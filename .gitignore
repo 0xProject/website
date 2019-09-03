@@ -7,3 +7,4 @@ public/bundle*
 mdx/tools/*
 
 .DS_Store
+.awcache
