@@ -1,0 +1,9 @@
+node_modules
+
+# Bundles
+public/bundle*
+
+# Tool MDX files authoritatively live on S3
+mdx/tools/*
+
+.DS_Store
