@@ -1,6 +1,6 @@
-import { ObjectMap, SignedOrder } from '@0x/types';
+import { AssetProxyId, ObjectMap, SignedOrder } from '@0x/types';
 import { BigNumber } from '@0x/utils';
-import { Provider } from 'ethereum-types';
+import { Provider, SupportedProvider } from 'ethereum-types';
 import * as React from 'react';
 
 export enum Side {
@@ -884,4 +884,53 @@ export interface ALink {
     to: string;
     shouldOpenInNewTab?: boolean;
 }
+
+export interface ERC20AssetMetaData {
+    assetProxyId: AssetProxyId.ERC20;
+    decimals: number;
+    primaryColor?: string;
+    symbol: string;
+    name: string;
+    iconUrl?: string;
+}
+
+export interface ERC721AssetMetaData {
+    assetProxyId: AssetProxyId.ERC721;
+    name: string;
+    imageUrl?: string;
+    primaryColor?: string;
+}
+
+export type AssetMetaData = ERC20AssetMetaData | ERC721AssetMetaData;
+
+export type OrderSource = string | SignedOrder[];
+
+export interface ZeroExInstantRequiredBaseConfig {
+    orderSource: OrderSource;
+}
+
+export enum Network {
+    Kovan = 42,
+    Mainnet = 1,
+}
+
+export interface AffiliateInfo {
+    feeRecipient: string;
+    feePercentage: number;
+}
+
+export interface ZeroExInstantOptionalBaseConfig {
+    provider: SupportedProvider;
+    walletDisplayName: string;
+    availableAssetDatas: string[];
+    defaultAssetBuyAmount: number;
+    defaultSelectedAssetData: string;
+    additionalAssetMetaDataMap: ObjectMap<AssetMetaData>;
+    networkId: Network;
+    affiliateInfo: AffiliateInfo;
+    shouldDisableAnalyticsTracking: boolean;
+    onSuccess?: (txHash: string) => void;
+}
+
+export type ZeroExInstantBaseConfig = ZeroExInstantRequiredBaseConfig & Partial<ZeroExInstantOptionalBaseConfig>;
 // tslint:disable:max-file-line-count

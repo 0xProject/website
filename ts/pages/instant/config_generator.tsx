@@ -14,15 +14,14 @@ import { Text } from 'ts/components/ui/text';
 import { ConfigGeneratorAddressInput } from 'ts/pages/instant/config_generator_address_input';
 import { FeePercentageSlider } from 'ts/pages/instant/fee_percentage_slider';
 import { colors } from 'ts/style/colors';
-import { WebsitePaths } from 'ts/types';
+import { ERC20AssetMetaData, WebsitePaths, ZeroExInstantBaseConfig } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 
 // New components
 import { Heading } from 'ts/components/text';
 import { Select, SelectItemConfig } from 'ts/pages/instant/select';
 
-import { assetMetaDataMap } from '../../../../instant/src/data/asset_meta_data_map';
-import { ERC20AssetMetaData, ZeroExInstantBaseConfig } from '../../../../instant/src/types';
+import { assetMetaDataMap } from 'ts/utils/asset_meta_data_map';
 
 export interface ConfigGeneratorProps {
     value: ZeroExInstantBaseConfig;
