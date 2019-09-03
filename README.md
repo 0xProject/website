@@ -34,13 +34,13 @@ yarn install
 To build this package and all other monorepo packages that it depends on, run the following from the monorepo root directory:
 
 ```bash
-PKG=@0x/website yarn build
+yarn build
 ```
 
 ### Run dev server
 
 ```bash
-PKG=@0x/website yarn watch
+yarn watch
 ```
 
 Visit [0xproject.localhost:3572](http://0xproject.localhost:3572) in your browser.
