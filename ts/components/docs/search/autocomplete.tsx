@@ -84,7 +84,7 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
 
   const onSuggestionSelected = (
     event: React.KeyboardEvent,
-    { suggestion }: any
+    { suggestion }: { suggestion: IHit }
   ): void => {
     const { externalUrl, hash, url, urlWithHash } = suggestion;
 
@@ -107,52 +107,6 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
     setValue(''); // Clear input value
     inputRef.blur(); // Blur input
   };
-
-  const getSuggestionValue = (hit: IHit): string => hit.textContent;
-
-  const renderSuggestion = (hit: IHit): React.ReactNode => {
-    const { externalUrl, urlWithHash } = hit;
-    const to = externalUrl ? externalUrl : urlWithHash;
-    // The atrributes to snippet are set in algolia_constants
-    const attributeToSnippet = externalUrl ? 'description' : 'textContent';
-
-    return (
-      <Link shouldOpenInNewTab={externalUrl ? true : false} to={to}>
-        <Highlight attribute="title" hit={hit} nonHighlightedTagName="h6" />
-        <Snippet
-          attribute={attributeToSnippet}
-          hit={hit}
-          nonHighlightedTagName="p"
-          tagName="span"
-        />
-      </Link>
-    );
-  };
-
-  const renderSectionTitle = (section: any): React.ReactNode => {
-    // TODO(fabio): Add `api-explorer` below once the API Explore page is ready (ditto in search_input.tsx)
-    const nameToSearchIndex = getNameToSearchIndex(
-      environments.getEnvironment()
-    );
-    const { tools, guides } = nameToSearchIndex;
-    const coreConcepts = nameToSearchIndex['core-concepts'];
-
-    const titles: { [key: string]: string } = {
-      // TODO: Add this back in when api - explorer page is ready
-      // to be indexed and included in the search results (ditto in search_input.tsx)
-      // [apiExplorer]: 'Api explorer',
-      [coreConcepts]: 'Core concepts',
-      [tools]: 'Tools',
-      [guides]: 'Guides'
-    };
-
-    if (section.hits.length) {
-      return <p>{titles[section.index]}</p>;
-    }
-    return null;
-  };
-
-  const getSectionSuggestions = (section: any): string => section.hits;
 
   const storeInputRef = (autosuggest: any): void => {
     if (autosuggest !== null) {
@@ -215,5 +169,49 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
     </>
   );
 };
+
+const getSuggestionValue = (hit: IHit): string => hit.textContent;
+
+const renderSuggestion = (hit: IHit): React.ReactNode => {
+  const { externalUrl, urlWithHash } = hit;
+  const to = externalUrl ? externalUrl : urlWithHash;
+  // The atrributes to snippet are set in algolia_constants
+  const attributeToSnippet = externalUrl ? 'description' : 'textContent';
+
+  return (
+    <Link shouldOpenInNewTab={externalUrl ? true : false} to={to}>
+      <Highlight attribute="title" hit={hit} nonHighlightedTagName="h6" />
+      <Snippet
+        attribute={attributeToSnippet}
+        hit={hit}
+        nonHighlightedTagName="p"
+        tagName="span"
+      />
+    </Link>
+  );
+};
+
+const renderSectionTitle = (section: any): React.ReactNode => {
+  // TODO(fabio): Add `api-explorer` below once the API Explore page is ready (ditto in search_input.tsx)
+  const nameToSearchIndex = getNameToSearchIndex(environments.getEnvironment());
+  const { tools, guides } = nameToSearchIndex;
+  const coreConcepts = nameToSearchIndex['core-concepts'];
+
+  const titles: { [key: string]: string } = {
+    // TODO: Add this back in when api - explorer page is ready
+    // to be indexed and included in the search results (ditto in search_input.tsx)
+    // [apiExplorer]: 'Api explorer',
+    [coreConcepts]: 'Core concepts',
+    [tools]: 'Tools',
+    [guides]: 'Guides'
+  };
+
+  if (section.hits.length) {
+    return <p>{titles[section.index]}</p>;
+  }
+  return null;
+};
+
+const getSectionSuggestions = (section: any): string => section.hits;
 
 export const AutoComplete = connectAutoComplete(withRouter(CustomAutoComplete));
