@@ -39,12 +39,12 @@ export interface IHit {
 
 interface IAutoCompleteProps extends RouteComponentProps<{}> {
   isHome?: boolean;
-  hits?: ISuggestions[];
+  hits?: IHits[];
   currentRefinement?: string;
   refine?: (value: string) => void;
 }
 
-interface ISuggestions {
+interface IHits {
   index: string;
   hits: IHit[];
 }
@@ -137,8 +137,7 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
   };
 
   const hasNoSuggestions =
-    //   @ts-ignore
-    value.length > 0 && !hits.find(hit => hit.hits.length);
+    value.length > 0 && !hits.find((hit: IHits): any => hit.hits.length);
 
   return (
     <>
