@@ -7,9 +7,13 @@ jobs:
               - image: nikolaik/python-nodejs:python3.7-nodejs8
           working_directory: ~/repo
           steps:
-              - restore_cache:
-                    keys:
-                        - repo-{{ .Environment.CIRCLE_SHA1 }}
+              - checkout
+              - run:
+                  name: install-yarn
+                  command: npm install --global yarn@1.17.0
+              - run:
+                  name: yarn
+                  command: yarn --frozen-lockfile --ignore-engines install || yarn --frozen-lockfile --ignore-engines install
               - run: yarn build:prod
               - save_cache:
                     key: repo-{{ .Environment.CIRCLE_SHA1 }}
