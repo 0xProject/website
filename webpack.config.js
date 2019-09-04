@@ -107,6 +107,9 @@ const config = {
         ],
     },
     optimization: {
+        removeAvailableModules: false,
+        removeEmptyChunks: false,
+        splitChunks: false,
         minimizer: [
             new TerserPlugin({
                 parallel: true,
