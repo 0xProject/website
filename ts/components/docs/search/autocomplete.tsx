@@ -58,6 +58,7 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
   location
 }) => {
   const [value, setValue] = React.useState<string>('');
+  const [hasOverlay, setHasOverlay] = React.useState<boolean>(false);
   let inputRef: HTMLInputElement;
 
   React.useEffect(() => {
@@ -124,9 +125,14 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
     }
   };
 
+  const onFocus = () => setHasOverlay(true);
+  const onBlur = () => setHasOverlay(false);
+
   const inputProps = {
     placeholder: 'Search docs…',
     onChange,
+    onFocus,
+    onBlur,
     value
   };
 
@@ -137,7 +143,7 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
   return (
     <>
       <AutocompleteWrapper
-        currentRefinement={currentRefinement}
+        hasOverlay={hasOverlay}
         hasNoSuggestions={hasNoSuggestions}
         isHome={isHome}>
         <Autosuggest
@@ -160,11 +166,8 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
           </div>
         )}
       </AutocompleteWrapper>
-      {currentRefinement && (
-        <AutocompleteOverlay
-          onClick={onSuggestionsClearRequested}
-          shouldLockScroll={!isHome}
-        />
+      {hasOverlay && (
+        <AutocompleteOverlay onClick={onBlur} shouldLockScroll={!isHome} />
       )}
     </>
   );

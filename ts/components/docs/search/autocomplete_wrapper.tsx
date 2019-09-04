@@ -3,15 +3,15 @@ import styled from 'styled-components';
 import { colors } from 'ts/style/colors';
 
 interface IWrapperProps {
-  isHome: boolean;
-  currentRefinement: string;
   hasNoSuggestions: boolean;
+  hasOverlay: boolean;
+  isHome: boolean;
 }
 
 export const AutocompleteWrapper = styled.div<IWrapperProps>`
   position: relative;
   min-width: 240px;
-  z-index: ${({ currentRefinement }) => currentRefinement && 500};
+  z-index: ${({ hasOverlay }) => hasOverlay && 500};
 
   ${({ isHome }) =>
     isHome &&
@@ -84,6 +84,8 @@ export const AutocompleteWrapper = styled.div<IWrapperProps>`
     padding: 18px 18px 21px 35px;
     width: 100%;
 
+    z-index: 500;
+
     outline: none;
     border: 1px solid transparent;
 
@@ -95,6 +97,7 @@ export const AutocompleteWrapper = styled.div<IWrapperProps>`
             &--focused,
             &--open {
                 border-bottom-color: ${colors.brandLight};
+                position: relative;
             }
         `};
 
@@ -105,7 +108,7 @@ export const AutocompleteWrapper = styled.div<IWrapperProps>`
             padding: 13px 21px 15px 52px;
             background-position: left 21px center;
             font-size: 1rem;
-
+            position: relative;
             transition: all 300ms ease-in-out;
 
             @media (min-width: 1200px) {
