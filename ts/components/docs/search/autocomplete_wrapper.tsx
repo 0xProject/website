@@ -34,23 +34,25 @@ export const AutocompleteWrapper = styled.div<IWrapperProps>`
     font-size: 16px;
     line-height: 24px;
     padding: 30px;
+    min-height: 86px;
     word-break: break-word;
+    background: white;
+    border: 1px solid #dbdfdd;
+    border-top: none;
+
+    position: absolute;
+    width: calc(100% + 2px);
+    right: -1px;
 
     ${({ isHome }) =>
       !isHome &&
       `
-        position: absolute;
-        background: white;
-        border: 1px solid #dbdfdd;
-        border-top: none;
-        width: 100%;
-
-        @media (min-width: 1200px) {
-            top: 26px;
-            right: 30px;
-            width: 750px;
-            border-top: 1px solid #dbdfdd;
-        }
+      @media (min-width: 1200px) {
+        top: 26px;
+        right: 30px;
+        width: 750px;
+        border-top: 1px solid #dbdfdd;
+      }
     `};
   }
 
