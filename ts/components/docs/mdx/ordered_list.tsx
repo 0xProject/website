@@ -15,7 +15,7 @@ export const OrderedList = styled.ol`
         margin-bottom: 0.8333rem;
         color: ${colors.brandDark};
         font-size: ${docs.fontSize.desktop};
-        line-height: 30px;
+        line-height: 1.6;
 
         &:before {
             display: flex;
@@ -27,6 +27,7 @@ export const OrderedList = styled.ol`
             border-radius: 50%;
             background-color: rgba(0, 174, 153, 0.1);
             min-width: 30px;
+            font-size: 14px;
             height: 30px;
         }
 

@@ -19,7 +19,13 @@ export const ScrollTopArrow = () => {
 
     return (
         <ArrowWrapper isArrowVisible={isArrowVisible} onClick={animateScroll.scrollToTop}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="22.047" height="22.236">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="none"
+                width="22.047"
+                height="22.236"
+                viewBox="0 0 22.047 22.236"
+            >
                 <path d="M2.524 8.625L3.67 9.693l6.557-6.232v18.23h1.592V3.46l6.557 6.232 1.147-1.068-8.5-8.08-8.5 8.08z" />
             </svg>
         </ArrowWrapper>

@@ -35,9 +35,14 @@ export interface IHit {
 
 interface IAutoCompleteProps extends RouteComponentProps<{}> {
     isHome?: boolean;
-    hits?: object[];
+    hits?: IHits[];
     currentRefinement?: string;
     refine?: (value: string) => void;
+}
+
+interface IHits {
+    index: string;
+    hits: IHit[];
 }
 
 const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
@@ -49,6 +54,7 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
     location,
 }) => {
     const [value, setValue] = React.useState<string>('');
+    const [hasOverlay, setHasOverlay] = React.useState<boolean>(false);
     let inputRef: HTMLInputElement;
 
     React.useEffect(() => {
@@ -69,7 +75,7 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
 
     const onSuggestionsClearRequested = (): void => refine('');
 
-    const onSuggestionSelected = (event: React.KeyboardEvent, { suggestion }: any): void => {
+    const onSuggestionSelected = (event: React.KeyboardEvent, { suggestion }: { suggestion: IHit }): void => {
         const { externalUrl, hash, url, urlWithHash } = suggestion;
 
         if (!externalUrl) {
@@ -92,45 +98,6 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
         inputRef.blur(); // Blur input
     };
 
-    const getSuggestionValue = (hit: IHit): string => hit.textContent;
-
-    const renderSuggestion = (hit: IHit): React.ReactNode => {
-        const { externalUrl, urlWithHash } = hit;
-        const to = externalUrl ? externalUrl : urlWithHash;
-        // The atrributes to snippet are set in algolia_constants
-        const attributeToSnippet = externalUrl ? 'description' : 'textContent';
-
-        return (
-            <Link shouldOpenInNewTab={externalUrl ? true : false} to={to}>
-                <Highlight attribute="title" hit={hit} nonHighlightedTagName="h6" />
-                <Snippet attribute={attributeToSnippet} hit={hit} nonHighlightedTagName="p" tagName="span" />
-            </Link>
-        );
-    };
-
-    const renderSectionTitle = (section: any): React.ReactNode => {
-        // TODO(fabio): Add `api-explorer` below once the API Explore page is ready (ditto in search_input.tsx)
-        const nameToSearchIndex = getNameToSearchIndex(environments.getEnvironment());
-        const { tools, guides } = nameToSearchIndex;
-        const coreConcepts = nameToSearchIndex['core-concepts'];
-
-        const titles: { [key: string]: string } = {
-            // TODO: Add this back in when api - explorer page is ready
-            // to be indexed and included in the search results (ditto in search_input.tsx)
-            // [apiExplorer]: 'Api explorer',
-            [coreConcepts]: 'Core concepts',
-            [tools]: 'Tools',
-            [guides]: 'Guides',
-        };
-
-        if (section.hits.length) {
-            return <p>{titles[section.index]}</p>;
-        }
-        return null;
-    };
-
-    const getSectionSuggestions = (section: any): string => section.hits;
-
     const storeInputRef = (autosuggest: any): void => {
         if (autosuggest !== null) {
             inputRef = autosuggest.input;
@@ -144,15 +111,22 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
         }
     };
 
+    const onFocus = () => setHasOverlay(true);
+    const onBlur = () => setHasOverlay(false);
+
     const inputProps = {
         placeholder: 'Search docs…',
         onChange,
+        onFocus,
+        onBlur,
         value,
     };
 
+    const hasNoSuggestions = value.length > 0 && !hits.find((hit: IHits): any => hit.hits.length);
+
     return (
         <>
-            <AutocompleteWrapper currentRefinement={currentRefinement} isHome={isHome}>
+            <AutocompleteWrapper hasOverlay={hasOverlay} hasNoSuggestions={hasNoSuggestions} isHome={isHome}>
                 <Autosuggest
                     suggestions={hits}
                     ref={storeInputRef}
@@ -167,12 +141,52 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
                     renderSectionTitle={renderSectionTitle}
                     getSectionSuggestions={getSectionSuggestions}
                 />
+                {hasNoSuggestions && (
+                    <div className="react-autosuggest__empty">No results found for "{currentRefinement}"</div>
+                )}
             </AutocompleteWrapper>
-            {currentRefinement && (
-                <AutocompleteOverlay onClick={onSuggestionsClearRequested} shouldLockScroll={!isHome} />
-            )}
+            {hasOverlay && <AutocompleteOverlay onClick={onBlur} shouldLockScroll={!isHome} />}
         </>
     );
 };
+
+const getSuggestionValue = (hit: IHit): string => hit.textContent;
+
+const renderSuggestion = (hit: IHit): React.ReactNode => {
+    const { externalUrl, urlWithHash } = hit;
+    const to = externalUrl ? externalUrl : urlWithHash;
+    // The atrributes to snippet are set in algolia_constants
+    const attributeToSnippet = externalUrl ? 'description' : 'textContent';
+
+    return (
+        <Link shouldOpenInNewTab={externalUrl ? true : false} to={to}>
+            <Highlight attribute="title" hit={hit} nonHighlightedTagName="h6" />
+            <Snippet attribute={attributeToSnippet} hit={hit} nonHighlightedTagName="p" tagName="span" />
+        </Link>
+    );
+};
+
+const renderSectionTitle = (section: any): React.ReactNode => {
+    // TODO(fabio): Add `api-explorer` below once the API Explore page is ready (ditto in search_input.tsx)
+    const nameToSearchIndex = getNameToSearchIndex(environments.getEnvironment());
+    const { tools, guides } = nameToSearchIndex;
+    const coreConcepts = nameToSearchIndex['core-concepts'];
+
+    const titles: { [key: string]: string } = {
+        // TODO: Add this back in when api - explorer page is ready
+        // to be indexed and included in the search results (ditto in search_input.tsx)
+        // [apiExplorer]: 'Api explorer',
+        [coreConcepts]: 'Core concepts',
+        [tools]: 'Tools',
+        [guides]: 'Guides',
+    };
+
+    if (section.hits.length) {
+        return <p>{titles[section.index]}</p>;
+    }
+    return null;
+};
+
+const getSectionSuggestions = (section: any): string => section.hits;
 
 export const AutoComplete = connectAutoComplete(withRouter(CustomAutoComplete));

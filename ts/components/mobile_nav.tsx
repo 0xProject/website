@@ -42,6 +42,9 @@ export const MobileNav: React.FC<IMobileNavProps> = props => {
                         <Link to={WebsitePaths.Why}>Why 0x</Link>
                     </li>
                     <li>
+                        <Link to={WebsitePaths.Docs}>Docs</Link>
+                    </li>
+                    <li>
                         <Link to={WebsitePaths.AboutMission}>About</Link>
                     </li>
                     <li>

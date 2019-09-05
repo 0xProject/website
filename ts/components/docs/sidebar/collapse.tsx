@@ -41,7 +41,8 @@ export const Collapse: React.FC<ICollapseProps> = props => {
 };
 
 const CollapseWrapper = styled.div<ICollapse>`
-    height: ${props => (props.isActive ? props.height : 0)}px;
+    min-height: ${props => (props.isActive ? props.height : 0)}px;
+    height: ${props => !props.isActive && '0px'};
     display: flex;
     flex-direction: column;
 `;

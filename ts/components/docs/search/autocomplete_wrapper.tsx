@@ -3,14 +3,15 @@ import styled from 'styled-components';
 import { colors } from 'ts/style/colors';
 
 interface IWrapperProps {
-    isHome?: boolean;
-    currentRefinement?: string;
+    hasNoSuggestions: boolean;
+    hasOverlay: boolean;
+    isHome: boolean;
 }
 
 export const AutocompleteWrapper = styled.div<IWrapperProps>`
     position: relative;
     min-width: 240px;
-    z-index: ${({ currentRefinement }) => currentRefinement && 500};
+    z-index: ${({ hasOverlay }) => hasOverlay && 500};
 
     ${({ isHome }) =>
         isHome &&
@@ -19,6 +20,41 @@ export const AutocompleteWrapper = styled.div<IWrapperProps>`
         max-width: 900px;
         margin: 0 auto;
     `};
+
+    ${({ hasNoSuggestions }) =>
+        hasNoSuggestions &&
+        `
+        background: white;
+        border: 1px solid #dbdfdd;
+    `}
+
+    .react-autosuggest__empty {
+        color: ${colors.textDarkSecondary};
+        text-align: center;
+        font-size: 16px;
+        line-height: 24px;
+        padding: 30px;
+        min-height: 86px;
+        word-break: break-word;
+        background: white;
+        border: 1px solid #dbdfdd;
+        border-top: none;
+
+        position: absolute;
+        width: calc(100% + 2px);
+        right: -1px;
+
+        ${({ isHome }) =>
+            !isHome &&
+            `
+      @media (min-width: 1200px) {
+        top: 26px;
+        right: 30px;
+        width: 750px;
+        border-top: 1px solid #dbdfdd;
+      }
+    `};
+    }
 
     .react-autosuggest__container {
         &--open,
@@ -29,18 +65,18 @@ export const AutocompleteWrapper = styled.div<IWrapperProps>`
         ${({ isHome }) =>
             isHome &&
             `
-            border: 1px solid transparent;
-            padding: 13px 30px 0;
+        border: 1px solid transparent;
+        padding: 13px 30px 0;
 
-            &--focused,
-            &--open {
-                border: 1px solid #dbdfdd;
-            }
+        &--focused,
+        &--open {
+            border: 1px solid #dbdfdd;
+        }
 
-            @media (max-width: 900px) {
-                padding: 13px 18px;
-            }
-        `};
+        @media (max-width: 900px) {
+            padding: 13px 18px;
+        }
+    `};
     }
 
     .react-autosuggest__input {
@@ -49,6 +85,8 @@ export const AutocompleteWrapper = styled.div<IWrapperProps>`
         font-size: 22px;
         padding: 18px 18px 21px 35px;
         width: 100%;
+
+        z-index: 500;
 
         outline: none;
         border: 1px solid transparent;
@@ -61,6 +99,7 @@ export const AutocompleteWrapper = styled.div<IWrapperProps>`
             &--focused,
             &--open {
                 border-bottom-color: ${colors.brandLight};
+                position: relative;
             }
         `};
 
@@ -71,7 +110,7 @@ export const AutocompleteWrapper = styled.div<IWrapperProps>`
             padding: 13px 21px 15px 52px;
             background-position: left 21px center;
             font-size: 1rem;
-
+            position: relative;
             transition: all 300ms ease-in-out;
 
             @media (min-width: 1200px) {
