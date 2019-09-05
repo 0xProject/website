@@ -102,20 +102,23 @@ require(isWhitelisted[takerAddress], 'TAKER_NOT_WHITELISTED');
 EXCHANGE.executeTransaction(salt, signerAddress, signedExchangeTransaction, signature);
 ```
 
-In order to implement an on-chain whitelist, the contract would first query if the user is present in a list, if the user is present then the 0x transaction is executed. Our contract wrappers package exposes a [transaction encoder](https://0x.org/docs/tools/contract-wrappers#TransactionEncoder) to encode 0x transactions. An detailed example of encoding and executing 0x transactions can be found in our [0x-starter-project](https://github.com/0xProject/0x-starter-project/blob/master/src/scenarios/execute_transaction.ts#L20).
+In order to implement an on-chain whitelist, the contract would first query if the user is present in a list, if the user is present then the 0x transaction is executed. `@0x/order-utils` exposes [transaction hash utils](https://0x.org/docs/tools/order-utils/v8.3.1#const-transactionhashutils) to help encode 0x transactions. When encoded and signed, a 0x transaction can be executed by any third party such as a relayer or extension contract. An detailed example of encoding and executing 0x transactions can be found in our [0x-starter-project](https://github.com/0xProject/0x-starter-project/blob/master/src/scenarios/execute_transaction.ts#L20).
 
 ```typescript
-// The transaction encoder provides helpers in encoding 0x Exchange transactions to allow
-// a third party to submit the transaction. This operates in the context of the signer (taker)
-// rather then the context of the submitter (sender)
-const transactionEncoder = await contractWrappers.exchange.transactionEncoderAsync();
-// This is an ABI encoded function call that the taker wishes to perform
+// This is an ABI encoded function call that the taker (signer) wishes to perform
 // in this scenario it is a fillOrder
-const fillData = transactionEncoder.fillOrderTx(signedOrder, takerAssetAmount);
+const fillData = contractWrappers.exchange.fillOrder.getABIEncodedTransactionData(signedOrder, takerAssetAmount, signedOrder.signature);
 // Generate a random salt to mitigate replay attacks
 const takerTransactionSalt = generatePseudoRandomSalt();
+// Encode a 0x transaction that can then be submitted by a third party
+const zeroExTx = {
+    verifyingContractAddress: contractWrappers.exchange.address,
+    salt: takerTransactionSalt,
+    signerAddress: taker,
+    data: fillData,
+};
+const executeTransactionHex = transactionHashUtils.getTransactionHashHex(zeroExTx);
 // The taker signs the operation data (fillOrder) with the salt
-const executeTransactionHex = transactionEncoder.getTransactionHashHex(fillData, takerTransactionSalt, taker);
 const takerSignatureHex = await signatureUtils.ecSignHashAsync(providerEngine, executeTransactionHex, taker);
 ```
 
