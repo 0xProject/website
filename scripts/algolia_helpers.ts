@@ -277,6 +277,7 @@ function formatTextNodes(textNodes: Node[]): FormattedNode[] {
 interface File {
     name: string;
     path: string;
+    resourceUri?: string;
     version?: string;
     versions?: string[];
     url: string;
