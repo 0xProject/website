@@ -74,7 +74,7 @@ export const DocsPage: React.FC<IDocsPageProps> = props => {
 
     const { Document, contents, wasNotFound } = state;
 
-    const { description, keywords, path, subtitle, title, versions } = pageMeta;
+    const { description, keywords, path, resourceUri, subtitle, title, versions } = pageMeta;
 
     const isLoading = !Document;
 
@@ -82,13 +82,13 @@ export const DocsPage: React.FC<IDocsPageProps> = props => {
     const filePath = versions && version ? path.replace(versions[0], version) : path;
 
     React.useEffect(() => {
-        void loadPageAsync(filePath);
-    }, [filePath]);
+        void loadPageAsync();
+    }, []);
 
-    const loadPageAsync = async (_filePath: string) => {
+    const loadPageAsync = async () => {
         try {
             if (isToolsPage) {
-                const response = await fetchAsync(path);
+                const response = await fetchAsync(resourceUri);
                 const content = await response.text();
                 const tableOfContents = await getTableOfContentsAsync(content);
 
@@ -98,7 +98,7 @@ export const DocsPage: React.FC<IDocsPageProps> = props => {
                     contents: tableOfContents,
                 });
             } else {
-                const component = await import(/* webpackChunkName: "mdx/[request]" */ `mdx/${_filePath}`);
+                const component = await import(/* webpackChunkName: "mdx/[request]" */ `mdx/${filePath}`);
 
                 setState({
                     ...state,
