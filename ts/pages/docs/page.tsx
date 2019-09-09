@@ -33,13 +33,22 @@ import { IContents, TableOfContents } from 'ts/components/docs/sidebar/table_of_
 
 import { PageNotFound } from 'ts/pages/docs/page_not_found';
 
+import { fetchAsync } from '@0x/utils';
 import { docs } from 'ts/style/docs';
 
 import meta from 'ts/utils/algolia_meta.json';
 
+// @ts-ignore no type definition for this one
+import MDXRuntime from '@mdx-js/runtime';
+const remark = require('remark');
+const remarkSlug = require('remark-slug');
+const remarkAutolinkHeadings = require('../../../webpack/remark_autolink_headings');
+const remarkSectionizeHeadings = require('../../../webpack/remark_sectionize_headings');
+const remarkTableOfContents = require('../../../webpack/remark_table_of_contents');
+
 interface IDocsPageProps extends RouteComponentProps<any> {}
 interface IDocsPageState {
-    Component: React.ReactNode;
+    Document: React.ReactNode;
     contents: IContents[];
     wasNotFound: boolean;
 }
@@ -51,22 +60,23 @@ export const DocsPage: React.FC<IDocsPageProps> = props => {
     const key = page ? page : type;
     // @ts-ignore
     const pageMeta = meta[type] && meta[type][key];
+    const isToolsPage = type === 'tools';
 
     if (!pageMeta) {
         return <PageNotFound />;
     }
 
     const [state, setState] = React.useState<IDocsPageState>({
-        Component: '',
+        Document: '',
         contents: [],
         wasNotFound: false,
     });
 
-    const { Component, contents, wasNotFound } = state;
+    const { Document, contents, wasNotFound } = state;
 
     const { description, keywords, path, subtitle, title, versions } = pageMeta;
 
-    const isLoading = !Component;
+    const isLoading = !Document;
 
     // If the route path includes a version, replace the initial version on path
     const filePath = versions && version ? path.replace(versions[0], version) : path;
@@ -77,13 +87,25 @@ export const DocsPage: React.FC<IDocsPageProps> = props => {
 
     const loadPageAsync = async (_filePath: string) => {
         try {
-            const component = await import(/* webpackChunkName: "mdx/[request]" */ `mdx/${_filePath}`);
+            if (isToolsPage) {
+                const response = await fetchAsync(path);
+                const content = await response.text();
+                const tableOfContents = await getTableOfContentsAsync(content);
 
-            setState({
-                ...state,
-                Component: component.default,
-                contents: component.tableOfContents(),
-            });
+                setState({
+                    ...state,
+                    Document: content,
+                    contents: tableOfContents,
+                });
+            } else {
+                const component = await import(/* webpackChunkName: "mdx/[request]" */ `mdx/${_filePath}`);
+
+                setState({
+                    ...state,
+                    Document: component.default,
+                    contents: component.tableOfContents(),
+                });
+            }
 
             if (hash) {
                 await waitForImages(); // images will push down content when loading, so we wait...
@@ -110,11 +132,21 @@ export const DocsPage: React.FC<IDocsPageProps> = props => {
                 <TableOfContents contents={contents} versions={versions} />
                 <Separator />
                 <ContentWrapper>
-                    <MDXProvider components={mdxComponents}>
-                        {/*
+                    {isToolsPage ? (
+                        <MDXRuntime
+                            components={mdxComponents}
+                            remarkPlugins={[remarkSlug, remarkAutolinkHeadings, remarkSectionizeHeadings]}
+                        >
+                            {Document}
+                        </MDXRuntime>
+                    ) : (
+                        <MDXProvider components={mdxComponents}>
+                            {/*
                                 // @ts-ignore */}
-                        <Component />
-                    </MDXProvider>
+                            <Document />
+                        </MDXProvider>
+                    )}
+
                     <HelpCallout />
                     <HelpfulCta page={key} />
                 </ContentWrapper>
@@ -147,6 +179,19 @@ const mdxComponents = {
     Note,
     Notification,
     StepLinks,
+};
+
+const getTableOfContentsAsync = async (content: string) => {
+    let tableOfContents;
+
+    await remark()
+        .use(remarkSlug)
+        .use(() => (tree: any) => {
+            tableOfContents = remarkTableOfContents(tree);
+        })
+        .process(content);
+
+    return tableOfContents;
 };
 
 const waitForImages = async () => {

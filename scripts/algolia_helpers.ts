@@ -93,10 +93,12 @@ function getNameToFile(dirName: string): ObjectMap<File> {
             const name = path.basename(path.join(p, '../../'));
             const version = path.basename(path.dirname(p));
             const url = `/docs/tools/${name}/${version}`;
+            const [_, pathInDir] = p.split('tools/');
+            const resourceUri = `https://s3.amazonaws.com/docs-markdown/${pathInDir}`;
 
             const fileIfExists = nameToFile[name];
 
-            const fileObject = { name, path: p, version, versions: [version], url };
+            const fileObject = { name, path: resourceUri, version, versions: [version], url };
 
             if (fileIfExists !== undefined) {
                 if (compareVersions.compare(version, fileIfExists.version, '>')) {

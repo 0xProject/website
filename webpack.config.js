@@ -188,5 +188,9 @@ module.exports = (_env, argv) => {
     config.plugins = plugins;
     console.log('i ｢atl｣: Plugin Count: ', config.plugins.length);
 
+    config.node = {
+        fs: 'empty',
+    };
+
     return config;
 };
