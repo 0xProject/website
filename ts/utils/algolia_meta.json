@@ -207,7 +207,7 @@
             "tags": ["Relayer", "Trader"],
             "type": "Typescript Libraries",
             "path": "tools/@0x/subproviders/v5.0.3/reference.mdx",
-            "resourceUri": "https://s3.amazonaws.com/docs-markdown/subproviders/v5.0.3/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/@0x/subproviders/v5.0.3/reference.mdx",
             "versions": ["v5.0.3", "v5.0.2"]
         },
         "asset-buyer": {

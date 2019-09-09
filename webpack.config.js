@@ -53,7 +53,7 @@ const config = {
             },
             {
                 test: /\.mdx$/,
-                include: path.join(__dirname, '/mdx'),
+                exclude: path.join(__dirname, '/mdx', '/tools'),
                 use: [
                     'cache-loader',
                     {
