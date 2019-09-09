@@ -171,6 +171,7 @@
             "tags": ["Trader", "Protocol Developer"],
             "type": "Typescript Libraries",
             "path": "tools/@0x/asset-swapper/v1.0.3/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/@0x/asset-swapper/v1.0.3/reference.mdx",
             "versions": ["v1.0.3", "v1.0.2"]
         },
         "0x.js": {
@@ -182,6 +183,7 @@
             "tags": ["Trader", "Relayer", "Protocol Developer"],
             "type": "Typescript Libraries",
             "path": "tools/0x.js/v7.0.1/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/0x.js/v7.0.1/reference.mdx",
             "versions": ["v7.0.1", "v7.0.0"]
         },
         "connect": {
@@ -193,6 +195,7 @@
             "tags": ["Trader", "Relayer"],
             "type": "Typescript Libraries",
             "path": "tools/@0x/connect/v5.0.18/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/@0x/connect/v5.0.18/reference.mdx",
             "versions": ["v5.0.18", "v5.0.17"]
         },
         "subproviders": {
@@ -204,6 +207,7 @@
             "tags": ["Relayer", "Trader"],
             "type": "Typescript Libraries",
             "path": "tools/@0x/subproviders/v5.0.3/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/subproviders/v5.0.3/reference.mdx",
             "versions": ["v5.0.3", "v5.0.2"]
         },
         "asset-buyer": {
@@ -215,6 +219,7 @@
             "tags": ["Trader", "Protocol Developer"],
             "type": "Typescript Libraries",
             "path": "tools/@0x/asset-buyer/v6.1.13/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/@0x/asset-buyer/v6.1.13/reference.mdx",
             "versions": ["v6.1.13", "v6.1.12"],
             "isHidden": true
         },
@@ -227,6 +232,7 @@
             "tags": [],
             "type": "Typescript Libraries",
             "path": "tools/ethereum-types/v2.1.5/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/ethereum-types/v2.1.5/reference.mdx",
             "versions": ["v2.1.5", "v2.1.4"],
             "isHidden": true
         },
@@ -240,6 +246,7 @@
             "type": "Typescript Libraries",
             "isHidden": true,
             "path": "tools/@0x/contract-wrappers/v12.0.0/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/@0x/contract-wrappers/v12.0.0/reference.mdx",
             "versions": ["v12.0.0", "v11.1.0"]
         },
         "json-schemas": {
@@ -252,6 +259,7 @@
             "type": "Typescript Libraries",
             "isHidden": true,
             "path": "tools/@0x/json-schemas/v4.0.1/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/@0x/json-schemas/v4.0.1/reference.mdx",
             "versions": ["v4.0.1", "v4.0.0"]
         },
         "order-utils": {
@@ -264,6 +272,7 @@
             "type": "Typescript Libraries",
             "isHidden": true,
             "path": "tools/@0x/order-utils/v8.3.1/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/@0x/order-utils/v8.3.1/reference.mdx",
             "versions": ["v8.3.1", "v8.3.0"]
         },
         "sol-compiler": {
@@ -276,6 +285,7 @@
             "type": "Typescript Libraries",
             "isHidden": true,
             "path": "tools/@0x/sol-compiler/v3.1.14/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/@0x/sol-compiler/v3.1.14/reference.mdx",
             "versions": ["v3.1.14", "v3.1.13"]
         },
         "sol-coverage": {
@@ -289,6 +299,7 @@
             "type": "Typescript Libraries",
             "isHidden": true,
             "path": "tools/@0x/sol-coverage/v3.0.11/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/@0x/sol-coverage/v3.0.11/reference.mdx",
             "versions": ["v3.0.11", "v3.0.10"]
         },
         "sol-profiler": {
@@ -302,6 +313,7 @@
             "type": "Typescript Libraries",
             "isHidden": true,
             "path": "tools/@0x/sol-profiler/v3.1.13/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/@0x/sol-profiler/v3.1.13/reference.mdx",
             "versions": ["v3.1.13", "v3.1.12"]
         },
         "sol-trace": {
@@ -315,6 +327,7 @@
             "type": "Typescript Libraries",
             "isHidden": true,
             "path": "tools/@0x/sol-trace/v2.0.19/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/@0x/sol-trace/v2.0.19/reference.mdx",
             "versions": ["v2.0.19", "v2.0.18"]
         },
         "web3-wrapper": {
@@ -327,6 +340,7 @@
             "type": "Typescript Libraries",
             "isHidden": true,
             "path": "tools/@0x/web3-wrapper/v6.0.12/reference.mdx",
+            "resourceUri": "https://s3.amazonaws.com/docs-markdown/@0x/web3-wrapper/v6.0.12/reference.mdx",
             "versions": ["v6.0.12", "v6.0.11"]
         },
         "mesh-ts-client": {

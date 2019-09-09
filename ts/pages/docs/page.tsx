@@ -78,8 +78,8 @@ export const DocsPage: React.FC<IDocsPageProps> = props => {
 
     const isLoading = !Document;
 
-    // If the route path includes a version, replace the initial version on path
-    const filePath = versions && version ? path.replace(versions[0], version) : path;
+    // If the resourceUri includes a version, replace the initial version
+    const urlWithVersion = versions && version ? resourceUri.replace(versions[0], version) : resourceUri;
 
     React.useEffect(() => {
         void loadPageAsync();
@@ -88,7 +88,7 @@ export const DocsPage: React.FC<IDocsPageProps> = props => {
     const loadPageAsync = async () => {
         try {
             if (isToolsPage) {
-                const response = await fetchAsync(resourceUri);
+                const response = await fetchAsync(urlWithVersion);
                 const content = await response.text();
                 const tableOfContents = await getTableOfContentsAsync(content);
 
@@ -98,7 +98,7 @@ export const DocsPage: React.FC<IDocsPageProps> = props => {
                     contents: tableOfContents,
                 });
             } else {
-                const component = await import(/* webpackChunkName: "mdx/[request]" */ `mdx/${filePath}`);
+                const component = await import(/* webpackChunkName: "mdx/[request]" */ `mdx/${path}`);
 
                 setState({
                     ...state,
