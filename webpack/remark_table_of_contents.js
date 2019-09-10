@@ -14,7 +14,7 @@ function transform(tree) {
             toc.push({
                 id: node.data.id,
                 level: node.depth,
-                title: getTitle(node.children),
+                title: getText(node),
             });
         },
     );
@@ -22,12 +22,22 @@ function transform(tree) {
     return toc;
 }
 
-function getTitle(children) {
-    let text = '';
+function getText(node) {
+    let nodes = [];
 
-    for (let i = 0; i < children.length; i++) {
-        text += children[i].value;
+    findTextNodes(node, nodes);
+
+    return nodes.join('');
+}
+
+function findTextNodes(parent, nodes) {
+    for (let i = 0; i < parent.children.length; i++) {
+        if (parent.children[i].value) {
+            nodes.push(parent.children[i].value);
+        } else {
+            if (parent.children[i].children.length) {
+                findTextNodes(parent.children[i], nodes);
+            }
+        }
     }
-
-    return text;
 }
