@@ -3,13 +3,10 @@ import styled from 'styled-components';
 
 interface IAutocompleteOverlayProps {
     onClick: () => void;
-    shouldLockScroll?: boolean;
 }
 
-export const AutocompleteOverlay: React.FC<IAutocompleteOverlayProps> = ({ onClick, shouldLockScroll }) => {
-    if (shouldLockScroll) {
-        useLockBodyScroll();
-    }
+export const AutocompleteOverlay: React.FC<IAutocompleteOverlayProps> = ({ onClick }) => {
+    useLockBodyScroll();
 
     return <Overlay onClick={onClick} />;
 };
