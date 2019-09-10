@@ -18,6 +18,7 @@ const GlobalStyles = withTheme(
         font-size: 18px;
         background-color: ${props => props.theme.bgColor};
         overflow-x: hidden;
+        width: 100vw; // Fixes content jumping when locking body scroll
     }
 
     @media (min-width: 768px) {
