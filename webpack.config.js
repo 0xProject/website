@@ -53,7 +53,7 @@ const config = {
             },
             {
                 test: /\.mdx$/,
-                include: path.join(__dirname, '/mdx'),
+                exclude: path.join(__dirname, '/mdx', '/tools'),
                 use: [
                     'cache-loader',
                     {
@@ -187,6 +187,10 @@ module.exports = (_env, argv) => {
 
     config.plugins = plugins;
     console.log('i ｢atl｣: Plugin Count: ', config.plugins.length);
+
+    config.node = {
+        fs: 'empty',
+    };
 
     return config;
 };
