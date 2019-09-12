@@ -96,8 +96,15 @@ const SidebarContent = styled.div`
     overflow-y: auto;
     overflow-x: hidden;
 
+    :hover {
+        scrollbar-color: ${colors.grey350} transparent;
+        &::-webkit-scrollbar-thumb {
+            background-color: ${colors.grey350};
+        }
+    }
+
     /* Slim scroll bar */
-    scrollbar-color: ${colors.grey500} transparent;
+    scrollbar-color: transparent;
     scrollbar-width: thin; /* Firefox */
     -ms-overflow-style: none; /* IE 10+ */
     &::-webkit-scrollbar {
@@ -106,6 +113,6 @@ const SidebarContent = styled.div`
         background: transparent; /* Chrome / Safari / Webkit */
     }
     &::-webkit-scrollbar-thumb {
-        background-color: ${colors.grey350};
+        background-color: transparent;
     }
 `;
