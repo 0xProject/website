@@ -186,7 +186,7 @@ export const AutocompleteWrapper = styled.div<IWrapperProps>`
         background-color: ${colors.white};
         flex-grow: 1;
 
-        max-height: calc(100vh - 200px);
+        max-height: 55vh;
         overflow-y: auto;
 
         /* Slim scroll bar */

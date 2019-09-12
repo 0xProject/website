@@ -145,7 +145,7 @@ const CustomAutoComplete: React.FC<IAutoCompleteProps> = ({
                     <div className="react-autosuggest__empty">No results found for "{currentRefinement}"</div>
                 )}
             </AutocompleteWrapper>
-            {hasOverlay && <AutocompleteOverlay onClick={onBlur} shouldLockScroll={!isHome} />}
+            {hasOverlay && <AutocompleteOverlay onClick={onBlur} />}
         </>
     );
 };
