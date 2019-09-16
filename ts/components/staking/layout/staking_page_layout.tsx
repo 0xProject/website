@@ -7,6 +7,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { Hero } from 'ts/components/docs/layout/hero';
 import { ScrollTopArrow } from 'ts/components/docs/layout/scroll_top_arrow';
 import { SiteWrap } from 'ts/components/siteWrap';
+import { Header as StakingHeader } from 'ts/components/staking/header/header';
 
 import { DocumentTitle } from 'ts/components/document_title';
 import { Section } from 'ts/components/newLayout';
@@ -32,7 +33,7 @@ const { description, keywords, title } = documentConstants.DOCS;
 
 export const StakingPageLayout: React.FC<IStakingPageLayoutProps  > = props => {
     return (
-        <SiteWrap isDocs={true} theme="light">
+        <SiteWrap isDocs={true} theme="light" headerComponent={StakingHeader}>
             <DocumentTitle
                 title={props.isHome ? title : `${title}: ${props.title}`}
                 description={props.description ? props.description : description}
