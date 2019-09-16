@@ -461,6 +461,7 @@ export enum WebsitePaths {
     Ecosystem = '/eap',
     MarketMaker = '/market-maker',
     Governance = '/governance',
+    Staking = '/stake',
     Why = '/why',
     PrivacyPolicy = '/privacy',
     TermsOfService = '/terms',
