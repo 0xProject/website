@@ -8,13 +8,12 @@ const ProgressBar = styled.div`
     padding: 5px;
 `;
 
-export interface StakingIndexProps {
-}
+export interface StakingIndexProps {}
 
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
-  return (
-      <StakingPageLayout isHome={true} title="0x Staking">
-        Stake!
-      </StakingPageLayout>
-  );
+    return (
+        <StakingPageLayout isHome={true} title="0x Staking">
+            Stake!
+        </StakingPageLayout>
+    );
 };

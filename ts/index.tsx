@@ -29,7 +29,7 @@ import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
 import { Governance } from 'ts/pages/governance/governance';
 import { VoteIndex } from 'ts/pages/governance/vote_index';
-import { StakingIndex } from 'ts/pages/staking';
+import { StakingIndex } from 'ts/pages/staking/home';
 import { Next0xInstant } from 'ts/pages/instant';
 import { NextLanding } from 'ts/pages/landing';
 import { NextLaunchKit } from 'ts/pages/launch_kit';
