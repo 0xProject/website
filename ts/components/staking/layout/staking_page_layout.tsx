@@ -29,7 +29,7 @@ interface IStakingPageLayoutProps {
 const SECTION_MIN_HEIGHT = '50vh';
 const SECTION_WIDTH = '1150px';
 
-const { description, keywords, title } = documentConstants.DOCS;
+const { description, keywords, title } = documentConstants.STAKING;
 
 export const StakingPageLayout: React.FC<IStakingPageLayoutProps  > = props => {
     return (
