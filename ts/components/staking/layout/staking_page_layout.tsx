@@ -31,7 +31,7 @@ const SECTION_WIDTH = '1150px';
 
 const { description, keywords, title } = documentConstants.STAKING;
 
-export const StakingPageLayout: React.FC<IStakingPageLayoutProps  > = props => {
+export const StakingPageLayout: React.FC<IStakingPageLayoutProps> = props => {
     return (
         <SiteWrap isDocs={true} theme="light" headerComponent={StakingHeader}>
             <DocumentTitle
