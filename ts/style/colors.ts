@@ -14,6 +14,7 @@ const appColors = {
     metaMaskOrange: '#f68c24',
     metaMaskTransparentOrange: 'rgba(255, 248, 242, 0.8)',
     brandLight: '#00AE99',
+    brandLightest: '#7BD2C7',
     brandDark: '#003831',
     backgroundDark: '#111A19',
     backgroundBlack: '#000000',
