@@ -109,7 +109,6 @@ const NavItem: React.FC<INavLinkProps> = ({ link }) => {
 
 const StyledHeader = styled.header<IHeaderProps>`
     padding: 30px;
-    background-color: ${colors.backgroundLight};
 `;
 
 const DocsLogoWrap = styled.div`

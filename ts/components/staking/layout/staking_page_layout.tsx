@@ -39,7 +39,7 @@ export const StakingPageLayout: React.FC<IStakingPageLayoutProps  > = props => {
                 description={props.description ? props.description : description}
                 keywords={props.keywords ? props.keywords : keywords}
             />
-            <Hero title={props.title} subtitle={props.subtitle} isHome={props.isHome} />
+
             <Section maxWidth={SECTION_WIDTH} minHeight={SECTION_MIN_HEIGHT} isPadded={false} overflow="visible">
                 {props.loading ? (
                     <LoaderWrapper>
@@ -47,11 +47,6 @@ export const StakingPageLayout: React.FC<IStakingPageLayoutProps  > = props => {
                     </LoaderWrapper>
                 ) : (
                     props.children
-                )}
-                {!props.isHome && (
-                    <MediaQuery maxWidth={900}>
-                        <ScrollTopArrow />
-                    </MediaQuery>
                 )}
             </Section>
         </SiteWrap>
