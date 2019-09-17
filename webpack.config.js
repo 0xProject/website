@@ -14,143 +14,150 @@ const GIT_SHA = childProcess
     .toString()
     .trim();
 
-const config = {
-    entry: ['./ts/index.tsx'],
-    output: {
-        path: path.join(__dirname, '/public'),
-        filename: 'bundle.js',
-        chunkFilename: 'bundle-[name].js',
-        publicPath: '/',
-    },
-    externals: {
-        zeroExInstant: 'zeroExInstant',
-    },
-    resolve: {
-        modules: [path.join(__dirname, '/ts'), 'node_modules'],
-        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.md', '.mdx'],
-        alias: {
-            ts: path.join(__dirname, '/ts'),
-            less: path.join(__dirname, '/less'),
-            sass: path.join(__dirname, '/sass'),
-            md: path.join(__dirname, '/md'),
-            mdx: path.join(__dirname, '/mdx'),
+module.exports = (_env, argv) => {
+    const plugins = [];
+    const isDevEnvironment = argv.mode === 'development';
+
+    const config = {
+        entry: ['./ts/index.tsx'],
+        output: {
+            path: path.join(__dirname, '/public'),
+            filename: 'bundle.js',
+            chunkFilename: 'bundle-[name].js',
+            publicPath: '/',
         },
-    },
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                loader: 'source-map-loader',
-                exclude: [
-                    // instead of /\/node_modules\//
-                    path.join(process.cwd(), 'node_modules'),
-                    path.join(process.cwd(), '../..', 'node_modules'),
-                ],
+        externals: {
+            zeroExInstant: 'zeroExInstant',
+        },
+        resolve: {
+            modules: [path.join(__dirname, '/ts'), 'node_modules'],
+            extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.md', '.mdx'],
+            alias: {
+                ts: path.join(__dirname, '/ts'),
+                less: path.join(__dirname, '/less'),
+                sass: path.join(__dirname, '/sass'),
+                md: path.join(__dirname, '/md'),
+                mdx: path.join(__dirname, '/mdx'),
             },
-            {
-                test: /\.tsx?$/,
-                loader: 'awesome-typescript-loader',
-            },
-            {
-                test: /\.mdx$/,
-                include: path.join(__dirname, '/mdx'),
-                use: [
-                    'cache-loader',
-                    {
-                        loader: 'babel-loader?cacheDirectory',
-                        options: {
-                            plugins: ['@babel/plugin-syntax-object-rest-spread'],
-                            presets: ['@babel/preset-env', '@babel/preset-react'],
-                        },
-                    },
-                    {
-                        loader: '@mdx-js/loader',
-                        options: {
-                            remarkPlugins: [remarkSlug, remarkAutolinkHeadings, remarkSectionizeHeadings],
-                            compilers: [mdxTableOfContents],
-                        },
-                    },
-                ],
-            },
-
-            {
-                test: /\.md$/,
-                use: 'raw-loader',
-            },
-            {
-                test: /\.less$/,
-                use: ['style-loader', 'css-loader', 'less-loader'],
-                exclude: /node_modules/,
-            },
-            {
-                test: /\.scss$/,
-                use: ['style-loader', 'css-loader', 'sass-loader'],
-            },
-            {
-                test: /\.css$/,
-                loaders: ['style-loader', 'css-loader'],
-            },
-
-            {
-                test: /\.svg$/,
-                use: [
-                    {
-                        loader: 'react-svg-loader',
-                        options: {
-                            svgo: {
-                                plugins: [{ removeViewBox: false }],
-                            },
-                        },
-                    },
-                ],
-            },
-        ],
-    },
-    optimization: {
-        minimizer: [
-            new TerserPlugin({
-                parallel: true,
-                sourceMap: true,
-                terserOptions: {
-                    mangle: {
-                        reserved: ['BigNumber'],
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.js$/,
+                    loader: 'source-map-loader',
+                    exclude: [
+                        // instead of /\/node_modules\//
+                        path.join(process.cwd(), 'node_modules'),
+                        path.join(process.cwd(), '../..', 'node_modules'),
+                    ],
+                },
+                {
+                    test: /\.tsx?$/,
+                    loader: 'awesome-typescript-loader',
+                    options: {
+                        useCache: true,
+                        // Skip type checking for local dev, can be done in editor and pre-push
+                        transpileOnly: isDevEnvironment,
                     },
                 },
-            }),
-        ],
-    },
-    devServer: {
-        host: '0.0.0.0',
-        port: 3572,
-        historyApiFallback: {
-            // Fixes issue where having dots in URL path that aren't part of fileNames causes webpack-dev-server
-            // to fail. Doc versions have dots in them, therefore we special case these urls to also load index.html.
-            // Source: https://github.com/cvut/fittable/issues/171
-            rewrites: [
                 {
-                    from: /^\/docs\/.*$/,
-                    to: function() {
-                        return 'index.html';
-                    },
+                    test: /\.mdx$/,
+                    include: path.join(__dirname, '/mdx'),
+                    use: [
+                        'cache-loader',
+                        {
+                            loader: 'babel-loader?cacheDirectory',
+                            options: {
+                                plugins: ['@babel/plugin-syntax-object-rest-spread'],
+                                presets: ['@babel/preset-env', '@babel/preset-react'],
+                            },
+                        },
+                        {
+                            loader: '@mdx-js/loader',
+                            options: {
+                                remarkPlugins: [remarkSlug, remarkAutolinkHeadings, remarkSectionizeHeadings],
+                                compilers: [mdxTableOfContents],
+                            },
+                        },
+                    ],
+                },
+
+                {
+                    test: /\.md$/,
+                    use: 'raw-loader',
+                },
+                {
+                    test: /\.less$/,
+                    use: ['style-loader', 'css-loader', 'less-loader'],
+                    exclude: /node_modules/,
+                },
+                {
+                    test: /\.scss$/,
+                    use: ['style-loader', 'css-loader', 'sass-loader'],
+                },
+                {
+                    test: /\.css$/,
+                    loaders: ['style-loader', 'css-loader'],
+                },
+
+                {
+                    test: /\.svg$/,
+                    use: [
+                        {
+                            loader: 'react-svg-loader',
+                            options: {
+                                svgo: {
+                                    plugins: [{ removeViewBox: false }],
+                                },
+                            },
+                        },
+                    ],
                 },
             ],
         },
-        disableHostCheck: true,
-        // Fixes assertion error
-        // Source: https://github.com/webpack/webpack-dev-server/issues/1491
-        https: {
-            spdy: {
-                protocols: ['http/1.1'],
+        optimization: {
+            minimizer: [
+                new TerserPlugin({
+                    parallel: true,
+                    sourceMap: true,
+                    terserOptions: {
+                        mangle: {
+                            reserved: ['BigNumber'],
+                        },
+                    },
+                }),
+            ],
+        },
+        devServer: {
+            host: '0.0.0.0',
+            port: 3572,
+            historyApiFallback: {
+                // Fixes issue where having dots in URL path that aren't part of fileNames causes webpack-dev-server
+                // to fail. Doc versions have dots in them, therefore we special case these urls to also load index.html.
+                // Source: https://github.com/cvut/fittable/issues/171
+                rewrites: [
+                    {
+                        from: /^\/docs\/.*$/,
+                        to: function() {
+                            return 'index.html';
+                        },
+                    },
+                ],
+            },
+            disableHostCheck: true,
+            // Fixes assertion error
+            // Source: https://github.com/webpack/webpack-dev-server/issues/1491
+            https: {
+                spdy: {
+                    protocols: ['http/1.1'],
+                },
             },
         },
-    },
-};
+    };
 
-module.exports = (_env, argv) => {
-    const plugins = [];
-    if (argv.mode === 'development') {
+    if (isDevEnvironment) {
         config.mode = 'development';
-        config.devtool = 'eval-source-map';
+        config.devtool = 'cheap-module-eval-source-map';
         // SSL certs
         if (fs.existsSync('./server.cert') && fs.existsSync('./server.key')) {
             config.devServer.https = {
