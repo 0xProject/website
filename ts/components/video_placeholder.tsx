@@ -47,7 +47,9 @@ export const VideoPlaceholder: React.FC<VideoPlaceholderProps> = props => {
     return (
         <Wrapper onClick={onClick}>
             <Inner>
-                <Title><PlayIcon /> {title}</Title>
+                <Title>
+                    <PlayIcon /> {title}
+                </Title>
             </Inner>
         </Wrapper>
     );

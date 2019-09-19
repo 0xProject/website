@@ -19,6 +19,7 @@ const appColors = {
     backgroundDark: '#111A19',
     backgroundBlack: '#000000',
     backgroundLight: '#F3F6F4',
+    backgroundLightGrey: '#F6F6F6',
     backgroundLightHover: '#EAEFEC',
     textDarkPrimary: '#000000',
     textDarkSecondary: '#5C5C5C',

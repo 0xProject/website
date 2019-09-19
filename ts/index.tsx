@@ -29,12 +29,12 @@ import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
 import { Governance } from 'ts/pages/governance/governance';
 import { VoteIndex } from 'ts/pages/governance/vote_index';
-import { StakingIndex } from 'ts/pages/staking/home';
 import { Next0xInstant } from 'ts/pages/instant';
 import { NextLanding } from 'ts/pages/landing';
 import { NextLaunchKit } from 'ts/pages/launch_kit';
 import { NextMarketMaker } from 'ts/pages/market_maker';
 import { PrivacyPolicy } from 'ts/pages/privacy';
+import { StakingIndex } from 'ts/pages/staking/home';
 import { TermsOfService } from 'ts/pages/terms';
 import { NextWhy } from 'ts/pages/why';
 

@@ -1,8 +1,6 @@
 import * as React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
-import { Header as DocsHeader } from 'ts/components/docs/header/header';
-import { Header as StakingHeader } from 'ts/components/staking/header/header';
 import { Footer } from 'ts/components/footer';
 import { Header as MainHeader } from 'ts/components/header';
 
@@ -12,7 +10,7 @@ import { GLOBAL_THEMES } from 'ts/style/theme';
 interface ISiteWrapProps {
     theme?: 'dark' | 'light' | 'gray';
     isDocs?: boolean;
-    headerComponent?: any,
+    headerComponent?: any;
     isFullScreen?: boolean;
     children: any;
 }

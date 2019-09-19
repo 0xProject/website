@@ -12,7 +12,6 @@ import { Hamburger } from 'ts/components/hamburger';
 import { Logo } from 'ts/components/logo';
 import { FlexWrap } from 'ts/components/newLayout';
 
-import { colors } from 'ts/style/colors';
 import { IThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 
