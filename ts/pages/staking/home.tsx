@@ -6,7 +6,6 @@ import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_lay
 import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 
 import { colors } from 'ts/style/colors';
-import { constants } from 'ts/utils/constants';
 
 export interface StakingIndexProps {}
 
