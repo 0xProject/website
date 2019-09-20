@@ -67,10 +67,6 @@ const projects: ProjectLogo[] = [
         imageUrl: 'images/clients/laketrade.svg',
     },
     {
-        name: 'Veil',
-        imageUrl: 'images/clients/veil.svg',
-    },
-    {
         name: 'Ethfinex',
         imageUrl: 'images/clients/ethfinex.svg',
     },
