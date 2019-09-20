@@ -291,6 +291,7 @@ export const FILTERS: ExploreFilterMetadata[] = [
         label: 'Wallets',
         name: 'wallets',
         filterType: ExploreFilterType.Keyword,
+    },
 ];
 
 export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
