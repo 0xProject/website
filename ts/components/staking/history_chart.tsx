@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Line } from 'react-chartjs-2';
 
-import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { colors } from 'ts/style/colors';
 
 export interface HistoryChartProps {}
@@ -17,7 +16,7 @@ const data = {
             borderColor: colors.brandLight,
             borderCapStyle: 'butt',
             borderDash: [],
-            borderDashOffset: 0.0,
+            borderDashOffset: 0,
             borderJoinStyle: 'miter',
             pointBorderColor: colors.brandLight,
             pointBackgroundColor: '#fff',
@@ -37,32 +36,34 @@ const options = {
     defaultFontSize: 14,
     maintainAspectRatio: false,
     scales: {
-        yAxes: [{
-            gridLines: {
-                color: 'transparent',
-            }
-            ticks: {
-                suggestedMin: 20,
-                suggestedMax: 50,
-                stepSize: 10,
+        yAxes: [
+            {
+                gridLines: {
+                    color: 'transparent',
+                },
+                ticks: {
+                    suggestedMin: 20,
+                    suggestedMax: 50,
+                    stepSize: 10,
+                },
             },
-        }],
-        xAxes: [{
-            gridLines: {
-                color: 'transparent',
+        ],
+        xAxes: [
+            {
+                gridLines: {
+                    color: 'transparent',
+                },
             },
-        }],
+        ],
     },
     legend: {
         labels: {
             boxWidth: 16,
             fontSize: 14,
-        }
-    }
+        },
+    },
 };
 
 export const HistoryChart: React.FC<HistoryChartProps> = props => {
-    return (
-        <Line data={data} options={options} />
-    );
+    return <Line data={data} options={options} />;
 };
