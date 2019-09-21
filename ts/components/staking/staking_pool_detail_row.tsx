@@ -18,7 +18,7 @@ const DesktopOnlyWrapper = styled.div`
     ${desktopOnlyStyle};
 `;
 
-const StakingPoolDetailsWrapper = styled.div`
+const StakingPoolDetailRowWrapper = styled.div`
     min-height: 120px;
     border: 1px solid #d9d9d9;
     display: flex;
@@ -157,7 +157,7 @@ const PoolWebsiteLink = ({ websiteUrl }: { websiteUrl: string }) => (
     </a>
 );
 
-interface IStakingPoolDetailsProps {
+interface IStakingPoolDetailRowProps {
     name: string;
     ethAddress: string;
     feesCollectedEth: BigNumber;
@@ -168,7 +168,7 @@ interface IStakingPoolDetailsProps {
     thumbnailUrl?: string;
 }
 
-export const StakingPoolDetails: React.FC<IStakingPoolDetailsProps> = ({
+export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
     name,
     thumbnailUrl,
     ethAddress,
@@ -177,7 +177,7 @@ export const StakingPoolDetails: React.FC<IStakingPoolDetailsProps> = ({
     rewardsSharePercent,
     stakingPercent,
 }) => (
-    <StakingPoolDetailsWrapper>
+    <StakingPoolDetailRowWrapper>
         {thumbnailUrl && (
             <Logo>
                 <img src={thumbnailUrl} />
@@ -214,5 +214,5 @@ export const StakingPoolDetails: React.FC<IStakingPoolDetailsProps> = ({
                 <RoundedPercentage percentage={stakingPercent} />
             </PoolPerformanceItem>
         </PoolPerformanceSection>
-    </StakingPoolDetailsWrapper>
+    </StakingPoolDetailRowWrapper>
 );
