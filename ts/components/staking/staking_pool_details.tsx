@@ -1,15 +1,33 @@
+import { BigNumber } from '@0x/utils';
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-const DetailsWrapper = styled.div`
-    height: 120px;
+import { colors } from 'ts/style/colors';
+import { ScreenWidths } from 'ts/types';
+import { configs } from 'ts/utils/configs';
+
+const desktopOnlyStyle = css<{ cutOffRem?: number }>`
+    @media (max-width: ${props => `${props.cutOffRem || ScreenWidths.Lg}rem`}) {
+        display: none;
+    }
+`;
+
+const DesktopOnlyWrapper = styled.div`
+    display: flex;
+
+    ${desktopOnlyStyle};
+`;
+
+const StakingPoolDetailsWrapper = styled.div`
+    min-height: 120px;
     border: 1px solid #d9d9d9;
     display: flex;
     align-items: center
     padding: 0 20px;
     flex-wrap: wrap;
+    max-width: 1152px;
 
-    @media (max-width: 1200px) {
+    @media (max-width: ${ScreenWidths.Lg}rem) {
         font-size: 20px;
         line-height: 27px;
         align-items: center;
@@ -21,14 +39,17 @@ const Logo = styled.div`
     border: 1px solid #d9d9d9;
     height: 80px;
     width: 80px;
+    padding: 15px;
+
+    ${desktopOnlyStyle}
 `;
 
-const PoolOverview = styled.div`
+const PoolOverviewSection = styled.div`
     display: flex;
     flex-direction: column;
-    margin: 0 30px;
+    margin-left: 30px;
 
-    @media (max-width: 1200px) {
+    @media (max-width: ${ScreenWidths.Lg}rem) {
         margin: 0;
     }
 `;
@@ -38,7 +59,7 @@ const Heading = styled.span`
     line-height: 32px;
     font-feature-settings: 'tnum' on, 'lnum' on;
 
-    @media (max-width: 1200px) {
+    @media (max-width: ${ScreenWidths.Lg}rem) {
         font-size: 20px;
         line-height: 27px;
     }
@@ -46,51 +67,58 @@ const Heading = styled.span`
 
 const DetailsText = styled.span`
     font-size: 17px;
-    line-height: 23px;
-    color: #5c5c5c;
+    color: ${colors.textDarkSecondary};
 `;
 
-const PerformanceSection = styled.div`
+const PoolPerformanceSection = styled.div`
     display: flex;
     margin-left: auto;
     width: 448px;
     justify-content: space-around;
 
-    @media (max-width: 1200px) {
+    @media (max-width: ${ScreenWidths.Lg}rem) {
         width: 100%;
         margin: 0;
     }
 `;
 
-const PoolPerformance = styled.div`
+const PoolPerformanceItem = styled.div<{ cutOffRem?: number }>`
     display: flex;
     flex-direction: column;
-    align-self: center;
+    justify-content: center;
     flex: 1;
 
     span:nth-of-type(1) {
         font-size: 14px;
         line-height: 17px;
-        color: #5c5c5c;
+        color: ${colors.textDarkSecondary};
     }
 
     span:nth-of-type(2) {
         font-size: 18px;
         line-height: 22px;
-        @media (max-width: 1200px) {
+        @media (max-width: ${ScreenWidths.Lg}rem) {
             font-size: 17px;
         }
     }
+
+    ${props => props.cutOffRem && desktopOnlyStyle}
+
+    // Border
+    & + & {
+        border-left: 1px solid #d9d9d9;
+        height: 47px;
+        padding-left: 20px;
+    }
 `;
 
-const VerticalDivider = styled.div`
-    border-left: 1px solid #d9d9d9;
-    height: 47px;
-    margin-right: 20px;
-
-    @media (max-width: 1200px) {
-        margin-right: 27px;
-    }
+const Ellipse = styled.div`
+    border-radius: 50%;
+    width: 4px;
+    height: 4px;
+    background: ${colors.textDarkSecondary}
+    opacity: 0.2;
+    margin: 0 12px;
 `;
 
 const CheckMark = () => (
@@ -117,78 +145,66 @@ const CheckMark = () => (
     </svg>
 );
 
-// TODO: proper types
+const RoundedPercentage = ({ percentage }: { percentage: number }) => <span>{Math.round(percentage)}%</span>;
+
 interface IStakingPoolDetailsProps {
     name: string;
-    thumbnailUrl?: string;
-    ethAddress?: string;
-    websiteUrl?: string;
-    feesGeneratedEth?: number;
-    stakingPercent?: number;
-    rewardsSharePercent?: number;
-}
+    ethAddress: string;
+    feesCollectedEth: BigNumber;
+    stakingPercent: number;
+    rewardsSharePercent: number;
 
-const ShortAddress = ({ ethAddress }: { ethAddress: string }) => (
-    <DetailsText>{`${ethAddress.slice(0, 6)}...${ethAddress.slice(
-        ethAddress.length - 4,
-        ethAddress.length,
-    )}`}</DetailsText>
-);
+    websiteUrl?: string;
+    thumbnailUrl?: string;
+}
 
 export const StakingPoolDetails: React.FC<IStakingPoolDetailsProps> = ({
     name,
     thumbnailUrl,
     ethAddress,
     websiteUrl,
-    feesGeneratedEth,
+    feesCollectedEth,
     rewardsSharePercent,
     stakingPercent,
-}) => {
-    // TODO: implement
-    const isMobile = true;
-    return (
-        <DetailsWrapper>
-            {!isMobile && (
-                <Logo>
-                    <img src={thumbnailUrl} />
-                </Logo>
-            )}
-            <PoolOverview>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Heading>{name}</Heading>
-                    {!isMobile && <CheckMark />}
-                </div>
-                {!isMobile && (
-                    <div
-                        style={{
-                            display: 'flex',
-                        }}
-                    >
-                        <ShortAddress ethAddress={ethAddress} />
-                        <DetailsText>{websiteUrl}</DetailsText>
-                    </div>
-                )}
-            </PoolOverview>
-            <PerformanceSection>
-                <PoolPerformance>
-                    <span>Collected Fees</span>
-                    <span>{feesGeneratedEth.toFixed(5)} ETH</span>
-                </PoolPerformance>
-                <VerticalDivider />
-                <PoolPerformance>
-                    <span>Rewards Shared</span>
-                    <span>{Math.round(rewardsSharePercent)}%</span>
-                </PoolPerformance>
-                {!isMobile && (
+}) => (
+    <StakingPoolDetailsWrapper>
+        {thumbnailUrl && (
+            <Logo>
+                <img src={thumbnailUrl} />
+            </Logo>
+        )}
+        <PoolOverviewSection>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Heading>{name}</Heading>
+                <DesktopOnlyWrapper>
+                    <CheckMark />
+                </DesktopOnlyWrapper>
+            </div>
+            <DesktopOnlyWrapper style={{ height: '23px', alignItems: 'center' }}>
+                <DetailsText>
+                    {`${ethAddress.slice(0, 6)}...${ethAddress.slice(ethAddress.length - 4, ethAddress.length)}`}
+                </DetailsText>
+                {websiteUrl && (
                     <>
-                        <VerticalDivider />
-                        <PoolPerformance>
-                            <span>Staked</span>
-                            <span>{Math.round(stakingPercent)}%</span>
-                        </PoolPerformance>
+                        <Ellipse />
+                        <DetailsText>{websiteUrl}</DetailsText>
                     </>
                 )}
-            </PerformanceSection>
-        </DetailsWrapper>
-    );
-};
+            </DesktopOnlyWrapper>
+        </PoolOverviewSection>
+        <PoolPerformanceSection>
+            <PoolPerformanceItem>
+                <span>Collected Fees</span>
+                <span>{feesCollectedEth.toFixed(configs.AMOUNT_DISPLAY_PRECSION)} ETH</span>
+            </PoolPerformanceItem>
+            <PoolPerformanceItem>
+                <span>Rewards Shared</span>
+                <RoundedPercentage percentage={rewardsSharePercent} />
+            </PoolPerformanceItem>
+            <PoolPerformanceItem cutOffRem={ScreenWidths.Sm}>
+                <span>Staked</span>
+                <RoundedPercentage percentage={stakingPercent} />
+            </PoolPerformanceItem>
+        </PoolPerformanceSection>
+    </StakingPoolDetailsWrapper>
+);
