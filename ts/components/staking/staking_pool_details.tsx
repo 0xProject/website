@@ -147,6 +147,16 @@ const CheckMark = () => (
 
 const RoundedPercentage = ({ percentage }: { percentage: number }) => <span>{Math.round(percentage)}%</span>;
 
+const ShortenedEthAddress = ({ address }: { address: string }) => (
+    <DetailsText>{`${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`}</DetailsText>
+);
+
+const PoolWebsiteLink = ({ websiteUrl }: { websiteUrl: string }) => (
+    <a href={websiteUrl} style={{ textDecoration: 'none' }}>
+        <DetailsText>{websiteUrl.replace(/(https:\/\/)?(www\.)?/, '')}</DetailsText>
+    </a>
+);
+
 interface IStakingPoolDetailsProps {
     name: string;
     ethAddress: string;
@@ -181,13 +191,11 @@ export const StakingPoolDetails: React.FC<IStakingPoolDetailsProps> = ({
                 </DesktopOnlyWrapper>
             </div>
             <DesktopOnlyWrapper style={{ height: '23px', alignItems: 'center' }}>
-                <DetailsText>
-                    {`${ethAddress.slice(0, 6)}...${ethAddress.slice(ethAddress.length - 4, ethAddress.length)}`}
-                </DetailsText>
+                <ShortenedEthAddress address={ethAddress} />
                 {websiteUrl && (
                     <>
                         <Ellipse />
-                        <DetailsText>{websiteUrl}</DetailsText>
+                        <PoolWebsiteLink websiteUrl={websiteUrl} />
                     </>
                 )}
             </DesktopOnlyWrapper>
