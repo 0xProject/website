@@ -66,10 +66,6 @@ const projects: ProjectLogo[] = [
         name: 'Lake Trade',
         imageUrl: 'images/clients/laketrade.svg',
     },
-    {
-        name: 'Ethfinex',
-        imageUrl: 'images/clients/ethfinex.svg',
-    },
 ];
 
 export const SectionLandingClients = () => (
