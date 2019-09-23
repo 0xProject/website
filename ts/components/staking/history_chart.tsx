@@ -25,7 +25,7 @@ const getDefaultDataset = (color: string) => {
         pointHoverBorderWidth: 2,
         pointRadius: 4,
         pointHitRadius: 10,
-    }
+    };
 };
 
 const data = {
