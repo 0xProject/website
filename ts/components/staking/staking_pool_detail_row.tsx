@@ -6,6 +6,8 @@ import { colors } from 'ts/style/colors';
 import { ScreenWidths } from 'ts/types';
 import { configs } from 'ts/utils/configs';
 
+import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
+
 const desktopOnlyStyle = css<{ cutOffRem?: number }>`
     @media (max-width: ${props => `${props.cutOffRem || ScreenWidths.Lg}rem`}) {
         display: none;
@@ -121,30 +123,6 @@ const Ellipse = styled.div`
     margin: 0 12px;
 `;
 
-const CheckMark = () => (
-    <svg
-        style={{ height: '22.5px', width: '22.5px', margin: '7.5px' }}
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            d="M12 23.25C18.2132 23.25 23.25 18.2132 23.25 12C23.25 5.7868 18.2132 0.75 12 0.75C5.7868 0.75 0.75 5.7868 0.75 12C0.75 18.2132 5.7868 23.25 12 23.25Z"
-            stroke="#00AE99"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        />
-        <path
-            d="M6.75 12.25L10.5 16L18 8.5"
-            stroke="#00AE99"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        />
-    </svg>
-);
-
 const RoundedPercentage = ({ percentage }: { percentage: number }) => <span>{Math.round(percentage)}%</span>;
 
 const ShortenedEthAddress = ({ address }: { address: string }) => (
@@ -186,8 +164,8 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
         <PoolOverviewSection>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Heading>{name}</Heading>
-                <DesktopOnlyWrapper>
-                    <CheckMark />
+                <DesktopOnlyWrapper style={{ margin: '7px' }}>
+                    <CircleCheckMark width="22px" height="22px" />
                 </DesktopOnlyWrapper>
             </div>
             <DesktopOnlyWrapper style={{ height: '23px', alignItems: 'center' }}>
