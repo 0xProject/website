@@ -351,13 +351,13 @@ const ExploreToolBarWrapper = styled.div`
 const ExploreToolBarContentWrapper = styled.div`
     display: inline-block;
     white-space: nowrap;
-    padding-bottom: 0.4rem
+    padding-bottom: 0.4rem;
     margin-bottom: 1.6rem;
     overflow-x: auto;
     @media (max-width: 64rem) {
-       & > * {
+        & > * {
             display: none;
-       }
+        }
     }
     & > * {
         margin: 0 0.3rem;

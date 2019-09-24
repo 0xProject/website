@@ -26,7 +26,7 @@ const CustomPre = styled.pre`
         min-height: 100%;
         text-align: center;
         margin-right: 5px;
-        margin-left: 10px
+        margin-left: 10px;
         line-height: 33px;
         padding: 10px 10px !important;
     }

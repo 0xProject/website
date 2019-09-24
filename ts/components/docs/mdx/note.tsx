@@ -18,7 +18,7 @@ export const Note: React.FC<INoteProps> = ({ children, description, heading }) =
 
 const NoteHeading = styled.strong`
     display: block;
-    font-size: 17px,
+    font-size: 17px;
     margin-bottom: 10px;
     color: ${colors.brandDark};
 `;
