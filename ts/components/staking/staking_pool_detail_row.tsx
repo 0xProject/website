@@ -22,7 +22,7 @@ const StakingPoolDetailRowWrapper = styled.div`
     min-height: 120px;
     border: 1px solid #d9d9d9;
     display: flex;
-    align-items: center
+    align-items: center;
     padding: 0 20px;
     flex-wrap: wrap;
     max-width: 1152px;
@@ -116,7 +116,7 @@ const Ellipse = styled.div`
     border-radius: 50%;
     width: 4px;
     height: 4px;
-    background: ${colors.textDarkSecondary}
+    background: ${colors.textDarkSecondary};
     opacity: 0.2;
     margin: 0 12px;
 `;
