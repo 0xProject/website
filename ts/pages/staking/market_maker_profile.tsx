@@ -17,7 +17,12 @@ export const MarketMakerProfile: React.FC<MarketMakerProfileProps> = props => {
     return (
         <StakingPageLayout isHome={true} title="Market Maker Profile">
             <Container>
-                <HistoryChart />
+                <HistoryChart
+                    fees={[40, 41, 40, 41, 40, 41, 40, 41, 40, 41, 40, 41]}
+                    rewards={[30, 31, 30, 31, 30, 31, 30, 31, 30, 31, 30, 31]}
+                    epochs={[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]}
+                    labels={['1 July', '5 July', '10 July', '15 July', '20 July', '25 July', '30 July']}
+                />
             </Container>
         </StakingPageLayout>
     );
