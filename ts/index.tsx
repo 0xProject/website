@@ -35,6 +35,7 @@ import { NextLaunchKit } from 'ts/pages/launch_kit';
 import { NextMarketMaker } from 'ts/pages/market_maker';
 import { PrivacyPolicy } from 'ts/pages/privacy';
 import { StakingIndex } from 'ts/pages/staking/home';
+import { MarketMakerProfile } from 'ts/pages/staking/market_maker_profile';
 import { TermsOfService } from 'ts/pages/terms';
 import { NextWhy } from 'ts/pages/why';
 
@@ -74,7 +75,10 @@ render(
                         <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit as any} />
                         <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem as any} />
                         <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance as any} />
+
                         <Route exact={true} path={WebsitePaths.Staking} component={StakingIndex as any} />
+                        <Route exact={true} path={WebsitePaths.MarketMakerProfile} component={MarketMakerProfile as any} />
+
                         <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex as any} />
                         <Route exact={true} path={WebsitePaths.Extensions} component={Extensions as any} />
                         <Route exact={true} path={WebsitePaths.AssetSwapperPage} component={CFL as any} />
