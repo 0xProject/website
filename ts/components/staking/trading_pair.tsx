@@ -14,6 +14,7 @@ interface TradingPairProps {
     currency: string;
     firstCurrency: Currency;
     secondCurrency: Currency;
+    url: string;
 }
 
 const Container = styled.a`
