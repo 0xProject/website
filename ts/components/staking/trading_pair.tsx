@@ -10,7 +10,7 @@ interface Currency {
 
 interface TradingPairProps {
     id: string;
-    price: number;
+    price: string;
     currency: string;
     firstCurrency: Currency;
     secondCurrency: Currency;
