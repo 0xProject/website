@@ -54,7 +54,6 @@ const Column = styled.div`
 
 const Metrics = styled(Column)`
     max-width: 460px;
-    background-color: red;
     padding: 0;
     @media (min-width: 768px) {
         padding: 0;
@@ -73,8 +72,40 @@ const Title = styled.h1`
     }
 `;
 
+const FiguresList = styled.ol`
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 15px;
+    margin-right: -15px;
+`;
+
+const Figure = styled.li`
+    background-color: ${colors.white};
+    padding: 20px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    width: calc(50% - 15px);
+`;
+
+const FigureTitle = styled.span`
+    display: block;
+    font-size: 17px;
+    line-height: 1.35;
+    color: #999999;
+    margin-bottom: 5px;
+`;
+
+const FigureNumber = styled.span`
+    display: block;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+    font-size: 28px;
+    line-height: 1.35;
+`;
+
 export const DashboardHero: React.FC<DashboardHeroProps> = props => {
-    const { title, titleMobile, description, actions } = props;
+    const { } = props;
+
+    const [selectedTabIndex, setSelectedTabIndex] = React.useState<number>(0);
 
     return (
         <Wrapper>
@@ -84,20 +115,40 @@ export const DashboardHero: React.FC<DashboardHeroProps> = props => {
                         Left
                     </Column>
                     <Metrics>
-                    <Tabs>
+                    <Tabs isLight={true}>
                         <Tab
-                            isSelected={true}
-                            onClick={() => {}}
+                            isSelected={selectedTabIndex === 0}
+                            onClick={() => setSelectedTabIndex(0)}
+                            isLight={true}
                         >
                             Current Epoch
                         </Tab>
                         <Tab
-                            isSelected={false}
-                            onClick={() => {}}
+                            isSelected={selectedTabIndex === 1}
+                            onClick={() => setSelectedTabIndex(1)}
+                            isLight={true}
                         >
                             All Time
                         </Tab>
                     </Tabs>
+                    <FiguresList>
+                        <Figure>
+                            <FigureTitle>Total volume</FigureTitle>
+                            <FigureNumber>1.23M USD</FigureNumber>
+                        </Figure>
+                        <Figure>
+                            <FigureTitle>ZRX Staked</FigureTitle>
+                            <FigureNumber>1,288,229</FigureNumber>
+                        </Figure>
+                        <Figure>
+                            <FigureTitle>Fees Generated</FigureTitle>
+                            <FigureNumber>.000023 ETH</FigureNumber>
+                        </Figure>
+                        <Figure>
+                            <FigureTitle>Rewards generated</FigureTitle>
+                            <FigureNumber>.000023 ETH</FigureNumber>
+                        </Figure>
+                    </FiguresList>
                     </Metrics>
                 </Row>
             </Inner>
