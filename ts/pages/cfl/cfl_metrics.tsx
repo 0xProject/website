@@ -3,10 +3,10 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
+import { Tab, Tabs } from 'ts/components/tabs';
 import { defaultData } from 'ts/pages/cfl/default_data';
 import { Metrics, MetricValue } from 'ts/pages/cfl/metrics';
 import { backendClient } from 'ts/utils/backend_client';
-import { Tabs, Tab } from 'ts/components/tabs';
 
 import { CFLMetricsPairData } from 'ts/types';
 
