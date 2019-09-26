@@ -60,17 +60,17 @@ const Metrics = styled(Column)`
     }
 `;
 
-const Title = styled.h1`
-    font-size: 46px;
-    line-height: 1.2;
-    font-weight: 300;
-    margin-bottom: 20px;
-    display: none;
-    @media (min-width: 768px) {
-        font-size: 50px;
-        display: block;
-    }
-`;
+// const Title = styled.h1`
+//     font-size: 46px;
+//     line-height: 1.2;
+//     font-weight: 300;
+//     margin-bottom: 20px;
+//     display: none;
+//     @media (min-width: 768px) {
+//         font-size: 50px;
+//         display: block;
+//     }
+// `;
 
 const FiguresList = styled.ol`
     display: flex;
