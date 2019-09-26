@@ -6,6 +6,7 @@ import { Icon } from 'ts/components/icon';
 import { defaultData } from 'ts/pages/cfl/default_data';
 import { Metrics, MetricValue } from 'ts/pages/cfl/metrics';
 import { backendClient } from 'ts/utils/backend_client';
+import { Tabs, Tab } from 'ts/components/tabs';
 
 import { CFLMetricsPairData } from 'ts/types';
 
@@ -24,38 +25,11 @@ const CFLMetricsContainer = styled.div`
     }
 `;
 
-const PairTabsContainer = styled.div`
-    display: flex;
-    border: ${props => `1px solid ${props.theme.lightBgColor}`};
-    padding-right: 5px;
-`;
-
 const MetricsContainer = styled.div`
     display: flex;
     margin-top: 15px;
     & div:not(:last-child) {
         margin-right: 15px;
-    }
-`;
-
-interface PairTabProps {
-    isSelected: boolean;
-}
-
-const PairTab = styled.label<PairTabProps>`
-    cursor: pointer;
-    white-space: nowrap;
-    background-color: ${props => (props.isSelected ? props.theme.lightBgColor : '')};
-    opacity: ${props => (props.isSelected ? 1 : 0.5)};
-    margin: 5px 0px 5px 5px;
-    &:hover {
-        background-color: ${props => props.theme.lightBgColor};
-    }
-    padding: 10px 17px;
-    font-size: 12px;
-    @media (min-width: 1024px) {
-        padding: 15px 40px;
-        font-size: 17px;
     }
 `;
 
@@ -80,20 +54,20 @@ export class CFLMetrics extends React.Component<CFLMetricsProps, CFLMetricsState
         const quoteToken = this._getSelectedPairData().quoteAssetSymbol;
         return (
             <CFLMetricsContainer>
-                <PairTabsContainer>
+                <Tabs>
                     {cflMetricsData.map((data, index) => {
                         const symbol = `${data.baseAssetSymbol} / ${data.quoteAssetSymbol}`;
                         return (
-                            <PairTab
+                            <Tab
                                 key={symbol}
                                 isSelected={selectedIndex === index}
                                 onClick={this._onTabClick.bind(this, index)}
                             >
                                 {symbol}
-                            </PairTab>
+                            </Tab>
                         );
                     })}
-                </PairTabsContainer>
+                </Tabs>
                 <MetricsContainer>
                     <Metrics title={`Price in ${quoteToken}`} metrics={[{ value: this._getLastPrice() }]} />
                     <Metrics title="7 day volume" metrics={[{ value: this._getVolume() }]} />
