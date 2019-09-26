@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { DashboardHero } from 'ts/components/staking/dashboard_hero';
 import { HistoryChart } from 'ts/components/staking/history_chart';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { TradingPair } from 'ts/components/staking/trading_pair';
@@ -17,6 +18,10 @@ const Heading = styled.h2`
     font-size: var(--defaultHeading);
     line-height: 1.35;
     margin-bottom: 20px;
+`;
+
+const GraphHeading = styled(Heading)`
+    margin-bottom: 60px;
 `;
 
 const TradingPairContainer = styled.div`
@@ -115,6 +120,8 @@ export const MarketMakerProfile: React.FC<MarketMakerProfileProps> = props => {
     return (
         <StakingPageLayout isHome={true} title="Market Maker Profile">
             <Container>
+                <DashboardHero />
+                <GraphHeading>Historical Details</GraphHeading>
                 <HistoryChart
                     fees={[40, 41, 40, 41, 40, 41, 40, 41, 40, 41, 40, 41]}
                     rewards={[30, 31, 30, 31, 30, 31, 30, 31, 30, 31, 30, 31]}
