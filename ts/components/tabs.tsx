@@ -1,26 +1,37 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-// import { colors } from 'ts/style/colors';
+import { colors } from 'ts/style/colors';
 
-interface PairTabProps {
-    isSelected: boolean;
+interface TabsProps {
+    isLight?: boolean;
 }
 
-const Container = styled.div`
+interface TabProps {
+    isSelected: boolean;
+    isLight?: boolean;
+}
+
+interface ContainerProps {
+    isLight: boolean;
+}
+
+const Container = styled.div<ContainerProps>`
     display: flex;
-    border: ${props => `1px solid ${props.theme.lightBgColor}`};
+    border: ${props => `1px solid ${props.isLight ? '#D7D7D7' : props.theme.lightBgColor}`};
     padding-right: 5px;
 `;
 
-export const Tab = styled.label<PairTabProps>`
+export const Tab = styled.label<TabProps>`
     cursor: pointer;
     white-space: nowrap;
-    background-color: ${props => (props.isSelected ? props.theme.lightBgColor : '')};
+    flex: 1;
+    text-align: center;
+    background-color: ${props => (props.isSelected ? (props.isLight ? colors.white : props.theme.lightBgColor) : '')};
     opacity: ${props => (props.isSelected ? 1 : 0.5)};
     margin: 5px 0px 5px 5px;
     &:hover {
-        background-color: ${props => props.theme.lightBgColor};
+        background-color: ${props => props.isLight ? colors.white : props.theme.lightBgColor};
     }
     padding: 10px 17px;
     font-size: 12px;
@@ -30,9 +41,9 @@ export const Tab = styled.label<PairTabProps>`
     }
 `;
 
-export const Tabs: React.FC = ({ children }) => {
+export const Tabs: React.FC<TabsProps> = ({ children, isLight }) => {
     return (
-        <Container>
+        <Container isLight={isLight}>
             {children}
         </Container>
     );
