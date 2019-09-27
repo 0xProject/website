@@ -17,12 +17,16 @@ interface RowProps {}
 
 const Wrapper = styled.div<WrapperProps>`
     margin-bottom: 40px;
+    @media (min-width: 768px) {
+        padding: 60px 30px;
+    }
 `;
 
 const Inner = styled.div<InnerProps>`
     background-color: ${colors.backgroundLightGrey};
+    padding: 20px;
     @media (min-width: 768px) {
-        padding: 60px;
+        padding: 60px 30px;
     }
 `;
 
@@ -60,18 +64,6 @@ const Metrics = styled(Column)`
     }
 `;
 
-// const Title = styled.h1`
-//     font-size: 46px;
-//     line-height: 1.2;
-//     font-weight: 300;
-//     margin-bottom: 20px;
-//     display: none;
-//     @media (min-width: 768px) {
-//         font-size: 50px;
-//         display: block;
-//     }
-// `;
-
 const FiguresList = styled.ol`
     display: flex;
     flex-wrap: wrap;
@@ -102,6 +94,47 @@ const FigureNumber = styled.span`
     line-height: 1.35;
 `;
 
+const PoolIcon = styled.div`
+    width: 60px;
+    height: 60px;
+    background-color: ${colors.white};
+    margin-bottom: 23px;
+`;
+
+const Title = styled.h1`
+    font-size: 34px;
+    line-height: 1.35;
+    font-weight: 300;
+    margin-bottom: 15px;
+`;
+
+const HorizontalList = styled.ul`
+    font-size: 17px;
+    font-weight: 300;
+    & > li {
+        display: inline-block;
+        line-height: 1;
+        position: relative;
+        margin-right: 30px;
+        &:first-child {
+            &:before {
+                display: none;
+            }
+        }
+        &:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -15px;
+            margin-top: -2px;
+            border-radius: 50%;
+            background-color: #5C5C5C;
+            width: 4px;
+            height: 4px;
+        }
+    }
+`;
+
 export const DashboardHero: React.FC<DashboardHeroProps> = props => {
     const { } = props;
 
@@ -112,7 +145,13 @@ export const DashboardHero: React.FC<DashboardHeroProps> = props => {
             <Inner>
                 <Row>
                     <Column>
-                        Left
+                        <PoolIcon />
+                        <Title>Binance Staking Pool</Title>
+                        <HorizontalList>
+                            <li>0x1234...1234</li>
+                            <li>mywebsite.com</li>
+                            <li>75% Rewards Shared</li>
+                        </HorizontalList>
                     </Column>
                     <Metrics>
                     <Tabs isLight={true}>
