@@ -119,8 +119,8 @@ const tradingPairs = [
 export const MarketMakerProfile: React.FC<MarketMakerProfileProps> = props => {
     return (
         <StakingPageLayout isHome={true} title="Market Maker Profile">
+            <DashboardHero />
             <Container>
-                <DashboardHero />
                 <GraphHeading>Historical Details</GraphHeading>
                 <HistoryChart
                     fees={[40, 41, 40, 41, 40, 41, 40, 41, 40, 41, 40, 41]}
