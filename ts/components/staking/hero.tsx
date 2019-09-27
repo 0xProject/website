@@ -11,7 +11,7 @@ interface StakingHeroProps {
     description: string;
     figure: React.ReactNode;
     actions: React.ReactNode;
-    videoId: string;
+    videoId?: string;
     videoChannel?: string;
     videoRatio?: string;
 }
@@ -123,24 +123,28 @@ export const StakingHero: React.FC<StakingHeroProps> = props => {
                         <Description>{description}</Description>
                         <Actions>{actions}</Actions>
                     </Column>
-                    <Video>
-                        <VideoPlaceholder title="Play explainer video" onClick={onOpenVideo} />
-                    </Video>
+                    {videoId && (
+                        <Video>
+                            <VideoPlaceholder title="Play explainer video" onClick={onOpenVideo} />
+                        </Video>
+                    )}
                 </Row>
             </Inner>
-            <ModalVideo
-                channel={videoChannel}
-                isOpen={isVideoOpen}
-                videoId={videoId}
-                onClose={onCloseVideo}
-                youtube={{
-                    autoplay: 1,
-                    controls: 0,
-                    showinfo: 0,
-                    modestbranding: 1,
-                }}
-                ratio={videoRatio}
-            />
+            {videoId && (
+                <ModalVideo
+                    channel={videoChannel}
+                    isOpen={isVideoOpen}
+                    videoId={videoId}
+                    onClose={onCloseVideo}
+                    youtube={{
+                        autoplay: 1,
+                        controls: 0,
+                        showinfo: 0,
+                        modestbranding: 1,
+                    }}
+                    ratio={videoRatio}
+                />
+            )}
         </Wrapper>
     );
 };
