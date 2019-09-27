@@ -712,6 +712,25 @@ export interface WebsiteBackendJobInfo {
     url: string;
 }
 
+export interface WebsiteBackendCurrency {
+    name: string;
+    iconUrl: string;
+}
+
+export interface WebsiteBackendTradingPair {
+    id: string;
+    price: string;
+    currency: string;
+    firstCurrency: WebsiteBackendCurrency;
+    secondCurrency: WebsiteBackendCurrency;
+    // Is there a link to a trading pair detail url?
+    url: string;
+}
+
+export interface WebsiteBackendTradingPairs {
+    tradingPairs: WebsiteBackendTradingPair[];
+}
+
 export interface ExchangeSlippageData {
     exchange: string;
     slippage: string;

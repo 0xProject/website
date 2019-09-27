@@ -7,6 +7,7 @@ import {
     WebsiteBackendPriceInfo,
     WebsiteBackendRelayerInfo,
     WebsiteBackendTokenInfo,
+    WebsiteBackendTradingPairs,
 } from 'ts/types';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { utils } from 'ts/utils/utils';
@@ -18,6 +19,7 @@ const RELAYERS_ENDPOINT = '/relayers';
 const TOKENS_ENDPOINT = '/tokens';
 const CFL_METRICS_ENDPOINT = '/cfl-metrics';
 const SUBSCRIBE_SUBSTACK_NEWSLETTER_ENDPOINT = '/newsletter_subscriber/substack';
+const TRADING_PAIRS_ENDPOINT = '/trading-pairs';
 
 export const backendClient = {
     async getGasInfoAsync(): Promise<WebsiteBackendGasInfo> {
@@ -56,5 +58,8 @@ export const backendClient = {
     },
     async getCFLMetricsAsync(): Promise<WebsiteBackendCFLMetricsData> {
         return fetchUtils.requestAsync(utils.getBackendBaseUrl(), CFL_METRICS_ENDPOINT);
+    },
+    async getTradingPairsAsync(): Promise<WebsiteBackendTradingPairs[]> {
+        return fetchUtils.requestAsync(utils.getBackendBaseUrl(), TRADING_PAIRS_ENDPOINT);
     },
 };
