@@ -35,16 +35,6 @@ export const PROJECTS: { [s: string]: ExploreProject } = {
         url: 'https://paradex.io/',
         keywords: ['tokens'],
     },
-    veil: {
-        name: 'veil',
-        label: 'Veil',
-        description:
-            'Platform for creating and trading in prediction markets on everything, built jointly on Augur and 0x.',
-        logo_url: '/images/explore/veil.svg',
-        theme_color: '#0204EB',
-        url: 'https://veil.co/',
-        keywords: ['prediction_markets'],
-    },
     radar_relay: {
         name: 'radar_relay',
         label: 'Radar Relay',
@@ -166,14 +156,14 @@ export const PROJECTS: { [s: string]: ExploreProject } = {
         url: 'https://alpha.fordex.co/',
         keywords: ['tokens'],
     },
-    ethfinex: {
-        name: 'ethfinex',
-        label: 'Ethfinex',
+    deversifi: {
+        name: 'deversifi',
+        label: 'DeversiFi',
         description:
-            'A hybrid relayer pulling volume from sister company and highly liquid centralized exchange Bitfinex.',
-        logo_url: '/images/explore/ethfinex.svg',
-        theme_color: '#222431',
-        url: 'https://trustless.ethfinex.com',
+            'A hybrid relayer giving decentralised access to highly-liquid centralised orderbooks such as Bitfinex.',
+        logo_url: '/images/explore/deversifi.svg',
+        theme_color: '#6436FF',
+        url: 'https://deversifi.com/',
         keywords: ['tokens'],
     },
     the_ocean: {
@@ -302,11 +292,6 @@ export const FILTERS: ExploreFilterMetadata[] = [
         name: 'wallets',
         filterType: ExploreFilterType.Keyword,
     },
-    {
-        label: 'Prediction Markets',
-        name: 'prediction_markets',
-        filterType: ExploreFilterType.Keyword,
-    },
 ];
 
 export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
@@ -317,14 +302,13 @@ export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
         hardCoded: [
             'dydx',
             'radar_relay',
-            'ethfinex',
+            'deversifi',
+            'imtoken',
             'paradex',
-            'veil',
             'gods_unchained',
             'zeroex_tracker',
             'emoon',
             'boxswap',
-            'imtoken',
             'pixura',
             'lake_project',
             'openrelay',
@@ -353,7 +337,6 @@ export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
             'pixura',
             'tokenmom',
             'lake_project',
-            'veil',
             'gods_unchained',
             'boxswap',
             'rex_relay',
@@ -367,7 +350,7 @@ export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
             'bamboo_relay',
             'mobidex',
             'star_bit_ex',
-            'ethfinex',
+            'deversifi',
             'radar_relay',
             'paradex',
         ],

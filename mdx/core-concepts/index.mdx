@@ -108,7 +108,7 @@ If the maker already knows their desired counter-party, they can simply send the
 
 Once someone finds and wishes to fill the 0x order authored by the maker, they are able to fill it by submitting the order, along with the amount they wish to fill it for, to the blockchain. The 0x protocol's settlement logic will verify the makers digital signature and that all the conditions of the trade are satisfied. If so, the assets involved will be atomically swapped between the maker and taker. If any of the orders conditions are not met however, the fill request is rejected.
 
-<Animation name="onOff" marginBottom="3rem" />
+<Animation name="onOff" marginBottom="4rem" />
 
 ## A non-custodial exchange protocol
 
@@ -132,7 +132,7 @@ By design, the 0x protocol is built to be highly modular and extensible. Some ch
 
 Another type of the 0x protocol extension that does not require any kind of approval to be used are aptly called [0x extensions](https://0x.org/extensions). 0x extensions add arbitrary logic that 0x orders must flow through before they can get filled or cancelled.
 
-<Image src="/images/docs/extension.png" align="center" alt="Extensions" width="700px" padding="20px" marginBottom="3rem" />
+<Image src="/images/docs/extension.svg" align="center" alt="Extensions" width="780px" marginBottom="3rem" />
 
 Examples of the types of features this enables are trading whitelists (KYC, invite-only, etc...), [Dutch auctions](https://0x.org/docs/guides/0x-extensions-explained#dutch-auction-contract) and [trade coordinators](https://0x.org/docs/guides/v2-coordinatior-specification) to name a few. We are just beginning to see the innovation this ability to permissionlessly extend the 0x protocol will unleash.
 
@@ -178,7 +178,7 @@ In this way, miners can optimize their reward by including the transactions that
 
 Ethereum is a peer-to-peer network of nodes that all keep a record of the blocks mined, and many of which participate in mining the blocks as well. By sending a transaction to any one node, it will quickly propogate to all other nodes through the networks gossip channels. Once a transaction is mined, the block it was included in will also be gossiped to all the nodes. In order to send an Ethereum transaction to a miner, all one has to do is send it to a single Ethereum node that is part of the P2P network. This node will take care of propogating it to the rest of the network.
 
-<Animation name="network" width="800px" />
+<Animation name="network" width="800px" marginBottom="2.5rem" />
 
 The main functions of an Ethereum client are to:
 
