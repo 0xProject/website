@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Providers, ProviderType } from 'ts/types';
 
 import { Icon } from 'ts/components/icon';
+import { colors } from 'ts/style/colors';
 import { utils } from 'ts/utils/utils';
 
 const SubMenuWrapper = styled.div`
@@ -12,6 +13,7 @@ const SubMenuWrapper = styled.div`
     width: 238px;
     height: 60px;
     border: 1px solid rgba(0, 0, 0, 0.4);
+    position: relative;
 `;
 
 const ConnectButton = ({ onClick }: { onClick: () => void }) => (
@@ -38,6 +40,29 @@ const Arrow = ({ isExpanded }: { isExpanded?: boolean }) => (
     </svg>
 );
 
+const ExpandedMenu = styled.div`
+    width: 237px;
+    height: 140px;
+    background: ${colors.backgroundLightGrey};
+    border: 1px solid rgba(92, 92, 92, 0.15);
+    position: absolute;
+    top: 73px;
+
+    &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: -5px;
+        right: 12px;
+        width: 8px;
+        height: 8px;
+        background: ${colors.backgroundLightGrey};
+        border-right: 1px solid rgba(92, 92, 92, 0.15);
+        border-bottom: 1px solid rgba(92, 92, 92, 0.15);
+        transform: rotate(-135deg);
+    }
+`;
+
 type ProviderName = Providers.Metamask | Providers.CoinbaseWallet | Providers.Cipher | ProviderType.Ledger;
 
 const ConnectedWallet = ({ userEthAddress, providerName }: { userEthAddress: string; providerName: ProviderName }) => {
@@ -50,6 +75,7 @@ const ConnectedWallet = ({ userEthAddress, providerName }: { userEthAddress: str
             <Icon name={`${providerName.toLowerCase()}_icon`} size={30} />
             <EthAddress>{utils.getAddressBeginAndEnd(userEthAddress)}</EthAddress>
             <Arrow isExpanded={isExpanded} />
+            {isExpanded && <ExpandedMenu />}
         </SubMenuWrapper>
     );
 };
