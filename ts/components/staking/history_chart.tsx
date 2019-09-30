@@ -132,6 +132,10 @@ const Container = styled.div`
     height: 290px;
     position: relative;
     margin-bottom: 90px;
+    display: none;
+    @media (min-width: 768px) {
+        display: block;
+    }
 `;
 
 export const HistoryChart: React.FC<HistoryChartProps> = props => {

@@ -22,6 +22,10 @@ const Heading = styled.h2`
 
 const GraphHeading = styled(Heading)`
     margin-bottom: 60px;
+    display: none;
+    @media (min-width: 768px) {
+        display: block;
+    }
 `;
 
 const TradingPairContainer = styled.div`
