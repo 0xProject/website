@@ -14,6 +14,13 @@ export interface AvatarProps {}
 
 const Wrap = styled.div<WrapProps>`
     font-size: 34px;
+    text-align: left;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        background-color: ${colors.backgroundLightGrey};
+        padding: 20px;
+    }
 `;
 
 const Avatar = styled.figure<AvatarProps>`

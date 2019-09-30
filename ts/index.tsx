@@ -24,7 +24,7 @@ import { NextAboutTeam } from 'ts/pages/about/team';
 import { Credits } from 'ts/pages/credits';
 import { Explore } from 'ts/pages/explore';
 
-import { Account } from 'ts/pages/account';
+import { Account } from 'ts/pages/account/dashboard';
 import { CFL } from 'ts/pages/cfl';
 import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
