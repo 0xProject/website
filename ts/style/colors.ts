@@ -16,6 +16,7 @@ const appColors = {
     brandLight: '#00AE99',
     brandLightest: '#7BD2C7',
     brandDark: '#003831',
+    border: '#D9D9D9',
     backgroundDark: '#111A19',
     backgroundBlack: '#000000',
     backgroundLight: '#F3F6F4',
