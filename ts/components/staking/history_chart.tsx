@@ -151,15 +151,13 @@ export const HistoryChart: React.FC<HistoryChartProps> = props => {
     const { fees, rewards, labels, epochs } = props;
 
     const container = React.useRef(null);
-    const [width, setWidth] = React.useState(0);
+    // const [_width, setWidth] = React.useState(0);
 
-    React.useLayoutEffect(() => {
-        const c = container.current;
+    // React.useLayoutEffect(() => {
+    //     const c = container.current;
 
-        console.log(c.offsetWidth);
-
-        setWidth(c.offsetWidth);
-    }, []);
+    //     setWidth(c.offsetWidth);
+    // }, []);
 
     const data = {
         labels,
@@ -179,7 +177,7 @@ export const HistoryChart: React.FC<HistoryChartProps> = props => {
 
     return (
         <Container ref={container}>
-            <Line data={data} options={getOptions(epochs)} width={700} height={290} />
+            <Line data={data} options={getOptions(epochs)} height={290} />
         </Container>
     );
 };
