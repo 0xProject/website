@@ -8,9 +8,7 @@ import CheckmarkThin from 'ts/icons/illustrations/checkmark-thin.svg';
 
 import { colors } from 'ts/style/colors';
 
-interface DashboardHeroProps {
-
-}
+interface DashboardHeroProps {}
 
 interface WrapperProps {}
 
@@ -26,9 +24,9 @@ const Wrapper = styled.div<WrapperProps>`
 `;
 
 const Inner = styled.div<InnerProps>`
-    background-color: ${colors.backgroundLightGrey};
-    padding: 20px;
+    padding: 0;
     @media (min-width: 768px) {
+        background-color: ${colors.backgroundLightGrey};
         padding: 60px 30px;
     }
 `;
@@ -38,20 +36,25 @@ const Row = styled.div<RowProps>`
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
-    align-items: center;
     flex-direction: column;
     @media (min-width: 768px) {
+        align-items: center;
         flex-direction: row;
     }
 `;
 
 const Column = styled.div`
-    padding: 30px;
-    width: 50%;
+    padding: 30px 20px;
+    &:first-child {
+        background-color: ${colors.backgroundLightGrey};
+    }
     @media (min-width: 768px) {
-        padding: 60px;
+        width: 50%;
+        /* padding: 60px; */
+        padding: 0;
         &:first-child {
             padding-left: 0;
+            background-color: none;
         }
         &:last-child {
             padding-right: 0;
@@ -60,10 +63,10 @@ const Column = styled.div`
 `;
 
 const Metrics = styled(Column)`
-    max-width: 460px;
-    padding: 0;
+    padding: 30px 20px;
     @media (min-width: 768px) {
-        padding: 0;
+        max-width: 460px;
+        padding: 0 0 0 20px;
     }
 `;
 
@@ -71,20 +74,23 @@ const FiguresList = styled.ol`
     display: flex;
     flex-wrap: wrap;
     padding-top: 15px;
-    margin-right: -15px;
+    margin-right: -20px;
 `;
 
 const Figure = styled.li`
     background-color: ${colors.white};
-    padding: 20px;
+    padding: 10px;
     margin-right: 15px;
     margin-bottom: 15px;
-    width: calc(50% - 15px);
+    @media (min-width: 480px) {
+        width: calc(50% - 15px);
+        padding: 20px;
+    }
 `;
 
 const FigureTitle = styled.span`
     display: block;
-    font-size: 17px;
+    font-size: 16px;
     line-height: 1.35;
     color: #999999;
     margin-bottom: 5px;
@@ -93,8 +99,11 @@ const FigureTitle = styled.span`
 const FigureNumber = styled.span`
     display: block;
     font-feature-settings: 'tnum' on, 'lnum' on;
-    font-size: 28px;
+    font-size: 20px;
     line-height: 1.35;
+    @media (min-width: 768px) {
+        font-size: 28px;
+    }
 `;
 
 const PoolIcon = styled.div`
@@ -102,28 +111,34 @@ const PoolIcon = styled.div`
     height: 60px;
     background-color: ${colors.white};
     margin-bottom: 23px;
+    border: 1px solid #d9d9d9;
 `;
 
 const Title = styled.h1`
-    font-size: 34px;
+    font-size: 28px;
     line-height: 1.35;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
+    @media (min-width: 768px) {
+        font-size: 34px;
+    }
 `;
 
 const HorizontalList = styled.ul`
     font-size: 17px;
     font-weight: 300;
-    color: #5C5C5C;
+    color: #5c5c5c;
     margin-bottom: 40px;
     a {
         color: ${colors.brandLight};
     }
     & > li {
         display: inline-block;
-        line-height: 1;
+        line-height: 1.5;
         position: relative;
-        margin-right: 30px;
+        margin-right: 15px;
+        padding-left: 15px;
         &:first-child {
+            padding-left: 0;
             &:before {
                 display: none;
             }
@@ -132,10 +147,10 @@ const HorizontalList = styled.ul`
             content: '';
             position: absolute;
             top: 50%;
-            left: -15px;
+            left: 0;
             margin-top: -4px;
             border-radius: 50%;
-            background-color: #D7D7D7;
+            background-color: #d7d7d7;
             width: 4px;
             height: 4px;
         }
@@ -143,7 +158,9 @@ const HorizontalList = styled.ul`
 `;
 
 const ButtonContainer = styled.div`
-    max-width: 330px;
+    @media (min-width: 768px) {
+        max-width: 330px;
+    }
 `;
 
 const StakingButton = styled(Button)`
@@ -154,13 +171,13 @@ const StakingButton = styled(Button)`
 const ProgressbarText = styled.span`
     display: block;
     font-size: 15px;
-    color: #5C5C5C;
+    color: #5c5c5c;
     line-height: 1.2;
-    margin-top: 7px;
+    margin-top: 8px;
 `;
 
 export const DashboardHero: React.FC<DashboardHeroProps> = props => {
-    const { } = props;
+    const {} = props;
 
     const [selectedTabIndex, setSelectedTabIndex] = React.useState<number>(0);
 
@@ -170,14 +187,23 @@ export const DashboardHero: React.FC<DashboardHeroProps> = props => {
                 <Row>
                     <Column>
                         <PoolIcon />
-                        <Title>Binance Staking Pool <CheckmarkThin /></Title>
+                        <Title>
+                            Binance Staking Pool <CheckmarkThin />
+                        </Title>
                         <HorizontalList>
                             <li>0x1234...1234</li>
                             <li>mywebsite.com</li>
-                            <li><a href="">75% Rewards Shared</a></li>
+                            <li>
+                                <a href="">75% Rewards Shared</a>
+                            </li>
                         </HorizontalList>
                         <ButtonContainer>
-                            <StakingButton href="/" isInline={true} color={colors.white}>
+                            <StakingButton
+                                href="/"
+                                color={colors.white}
+                                isFullWidth={true}
+                                isLarge={true}
+                            >
                                 Start Staking
                             </StakingButton>
                             <Progressbar progress={75} />
@@ -185,40 +211,40 @@ export const DashboardHero: React.FC<DashboardHeroProps> = props => {
                         </ButtonContainer>
                     </Column>
                     <Metrics>
-                    <Tabs isLight={true}>
-                        <Tab
-                            isSelected={selectedTabIndex === 0}
-                            onClick={() => setSelectedTabIndex(0)}
-                            isLight={true}
-                        >
-                            Current Epoch
-                        </Tab>
-                        <Tab
-                            isSelected={selectedTabIndex === 1}
-                            onClick={() => setSelectedTabIndex(1)}
-                            isLight={true}
-                        >
-                            All Time
-                        </Tab>
-                    </Tabs>
-                    <FiguresList>
-                        <Figure>
-                            <FigureTitle>Total volume</FigureTitle>
-                            <FigureNumber>1.23M USD</FigureNumber>
-                        </Figure>
-                        <Figure>
-                            <FigureTitle>ZRX Staked</FigureTitle>
-                            <FigureNumber>1,288,229</FigureNumber>
-                        </Figure>
-                        <Figure>
-                            <FigureTitle>Fees Generated</FigureTitle>
-                            <FigureNumber>.000023 ETH</FigureNumber>
-                        </Figure>
-                        <Figure>
-                            <FigureTitle>Rewards generated</FigureTitle>
-                            <FigureNumber>.000023 ETH</FigureNumber>
-                        </Figure>
-                    </FiguresList>
+                        <Tabs isLight={true}>
+                            <Tab
+                                isSelected={selectedTabIndex === 0}
+                                onClick={() => setSelectedTabIndex(0)}
+                                isLight={true}
+                            >
+                                Current Epoch
+                            </Tab>
+                            <Tab
+                                isSelected={selectedTabIndex === 1}
+                                onClick={() => setSelectedTabIndex(1)}
+                                isLight={true}
+                            >
+                                All Time
+                            </Tab>
+                        </Tabs>
+                        <FiguresList>
+                            <Figure>
+                                <FigureTitle>Total volume</FigureTitle>
+                                <FigureNumber>1.23M USD</FigureNumber>
+                            </Figure>
+                            <Figure>
+                                <FigureTitle>ZRX Staked</FigureTitle>
+                                <FigureNumber>1,288,229</FigureNumber>
+                            </Figure>
+                            <Figure>
+                                <FigureTitle>Fees Generated</FigureTitle>
+                                <FigureNumber>.000023 ETH</FigureNumber>
+                            </Figure>
+                            <Figure>
+                                <FigureTitle>Rewards generated</FigureTitle>
+                                <FigureNumber>.000023 ETH</FigureNumber>
+                            </Figure>
+                        </FiguresList>
                     </Metrics>
                 </Row>
             </Inner>
