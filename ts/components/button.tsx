@@ -32,6 +32,8 @@ export interface ButtonInterface {
     onClick?: (e: any) => any;
     theme?: IThemeInterface;
     shouldUseAnchorTag?: boolean;
+    isFullWidth?: boolean;
+    isLarge?: boolean;
 }
 
 export const Button: React.StatelessComponent<ButtonInterface> = (props: ButtonInterface) => {
@@ -78,7 +80,7 @@ const ButtonBase = styled.button<ButtonInterface>`
     border-color: ${props => props.isTransparent && !props.isWithArrow && props.borderColor};
     color: ${props => (props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor)};
     padding: ${props =>
-        !props.isNoPadding && !props.isWithArrow && ((!!props.padding && props.padding) || '18px 30px')};
+        !props.isNoPadding && !props.isWithArrow && ((!!props.padding && props.padding) || (props.isLarge ? '22px 30px' : '18px 30px'))};
     white-space: ${props => props.isWithArrow && 'nowrap'};
     text-align: ${props => props.textAlign};
     font-size: ${props => (props.fontSize ? props.fontSize : props.isWithArrow ? '20px' : '18px')};
@@ -86,6 +88,7 @@ const ButtonBase = styled.button<ButtonInterface>`
     cursor: pointer;
     outline: none;
     transition: background-color 0.35s, border-color 0.35s;
+    width: ${props => props.isFullWidth ? '100%' : 'auto'};
 
     // @todo Refactor to use theme props
     ${props =>
