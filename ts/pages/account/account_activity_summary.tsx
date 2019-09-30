@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { PanelHeader } from 'ts/components/ui/panel_header';
+
 import { colors } from 'ts/style/colors';
 
 interface AccountActivitySummaryProps {
