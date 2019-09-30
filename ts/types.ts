@@ -731,6 +731,24 @@ export interface WebsiteBackendTradingPairs {
     tradingPairs: WebsiteBackendTradingPair[];
 }
 
+export interface StakingPoolMetrics {
+    totalVolume: string;
+    totalStaked: string;
+    feesGenerated: string;
+    rewardsShared: string;
+}
+
+export interface WebsiteBackendStakingPoolInfo {
+    // 0x1234...1234 <= is this the id?
+    id: string;
+    website: string;
+    rewardsShared: number;
+    iconUrl: string;
+    estimatedStake: number;
+    currentEpochMetrics: StakingPoolMetrics;
+    allTimeMetrics: StakingPoolMetrics;
+}
+
 export interface ExchangeSlippageData {
     exchange: string;
     slippage: string;
