@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styled from 'styled-components';
 
 import { merge } from 'lodash';
 import { defaults, Line } from 'react-chartjs-2';
@@ -106,7 +107,15 @@ const getOptions = (epochs: number[]) => {
             callbacks: {
                 label: (item: any, graphData: any) => {
                     const datasetLabel = graphData.datasets[item.datasetIndex].label;
-                    return `${datasetLabel} ${item.yLabel} ETH`;
+                    return `${datasetLabel} — ${item.yLabel} ETH`;
+                },
+                labelColor: (tooltipItem: any, chart: any) => {
+                    const datasetIndex = tooltipItem.datasetIndex;
+                    const { backgroundColor } = chart.config.data.datasets[datasetIndex];
+                    return {
+                        borderColor: 'transparent',
+                        backgroundColor,
+                    };
                 },
                 title: (item: any, graphData: any) => {
                     const firstItem = item[0];
@@ -127,8 +136,28 @@ merge(defaults, {
     },
 });
 
+const Container = styled.div`
+    /* height: 290px; */
+    position: relative;
+    margin-bottom: 90px;
+    display: none;
+    width: 100%;
+    @media (min-width: 768px) {
+        display: block;
+    }
+`;
+
 export const HistoryChart: React.FC<HistoryChartProps> = props => {
     const { fees, rewards, labels, epochs } = props;
+
+    const container = React.useRef(null);
+    // const [_width, setWidth] = React.useState(0);
+
+    // React.useLayoutEffect(() => {
+    //     const c = container.current;
+
+    //     setWidth(c.offsetWidth);
+    // }, []);
 
     const data = {
         labels,
@@ -146,5 +175,9 @@ export const HistoryChart: React.FC<HistoryChartProps> = props => {
         ],
     };
 
-    return <Line data={data} options={getOptions(epochs)} />;
+    return (
+        <Container ref={container}>
+            <Line data={data} options={getOptions(epochs)} height={290} />
+        </Container>
+    );
 };
