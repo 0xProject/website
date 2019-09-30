@@ -107,7 +107,15 @@ const getOptions = (epochs: number[]) => {
             callbacks: {
                 label: (item: any, graphData: any) => {
                     const datasetLabel = graphData.datasets[item.datasetIndex].label;
-                    return `${datasetLabel} ${item.yLabel} ETH`;
+                    return `${datasetLabel} — ${item.yLabel} ETH`;
+                },
+                labelColor: (tooltipItem: any, chart: any) => {
+                    const datasetIndex = tooltipItem.datasetIndex;
+                    const { backgroundColor } = chart.config.data.datasets[datasetIndex];
+                    return {
+                        borderColor: 'transparent',
+                        backgroundColor,
+                    };
                 },
                 title: (item: any, graphData: any) => {
                     const firstItem = item[0];
@@ -129,10 +137,11 @@ merge(defaults, {
 });
 
 const Container = styled.div`
-    height: 290px;
+    /* height: 290px; */
     position: relative;
     margin-bottom: 90px;
     display: none;
+    width: 100%;
     @media (min-width: 768px) {
         display: block;
     }
@@ -140,6 +149,17 @@ const Container = styled.div`
 
 export const HistoryChart: React.FC<HistoryChartProps> = props => {
     const { fees, rewards, labels, epochs } = props;
+
+    const container = React.useRef(null);
+    const [width, setWidth] = React.useState(0);
+
+    React.useLayoutEffect(() => {
+        const c = container.current;
+
+        console.log(c.offsetWidth);
+
+        setWidth(c.offsetWidth);
+    }, []);
 
     const data = {
         labels,
@@ -158,8 +178,8 @@ export const HistoryChart: React.FC<HistoryChartProps> = props => {
     };
 
     return (
-        <Container>
-            <Line data={data} options={getOptions(epochs)} />
+        <Container ref={container}>
+            <Line data={data} options={getOptions(epochs)} width={700} height={290} />
         </Container>
     );
 };
