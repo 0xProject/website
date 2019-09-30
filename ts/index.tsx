@@ -24,6 +24,7 @@ import { NextAboutTeam } from 'ts/pages/about/team';
 import { Credits } from 'ts/pages/credits';
 import { Explore } from 'ts/pages/explore';
 
+import { Account } from 'ts/pages/account';
 import { CFL } from 'ts/pages/cfl';
 import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
@@ -75,6 +76,8 @@ render(
                         <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit as any} />
                         <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem as any} />
                         <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance as any} />
+
+                        <Route exact={true} path={WebsitePaths.Account} component={Account as any} />
 
                         <Route exact={true} path={WebsitePaths.Staking} component={StakingIndex as any} />
                         <Route exact={true} path={WebsitePaths.MarketMakerProfile} component={MarketMakerProfile as any} />
