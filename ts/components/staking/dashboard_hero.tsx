@@ -1,7 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { Button } from 'ts/components/button';
+import { Progressbar } from 'ts/components/progressbar';
 import { Tab, Tabs } from 'ts/components/tabs';
+import CheckmarkThin from 'ts/icons/illustrations/checkmark-thin.svg';
 
 import { colors } from 'ts/style/colors';
 
@@ -104,13 +107,17 @@ const PoolIcon = styled.div`
 const Title = styled.h1`
     font-size: 34px;
     line-height: 1.35;
-    font-weight: 300;
     margin-bottom: 15px;
 `;
 
 const HorizontalList = styled.ul`
     font-size: 17px;
     font-weight: 300;
+    color: #5C5C5C;
+    margin-bottom: 40px;
+    a {
+        color: ${colors.brandLight};
+    }
     & > li {
         display: inline-block;
         line-height: 1;
@@ -126,13 +133,30 @@ const HorizontalList = styled.ul`
             position: absolute;
             top: 50%;
             left: -15px;
-            margin-top: -2px;
+            margin-top: -4px;
             border-radius: 50%;
-            background-color: #5C5C5C;
+            background-color: #D7D7D7;
             width: 4px;
             height: 4px;
         }
     }
+`;
+
+const ButtonContainer = styled.div`
+    max-width: 330px;
+`;
+
+const StakingButton = styled(Button)`
+    padding: 100px;
+    margin-bottom: 15px;
+`;
+
+const ProgressbarText = styled.span`
+    display: block;
+    font-size: 15px;
+    color: #5C5C5C;
+    line-height: 1.2;
+    margin-top: 7px;
 `;
 
 export const DashboardHero: React.FC<DashboardHeroProps> = props => {
@@ -146,12 +170,19 @@ export const DashboardHero: React.FC<DashboardHeroProps> = props => {
                 <Row>
                     <Column>
                         <PoolIcon />
-                        <Title>Binance Staking Pool</Title>
+                        <Title>Binance Staking Pool <CheckmarkThin /></Title>
                         <HorizontalList>
                             <li>0x1234...1234</li>
                             <li>mywebsite.com</li>
-                            <li>75% Rewards Shared</li>
+                            <li><a href="">75% Rewards Shared</a></li>
                         </HorizontalList>
+                        <ButtonContainer>
+                            <StakingButton href="/" isInline={true} color={colors.white}>
+                                Start Staking
+                            </StakingButton>
+                            <Progressbar progress={75} />
+                            <ProgressbarText>74% estimated stake for next epoch</ProgressbarText>
+                        </ButtonContainer>
                     </Column>
                     <Metrics>
                     <Tabs isLight={true}>
