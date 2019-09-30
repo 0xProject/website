@@ -749,6 +749,18 @@ export interface WebsiteBackendStakingPoolInfo {
     allTimeMetrics: StakingPoolMetrics;
 }
 
+export interface StakingHistoryDataset {
+    // 'Fees collected' or 'Rewards shared'
+    title: string;
+    data: StakingHistoryTimePoint[];
+}
+
+export interface StakingHistoryTimePoint {
+    date: string;
+    value: number;
+    epoch: string;
+}
+
 export interface ExchangeSlippageData {
     exchange: string;
     slippage: string;
