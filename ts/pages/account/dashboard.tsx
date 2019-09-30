@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading } from 'ts/components/text';
 import { AccountDetail } from 'ts/pages/account/account_detail';
+import { AccountEmptyStake } from 'ts/pages/account/account_empty_stake';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { colors } from 'ts/style/colors';
 
@@ -65,6 +66,10 @@ const SectionWrapper = styled.div`
     width: calc(100% - 40px);
     max-width: 1152px;
     margin: 0 auto;
+
+    & + & {
+        margin-top: 90px;
+    }
 `;
 
 const Grid = styled.div`
@@ -97,8 +102,19 @@ export const Account: React.FC<AccountProps> = props => {
                     asElement="h3"
                     fontWeight="400"
                 >
+                    Activity
+                </Heading>
+            </SectionWrapper>
+
+            <SectionWrapper>
+                <Heading
+                    asElement="h3"
+                    fontWeight="400"
+                >
                     Your staking pools
                 </Heading>
+
+                <AccountEmptyStake />
             </SectionWrapper>
 
             <SectionWrapper>
