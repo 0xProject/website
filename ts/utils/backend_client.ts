@@ -8,6 +8,7 @@ import {
     WebsiteBackendRelayerInfo,
     WebsiteBackendTokenInfo,
     WebsiteBackendTradingPairs,
+    WebsiteBackendStakingPoolInfo,
 } from 'ts/types';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { utils } from 'ts/utils/utils';
@@ -20,6 +21,7 @@ const TOKENS_ENDPOINT = '/tokens';
 const CFL_METRICS_ENDPOINT = '/cfl-metrics';
 const SUBSCRIBE_SUBSTACK_NEWSLETTER_ENDPOINT = '/newsletter_subscriber/substack';
 const TRADING_PAIRS_ENDPOINT = '/trading-pairs';
+const STAKING_POOLS_ENDPOINT = '/staking-pools';
 
 export const backendClient = {
     async getGasInfoAsync(): Promise<WebsiteBackendGasInfo> {
@@ -61,5 +63,11 @@ export const backendClient = {
     },
     async getTradingPairsAsync(): Promise<WebsiteBackendTradingPairs[]> {
         return fetchUtils.requestAsync(utils.getBackendBaseUrl(), TRADING_PAIRS_ENDPOINT);
+    },
+    async getStakingPoolsAsync(): Promise<WebsiteBackendStakingPoolInfo[]> {
+        return fetchUtils.requestAsync(utils.getBackendBaseUrl(), STAKING_POOLS_ENDPOINT);
+    },
+    async getStakingPoolAsync(id: string): Promise<WebsiteBackendStakingPoolInfo> {
+        return fetchUtils.requestAsync(utils.getBackendBaseUrl(), `${STAKING_POOLS_ENDPOINT}/${id}`);
     },
 };

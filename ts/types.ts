@@ -745,6 +745,7 @@ export interface WebsiteBackendStakingPoolInfo {
     rewardsShared: number;
     iconUrl: string;
     estimatedStake: number;
+    nextEpoch: string;
     currentEpochMetrics: StakingPoolMetrics;
     allTimeMetrics: StakingPoolMetrics;
 }
