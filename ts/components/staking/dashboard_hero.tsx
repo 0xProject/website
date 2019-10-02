@@ -5,6 +5,7 @@ import { Button } from 'ts/components/button';
 import { Progressbar } from 'ts/components/progressbar';
 import { Tab, Tabs } from 'ts/components/tabs';
 import CheckmarkThin from 'ts/icons/illustrations/checkmark-thin.svg';
+import Checkmark from 'ts/icons/illustrations/checkmark.svg';
 
 import { colors } from 'ts/style/colors';
 
@@ -195,8 +196,30 @@ const ProgressbarText = styled.span`
     margin-top: 8px;
 `;
 
-export const DashboardHero: React.FC<DashboardHeroProps> = ({ title, tabs, poolId, website, isVerified, estimatedStake, rewardsShared, iconUrl }) => {
+const CheckmarkThinDesktop = styled(CheckmarkThin)`
+    display: none;
+    @media (min-width: 768px) {
+        display: inline-block;
+    }
+`;
 
+const VerificationIndicator = styled.li`
+    display: inline-block;
+    @media (min-width: 768px) {
+        display: none !important;
+    }
+`;
+
+export const DashboardHero: React.FC<DashboardHeroProps> = ({
+    title,
+    tabs,
+    poolId,
+    website,
+    isVerified,
+    estimatedStake,
+    rewardsShared,
+    iconUrl,
+}) => {
     const [selectedTabIndex, setSelectedTabIndex] = React.useState<number>(0);
 
     const selectedTab = tabs[selectedTabIndex];
@@ -209,7 +232,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({ title, tabs, poolI
                     <Column>
                         <PoolIcon src={iconUrl} />
                         <Title>
-                            {title} {isVerified && <CheckmarkThin />}
+                            {title} {isVerified && <CheckmarkThinDesktop title="Identitity verified" />}
                         </Title>
                         <HorizontalList>
                             <li>{poolId}</li>
@@ -217,14 +240,16 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({ title, tabs, poolI
                             <li>
                                 <a href="">{rewardsShared}% Rewards Shared</a>
                             </li>
+                            {isVerified && (
+                                <VerificationIndicator>
+                                    <a href="">
+                                        <Checkmark /> Verified identity
+                                    </a>
+                                </VerificationIndicator>
+                            )}
                         </HorizontalList>
                         <ButtonContainer>
-                            <StakingButton
-                                href="/"
-                                color={colors.white}
-                                isFullWidth={true}
-                                isLarge={true}
-                            >
+                            <StakingButton href="/" color={colors.white} isFullWidth={true} isLarge={true}>
                                 Start Staking
                             </StakingButton>
                             <Progressbar progress={75} />
@@ -246,7 +271,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({ title, tabs, poolI
                                 );
                             })}
                         </Tabs>
-                        {metrics != null &&
+                        {metrics != null && (
                             <FiguresList>
                                 {metrics.map(metric => {
                                     return (
@@ -257,7 +282,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({ title, tabs, poolI
                                     );
                                 })}
                             </FiguresList>
-                        }
+                        )}
                     </Metrics>
                 </Row>
             </Inner>
