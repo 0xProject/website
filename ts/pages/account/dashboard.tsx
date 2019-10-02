@@ -1,10 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { CallToAction } from 'ts/components/call_to_action';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading } from 'ts/components/text';
+import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
 import { AccountDetail } from 'ts/pages/account/account_detail';
-import { AccountEmptyStake } from 'ts/pages/account/account_empty_stake';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { colors } from 'ts/style/colors';
 
@@ -72,6 +73,13 @@ const SectionWrapper = styled.div`
     }
 `;
 
+const SectionHeader = styled.header`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+`;
+
 const Grid = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -98,32 +106,57 @@ export const Account: React.FC<AccountProps> = props => {
             </HeaderWrapper>
 
             <SectionWrapper>
-                <Heading
-                    asElement="h3"
-                    fontWeight="400"
-                >
-                    Activity
-                </Heading>
+                <SectionHeader>
+                    <Heading
+                        asElement="h3"
+                        fontWeight="400"
+                        isNoMargin={true}
+                    >
+                        Activity
+                    </Heading>
+
+                    Show all activity
+                </SectionHeader>
+
+                <AccountActivitySummary />
             </SectionWrapper>
 
             <SectionWrapper>
-                <Heading
-                    asElement="h3"
-                    fontWeight="400"
-                >
-                    Your staking pools
-                </Heading>
+                <SectionHeader>
+                    <Heading
+                        asElement="h3"
+                        fontWeight="400"
+                        isNoMargin={true}
+                    >
+                        Your staking pools
+                    </Heading>
 
-                <AccountEmptyStake />
+                    Apply to create a staking pool
+                </SectionHeader>
+
+                <CallToAction
+                    icon="voting"
+                    title="You haven't staked ZRX"
+                    description="Start staking your ZRX and getting interest."
+                    actions={[
+                        {
+                            label: 'Start staking',
+                            url: '#',
+                        },
+                    ]}
+                />
             </SectionWrapper>
 
             <SectionWrapper>
-                <Heading
-                    asElement="h3"
-                    fontWeight="400"
-                >
-                    Your voting history
-                </Heading>
+                <SectionHeader>
+                    <Heading
+                        asElement="h3"
+                        fontWeight="400"
+                        isNoMargin={true}
+                    >
+                        Your voting history
+                    </Heading>
+                </SectionHeader>
 
                 <Grid>
                     <AccountVote />
