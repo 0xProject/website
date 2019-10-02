@@ -29,6 +29,31 @@ const StyledDefinition = styled(Definition)`
     div {
         margin-top: 0;
     }
+
+    button, a {
+        color: #00AE99;
+
+        path {
+            fill: #00AE99;
+        }
+    }
+
+    @media (max-width: 768px) {
+        text-align: center;
+
+        figure {
+            margin-bottom: 30px;
+        }
+
+        div {
+            max-width: 100%;
+        }
+
+        button, a {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
 `;
 
 export const CallToAction: React.StatelessComponent<AccountEmptyStakeProps> = ({

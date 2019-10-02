@@ -5,14 +5,46 @@ import styled from 'styled-components';
 import { CallToAction } from 'ts/components/call_to_action';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading } from 'ts/components/text';
+import { StatFigure } from 'ts/components/ui/stat_figure';
 import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
 import { AccountDetail } from 'ts/pages/account/account_detail';
+import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { colors } from 'ts/style/colors';
 
 export interface AccountProps {}
 
 const MOCK_DATA = {
+    activitySummary: {
+        title: '500 ZRX will be removed from Binance Pool in 10 days',
+        subtitle: 'Your tokens will need to be manually withdrawn once they are removed ',
+    },
+    stakes: [
+        {
+            title: 'Binance Staking Pool',
+            subtitle: 'https://binance.com',
+            rewards: '95%',
+            fees: '0.03212 ETH',
+            staked: '52%',
+            userData: {
+                amount: 213425,
+                rewards: 0.0342,
+            },
+            timeRemaining: '5 days',
+        },
+        {
+            title: 'Coinbase Staking Pool',
+            subtitle: 'https://coinbase.com',
+            rewards: '23%',
+            fees: '0.00236 ETH',
+            staked: '12%',
+            userData: {
+                amount: 12345,
+                rewards: 0.01134,
+            },
+            timeRemaining: '14 days',
+        },
+    ],
     voteHistory: [
         {
             title: 'StaticCallAssetProxy',
@@ -67,7 +99,15 @@ export const Account: React.FC<AccountProps> = () => {
                     Show all activity
                 </SectionHeader>
 
-                <AccountActivitySummary />
+                <AccountActivitySummary
+                    title={MOCK_DATA.activitySummary.title}
+                    subtitle={MOCK_DATA.activitySummary.subtitle}
+                >
+                    <StatFigure
+                        label="Withdraw date"
+                        value="9/19/29"
+                    />
+                </AccountActivitySummary>
             </SectionWrapper>
 
             <SectionWrapper>
@@ -90,10 +130,19 @@ export const Account: React.FC<AccountProps> = () => {
                     actions={[
                         {
                             label: 'Start staking',
-                            url: '#',
+                            onClick: () => null,
                         },
                     ]}
                 />
+
+                {_.map(MOCK_DATA.stakes, (item, index) => {
+                    return (
+                        <AccountStakeOverview
+                            key={`stake-${index}`}
+                            {...item}
+                        />
+                    );
+                })}
             </SectionWrapper>
 
             <SectionWrapper>

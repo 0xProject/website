@@ -7,7 +7,7 @@ import { colors } from 'ts/style/colors';
 interface PanelHeaderProps {
     avatarSrc?: string;
     avatarComponent?: Node;
-    title: string;
+    title: string | Node;
     subtitle: string;
 }
 
@@ -22,6 +22,10 @@ const Avatar = styled.figure`
     height: 80px;
     border: 1px solid ${colors.border};
     margin-right: 30px;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
 `;
 
 export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
@@ -40,7 +44,7 @@ export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
                     fontWeight="500"
                     isNoMargin={true}
                 >
-                    Lorem ipsum dolor sit amet
+                    {title}
                 </Heading>
 
                 <Paragraph

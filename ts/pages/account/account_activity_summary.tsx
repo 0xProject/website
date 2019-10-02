@@ -4,7 +4,11 @@ import styled from 'styled-components';
 import { PanelHeader } from 'ts/components/ui/panel_header';
 import { colors } from 'ts/style/colors';
 
-interface AccountActivitySummaryProps {}
+interface AccountActivitySummaryProps {
+    title: string;
+    subtitle: string;
+    children?: any;
+}
 
 const Wrap = styled.div`
     padding: 20px;
@@ -14,13 +18,19 @@ const Wrap = styled.div`
     align-items: center;
 `;
 
-export const AccountActivitySummary: React.StatelessComponent<AccountActivitySummaryProps> = () => {
+export const AccountActivitySummary: React.StatelessComponent<AccountActivitySummaryProps> = ({
+    title,
+    subtitle,
+    children,
+}) => {
     return (
         <Wrap>
             <PanelHeader
-                title="Lorem ipsum"
-                subtitle="Dolor sit amet consequitur"
+                title={title}
+                subtitle={subtitle}
             />
+
+            {children}
         </Wrap>
     );
 };
