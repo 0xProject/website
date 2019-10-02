@@ -123,7 +123,59 @@ const tradingPairs = [
 export const MarketMakerProfile: React.FC<MarketMakerProfileProps> = props => {
     return (
         <StakingPageLayout isHome={true} title="Market Maker Profile">
-            <DashboardHero />
+            <DashboardHero
+                title="Binance Staking Pool"
+                website="mywebsite.com"
+                poolId="0x1234...1234"
+                isVerified={true}
+                estimatedStake={75}
+                rewardsShared={74}
+                iconUrl=""
+                tabs={[
+                    {
+                        title: 'Current Epoch',
+                        metrics: [
+                            {
+                                title: 'Total Volume',
+                                number: '1.23M USD',
+                            },
+                            {
+                                title: 'ZRX Staked',
+                                number: '1,288,229',
+                            },
+                            {
+                                title: 'Fees Generated',
+                                number: '.000023 ETH',
+                            },
+                            {
+                                title: 'Rewards Shared',
+                                number: '.000023 ETH',
+                            },
+                        ],
+                    },
+                    {
+                        title: 'All Time',
+                        metrics: [
+                            {
+                                title: 'All Volume',
+                                number: '1.23M USD',
+                            },
+                            {
+                                title: 'ZRX Staked',
+                                number: '1,288,229',
+                            },
+                            {
+                                title: 'Fees Generated',
+                                number: '.000023 ETH',
+                            },
+                            {
+                                title: 'Rewards Shared',
+                                number: '.000023 ETH',
+                            },
+                        ],
+                    },
+                ]}
+            />
             <Container>
                 <GraphHeading>Historical Details</GraphHeading>
                 <HistoryChart
