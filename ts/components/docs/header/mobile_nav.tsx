@@ -16,6 +16,9 @@ interface IMobileNavProps {
     isToggled: boolean;
     toggleMobileNav: () => void;
     navItems: INavItems[];
+    children?: React.ReactNode;
+    hasBackButton?: boolean;
+    hasSearch?: boolean;
 }
 
 interface INavItems {
@@ -27,13 +30,13 @@ interface INavItems {
 }
 
 export const MobileNav: React.FC<IMobileNavProps> = props => {
-    const { navItems, isToggled, toggleMobileNav } = props;
+    const { navItems, isToggled, toggleMobileNav, children, hasSearch, hasBackButton } = props;
 
     return (
         <MediaQuery maxWidth={1199}>
             <Wrap isToggled={isToggled}>
                 <Section>
-                    <SearchInput isHome={false} />
+                    {hasSearch && <SearchInput isHome={false} />}
 
                     <ul>
                         {navItems.map(link => (
@@ -44,19 +47,27 @@ export const MobileNav: React.FC<IMobileNavProps> = props => {
                     </ul>
                 </Section>
 
-                <BackButton
-                    to={WebsitePaths.Home}
-                    textAlign="left"
-                    transparentBgColor={colors.backgroundLight}
-                    isWithArrow={true}
-                >
-                    Back to main site
-                </BackButton>
+                {children}
+                {hasBackButton && (
+                    <BackButton
+                        to={WebsitePaths.Home}
+                        textAlign="left"
+                        transparentBgColor={colors.backgroundLight}
+                        isWithArrow={true}
+                    >
+                        Back to main site
+                    </BackButton>
+                )}
 
                 {isToggled && <Overlay onClick={toggleMobileNav} />}
             </Wrap>
         </MediaQuery>
     );
+};
+
+MobileNav.defaultProps = {
+    hasBackButton: true,
+    hasSearch: true,
 };
 
 const BackButton = styled(Button)`

@@ -1,5 +1,7 @@
 import * as React from 'react';
+import MediaQuery from 'react-responsive';
 import styled from 'styled-components';
+
 import { Providers, ProviderType } from 'ts/types';
 
 import { Icon } from 'ts/components/icon';
@@ -8,12 +10,20 @@ import { utils } from 'ts/utils/utils';
 
 const SubMenuWrapper = styled.div`
     display: flex;
-    cursor: pointer;
-    align-items: center;
-    width: 238px;
-    height: 60px;
-    border: 1px solid rgba(0, 0, 0, 0.4);
-    position: relative;
+
+    @media (min-width: 1200px) {
+        cursor: pointer;
+        width: 238px;
+        height: 60px;
+        border: 1px solid rgba(0, 0, 0, 0.4);
+        position: relative;
+        align-items: center;
+    }
+
+    @media (max-width: 1199px) {
+        flex-direction: column;
+        background: #e3e9e5;
+    }
 `;
 
 const ConnectButton = ({ onClick }: { onClick: () => void }) => (
@@ -44,16 +54,18 @@ const MenuItem = styled.span`
     font-size: 20px;
     height: 29px;
     color: #000000;
-    margin-left: 30px;
 
-    & + & {
-        margin-top: 20px;
-    }
+    @media (min-width: 1200px) {
+        margin-left: 30px;
+        & + & {
+            margin-top: 20px;
+        }
 
-    &:hover {
-        opacity: 0.5;
-        transform: translate3d(0, 0, 0);
-        transition: opacity 0.35s, transform 0.35s, visibility 0s;
+        &:hover {
+            opacity: 0.5;
+            transform: translate3d(0, 0, 0);
+            transition: opacity 0.35s, transform 0.35s, visibility 0s;
+        }
     }
 `;
 
@@ -83,6 +95,34 @@ const ExpandedMenu = styled.div`
     }
 `;
 
+const WalletAddressWrapper = styled.div`
+    display: flex;
+    align-items: center;
+
+    @media (min-width: 1200px) {
+        justify-content: space-evenly;
+        width: 100%;
+    }
+
+    @media (max-width: 1199px) {
+        margin: 34px 0 19px 30px;
+        * + * {
+            margin-left: 20px;
+        }
+    }
+`;
+
+const MobileMenuWrapper = styled.div`
+    display: flex;
+    border-top: 1px solid #f3f6f4;
+    margin: 0 30px 30px;
+    padding-top: 30px;
+
+    ${MenuItem} + ${MenuItem} {
+        margin-left: 55px;
+    }
+`;
+
 type ProviderName = Providers.Metamask | Providers.CoinbaseWallet | Providers.Cipher | ProviderType.Ledger;
 
 const ConnectedWallet = ({
@@ -96,16 +136,28 @@ const ConnectedWallet = ({
 
     // TODO(kimpers): add svgs for all providers
     return (
-        <SubMenuWrapper style={{ justifyContent: 'space-evenly' }} onClick={toggleExpanded}>
-            <Icon name={`${providerName.toLowerCase()}_icon`} size={30} />
-            <EthAddress>{utils.getAddressBeginAndEnd(userEthAddress)}</EthAddress>
-            <Arrow isExpanded={isExpanded} />
-            {isExpanded && (
-                <ExpandedMenu>
+        <SubMenuWrapper onClick={toggleExpanded}>
+            <WalletAddressWrapper>
+                <Icon name={`${providerName.toLowerCase()}_icon`} size={30} />
+                <EthAddress>{utils.getAddressBeginAndEnd(userEthAddress)}</EthAddress>
+                <MediaQuery minWidth={1200}>
+                    <Arrow isExpanded={isExpanded} />
+                </MediaQuery>
+            </WalletAddressWrapper>
+            <MediaQuery maxWidth={1199}>
+                <MobileMenuWrapper>
                     <MenuItem onClick={openConnectWalletDialogCB}>Switch wallet</MenuItem>
                     <MenuItem onClick={logoutWalletCB}>Logout</MenuItem>
-                </ExpandedMenu>
-            )}
+                </MobileMenuWrapper>
+            </MediaQuery>
+            <MediaQuery minWidth={1200}>
+                {isExpanded && (
+                    <ExpandedMenu>
+                        <MenuItem onClick={openConnectWalletDialogCB}>Switch wallet</MenuItem>
+                        <MenuItem onClick={logoutWalletCB}>Logout</MenuItem>
+                    </ExpandedMenu>
+                )}
+            </MediaQuery>
         </SubMenuWrapper>
     );
 };

@@ -7,6 +7,7 @@ import { Link } from 'ts/components/documentation/shared/link';
 
 import { MobileNav } from 'ts/components/docs/header/mobile_nav';
 import { SearchInput } from 'ts/components/docs/search/search_input';
+import { SubMenu } from 'ts/components/staking/header/sub_menu';
 
 import { Hamburger } from 'ts/components/hamburger';
 import { Logo } from 'ts/components/logo';
@@ -15,7 +16,7 @@ import { FlexWrap } from 'ts/components/newLayout';
 import { IThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 
-import { WebsitePaths } from 'ts/types';
+import { Providers, WebsitePaths } from 'ts/types';
 
 interface IHeaderProps {
     location?: Location;
@@ -59,6 +60,28 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }
         }
     };
 
+    const openConnectWalletDialog = () => {
+        onUnpin();
+        // TODO(kimpers): hook up wallet connection to submenu
+        // tslint:disable-next-line:no-console
+        console.log('TODO: open connect wallet dialog');
+    };
+
+    const logoutWallet = () => {
+        onUnpin();
+        // tslint:disable-next-line:no-console
+        console.log('TODO: logout wallet');
+    };
+
+    const subMenu = (
+        <SubMenu
+            openConnectWalletDialogCB={openConnectWalletDialog}
+            logoutWalletCB={logoutWallet}
+            userEthAddress="0xf854ee7048f7d5e61233a0663dc36d88da779c39"
+            providerName={Providers.Metamask}
+        />
+    );
+
     return (
         <Headroom
             onUnpin={onUnpin}
@@ -85,11 +108,21 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }
                         </NavLinks>
 
                         <SearchInput isHome={false} />
+
+                        {subMenu}
                     </MediaQuery>
 
                     <MediaQuery maxWidth={1199}>
                         <Hamburger isOpen={isNavToggled} onClick={toggleMobileNav} />
-                        <MobileNav navItems={navItems} isToggled={isNavToggled} toggleMobileNav={toggleMobileNav} />
+                        <MobileNav
+                            navItems={navItems}
+                            isToggled={isNavToggled}
+                            toggleMobileNav={toggleMobileNav}
+                            hasBackButton={false}
+                            hasSearch={false}
+                        >
+                            {subMenu}
+                        </MobileNav>
                     </MediaQuery>
                 </HeaderWrap>
             </StyledHeader>
