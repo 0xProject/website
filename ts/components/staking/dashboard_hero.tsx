@@ -8,7 +8,26 @@ import CheckmarkThin from 'ts/icons/illustrations/checkmark-thin.svg';
 
 import { colors } from 'ts/style/colors';
 
-interface DashboardHeroProps {}
+interface Metrics {
+    title: string;
+    number: string;
+}
+
+interface DashBoardHeroTabs {
+    title: string;
+    metrics: Metrics[];
+}
+
+interface DashboardHeroProps {
+    title: string;
+    website: string;
+    poolId: string;
+    isVerified: boolean;
+    estimatedStake: number;
+    rewardsShared: number;
+    iconUrl: string;
+    tabs: DashBoardHeroTabs[];
+}
 
 interface WrapperProps {}
 
@@ -106,7 +125,7 @@ const FigureNumber = styled.span`
     }
 `;
 
-const PoolIcon = styled.div`
+const PoolIcon = styled.img`
     width: 60px;
     height: 60px;
     background-color: ${colors.white};
@@ -176,25 +195,27 @@ const ProgressbarText = styled.span`
     margin-top: 8px;
 `;
 
-export const DashboardHero: React.FC<DashboardHeroProps> = props => {
-    const {} = props;
+export const DashboardHero: React.FC<DashboardHeroProps> = ({ title, tabs, poolId, website, isVerified, estimatedStake, rewardsShared, iconUrl }) => {
 
     const [selectedTabIndex, setSelectedTabIndex] = React.useState<number>(0);
+
+    const selectedTab = tabs[selectedTabIndex];
+    const metrics = selectedTab != null ? selectedTab.metrics : null;
 
     return (
         <Wrapper>
             <Inner>
                 <Row>
                     <Column>
-                        <PoolIcon />
+                        <PoolIcon src={iconUrl} />
                         <Title>
-                            Binance Staking Pool <CheckmarkThin />
+                            {title} {isVerified && <CheckmarkThin />}
                         </Title>
                         <HorizontalList>
-                            <li>0x1234...1234</li>
-                            <li>mywebsite.com</li>
+                            <li>{poolId}</li>
+                            <li>{website}</li>
                             <li>
-                                <a href="">75% Rewards Shared</a>
+                                <a href="">{rewardsShared}% Rewards Shared</a>
                             </li>
                         </HorizontalList>
                         <ButtonContainer>
@@ -207,44 +228,36 @@ export const DashboardHero: React.FC<DashboardHeroProps> = props => {
                                 Start Staking
                             </StakingButton>
                             <Progressbar progress={75} />
-                            <ProgressbarText>74% estimated stake for next epoch</ProgressbarText>
+                            <ProgressbarText>{estimatedStake}% estimated stake for next epoch</ProgressbarText>
                         </ButtonContainer>
                     </Column>
                     <Metrics>
                         <Tabs isLight={true}>
-                            <Tab
-                                isSelected={selectedTabIndex === 0}
-                                onClick={() => setSelectedTabIndex(0)}
-                                isLight={true}
-                            >
-                                Current Epoch
-                            </Tab>
-                            <Tab
-                                isSelected={selectedTabIndex === 1}
-                                onClick={() => setSelectedTabIndex(1)}
-                                isLight={true}
-                            >
-                                All Time
-                            </Tab>
+                            {tabs.map((tab, index) => {
+                                return (
+                                    <Tab
+                                        key={tab.title}
+                                        isSelected={selectedTabIndex === index}
+                                        onClick={() => setSelectedTabIndex(index)}
+                                        isLight={true}
+                                    >
+                                        {tab.title}
+                                    </Tab>
+                                );
+                            })}
                         </Tabs>
-                        <FiguresList>
-                            <Figure>
-                                <FigureTitle>Total volume</FigureTitle>
-                                <FigureNumber>1.23M USD</FigureNumber>
-                            </Figure>
-                            <Figure>
-                                <FigureTitle>ZRX Staked</FigureTitle>
-                                <FigureNumber>1,288,229</FigureNumber>
-                            </Figure>
-                            <Figure>
-                                <FigureTitle>Fees Generated</FigureTitle>
-                                <FigureNumber>.000023 ETH</FigureNumber>
-                            </Figure>
-                            <Figure>
-                                <FigureTitle>Rewards generated</FigureTitle>
-                                <FigureNumber>.000023 ETH</FigureNumber>
-                            </Figure>
-                        </FiguresList>
+                        {metrics != null &&
+                            <FiguresList>
+                                {metrics.map(metric => {
+                                    return (
+                                        <Figure key={`${metric.title}${metric.number}`}>
+                                            <FigureTitle>{metric.title}</FigureTitle>
+                                            <FigureNumber>{metric.number}</FigureNumber>
+                                        </Figure>
+                                    );
+                                })}
+                            </FiguresList>
+                        }
                     </Metrics>
                 </Row>
             </Inner>
