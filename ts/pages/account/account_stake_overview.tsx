@@ -40,7 +40,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                     subtitle={subtitle}
                 />
 
-                <Flex>
+                <Stats>
                     <StatFigure
                         label="Fees Generated"
                         value={fees}
@@ -53,7 +53,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                         label="Staked"
                         value={staked}
                     />
-                </Flex>
+                </Stats>
             </Flex>
 
             <Flex>
@@ -104,16 +104,33 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                     </Button>
                 </Action>
             </Flex>
+
+            <MobileActions>
+                <Button color="#fff">
+                    View history
+                </Button>
+
+                <Button color="red" bgColor="#fff" borderColor={colors.border}>
+                    Remove
+                </Button>
+            </MobileActions>
         </Wrap>
     );
 };
 
 const Wrap = styled.div`
-    padding: 0 20px;
-    border: 1px solid ${colors.border};
-
     & + & {
         margin-top: 20px;
+    }
+
+    @media (min-width: 768px) {
+        padding: 0 20px;
+        border: 1px solid ${colors.border};
+    }
+
+    @media (max-width: 768px) {
+        padding: 20px;
+        background: ${colors.backgroundLightGrey};
     }
 `;
 
@@ -124,28 +141,74 @@ const FlexBase = styled.div`
 `;
 
 const Flex = styled(FlexBase)`
-    padding: 20px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    & + & {
-        border-top: 1px solid ${colors.border};
+    @media (min-width: 768px) {
+        padding: 20px 0;
+
+        & + & {
+            border-top: 1px solid ${colors.border};
+        }
+    }
+`;
+
+const Stats = styled(Flex)`
+    @media (max-width: 768px) {
+        display: none;
     }
 `;
 
 const Action = styled(FlexBase)`
     width: calc(50% - 10px);
     background-color: ${colors.backgroundLightGrey};
-    padding: 20px;
 
     > div {
         font-size: 18px;
+    }
+
+    @media (min-width: 768px) {
+        padding: 20px;
+    }
+
+    @media (max-width: 768px) {
+        margin: 20px 0;
+
+        & + & {
+            border-left: 1px solid ${colors.border};
+            padding-left: 30px;
+        }
+
+        button {
+            display: none;
+        }
     }
 `;
 
 const InlineStats = styled(FlexBase)`
     div + div {
         margin-left: 45px;
+    }
+
+    @media (max-width: 768px) {
+        div:nth-child(2) {
+            display: none;
+        }
+    }
+`;
+
+const MobileActions = styled.div`
+    button {
+        display: block;
+        width: 100%;
+    }
+
+    button + button {
+        margin-top: 20px;
+    }
+
+    @media (min-width: 768px) {
+        display: none;
     }
 `;

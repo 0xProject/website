@@ -14,6 +14,7 @@ interface AccountEmptyStakeProps {
 const Wrap = styled.div`
     padding: 60px;
     background-color: ${colors.backgroundLightGrey};
+    margin-bottom: 20px;
 
     > div {
         max-width: 780px;
