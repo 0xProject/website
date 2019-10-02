@@ -14,6 +14,8 @@ import { colors } from 'ts/style/colors';
 
 export interface AccountProps {}
 
+// Mock data: not sure how this would be designed from a backend perspective,
+// but I think this gives an overview of what the components take in as props
 const MOCK_DATA = {
     activitySummary: {
         title: '500 ZRX will be removed from Binance Pool in 10 days',
@@ -30,7 +32,7 @@ const MOCK_DATA = {
                 amount: 213425,
                 rewards: 0.0342,
             },
-            timeRemaining: '5 days',
+            timeRemaining: '5 days', // Maybe this would be in another format and need a convert method in the component
         },
         {
             title: 'Coinbase Staking Pool',
@@ -42,7 +44,7 @@ const MOCK_DATA = {
                 amount: 12345,
                 rewards: 0.01134,
             },
-            timeRemaining: '14 days',
+            timeRemaining: '14 days', // Maybe this would be in another format and need a convert method in the component
         },
     ],
     voteHistory: [
