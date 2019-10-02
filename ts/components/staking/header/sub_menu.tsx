@@ -40,6 +40,23 @@ const Arrow = ({ isExpanded }: { isExpanded?: boolean }) => (
     </svg>
 );
 
+const MenuItem = styled.span`
+    font-size: 20px;
+    height: 29px;
+    color: #000000;
+    margin-left: 30px;
+
+    & + & {
+        margin-top: 20px;
+    }
+
+    &:hover {
+        opacity: 0.5;
+        transform: translate3d(0, 0, 0);
+        transition: opacity 0.35s, transform 0.35s, visibility 0s;
+    }
+`;
+
 const ExpandedMenu = styled.div`
     width: 237px;
     height: 140px;
@@ -47,6 +64,9 @@ const ExpandedMenu = styled.div`
     border: 1px solid rgba(92, 92, 92, 0.15);
     position: absolute;
     top: 73px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     &:after {
         content: '';
@@ -65,7 +85,12 @@ const ExpandedMenu = styled.div`
 
 type ProviderName = Providers.Metamask | Providers.CoinbaseWallet | Providers.Cipher | ProviderType.Ledger;
 
-const ConnectedWallet = ({ userEthAddress, providerName }: { userEthAddress: string; providerName: ProviderName }) => {
+const ConnectedWallet = ({
+    userEthAddress,
+    providerName,
+    openConnectWalletDialogCB,
+    logoutWalletCB,
+}: ISubMenuProps) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
     const toggleExpanded = () => setIsExpanded(!isExpanded);
 
@@ -75,24 +100,30 @@ const ConnectedWallet = ({ userEthAddress, providerName }: { userEthAddress: str
             <Icon name={`${providerName.toLowerCase()}_icon`} size={30} />
             <EthAddress>{utils.getAddressBeginAndEnd(userEthAddress)}</EthAddress>
             <Arrow isExpanded={isExpanded} />
-            {isExpanded && <ExpandedMenu />}
+            {isExpanded && (
+                <ExpandedMenu>
+                    <MenuItem onClick={openConnectWalletDialogCB}>Switch wallet</MenuItem>
+                    <MenuItem onClick={logoutWalletCB}>Logout</MenuItem>
+                </ExpandedMenu>
+            )}
         </SubMenuWrapper>
     );
 };
 
 interface ISubMenuProps {
     openConnectWalletDialogCB: () => void;
+    logoutWalletCB: () => void;
 
     userEthAddress?: string;
     providerName?: ProviderName;
 }
 
-export const SubMenu = ({ userEthAddress, providerName, openConnectWalletDialogCB }: ISubMenuProps) => {
-    const isConnected = Boolean(userEthAddress && providerName);
+export const SubMenu = (props: ISubMenuProps) => {
+    const isConnected = Boolean(props.userEthAddress && props.providerName);
 
     if (isConnected) {
-        return <ConnectedWallet userEthAddress={userEthAddress} providerName={providerName} />;
+        return <ConnectedWallet {...props} />;
     }
 
-    return <ConnectButton onClick={openConnectWalletDialogCB} />;
+    return <ConnectButton onClick={props.openConnectWalletDialogCB} />;
 };
