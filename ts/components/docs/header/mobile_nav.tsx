@@ -19,6 +19,7 @@ interface IMobileNavProps {
     children?: React.ReactNode;
     hasBackButton?: boolean;
     hasSearch?: boolean;
+    navHeight?: number;
 }
 
 interface INavItems {
@@ -30,11 +31,11 @@ interface INavItems {
 }
 
 export const MobileNav: React.FC<IMobileNavProps> = props => {
-    const { navItems, isToggled, toggleMobileNav, children, hasSearch, hasBackButton } = props;
+    const { navItems, isToggled, toggleMobileNav, children, hasSearch, hasBackButton, navHeight } = props;
 
     return (
         <MediaQuery maxWidth={1199}>
-            <Wrap isToggled={isToggled}>
+            <Wrap isToggled={isToggled} navHeight={navHeight}>
                 <Section>
                     {hasSearch && <SearchInput isHome={false} />}
 
@@ -68,15 +69,16 @@ export const MobileNav: React.FC<IMobileNavProps> = props => {
 MobileNav.defaultProps = {
     hasBackButton: true,
     hasSearch: true,
+    navHeight: 426,
 };
 
 const BackButton = styled(Button)`
     padding: 24px 30px;
 `;
 
-const Wrap = styled.nav<{ isToggled: boolean }>`
+const Wrap = styled.nav<{ isToggled: boolean; navHeight: number }>`
     width: 100%;
-    height: 426px;
+    height: ${props => props.navHeight}px;
     background-color: ${props => props.theme.mobileNavBgUpper};
     color: ${props => props.theme.mobileNavColor};
     transition: ${props => (props.isToggled ? 'visibility 0s, transform 0.5s' : 'visibility 0s 0.5s, transform 0.5s')};

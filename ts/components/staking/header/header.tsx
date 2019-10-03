@@ -16,7 +16,7 @@ import { FlexWrap } from 'ts/components/newLayout';
 import { IThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 
-import { Providers, WebsitePaths } from 'ts/types';
+import { WebsitePaths } from 'ts/types';
 
 interface IHeaderProps {
     location?: Location;
@@ -60,9 +60,9 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }
         }
     };
 
+    // TODO(kimpers): hook up wallet connection to sub menu
     const openConnectWalletDialog = () => {
         onUnpin();
-        // TODO(kimpers): hook up wallet connection to submenu
         // tslint:disable-next-line:no-console
         console.log('TODO: open connect wallet dialog');
     };
@@ -73,14 +73,8 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }
         console.log('TODO: logout wallet');
     };
 
-    const subMenu = (
-        <SubMenu
-            openConnectWalletDialogCB={openConnectWalletDialog}
-            logoutWalletCB={logoutWallet}
-            userEthAddress="0xf854ee7048f7d5e61233a0663dc36d88da779c39"
-            providerName={Providers.Metamask}
-        />
-    );
+    const subMenu = <SubMenu openConnectWalletDialogCB={openConnectWalletDialog} logoutWalletCB={logoutWallet} />;
+    const isWalletConnected = false;
 
     return (
         <Headroom
@@ -113,13 +107,17 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }
                     </MediaQuery>
 
                     <MediaQuery maxWidth={1199}>
-                        <Hamburger isOpen={isNavToggled} onClick={toggleMobileNav} />
+                        <div style={{ position: 'relative' }}>
+                            <WalletConnectedIndicator isConnected={isWalletConnected} isNavToggled={isNavToggled} />
+                            <Hamburger isOpen={isNavToggled} onClick={toggleMobileNav} />
+                        </div>
                         <MobileNav
                             navItems={navItems}
                             isToggled={isNavToggled}
                             toggleMobileNav={toggleMobileNav}
                             hasBackButton={false}
                             hasSearch={false}
+                            navHeight={isWalletConnected ? 426 : 365}
                         >
                             {subMenu}
                         </MobileNav>
@@ -141,6 +139,24 @@ const NavItem: React.FC<INavLinkProps> = ({ link }) => {
 
 const StyledHeader = styled.header<IHeaderProps>`
     padding: 30px;
+`;
+
+interface IWalletConnectedIndicatorProps {
+    isConnected: boolean;
+    isNavToggled: boolean;
+}
+const WalletConnectedIndicator = styled.div<IWalletConnectedIndicatorProps>`
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid #ffffff;
+    background-color: ${props => (props.isConnected ? '#00AE99' : '#E71D36')};
+    transition: opacity 0.25s ease-in;
+    opacity: ${props => (props.isNavToggled ? 0 : 1)};
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    z-index: ${zIndex.header + 1};
 `;
 
 const DocsLogoWrap = styled.div`
