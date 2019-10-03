@@ -232,7 +232,12 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                     <Column>
                         <PoolIcon src={iconUrl} />
                         <Title>
-                            {title} {isVerified && <CheckmarkThinDesktop title="Identitity verified" />}
+                            {title}{' '}
+                            {isVerified && (
+                                <span title="Identitity verified">
+                                    <CheckmarkThinDesktop />
+                                </span>
+                            )}
                         </Title>
                         <HorizontalList>
                             <li>{poolId}</li>
