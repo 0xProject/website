@@ -29,6 +29,10 @@ const Avatar = styled.figure<AvatarProps>`
     background-color: #fff;
     margin-bottom: 22px;
     border: 1px solid ${colors.border};
+
+    img {
+        object-fit: cover;
+    }
 `;
 
 export const AccountDetail: React.StatelessComponent<AccountDetailProps> = ({
@@ -39,7 +43,9 @@ export const AccountDetail: React.StatelessComponent<AccountDetailProps> = ({
 
     return (
         <Wrap>
-            <Avatar />
+            <Avatar>
+                <img src={avatarSrc} />
+            </Avatar>
             {truncatedAddress}
         </Wrap>
     );

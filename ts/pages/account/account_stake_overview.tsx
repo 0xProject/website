@@ -41,7 +41,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                     title={title}
                     subtitle={subtitle}
                     avatarSrc={avatarSrc}
-                    responsiveAvatar={true}
+                    isResponsiveAvatar={true}
                 />
 
                 <Stats>
@@ -62,16 +62,18 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
 
             <Flex>
                 <Action>
-                    <div>
-                        <Heading
-                            size={14}
-                            marginBottom="12px"
-                        >
-                            Your stake
-                        </Heading>
+                    <InlineStats>
+                        <div>
+                            <Heading
+                                size={14}
+                                marginBottom="12px"
+                            >
+                                Your stake
+                            </Heading>
 
-                        {userData.amount} ZRX
-                    </div>
+                            {userData.amount} ZRX
+                        </div>
+                    </InlineStats>
 
                     <Button color="red" bgColor="#fff" borderColor={colors.border}>
                         Remove
@@ -191,6 +193,8 @@ const Action = styled(FlexBase)`
 `;
 
 const InlineStats = styled(FlexBase)`
+    padding-right: 30px;
+
     div + div {
         margin-left: 45px;
     }

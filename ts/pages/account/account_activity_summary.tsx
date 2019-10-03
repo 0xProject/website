@@ -33,6 +33,8 @@ const Wrap = styled.div`
 `;
 
 const ChildWrap = styled.div`
+    flex-shrink: 0;
+
     @media (max-width: 768px) {
         margin-top: 30px;
     }

@@ -9,7 +9,7 @@ interface PanelHeaderProps {
     avatarComponent?: Node;
     title: string | Node;
     subtitle: string;
-    responsiveAvatar?: boolean;
+    isResponsiveAvatar?: boolean;
 }
 
 interface AvatarProps {
@@ -20,6 +20,7 @@ const Wrap = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-right: 30px;
 
     @media (max-width: 768px) {
         p {
@@ -50,12 +51,12 @@ export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
     avatarSrc,
     title,
     subtitle,
-    responsiveAvatar,
+    isResponsiveAvatar,
 }) => {
     return (
         <Wrap>
             {avatarSrc && (
-                <Avatar isResponsive={responsiveAvatar}>
+                <Avatar isResponsive={isResponsiveAvatar}>
                     <img src={avatarSrc} />
                 </Avatar>
             )}

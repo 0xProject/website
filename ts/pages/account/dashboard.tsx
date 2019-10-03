@@ -75,16 +75,17 @@ const MOCK_DATA = {
 
 export const Account: React.FC<AccountProps> = () => {
     return (
-        <StakingPageLayout isHome={true} title="0x Staking">
+        <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
                 <Inner>
+                    {/* Note: shared component in MarketMaker */}
                     <AccountDetail
                         accountAddress="0x123451234512345"
-                        avatarSrc=""
+                        avatarSrc="https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png"
                     />
 
                     <Figures>
-                        {/* Note: replace this with figures component */}
+                        {/* Note: replace this with figures component, shared with MarketMaker etc. */}
                         <div>Figure</div>
                         <div>Figure</div>
                         <div>Figure</div>
@@ -102,7 +103,13 @@ export const Account: React.FC<AccountProps> = () => {
                         Activity
                     </Heading>
 
-                    Show all activity
+                    <Button
+                        isWithArrow={true}
+                        isTransparent={true}
+                        to="/account/activity"
+                    >
+                        Show all activity
+                    </Button>
                 </SectionHeader>
 
                 <AccountActivitySummary
@@ -137,7 +144,13 @@ export const Account: React.FC<AccountProps> = () => {
                         Your staking pools
                     </Heading>
 
-                    Apply to create a staking pool
+                    <Button
+                        isWithArrow={true}
+                        isTransparent={true}
+                        to="/account/activity"
+                    >
+                        Apply to create a staking pool
+                    </Button>
                 </SectionHeader>
 
                 <CallToAction
