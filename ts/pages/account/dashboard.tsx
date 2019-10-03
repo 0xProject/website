@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { Button } from 'ts/components/button';
 import { CallToAction } from 'ts/components/call_to_action';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading } from 'ts/components/text';
@@ -20,11 +21,13 @@ const MOCK_DATA = {
     activitySummary: {
         title: '500 ZRX will be removed from Binance Pool in 10 days',
         subtitle: 'Your tokens will need to be manually withdrawn once they are removed ',
+        avatarSrc: 'https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png',
     },
     stakes: [
         {
             title: 'Binance Staking Pool',
             subtitle: 'https://binance.com',
+            avatarSrc: 'https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png',
             rewards: '95%',
             fees: '0.03212 ETH',
             staked: '52%',
@@ -37,6 +40,7 @@ const MOCK_DATA = {
         {
             title: 'Coinbase Staking Pool',
             subtitle: 'https://coinbase.com',
+            avatarSrc: 'https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png',
             rewards: '23%',
             fees: '0.00236 ETH',
             staked: '12%',
@@ -104,11 +108,22 @@ export const Account: React.FC<AccountProps> = () => {
                 <AccountActivitySummary
                     title={MOCK_DATA.activitySummary.title}
                     subtitle={MOCK_DATA.activitySummary.subtitle}
+                    avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
                 >
                     <StatFigure
                         label="Withdraw date"
                         value="9/19/29"
                     />
+                </AccountActivitySummary>
+
+                <AccountActivitySummary
+                    title="Your ZRX is unlocked and ready for withdrawal"
+                    subtitle="6,000 ZRX  →  0x12345...12345"
+                    avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
+                >
+                    <Button>
+                        Withdraw ZRX
+                    </Button>
                 </AccountActivitySummary>
             </SectionWrapper>
 

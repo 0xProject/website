@@ -10,9 +10,17 @@ interface StatFigureProps {
 }
 
 const Wrap = styled.div`
-    padding: 0 15px;
     font-size: 18px;
-    border-left: 1px solid ${colors.border};
+
+    @media (min-width: 768px) {
+        padding: 0 15px;
+        border-left: 1px solid ${colors.border};
+    }
+
+    @media (max-width: 768px) {
+        padding-top: 15px;
+        border-top: 1px solid ${colors.border};
+    }
 `;
 
 export const StatFigure: React.StatelessComponent<StatFigureProps> = ({

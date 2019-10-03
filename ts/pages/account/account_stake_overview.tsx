@@ -16,6 +16,7 @@ interface UserData {
 interface StakeOverviewProps {
     title: string;
     subtitle: string;
+    avatarSrc?: string;
     rewards: string;
     fees: string;
     staked: string;
@@ -26,6 +27,7 @@ interface StakeOverviewProps {
 export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> = ({
     title,
     subtitle,
+    avatarSrc,
     rewards,
     fees,
     staked,
@@ -38,6 +40,8 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                 <PanelHeader
                     title={title}
                     subtitle={subtitle}
+                    avatarSrc={avatarSrc}
+                    responsiveAvatar={true}
                 />
 
                 <Stats>
