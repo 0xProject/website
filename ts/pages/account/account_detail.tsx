@@ -9,32 +9,6 @@ export interface AccountDetailProps {
     avatarSrc?: string;
 }
 
-export interface WrapProps {}
-export interface AvatarProps {}
-
-const Wrap = styled.div<WrapProps>`
-    font-size: 34px;
-    text-align: left;
-
-    @media (max-width: 768px) {
-        width: 100%;
-        background-color: ${colors.backgroundLightGrey};
-        padding: 20px;
-    }
-`;
-
-const Avatar = styled.figure<AvatarProps>`
-    width: 60px;
-    height: 60px;
-    background-color: #fff;
-    margin-bottom: 22px;
-    border: 1px solid ${colors.border};
-
-    img {
-        object-fit: cover;
-    }
-`;
-
 export const AccountDetail: React.StatelessComponent<AccountDetailProps> = ({
     accountAddress,
     avatarSrc,
@@ -50,3 +24,26 @@ export const AccountDetail: React.StatelessComponent<AccountDetailProps> = ({
         </Wrap>
     );
 };
+
+const Wrap = styled.div`
+    font-size: 34px;
+    text-align: left;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        background-color: ${colors.backgroundLightGrey};
+        padding: 20px;
+    }
+`;
+
+const Avatar = styled.figure`
+    width: 60px;
+    height: 60px;
+    background-color: #fff;
+    margin-bottom: 22px;
+    border: 1px solid ${colors.border};
+
+    img {
+        object-fit: cover;
+    }
+`;

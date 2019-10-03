@@ -2,14 +2,14 @@ import * as _ from 'lodash';
 import * as React from 'react';
 // import styled from 'styled-components';
 
-import { Breadcrumb } from 'ts/components/ui/breadcrumb';
-
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
+import { Breadcrumb } from 'ts/components/ui/breadcrumb';
+import { truncateStringPortion } from 'ts/constants/utilities';
 
 export const AccountActivity: React.FC = () => {
     const crumbs = [
         {
-            label: '0x12345344345',
+            label: truncateStringPortion('0x12345344345', 7),
             url: '/account',
         },
         {
