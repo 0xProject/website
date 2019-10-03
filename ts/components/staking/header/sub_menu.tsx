@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Providers, ProviderType } from 'ts/types';
 
+import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
 import { utils } from 'ts/utils/utils';
@@ -25,12 +26,6 @@ const SubMenuWrapper = styled.div`
         background: #e3e9e5;
     }
 `;
-
-const ConnectButton = ({ onClick }: { onClick: () => void }) => (
-    <SubMenuWrapper style={{ justifyContent: 'center' }} onClick={onClick}>
-        <span>Connect your wallet</span>
-    </SubMenuWrapper>
-);
 
 const EthAddress = styled.span`
     font-size: 18px;
@@ -139,7 +134,13 @@ const ConnectedWallet = ({
         <SubMenuWrapper onClick={toggleExpanded}>
             <WalletAddressWrapper>
                 <Icon name={`${providerName.toLowerCase()}_icon`} size={30} />
-                <EthAddress>{utils.getAddressBeginAndEnd(userEthAddress)}</EthAddress>
+                <MediaQuery maxWidth={1199}>
+                    {(isMobile: boolean) => (
+                        <EthAddress>
+                            {utils.getAddressBeginAndEnd(userEthAddress, isMobile ? 9 : 5, isMobile ? 7 : 4)}
+                        </EthAddress>
+                    )}
+                </MediaQuery>
                 <MediaQuery minWidth={1200}>
                     <Arrow isExpanded={isExpanded} />
                 </MediaQuery>
@@ -170,6 +171,18 @@ interface ISubMenuProps {
     providerName?: ProviderName;
 }
 
+const ConnectButton = styled(Button).attrs({
+    isTransparent: true,
+    borderColor: 'rgba(0, 0, 0, 0.4)',
+})`
+    color: ${colors.black};
+
+    @media (max-width: 1199px) {
+        margin: 30px;
+        width: 315px;
+    }
+`;
+
 export const SubMenu = (props: ISubMenuProps) => {
     const isConnected = Boolean(props.userEthAddress && props.providerName);
 
@@ -177,5 +190,5 @@ export const SubMenu = (props: ISubMenuProps) => {
         return <ConnectedWallet {...props} />;
     }
 
-    return <ConnectButton onClick={props.openConnectWalletDialogCB} />;
+    return <ConnectButton onClick={props.openConnectWalletDialogCB}>Connect your wallet</ConnectButton>;
 };
