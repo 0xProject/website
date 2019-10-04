@@ -1,10 +1,19 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { Button } from 'ts/components/button';
 import { DashboardHero } from 'ts/components/staking/dashboard_hero';
 import { HistoryChart } from 'ts/components/staking/history_chart';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { TradingPair } from 'ts/components/staking/trading_pair';
+
+import { colors } from 'ts/style/colors';
+
+export interface ActionProps {
+    children: React.ReactNode;
+    title: string;
+    figure: string;
+}
 
 export interface MarketMakerProfileProps {}
 
@@ -32,6 +41,102 @@ const TradingPairContainer = styled.div`
     display: inline-block;
     width: 330px;
 `;
+
+const ActionsWrapper = styled.div`
+    padding: 20px;
+    margin-top: 0;
+    /* padding: 60px 0; */
+    @media (min-width: 768px) {
+        padding: 60px 30px;
+        background-color: ${colors.backgroundLightGrey};
+        margin: 30px;
+    }
+`;
+
+const ActionsInner = styled.div`
+    max-width: 1152px;
+    margin: 0 auto;
+`;
+
+const ActionHeading = styled.h2`
+    font-size: 28px;
+    margin-bottom: 14px;
+    @media (min-width: 768px) {
+        margin-bottom: 30px;
+        font-size: 34px;
+    }
+`;
+
+const ActionContainer = styled.div`
+    padding: 20px;
+    margin-bottom: 16px;
+    background-color: ${colors.backgroundLightGrey};
+    display: flex;
+    flex-direction: column;
+    @media (min-width: 768px) {
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: row;
+        background-color: ${colors.white};
+        flex: 1;
+        margin-right: 30px;
+        margin-bottom: 0;
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+`;
+
+const Actions = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    @media (min-width: 768px) {
+        flex-direction: row;
+    }
+`;
+
+const ActionText = styled.div`
+    line-height: 1.35;
+    margin-bottom: 18px;
+    @media (min-width: 768px) {
+        margin-bottom: 0;
+    }
+    h3 {
+        font-size: 20px;
+        @media (min-width: 768px) {
+            font-size: 28px;
+        }
+    }
+    span {
+        color: #999999;
+        font-size: 16px;
+        margin-bottom: 10px;
+        display: block;
+        @media (min-width: 768px) {
+            font-size: 17px;
+        }
+    }
+`;
+
+const ActionButton = styled.div`
+    flex: 1;
+    @media (min-width: 768px) {
+        flex: 0 0 180px;
+    }
+`;
+
+const Action: React.FC<ActionProps> = ({ children, title, figure }) => {
+    return (
+        <ActionContainer>
+            <ActionText>
+                <span>{title}</span>
+                <h3>{figure}</h3>
+            </ActionText>
+            <ActionButton>{children}</ActionButton>
+        </ActionContainer>
+    );
+};
 
 const tradingPairs = [
     {
@@ -176,6 +281,41 @@ export const MarketMakerProfile: React.FC<MarketMakerProfileProps> = props => {
                     },
                 ]}
             />
+            <ActionsWrapper>
+                <ActionsInner>
+                    <ActionHeading>Your Stake</ActionHeading>
+                    <Actions>
+                        <Action title="Staked ZRX" figure="281,345 ZRX">
+                            <Button
+                                to="/"
+                                color={colors.red}
+                                borderColor="#D5D5D5"
+                                bgColor={colors.white}
+                                isTransparent={true}
+                                fontSize="17px"
+                                fontWeight="300"
+                                isNoBorder={true}
+                                padding="15px 35px"
+                                isFullWidth={true}
+                            >
+                                Remove
+                            </Button>
+                        </Action>
+                        <Action title="Staked ZRX" figure="281,345 ZRX">
+                            <Button
+                                to="/"
+                                color={colors.white}
+                                fontSize="17px"
+                                fontWeight="300"
+                                padding="15px 35px"
+                                isFullWidth={true}
+                            >
+                                View History
+                            </Button>
+                        </Action>
+                    </Actions>
+                </ActionsInner>
+            </ActionsWrapper>
             <Container>
                 <GraphHeading>Historical Details</GraphHeading>
                 <HistoryChart
