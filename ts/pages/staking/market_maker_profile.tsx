@@ -119,6 +119,7 @@ const ActionText = styled.div`
 `;
 
 const ActionButton = styled.div`
+    background-color: ${colors.white};
     flex: 1;
     @media (min-width: 768px) {
         flex: 0 0 180px;
