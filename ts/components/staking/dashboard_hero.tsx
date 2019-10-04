@@ -37,9 +37,8 @@ interface InnerProps {}
 interface RowProps {}
 
 const Wrapper = styled.div<WrapperProps>`
-    margin-bottom: 40px;
     @media (min-width: 768px) {
-        padding: 60px 30px;
+        padding: 60px 30px 40px 30px;
     }
 `;
 

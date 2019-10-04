@@ -34,6 +34,7 @@ export interface ButtonInterface {
     shouldUseAnchorTag?: boolean;
     isFullWidth?: boolean;
     isLarge?: boolean;
+    fontWeight?: string;
 }
 
 export const Button: React.StatelessComponent<ButtonInterface> = (props: ButtonInterface) => {
@@ -84,6 +85,7 @@ const ButtonBase = styled.button<ButtonInterface>`
     white-space: ${props => props.isWithArrow && 'nowrap'};
     text-align: ${props => props.textAlign};
     font-size: ${props => (props.fontSize ? props.fontSize : props.isWithArrow ? '20px' : '18px')};
+    font-weight: ${props => props.fontWeight ? props.fontWeight : 'normal'};
     text-decoration: none;
     cursor: pointer;
     outline: none;
