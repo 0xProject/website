@@ -45,11 +45,10 @@ const TradingPairContainer = styled.div`
 const ActionsWrapper = styled.div`
     padding: 20px;
     margin-top: 0;
-    /* padding: 60px 0; */
     @media (min-width: 768px) {
         padding: 60px 30px;
         background-color: ${colors.backgroundLightGrey};
-        margin: 30px;
+        margin: 30px 30px 70px;
     }
 `;
 
