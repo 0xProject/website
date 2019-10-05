@@ -1,7 +1,7 @@
 import { darken } from 'polished';
 import * as React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { IThemeInterface } from 'ts/style/theme';
 
@@ -101,22 +101,29 @@ const ButtonBase = styled.button<ButtonInterface>`
         color: ${colors.white};
     `}
 
-    svg {
-        margin-left: 9px;
-        transition: transform 0.5s;
-        transform: translate3d(-2px, 2px, 0);
-    }
+    /* Only apply SVG styling if it's an arrow button */
+    ${props =>
+        props.isWithArrow &&
+        css`
+            svg {
+                margin-left: 9px;
+                transition: transform 0.5s;
+                transform: translate3d(-2px, 2px, 0);
+            }
 
-    path {
-        fill: ${props => (props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor)};
-    }
+            &:hover {
+                svg {
+                    transform: translate3d(2px, -2px, 0);
+                }
+            }
+
+            path {
+                fill: ${props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor};
+            }
+        `}
 
     &:hover {
         background-color: ${props => !props.isTransparent && !props.isWithArrow && (darken(0.05, props.bgColor || colors.brandLight))};
         border-color: ${props => props.isTransparent && !props.isNoBorder && !props.isWithArrow && '#00AE99'};
-
-        svg {
-            transform: ${props => (props.isWithArrow ? 'translate3d(2px, -2px, 0)' : '')};
-        }
     }
 `;
