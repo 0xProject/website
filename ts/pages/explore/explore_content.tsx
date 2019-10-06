@@ -260,6 +260,16 @@ export const PROJECTS: { [s: string]: ExploreProject } = {
         url: 'https://dex.verisafe.io',
         keywords: ['tokens'],
     },
+    odee: {
+        name: 'odee',
+        label: 'Odee',
+        description: 'A relayer based out of Estonia offering users the ability to trade hundreds of ERC-20 tokens.',
+        logo_url: '/images/explore/odee.svg',
+        theme_color: '#262626',
+        logo_max_width: '160px',
+        url: 'https://www.odee.com',
+        keywords: ['tokens'],
+    },
 };
 
 export const EDITORIAL: ExploreTile[] = [
@@ -334,6 +344,7 @@ export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
             'ambo',
             'rex_relay',
             'veridex',
+            'odee',
         ],
     },
     [ExploreTilesOrdering.RecentlyAdded]: {
@@ -341,6 +352,7 @@ export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
         ordering: ExploreTilesOrdering.RecentlyAdded,
         type: ExploreTilesOrderingType.HardCodedByName,
         hardCoded: [
+            'odee',
             'veridex',
             'dydx',
             'fabrx',
