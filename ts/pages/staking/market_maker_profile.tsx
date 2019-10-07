@@ -103,9 +103,15 @@ const ActionText = styled.div`
     }
     h3 {
         font-size: 20px;
-        @media (min-width: 768px) {
+        @media (min-width: 991px) {
             font-size: 28px;
         }
+        /* @media (min-width: 768px) {
+            font-size: 24px;
+        }
+        @media (min-width: 991px) {
+            font-size: 28px;
+        } */
     }
     span {
         color: #999999;
