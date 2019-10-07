@@ -36,6 +36,7 @@ import { NextMarketMaker } from 'ts/pages/market_maker';
 import { PrivacyPolicy } from 'ts/pages/privacy';
 import { StakingIndex } from 'ts/pages/staking/home';
 import { MarketMakerProfile } from 'ts/pages/staking/market_maker_profile';
+import { StakingWizard } from 'ts/pages/staking/wizard';
 import { TermsOfService } from 'ts/pages/terms';
 import { NextWhy } from 'ts/pages/why';
 
@@ -77,6 +78,7 @@ render(
                         <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance as any} />
 
                         <Route exact={true} path={WebsitePaths.Staking} component={StakingIndex as any} />
+                        <Route exact={true} path={WebsitePaths.StakingWizard} component={StakingWizard as any} />
                         <Route exact={true} path={WebsitePaths.MarketMakerProfile} component={MarketMakerProfile as any} />
 
                         <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex as any} />

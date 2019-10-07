@@ -462,6 +462,7 @@ export enum WebsitePaths {
     MarketMaker = '/market-maker',
     Governance = '/governance',
     Staking = '/stake',
+    StakingWizard = '/stake/start-staking',
     MarketMakerProfile = '/market-maker-profile',
     Account = '/account',
     Why = '/why',
