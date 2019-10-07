@@ -121,6 +121,9 @@ const FigureNumber = styled.span`
     font-size: 20px;
     line-height: 1.35;
     @media (min-width: 768px) {
+        font-size: 24px;
+    }
+    @media (min-width: 991px) {
         font-size: 28px;
     }
 `;
