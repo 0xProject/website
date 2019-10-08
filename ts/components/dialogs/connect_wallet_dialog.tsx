@@ -5,23 +5,13 @@ import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
-import { Heading } from 'ts/components/text';
+import { Heading, Paragraph } from 'ts/components/text';
 // TODO(kimpers): New providers needed!
 import { Providers } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 
-// TODO: move into util?
-const providerToName: { [provider: string]: string } = {
-    [Providers.Metamask]: constants.PROVIDER_NAME_METAMASK,
-    [Providers.Parity]: constants.PROVIDER_NAME_PARITY_SIGNER,
-    [Providers.Mist]: constants.PROVIDER_NAME_MIST,
-    [Providers.CoinbaseWallet]: constants.PROVIDER_NAME_COINBASE_WALLET,
-    [Providers.Cipher]: constants.PROVIDER_NAME_CIPHER,
-};
-
 const StyledDialogContent = styled(DialogContent)`
-    width: 571px;
-    height: 528px;
+    max-width: 571px;
     background: #ffffff;
     border: 1px solid #e5e5e5;
 `;
@@ -36,6 +26,10 @@ const WalletProviderButton = styled(Button).attrs({
     display: flex;
     align-items: center;
     padding: 15px;
+
+    & + & {
+        margin-left: 30px;
+    }
 `;
 
 const Divider = styled.div`
@@ -45,41 +39,101 @@ const Divider = styled.div`
     margin: 0 15px;
 `;
 
-interface IWalletCategoryProps {
-    title: string;
-    provider: Providers;
-    onClick: () => void;
+type ProviderType = 'INJECTED' | 'HARDWARE_WALLET' | 'WALLET_CONNECT';
+
+interface IProviderInfo {
+    name: string;
+    id: string;
+    description?: string;
 }
 
-const WalletCategory = ({ title, provider, onClick }: IWalletCategoryProps) => {
+const WalletCategoryStyling = styled.div`
+    & + &  {
+        margin-top: 30px;
+    }
+`;
+
+interface IWalletCategoryProps {
+    title: string;
+    providers: IProviderInfo[];
+    onClick: (id: string) => void;
+}
+
+const WalletCategory = ({ title, providers, onClick }: IWalletCategoryProps) => {
     return (
-        <div>
+        <WalletCategoryStyling>
             <Heading asElement="h5" color="#5C5C5C" size={20} marginBottom="15px">
                 {title}
             </Heading>
-            <WalletProviderButton onClick={onClick}>
-                <Icon name={`${provider.toLowerCase()}_icon`} size={30} />
-                <Divider />
-                <Heading asElement="h5" size={20} marginBottom="0px">
-                    {providerToName[provider]}
-                </Heading>
-            </WalletProviderButton>
-        </div>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+            {providers.map(provider => (
+                <WalletProviderButton onClick={() => onClick(provider.id)} key={provider.name}>
+                    <Icon name={`${provider.id.toLowerCase()}_icon`} size={30} />
+                    <Divider />
+                    <div style={{textAlign: 'left'}}>
+                        <Heading asElement="h5" size={20} marginBottom="0px">
+                            {provider.name}
+                        </Heading>
+                        {provider.description && (
+                            <Paragraph size="small" color="#898990" marginBottom="0px">{provider.description}</Paragraph>
+                        )}
+                    </div>
+                </WalletProviderButton>
+            ))}
+            </div>
+        </WalletCategoryStyling>
     );
 };
+
+const MOCK_DATA = [
+    {
+        title: 'Detected wallet',
+        providers: [
+            {
+                name: 'MetaMask',
+                id: Providers.Metamask,
+            },
+        ],
+    },
+    {
+        title: 'Hardware wallets',
+        providers: [
+            {
+                name: 'Trezor',
+                id: 'TREZOR',
+            },
+            {
+                name: 'Ledger',
+                id: 'LEDGER',
+            },
+        ],
+    },
+    {
+        title: 'Mobile wallets',
+        providers: [
+            {
+                name: 'Wallet connect',
+                id: 'wallet_connect',
+                description: 'Walleth, Trust, Tokenary, Rainbow, Pillar, Argent, etc',
+            },
+        ],
+    },
+];
 
 export const ConnectWalletDialog = () => {
     return (
         <DialogOverlay isOpen={true} style={{ background: 'none' }}>
             <StyledDialogContent>
-                <Heading asElement="h3" size={34}>
-                    Connect a wallet
-                </Heading>
-                <WalletCategory
-                    title="Detected wallet"
-                    provider={Providers.Metamask}
-                    onClick={() => console.log('Clicked on wallet provider')}
-                />
+            <Heading asElement="h3" size={34}>
+                Connect a wallet
+            </Heading>
+                {MOCK_DATA.map(({ title, providers }) => (
+                    <WalletCategory
+                        title={title}
+                        providers={providers}
+                        onClick={(id: string) => console.log(`Clicked on wallet provider ${id}`)}
+                    />
+                )}
             </StyledDialogContent>
         </DialogOverlay>
     );
