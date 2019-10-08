@@ -74,18 +74,21 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                     fromNow: '2 days',
                                     title: 'Staking starts',
                                     description: 'Your staking pool is included in the Market Maker score along with voting power.',
+                                    isActive: true,
                                 },
                                 {
                                     date: '22.08',
                                     fromNow: '2 days',
                                     title: 'Staking starts',
                                     description: 'Your staking pool is included in the Market Maker score along with voting power.',
+                                    isActive: false,
                                 },
                                 {
                                     date: '22.08',
                                     fromNow: '2 days',
                                     title: 'Staking starts',
                                     description: 'Your staking pool is included in the Market Maker score along with voting power.',
+                                    isActive: false,
                                 },
                             ]}
                         />
