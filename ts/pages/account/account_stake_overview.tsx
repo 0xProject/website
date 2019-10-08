@@ -105,7 +105,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                         </div>
                     </InlineStats>
 
-                    <Button color="#fff">
+                    <Button color="#fff" to="/account/history">
                         View history
                     </Button>
                 </Action>

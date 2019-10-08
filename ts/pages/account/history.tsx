@@ -74,19 +74,19 @@ const strings: Strings = {
     },
 };
 
-export const AccountActivity: React.FC = () => {
+export const AccountHistory: React.FC = () => {
     const crumbs = [
         {
             label: truncateStringPortion('0x12345344345', 7),
             url: '/account',
         },
         {
-            label: 'Activity',
+            label: 'History',
         },
     ];
 
     return (
-        <StakingPageLayout title="0x Staking | Activity">
+        <StakingPageLayout title="0x Staking | History">
             <Breadcrumb crumbs={crumbs} />
 
             <ContentWrap>
@@ -95,7 +95,7 @@ export const AccountActivity: React.FC = () => {
                     fontWeight="500"
                     marginBottom="60px"
                 >
-                    Activity
+                    Binance History
                 </Heading>
 
                 <Table columns={columns}>
