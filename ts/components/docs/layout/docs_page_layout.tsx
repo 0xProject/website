@@ -4,7 +4,9 @@ import styled from 'styled-components';
 
 import CircularProgress from 'material-ui/CircularProgress';
 
+import { Header } from 'ts/components/docs/header/header';
 import { Hero } from 'ts/components/docs/layout/hero';
+
 import { ScrollTopArrow } from 'ts/components/docs/layout/scroll_top_arrow';
 import { SiteWrap } from 'ts/components/siteWrap';
 
@@ -32,7 +34,7 @@ const { description, keywords, title } = documentConstants.DOCS;
 
 export const DocsPageLayout: React.FC<IDocsPageLayoutProps> = props => {
     return (
-        <SiteWrap isDocs={true} theme="light">
+        <SiteWrap isDocs={true} theme="light" headerComponent={Header}>
             <DocumentTitle
                 title={props.isHome ? title : `${title}: ${props.title}`}
                 description={props.description ? props.description : description}
