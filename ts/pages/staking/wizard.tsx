@@ -5,9 +5,10 @@ import { colors } from 'ts/style/colors';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 
-import { Timeline } from 'ts/components/staking/wizard/Timeline';
-import { Status } from 'ts/components/staking/wizard/Status';
 import { Button } from 'ts/components/button';
+import { Status } from 'ts/components/staking/wizard/Status';
+import { Timeline } from 'ts/components/staking/wizard/Timeline';
+import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
 
 export interface StakingWizardProps {}
 
@@ -24,8 +25,16 @@ const Container = styled.div`
 
 const SplitviewContainer = styled.div`
     display: flex;
+    flex-direction: column;
+
+    @media (min-width: 768px) {
+        flex-direction: row;
+    }
+
     & > div {
-        width: 50%;
+        @media (min-width: 768px) {
+            width: 50%;
+        }
     }
 `;
 
@@ -37,11 +46,15 @@ const Left = styled.div`
 `;
 
 const Right = styled.div`
-    background-color: ${colors.backgroundLightGrey};
-    padding: 60px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    padding: 20px;
+
+    @media (min-width: 768px) {
+        padding: 60px;
+        background-color: ${colors.backgroundLightGrey};
+    }
 `;
 
 const ConnectWalletButton = styled(Button)`
@@ -73,21 +86,24 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                     date: '22.08',
                                     fromNow: '2 days',
                                     title: 'Staking starts',
-                                    description: 'Your staking pool is included in the Market Maker score along with voting power.',
+                                    description:
+                                        'Your staking pool is included in the Market Maker score along with voting power.',
                                     isActive: true,
                                 },
                                 {
                                     date: '22.08',
                                     fromNow: '2 days',
                                     title: 'Staking starts',
-                                    description: 'Your staking pool is included in the Market Maker score along with voting power.',
+                                    description:
+                                        'Your staking pool is included in the Market Maker score along with voting power.',
                                     isActive: false,
                                 },
                                 {
                                     date: '22.08',
                                     fromNow: '2 days',
                                     title: 'Staking starts',
-                                    description: 'Your staking pool is included in the Market Maker score along with voting power.',
+                                    description:
+                                        'Your staking pool is included in the Market Maker score along with voting power.',
                                     isActive: false,
                                 },
                             ]}
@@ -95,8 +111,30 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                     }
                     rightComponent={
                         <>
-                            <ConnectWalletButton color={colors.white}>Connect your wallet to start staking</ConnectWalletButton>
-                            <Status title="Please connect your wallet, so we can find suitable market maker." />
+                            <NumberInput
+                                placeholder="Enter your stake"
+                                topLabel="Available: 1,000,000 ZRX"
+                                bottomLabels={[
+                                    {
+                                        label: 'Based on your ZRX balance',
+                                    },
+                                    {
+                                        label: 'Change wallet',
+                                        link: '#',
+                                        onClick: () => {
+                                            console.log('Change wallet');
+                                        },
+                                    },
+                                ]}
+                            />
+                            <ConnectWalletButton color={colors.white}>
+                                Connect your wallet to start staking
+                            </ConnectWalletButton>
+                            <Status
+                                linkText="or explore market maker list"
+                                linkUrl="/"
+                                title="Please connect your wallet, so we can find suitable market maker."
+                            />
                         </>
                     }
                 />

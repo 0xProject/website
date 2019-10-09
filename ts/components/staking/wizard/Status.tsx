@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
+import { Icon } from 'ts/components/icon';
 
 import { colors } from 'ts/style/colors';
 
@@ -13,7 +14,7 @@ interface StatusProps {
 }
 
 const StatusContainer = styled.div`
-    padding: 60px;
+    padding: 20px;
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -21,11 +22,19 @@ const StatusContainer = styled.div`
     justify-content: center;
     text-align: center;
     border: 1px solid #dddddd;
+
+    @media (min-width: 768px) {
+        padding: 60px;
+    }
 `;
 
 const Title = styled.h2`
-    font-size: 28px;
+    font-size: 20px;
     line-height: 1.38;
+
+    @media (min-width: 768px) {
+        font-size: 28px;
+    }
 `;
 
 const Link = styled(Button)`
@@ -38,14 +47,21 @@ const Link = styled(Button)`
     }
 `;
 
+const StatusIcon = styled(Icon)`
+    margin-bottom: 30px;
+`;
+
 export const Status: React.FC<StatusProps> = props => {
     const { icon, title, linkText, linkUrl } = props;
     return (
         <StatusContainer>
+            <StatusIcon color={colors.brandLight} name="getStartedThin" size={145} />
             <Title>{title}</Title>
-            <Link href="/" isWithArrow={true} color={colors.brandLight}>
-                or explore market maker list
-            </Link>
+            {linkText != null && linkUrl != null &&
+                <Link href={linkUrl} isWithArrow={true} color={colors.brandLight}>
+                    {linkText}
+                </Link>
+            }
         </StatusContainer>
     );
 };
