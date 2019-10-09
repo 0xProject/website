@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 
 import { colors } from 'ts/style/colors';

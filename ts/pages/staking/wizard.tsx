@@ -6,9 +6,9 @@ import { colors } from 'ts/style/colors';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 
 import { Button } from 'ts/components/button';
+import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
 import { Status } from 'ts/components/staking/wizard/Status';
 import { Timeline } from 'ts/components/staking/wizard/Timeline';
-import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
 
 export interface StakingWizardProps {}
 
@@ -122,7 +122,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                         label: 'Change wallet',
                                         link: '#',
                                         onClick: () => {
-                                            console.log('Change wallet');
+                                            // console.log('Change wallet');
                                         },
                                     },
                                 ]}

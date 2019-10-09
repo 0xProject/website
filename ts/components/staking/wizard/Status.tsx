@@ -52,7 +52,7 @@ const StatusIcon = styled(Icon)`
 `;
 
 export const Status: React.FC<StatusProps> = props => {
-    const { icon, title, linkText, linkUrl } = props;
+    const { title, linkText, linkUrl } = props;
     return (
         <StatusContainer>
             <StatusIcon color={colors.brandLight} name="getStartedThin" size={145} />
