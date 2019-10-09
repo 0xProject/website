@@ -27,7 +27,9 @@ const StakingPoolDetailRowWrapper = styled.div`
     align-items: center;
     padding: 0 20px;
     flex-wrap: wrap;
+    margin: auto;
     max-width: 1152px;
+    margin-top: 20px;
 
     @media (max-width: ${ScreenWidths.Lg}rem) {
         font-size: 20px;
