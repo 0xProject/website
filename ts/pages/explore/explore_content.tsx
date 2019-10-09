@@ -250,6 +250,16 @@ export const PROJECTS: { [s: string]: ExploreProject } = {
         url: 'https://www.godsunchained.com',
         keywords: ['collectibles'],
     },
+    veridex: {
+        name: 'veridex',
+        label: 'VeriDex',
+        description:
+            "Open order book relayer that offers ERC-20 token trading against the platform's native VSF token.",
+        logo_url: '/images/explore/veridex.svg',
+        theme_color: '#242424',
+        url: 'https://dex.verisafe.io',
+        keywords: ['tokens'],
+    },
 };
 
 export const EDITORIAL: ExploreTile[] = [
@@ -323,6 +333,7 @@ export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
             'fabrx',
             'ambo',
             'rex_relay',
+            'veridex',
         ],
     },
     [ExploreTilesOrdering.RecentlyAdded]: {
@@ -330,6 +341,7 @@ export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
         ordering: ExploreTilesOrdering.RecentlyAdded,
         type: ExploreTilesOrderingType.HardCodedByName,
         hardCoded: [
+            'veridex',
             'dydx',
             'fabrx',
             'ambo',
