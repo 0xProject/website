@@ -140,7 +140,7 @@ const PoolWebsiteLink = ({ websiteUrl }: { websiteUrl: string }) => (
 interface IStakingPoolDetailRowProps {
     name: string;
     ethAddress: string;
-    feesCollectedEth: BigNumber;
+    feesCollectedEth: number;
     stakingPercent: number;
     rewardsSharePercent: number;
 
