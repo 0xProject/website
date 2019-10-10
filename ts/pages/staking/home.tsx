@@ -8,9 +8,8 @@ import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 import { Heading } from 'ts/components/text';
 import { ScreenWidths } from 'ts/types';
 import { StakingHero } from 'ts/components/staking/hero';
-import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
-
+import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
 
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
