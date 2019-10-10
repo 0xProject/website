@@ -71,6 +71,21 @@ const ConnectWalletButton = styled(Button)`
     margin-bottom: 60px;
 `;
 
+const InfoHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+`;
+
+const InfoHeaderItem = styled.span`
+    font-size: 20px;
+    line-height: 1.35;
+
+    &:last-child {
+        color: ${colors.textDarkSecondary};
+    }
+`;
+
 const Splitview: React.FC<SplitviewProps> = props => {
     const { leftComponent, rightComponent } = props;
     return (
@@ -151,25 +166,32 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                 rewards="95%"
                                 staked="52%"
                                 difference="+500,000 ZRX"
+                                iconUrl="/images/toshi_logo.jpg"
                             />
+                            <InfoHeader>
+                                <InfoHeaderItem>Start Staking</InfoHeaderItem>
+                                <InfoHeaderItem>Begins in 2 days</InfoHeaderItem>
+                            </InfoHeader>
                             <Inner>
                                 <TransactionItem
                                     marketMakerId="0x12345...12345"
                                     selfId="0x12345...12345"
                                     sendAmount="1520 ZRX"
-                                    selfIcon="/images/toshi_logo.jpg"
+                                    selfIconUrl="/images/toshi_logo.jpg"
                                     receiveAmount="1520 ZRX"
                                     marketMakerName="Binance"
-                                    marketMakerIcon="/images/toshi_logo.jpg"
+                                    marketMakerIconUrl="/images/toshi_logo.jpg"
+                                    isActive={true}
                                 />
                                 <TransactionItem
                                     marketMakerId="0x12345...12345"
                                     selfId="0x12345...12345"
                                     sendAmount="1520 ZRX"
-                                    selfIcon="/images/toshi_logo.jpg"
+                                    selfIconUrl="/images/toshi_logo.jpg"
                                     receiveAmount="1520 ZRX"
                                     marketMakerName="Binance"
-                                    marketMakerIcon="/images/toshi_logo.jpg"
+                                    marketMakerIconUrl="/images/toshi_logo.jpg"
+                                    isActive={false}
                                 />
                             </Inner>
                         </>

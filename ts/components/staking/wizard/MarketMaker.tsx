@@ -154,11 +154,11 @@ const TitleContainer = styled.div`
 `;
 
 export const MarketMaker: React.FC<MarketMakerProps> = props => {
-    const { name, collectedFees, rewards, staked, difference } = props;
+    const { name, collectedFees, rewards, staked, difference, iconUrl } = props;
     return (
         <Container>
             <Heading>
-                <MarketMakerIcon />
+                <MarketMakerIcon src={iconUrl} alt={name} />
                 <TitleContainer>
                     <Title>{name} <CheckIcon name="checkmark" size={15} /></Title>
                     <Website href="https://binance.com" target="_blank">https://binance.com</Website>

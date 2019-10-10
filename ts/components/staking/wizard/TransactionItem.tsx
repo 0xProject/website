@@ -11,13 +11,18 @@ interface TransactionItemProps {
     receiveAmount: string;
     marketMakerName: string;
     marketMakerId: string;
-    marketMakerIcon: string;
+    marketMakerIconUrl: string;
     selfId: string;
-    selfIcon: string;
+    selfIconUrl: string;
+    isActive: boolean;
 }
 
 interface CaretProps {
     isLeft?: boolean;
+}
+
+interface TransactionRowProps {
+    isActive?: boolean;
 }
 
 const Container = styled.div`
@@ -68,13 +73,14 @@ const Transaction = styled.div`
     flex-direction: column;
 `;
 
-const TransactionRow = styled.div`
+const TransactionRow = styled.div<TransactionRowProps>`
     display: flex;
     font-size: 11px;
     justify-content: center;
     align-items: center;
     height: 50%;
     position: relative;
+    color: ${props => props.isActive ? colors.brandLight : colors.black};
 
     &:first-child {
         border-bottom: 1px solid #d9d9d9;
@@ -100,12 +106,22 @@ const Caret = styled(Icon)<CaretProps>`
 `;
 
 export const TransactionItem: React.FC<TransactionItemProps> = props => {
-    const { sendAmount, receiveAmount, marketMakerName, marketMakerId, selfId, selfIcon, marketMakerIcon } = props;
+    const {
+        sendAmount,
+        receiveAmount,
+        marketMakerName,
+        marketMakerId,
+        selfId,
+        selfIconUrl,
+        marketMakerIconUrl,
+        isActive,
+    } = props;
+
     return (
         <Container>
             <Party>
                 <PartySquare>
-                    <PartyImage src={selfIcon} alt="Your avatar" />
+                    <PartyImage src={selfIconUrl} alt="Your avatar" />
                 </PartySquare>
                 <PartyDescription>
                     <h4>You</h4>
@@ -113,7 +129,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = props => {
                 </PartyDescription>
             </Party>
             <Transaction>
-                <TransactionRow>
+                <TransactionRow isActive={isActive}>
                     <span>{sendAmount}</span>
                     <Caret name="caret-right" size={10} />
                 </TransactionRow>
@@ -124,7 +140,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = props => {
             </Transaction>
             <Party>
                 <PartySquare>
-                    <PartyImage src={marketMakerIcon} alt={marketMakerName} />
+                    <PartyImage src={marketMakerIconUrl} alt={marketMakerName} />
                 </PartySquare>
                 <PartyDescription>
                     <h4>{marketMakerName}</h4>
