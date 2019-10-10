@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { ModalVideo } from 'ts/components/modals/modal_video';
 import { VideoPlaceholder } from 'ts/components/video_placeholder';
 import { colors } from 'ts/style/colors';
 
@@ -10,6 +11,9 @@ interface StakingHeroProps {
     description: string;
     figure: React.ReactNode;
     actions: React.ReactNode;
+    videoId?: string;
+    videoChannel?: string;
+    videoRatio?: string;
 }
 
 interface WrapperProps {}
@@ -103,12 +107,11 @@ const Actions = styled.div`
     }
 `;
 
-const onVideoClick = () => {
-    // console.log('video click');
-};
-
 export const StakingHero: React.FC<StakingHeroProps> = props => {
-    const { title, titleMobile, description, actions } = props;
+    const { title, titleMobile, description, actions, videoChannel, videoId, videoRatio } = props;
+    const [isVideoOpen, setIsVideoOpen] = React.useState(false);
+    const onOpenVideo = () => setIsVideoOpen(true);
+    const onCloseVideo = () => setIsVideoOpen(false);
 
     return (
         <Wrapper>
@@ -120,11 +123,33 @@ export const StakingHero: React.FC<StakingHeroProps> = props => {
                         <Description>{description}</Description>
                         <Actions>{actions}</Actions>
                     </Column>
-                    <Video>
-                        <VideoPlaceholder title="Play explainer video" onClick={onVideoClick} />
-                    </Video>
+                    {videoId && (
+                        <Video>
+                            <VideoPlaceholder title="Play explainer video" onClick={onOpenVideo} />
+                        </Video>
+                    )}
                 </Row>
             </Inner>
+            {videoId && (
+                <ModalVideo
+                    channel={videoChannel}
+                    isOpen={isVideoOpen}
+                    videoId={videoId}
+                    onClose={onCloseVideo}
+                    youtube={{
+                        autoplay: 1,
+                        controls: 0,
+                        showinfo: 0,
+                        modestbranding: 1,
+                    }}
+                    ratio={videoRatio}
+                />
+            )}
         </Wrapper>
     );
+};
+
+StakingHero.defaultProps = {
+    videoChannel: 'youtube',
+    videoRatio: '21:9',
 };
