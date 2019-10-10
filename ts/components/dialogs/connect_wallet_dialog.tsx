@@ -6,14 +6,46 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { Heading, Paragraph } from 'ts/components/text';
+import { zIndex } from 'ts/style/z_index';
 // TODO(kimpers): New providers needed!
 import { Providers } from 'ts/types';
-import { constants } from 'ts/utils/constants';
+
+const MainHeading = styled(Heading).attrs({
+    asElement: 'h3',
+    marginBottom: '0',
+})`
+    font-size: 34px !important;
+    line-height: 42px !important;
+    display: inline-block;
+
+    @media (max-width: 768px) {
+        font-size: 28px !important;
+        line-height: 38px !important;
+    }
+`;
+
+const StyledDialogOverlay = styled(DialogOverlay)`
+    background: none !important;
+    z-index: ${zIndex.overlay};
+
+    @media (max-width: 768px) {
+        background: white !important;
+    }
+`;
 
 const StyledDialogContent = styled(DialogContent)`
-    max-width: 571px;
+    width: 571px !important;
     background: #ffffff;
     border: 1px solid #e5e5e5;
+
+    @media (max-width: 768px) {
+        height: 100vh !important;
+        width: 100vw !important;
+        margin: 0 !important;
+        padding: 30px !important;
+
+        border: none;
+    }
 `;
 
 const WalletProviderButton = styled(Button).attrs({
@@ -27,8 +59,34 @@ const WalletProviderButton = styled(Button).attrs({
     align-items: center;
     padding: 15px;
 
-    & + & {
-        margin-left: 30px;
+    @media (min-width: 769px) {
+        & + & {
+            margin-left: 30px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        & + & {
+            margin-top: 15px;
+        }
+    }
+`;
+
+const HeadingRow = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+
+    button {
+        height: 18px;
+        width: 18px;
+    }
+
+    figure {
+        path {
+            fill: #000;
+        }
     }
 `;
 
@@ -39,19 +97,27 @@ const Divider = styled.div`
     margin: 0 15px;
 `;
 
-type ProviderType = 'INJECTED' | 'HARDWARE_WALLET' | 'WALLET_CONNECT';
+const WalletCategoryStyling = styled.div`
+    & + & {
+        margin-top: 30px;
+    }
+
+    /* Provider buttons wrapper */
+    & > div {
+        display: flex;
+        flex-direction: row;
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+        }
+    }
+`;
 
 interface IProviderInfo {
     name: string;
     id: string;
     description?: string;
 }
-
-const WalletCategoryStyling = styled.div`
-    & + &  {
-        margin-top: 30px;
-    }
-`;
 
 interface IWalletCategoryProps {
     title: string;
@@ -65,21 +131,23 @@ const WalletCategory = ({ title, providers, onClick }: IWalletCategoryProps) => 
             <Heading asElement="h5" color="#5C5C5C" size={20} marginBottom="15px">
                 {title}
             </Heading>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-            {providers.map(provider => (
-                <WalletProviderButton onClick={() => onClick(provider.id)} key={provider.name}>
-                    <Icon name={`${provider.id.toLowerCase()}_icon`} size={30} />
-                    <Divider />
-                    <div style={{textAlign: 'left'}}>
-                        <Heading asElement="h5" size={20} marginBottom="0px">
-                            {provider.name}
-                        </Heading>
-                        {provider.description && (
-                            <Paragraph size="small" color="#898990" marginBottom="0px">{provider.description}</Paragraph>
-                        )}
-                    </div>
-                </WalletProviderButton>
-            ))}
+            <div>
+                {providers.map(provider => (
+                    <WalletProviderButton onClick={() => onClick(provider.id)} key={provider.name}>
+                        <Icon name={`${provider.id.toLowerCase()}_icon`} size={30} />
+                        <Divider />
+                        <div style={{ textAlign: 'left' }}>
+                            <Heading asElement="h5" size={20} marginBottom="0px">
+                                {provider.name}
+                            </Heading>
+                            {provider.description && (
+                                <Paragraph size="small" color="#898990" marginBottom="0px">
+                                    {provider.description}
+                                </Paragraph>
+                            )}
+                        </div>
+                    </WalletProviderButton>
+                ))}
             </div>
         </WalletCategoryStyling>
     );
@@ -120,21 +188,29 @@ const MOCK_DATA = [
     },
 ];
 
-export const ConnectWalletDialog = () => {
+interface IConnectWalletDialogProps {
+    onDismiss: () => void;
+}
+
+export const ConnectWalletDialog = ({ onDismiss }: IConnectWalletDialogProps) => {
     return (
-        <DialogOverlay isOpen={true} style={{ background: 'none' }}>
+        <StyledDialogOverlay isOpen={true}>
             <StyledDialogContent>
-            <Heading asElement="h3" size={34}>
-                Connect a wallet
-            </Heading>
-                {MOCK_DATA.map(({ title, providers }) => (
+                <HeadingRow>
+                    <MainHeading>Connect a wallet</MainHeading>
+                    <Button isTransparent={true} isNoBorder={true} padding="0px">
+                        <Icon name="close-modal" />
+                    </Button>
+                </HeadingRow>
+                {MOCK_DATA.map(({ title, providers }, i) => (
                     <WalletCategory
+                        key={`wallet-category-${i}`}
                         title={title}
                         providers={providers}
-                        onClick={(id: string) => console.log(`Clicked on wallet provider ${id}`)}
+                        onClick={(id: string) => alert(`Clicked on wallet provider ${id}`)}
                     />
-                )}
+                ))}
             </StyledDialogContent>
-        </DialogOverlay>
+        </StyledDialogOverlay>
     );
 };
