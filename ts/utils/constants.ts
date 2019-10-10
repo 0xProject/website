@@ -121,6 +121,7 @@ export const constants = {
     URL_VOTE_FAQ:
         'https://blog.0xproject.com/vote-with-zrx-to-add-support-for-erc-1155-and-the-staticcallassetproxy-49a855807bcd#967f',
     URL_ZEIP_REPO: 'https://github.com/0xProject/ZEIPs/',
+    URL_SSA: 'INSERT_URL_HERE', // This will be the endpoint for a standard staking api url
     TYPES_SECTION_NAME: 'types',
     EXTERNAL_EXPORTS_SECTION_NAME: 'external exports',
     TYPE_TO_SYNTAX: {
