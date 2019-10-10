@@ -1,6 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { colors } from 'ts/style/colors';
+
 import { Button } from 'ts/components/button';
 import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 import { Heading } from 'ts/components/text';
@@ -10,11 +12,7 @@ import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 
 
-import { colors } from 'ts/style/colors';
-
-
 export interface StakingIndexProps {}
-
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
@@ -51,32 +49,32 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                   Your voting history
               </Heading>
               <StakingPoolDetailRow
-                  name= "Staking 01"
-                  thumbnailUrl={"https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg"}
+                  name="Staking 01"
+                  thumbnailUrl={'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg'}
                   feesCollectedEth={0.03281}
                   stakingPercent={2000}
                   rewardsSharePercent={100}
                   ethAddress="234 CALIFORNIA"
               />
               <StakingPoolDetailRow
-                  name= "Staking 02"
-                  thumbnailUrl={"https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg"}
+                  name="Staking 02"
+                  thumbnailUrl={'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg'}
                   feesCollectedEth={0.03281}
                   stakingPercent={2000}
                   rewardsSharePercent={100}
                   ethAddress="235 CALIFORNIA staking.com"
               />
               <StakingPoolDetailRow
-                  name= "Staking 03"
-                  thumbnailUrl={"https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg"}
+                  name="Staking 03"
+                  thumbnailUrl={'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg'}
                   feesCollectedEth={0.03281}
                   stakingPercent={2000}
                   rewardsSharePercent={100}
                   ethAddress="236 CALIFORNIA"
               />
               <StakingPoolDetailRow
-                  name= "Staking 04"
-                  thumbnailUrl={"https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg"}
+                  name="Staking 04"
+                  thumbnailUrl={'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg'}
                   feesCollectedEth={0.03281}
                   stakingPercent={2000}
                   rewardsSharePercent={100}
