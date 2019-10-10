@@ -2,13 +2,16 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
+import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
+import { Heading } from 'ts/components/text';
+import { ScreenWidths } from 'ts/types';
 import { StakingHero } from 'ts/components/staking/hero';
 import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
-import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
-import { Heading } from 'ts/components/text';
+
+
 import { colors } from 'ts/style/colors';
-import { ScreenWidths } from 'ts/types';
+
 
 export interface StakingIndexProps {}
 
@@ -50,7 +53,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
               <StakingPoolDetailRow
                   name= "Staking 01"
                   thumbnailUrl={"https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg"}
-                  feesCollectedEth={.03281}
+                  feesCollectedEth={0.03281}
                   stakingPercent={2000}
                   rewardsSharePercent={100}
                   ethAddress="234 CALIFORNIA"
@@ -58,7 +61,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
               <StakingPoolDetailRow
                   name= "Staking 02"
                   thumbnailUrl={"https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg"}
-                  feesCollectedEth={.03281}
+                  feesCollectedEth={0.03281}
                   stakingPercent={2000}
                   rewardsSharePercent={100}
                   ethAddress="235 CALIFORNIA staking.com"
@@ -66,7 +69,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
               <StakingPoolDetailRow
                   name= "Staking 03"
                   thumbnailUrl={"https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg"}
-                  feesCollectedEth={.03281}
+                  feesCollectedEth={0.03281}
                   stakingPercent={2000}
                   rewardsSharePercent={100}
                   ethAddress="236 CALIFORNIA"
@@ -74,7 +77,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
               <StakingPoolDetailRow
                   name= "Staking 04"
                   thumbnailUrl={"https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg"}
-                  feesCollectedEth={.03281}
+                  feesCollectedEth={0.03281}
                   stakingPercent={2000}
                   rewardsSharePercent={100}
                   ethAddress="237 CALIFORNIA"
