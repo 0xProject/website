@@ -141,3 +141,29 @@ export interface TradingPairMetadata {
 }
 
 // TODO(dave4506) Add activity types
+enum StakingEventType {
+    StakingContract = 'STAKING',
+    StakingStaker = 'STAKING_STAKER',
+    StakingPool = 'STAKING_POOL',
+    StakingDelegator = 'STAKING_DELEGATOR',
+}
+
+export type StakingDelegatorRelevantEvents = StakingPoolRelevantEvents | StakingStakerEvent | StakingDelegatorEvent;
+export type StakingPoolRelevantEvents = StakingContractEvent | StakingRelevantEvents;
+export type StakingRelevantEvents =  StakingPoolEvent;
+
+export interface StakingContractEvent {
+    eventType: StakingEventType.StakingContract;
+}
+
+export interface StakingStakerEvent {
+    eventType: StakingEventType.StakingStaker;
+}
+
+export interface StakingPoolEvent {
+    eventType: StakingEventType.StakingPool;
+}
+
+export interface StakingDelegatorEvent {
+    eventType: StakingEventType.StakingDelegator;
+}

@@ -1,7 +1,15 @@
 import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 
-import { DetailedStakingPoolStats, StakingDelegatorStats, StakingPoolStats, StakingStats } from './staking_types';
+import {
+    DetailedStakingPoolStats,
+    StakingDelegatorRelevantEvents,
+    StakingDelegatorStats,
+    StakingPoolRelevantEvents,
+    StakingPoolStats,
+    StakingRelevantEvents,
+    StakingStats,
+} from './staking_types';
 
 const STANDARD_STAKING_API_ENDPOINTS = {
     STAKING: '/staking',
@@ -22,7 +30,7 @@ export const stakingClient = {
         return [];
     },
     /**
-     * this hits the server 3 times
+     * This hits the server 3 times
      * 1. Get StakingPoolStats for specified poolId from /staking-pools
      * 2. Get all epoch data from /staking-pool-epochs
      * 3. Get all neccessary metadata related to trading pairs from /trading-pairs
@@ -51,19 +59,19 @@ export const stakingClient = {
     /**
      * TODO(dave4506) add event types
      */
-    async getStakingDelegatorActivityAsync(delegatorAddress: string): Promise<any> {
+    async getStakingDelegatorActivityAsync(delegatorAddress: string): Promise<StakingDelegatorRelevantEvents[]> {
         return {};
     },
     /**
      * TODO(dave4506) add event types
      */
-    async getStakingPoolActivityAsync(poolId: string): Promise<any> {
+    async getStakingPoolActivityAsync(poolId: string): Promise<StakingPoolRelevantEvents[]> {
         return {};
     },
     /**
      * TODO(dave4506) add event types
      */
-    async getStakingActivityAsync(): Promise<any> {
+    async getStakingActivityAsync(): Promise<StakingRelevantEvents[]> {
         return {};
     },
 };
