@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 interface SpinnerProps {
     size?: string;
@@ -15,16 +15,14 @@ const SpinnerStyle = styled.div<SpinnerProps>`
 
     content: '';
     box-sizing: border-box;
-    width: ${props => props.size === 'big' ? '40px' : '20px'};
-    height: ${props => props.size === 'big' ? '40px' : '20px'};
+    width: ${props => (props.size === 'big' ? '40px' : '20px')};
+    height: ${props => (props.size === 'big' ? '40px' : '20px')};
     border-radius: 50%;
     border: 1px solid ${props => props.color};
     border-top-color: #000;
-    animation: spinner .6s linear infinite;
+    animation: spinner 0.6s linear infinite;
 `;
 
 export const Spinner: React.FC<SpinnerProps> = ({ size, color }) => {
-    return (
-        <SpinnerStyle size={size} color={color} />
-    )
-}
+    return <SpinnerStyle size={size} color={color} />;
+};
