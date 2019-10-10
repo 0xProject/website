@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { truncateStringPortion } from 'ts/constants/utilities';
 import { colors } from 'ts/style/colors';
+import { utils } from 'ts/utils/utils';
 
 export interface AccountDetailProps {
     accountAddress: string;
@@ -13,7 +13,7 @@ export const AccountDetail: React.StatelessComponent<AccountDetailProps> = ({
     accountAddress,
     avatarSrc,
 }) => {
-    const truncatedAddress = truncateStringPortion(accountAddress, 7, 3);
+    const truncatedAddress = utils.getAddressBeginAndEnd(accountAddress, 7, 3);
 
     return (
         <Wrap>

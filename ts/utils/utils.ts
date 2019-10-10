@@ -181,8 +181,8 @@ export const utils = {
             _.includes(errMsg, ledgerDenialErrMsg);
         return isUserDeniedErrMsg;
     },
-    getAddressBeginAndEnd(address: string): string {
-        const truncatedAddress = `${address.substring(0, 6)}...${address.substr(-4)}`; // 0x3d5a...b287
+    getAddressBeginAndEnd(address: string, beginCharCount: number = 6, endCharCount: number = 4): string {
+        const truncatedAddress = `${address.substring(0, beginCharCount)}...${address.substr(-endCharCount)}`; // 0x3d5a...b287
         return truncatedAddress;
     },
     getReadableAccountState(accountState: AccountState, userAddress: string): string {

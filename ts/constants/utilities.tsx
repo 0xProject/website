@@ -20,13 +20,3 @@ export const getCSSPadding = (value: number | Array<string | number> = 0): strin
         return `${value}px`;
     }
 };
-
-export const truncateStringPortion = (value: string, beginCharCount: number = 3, endCharCount: number = 3, dotCount: number = 3) => {
-    let result = '';
-
-    result += value.substring(0, beginCharCount);
-    result += '.'.repeat(dotCount);
-    result += value.substring(value.length - endCharCount, value.length);
-
-    return result;
-};

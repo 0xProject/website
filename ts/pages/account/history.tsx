@@ -7,7 +7,8 @@ import { Heading } from 'ts/components/text';
 import { Breadcrumb } from 'ts/components/ui/breadcrumb';
 import { Table } from 'ts/components/ui/table';
 import { StakeStatus } from 'ts/components/ui/table_stake_status';
-import { truncateStringPortion } from 'ts/constants/utilities';
+
+import { utils } from 'ts/utils/utils';
 
 interface MockData {
     timestamp: string | number;
@@ -77,7 +78,7 @@ const strings: Strings = {
 export const AccountHistory: React.FC = () => {
     const crumbs = [
         {
-            label: truncateStringPortion('0x12345344345', 7),
+            label: utils.getAddressBeginAndEnd('0x12345344345', 7, 3),
             url: '/account',
         },
         {
