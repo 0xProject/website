@@ -246,6 +246,7 @@ const VoteButton = styled(Button)`
     margin-bottom: 40px;
     width: 100%;
     max-width: 205px;
+    color: white;
 `;
 
 const MoreLink = styled(Button)`
