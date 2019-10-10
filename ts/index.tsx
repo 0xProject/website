@@ -25,8 +25,8 @@ import { Credits } from 'ts/pages/credits';
 import { Explore } from 'ts/pages/explore';
 
 import { AccountActivity } from 'ts/pages/account/activity';
-import { AccountHistory } from 'ts/pages/account/history';
 import { Account } from 'ts/pages/account/dashboard';
+import { AccountHistory } from 'ts/pages/account/history';
 
 import { CFL } from 'ts/pages/cfl';
 import { NextEcosystem } from 'ts/pages/ecosystem';

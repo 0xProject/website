@@ -34,15 +34,21 @@ export const Breadcrumb: React.StatelessComponent<BreadcrumbProps> = ({
 
             <p>
                 {_.map(crumbs, crumb => {
-                    const Component = crumb.url ? ReactRouterLink : 'span';
+                    if (crumb.url) {
+                        return (
+                            <ReactRouterLink
+                                key={crumb.url}
+                                to={crumb.url}
+                            >
+                                {crumb.label}
+                            </ReactRouterLink>
+                        );
+                    }
 
                     return (
-                        <Component
-                            key={crumb.url}
-                            to={crumb.url}
-                        >
+                        <span key={crumb.label}>
                             {crumb.label}
-                        </Component>
+                        </span>
                     );
                 })}
             </p>
