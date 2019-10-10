@@ -6,6 +6,7 @@ import { colors } from 'ts/style/colors';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 
 import { Button } from 'ts/components/button';
+import { MarketMaker } from 'ts/components/staking/wizard/MarketMaker';
 import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
 import { Status } from 'ts/components/staking/wizard/Status';
 import { Timeline } from 'ts/components/staking/wizard/Timeline';
@@ -27,12 +28,12 @@ const SplitviewContainer = styled.div`
     display: flex;
     flex-direction: column;
 
-    @media (min-width: 768px) {
+    @media (min-width: 900px) {
         flex-direction: row;
     }
 
     & > div {
-        @media (min-width: 768px) {
+        @media (min-width: 900px) {
             width: 50%;
         }
     }
@@ -52,8 +53,10 @@ const Right = styled.div`
     padding: 20px;
 
     @media (min-width: 768px) {
-        padding: 60px;
         background-color: ${colors.backgroundLightGrey};
+    }
+    @media (min-width: 900px) {
+        padding: 60px;
     }
 `;
 
@@ -134,6 +137,13 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                 linkText="or explore market maker list"
                                 linkUrl="/"
                                 title="Please connect your wallet, so we can find suitable market maker."
+                            />
+                            <MarketMaker
+                                name="Binance staking pool"
+                                collectedFees="3.212,032 ETH"
+                                rewards="95%"
+                                staked="52%"
+                                difference="+500,000 ZRX"
                             />
                         </>
                     }
