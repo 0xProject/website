@@ -10,6 +10,7 @@ import { MarketMaker } from 'ts/components/staking/wizard/MarketMaker';
 import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
 import { Status } from 'ts/components/staking/wizard/Status';
 import { Timeline } from 'ts/components/staking/wizard/Timeline';
+import { TransactionItem } from 'ts/components/staking/wizard/TransactionItem';
 
 export interface StakingWizardProps {}
 
@@ -22,6 +23,12 @@ const Container = styled.div`
     max-width: 1390px;
     margin: 0 auto;
     position: relative;
+`;
+
+const Inner = styled.div`
+    border: 1px solid #E3E3E3;
+    background-color: ${colors.white};
+    padding: 30px;
 `;
 
 const SplitviewContainer = styled.div`
@@ -145,6 +152,26 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                 staked="52%"
                                 difference="+500,000 ZRX"
                             />
+                            <Inner>
+                                <TransactionItem
+                                    marketMakerId="0x12345...12345"
+                                    selfId="0x12345...12345"
+                                    sendAmount="1520 ZRX"
+                                    selfIcon="/images/toshi_logo.jpg"
+                                    receiveAmount="1520 ZRX"
+                                    marketMakerName="Binance"
+                                    marketMakerIcon="/images/toshi_logo.jpg"
+                                />
+                                <TransactionItem
+                                    marketMakerId="0x12345...12345"
+                                    selfId="0x12345...12345"
+                                    sendAmount="1520 ZRX"
+                                    selfIcon="/images/toshi_logo.jpg"
+                                    receiveAmount="1520 ZRX"
+                                    marketMakerName="Binance"
+                                    marketMakerIcon="/images/toshi_logo.jpg"
+                                />
+                            </Inner>
                         </>
                     }
                 />

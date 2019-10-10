@@ -16,7 +16,7 @@ interface MarketMakerProps {
 }
 
 const Container = styled.div`
-    margin-top: 20px;
+    margin: 20px 0;
     border: 1px solid #DDDDDD;
     background-color: ${colors.white};
 `;
