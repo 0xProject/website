@@ -86,7 +86,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
 
 const SectionWrapper = styled.div`
     width: calc(100% - 100px);
-    max-width: 1152px;
+    max-width: 1228px;
     margin: 0 auto;
     padding: 40px;
 
