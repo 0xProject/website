@@ -6,6 +6,7 @@ import { colors } from 'ts/style/colors';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 
 import { Button } from 'ts/components/button';
+import { Spinner } from 'ts/components/spinner';
 import { MarketMaker } from 'ts/components/staking/wizard/MarketMaker';
 import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
 import { Status } from 'ts/components/staking/wizard/Status';
@@ -26,7 +27,7 @@ const Container = styled.div`
 `;
 
 const Inner = styled.div`
-    border: 1px solid #E3E3E3;
+    border: 1px solid #e3e3e3;
     background-color: ${colors.white};
     padding: 30px;
 `;
@@ -69,6 +70,17 @@ const Right = styled.div`
 
 const ConnectWalletButton = styled(Button)`
     margin-bottom: 60px;
+`;
+
+const ButtonWithIcon = styled(Button)`
+    display: flex;
+    width: 100%;
+    justify-content: center;
+`;
+
+const SpinnerContainer = styled.span`
+    display: inline-block;
+    margin-right: 10px;
 `;
 
 const InfoHeader = styled.div`
@@ -193,6 +205,17 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                     marketMakerIconUrl="/images/toshi_logo.jpg"
                                     isActive={false}
                                 />
+                                <ButtonWithIcon
+                                    isTransparent={true}
+                                    borderColor="#DFE7E1"
+                                    color={colors.textDarkSecondary}
+                                    isDisabled={true}
+                                >
+                                    <SpinnerContainer>
+                                        <Spinner color="#BEBEBE" />
+                                    </SpinnerContainer>
+                                    <span>Waiting for signature</span>
+                                </ButtonWithIcon>
                             </Inner>
                         </>
                     }
