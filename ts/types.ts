@@ -460,7 +460,7 @@ export enum WebsitePaths {
     Instant = '/instant',
     Ecosystem = '/eap',
     MarketMaker = '/market-maker',
-    Governance = '/governance',
+    Governance = '/vote',
     Staking = '/stake',
     StakingWizard = '/stake/start-staking',
     MarketMakerProfile = '/market-maker-profile',

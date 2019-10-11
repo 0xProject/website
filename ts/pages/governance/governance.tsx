@@ -8,7 +8,7 @@ import { Banner } from 'ts/components/banner';
 import { Button } from 'ts/components/button';
 import { DocumentTitle } from 'ts/components/document_title';
 import { Column, FlexWrap, Section } from 'ts/components/newLayout';
-import { SiteWrap } from 'ts/components/siteWrap';
+import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading, Paragraph } from 'ts/components/text';
 import { Countdown } from 'ts/pages/governance/countdown';
 import { Proposal, proposals } from 'ts/pages/governance/data';
@@ -66,7 +66,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
     public render(): React.ReactNode {
         const { isVoteReceived, tally } = this.state;
         return (
-            <SiteWrap theme="dark">
+            <StakingPageLayout isHome={false} title="0x Governance">
                 <DocumentTitle {...documentConstants.VOTE} />
                 <Section maxWidth="1170px" isFlex={true}>
                     <Column width="55%" maxWidth="560px">
@@ -90,7 +90,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                     </Column>
                 </Section>
 
-                <Section bgColor="dark" maxWidth="1170px">
+                <Section bgColor="light" maxWidth="1170px">
                     <SectionWrap>
                         <Heading>{this._proposalData.benefit.title}</Heading>
                         <FlexWrap>
@@ -158,7 +158,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                     onWalletConnected={this._onWalletConnected.bind(this)}
                     onVoted={this._onVoteReceived.bind(this)}
                 />
-            </SiteWrap>
+            </StakingPageLayout>
         );
     }
 
@@ -246,6 +246,7 @@ const VoteButton = styled(Button)`
     margin-bottom: 40px;
     width: 100%;
     max-width: 205px;
+    color: white;
 `;
 
 const MoreLink = styled(Button)`
