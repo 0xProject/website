@@ -1,8 +1,8 @@
 import { BigNumber } from '@0x/utils';
 
-export interface EpochTime {
+export interface StakingTimeMetadata {
     observedTimestamp: number;
-    txHash: string;
+    txHash?: string;
     blockNumber: number;
 }
 
@@ -13,8 +13,8 @@ export interface ApproximateEpochTime {
 
 export interface EpochStats {
     epoch_id: number;
-    startingEpochTime: EpochTime;
-    endingEpochTime?: EpochTime;
+    startingEpochTime: StakingTimeMetadata;
+    endingEpochTime?: StakingTimeMetadata;
 }
 
 export interface EpochStakingStats extends EpochStats {
@@ -52,7 +52,7 @@ export interface StakingDelegatorStats {
 
 export interface EpochStakingDelegatorStats extends EpochStats {
     totalZrxStaked: BigNumber;
-    stakeStatus: ZrxStakingStatus;
+    stakeStatus: ZrxStakerBalance;
     totalFeesSharedInEth: BigNumber;
     stakedPools: EpochStakingDelegatorPoolStats[];
 }
@@ -104,7 +104,7 @@ export interface StakingPoolMetadata {
     name?: string;
 }
 
-export interface ZrxStakingStatus {
+export interface ZrxStakerBalance {
     inactive: BigNumber;
     active: BigNumber;
     delegated: BigNumber;
@@ -140,7 +140,17 @@ export interface TradingPairMetadata {
     takerAsset: AssetMetadata;
 }
 
-// TODO(dave4506) Add activity types
+export interface StakingContractParams {
+    epochDurationInSeconds: number;
+    rewardDelegatedStakeWeight: number;
+    minimumPoolStake: number;
+    maximumMakersInPool: number;
+    cobbDouglasAlphaNumerator: number;
+    cobbDouglasAlphaDenominator: number;
+    wethProxyAddress: string;
+    zrxVaultAddress: string;
+}
+
 enum StakingEventType {
     StakingContract = 'STAKING',
     StakingStaker = 'STAKING_STAKER',
@@ -148,22 +158,153 @@ enum StakingEventType {
     StakingDelegator = 'STAKING_DELEGATOR',
 }
 
-export type StakingDelegatorRelevantEvents = StakingPoolRelevantEvents | StakingStakerEvent | StakingDelegatorEvent;
+enum StakingStakeStatus {
+    Withdrawable = 'WITHDRAWABLE',
+    Inactive = 'INACTIVE',
+    Active = 'ACTIVE',
+    Delegated = 'DELEGATED',
+}
+
+export type StakingDelegatorRelevantEvents = StakingStakerRelevantEvents | StakingDelegatorEvent;
+export type StakingStakerRelevantEvents = StakingStakerEvent | StakingPoolRelevantEvents;
 export type StakingPoolRelevantEvents = StakingContractEvent | StakingRelevantEvents;
 export type StakingRelevantEvents =  StakingPoolEvent;
 
-export interface StakingContractEvent {
+export interface StakingEventBase {
+    timeStamp: StakingTimeMetadata;
+}
+
+export interface StakingContractEvent extends StakingEventBase {
     eventType: StakingEventType.StakingContract;
 }
 
-export interface StakingStakerEvent {
-    eventType: StakingEventType.StakingStaker;
+export interface StakingContractEpochEndedEvent extends StakingContractEvent {
+    event: 'STAKING_EPOCH_ENDED';
+    epochId: number;
+    numActivePools: number;
+    rewardsAvailableInEth: BigNumber;
+    totalFeesGeneratedInEth: BigNumber;
+    totalZrxStaked: BigNumber;
 }
 
-export interface StakingPoolEvent {
+export interface StakingContractEpochFinalizedEvent extends StakingContractEvent {
+    event: 'STAKING_EPOCH_FINALIZED';
+    epoch: number;
+    rewardsPaidInEth: BigNumber;
+    rewardsRemainingInEth: BigNumber;
+}
+
+export interface StakingContractParamsChangeEvent extends StakingContractEvent {
+    event: 'PARAMS_CHANGE';
+    fromParams: StakingContractParams;
+    toParams: StakingContractParams;
+}
+
+export interface StakingContractExchangeAddedEvent extends StakingContractEvent {
+    event: 'EXCHANGE_ADDED';
+    exchangeAddress: string;
+}
+
+export interface StakingContractExchangeRemovedEvent extends StakingContractEvent {
+    event: 'EXCHANGE_REMOVED';
+    exchangeAddress: string;
+}
+
+export interface StakingStakerEvent extends StakingEventBase {
+    eventType: StakingEventType.StakingStaker;
+    stakerAddress: string;
+}
+
+export interface StakingStakerStatusChangeEvent extends StakingStakerEvent {
+    event: 'STAKE_CHANGED_STATUS';
+    zrxAmountStakedChanged: BigNumber;
+    fromPoolId?: string;
+    toPoolId?: string;
+    toStatus: StakingStakeStatus;
+    fromStatus: StakingStakeStatus;
+}
+
+export interface StakingPoolEvent extends StakingEventBase {
     eventType: StakingEventType.StakingPool;
 }
 
-export interface StakingDelegatorEvent {
+export interface StakingPoolActivatedEvent extends StakingPoolEvent {
+    event: 'STAKING_POOL_ACTIVATED';
+    epochId: number;
+    poolId: number;
+}
+
+export interface StakingPoolCreatedEvent extends StakingPoolEvent {
+    event: 'STAKING_POOL_CREATED';
+    operatorAddress: string;
+    delegatorStakingPoolOwnershipShare: number;
+}
+
+export interface StakingPoolMetadataUpdatedEvent extends StakingPoolEvent {
+    event: 'STAKING_POOL_METADATA_UPDATED';
+    oldMetadata: StakingPoolMetadata;
+    newMetadata: StakingPoolMetadata;
+}
+
+export interface StakingPoolVerifiedUpdatedEvent extends StakingPoolEvent {
+    event: 'STAKING_POOL_VERIFIED_UPDATED';
+    oldVerified: boolean;
+    newVerified: boolean;
+}
+
+export interface StakingPoolStatusUpdatedEvent extends StakingPoolEvent {
+    event: 'STAKING_POOL_STATUS_UPDATED';
+    oldStatus: StakingPoolStatus;
+    newStatus: StakingPoolStatus;
+}
+
+export interface StakingPoolPendingAddMakerEvent extends StakingPoolEvent {
+    event: 'STAKING_POOL_PENDING_ADD_MAKER';
+    makerAddress: string;
+}
+
+export interface StakingPoolAddedMakerEvent extends StakingPoolEvent {
+    event: 'STAKING_POOL_ADDED_MAKER';
+    makerAddress: string;
+}
+
+export interface StakingPoolRemovedMakerEvent extends StakingPoolEvent {
+    event: 'STAKING_POOL_REMOVED_MAKER';
+    makerAddress: string;
+}
+
+export interface StakingPoolOperatorShareDecreasedEvent extends StakingPoolEvent {
+    event: 'STAKING_POOL_OPERATATOR_SHARE_DECREASED';
+    oldOperatorShare: number;
+    newOperatorShare: number;
+}
+
+export interface StakingPoolEpochEndedEvent extends StakingPoolEvent {
+    event: 'STAKING_EPOCH_ENDED';
+    epoch: number;
+    rewardsAvailableForDelegatorPoolInEth: BigNumber;
+    rewardsAvailableForOperatorInEth: BigNumber;
+    totalFeesGeneratedInEth: BigNumber;
+    totalZrxStaked: BigNumber;
+}
+
+export interface StakingDelegatorEvent extends StakingEventBase {
     eventType: StakingEventType.StakingDelegator;
+    delegatorAddress: string;
+}
+
+
+export interface StakingDelegatorEpochEndedEvent extends StakingDelegatorEvent {
+    event: 'STAKING_EPOCH_ENDED';
+    epoch: number;
+    poolId: number;
+    rewardsAvailableForDelegatorPoolInEth: BigNumber;
+    rewardsAvailableForDelegatorInEth: BigNumber;
+}
+
+export interface StakingDelegatorRewardsPaidEvent extends StakingDelegatorEvent {
+    event: 'STAKING_DELEGATOR_REWARDS_PAID';
+    epoch: number;
+    withdrawableTotalFeesSharedInEth: BigNumber;
+    totalFeesSharedInEth: BigNumber;
 }
