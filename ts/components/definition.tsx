@@ -29,7 +29,7 @@ export interface DefinitionProps {
 
 export const Definition = ({ className, ...props }: DefinitionProps) => (
     <Wrap {...props} className={className}>
-        {!!props.icon && <Icon name={props.icon} size={props.iconSize || 'medium'} margin={[0, 0, 'default', 0]} />}
+        {!!props.icon && <Icon name={props.icon} size={props.iconSize || 'medium'} margin={[0, 0, props.isInlineIcon ? 0 : 'default', 0]} />}
 
         <TextWrap {...props}>
             <Heading

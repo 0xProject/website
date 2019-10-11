@@ -465,6 +465,8 @@ export enum WebsitePaths {
     StakingWizard = '/stake/start-staking',
     MarketMakerProfile = '/market-maker-profile',
     Account = '/account',
+    AccountActivity = '/account/activity',
+    AccountHistory = '/account/history',
     Why = '/why',
     PrivacyPolicy = '/privacy',
     TermsOfService = '/terms',
@@ -711,6 +713,56 @@ export interface WebsiteBackendJobInfo {
     department: string;
     office: string;
     url: string;
+}
+
+export interface WebsiteBackendCurrency {
+    name: string;
+    iconUrl: string;
+}
+
+export interface WebsiteBackendTradingPair {
+    id: string;
+    price: string;
+    currency: string;
+    firstCurrency: WebsiteBackendCurrency;
+    secondCurrency: WebsiteBackendCurrency;
+    // Is there a link to a trading pair detail url?
+    url: string;
+}
+
+export interface WebsiteBackendTradingPairs {
+    tradingPairs: WebsiteBackendTradingPair[];
+}
+
+export interface StakingPoolMetrics {
+    totalVolume: string;
+    totalStaked: string;
+    feesGenerated: string;
+    rewardsShared: string;
+}
+
+export interface WebsiteBackendStakingPoolInfo {
+    // 0x1234...1234 <= is this the id?
+    id: string;
+    website: string;
+    rewardsShared: number;
+    iconUrl: string;
+    estimatedStake: number;
+    nextEpoch: string;
+    currentEpochMetrics: StakingPoolMetrics;
+    allTimeMetrics: StakingPoolMetrics;
+}
+
+export interface StakingHistoryDataset {
+    // 'Fees collected' or 'Rewards shared'
+    title: string;
+    data: StakingHistoryTimePoint[];
+}
+
+export interface StakingHistoryTimePoint {
+    date: string;
+    value: number;
+    epoch: string;
 }
 
 export interface ExchangeSlippageData {
