@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
@@ -18,6 +19,13 @@ export interface StakingWizardProps {}
 interface SplitviewProps {
     leftComponent: React.ReactNode;
     rightComponent: React.ReactNode;
+}
+
+interface ErrorButtonProps {
+    message: string;
+    secondaryButtonText: string;
+    onClose: () => void;
+    onSecondaryClick: () => void;
 }
 
 const Container = styled.div`
@@ -76,6 +84,7 @@ const ButtonWithIcon = styled(Button)`
     display: flex;
     width: 100%;
     justify-content: center;
+    align-items: center;
 `;
 
 const SpinnerContainer = styled.span`
@@ -98,6 +107,41 @@ const InfoHeaderItem = styled.span`
     }
 `;
 
+const ErrorButtonContainer = styled.div`
+    padding: 18px 0;
+    font-size: 18px;
+    color: ${colors.error};
+    border: 1px solid ${colors.error};
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    span {
+        flex: 1;
+    }
+`;
+
+const CloseIcon = styled(Icon)`
+    path {
+        fill: ${colors.error};
+    }
+`;
+
+const CloseIconContainer = styled.button`
+    text-align: center;
+    flex: 0 0 60px;
+    border: 0;
+`;
+
+const Retry = styled.button`
+    max-width: 100px;
+    flex: 1 1 100px;
+    border: 0;
+    font-size: 18px;
+    font-family: 'Formular', monospace;
+    border-left: 1px solid #898989;
+`;
+
 const Splitview: React.FC<SplitviewProps> = props => {
     const { leftComponent, rightComponent } = props;
     return (
@@ -105,6 +149,19 @@ const Splitview: React.FC<SplitviewProps> = props => {
             <Left>{leftComponent}</Left>
             <Right>{rightComponent}</Right>
         </SplitviewContainer>
+    );
+};
+
+const ErrorButton: React.FC<ErrorButtonProps> = props => {
+    const { onSecondaryClick, message, secondaryButtonText } = props;
+    return (
+        <ErrorButtonContainer>
+            <CloseIconContainer>
+                <CloseIcon name="close" size={10} />
+            </CloseIconContainer>
+            <span>{message}</span>
+            <Retry onClick={onSecondaryClick}>{secondaryButtonText}</Retry>
+        </ErrorButtonContainer>
     );
 };
 
@@ -216,6 +273,13 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                     </SpinnerContainer>
                                     <span>Waiting for signature</span>
                                 </ButtonWithIcon>
+
+                                <ErrorButton
+                                    message="Transaction aborted"
+                                    secondaryButtonText="Retry"
+                                    onClose={() => {}}
+                                    onSecondaryClick={() => {}}
+                                />
                             </Inner>
                         </>
                     }

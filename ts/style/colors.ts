@@ -24,6 +24,7 @@ const appColors = {
     textDarkPrimary: '#000000',
     textDarkSecondary: '#5C5C5C',
     white: '#fff',
+    error: ' #E71D36',
     instantPrimaryBackground: '#222222',
     instantSecondaryBackground: '#333333',
     instantTertiaryBackground: '#444444',
