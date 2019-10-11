@@ -1,4 +1,3 @@
-import { BigNumber } from '@0x/utils';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
@@ -27,7 +26,9 @@ const StakingPoolDetailRowWrapper = styled.div`
     align-items: center;
     padding: 0 20px;
     flex-wrap: wrap;
+    margin: auto;
     max-width: 1152px;
+    margin-top: 20px;
 
     @media (max-width: ${ScreenWidths.Lg}rem) {
         font-size: 20px;
@@ -138,7 +139,7 @@ const PoolWebsiteLink = ({ websiteUrl }: { websiteUrl: string }) => (
 interface IStakingPoolDetailRowProps {
     name: string;
     ethAddress: string;
-    feesCollectedEth: BigNumber;
+    feesCollectedEth: number;
     stakingPercent: number;
     rewardsSharePercent: number;
 
