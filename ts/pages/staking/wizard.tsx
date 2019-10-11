@@ -277,8 +277,12 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                 <ErrorButton
                                     message="Transaction aborted"
                                     secondaryButtonText="Retry"
-                                    onClose={() => {}}
-                                    onSecondaryClick={() => {}}
+                                    onClose={() => {
+                                        const a = 1;
+                                    }}
+                                    onSecondaryClick={() => {
+                                        const a = 1;
+                                    }}
                                 />
                             </Inner>
                         </>
