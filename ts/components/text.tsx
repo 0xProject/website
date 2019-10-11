@@ -27,6 +27,7 @@ interface ParagraphProps extends BaseTextInterface {
     lineHeight?: number | string;
     marginBottom?: string; // maybe we should remove isNoMargin
     isMuted?: boolean | number;
+    fontSize?: string;
     fontWeight?: string | number;
 }
 
@@ -65,7 +66,7 @@ Heading.defaultProps = {
 // and be more generic. e.g. <Text /> with a props asElement so we can use it
 // for literally anything =
 export const Paragraph = styled.p<ParagraphProps>`
-    font-size: ${props => `var(--${props.size || 'default'}Paragraph)`};
+    font-size: ${props => props.fontSize || `var(--${props.size || 'default'}Paragraph)`};
     font-weight: ${props => props.fontWeight || 300};
     margin-bottom: ${props => !props.isNoMargin && (props.marginBottom || '30px')};
     padding: ${props => props.padding && getCSSPadding(props.padding)};
