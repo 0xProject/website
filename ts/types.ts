@@ -644,6 +644,7 @@ export enum Providers {
     Mist = 'MIST',
     CoinbaseWallet = 'COINBASE_WALLET',
     Cipher = 'CIPHER',
+    TrustWallet = 'TRUST_WALLET',
 }
 
 export interface InjectedProviderUpdate {

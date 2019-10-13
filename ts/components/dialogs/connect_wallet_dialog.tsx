@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { Heading, Paragraph } from 'ts/components/text';
+import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
 // TODO(kimpers): New providers needed!
 import { Providers } from 'ts/types';
@@ -35,7 +36,7 @@ const StyledDialogOverlay = styled(DialogOverlay)`
 
 const StyledDialogContent = styled(DialogContent)`
     width: 571px !important;
-    background: #ffffff;
+    background: ${props => props.theme.bgColor};
     border: 1px solid #e5e5e5;
 
     @media (max-width: 768px) {
@@ -85,7 +86,7 @@ const HeadingRow = styled.div`
 
     figure {
         path {
-            fill: #000;
+            fill: ${colors.black};
         }
     }
 `;
@@ -117,6 +118,7 @@ interface IProviderInfo {
     name: string;
     id: string;
     description?: string;
+    icon?: React.ReactNode;
 }
 
 interface IWalletCategoryProps {
@@ -125,16 +127,16 @@ interface IWalletCategoryProps {
     onClick: (id: string) => void;
 }
 
-const WalletCategory = ({ title, providers, onClick }: IWalletCategoryProps) => {
+const WalletCategory = ({ title, providers, onClick, icon }: IWalletCategoryProps) => {
     return (
         <WalletCategoryStyling>
-            <Heading asElement="h5" color="#5C5C5C" size={20} marginBottom="15px">
+            <Heading asElement="h5" color={colors.textDarkSecondary} size={20} marginBottom="15px">
                 {title}
             </Heading>
             <div>
                 {providers.map(provider => (
                     <WalletProviderButton onClick={() => onClick(provider.id)} key={provider.name}>
-                        <Icon name={`${provider.id.toLowerCase()}_icon`} size={30} />
+                        {provider.icon || <Icon name={`${provider.id.toLowerCase()}_icon`} size={30} />}
                         <Divider />
                         <div style={{ textAlign: 'left' }}>
                             <Heading asElement="h5" size={20} marginBottom="0px">
@@ -153,7 +155,7 @@ const WalletCategory = ({ title, providers, onClick }: IWalletCategoryProps) => 
     );
 };
 
-const MOCK_DATA = [
+const MOCK_DATA_DESKTOP = [
     {
         title: 'Detected wallet',
         providers: [
@@ -188,6 +190,68 @@ const MOCK_DATA = [
     },
 ];
 
+const IconPlus = styled.div`
+    position: relative;
+    width: 15px;
+    height: 15px;
+    margin: auto;
+
+    &:before,
+    &:after {
+        content: '';
+        position: absolute;
+        background-color: ${colors.black};
+    }
+
+    &:before {
+        top: 0;
+        left: 7px;
+        width: 1px;
+        height: 100%;
+    }
+
+    &:after {
+        top: 7px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+    }
+`;
+
+const MOCK_DATA_MOBILE = [
+    {
+        title: 'Mobile wallet',
+        providers: [
+            {
+                name: 'Coinbase',
+                id: Providers.CoinbaseWallet,
+            },
+            {
+                name: 'Trust',
+                id: Providers.TrustWallet,
+            },
+            {
+                name: 'Other mobile wallets',
+                id: 'OTHER_WALLETS',
+                icon: (
+                    <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
+                        <IconPlus />
+                    </div>
+                ),
+            },
+        ],
+    },
+    {
+        title: 'Hardware wallets',
+        providers: [
+            {
+                name: 'Ledger X',
+                id: 'LEDGER',
+            },
+        ],
+    },
+];
+
 interface IConnectWalletDialogProps {
     onDismiss: () => void;
 }
@@ -202,7 +266,7 @@ export const ConnectWalletDialog = ({ onDismiss }: IConnectWalletDialogProps) =>
                         <Icon name="close-modal" />
                     </Button>
                 </HeadingRow>
-                {MOCK_DATA.map(({ title, providers }, i) => (
+                {MOCK_DATA_MOBILE.map(({ title, providers }, i) => (
                     <WalletCategory
                         key={`wallet-category-${i}`}
                         title={title}
