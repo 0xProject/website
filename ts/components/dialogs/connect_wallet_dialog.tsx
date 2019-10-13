@@ -10,6 +10,7 @@ import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
 // TODO(kimpers): New providers needed!
 import { Providers } from 'ts/types';
+import { utils } from 'ts/utils/utils';
 
 const MainHeading = styled(Heading).attrs({
     asElement: 'h3',
@@ -114,20 +115,12 @@ const WalletCategoryStyling = styled.div`
     }
 `;
 
-interface IProviderInfo {
-    name: string;
-    id: string;
-    description?: string;
-    icon?: React.ReactNode;
-}
-
 interface IWalletCategoryProps {
     title: string;
     providers: IProviderInfo[];
-    onClick: (id: string) => void;
 }
 
-const WalletCategory = ({ title, providers, onClick, icon }: IWalletCategoryProps) => {
+const WalletCategory = ({ title, providers }: IWalletCategoryProps) => {
     return (
         <WalletCategoryStyling>
             <Heading asElement="h5" color={colors.textDarkSecondary} size={20} marginBottom="15px">
@@ -135,7 +128,7 @@ const WalletCategory = ({ title, providers, onClick, icon }: IWalletCategoryProp
             </Heading>
             <div>
                 {providers.map(provider => (
-                    <WalletProviderButton onClick={() => onClick(provider.id)} key={provider.name}>
+                    <WalletProviderButton onClick={provider.onClick} key={provider.name}>
                         {provider.icon || <Icon name={`${provider.id.toLowerCase()}_icon`} size={30} />}
                         <Divider />
                         <div style={{ textAlign: 'left' }}>
@@ -154,41 +147,6 @@ const WalletCategory = ({ title, providers, onClick, icon }: IWalletCategoryProp
         </WalletCategoryStyling>
     );
 };
-
-const MOCK_DATA_DESKTOP = [
-    {
-        title: 'Detected wallet',
-        providers: [
-            {
-                name: 'MetaMask',
-                id: Providers.Metamask,
-            },
-        ],
-    },
-    {
-        title: 'Hardware wallets',
-        providers: [
-            {
-                name: 'Trezor',
-                id: 'TREZOR',
-            },
-            {
-                name: 'Ledger',
-                id: 'LEDGER',
-            },
-        ],
-    },
-    {
-        title: 'Mobile wallets',
-        providers: [
-            {
-                name: 'Wallet connect',
-                id: 'wallet_connect',
-                description: 'Walleth, Trust, Tokenary, Rainbow, Pillar, Argent, etc',
-            },
-        ],
-    },
-];
 
 const IconPlus = styled.div`
     position: relative;
@@ -218,62 +176,92 @@ const IconPlus = styled.div`
     }
 `;
 
-const MOCK_DATA_MOBILE = [
-    {
-        title: 'Mobile wallet',
-        providers: [
-            {
-                name: 'Coinbase',
-                id: Providers.CoinbaseWallet,
-            },
-            {
-                name: 'Trust',
-                id: Providers.TrustWallet,
-            },
-            {
-                name: 'Other mobile wallets',
-                id: 'OTHER_WALLETS',
-                icon: (
-                    <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
-                        <IconPlus />
-                    </div>
-                ),
-            },
-        ],
-    },
-    {
-        title: 'Hardware wallets',
-        providers: [
-            {
-                name: 'Ledger X',
-                id: 'LEDGER',
-            },
-        ],
-    },
-];
-
 interface IConnectWalletDialogProps {
     onDismiss: () => void;
 }
 
+interface IProviderInfo {
+    name: string;
+    id: string;
+    description?: string;
+    icon?: React.ReactNode;
+    onClick?: () => void;
+}
+
+interface IWalletProviderCategory {
+    title: string;
+    providers: IProviderInfo[];
+}
+
 export const ConnectWalletDialog = ({ onDismiss }: IConnectWalletDialogProps) => {
+    const [shouldShowOtherWallets, setShouldShowOtherWallets] = React.useState(false);
+
+    let walletProviders: IWalletProviderCategory[];
+    if (utils.isMobileOperatingSystem()) {
+        walletProviders = [
+            {
+                title: 'Mobile wallet',
+                providers: [
+                    { name: 'Coinbase', id: Providers.CoinbaseWallet },
+                    { name: 'Trust', id: Providers.TrustWallet },
+                    {
+                        name: 'Other mobile wallets',
+                        id: 'OTHER_WALLETS',
+                        icon: (
+                            <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
+                                <IconPlus />
+                            </div>
+                        ),
+                        onClick: () => setShouldShowOtherWallets(true),
+                    },
+                ],
+            },
+            {
+                title: 'Hardware wallets',
+                providers: [{ name: 'Ledger X', id: 'LEDGER' }],
+            },
+        ];
+    } else {
+        walletProviders = [
+            {
+                title: 'Detected wallet',
+                providers: [{ name: 'MetaMask', id: Providers.Metamask }],
+            },
+            {
+                title: 'Hardware wallets',
+                providers: [{ name: 'Trezor', id: 'TREZOR' }, { name: 'Ledger', id: 'LEDGER' }],
+            },
+            {
+                title: 'Mobile wallets',
+                providers: [
+                    {
+                        name: 'Wallet connect',
+                        id: Providers.WalletConnect,
+                        description: 'Walleth, Trust, Tokenary, Rainbow, Pillar, Argent, etc',
+                    },
+                ],
+            },
+        ];
+    }
+
     return (
         <StyledDialogOverlay isOpen={true}>
             <StyledDialogContent>
-                <HeadingRow>
-                    <MainHeading>Connect a wallet</MainHeading>
-                    <Button isTransparent={true} isNoBorder={true} padding="0px">
-                        <Icon name="close-modal" />
-                    </Button>
-                </HeadingRow>
-                {MOCK_DATA_MOBILE.map(({ title, providers }, i) => (
-                    <WalletCategory
-                        key={`wallet-category-${i}`}
-                        title={title}
-                        providers={providers}
-                        onClick={(id: string) => alert(`Clicked on wallet provider ${id}`)}
-                    />
-                ))}
+                {shouldShowOtherWallets ? (
+                    <span>OTHER WALLETS</span>
+                ) : (
+                    <>
+                        <HeadingRow>
+                            <MainHeading>Connect a wallet</MainHeading>
+                            <Button isTransparent={true} isNoBorder={true} padding="0px">
+                                <Icon name="close-modal" />
+                            </Button>
+                        </HeadingRow>
+                        {walletProviders.map(({ title, providers }, i) => (
+                            <WalletCategory key={`wallet-category-${i}`} title={title} providers={providers} />
+                        ))}
+                    </>
+                )}
             </StyledDialogContent>
         </StyledDialogOverlay>
     );
