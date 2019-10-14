@@ -186,7 +186,7 @@ const Action = styled(FlexBase)`
             padding-left: 30px;
         }
 
-        button {
+        button, a {
             display: none;
         }
     }

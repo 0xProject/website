@@ -321,8 +321,14 @@ const FigureItem = styled.div`
         }
     }
 
-    & + & {
-        margin-left: 12px;
+    @media (min-width: 768px) {
+        & + & {
+            margin-left: 12px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
     }
 `;
 
