@@ -58,7 +58,7 @@ export const Button: React.StatelessComponent<ButtonInterface> = (props: ButtonI
             {children}
 
             {isWithArrow && (
-                <svg width="16" height="15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 16 15" width="16" height="15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4.484.246l.024 1.411 8.146.053L.817 13.547l.996.996L13.65 2.706l.052 8.146 1.412.024L15.045.315 4.484.246z" />
                 </svg>
             )}

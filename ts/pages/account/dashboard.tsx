@@ -85,10 +85,58 @@ export const Account: React.FC<AccountProps> = () => {
                     />
 
                     <Figures>
-                        {/* Note: replace this with figures component, shared with MarketMaker etc. */}
-                        <div>Figure</div>
-                        <div>Figure</div>
-                        <div>Figure</div>
+                        <FigureItem>
+                            <header>
+                                Wallet balance
+
+                                <button>
+                                    <svg width="7" height="13" viewBox="0 0 7 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g opacity="0.7">
+                                            <path d="M3.61176 0.888889C3.61176 1.10367 3.43765 1.27778 3.22287 1.27778C3.0081 1.27778 2.83398 1.10367 2.83398 0.888889C2.83398 0.674111 3.0081 0.5 3.22287 0.5C3.43765 0.5 3.61176 0.674111 3.61176 0.888889Z" fill="white" stroke="#5C5C5C"/>
+                                            <path d="M1 4.88867H3.66667V11.9998" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M1 12H6.33333" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                    </svg>
+                                </button>
+                            </header>
+
+                            21,000,000 ZRX
+                        </FigureItem>
+
+                        <FigureItem>
+                            <header>
+                                Staked Balance
+
+                                <button>
+                                    <svg width="7" height="13" viewBox="0 0 7 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g opacity="0.7">
+                                            <path d="M3.61176 0.888889C3.61176 1.10367 3.43765 1.27778 3.22287 1.27778C3.0081 1.27778 2.83398 1.10367 2.83398 0.888889C2.83398 0.674111 3.0081 0.5 3.22287 0.5C3.43765 0.5 3.61176 0.674111 3.61176 0.888889Z" fill="white" stroke="#5C5C5C"/>
+                                            <path d="M1 4.88867H3.66667V11.9998" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M1 12H6.33333" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                    </svg>
+                                </button>
+                            </header>
+
+                            1,322,000 ZRX
+                        </FigureItem>
+
+                        <FigureItem>
+                            <header>
+                                Rewards
+
+                                <Button
+                                    isWithArrow={true}
+                                    isTransparent={true}
+                                    fontSize="17px"
+                                    color={colors.brandLight}
+                                >
+                                    Withdraw
+                                </Button>
+                            </header>
+
+                            .000213 ETH
+                        </FigureItem>
                     </Figures>
                 </Inner>
             </HeaderWrapper>
@@ -150,7 +198,7 @@ export const Account: React.FC<AccountProps> = () => {
                         to="/account/activity"
                     >
                         Apply to create a staking pool
-                    </Button>
+                    </Button>to="/account/activity"
                 </SectionHeader>
 
                 <CallToAction
@@ -229,24 +277,45 @@ const Inner = styled.div`
 `;
 
 const Figures = styled.div`
-    div {
-        background-color: #fff;
-        padding: 20px;
-        width: 252px;
-        height: 94px;
-        text-align: left;
-    }
-
     @media (max-width: 1200px) {
         padding-top: 24px;
     }
 
     @media (min-width: 768px) {
         display: flex;
+    }
+`;
 
-        div + div {
-            margin-left: 12px;
+const FigureItem = styled.div`
+    background-color: #fff;
+    padding: 20px;
+    width: 252px;
+    height: 94px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 20px;
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 17px;
+        color: #999;
+    }
+
+    button {
+        border: 0;
+        font-size: 17px;
+
+        svg {
+            height: 13px;
         }
+    }
+
+    & + & {
+        margin-left: 12px;
     }
 `;
 
