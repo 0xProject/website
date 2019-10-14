@@ -20,6 +20,7 @@ interface InputProps {
     errors?: ErrorProps;
     isErrors?: boolean;
     required?: boolean;
+    placeholder?: string;
     onChange?: (e: React.ChangeEvent) => void;
 }
 
@@ -67,7 +68,7 @@ export const CheckBoxInput = (props: CheckBoxProps) => {
 };
 
 export const Input = React.forwardRef((props: InputProps, ref?: React.Ref<HTMLInputElement>) => {
-    const { name, label, type, errors, defaultValue, onChange, width, className } = props;
+    const { name, label, type, errors, defaultValue, onChange, width, className, placeholder } = props;
     const id = `input-${name}`;
     const componentType = type === 'textarea' ? 'textarea' : 'input';
     const isErrors = errors.hasOwnProperty(name) && errors[name] !== null;
@@ -84,6 +85,7 @@ export const Input = React.forwardRef((props: InputProps, ref?: React.Ref<HTMLIn
                 isErrors={isErrors}
                 defaultValue={defaultValue}
                 onChange={onChange}
+                placeholder={placeholder}
                 {...inputProps}
             />
             {isErrors && <Error>{errorMessage}</Error>}
