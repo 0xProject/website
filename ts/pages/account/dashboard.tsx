@@ -8,6 +8,7 @@ import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_lay
 import { Heading } from 'ts/components/text';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
+import { AccountApplyModal } from 'ts/pages/account/account_apply_modal';
 import { AccountDetail } from 'ts/pages/account/account_detail';
 import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
@@ -74,6 +75,8 @@ const MOCK_DATA = {
 };
 
 export const Account: React.FC<AccountProps> = () => {
+    const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
+
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
@@ -195,10 +198,10 @@ export const Account: React.FC<AccountProps> = () => {
                     <Button
                         isWithArrow={true}
                         isTransparent={true}
-                        to="/account/activity"
+                        onClick={() => toggleApplyModal(true)}
                     >
                         Apply to create a staking pool
-                    </Button>to="/account/activity"
+                    </Button>
                 </SectionHeader>
 
                 <CallToAction
@@ -247,6 +250,10 @@ export const Account: React.FC<AccountProps> = () => {
                     })}
                 </Grid>
             </SectionWrapper>
+
+            <AccountApplyModal
+                isOpen={isApplyModalOpen}
+                onDismiss={() => toggleApplyModal(false)} />
         </StakingPageLayout>
     );
 };
