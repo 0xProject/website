@@ -347,6 +347,16 @@ const SectionHeader = styled.header`
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+
+    @media (max-width: 768px) {
+        h3 {
+            font-size: 28px;
+        }
+
+        a, button {
+            display: none;
+        }
+    }
 `;
 
 const Grid = styled.div`
