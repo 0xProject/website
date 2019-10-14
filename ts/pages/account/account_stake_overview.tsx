@@ -128,8 +128,15 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
             </Flex>
 
             <MobileActions>
-                <Button color="#fff">
-                    View history
+                <Button
+                    to="/account/history"
+                    color={colors.white}
+                    fontSize="17px"
+                    fontWeight="300"
+                    padding="15px 35px"
+                    isFullWidth={true}
+                >
+                    View History
                 </Button>
 
                 <Button
@@ -240,8 +247,9 @@ const MobileActions = styled.div`
         width: 100%;
     }
 
-    button + button {
-        margin-top: 20px;
+    a + button,
+    a + a {
+        margin-top: 16px;
     }
 
     @media (min-width: 768px) {
