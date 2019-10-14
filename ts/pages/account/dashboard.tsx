@@ -178,7 +178,14 @@ export const Account: React.FC<AccountProps> = () => {
                     subtitle="6,000 ZRX  →  0x12345...12345"
                     avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
                 >
-                    <Button color="#fff">
+                    <Button
+                        to="/"
+                        color={colors.brandLight}
+                        bgColor={colors.white}
+                        fontSize="17px"
+                        fontWeight="300"
+                        padding="15px 35px"
+                    >
                         Withdraw ZRX
                     </Button>
                 </AccountActivitySummary>
@@ -309,11 +316,13 @@ const FigureItem = styled.div`
         align-items: center;
         font-size: 17px;
         color: #999;
+        font-weight: 200;
     }
 
     button {
         border: 0;
         font-size: 17px;
+        font-weight: 200;
 
         svg {
             height: 13px;
