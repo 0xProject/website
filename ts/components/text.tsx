@@ -20,6 +20,7 @@ interface HeadingProps extends BaseTextInterface {
     marginBottom?: string;
     color?: string;
     children?: React.ReactNode | string;
+    style?: object;
 }
 
 interface ParagraphProps extends BaseTextInterface {
