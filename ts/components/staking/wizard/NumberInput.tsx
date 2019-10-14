@@ -6,10 +6,15 @@ import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
 
 interface NumberInputProps {
+    heading?: string;
     placeholder: string;
-    topLabel?: string;
+    topLabels?: string[];
     bottomLabels?: BottomLabelProps[];
-    onChange?: () => void;
+    isError?: boolean;
+    labels?: string[];
+    value?: string;
+    shouldFocusOnInit?: boolean;
+    onChange?: (newValue: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface BottomLabelProps {
@@ -22,19 +27,25 @@ interface BottomLabelComponentProps {
     item: BottomLabelProps;
 }
 
+interface InputContainerProps {
+    isError: boolean;
+}
+
 const Container = styled.div`
     margin-bottom: 30px;
 `;
 
-const InputContainer = styled.div`
-    border: 1px solid #d9d9d9;
+const InputContainer = styled.div<InputContainerProps>`
+    transition: border 0.3s ease;
     position: relative;
     height: 70px;
     display: flex;
+    margin-bottom: 30px;
     align-items: center;
     background-color: ${colors.white};
+    border: 1px solid ${props => (props.isError ? colors.orange : '#d9d9d9')};
     &:focus-within {
-        border: 1px solid ${colors.brandLight};
+        border: 1px solid ${props => (props.isError ? colors.orange : colors.brandLight)};
     }
 `;
 
@@ -92,14 +103,27 @@ const Label = styled.li`
     }
 `;
 
+const TopLabels = styled.span`
+    display: flex;
+    justify-content: space-between;
+`;
+
 const TopLabel = styled.span`
     display: block;
-    text-align: right;
     width: 100%;
     color: ${colors.textDarkSecondary};
     font-size: 16px;
     line-height: 1.34;
     margin-bottom: 8px;
+    &:last-child {
+        text-align: right;
+    }
+`;
+
+const Heading = styled.h3`
+    font-size: 20px;
+    line-height: 1.35;
+    margin-bottom: 15px;
 `;
 
 const BottomLabels = styled.ol`
@@ -143,7 +167,9 @@ const BottomLabel: React.FC<BottomLabelComponentProps> = ({ item }) => {
     if (onClick != null) {
         return (
             <li>
-                <a href="#" onClick={onClick}>{label}</a>
+                <a href="#" onClick={onClick}>
+                    {label}
+                </a>
             </li>
         );
     }
@@ -160,20 +186,36 @@ const BottomLabel: React.FC<BottomLabelComponentProps> = ({ item }) => {
 };
 
 export const NumberInput: React.FC<NumberInputProps> = props => {
-    const { placeholder, topLabel, bottomLabels, onChange } = props;
+    const { placeholder, bottomLabels, labels, onChange, topLabels, heading, isError, shouldFocusOnInit } = props;
+
+    const input = React.useRef(null);
+
+    React.useLayoutEffect(() => {
+        if (shouldFocusOnInit) {
+            input.current.focus();
+        }
+    }, []);
+
     return (
         <Container>
-            {topLabel != null && <TopLabel>{topLabel}</TopLabel>}
-            <InputContainer>
+            {heading && <Heading>{heading}</Heading>}
+            <TopLabels>
+                {topLabels != null &&
+                    topLabels.length > 0 &&
+                    topLabels.map(label => <TopLabel key={label}>{label}</TopLabel>)}
+            </TopLabels>
+            <InputContainer isError={isError}>
                 <ZrxIcon>
                     <Icon name="logo-mark" size={40} />
                 </ZrxIcon>
-                <Input type="number" name="stake" placeholder={placeholder} onChange={onChange} />
-                <Labels>
-                    <Label>25%</Label>
-                    <Label>50%</Label>
-                    <Label>100%</Label>
-                </Labels>
+                <Input type="number" name="stake" placeholder={placeholder} onChange={onChange} ref={input} />
+                {labels != null && labels.length > 0 && (
+                    <Labels>
+                        {labels.map((label, index) => {
+                            return <Label key={index.toString()}>{label}</Label>;
+                        })}
+                    </Labels>
+                )}
             </InputContainer>
             {bottomLabels != null && bottomLabels.length > 0 && (
                 <BottomLabels>

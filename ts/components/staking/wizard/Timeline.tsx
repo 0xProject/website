@@ -98,7 +98,7 @@ export const Timeline: React.FC<TimelineProps> = props => {
                     const { date, fromNow, title, description } = item;
                     const isActive = activeItemIndex === index;
                     return (
-                        <TimelineItem key={date}>
+                        <TimelineItem key={index.toString()}>
                             <TimelineDate>
                                 <span>{fromNow}</span>
                                 <span>{date}</span>
