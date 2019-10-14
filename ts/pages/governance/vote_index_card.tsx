@@ -82,7 +82,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = ({
                 <FlexWrap>
                     <Column width="60%" padding="0px 20px 0px 0px">
                         <Heading>
-                            {`${title} `}
+                            {`${title} `} sdf
                             <Muted>{`(ZEIP-${zeipId})`}</Muted>
                         </Heading>
 
