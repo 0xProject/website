@@ -211,7 +211,7 @@ export const Account: React.FC<AccountProps> = () => {
                 </SectionHeader>
 
                 <CallToAction
-                    icon="voting"
+                    icon="revenue"
                     title="You haven't staked ZRX"
                     description="Start staking your ZRX and getting interest."
                     actions={[
