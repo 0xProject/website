@@ -18,7 +18,7 @@ export const AccountApplyModal: React.FunctionComponent<Props> = ({
   isOpen,
   onDismiss,
 }) => {
-  const onSubmit = e => {
+  const onSubmit = (e: React.FormEvent<HTMLInputElement>): void => {
     e.preventDefault();
     alert('submit!');
   };
