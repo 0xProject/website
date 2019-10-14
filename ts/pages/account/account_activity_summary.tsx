@@ -10,6 +10,7 @@ interface AccountActivitySummaryProps {
     subtitle: string;
     avatarSrc?: string;
     children?: any;
+    icon?: string;
 }
 
 const Wrap = styled.div`
@@ -45,6 +46,7 @@ export const AccountActivitySummary: React.StatelessComponent<AccountActivitySum
     title,
     subtitle,
     avatarSrc,
+    icon,
     children,
 }) => {
     return (
@@ -53,6 +55,7 @@ export const AccountActivitySummary: React.StatelessComponent<AccountActivitySum
                 title={title}
                 subtitle={subtitle}
                 avatarSrc={avatarSrc}
+                icon={icon}
             />
 
             <ChildWrap>

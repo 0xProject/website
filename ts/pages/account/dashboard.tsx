@@ -23,6 +23,7 @@ const MOCK_DATA = {
         title: '500 ZRX will be removed from Binance Pool in 10 days',
         subtitle: 'Your tokens will need to be manually withdrawn once they are removed ',
         avatarSrc: 'https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png',
+        icon: 'clock',
     },
     stakes: [
         {
@@ -166,6 +167,7 @@ export const Account: React.FC<AccountProps> = () => {
                     title={MOCK_DATA.activitySummary.title}
                     subtitle={MOCK_DATA.activitySummary.subtitle}
                     avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
+                    icon={MOCK_DATA.activitySummary.icon}
                 >
                     <StatFigure
                         label="Withdraw date"
@@ -177,6 +179,7 @@ export const Account: React.FC<AccountProps> = () => {
                     title="Your ZRX is unlocked and ready for withdrawal"
                     subtitle="6,000 ZRX  →  0x12345...12345"
                     avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
+                    icon="check"
                 >
                     <Button
                         to="/"
