@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { Heading, Paragraph } from 'ts/components/text';
 import { colors } from 'ts/style/colors';
 
+import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
+
 interface PanelHeaderProps {
     avatarSrc?: string;
     avatarComponent?: React.ReactNode;
@@ -27,6 +29,11 @@ const Wrap = styled.div`
             display: none;
         }
     }
+`;
+
+const Flex = styled.div`
+    display: flex;
+    align-items: center;
 `;
 
 const Avatar = styled.figure<AvatarProps>`
@@ -62,13 +69,17 @@ export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
             )}
 
             <div>
-                <Heading
-                    size="small"
-                    fontWeight="500"
-                    isNoMargin={true}
-                >
-                    {title}
-                </Heading>
+                <Flex>
+                    <Heading
+                        size="small"
+                        fontWeight="500"
+                        isNoMargin={true}
+                        style={{ marginRight: '8px' }}
+                    >
+                        {title}
+                    </Heading>
+                    <CircleCheckMark />
+                </Flex>
 
                 <Paragraph
                     fontSize="17px"
