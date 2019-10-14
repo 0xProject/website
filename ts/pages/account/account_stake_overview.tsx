@@ -75,7 +75,17 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                         </div>
                     </InlineStats>
 
-                    <Button color="red" bgColor="#fff" borderColor={colors.border}>
+                    <Button
+                        to="/"
+                        color={colors.red}
+                        borderColor="#D5D5D5"
+                        bgColor={colors.white}
+                        isTransparent={true}
+                        fontSize="17px"
+                        fontWeight="300"
+                        isNoBorder={true}
+                        padding="15px 35px"
+                    >
                         Remove
                     </Button>
                 </Action>
@@ -105,8 +115,14 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                         </div>
                     </InlineStats>
 
-                    <Button color="#fff" to="/account/history">
-                        View history
+                    <Button
+                        to="/account/history"
+                        color={colors.white}
+                        fontSize="17px"
+                        fontWeight="300"
+                        padding="15px 35px"
+                    >
+                        View History
                     </Button>
                 </Action>
             </Flex>
@@ -116,7 +132,18 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                     View history
                 </Button>
 
-                <Button color="red" bgColor="#fff" borderColor={colors.border}>
+                <Button
+                    to="/"
+                    color={colors.red}
+                    borderColor="#D5D5D5"
+                    bgColor={colors.white}
+                    isTransparent={true}
+                    fontSize="17px"
+                    fontWeight="300"
+                    isNoBorder={true}
+                    padding="15px 35px"
+                    isFullWidth={true}
+                >
                     Remove
                 </Button>
             </MobileActions>
@@ -172,6 +199,7 @@ const Action = styled(FlexBase)`
 
     > div {
         font-size: 18px;
+        flex-shrink: 0;
     }
 
     @media (min-width: 768px) {

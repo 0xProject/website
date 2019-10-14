@@ -81,7 +81,6 @@ export const Account: React.FC<AccountProps> = () => {
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
                 <Inner>
-                    {/* Note: shared component in MarketMaker */}
                     <AccountDetail
                         accountAddress="0x123451234512345"
                         avatarSrc="https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png"
@@ -179,7 +178,7 @@ export const Account: React.FC<AccountProps> = () => {
                     subtitle="6,000 ZRX  →  0x12345...12345"
                     avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
                 >
-                    <Button>
+                    <Button color="#fff">
                         Withdraw ZRX
                     </Button>
                 </AccountActivitySummary>
