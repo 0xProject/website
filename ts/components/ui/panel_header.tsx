@@ -42,7 +42,7 @@ const Avatar = styled.figure<AvatarProps>`
     height: 80px;
     background-color: #fff;
     border: 1px solid ${colors.border};
-    margin-right: 30px;
+    margin-right: 20px;
     position: relative;
 
     img {
