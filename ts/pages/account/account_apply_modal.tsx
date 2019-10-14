@@ -14,11 +14,15 @@ interface Props {
   onDismiss?: () => void;
 }
 
+interface FormProps {
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void,
+}
+
 export const AccountApplyModal: React.FunctionComponent<Props> = ({
   isOpen,
   onDismiss,
 }) => {
-  const onSubmit = (event: React.FormEvent<HTMLInputElement>): void => {
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     alert('submit!');
   };
@@ -84,7 +88,7 @@ const StyledDialogContent = styled(DialogContent)`
     }
 `;
 
-const InputWrap = styled.form`
+const InputWrap = styled.form<FormProps>`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
