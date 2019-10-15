@@ -286,11 +286,22 @@ const StyledTooltip = styled(ReactTooltip)`
         color: ${colors.textDarkPrimary};
         line-height: 1.5;
 
-        &:before {
-            border-top-color: ${colors.border} !important;
+        @media (min-width: 768px) {
+            &:before {
+                border-top-color: ${colors.border} !important;
+            }
+            &:after {
+                border-top-color: #f6f6f6 !important;
+            }
         }
-        &:after {
-            border-top-color: #f6f6f6 !important;
+
+        @media (max-width: 768px) {
+            &:before {
+                border-left-color: ${colors.border} !important;
+            }
+            &:after {
+                border-left-color: #f6f6f6 !important;
+            }
         }
     }
     &.tooltip-light.border {
