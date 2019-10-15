@@ -9,14 +9,19 @@ import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
 import { ScreenWidths } from 'ts/types';
-
+import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
 import { StakingHero } from 'ts/components/staking/hero';
 import { Heading } from 'ts/components/text';
 
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
+    const [isApplyModalOpen, toggleApplyModal] = React.useState(true);
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
+            <StakingConfirmationDialog
+              isOpen={isApplyModalOpen}
+              onDismiss={() => toggleApplyModal(false)}
+            />
             <StakingHero
                 title="Start staking your ZRX tokens"
                 titleMobile="Start staking your tokens"
