@@ -1,3 +1,4 @@
+import { darken } from 'polished';
 import * as React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import styled from 'styled-components';
@@ -111,7 +112,7 @@ const ButtonBase = styled.button<ButtonInterface>`
     }
 
     &:hover {
-        background-color: ${props => !props.isTransparent && !props.isWithArrow && '#04BEA8'};
+        background-color: ${props => !props.isTransparent && !props.isWithArrow && (darken(0.05, props.bgColor || colors.brandLight))};
         border-color: ${props => props.isTransparent && !props.isNoBorder && !props.isWithArrow && '#00AE99'};
 
         svg {
