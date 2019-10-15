@@ -196,6 +196,7 @@ export const Account: React.FC<AccountProps> = () => {
                         fontSize="17px"
                         fontWeight="300"
                         padding="15px 35px"
+                        isFullWidth={true}
                     >
                         Withdraw ZRX
                     </Button>
