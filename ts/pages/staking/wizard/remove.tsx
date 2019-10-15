@@ -9,6 +9,7 @@ import { utils } from 'ts/utils/utils';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 
 import { Button } from 'ts/components/button';
+import { Spinner } from 'ts/components/spinner';
 import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
 import { Timeline } from 'ts/components/staking/wizard/Timeline';
@@ -18,12 +19,13 @@ const STAKED = 1000000;
 
 export interface StakingWizardProps {}
 
-// interface ErrorButtonProps {
-//     message: string;
-//     secondaryButtonText: string;
-//     onClose: () => void;
-//     onSecondaryClick: () => void;
-// }
+enum Steps {
+    Initial,
+    Confirm,
+    WaitingForRemoval,
+    WaitingForConfirmation,
+    Done,
+}
 
 const Container = styled.div`
     max-width: 1390px;
@@ -37,21 +39,29 @@ const Inner = styled.div`
     padding: 30px;
 `;
 
-// const ConnectWalletButton = styled(Button)`
-//     margin-bottom: 60px;
-// `;
+const CenteredHeader = styled.h2`
+    max-width: 440px;
+    margin: 0 auto;
+    font-size: 34px;
+    line-height: 1.23;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 175px;
+`;
 
-// const ButtonWithIcon = styled(Button)`
-//     display: flex;
-//     width: 100%;
-//     justify-content: center;
-//     align-items: center;
-// `;
+const ButtonWithIcon = styled(Button)`
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+`;
 
-// const SpinnerContainer = styled.span`
-//     display: inline-block;
-//     margin-right: 10px;
-// `;
+const SpinnerContainer = styled.span`
+    display: inline-block;
+    margin-right: 10px;
+`;
 
 const InfoHeader = styled.div`
     display: flex;
@@ -68,53 +78,44 @@ const InfoHeaderItem = styled.span`
     }
 `;
 
-// const ErrorButtonContainer = styled.div`
-//     padding: 18px 0;
-//     font-size: 18px;
-//     color: ${colors.error};
-//     border: 1px solid ${colors.error};
-//     display: flex;
-//     align-items: center;
-//     width: 100%;
+const NumberInputContainer = styled.div`
+    margin-bottom: 60px;
+`;
 
-//     span {
-//         flex: 1;
-//     }
-// `;
+const Message = styled.div`
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 130px;
 
-// const CloseIcon = styled(Icon)`
-//     path {
-//         fill: ${colors.error};
-//     }
-// `;
+    h2 {
+        font-size: 34px;
+        line-height: 1.24;
+        width: 100%;
+        margin-bottom: 15px;
+    }
 
-// const CloseIconContainer = styled.button`
-//     text-align: center;
-//     flex: 0 0 60px;
-//     border: 0;
-// `;
+    p {
+        font-size: 18px;
+        line-height: 1.45;
+        color: ${colors.textDarkSecondary};
+        font-weight: 300;
+        max-width: 340px;
+        margin: 0 auto;
+    }
+`;
 
-// const Retry = styled.button`
-//     max-width: 100px;
-//     flex: 1 1 100px;
-//     border: 0;
-//     font-size: 18px;
-//     font-family: 'Formular', monospace;
-//     border-left: 1px solid #898989;
-// `;
+const ButtonsContainer = styled.div`
+    display: flex;
 
-// const ErrorButton: React.FC<ErrorButtonProps> = props => {
-//     const { onSecondaryClick, message, secondaryButtonText } = props;
-//     return (
-//         <ErrorButtonContainer>
-//             <CloseIconContainer>
-//                 <CloseIcon name="close" size={10} />
-//             </CloseIconContainer>
-//             <span>{message}</span>
-//             <Retry onClick={onSecondaryClick}>{secondaryButtonText}</Retry>
-//         </ErrorButtonContainer>
-//     );
-// };
+    & > button {
+        flex: 1;
+        margin-right: 30px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+`;
 
 interface Data {
     currency: string;
@@ -131,7 +132,7 @@ const getData = async (): Promise<Data> => {
 };
 
 export const RemoveStake: React.FC<StakingWizardProps> = props => {
-    const [step, setStep] = React.useState<number>(0);
+    const [step, setStep] = React.useState<Steps>(Steps.Initial);
     const [value, setValue] = React.useState<null | string>(null);
     const [parsedValue, setParsedValue] = React.useState<null | number>(null);
     const [isError, setIsError] = React.useState<boolean>(false);
@@ -139,6 +140,10 @@ export const RemoveStake: React.FC<StakingWizardProps> = props => {
         currency: 'ZRX',
         amountStaked: new BigNumber(0),
     });
+
+    const isStepWaiting = step === Steps.Confirm ||
+        step === Steps.WaitingForConfirmation ||
+        step === Steps.WaitingForRemoval;
 
     const onValueChange = (newValue: string): void => {
         const parsed = parseInt(newValue, 0);
@@ -157,12 +162,34 @@ export const RemoveStake: React.FC<StakingWizardProps> = props => {
         setParsedValue(parsed);
     };
 
-    const onButtonClick = (): void => {
+    const onButtonClick = async (): Promise<void> => {
         if (isError) {
             return;
         }
 
-        setStep(oldStep => oldStep + 1);
+        await startWizard();
+    };
+
+    // This is purely to emulate a 'slow' API response from the server,
+    // can be removed after the real data handling gets implemented.
+    const emulateApiRequest = async () => {
+        return new Promise(resolve => setTimeout(resolve, 1500));
+    };
+
+    const startWizard = async () => {
+        setStep(Steps.Confirm);
+
+        await emulateApiRequest();
+
+        setStep(Steps.WaitingForRemoval);
+
+        await emulateApiRequest();
+
+        setStep(Steps.WaitingForConfirmation);
+
+        await emulateApiRequest();
+
+        setStep(Steps.Done);
     };
 
     React.useEffect(() => {
@@ -210,7 +237,10 @@ export const RemoveStake: React.FC<StakingWizardProps> = props => {
                     rightComponent={
                         <>
                             <InfoHeader>
-                                <InfoHeaderItem>Remove stake</InfoHeaderItem>
+                                <InfoHeaderItem>
+                                    Remove Stake
+                                </InfoHeaderItem>
+
                                 {data != null && data.amountStaked != null && (
                                     <InfoHeaderItem>
                                         Total Staked: {utils.getFormattedAmount(data.amountStaked, 0)}
@@ -218,36 +248,78 @@ export const RemoveStake: React.FC<StakingWizardProps> = props => {
                                 )}
                             </InfoHeader>
                             <Inner>
+                                {isStepWaiting &&
+                                    <CenteredHeader>
+                                        {step === Steps.Confirm && 'Please confirm in Metamask'}
+                                        {step === Steps.WaitingForRemoval && 'Removing your stake'}
+                                        {step === Steps.WaitingForConfirmation && 'Receiving final confirmation'}
+                                    </CenteredHeader>
+                                }
 
-                                <NumberInput
-                                    placeholder="Enter your stake"
-                                    heading="Amount"
-                                    value={value}
-                                    onChange={newValue => onValueChange(newValue.target.value)}
-                                    isError={isError}
-                                    shouldFocusOnInit={true}
-                                />
+                                {step === Steps.Initial &&
+                                    <NumberInputContainer>
+                                        <NumberInput
+                                            placeholder="Amount removed"
+                                            heading="Amount"
+                                            value={value}
+                                            onChange={newValue => onValueChange(newValue.target.value)}
+                                            isError={isError}
+                                            shouldFocusOnInit={true}
+                                        />
+                                    </NumberInputContainer>
+                                }
 
-                                <TransactionItem
-                                    marketMakerId="0x12345...12345"
-                                    selfId="0x12345...12345"
-                                    sendAmount={parsedValue != null ? `${parsedValue} ${data.currency}` : ''}
-                                    selfIconUrl="/images/toshi_logo.jpg"
-                                    receiveAmount="Transfer Scheduled for 24.08"
-                                    marketMakerName="Binance"
-                                    marketMakerIconUrl="/images/toshi_logo.jpg"
-                                    isActive={true}
-                                />
+                                {step !== Steps.Done &&
+                                    <TransactionItem
+                                        marketMakerId="0x12345...12345"
+                                        selfId="0x12345...12345"
+                                        sendAmount={parsedValue != null ? `${parsedValue} ${data.currency}` : ''}
+                                        selfIconUrl="/images/toshi_logo.jpg"
+                                        receiveAmount="Transfer Scheduled for 24.08"
+                                        marketMakerName="Binance"
+                                        marketMakerIconUrl="/images/toshi_logo.jpg"
+                                        isActive={true}
+                                    />
+                                }
 
-                                <Button
-                                    bgColor={colors.orange}
-                                    color={colors.white}
-                                    isFullWidth={true}
-                                    onClick={onButtonClick}
-                                    isDisabled={isError}
-                                >
-                                    Remove stake
-                                </Button>
+                                {step === Steps.Initial && (
+                                    <Button
+                                        bgColor={colors.orange}
+                                        color={colors.white}
+                                        isFullWidth={true}
+                                        onClick={onButtonClick}
+                                        isDisabled={isError}
+                                    >
+                                        Remove stake
+                                    </Button>
+                                )}
+
+                                {isStepWaiting &&
+                                    <ButtonWithIcon
+                                        isTransparent={true}
+                                        borderColor="#DFE7E1"
+                                        color={colors.textDarkSecondary}
+                                        isDisabled={true}
+                                    >
+                                        <SpinnerContainer>
+                                            <Spinner color="#BEBEBE" />
+                                        </SpinnerContainer>
+                                        <span>Waiting for signature</span>
+                                    </ButtonWithIcon>
+                                }
+
+                                {step === Steps.Done &&
+                                    <>
+                                        <Message>
+                                            <h2>Congratulations!</h2>
+                                            <p>You have initiated a removal of your stake. You can already choose another market maker or withdraw your funds after this epoch.</p>
+                                        </Message>
+                                        <ButtonsContainer>
+                                            <Button isInline={true} isTransparent={true} borderColor={colors.brandLight}>Go to dashboard</Button>
+                                            <Button isInline={true} color={colors.white}>Choose new pool</Button>
+                                        </ButtonsContainer>
+                                    </>
+                                }
                             </Inner>
                         </>
                     }
