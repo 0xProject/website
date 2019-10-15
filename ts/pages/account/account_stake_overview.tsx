@@ -78,9 +78,8 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                     <Button
                         to="/"
                         color={colors.red}
-                        borderColor="#D5D5D5"
+                        borderColor={colors.border}
                         bgColor={colors.white}
-                        isTransparent={true}
                         fontSize="17px"
                         fontWeight="300"
                         isNoBorder={true}

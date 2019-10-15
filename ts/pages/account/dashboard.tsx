@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as React from 'react';
-import * as ReactTooltip from 'react-tooltip';
+import ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -94,13 +94,7 @@ export const Account: React.FC<AccountProps> = () => {
                             label="Wallet balance"
                             headerComponent={() => (
                                 <div data-tip={true} data-for="walletBalance" data-border="true">
-                                    <svg width="7" height="13" viewBox="0 0 7 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g opacity="0.7">
-                                            <path d="M3.61176 0.888889C3.61176 1.10367 3.43765 1.27778 3.22287 1.27778C3.0081 1.27778 2.83398 1.10367 2.83398 0.888889C2.83398 0.674111 3.0081 0.5 3.22287 0.5C3.43765 0.5 3.61176 0.674111 3.61176 0.888889Z" fill="white" stroke="#5C5C5C"/>
-                                            <path d="M1 4.88867H3.66667V11.9998" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M1 12H6.33333" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </g>
-                                    </svg>
+                                    {renderInfoIcon()}
 
                                     <StyledTooltip id="walletBalance" className="tooltip-light">
                                         This is the amount available for delegation starting in the next Epoch
@@ -115,13 +109,7 @@ export const Account: React.FC<AccountProps> = () => {
                             label="Staked balance"
                             headerComponent={() => (
                                 <div data-tip={true} data-for="stakedBalance" data-border="true">
-                                    <svg width="7" height="13" viewBox="0 0 7 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g opacity="0.7">
-                                            <path d="M3.61176 0.888889C3.61176 1.10367 3.43765 1.27778 3.22287 1.27778C3.0081 1.27778 2.83398 1.10367 2.83398 0.888889C2.83398 0.674111 3.0081 0.5 3.22287 0.5C3.43765 0.5 3.61176 0.674111 3.61176 0.888889Z" fill="white" stroke="#5C5C5C"/>
-                                            <path d="M1 4.88867H3.66667V11.9998" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M1 12H6.33333" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </g>
-                                    </svg>
+                                    {renderInfoIcon()}
 
                                     <StyledTooltip id="stakedBalance" className="tooltip-light">
                                         This is the amount available for delegation starting in the next Epoch
@@ -193,6 +181,7 @@ export const Account: React.FC<AccountProps> = () => {
                         to="/"
                         color={colors.brandLight}
                         bgColor={colors.white}
+                        borderColor={colors.border}
                         fontSize="17px"
                         fontWeight="300"
                         padding="15px 35px"
@@ -275,6 +264,18 @@ export const Account: React.FC<AccountProps> = () => {
                 onDismiss={() => toggleApplyModal(false)}
             />
         </StakingPageLayout>
+    );
+};
+
+const renderInfoIcon = () => {
+    return (
+        <svg width="7" height="13" viewBox="0 0 7 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g opacity="0.7">
+                <path d="M3.61176 0.888889C3.61176 1.10367 3.43765 1.27778 3.22287 1.27778C3.0081 1.27778 2.83398 1.10367 2.83398 0.888889C2.83398 0.674111 3.0081 0.5 3.22287 0.5C3.43765 0.5 3.61176 0.674111 3.61176 0.888889Z" fill="white" stroke="#5C5C5C"/>
+                <path d="M1 4.88867H3.66667V11.9998" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1 12H6.33333" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+        </svg>
     );
 };
 
