@@ -3,18 +3,14 @@ import styled from 'styled-components';
 
 import { BigNumber } from '@0x/utils';
 
-import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
 import { utils } from 'ts/utils/utils';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 
 import { Button } from 'ts/components/button';
-import { Spinner } from 'ts/components/spinner';
-import { MarketMaker } from 'ts/components/staking/wizard/MarketMaker';
 import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
-import { Status } from 'ts/components/staking/wizard/Status';
 import { Timeline } from 'ts/components/staking/wizard/Timeline';
 import { TransactionItem } from 'ts/components/staking/wizard/TransactionItem';
 
@@ -22,12 +18,12 @@ const STAKED = 1000000;
 
 export interface StakingWizardProps {}
 
-interface ErrorButtonProps {
-    message: string;
-    secondaryButtonText: string;
-    onClose: () => void;
-    onSecondaryClick: () => void;
-}
+// interface ErrorButtonProps {
+//     message: string;
+//     secondaryButtonText: string;
+//     onClose: () => void;
+//     onSecondaryClick: () => void;
+// }
 
 const Container = styled.div`
     max-width: 1390px;
@@ -41,21 +37,21 @@ const Inner = styled.div`
     padding: 30px;
 `;
 
-const ConnectWalletButton = styled(Button)`
-    margin-bottom: 60px;
-`;
+// const ConnectWalletButton = styled(Button)`
+//     margin-bottom: 60px;
+// `;
 
-const ButtonWithIcon = styled(Button)`
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-`;
+// const ButtonWithIcon = styled(Button)`
+//     display: flex;
+//     width: 100%;
+//     justify-content: center;
+//     align-items: center;
+// `;
 
-const SpinnerContainer = styled.span`
-    display: inline-block;
-    margin-right: 10px;
-`;
+// const SpinnerContainer = styled.span`
+//     display: inline-block;
+//     margin-right: 10px;
+// `;
 
 const InfoHeader = styled.div`
     display: flex;
@@ -72,53 +68,53 @@ const InfoHeaderItem = styled.span`
     }
 `;
 
-const ErrorButtonContainer = styled.div`
-    padding: 18px 0;
-    font-size: 18px;
-    color: ${colors.error};
-    border: 1px solid ${colors.error};
-    display: flex;
-    align-items: center;
-    width: 100%;
+// const ErrorButtonContainer = styled.div`
+//     padding: 18px 0;
+//     font-size: 18px;
+//     color: ${colors.error};
+//     border: 1px solid ${colors.error};
+//     display: flex;
+//     align-items: center;
+//     width: 100%;
 
-    span {
-        flex: 1;
-    }
-`;
+//     span {
+//         flex: 1;
+//     }
+// `;
 
-const CloseIcon = styled(Icon)`
-    path {
-        fill: ${colors.error};
-    }
-`;
+// const CloseIcon = styled(Icon)`
+//     path {
+//         fill: ${colors.error};
+//     }
+// `;
 
-const CloseIconContainer = styled.button`
-    text-align: center;
-    flex: 0 0 60px;
-    border: 0;
-`;
+// const CloseIconContainer = styled.button`
+//     text-align: center;
+//     flex: 0 0 60px;
+//     border: 0;
+// `;
 
-const Retry = styled.button`
-    max-width: 100px;
-    flex: 1 1 100px;
-    border: 0;
-    font-size: 18px;
-    font-family: 'Formular', monospace;
-    border-left: 1px solid #898989;
-`;
+// const Retry = styled.button`
+//     max-width: 100px;
+//     flex: 1 1 100px;
+//     border: 0;
+//     font-size: 18px;
+//     font-family: 'Formular', monospace;
+//     border-left: 1px solid #898989;
+// `;
 
-const ErrorButton: React.FC<ErrorButtonProps> = props => {
-    const { onSecondaryClick, message, secondaryButtonText } = props;
-    return (
-        <ErrorButtonContainer>
-            <CloseIconContainer>
-                <CloseIcon name="close" size={10} />
-            </CloseIconContainer>
-            <span>{message}</span>
-            <Retry onClick={onSecondaryClick}>{secondaryButtonText}</Retry>
-        </ErrorButtonContainer>
-    );
-};
+// const ErrorButton: React.FC<ErrorButtonProps> = props => {
+//     const { onSecondaryClick, message, secondaryButtonText } = props;
+//     return (
+//         <ErrorButtonContainer>
+//             <CloseIconContainer>
+//                 <CloseIcon name="close" size={10} />
+//             </CloseIconContainer>
+//             <span>{message}</span>
+//             <Retry onClick={onSecondaryClick}>{secondaryButtonText}</Retry>
+//         </ErrorButtonContainer>
+//     );
+// };
 
 interface Data {
     currency: string;
