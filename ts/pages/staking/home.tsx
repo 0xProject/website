@@ -6,10 +6,12 @@ import { colors } from 'ts/style/colors';
 import { Button } from 'ts/components/button';
 import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 
+import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
+
 import { ScreenWidths } from 'ts/types';
-import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
+
 import { StakingHero } from 'ts/components/staking/hero';
 import { Heading } from 'ts/components/text';
 
