@@ -74,22 +74,31 @@ const WalletProviderButton = styled(Button).attrs({
     }
 `;
 
+const ButtonClose = styled(Button)`
+    width: 18px;
+    height: 18px;
+    border: none;
+
+    path {
+        fill: ${colors.black};
+    }
+`;
+
+const ButtonBack = styled(Button)`
+    width: 22px;
+    height: 17px;
+    border: none;
+
+    path {
+        fill: ${colors.backgroundDark};
+    }
+`;
+
 const HeadingRow = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 30px;
-
-    button {
-        height: 18px;
-        width: 18px;
-    }
-
-    figure {
-        path {
-            fill: ${colors.black};
-        }
-    }
 `;
 
 const Divider = styled.div`
@@ -132,11 +141,11 @@ const WalletCategory = ({ title, providers }: IWalletCategoryProps) => {
                         {provider.icon || <Icon name={`${provider.id.toLowerCase()}_icon`} size={30} />}
                         <Divider />
                         <div style={{ textAlign: 'left' }}>
-                            <Heading asElement="h5" size={20} marginBottom="0px">
+                            <Heading asElement="h5" size={20} marginBottom="0">
                                 {provider.name}
                             </Heading>
                             {provider.description && (
-                                <Paragraph size="small" color="#898990" marginBottom="0px">
+                                <Paragraph size="small" color="#898990" marginBottom="0">
                                     {provider.description}
                                 </Paragraph>
                             )}
@@ -176,8 +185,65 @@ const IconPlus = styled.div`
     }
 `;
 
+const Arrow = () => (
+    <svg
+        style={{
+            transform: 'rotate(180deg)',
+        }}
+        color={colors.backgroundDark}
+        width="22"
+        height="17"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path d="M13.066 0l-1.068 1.147 6.232 6.557H0v1.592h18.23l-6.232 6.557L13.066 17l8.08-8.5-8.08-8.5z" />
+    </svg>
+);
+
+const DashboardUrlWrapper = styled.div`
+    height: 70px;
+    background: ${colors.backgroundLight};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    user-select: all;
+`;
+
+interface IOtherWalletScreenProps {
+    onDismiss: () => void;
+    onGoBack: () => void;
+}
+
+const OtherWalletScreen = ({ onDismiss, onGoBack }: IOtherWalletScreenProps) => (
+    <>
+        <HeadingRow>
+            <ButtonBack isTransparent={true} isNoBorder={true} padding="0px" onClick={onGoBack}>
+                <Arrow />
+            </ButtonBack>
+            <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onDismiss}>
+                <Icon name="close-modal" />
+            </ButtonClose>
+        </HeadingRow>
+        <Heading asElement="h5" color={colors.textDarkSecondary} size={20} marginBottom="15px">
+            Other mobile wallets
+        </Heading>
+        <Paragraph size={20} color={colors.textDarkPrimary}>
+            Please open the link in your mobile wallet.
+        </Paragraph>
+        <DashboardUrlWrapper>
+            <Paragraph size={20} color={colors.textDarkPrimary} marginBottom="0">
+                https://0x.org/dashboard
+            </Paragraph>
+        </DashboardUrlWrapper>
+    </>
+);
+
 interface IConnectWalletDialogProps {
     onDismiss: () => void;
+    isOpen: boolean;
 }
 
 interface IProviderInfo {
@@ -193,11 +259,12 @@ interface IWalletProviderCategory {
     providers: IProviderInfo[];
 }
 
-export const ConnectWalletDialog = ({ onDismiss }: IConnectWalletDialogProps) => {
+export const ConnectWalletDialog = ({ onDismiss, isOpen }: IConnectWalletDialogProps) => {
     const [shouldShowOtherWallets, setShouldShowOtherWallets] = React.useState(false);
+    const isMobile = utils.isMobileOperatingSystem();
 
     let walletProviders: IWalletProviderCategory[];
-    if (utils.isMobileOperatingSystem()) {
+    if (isMobile) {
         walletProviders = [
             {
                 title: 'Mobile wallet',
@@ -245,17 +312,17 @@ export const ConnectWalletDialog = ({ onDismiss }: IConnectWalletDialogProps) =>
     }
 
     return (
-        <StyledDialogOverlay isOpen={true}>
+        <StyledDialogOverlay isOpen={isOpen}>
             <StyledDialogContent>
-                {shouldShowOtherWallets ? (
-                    <span>OTHER WALLETS</span>
+                {isMobile && shouldShowOtherWallets ? (
+                    <OtherWalletScreen onDismiss={onDismiss} onGoBack={() => setShouldShowOtherWallets(false)} />
                 ) : (
                     <>
                         <HeadingRow>
                             <MainHeading>Connect a wallet</MainHeading>
-                            <Button isTransparent={true} isNoBorder={true} padding="0px">
+                            <ButtonClose isTransparent={true} isNoBorder={true} padding="0px">
                                 <Icon name="close-modal" />
-                            </Button>
+                            </ButtonClose>
                         </HeadingRow>
                         {walletProviders.map(({ title, providers }, i) => (
                             <WalletCategory key={`wallet-category-${i}`} title={title} providers={providers} />
