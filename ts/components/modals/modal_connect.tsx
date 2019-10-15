@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 
-import { Button } from 'ts/components/button';
 import { ButtonClose } from 'ts/components/modals/button_close';
 import { Heading, Paragraph } from 'ts/components/text';
 
@@ -14,7 +13,7 @@ interface Props {
   onDismiss?: () => void;
 }
 
-export const StakingConfirmationDialog: React.FunctionComponent<Props> = ({
+export const ModalConnect: React.FunctionComponent<Props> = ({
   isOpen,
   onDismiss,
 }) => {
@@ -35,22 +34,13 @@ export const StakingConfirmationDialog: React.FunctionComponent<Props> = ({
           fontWeight="400"
           marginBottom="20px"
         >
-          Staking Confirmation
+          Connect a Wallet
         </Heading>
 
         <Paragraph isMuted={false} color={colors.textDarkSecondary}>
-          This will lock your tokens.  To unlock, you will need to remove your stake and wait until the epoch after next before withdrawal is available.
-        </Paragraph>
-        <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-          Unlocking will take between 2-4 weeks (1-2 Epochs)
-        </Paragraph>
-        <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-          50% of your ZRX voting power will go to the owner(s) of the staking pool(s)
+          Detected wallet
         </Paragraph>
         <ButtonClose onClick={onDismiss} />
-        <Button  onClick={onDismiss} isInline={true} isFullWidth={true} color={colors.white}>
-            I understand, Stake my ZRX
-        </Button>
       </StyledDialogContent>
     </DialogOverlay>
   );
@@ -59,7 +49,6 @@ export const StakingConfirmationDialog: React.FunctionComponent<Props> = ({
 const StyledDialogContent = styled(DialogContent)`
     position: relative;
     max-width: 800px;
-    background-color: #f6f6f6 !important;
     padding: 60px 60px !important;
 
     @media (max-width: 768px) {
