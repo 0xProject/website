@@ -207,7 +207,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                         <>
                             <NumberInput
                                 placeholder="Enter your stake"
-                                topLabel="Available: 1,000,000 ZRX"
+                                topLabels={['Available: 1,000,000 ZRX']}
                                 bottomLabels={[
                                     {
                                         label: 'Based on your ZRX balance',
