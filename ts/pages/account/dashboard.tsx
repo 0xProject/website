@@ -162,6 +162,7 @@ export const Account: React.FC<AccountProps> = () => {
                     </Heading>
 
                     <Button
+                        color={colors.brandDark}
                         isWithArrow={true}
                         isTransparent={true}
                         to="/account/activity"
@@ -212,6 +213,7 @@ export const Account: React.FC<AccountProps> = () => {
                     </Heading>
 
                     <Button
+                        color={colors.brandDark}
                         isWithArrow={true}
                         isTransparent={true}
                         onClick={() => toggleApplyModal(true)}
