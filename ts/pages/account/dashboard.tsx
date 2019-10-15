@@ -262,7 +262,8 @@ export const Account: React.FC<AccountProps> = () => {
 
             <AccountApplyModal
                 isOpen={isApplyModalOpen}
-                onDismiss={() => toggleApplyModal(false)} />
+                onDismiss={() => toggleApplyModal(false)}
+            />
         </StakingPageLayout>
     );
 };

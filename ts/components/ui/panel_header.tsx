@@ -49,17 +49,26 @@ const Avatar = styled.figure<AvatarProps>`
         object-fit: cover;
     }
 
-    svg {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        transform: translateX(50%) translateY(50%);
-    }
-
     @media (max-width: 768px) {
         width: 32px;
         height: 32px;
         display: ${props => !props.isResponsive && 'none'};
+    }
+`;
+
+const IconWrap = styled.div`
+    padding: 5px;
+    border-radius: 50%;
+    border: 1px solid ${colors.border};
+    position: relative;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    transform: translateX(50%) translateY(50%);
+    background-color: ${colors.white};
+
+    svg {
+        display: block;
     }
 `;
 
@@ -77,14 +86,18 @@ export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
                     <img src={avatarSrc} />
 
                     {icon === 'check' &&
-                        <CircleCheckMark fill="#fff" />
+                        <IconWrap>
+                            <CircleCheckMark fill="#fff" />
+                        </IconWrap>
                     }
 
                     {icon === 'clock' &&
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="#fff" d="M12 23.5C5.64614 23.5 0.5 18.3539 0.5 12C0.5 5.64614 5.64614 0.5 12 0.5C18.3539 0.5 23.5 5.64614 23.5 12C23.5 18.3539 18.3539 23.5 12 23.5Z" stroke="black"/>
-                            <path d="M11.0762 4.61523V12.6081L18.4608 17.5383" stroke="black"/>
-                        </svg>
+                        <IconWrap>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill="#fff" d="M12 23.5C5.64614 23.5 0.5 18.3539 0.5 12C0.5 5.64614 5.64614 0.5 12 0.5C18.3539 0.5 23.5 5.64614 23.5 12C23.5 18.3539 18.3539 23.5 12 23.5Z" stroke="black"/>
+                                <path d="M11.0762 4.61523V12.6081L18.4608 17.5383" stroke="black"/>
+                            </svg>
+                        </IconWrap>
                     }
                 </Avatar>
             )}
