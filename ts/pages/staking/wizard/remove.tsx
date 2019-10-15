@@ -123,7 +123,7 @@ interface Data {
 }
 
 const getData = async (): Promise<Data> => {
-    return new Promise((resolve, _reject) => {
+    return new Promise<Data>((resolve, _reject) => {
         resolve({
             currency: 'ZRX',
             amountStaked: new BigNumber(1000000),
@@ -173,7 +173,7 @@ export const RemoveStake: React.FC<StakingWizardProps> = props => {
     // This is purely to emulate a 'slow' API response from the server,
     // can be removed after the real data handling gets implemented.
     const emulateApiRequest = async () => {
-        return new Promise(resolve => setTimeout(resolve, 1500));
+        return new Promise<void>(resolve => setTimeout(resolve, 1500));
     };
 
     const startWizard = async () => {
