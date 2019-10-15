@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import * as React from 'react';
+import * as ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -10,6 +11,7 @@ import { StatFigure } from 'ts/components/ui/stat_figure';
 import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
 import { AccountApplyModal } from 'ts/pages/account/account_apply_modal';
 import { AccountDetail } from 'ts/pages/account/account_detail';
+import { AccountFigure } from 'ts/pages/account/account_figure';
 import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { colors } from 'ts/style/colors';
@@ -88,11 +90,10 @@ export const Account: React.FC<AccountProps> = () => {
                     />
 
                     <Figures>
-                        <FigureItem>
-                            <header>
-                                Wallet balance
-
-                                <button>
+                        <AccountFigure
+                            label="Wallet balance"
+                            headerComponent={() => (
+                                <div data-tip={true} data-for="walletBalance">
                                     <svg width="7" height="13" viewBox="0 0 7 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g opacity="0.7">
                                             <path d="M3.61176 0.888889C3.61176 1.10367 3.43765 1.27778 3.22287 1.27778C3.0081 1.27778 2.83398 1.10367 2.83398 0.888889C2.83398 0.674111 3.0081 0.5 3.22287 0.5C3.43765 0.5 3.61176 0.674111 3.61176 0.888889Z" fill="white" stroke="#5C5C5C"/>
@@ -100,13 +101,54 @@ export const Account: React.FC<AccountProps> = () => {
                                             <path d="M1 12H6.33333" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                                         </g>
                                     </svg>
-                                </button>
-                            </header>
 
+                                    <ReactTooltip id="walletBalance">
+                                        This is the amount available for delegation starting in the next Epoch
+                                    </ReactTooltip>
+                                </div>
+                            )}
+                        >
                             21,000,000 ZRX
-                        </FigureItem>
+                        </AccountFigure>
 
-                        <FigureItem>
+                        <AccountFigure
+                            label="Staked balance"
+                            headerComponent={() => (
+                                <div data-tip={true} data-for="walletBalance">
+                                    <svg width="7" height="13" viewBox="0 0 7 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g opacity="0.7">
+                                            <path d="M3.61176 0.888889C3.61176 1.10367 3.43765 1.27778 3.22287 1.27778C3.0081 1.27778 2.83398 1.10367 2.83398 0.888889C2.83398 0.674111 3.0081 0.5 3.22287 0.5C3.43765 0.5 3.61176 0.674111 3.61176 0.888889Z" fill="white" stroke="#5C5C5C"/>
+                                            <path d="M1 4.88867H3.66667V11.9998" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M1 12H6.33333" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                    </svg>
+
+                                    <ReactTooltip id="walletBalance">
+                                        This is the amount available for delegation starting in the next Epoch
+                                    </ReactTooltip>
+                                </div>
+                            )}
+                        >
+                            1,322,000 ZRX
+                        </AccountFigure>
+
+                        <AccountFigure
+                            label="Rewards"
+                            headerComponent={() => (
+                                <Button
+                                    isWithArrow={true}
+                                    isTransparent={true}
+                                    fontSize="17px"
+                                    color={colors.brandLight}
+                                >
+                                    Withdraw
+                                </Button>
+                            )}
+                        >
+                            .000213 ETH
+                        </AccountFigure>
+
+                        {/* <FigureItem>
                             <header>
                                 Staked Balance
 
@@ -122,24 +164,7 @@ export const Account: React.FC<AccountProps> = () => {
                             </header>
 
                             1,322,000 ZRX
-                        </FigureItem>
-
-                        <FigureItem>
-                            <header>
-                                Rewards
-
-                                <Button
-                                    isWithArrow={true}
-                                    isTransparent={true}
-                                    fontSize="17px"
-                                    color={colors.brandLight}
-                                >
-                                    Withdraw
-                                </Button>
-                            </header>
-
-                            .000213 ETH
-                        </FigureItem>
+                        </FigureItem> */}
                     </Figures>
                 </Inner>
             </HeaderWrapper>
