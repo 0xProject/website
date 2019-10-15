@@ -1,3 +1,4 @@
+import { darken } from 'polished';
 import * as React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import styled from 'styled-components';
@@ -58,7 +59,7 @@ export const Button: React.StatelessComponent<ButtonInterface> = (props: ButtonI
             {children}
 
             {isWithArrow && (
-                <svg width="16" height="15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 16 15" width="16" height="15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4.484.246l.024 1.411 8.146.053L.817 13.547l.996.996L13.65 2.706l.052 8.146 1.412.024L15.045.315 4.484.246z" />
                 </svg>
             )}
@@ -111,7 +112,7 @@ const ButtonBase = styled.button<ButtonInterface>`
     }
 
     &:hover {
-        background-color: ${props => !props.isTransparent && !props.isWithArrow && '#04BEA8'};
+        background-color: ${props => !props.isTransparent && !props.isWithArrow && (darken(0.05, props.bgColor || colors.brandLight))};
         border-color: ${props => props.isTransparent && !props.isNoBorder && !props.isWithArrow && '#00AE99'};
 
         svg {

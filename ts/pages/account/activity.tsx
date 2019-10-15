@@ -140,4 +140,10 @@ const ContentWrap = styled.div`
     width: calc(100% - 40px);
     max-width: 1152px;
     margin: 90px auto 0 auto;
+
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 34px;
+        }
+    }
 `;

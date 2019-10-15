@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import * as React from 'react';
+import * as ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -8,7 +9,9 @@ import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_lay
 import { Heading } from 'ts/components/text';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
+import { AccountApplyModal } from 'ts/pages/account/account_apply_modal';
 import { AccountDetail } from 'ts/pages/account/account_detail';
+import { AccountFigure } from 'ts/pages/account/account_figure';
 import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { colors } from 'ts/style/colors';
@@ -22,6 +25,7 @@ const MOCK_DATA = {
         title: '500 ZRX will be removed from Binance Pool in 10 days',
         subtitle: 'Your tokens will need to be manually withdrawn once they are removed ',
         avatarSrc: 'https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png',
+        icon: 'clock',
     },
     stakes: [
         {
@@ -74,21 +78,75 @@ const MOCK_DATA = {
 };
 
 export const Account: React.FC<AccountProps> = () => {
+    const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
+
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
                 <Inner>
-                    {/* Note: shared component in MarketMaker */}
                     <AccountDetail
                         accountAddress="0x123451234512345"
                         avatarSrc="https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png"
                     />
 
                     <Figures>
-                        {/* Note: replace this with figures component, shared with MarketMaker etc. */}
-                        <div>Figure</div>
-                        <div>Figure</div>
-                        <div>Figure</div>
+                        <AccountFigure
+                            label="Wallet balance"
+                            headerComponent={() => (
+                                <div data-tip={true} data-for="walletBalance" data-border="true">
+                                    <svg width="7" height="13" viewBox="0 0 7 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g opacity="0.7">
+                                            <path d="M3.61176 0.888889C3.61176 1.10367 3.43765 1.27778 3.22287 1.27778C3.0081 1.27778 2.83398 1.10367 2.83398 0.888889C2.83398 0.674111 3.0081 0.5 3.22287 0.5C3.43765 0.5 3.61176 0.674111 3.61176 0.888889Z" fill="white" stroke="#5C5C5C"/>
+                                            <path d="M1 4.88867H3.66667V11.9998" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M1 12H6.33333" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                    </svg>
+
+                                    <StyledTooltip id="walletBalance" className="tooltip-light">
+                                        This is the amount available for delegation starting in the next Epoch
+                                    </StyledTooltip>
+                                </div>
+                            )}
+                        >
+                            21,000,000 ZRX
+                        </AccountFigure>
+
+                        <AccountFigure
+                            label="Staked balance"
+                            headerComponent={() => (
+                                <div data-tip={true} data-for="stakedBalance" data-border="true">
+                                    <svg width="7" height="13" viewBox="0 0 7 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g opacity="0.7">
+                                            <path d="M3.61176 0.888889C3.61176 1.10367 3.43765 1.27778 3.22287 1.27778C3.0081 1.27778 2.83398 1.10367 2.83398 0.888889C2.83398 0.674111 3.0081 0.5 3.22287 0.5C3.43765 0.5 3.61176 0.674111 3.61176 0.888889Z" fill="white" stroke="#5C5C5C"/>
+                                            <path d="M1 4.88867H3.66667V11.9998" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M1 12H6.33333" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                    </svg>
+
+                                    <StyledTooltip id="stakedBalance" className="tooltip-light">
+                                        This is the amount available for delegation starting in the next Epoch
+                                    </StyledTooltip>
+                                </div>
+                            )}
+                        >
+                            1,322,000 ZRX
+                        </AccountFigure>
+
+                        <AccountFigure
+                            label="Rewards"
+                            headerComponent={() => (
+                                <Button
+                                    isWithArrow={true}
+                                    isTransparent={true}
+                                    fontSize="17px"
+                                    color={colors.brandLight}
+                                >
+                                    Withdraw
+                                </Button>
+                            )}
+                        >
+                            .000213 ETH
+                        </AccountFigure>
                     </Figures>
                 </Inner>
             </HeaderWrapper>
@@ -104,6 +162,7 @@ export const Account: React.FC<AccountProps> = () => {
                     </Heading>
 
                     <Button
+                        color={colors.brandDark}
                         isWithArrow={true}
                         isTransparent={true}
                         to="/account/activity"
@@ -116,6 +175,7 @@ export const Account: React.FC<AccountProps> = () => {
                     title={MOCK_DATA.activitySummary.title}
                     subtitle={MOCK_DATA.activitySummary.subtitle}
                     avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
+                    icon={MOCK_DATA.activitySummary.icon}
                 >
                     <StatFigure
                         label="Withdraw date"
@@ -127,8 +187,17 @@ export const Account: React.FC<AccountProps> = () => {
                     title="Your ZRX is unlocked and ready for withdrawal"
                     subtitle="6,000 ZRX  →  0x12345...12345"
                     avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
+                    icon="check"
                 >
-                    <Button>
+                    <Button
+                        to="/"
+                        color={colors.brandLight}
+                        bgColor={colors.white}
+                        fontSize="17px"
+                        fontWeight="300"
+                        padding="15px 35px"
+                        isFullWidth={true}
+                    >
                         Withdraw ZRX
                     </Button>
                 </AccountActivitySummary>
@@ -145,16 +214,17 @@ export const Account: React.FC<AccountProps> = () => {
                     </Heading>
 
                     <Button
+                        color={colors.brandDark}
                         isWithArrow={true}
                         isTransparent={true}
-                        to="/account/activity"
+                        onClick={() => toggleApplyModal(true)}
                     >
                         Apply to create a staking pool
                     </Button>
                 </SectionHeader>
 
                 <CallToAction
-                    icon="voting"
+                    icon="revenue"
                     title="You haven't staked ZRX"
                     description="Start staking your ZRX and getting interest."
                     actions={[
@@ -199,9 +269,46 @@ export const Account: React.FC<AccountProps> = () => {
                     })}
                 </Grid>
             </SectionWrapper>
+
+            <AccountApplyModal
+                isOpen={isApplyModalOpen}
+                onDismiss={() => toggleApplyModal(false)}
+            />
         </StakingPageLayout>
     );
 };
+
+const StyledTooltip = styled(ReactTooltip)`
+    &.tooltip-light {
+        background-color: #f6f6f6;
+        max-width: 390px;
+        padding: 20px;
+        font-size: 18px;
+        color: ${colors.textDarkPrimary};
+        line-height: 1.5;
+
+        @media (min-width: 768px) {
+            &:before {
+                border-top-color: ${colors.border} !important;
+            }
+            &:after {
+                border-top-color: #f6f6f6 !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            &:before {
+                border-left-color: ${colors.border} !important;
+            }
+            &:after {
+                border-left-color: #f6f6f6 !important;
+            }
+        }
+    }
+    &.tooltip-light.border {
+        border: 1px solid ${colors.border};
+    }
+`;
 
 const HeaderWrapper = styled.div`
     width: 100%;
@@ -229,24 +336,12 @@ const Inner = styled.div`
 `;
 
 const Figures = styled.div`
-    div {
-        background-color: #fff;
-        padding: 20px;
-        width: 252px;
-        height: 94px;
-        text-align: left;
-    }
-
     @media (max-width: 1200px) {
         padding-top: 24px;
     }
 
     @media (min-width: 768px) {
         display: flex;
-
-        div + div {
-            margin-left: 12px;
-        }
     }
 `;
 
@@ -265,6 +360,16 @@ const SectionHeader = styled.header`
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+
+    @media (max-width: 768px) {
+        h3 {
+            font-size: 28px;
+        }
+
+        a, button {
+            display: none;
+        }
+    }
 `;
 
 const Grid = styled.div`
