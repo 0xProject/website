@@ -64,7 +64,7 @@ export const AccountApplyModal: React.FunctionComponent<Props> = ({
               Back
             </ButtonBack>
 
-            <Button type="submit">
+            <Button type="submit" color={colors.white}>
               Submit
             </Button>
           </footer>
