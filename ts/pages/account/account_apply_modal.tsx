@@ -120,4 +120,3 @@ const ButtonBack = styled.button`
 
   cursor: pointer;
 `;
-
