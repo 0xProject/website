@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 
 import { Button } from 'ts/components/button';
@@ -15,7 +16,7 @@ interface Props {
 }
 
 interface FormProps {
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void,
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export const AccountApplyModal: React.FunctionComponent<Props> = ({
@@ -26,7 +27,7 @@ export const AccountApplyModal: React.FunctionComponent<Props> = ({
     event.preventDefault();
     alert('submit!');
   };
-  
+
   return (
     <DialogOverlay
         style={{ background: 'rgba(255, 255, 255, 0.8)', zIndex: 30 }}
@@ -46,7 +47,7 @@ export const AccountApplyModal: React.FunctionComponent<Props> = ({
             Your vote will help to decide the future of the protocol. You will be receiving a custom
           “I voted” NFT as a token of our appreciation.
         </Paragraph>
-        
+
         <InputWrap onSubmit={onSubmit}>
           <Input width="half" label="Your name" />
           <Input width="half" label="Your email" />
@@ -62,7 +63,7 @@ export const AccountApplyModal: React.FunctionComponent<Props> = ({
 
               Back
             </ButtonBack>
-            
+
             <Button type="submit">
               Submit
             </Button>
@@ -72,8 +73,8 @@ export const AccountApplyModal: React.FunctionComponent<Props> = ({
         <ButtonClose onClick={onDismiss} />
       </StyledDialogContent>
     </DialogOverlay>
-  )
-}
+  );
+};
 
 const StyledDialogContent = styled(DialogContent)`
     position: relative;
@@ -119,3 +120,4 @@ const ButtonBack = styled.button`
 
   cursor: pointer;
 `;
+

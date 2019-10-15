@@ -71,7 +71,7 @@ export const AccountVote: React.StatelessComponent<AccountVoteProps> = ({
                         d="M5.50551 6.99961L0 12.5051L0.989949 13.4951L6.49546 7.98956L12.001 13.4951L12.9909 12.5051L7.48541 6.99961L12.99 1.49508L12 0.505127L6.49546 6.00966L0.990926 0.505127L0.0009767 1.49508L5.50551 6.99961Z"
                         fill="#E71D36"
                     />
-                </svg> 
+                </svg>
              )}
 
              Voted {vote}
