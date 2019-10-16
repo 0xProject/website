@@ -5,20 +5,20 @@ import { colors } from 'ts/style/colors';
 import { utils } from 'ts/utils/utils';
 
 export interface AccountDetailProps {
-    accountAddress: string;
-    avatarSrc?: string;
+    userEthAddress: string;
+    userImageSrc?: string;
 }
 
 export const AccountDetail: React.StatelessComponent<AccountDetailProps> = ({
-    accountAddress,
-    avatarSrc,
+    userEthAddress,
+    userImageSrc,
 }) => {
-    const truncatedAddress = utils.getAddressBeginAndEnd(accountAddress, 7, 3);
+    const truncatedAddress = utils.getAddressBeginAndEnd(userEthAddress, 7, 3);
 
     return (
         <Wrap>
             <Avatar>
-                <img src={avatarSrc} />
+                <img src={userImageSrc} />
             </Avatar>
             {truncatedAddress}
         </Wrap>

@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import * as React from 'react';
-import * as ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -86,8 +85,8 @@ export const Account: React.FC<AccountProps> = () => {
             <HeaderWrapper>
                 <Inner>
                     <AccountDetail
-                        accountAddress="0x123451234512345"
-                        avatarSrc="https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png"
+                        userEthAddress="0x123451234512345"
+                        userImageSrc="https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png"
                     />
 
                     <Figures>
