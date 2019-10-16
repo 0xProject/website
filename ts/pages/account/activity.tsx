@@ -8,10 +8,12 @@ import { Breadcrumb } from 'ts/components/ui/breadcrumb';
 import { Table } from 'ts/components/ui/table';
 import { StakeStatus } from 'ts/components/ui/table_stake_status';
 
+import { colors } from 'ts/style/colors';
 import { utils } from 'ts/utils/utils';
 
 interface MockData {
     timestamp: string | number;
+    date: string | number;
     statusId: string | number;
     amount: string | number;
     status: string;
@@ -32,6 +34,7 @@ const columns = ['date', 'name', 'amount', 'status'];
 const MOCK_DATA: MockData[] = [
     {
         timestamp: '12345',
+        date: '29.08',
         statusId: 1,
         amount: '200 ZRX',
         status: 'processed',
@@ -39,6 +42,7 @@ const MOCK_DATA: MockData[] = [
     },
     {
         timestamp: '12345',
+        date: '29.08',
         statusId: 1,
         amount: '200 ZRX',
         status: 'locked',
@@ -46,6 +50,7 @@ const MOCK_DATA: MockData[] = [
     },
     {
         timestamp: '12345',
+        date: '29.08',
         statusId: 1,
         amount: '200 ZRX',
         status: 'processed',
@@ -53,6 +58,7 @@ const MOCK_DATA: MockData[] = [
     },
     {
         timestamp: '12345',
+        date: '29.08',
         statusId: 1,
         amount: '200 ZRX',
         status: 'processed',
@@ -105,9 +111,12 @@ export const AccountActivity: React.FC = () => {
 
                         return (
                             <tr key={row.id}>
-                                <td>
-                                    {row.timestamp}
-                                </td>
+                                <DateCell>
+                                    <strong>
+                                        {row.timestamp}
+                                    </strong>
+                                    {row.date}
+                                </DateCell>
                                 <td>
                                     <StakeStatus
                                         title={description.title}
@@ -145,5 +154,15 @@ const ContentWrap = styled.div`
         h1 {
             font-size: 34px;
         }
+    }
+`;
+
+const DateCell = styled.td`
+    color: ${colors.textDarkSecondary};
+
+    strong {
+        display: block;
+        margin-bottom: 10px;
+        color: ${colors.textDarkPrimary}
     }
 `;

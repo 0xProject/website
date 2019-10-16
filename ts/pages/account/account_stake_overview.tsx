@@ -4,58 +4,62 @@ import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Heading } from 'ts/components/text';
+import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { PanelHeader } from 'ts/components/ui/panel_header';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { colors } from 'ts/style/colors';
 
 interface UserData {
-    amount: string | number;
-    rewards: string | number;
+    amountInEth: string | number;
+    rewardsReceived: string | number;
 }
 
 interface StakeOverviewProps {
-    title: string;
-    subtitle: string;
-    avatarSrc?: string;
-    rewards: string;
-    fees: string;
-    staked: string;
+    name: string;
+    websiteUrl: string;
+    logoUrl?: string;
+    rewardsShared: string;
+    feesGenerated: string;
+    totalStaked: string;
     userData: UserData;
-    timeRemaining: string;
+    approximateTimestamp: number;
+    isVerified: boolean;
 }
 
 export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> = ({
-    title,
-    subtitle,
-    avatarSrc,
-    rewards,
-    fees,
-    staked,
+    name,
+    websiteUrl,
+    logoUrl,
+    rewardsShared = '0 ETH',
+    feesGenerated = '0 ETH',
+    totalStaked = '0%',
     userData,
-    timeRemaining,
+    approximateTimestamp,
+    isVerified,
 }) => {
     return (
         <Wrap>
             <Flex>
                 <PanelHeader
-                    title={title}
-                    subtitle={subtitle}
-                    avatarSrc={avatarSrc}
+                    subtitle={websiteUrl}
+                    avatarSrc={logoUrl}
                     isResponsiveAvatar={true}
-                />
+                >
+                    {renderTitle(name, isVerified)}
+                </PanelHeader>
 
                 <Stats>
                     <StatFigure
                         label="Fees Generated"
-                        value={fees}
+                        value={feesGenerated}
                     />
                     <StatFigure
                         label="Rewards Shared"
-                        value={rewards}
+                        value={rewardsShared}
                     />
                     <StatFigure
                         label="Staked"
-                        value={staked}
+                        value={totalStaked}
                     />
                 </Stats>
             </Flex>
@@ -71,16 +75,15 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                                 Your stake
                             </Heading>
 
-                            {userData.amount} ZRX
+                            {userData.amountInEth} ZRX
                         </div>
                     </InlineStats>
 
                     <Button
                         to="/"
                         color={colors.red}
-                        borderColor="#D5D5D5"
+                        borderColor={colors.border}
                         bgColor={colors.white}
-                        isTransparent={true}
                         fontSize="17px"
                         fontWeight="300"
                         isNoBorder={true}
@@ -100,7 +103,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                                 Your rewards
                             </Heading>
 
-                            {userData.rewards} ETH
+                            {userData.rewardsReceived} ETH
                         </div>
 
                         <div>
@@ -111,7 +114,8 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                                 Next epoch
                             </Heading>
 
-                            {timeRemaining}
+                            {/* Needs to be formatted */}
+                            {approximateTimestamp || '2 days'}
                         </div>
                     </InlineStats>
 
@@ -158,6 +162,17 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
     );
 };
 
+const renderTitle = (name: string, isVerified: boolean): React.ReactNode => {
+    return (
+        <Title>
+            {name}
+            {isVerified &&
+                <CircleCheckMark />
+            }
+        </Title>
+    );
+};
+
 const Wrap = styled.div`
     & + & {
         margin-top: 20px;
@@ -197,6 +212,16 @@ const Flex = styled(FlexBase)`
 const Stats = styled(Flex)`
     @media (max-width: 768px) {
         display: none;
+    }
+`;
+
+const Title = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+
+    svg {
+        margin-left: 8px;
     }
 `;
 
