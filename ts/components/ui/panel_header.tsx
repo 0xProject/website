@@ -8,7 +8,7 @@ import { colors } from 'ts/style/colors';
 interface PanelHeaderProps {
     avatarSrc?: string;
     avatarComponent?: React.ReactNode;
-    title: string | React.ReactNode;
+    title?: string | React.ReactNode;
     subtitle: string;
     isResponsiveAvatar?: boolean;
     icon?: string;
