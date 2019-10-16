@@ -80,7 +80,7 @@ export const ModalConnect: React.FunctionComponent<Props> = ({
 
 const StyledDialogContent = styled(DialogContent)`
     position: relative;
-    max-width: 800px;
+    max-width: 550px;
     padding: 40px 40px !important;
     border: 1px solid ${colors.walletBoxShadow};
 

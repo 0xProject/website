@@ -23,8 +23,8 @@ const Container = styled.a`
 
 const WalletDetailIcon = styled.img`
     width: 30px;
+    min-width: 30px;
     height: 30px;
-    background-color: ${colors.walletBoxShadow};
     text-align: center;
     color: ${colors.white};
     font-weight: 300;
