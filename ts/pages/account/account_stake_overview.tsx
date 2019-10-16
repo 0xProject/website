@@ -9,53 +9,53 @@ import { StatFigure } from 'ts/components/ui/stat_figure';
 import { colors } from 'ts/style/colors';
 
 interface UserData {
-    amount: string | number;
-    rewards: string | number;
+    amountInEth: string | number;
+    rewardsReceived: string | number;
 }
 
 interface StakeOverviewProps {
-    title: string;
-    subtitle: string;
-    avatarSrc?: string;
-    rewards: string;
-    fees: string;
-    staked: string;
+    name: string;
+    websiteUrl: string;
+    logoUrl?: string;
+    rewardsShared: string;
+    feesGenerated: string;
+    totalStaked: string;
     userData: UserData;
-    timeRemaining: string;
+    approximateTimestamp: number;
 }
 
 export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> = ({
-    title,
-    subtitle,
-    avatarSrc,
-    rewards,
-    fees,
-    staked,
+    name,
+    websiteUrl,
+    logoUrl,
+    rewardsShared = '0 ETH',
+    feesGenerated = '0 ETH',
+    totalStaked = '0%',
     userData,
-    timeRemaining,
+    approximateTimestamp,
 }) => {
     return (
         <Wrap>
             <Flex>
                 <PanelHeader
-                    title={title}
-                    subtitle={subtitle}
-                    avatarSrc={avatarSrc}
+                    title={name}
+                    subtitle={websiteUrl}
+                    avatarSrc={logoUrl}
                     isResponsiveAvatar={true}
                 />
 
                 <Stats>
                     <StatFigure
                         label="Fees Generated"
-                        value={fees}
+                        value={feesGenerated}
                     />
                     <StatFigure
                         label="Rewards Shared"
-                        value={rewards}
+                        value={rewardsShared}
                     />
                     <StatFigure
                         label="Staked"
-                        value={staked}
+                        value={totalStaked}
                     />
                 </Stats>
             </Flex>
@@ -71,7 +71,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                                 Your stake
                             </Heading>
 
-                            {userData.amount} ZRX
+                            {userData.amountInEth} ZRX
                         </div>
                     </InlineStats>
 
@@ -99,7 +99,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                                 Your rewards
                             </Heading>
 
-                            {userData.rewards} ETH
+                            {userData.rewardsReceived} ETH
                         </div>
 
                         <div>
@@ -110,7 +110,8 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                                 Next epoch
                             </Heading>
 
-                            {timeRemaining}
+                            {/* Needs to be formatted */}
+                            {approximateTimestamp || '2 days'}
                         </div>
                     </InlineStats>
 

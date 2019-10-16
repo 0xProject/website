@@ -29,30 +29,17 @@ const MOCK_DATA = {
     },
     stakes: [
         {
-            title: 'Binance Staking Pool',
-            subtitle: 'https://binance.com',
-            avatarSrc: 'https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png',
-            rewards: '95%',
-            fees: '0.03212 ETH',
-            staked: '52%',
+            name: 'Binance Staking Pool',
+            websiteUrl: 'https://binance.com',
+            logoUrl: 'https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png',
+            rewardsShared: '95%',
+            feesGenerated: '0.03212 ETH',
+            totalStaked: '52%',
             userData: {
-                amount: 213425,
-                rewards: 0.0342,
+                amountInEth: 213425,
+                rewardsReceived: 0.0342,
             },
-            timeRemaining: '5 days', // Maybe this would be in another format and need a convert method in the component
-        },
-        {
-            title: 'Coinbase Staking Pool',
-            subtitle: 'https://coinbase.com',
-            avatarSrc: 'https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png',
-            rewards: '23%',
-            fees: '0.00236 ETH',
-            staked: '12%',
-            userData: {
-                amount: 12345,
-                rewards: 0.01134,
-            },
-            timeRemaining: '14 days', // Maybe this would be in another format and need a convert method in the component
+            approximateTimestamp: 778435, // Maybe this would be in another format and need a convert method in the component
         },
     ],
     voteHistory: [
