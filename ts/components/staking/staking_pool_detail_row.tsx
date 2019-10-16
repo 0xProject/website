@@ -1,11 +1,83 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
+import { BigNumber } from '@0x/utils';
 import { colors } from 'ts/style/colors';
 import { ScreenWidths } from 'ts/types';
 import { configs } from 'ts/utils/configs';
 
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
+const RoundedPercentage = ({ percentage }: { percentage: number }) => <span>{Math.round(percentage)}%</span>;
+
+const ShortenedEthAddress = ({ address }: { address: string }) => (
+    <DetailsText>{`${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`}</DetailsText>
+);
+
+const PoolWebsiteLink = ({ websiteUrl }: { websiteUrl: string }) => (
+    <a href={websiteUrl} style={{ textDecoration: 'none' }}>
+        <DetailsText>{websiteUrl.replace(/(https:\/\/)?(www\.)?/, '')}</DetailsText>
+    </a>
+);
+
+interface IStakingPoolDetailRowProps {
+    name: string;
+    location: string;
+    totalFeesGeneratedInEth: BigNumber | number;
+    totalZrxStaked: BigNumber | number;
+    rewardsSharePercent: number;
+
+    websiteUrl?: string;
+    thumbnailUrl?: string;
+}
+
+export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
+    name,
+    thumbnailUrl,
+    location,
+    websiteUrl,
+    totalFeesGeneratedInEth,
+    rewardsSharePercent,
+    totalZrxStaked,
+}) => (
+    <StakingPoolDetailRowWrapper>
+        {thumbnailUrl && (
+            <Logo>
+                <img src={thumbnailUrl} />
+            </Logo>
+        )}
+        <PoolOverviewSection>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Heading>{name}</Heading>
+                <DesktopOnlyWrapper style={{ margin: '7px' }}>
+                    <CircleCheckMark width="22px" height="22px" />
+                </DesktopOnlyWrapper>
+            </div>
+            <DesktopOnlyWrapper style={{ height: '23px', alignItems: 'center' }}>
+                <ShortenedEthAddress address={location} />
+                {websiteUrl && (
+                    <>
+                        <Ellipse />
+                        <PoolWebsiteLink websiteUrl={websiteUrl} />
+                    </>
+                )}
+            </DesktopOnlyWrapper>
+        </PoolOverviewSection>
+        <PoolPerformanceSection>
+            <PoolPerformanceItem>
+                <span>Collected Fees</span>
+                <span>{totalFeesGeneratedInEth.toFixed(configs.AMOUNT_DISPLAY_PRECSION)} ETH</span>
+            </PoolPerformanceItem>
+            <PoolPerformanceItem>
+                <span>Rewards Shared</span>
+                <RoundedPercentage percentage={rewardsSharePercent} />
+            </PoolPerformanceItem>
+            <PoolPerformanceItem cutOffRem={ScreenWidths.Sm}>
+                <span>Staked</span>
+                <RoundedPercentage percentage={totalZrxStaked} />
+            </PoolPerformanceItem>
+        </PoolPerformanceSection>
+    </StakingPoolDetailRowWrapper>
+);
 
 const desktopOnlyStyle = css<{ cutOffRem?: number }>`
     @media (max-width: ${props => `${props.cutOffRem || ScreenWidths.Lg}rem`}) {
@@ -123,75 +195,3 @@ const Ellipse = styled.div`
     opacity: 0.2;
     margin: 0 12px;
 `;
-
-const RoundedPercentage = ({ percentage }: { percentage: number }) => <span>{Math.round(percentage)}%</span>;
-
-const ShortenedEthAddress = ({ address }: { address: string }) => (
-    <DetailsText>{`${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`}</DetailsText>
-);
-
-const PoolWebsiteLink = ({ websiteUrl }: { websiteUrl: string }) => (
-    <a href={websiteUrl} style={{ textDecoration: 'none' }}>
-        <DetailsText>{websiteUrl.replace(/(https:\/\/)?(www\.)?/, '')}</DetailsText>
-    </a>
-);
-
-interface IStakingPoolDetailRowProps {
-    name: string;
-    ethAddress: string;
-    feesCollectedEth: number;
-    stakingPercent: number;
-    rewardsSharePercent: number;
-
-    websiteUrl?: string;
-    thumbnailUrl?: string;
-}
-
-export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
-    name,
-    thumbnailUrl,
-    ethAddress,
-    websiteUrl,
-    feesCollectedEth,
-    rewardsSharePercent,
-    stakingPercent,
-}) => (
-    <StakingPoolDetailRowWrapper>
-        {thumbnailUrl && (
-            <Logo>
-                <img src={thumbnailUrl} />
-            </Logo>
-        )}
-        <PoolOverviewSection>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Heading>{name}</Heading>
-                <DesktopOnlyWrapper style={{ margin: '7px' }}>
-                    <CircleCheckMark width="22px" height="22px" />
-                </DesktopOnlyWrapper>
-            </div>
-            <DesktopOnlyWrapper style={{ height: '23px', alignItems: 'center' }}>
-                <ShortenedEthAddress address={ethAddress} />
-                {websiteUrl && (
-                    <>
-                        <Ellipse />
-                        <PoolWebsiteLink websiteUrl={websiteUrl} />
-                    </>
-                )}
-            </DesktopOnlyWrapper>
-        </PoolOverviewSection>
-        <PoolPerformanceSection>
-            <PoolPerformanceItem>
-                <span>Collected Fees</span>
-                <span>{feesCollectedEth.toFixed(configs.AMOUNT_DISPLAY_PRECSION)} ETH</span>
-            </PoolPerformanceItem>
-            <PoolPerformanceItem>
-                <span>Rewards Shared</span>
-                <RoundedPercentage percentage={rewardsSharePercent} />
-            </PoolPerformanceItem>
-            <PoolPerformanceItem cutOffRem={ScreenWidths.Sm}>
-                <span>Staked</span>
-                <RoundedPercentage percentage={stakingPercent} />
-            </PoolPerformanceItem>
-        </PoolPerformanceSection>
-    </StakingPoolDetailRowWrapper>
-);

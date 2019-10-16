@@ -13,6 +13,36 @@ import { ScreenWidths } from 'ts/types';
 import { StakingHero } from 'ts/components/staking/hero';
 import { Heading } from 'ts/components/text';
 
+const stakingPools = [
+  {
+    id: '29n5c290cn0cc2943cn239',
+    name: 'Staking 01',
+    thumbnailUrl: 'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg',
+    feesCollectedEth: 0.03281,
+    stakingPercent: 2000,
+    rewardsSharePercent: 100,
+    location: '234 CALIFORNIA'
+  },
+  {
+    id: '29n5c290cn0cc2943cn230',
+    name: 'Staking 02',
+    thumbnailUrl: 'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg',
+    feesCollectedEth: 0.03281,
+    stakingPercent: 2000,
+    rewardsSharePercent: 100,
+    location: '234 CALIFORNIA'
+  },
+  {
+    id: '29n5c290cn0cc2943cn240',
+    name: 'Staking 03',
+    thumbnailUrl: 'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg',
+    feesCollectedEth: 0.03281,
+    stakingPercent: 2000,
+    rewardsSharePercent: 100,
+    location: '234 CALIFORNIA'
+  }
+]
+
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
     return (
@@ -47,40 +77,21 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                   fontWeight="400"
                   isNoMargin={true}
               >
-                  Your voting history
+                  Staking Pools
               </Heading>
-              <StakingPoolDetailRow
-                  name="Staking 01"
-                  thumbnailUrl={'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg'}
-                  feesCollectedEth={0.03281}
-                  stakingPercent={2000}
-                  rewardsSharePercent={100}
-                  ethAddress="234 CALIFORNIA"
-              />
-              <StakingPoolDetailRow
-                  name="Staking 02"
-                  thumbnailUrl={'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg'}
-                  feesCollectedEth={0.03281}
-                  stakingPercent={2000}
-                  rewardsSharePercent={100}
-                  ethAddress="235 CALIFORNIA staking.com"
-              />
-              <StakingPoolDetailRow
-                  name="Staking 03"
-                  thumbnailUrl={'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg'}
-                  feesCollectedEth={0.03281}
-                  stakingPercent={2000}
-                  rewardsSharePercent={100}
-                  ethAddress="236 CALIFORNIA"
-              />
-              <StakingPoolDetailRow
-                  name="Staking 04"
-                  thumbnailUrl={'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg'}
-                  feesCollectedEth={0.03281}
-                  stakingPercent={2000}
-                  rewardsSharePercent={100}
-                  ethAddress="237 CALIFORNIA"
-              />
+              {stakingPools.map(({ id, name, thumbnailUrl, feesCollectedEth, stakingPercent, rewardsSharePercent, location }) => {
+                  return (
+                    <StakingPoolDetailRow
+                      key={id}
+                      name={name}
+                      thumbnailUrl={thumbnailUrl}
+                      totalFeesGeneratedInEth={feesCollectedEth}
+                      totalZrxStaked={stakingPercent}
+                      rewardsSharePercent={rewardsSharePercent}
+                      location={location}
+                    />
+                );
+              })}
             </SectionWrapper>
         </StakingPageLayout>
     );
