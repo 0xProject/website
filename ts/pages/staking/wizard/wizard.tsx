@@ -259,6 +259,10 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                 placeholder="Enter your stake"
                                 heading="Amount"
                                 topLabels={['Amount', 'Available: 1,000,000 ZRX']}
+                                labels={['25%', '50%', '100%']}
+                                onLabelChange={(label: string) => {
+                                    // console.log('Change label');
+                                }}
                                 bottomLabels={[
                                     {
                                         label: 'Based on your ZRX balance',
