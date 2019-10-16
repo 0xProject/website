@@ -32,8 +32,11 @@ const Container = styled.div`
 `;
 
 const Party = styled.div`
-    padding: 0 15px;
     flex: 0 0 110px;
+
+    @media (min-width: 480px) {
+        padding: 0 15px;
+    }
 `;
 
 const PartySquare = styled.div`
