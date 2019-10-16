@@ -101,14 +101,14 @@ const ButtonBase = styled.button<ButtonInterface>`
         color: ${colors.white};
     `}
 
-    svg {
+    > svg {
         margin-left: 9px;
         transition: transform 0.5s;
         transform: translate3d(-2px, 2px, 0);
-    }
 
-    path {
-        fill: ${props => (props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor)};
+        path {
+            fill: ${props => (props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor)};
+        }
     }
 
     &:hover {

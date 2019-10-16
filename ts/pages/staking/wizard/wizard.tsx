@@ -14,6 +14,8 @@ import { Status } from 'ts/components/staking/wizard/Status';
 import { Timeline } from 'ts/components/staking/wizard/timeline';
 import { TransactionItem } from 'ts/components/staking/wizard/TransactionItem';
 
+import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
+
 export interface StakingWizardProps {}
 
 interface SplitviewProps {
@@ -286,6 +288,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                     }}
                                 />
                             </Inner>
+                            <Newsletter />
                         </>
                     }
                 />
