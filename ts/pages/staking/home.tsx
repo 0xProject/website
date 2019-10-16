@@ -6,8 +6,11 @@ import { colors } from 'ts/style/colors';
 import { Button } from 'ts/components/button';
 import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 
+import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
+import { ModalConnect } from 'ts/components/modals/modal_connect';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
+
 import { ScreenWidths } from 'ts/types';
 
 import { StakingHero } from 'ts/components/staking/hero';
@@ -45,8 +48,19 @@ const stakingPools = [
 
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
+    const [isStakingConfirmationOpen, toggleStakingConfirmation] = React.useState(false);
+    const [isModalConnectOpen, toggleModalConnect] = React.useState(false);
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
+            <StakingConfirmationDialog
+              isOpen={isStakingConfirmationOpen}
+              onDismiss={() => toggleStakingConfirmation(false)}
+            />
+
+            <ModalConnect
+              isOpen={isModalConnectOpen}
+              onDismiss={() => toggleModalConnect(false)}
+            />
             <StakingHero
                 title="Start staking your ZRX tokens"
                 titleMobile="Start staking your tokens"
