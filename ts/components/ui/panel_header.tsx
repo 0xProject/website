@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { Icon } from 'ts/components/Icon';
 import { Heading, Paragraph } from 'ts/components/text';
 import { colors } from 'ts/style/colors';
 
@@ -57,10 +58,10 @@ const Avatar = styled.figure<AvatarProps>`
 `;
 
 const IconWrap = styled.div`
-    padding: 5px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     border: 1px solid ${colors.border};
-    position: relative;
     position: absolute;
     right: 0;
     bottom: 0;
@@ -68,7 +69,10 @@ const IconWrap = styled.div`
     background-color: ${colors.white};
 
     svg {
-        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate3d(-50%, -50%, 0);
     }
 `;
 
@@ -84,21 +88,9 @@ export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
             {avatarSrc && (
                 <Avatar isResponsive={isResponsiveAvatar}>
                     <img src={avatarSrc} />
-
-                    {icon === 'check' &&
-                        <IconWrap>
-                            <CircleCheckMark fill="#fff" />
-                        </IconWrap>
-                    }
-
-                    {icon === 'clock' &&
-                        <IconWrap>
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#fff" d="M12 23.5C5.64614 23.5 0.5 18.3539 0.5 12C0.5 5.64614 5.64614 0.5 12 0.5C18.3539 0.5 23.5 5.64614 23.5 12C23.5 18.3539 18.3539 23.5 12 23.5Z" stroke="black"/>
-                                <path d="M11.0762 4.61523V12.6081L18.4608 17.5383" stroke="black"/>
-                            </svg>
-                        </IconWrap>
-                    }
+                    <IconWrap>
+                        <Icon name={icon} size={24} />
+                    </IconWrap>
                 </Avatar>
             )}
 

@@ -168,7 +168,7 @@ export const Account: React.FC<AccountProps> = () => {
                     title="Your ZRX is unlocked and ready for withdrawal"
                     subtitle="6,000 ZRX  →  0x12345...12345"
                     avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
-                    icon="check"
+                    icon="checkmark"
                 >
                     <Button
                         to="/"
