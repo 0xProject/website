@@ -16,6 +16,8 @@ import { Status } from 'ts/components/staking/wizard/status';
 // import { Timeline } from 'ts/components/staking/wizard/timeline';
 import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
+import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
+
 export interface StakingWizardProps {}
 
 interface ErrorButtonProps {
@@ -334,6 +336,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                     }}
                                 />
                             </Inner>
+                            <Newsletter />
                         </>
                     }
                 />
