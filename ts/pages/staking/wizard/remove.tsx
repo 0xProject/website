@@ -12,7 +12,7 @@ import { Button } from 'ts/components/button';
 import { Spinner } from 'ts/components/spinner';
 import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
-import { Timeline } from 'ts/components/staking/wizard/Timeline';
+import { Timeline } from 'ts/components/staking/wizard/timeline';
 import { TransactionItem } from 'ts/components/staking/wizard/TransactionItem';
 
 const STAKED = 1000000;

@@ -11,7 +11,7 @@ import { Spinner } from 'ts/components/spinner';
 import { MarketMaker } from 'ts/components/staking/wizard/MarketMaker';
 import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
 import { Status } from 'ts/components/staking/wizard/Status';
-import { Timeline } from 'ts/components/staking/wizard/Timeline';
+import { Timeline } from 'ts/components/staking/wizard/timeline';
 import { TransactionItem } from 'ts/components/staking/wizard/TransactionItem';
 
 export interface StakingWizardProps {}
