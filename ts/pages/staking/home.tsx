@@ -19,7 +19,7 @@ import { Heading } from 'ts/components/text';
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
     const [isStakingConfirmationOpen, toggleStakingConfirmation] = React.useState(false);
-    const [isModalConnectOpen, toggleModalConnect] = React.useState(true);
+    const [isModalConnectOpen, toggleModalConnect] = React.useState(false);
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
             <StakingConfirmationDialog
