@@ -25,13 +25,19 @@ const SplitviewContainer = styled.div`
 `;
 
 const Left = styled.div`
-    padding: 100px 15px;
+    padding: 60px 15px 30px 15px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+
+    @media (min-width: 480px) {
+        padding: 100px 15px;
+    }
+
     @media (min-width: 768px) {
         padding: 100px 30px;
     }
+
     @media (min-width: 1140px) {
         padding: 100px 60px;
     }

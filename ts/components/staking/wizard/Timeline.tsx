@@ -14,8 +14,6 @@ interface TimelineItem {
 interface TimelineProps {
     items: TimelineItem[];
     activeItemIndex: number;
-    header: string;
-    description: string;
 }
 
 interface TimelineContentProps {
@@ -94,59 +92,30 @@ const TimelineContent = styled.div<TimelineContentProps>`
     }
 `;
 
-const TimelineHeader = styled.h1`
-    font-size: 36px;
-    font-weight: 300;
-    line-height: 1.1;
-    margin-bottom: 15px;
-
-    @media (min-width: 768px) {
-        font-size: 50px;
-    }
-`;
-
-const TimelineDescription = styled.h2`
-    font-size: 17px;
-    font-weight: 300;
-    color: ${colors.textDarkSecondary};
-    line-height: 1.44;
-    margin-bottom: 30px;
-    max-width: 340px;
-
-    @media (min-width: 768px) {
-        margin-bottom: 60px;
-        font-size: 18px;
-    }
-`;
-
 export const Timeline: React.FC<TimelineProps> = props => {
-    const { items, activeItemIndex, header } = props;
+    const { items, activeItemIndex } = props;
     return (
-        <>
-            <TimelineHeader>{header}</TimelineHeader>
-            <TimelineDescription>{props.description}</TimelineDescription>
-            <ol>
-                {items.map((item, index) => {
-                    const { date, fromNow, title, description } = item;
-                    const isActive = activeItemIndex === index;
-                    return (
-                        <TimelineItem key={index.toString()}>
-                            <TimelineDate>
+        <ol>
+            {items.map((item, index) => {
+                const { date, fromNow, title, description } = item;
+                const isActive = activeItemIndex === index;
+                return (
+                    <TimelineItem key={index.toString()}>
+                        <TimelineDate>
+                            <span>{fromNow}</span>
+                            <span>{date}</span>
+                        </TimelineDate>
+                        <TimelineContent isActive={isActive}>
+                            <TimelineDateMobile>
                                 <span>{fromNow}</span>
                                 <span>{date}</span>
-                            </TimelineDate>
-                            <TimelineContent isActive={isActive}>
-                                <TimelineDateMobile>
-                                    <span>{fromNow}</span>
-                                    <span>{date}</span>
-                                </TimelineDateMobile>
-                                <h3>{title}</h3>
-                                <p>{description}</p>
-                            </TimelineContent>
-                        </TimelineItem>
-                    );
-                })}
-            </ol>
-        </>
+                            </TimelineDateMobile>
+                            <h3>{title}</h3>
+                            <p>{description}</p>
+                        </TimelineContent>
+                    </TimelineItem>
+                );
+            })}
+        </ol>
     );
 };

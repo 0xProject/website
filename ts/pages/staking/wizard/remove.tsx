@@ -98,6 +98,31 @@ const ButtonsContainer = styled.div`
     }
 `;
 
+const IntroHeader = styled.h1`
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 15px;
+
+    @media (min-width: 768px) {
+        font-size: 50px;
+    }
+`;
+
+const IntroDescription = styled.h2`
+    font-size: 17px;
+    font-weight: 300;
+    color: ${colors.textDarkSecondary};
+    line-height: 1.44;
+    margin-bottom: 30px;
+    max-width: 340px;
+
+    @media (min-width: 768px) {
+        margin-bottom: 60px;
+        font-size: 18px;
+    }
+`;
+
 interface Data {
     currency: string;
     amountStaked: BigNumber;
@@ -184,36 +209,38 @@ export const RemoveStake: React.FC<StakingWizardProps> = props => {
             <Container>
                 <Splitview
                     leftComponent={
-                        <Timeline
-                            activeItemIndex={0}
-                            header="Unstake your ZRX"
-                            description="Use one pool of capital across multiple relayers to trade against a large group."
-                            items={[
-                                {
-                                    date: '22.08',
-                                    fromNow: '2 days',
-                                    title: 'Removing your stake',
-                                    description: 'Your declared staking pool is going to be locked in smart contract.',
-                                    isActive: true,
-                                },
-                                {
-                                    date: '22.08',
-                                    fromNow: '2 days',
-                                    title: 'Lockout period',
-                                    description:
-                                        'Your tokens will be locked from withdrawal until the end of the next Epoch.',
-                                    isActive: false,
-                                },
-                                {
-                                    date: '22.08',
-                                    fromNow: '2 days',
-                                    title: 'Tokens unlocked',
-                                    description:
-                                        'You are able to withdraw your tokens to your wallet, which you are free to move or restake',
-                                    isActive: false,
-                                },
-                            ]}
-                        />
+                        <>
+                            <IntroHeader>Start staking your tokens</IntroHeader>
+                            <IntroDescription>Use one pool of capital across multiple relayers to trade against a large group.</IntroDescription>
+                            <Timeline
+                                activeItemIndex={0}
+                                items={[
+                                    {
+                                        date: '22.08',
+                                        fromNow: '2 days',
+                                        title: 'Removing your stake',
+                                        description: 'Your declared staking pool is going to be locked in smart contract.',
+                                        isActive: true,
+                                    },
+                                    {
+                                        date: '22.08',
+                                        fromNow: '2 days',
+                                        title: 'Lockout period',
+                                        description:
+                                            'Your tokens will be locked from withdrawal until the end of the next Epoch.',
+                                        isActive: false,
+                                    },
+                                    {
+                                        date: '22.08',
+                                        fromNow: '2 days',
+                                        title: 'Tokens unlocked',
+                                        description:
+                                            'You are able to withdraw your tokens to your wallet, which you are free to move or restake',
+                                        isActive: false,
+                                    },
+                                ]}
+                            />
+                        </>
                     }
                     rightComponent={
                         <>
