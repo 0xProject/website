@@ -21,7 +21,7 @@ interface DashBoardHeroTabs {
 
 interface DashboardHeroProps {
     title: string;
-    website: string;
+    websiteUrl: string;
     poolId: string;
     isVerified: boolean;
     estimatedStake: number;
@@ -216,7 +216,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
     title,
     tabs,
     poolId,
-    website,
+    websiteUrl,
     isVerified,
     estimatedStake,
     rewardsShared,
@@ -243,7 +243,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                         </Title>
                         <HorizontalList>
                             <li>{poolId}</li>
-                            <li>{website}</li>
+                            <li>{websiteUrl}</li>
                             <li>
                                 <a href="">{rewardsShared}% Rewards Shared</a>
                             </li>
