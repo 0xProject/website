@@ -88,9 +88,12 @@ export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
             {avatarSrc && (
                 <Avatar isResponsive={isResponsiveAvatar}>
                     <img src={avatarSrc} />
-                    <IconWrap>
-                        <Icon name={icon} size={24} />
-                    </IconWrap>
+
+                    {icon &&
+                        <IconWrap>
+                            <Icon name={icon} size={24} />
+                        </IconWrap>
+                    }
                 </Avatar>
             )}
 
