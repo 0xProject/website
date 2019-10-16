@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Heading } from 'ts/components/text';
+import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { PanelHeader } from 'ts/components/ui/panel_header';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { colors } from 'ts/style/colors';
@@ -22,6 +23,7 @@ interface StakeOverviewProps {
     totalStaked: string;
     userData: UserData;
     approximateTimestamp: number;
+    verified: boolean;
 }
 
 export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> = ({
@@ -33,16 +35,18 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
     totalStaked = '0%',
     userData,
     approximateTimestamp,
+    verified,
 }) => {
     return (
         <Wrap>
             <Flex>
                 <PanelHeader
-                    title={name}
                     subtitle={websiteUrl}
                     avatarSrc={logoUrl}
                     isResponsiveAvatar={true}
-                />
+                >
+                    {renderTitle(name, verified)}
+                </PanelHeader>
 
                 <Stats>
                     <StatFigure
@@ -158,6 +162,17 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
     );
 };
 
+const renderTitle = (name: string, verified: boolean): React.ReactNode => {
+    return (
+        <Title>
+            {name}
+            {verified &&
+                <CircleCheckMark />
+            }
+        </Title>
+    );
+};
+
 const Wrap = styled.div`
     & + & {
         margin-top: 20px;
@@ -197,6 +212,16 @@ const Flex = styled(FlexBase)`
 const Stats = styled(Flex)`
     @media (max-width: 768px) {
         display: none;
+    }
+`;
+
+const Title = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+
+    svg {
+        margin-left: 8px;
     }
 `;
 

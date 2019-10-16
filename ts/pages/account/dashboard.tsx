@@ -39,6 +39,7 @@ const MOCK_DATA = {
                 amountInEth: 213425,
                 rewardsReceived: 0.0342,
             },
+            verified: true,
             approximateTimestamp: 778435, // Maybe this would be in another format and need a convert method in the component
         },
     ],

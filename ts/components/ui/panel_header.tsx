@@ -12,6 +12,7 @@ interface PanelHeaderProps {
     subtitle: string;
     isResponsiveAvatar?: boolean;
     icon?: string;
+    children?: React.ReactNode;
 }
 
 interface AvatarProps {
@@ -80,6 +81,7 @@ export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
     subtitle,
     isResponsiveAvatar,
     icon,
+    children,
 }) => {
     return (
         <Wrap>
@@ -103,7 +105,7 @@ export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
                         isNoMargin={true}
                         style={{ marginRight: '8px' }}
                     >
-                        {title}
+                        {title || children}
                     </Heading>
                 </Flex>
 
