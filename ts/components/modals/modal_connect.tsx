@@ -18,11 +18,6 @@ export const ModalConnect: React.FunctionComponent<Props> = ({
   isOpen,
   onDismiss,
 }) => {
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
-    alert('submit!');
-  };
-
   return (
     <DialogOverlay
         style={{ background: 'rgba(255, 255, 255, 0.8)', zIndex: 30 }}

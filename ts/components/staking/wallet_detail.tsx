@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Heading, Paragraph } from 'ts/components/text';
+import { Paragraph } from 'ts/components/text';
 import { colors } from 'ts/style/colors';
 
 interface WalletDetailProps {
