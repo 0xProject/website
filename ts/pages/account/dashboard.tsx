@@ -1,12 +1,12 @@
 import * as _ from 'lodash';
 import * as React from 'react';
-import ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { CallToAction } from 'ts/components/call_to_action';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading } from 'ts/components/text';
+import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
 import { AccountApplyModal } from 'ts/pages/account/account_apply_modal';
@@ -93,13 +93,9 @@ export const Account: React.FC<AccountProps> = () => {
                         <AccountFigure
                             label="Wallet balance"
                             headerComponent={() => (
-                                <div data-tip={true} data-for="walletBalance" data-border="true">
-                                    {renderInfoIcon()}
-
-                                    <StyledTooltip id="walletBalance" className="tooltip-light">
-                                        This is the amount available for delegation starting in the next Epoch
-                                    </StyledTooltip>
-                                </div>
+                                <InfoTooltip>
+                                    This is the amount available for delegation starting in the next Epoch
+                                </InfoTooltip>
                             )}
                         >
                             21,000,000 ZRX
@@ -108,13 +104,9 @@ export const Account: React.FC<AccountProps> = () => {
                         <AccountFigure
                             label="Staked balance"
                             headerComponent={() => (
-                                <div data-tip={true} data-for="stakedBalance" data-border="true">
-                                    {renderInfoIcon()}
-
-                                    <StyledTooltip id="stakedBalance" className="tooltip-light">
-                                        This is the amount available for delegation starting in the next Epoch
-                                    </StyledTooltip>
-                                </div>
+                                <InfoTooltip>
+                                    This is the amount available for delegation starting in the next Epoch
+                                </InfoTooltip>
                             )}
                         >
                             1,322,000 ZRX
@@ -266,50 +258,6 @@ export const Account: React.FC<AccountProps> = () => {
         </StakingPageLayout>
     );
 };
-
-const renderInfoIcon = () => {
-    return (
-        <svg width="7" height="13" viewBox="0 0 7 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g opacity="0.7">
-                <path d="M3.61176 0.888889C3.61176 1.10367 3.43765 1.27778 3.22287 1.27778C3.0081 1.27778 2.83398 1.10367 2.83398 0.888889C2.83398 0.674111 3.0081 0.5 3.22287 0.5C3.43765 0.5 3.61176 0.674111 3.61176 0.888889Z" fill="white" stroke="#5C5C5C"/>
-                <path d="M1 4.88867H3.66667V11.9998" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M1 12H6.33333" stroke="#5C5C5C" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-            </g>
-        </svg>
-    );
-};
-
-const StyledTooltip = styled(ReactTooltip)`
-    &.tooltip-light {
-        background-color: #f6f6f6;
-        max-width: 390px;
-        padding: 20px;
-        font-size: 18px;
-        color: ${colors.textDarkPrimary};
-        line-height: 1.5;
-
-        @media (min-width: 768px) {
-            &:before {
-                border-top-color: ${colors.border} !important;
-            }
-            &:after {
-                border-top-color: #f6f6f6 !important;
-            }
-        }
-
-        @media (max-width: 768px) {
-            &:before {
-                border-left-color: ${colors.border} !important;
-            }
-            &:after {
-                border-left-color: #f6f6f6 !important;
-            }
-        }
-    }
-    &.tooltip-light.border {
-        border: 1px solid ${colors.border};
-    }
-`;
 
 const HeaderWrapper = styled.div`
     width: 100%;
