@@ -12,10 +12,10 @@ import { Button } from 'ts/components/button';
 import { Spinner } from 'ts/components/spinner';
 import { InfoHeader, InfoHeaderItem } from 'ts/components/staking/wizard/info_header';
 import { Inner } from 'ts/components/staking/wizard/inner';
-import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
+import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
 import { Timeline } from 'ts/components/staking/wizard/timeline';
-import { TransactionItem } from 'ts/components/staking/wizard/TransactionItem';
+import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
 const STAKED = 1000000;
 

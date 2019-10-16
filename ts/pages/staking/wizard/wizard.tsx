@@ -8,12 +8,12 @@ import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_lay
 
 import { Button } from 'ts/components/button';
 import { Spinner } from 'ts/components/spinner';
-import { MarketMaker } from 'ts/components/staking/wizard/MarketMaker';
-import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
+import { MarketMaker } from 'ts/components/staking/wizard/market_maker';
+import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
-import { Status } from 'ts/components/staking/wizard/Status';
+import { Status } from 'ts/components/staking/wizard/status';
 // import { Timeline } from 'ts/components/staking/wizard/timeline';
-import { TransactionItem } from 'ts/components/staking/wizard/TransactionItem';
+import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
 export interface StakingWizardProps {}
 
