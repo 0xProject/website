@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import * as React from 'react';
+import * as ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -258,6 +259,38 @@ export const Account: React.FC<AccountProps> = () => {
         </StakingPageLayout>
     );
 };
+
+const StyledTooltip = styled(ReactTooltip)`
+    &.tooltip-light {
+        background-color: #f6f6f6;
+        max-width: 390px;
+        padding: 20px;
+        font-size: 18px;
+        color: ${colors.textDarkPrimary};
+        line-height: 1.5;
+
+        @media (min-width: 768px) {
+            &:before {
+                border-top-color: ${colors.border} !important;
+            }
+            &:after {
+                border-top-color: #f6f6f6 !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            &:before {
+                border-left-color: ${colors.border} !important;
+            }
+            &:after {
+                border-left-color: #f6f6f6 !important;
+            }
+        }
+    }
+    &.tooltip-light.border {
+        border: 1px solid ${colors.border};
+    }
+`;
 
 const HeaderWrapper = styled.div`
     width: 100%;
