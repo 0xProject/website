@@ -5,8 +5,6 @@ import { Icon } from 'ts/components/Icon';
 import { Heading, Paragraph } from 'ts/components/text';
 import { colors } from 'ts/style/colors';
 
-import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
-
 interface PanelHeaderProps {
     avatarSrc?: string;
     avatarComponent?: React.ReactNode;
