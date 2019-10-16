@@ -13,7 +13,7 @@ interface InfoTooltipProps {
 
 export const InfoTooltip = (props: InfoTooltipProps) => {
     return (
-        <div className={props.className} data-tip={true} data-for="walletBalance" data-border="true">
+        <div className={props.className} data-tip={true} data-for="walletBalance" data-type="light" data-border="true">
             <StyledIcon name="info" size={13} />
 
             <StyledTooltip id="walletBalance" className="tooltip-light">
@@ -30,33 +30,31 @@ const StyledIcon = styled(Icon)`
 `;
 
 const StyledTooltip = styled(ReactTooltip)`
-    &.tooltip-light {
+    &.tooltip-light.type-light.border {
         background-color: #f6f6f6;
+        border: 1px solid ${colors.border};
         max-width: 390px;
         padding: 20px;
         font-size: 18px;
         color: ${colors.textDarkPrimary};
         line-height: 1.5;
 
-        @media (min-width: 768px) {
+        &.place-left {
             &:before {
-                border-top-color: ${colors.border} !important;
+                border-left-color: ${colors.border};
             }
             &:after {
-                border-top-color: #f6f6f6 !important;
+                border-left-color: #f6f6f6;
             }
         }
 
-        @media (max-width: 768px) {
+       &.place-top {
             &:before {
-                border-left-color: ${colors.border} !important;
+                border-top-color: ${colors.border};
             }
             &:after {
-                border-left-color: #f6f6f6 !important;
+                border-top-color: #f6f6f6;
             }
         }
-    }
-    &.tooltip-light.border {
-        border: 1px solid ${colors.border};
     }
 `;
