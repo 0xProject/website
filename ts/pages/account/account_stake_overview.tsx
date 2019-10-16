@@ -23,7 +23,7 @@ interface StakeOverviewProps {
     totalStaked: string;
     userData: UserData;
     approximateTimestamp: number;
-    verified: boolean;
+    isVerified: boolean;
 }
 
 export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> = ({
@@ -35,7 +35,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
     totalStaked = '0%',
     userData,
     approximateTimestamp,
-    verified,
+    isVerified,
 }) => {
     return (
         <Wrap>
@@ -45,7 +45,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                     avatarSrc={logoUrl}
                     isResponsiveAvatar={true}
                 >
-                    {renderTitle(name, verified)}
+                    {renderTitle(name, isVerified)}
                 </PanelHeader>
 
                 <Stats>
@@ -162,11 +162,11 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
     );
 };
 
-const renderTitle = (name: string, verified: boolean): React.ReactNode => {
+const renderTitle = (name: string, isVerified: boolean): React.ReactNode => {
     return (
         <Title>
             {name}
-            {verified &&
+            {isVerified &&
                 <CircleCheckMark />
             }
         </Title>
