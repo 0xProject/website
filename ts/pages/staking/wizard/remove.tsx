@@ -10,6 +10,8 @@ import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_lay
 
 import { Button } from 'ts/components/button';
 import { Spinner } from 'ts/components/spinner';
+import { InfoHeader, InfoHeaderItem } from 'ts/components/staking/wizard/info_header';
+import { Inner } from 'ts/components/staking/wizard/inner';
 import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
 import { Timeline } from 'ts/components/staking/wizard/timeline';
@@ -31,12 +33,6 @@ const Container = styled.div`
     max-width: 1390px;
     margin: 0 auto;
     position: relative;
-`;
-
-const Inner = styled.div`
-    border: 1px solid #e3e3e3;
-    background-color: ${colors.white};
-    padding: 30px;
 `;
 
 const CenteredHeader = styled.h2`
@@ -61,21 +57,6 @@ const ButtonWithIcon = styled(Button)`
 const SpinnerContainer = styled.span`
     display: inline-block;
     margin-right: 10px;
-`;
-
-const InfoHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 30px;
-`;
-
-const InfoHeaderItem = styled.span`
-    font-size: 20px;
-    line-height: 1.35;
-
-    &:last-child {
-        color: ${colors.textDarkSecondary};
-    }
 `;
 
 const NumberInputContainer = styled.div`
