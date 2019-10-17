@@ -21,7 +21,7 @@ const { description, keywords, title } = documentConstants.STAKING;
 
 export const StakingPageLayout: React.FC<IStakingPageLayoutProps> = props => {
     return (
-        <SiteWrap isDocs={true} theme="light" headerComponent={StakingHeader}>
+        <SiteWrap isDocs={true} theme="staking" headerComponent={StakingHeader}>
             <DocumentTitle
                 title={props.isHome ? title : `${title}: ${props.title}`}
                 description={props.description ? props.description : description}
