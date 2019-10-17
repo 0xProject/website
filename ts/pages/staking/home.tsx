@@ -7,7 +7,7 @@ import { Button } from 'ts/components/button';
 import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 
 import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
-import { ModalConnect } from 'ts/components/modals/modal_connect';
+import { ConnectWalletDialog } from 'ts/components/dialogs/connect_wallet_dialog';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
 
@@ -24,7 +24,7 @@ const stakingPools = [
     feesCollectedEth: 0.03281,
     stakingPercent: 2000,
     rewardsSharePercent: 100,
-    location: '234 CALIFORNIA'
+    location: '234 CALIFORNIA',
   },
   {
     id: '29n5c290cn0cc2943cn230',
@@ -33,7 +33,7 @@ const stakingPools = [
     feesCollectedEth: 0.03281,
     stakingPercent: 2000,
     rewardsSharePercent: 100,
-    location: '234 CALIFORNIA'
+    location: '234 CALIFORNIA',
   },
   {
     id: '29n5c290cn0cc2943cn240',
@@ -42,24 +42,23 @@ const stakingPools = [
     feesCollectedEth: 0.03281,
     stakingPercent: 2000,
     rewardsSharePercent: 100,
-    location: '234 CALIFORNIA'
-  }
-]
+    location: '234 CALIFORNIA',
+  },
+];
 
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
     const [isStakingConfirmationOpen, toggleStakingConfirmation] = React.useState(false);
-    const [isModalConnectOpen, toggleModalConnect] = React.useState(false);
+    const [isDialogConnectOpen, toggleDialogConnect] = React.useState(false);
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
             <StakingConfirmationDialog
               isOpen={isStakingConfirmationOpen}
               onDismiss={() => toggleStakingConfirmation(false)}
             />
-
-            <ModalConnect
-              isOpen={isModalConnectOpen}
-              onDismiss={() => toggleModalConnect(false)}
+            <ConnectWalletDialog
+              isOpen={isDialogConnectOpen}
+              onDismiss={() => toggleDialogConnect(false)}
             />
             <StakingHero
                 title="Start staking your ZRX tokens"

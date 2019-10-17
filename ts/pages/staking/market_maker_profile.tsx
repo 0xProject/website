@@ -15,7 +15,10 @@ export interface ActionProps {
     figure: string;
 }
 
-export interface MarketMakerProfileProps {}
+export interface MarketMakerProfileProps {
+  websiteUrl: string;
+  verified: boolean;
+}
 
 const Container = styled.div`
     max-width: 1152px;
@@ -236,9 +239,9 @@ export const MarketMakerProfile: React.FC<MarketMakerProfileProps> = props => {
         <StakingPageLayout isHome={true} title="Market Maker Profile">
             <DashboardHero
                 title="Binance Staking Pool"
-                website="mywebsite.com"
+                websiteUrl="mywebsite.com"
                 poolId="0x1234...1234"
-                isVerified={true}
+                verified={true}
                 estimatedStake={75}
                 rewardsShared={74}
                 iconUrl=""
