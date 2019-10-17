@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { BigNumber } from '@0x/utils';
 import { colors } from 'ts/style/colors';
 import { ScreenWidths } from 'ts/types';
 import { configs } from 'ts/utils/configs';
@@ -22,8 +21,8 @@ const PoolWebsiteLink = ({ websiteUrl }: { websiteUrl: string }) => (
 interface IStakingPoolDetailRowProps {
     name: string;
     location: string;
-    totalFeesGeneratedInEth: BigNumber | number;
-    totalZrxStaked: BigNumber | number;
+    totalFeesGeneratedInEth: number;
+    totalZrxStaked: number;
     rewardsSharePercent: number;
 
     websiteUrl?: string;
