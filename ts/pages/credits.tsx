@@ -82,6 +82,14 @@ export class Credits extends React.Component<CreditsProps> {
                             iconSize="medium"
                             isInline={true}
                         />
+                        <CenteredDefinition
+                            title="Rivet"
+                            titleSize="small"
+                            description="500k Ethereum node requests per month + 1M bonus requests"
+                            icon="rivet"
+                            iconSize="medium"
+                            isInline={true}
+                        />
                     </FlexWrap>
                 </Section>
 
