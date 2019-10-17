@@ -23,7 +23,7 @@ interface DashboardHeroProps {
     title: string;
     websiteUrl: string;
     poolId: string;
-    verified: boolean;
+    isVerified: boolean;
     estimatedStake: number;
     rewardsShared: number;
     iconUrl: string;
@@ -217,7 +217,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
     tabs,
     poolId,
     websiteUrl,
-    verified,
+    isVerified,
     estimatedStake,
     rewardsShared,
     iconUrl,
@@ -235,7 +235,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                         <PoolIcon src={iconUrl} />
                         <Title>
                             {title}{' '}
-                            {verified && (
+                            {isVerified && (
                                 <span title="Identitity verified">
                                     <CheckmarkThinDesktop />
                                 </span>
@@ -247,7 +247,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                             <li>
                                 <a href="">{rewardsShared}% Rewards Shared</a>
                             </li>
-                            {verified && (
+                            {isVerified && (
                                 <VerificationIndicator>
                                     <a href="">
                                         <Checkmark /> Verified identity

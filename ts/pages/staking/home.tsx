@@ -6,8 +6,8 @@ import { colors } from 'ts/style/colors';
 import { Button } from 'ts/components/button';
 import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 
-import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
 import { ConnectWalletDialog } from 'ts/components/dialogs/connect_wallet_dialog';
+import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
 
