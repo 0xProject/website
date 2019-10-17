@@ -57,11 +57,11 @@ const InputContainer = styled.div<InputContainerProps>`
 const Input = styled.input`
     padding-left: 70px;
     flex: 1;
-    align-self: stretch;
     border: 0;
     font-size: 20px;
     font-family: 'Formular', monospace;
     outline: none;
+    width: 60%;
     &::placeholder {
         color: ${colors.textDarkSecondary};
         font-family: 'Formular', monospace;
@@ -88,22 +88,19 @@ const ZrxIcon = styled.div`
 `;
 
 const Labels = styled.ol`
-    overflow: hidden;
-    white-space: nowrap;
-    width: 50%;
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    width: 40%;
 `;
 
 const Label = styled.li<LabelProps>`
     font-size: 14px;
-    min-width: 70px;
     color: ${props => (props.isActive ? colors.white : colors.textDarkSecondary)};
     background-color: ${props => (props.isActive ? colors.brandLight : colors.white)};
     text-align: center;
     padding: 6px;
     margin-right: 15px;
-    display: inline-block;
-    border: ${props => (props.isActive ? 0 : '1px solid #d5d5d5')};
+    border: 1px solid ${props => (props.isActive ? colors.brandLight : '#d5d5d5')};
     cursor: pointer;
     &:last-child {
         margin-right: 20px;
