@@ -88,9 +88,13 @@ const ZrxIcon = styled.div`
 `;
 
 const Labels = styled.ol`
-    display: flex;
-    justify-content: flex-end;
-    width: 40%;
+    display: none;
+
+    @media (min-width: 480px) {
+        justify-content: flex-end;
+        width: 40%;
+        display: flex;
+    }
 `;
 
 const Label = styled.li<LabelProps>`
