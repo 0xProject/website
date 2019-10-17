@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
+import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 
 import { colors } from 'ts/style/colors';
 
@@ -99,7 +100,7 @@ const MetricAmount = styled.h5`
     }
 `;
 
-const InfoIcon = styled(Icon)`
+const StyledInfoTooltip = styled(InfoTooltip)`
     position: absolute;
     top: 7px;
     right: 15px;
@@ -108,11 +109,6 @@ const InfoIcon = styled(Icon)`
     @media (min-width: 768px) {
         display: block;
     }
-
-    path {
-        fill: ${colors.textDarkSecondary};
-    }
-
 `;
 
 const Difference = styled.span`
@@ -168,17 +164,23 @@ export const MarketMaker: React.FC<MarketMakerProps> = props => {
                 <Metric>
                     <MetricTitle>Collected fees</MetricTitle>
                     <MetricAmount>{collectedFees}</MetricAmount>
-                    <InfoIcon name="info" size={13} />
+                    <StyledInfoTooltip>
+                        Lorem ipsum dolor sit amet
+                    </StyledInfoTooltip>
                 </Metric>
                 <Metric>
                     <MetricTitle>Rewards</MetricTitle>
                     <MetricAmount>{rewards}</MetricAmount>
-                    <InfoIcon name="info" size={13} />
+                    <StyledInfoTooltip>
+                        Lorem ipsum dolor sit amet
+                    </StyledInfoTooltip>
                 </Metric>
                 <Metric>
                     <MetricTitle>Staked</MetricTitle>
                     <MetricAmount>{staked}</MetricAmount>
-                    <InfoIcon name="info" size={13} />
+                    <StyledInfoTooltip>
+                        Lorem ipsum dolor sit amet
+                    </StyledInfoTooltip>
                 </Metric>
             </Metrics>
         </Container>

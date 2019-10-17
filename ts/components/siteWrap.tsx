@@ -8,7 +8,7 @@ import { GlobalStyles } from 'ts/constants/globalStyle';
 import { GLOBAL_THEMES } from 'ts/style/theme';
 
 interface ISiteWrapProps {
-    theme?: 'dark' | 'light' | 'gray';
+    theme?: 'dark' | 'light' | 'gray' | 'staking';
     isDocs?: boolean;
     headerComponent?: any;
     isFullScreen?: boolean;
