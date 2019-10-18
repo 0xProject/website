@@ -90,7 +90,7 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }
                             <Logo />
                         </Link>
                         <DocsLogoWrap>
-                            / <DocsLogoLink to={WebsitePaths.Docs}>Staking</DocsLogoLink>
+                            / <DocsLogoLink to={WebsitePaths.Staking}>Staking</DocsLogoLink>
                         </DocsLogoWrap>
                     </LogoWrap>
 
@@ -100,9 +100,6 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }
                                 <NavItem key={`navlink-${index}`} link={link} />
                             ))}
                         </NavLinks>
-
-                        <SearchInput isHome={false} />
-
                         {subMenu}
                     </MediaQuery>
 
