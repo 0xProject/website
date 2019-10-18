@@ -29,7 +29,7 @@ const Heading = styled.div`
 
     @media (min-width: 768px) {
         border-bottom: 1px solid #DDDDDD;
-        padding: 20px;
+        padding: 30px;
     }
 `;
 
@@ -88,6 +88,11 @@ const MetricTitle = styled.h4`
     @media (min-width: 768px) {
         margin-bottom: 8px;
         font-size: 14px;
+        max-width: 85px;
+    }
+
+    @media (min-width: 1200px) {
+        max-width: 100%;
     }
 `;
 
