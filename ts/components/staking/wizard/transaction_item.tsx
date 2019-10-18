@@ -14,6 +14,8 @@ interface TransactionItemProps {
     selfId: string;
     selfIconUrl: string;
     isActive: boolean;
+    isLeftCaretHidden?: boolean;
+    isRightCaretHidden?: boolean;
 }
 
 interface CaretProps {
@@ -118,6 +120,8 @@ export const TransactionItem: React.FC<TransactionItemProps> = props => {
         selfIconUrl,
         marketMakerIconUrl,
         isActive,
+        isLeftCaretHidden,
+        isRightCaretHidden,
     } = props;
 
     return (
@@ -134,11 +138,11 @@ export const TransactionItem: React.FC<TransactionItemProps> = props => {
             <Transaction>
                 <TransactionRow isActive={isActive}>
                     <span>{sendAmount}</span>
-                    <Caret name="caret-right" size={10} />
+                    {!isRightCaretHidden && <Caret name="caret-right" size={10} />}
                 </TransactionRow>
                 <TransactionRow>
                     <span>{receiveAmount}</span>
-                    <Caret name="caret-left" size={10} isLeft={true} />
+                    {!isLeftCaretHidden && <Caret name="caret-left" size={10} isLeft={true} />}
                 </TransactionRow>
             </Transaction>
             <Party>
