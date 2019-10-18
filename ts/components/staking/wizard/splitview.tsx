@@ -25,22 +25,35 @@ const SplitviewContainer = styled.div`
 `;
 
 const Left = styled.div`
-    padding: 100px 60px;
+    padding: 60px 15px 30px 15px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+
+    @media (min-width: 480px) {
+        padding: 100px 15px;
+    }
+
+    @media (min-width: 768px) {
+        padding: 100px 30px;
+    }
+
+    @media (min-width: 1140px) {
+        padding: 100px 60px;
+    }
 `;
 
 const Right = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 20px;
+    padding: 15px;
 
     @media (min-width: 768px) {
+        padding: 30px;
         background-color: ${colors.backgroundLightGrey};
     }
-    @media (min-width: 900px) {
+    @media (min-width: 1140px) {
         padding: 60px;
     }
 `;

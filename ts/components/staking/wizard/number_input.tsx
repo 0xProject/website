@@ -15,12 +15,17 @@ interface NumberInputProps {
     value?: string;
     shouldFocusOnInit?: boolean;
     onChange?: (newValue: React.ChangeEvent<HTMLInputElement>) => void;
+    onLabelChange?: (newValue: string) => void;
 }
 
 interface BottomLabelProps {
     label: string;
     link?: string;
     onClick?: () => void;
+}
+
+interface LabelProps {
+    isActive: boolean;
 }
 
 interface BottomLabelComponentProps {
@@ -52,11 +57,11 @@ const InputContainer = styled.div<InputContainerProps>`
 const Input = styled.input`
     padding-left: 70px;
     flex: 1;
-    align-self: stretch;
     border: 0;
     font-size: 20px;
     font-family: 'Formular', monospace;
     outline: none;
+    width: 60%;
     &::placeholder {
         color: ${colors.textDarkSecondary};
         font-family: 'Formular', monospace;
@@ -83,21 +88,24 @@ const ZrxIcon = styled.div`
 `;
 
 const Labels = styled.ol`
-    overflow: hidden;
-    white-space: nowrap;
-    width: 50%;
-    text-align: right;
+    display: none;
+
+    @media (min-width: 480px) {
+        justify-content: flex-end;
+        width: 40%;
+        display: flex;
+    }
 `;
 
-const Label = styled.li`
+const Label = styled.li<LabelProps>`
     font-size: 14px;
-    min-width: 70px;
-    color: ${colors.textDarkSecondary};
+    color: ${props => (props.isActive ? colors.white : colors.textDarkSecondary)};
+    background-color: ${props => (props.isActive ? colors.brandLight : colors.white)};
     text-align: center;
     padding: 6px;
     margin-right: 15px;
-    display: inline-block;
-    border: 1px solid #d5d5d5;
+    border: 1px solid ${props => (props.isActive ? colors.brandLight : '#d5d5d5')};
+    cursor: pointer;
     &:last-child {
         margin-right: 20px;
     }
@@ -186,7 +194,17 @@ const BottomLabel: React.FC<BottomLabelComponentProps> = ({ item }) => {
 };
 
 export const NumberInput: React.FC<NumberInputProps> = props => {
-    const { placeholder, bottomLabels, labels, onChange, topLabels, heading, isError, shouldFocusOnInit } = props;
+    const {
+        placeholder,
+        bottomLabels,
+        labels,
+        onChange,
+        onLabelChange,
+        topLabels,
+        heading,
+        isError,
+        shouldFocusOnInit,
+    } = props;
 
     const input = React.useRef(null);
 
@@ -195,6 +213,13 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
             input.current.focus();
         }
     }, []);
+
+    const [selectedOption, setSelectedOption] = React.useState(null);
+
+    const onLabelSelect = (label: string): void => {
+        onLabelChange(label);
+        setSelectedOption(label);
+    };
 
     return (
         <Container>
@@ -212,7 +237,15 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
                 {labels != null && labels.length > 0 && (
                     <Labels>
                         {labels.map((label, index) => {
-                            return <Label key={index.toString()}>{label}</Label>;
+                            return (
+                                <Label
+                                    key={index.toString()}
+                                    isActive={selectedOption === label}
+                                    onClick={() => onLabelSelect(label)}
+                                >
+                                    {label}
+                                </Label>
+                            );
                         })}
                     </Labels>
                 )}

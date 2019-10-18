@@ -10,10 +10,12 @@ import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_lay
 
 import { Button } from 'ts/components/button';
 import { Spinner } from 'ts/components/spinner';
-import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
+import { InfoHeader, InfoHeaderItem } from 'ts/components/staking/wizard/info_header';
+import { Inner } from 'ts/components/staking/wizard/inner';
+import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
-import { Timeline } from 'ts/components/staking/wizard/Timeline';
-import { TransactionItem } from 'ts/components/staking/wizard/TransactionItem';
+import { Timeline } from 'ts/components/staking/wizard/timeline';
+import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
 const STAKED = 1000000;
 
@@ -31,12 +33,6 @@ const Container = styled.div`
     max-width: 1390px;
     margin: 0 auto;
     position: relative;
-`;
-
-const Inner = styled.div`
-    border: 1px solid #e3e3e3;
-    background-color: ${colors.white};
-    padding: 30px;
 `;
 
 const CenteredHeader = styled.h2`
@@ -61,21 +57,6 @@ const ButtonWithIcon = styled(Button)`
 const SpinnerContainer = styled.span`
     display: inline-block;
     margin-right: 10px;
-`;
-
-const InfoHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 30px;
-`;
-
-const InfoHeaderItem = styled.span`
-    font-size: 20px;
-    line-height: 1.35;
-
-    &:last-child {
-        color: ${colors.textDarkSecondary};
-    }
 `;
 
 const NumberInputContainer = styled.div`
@@ -114,6 +95,31 @@ const ButtonsContainer = styled.div`
         &:last-child {
             margin-right: 0;
         }
+    }
+`;
+
+const IntroHeader = styled.h1`
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 15px;
+
+    @media (min-width: 768px) {
+        font-size: 50px;
+    }
+`;
+
+const IntroDescription = styled.h2`
+    font-size: 17px;
+    font-weight: 300;
+    color: ${colors.textDarkSecondary};
+    line-height: 1.44;
+    margin-bottom: 30px;
+    max-width: 340px;
+
+    @media (min-width: 768px) {
+        margin-bottom: 60px;
+        font-size: 18px;
     }
 `;
 
@@ -203,36 +209,38 @@ export const RemoveStake: React.FC<StakingWizardProps> = props => {
             <Container>
                 <Splitview
                     leftComponent={
-                        <Timeline
-                            activeItemIndex={0}
-                            header="Unstake your ZRX"
-                            description="Use one pool of capital across multiple relayers to trade against a large group."
-                            items={[
-                                {
-                                    date: '22.08',
-                                    fromNow: '2 days',
-                                    title: 'Removing your stake',
-                                    description: 'Your declared staking pool is going to be locked in smart contract.',
-                                    isActive: true,
-                                },
-                                {
-                                    date: '22.08',
-                                    fromNow: '2 days',
-                                    title: 'Lockout period',
-                                    description:
-                                        'Your tokens will be locked from withdrawal until the end of the next Epoch.',
-                                    isActive: false,
-                                },
-                                {
-                                    date: '22.08',
-                                    fromNow: '2 days',
-                                    title: 'Tokens unlocked',
-                                    description:
-                                        'You are able to withdraw your tokens to your wallet, which you are free to move or restake',
-                                    isActive: false,
-                                },
-                            ]}
-                        />
+                        <>
+                            <IntroHeader>Start staking your tokens</IntroHeader>
+                            <IntroDescription>Use one pool of capital across multiple relayers to trade against a large group.</IntroDescription>
+                            <Timeline
+                                activeItemIndex={0}
+                                items={[
+                                    {
+                                        date: '22.08',
+                                        fromNow: '2 days',
+                                        title: 'Removing your stake',
+                                        description: 'Your declared staking pool is going to be locked in smart contract.',
+                                        isActive: true,
+                                    },
+                                    {
+                                        date: '22.08',
+                                        fromNow: '2 days',
+                                        title: 'Lockout period',
+                                        description:
+                                            'Your tokens will be locked from withdrawal until the end of the next Epoch.',
+                                        isActive: false,
+                                    },
+                                    {
+                                        date: '22.08',
+                                        fromNow: '2 days',
+                                        title: 'Tokens unlocked',
+                                        description:
+                                            'You are able to withdraw your tokens to your wallet, which you are free to move or restake',
+                                        isActive: false,
+                                    },
+                                ]}
+                            />
+                        </>
                     }
                     rightComponent={
                         <>

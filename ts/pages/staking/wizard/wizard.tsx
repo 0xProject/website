@@ -8,18 +8,17 @@ import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_lay
 
 import { Button } from 'ts/components/button';
 import { Spinner } from 'ts/components/spinner';
-import { MarketMaker } from 'ts/components/staking/wizard/MarketMaker';
-import { NumberInput } from 'ts/components/staking/wizard/NumberInput';
-import { Status } from 'ts/components/staking/wizard/Status';
-import { Timeline } from 'ts/components/staking/wizard/Timeline';
-import { TransactionItem } from 'ts/components/staking/wizard/TransactionItem';
+import { Inner } from 'ts/components/staking/wizard/inner';
+import { MarketMaker } from 'ts/components/staking/wizard/market_maker';
+import { NumberInput } from 'ts/components/staking/wizard/number_input';
+import { Splitview } from 'ts/components/staking/wizard/splitview';
+import { Status } from 'ts/components/staking/wizard/status';
+// import { Timeline } from 'ts/components/staking/wizard/timeline';
+import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
+
+import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
 export interface StakingWizardProps {}
-
-interface SplitviewProps {
-    leftComponent: React.ReactNode;
-    rightComponent: React.ReactNode;
-}
 
 interface ErrorButtonProps {
     message: string;
@@ -32,48 +31,6 @@ const Container = styled.div`
     max-width: 1390px;
     margin: 0 auto;
     position: relative;
-`;
-
-const Inner = styled.div`
-    border: 1px solid #e3e3e3;
-    background-color: ${colors.white};
-    padding: 30px;
-`;
-
-const SplitviewContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-
-    @media (min-width: 900px) {
-        flex-direction: row;
-    }
-
-    & > div {
-        @media (min-width: 900px) {
-            width: 50%;
-        }
-    }
-`;
-
-const Left = styled.div`
-    padding: 100px 60px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-`;
-
-const Right = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px;
-
-    @media (min-width: 768px) {
-        background-color: ${colors.backgroundLightGrey};
-    }
-    @media (min-width: 900px) {
-        padding: 60px;
-    }
 `;
 
 const ConnectWalletButton = styled(Button)`
@@ -142,15 +99,95 @@ const Retry = styled.button`
     border-left: 1px solid #898989;
 `;
 
-const Splitview: React.FC<SplitviewProps> = props => {
-    const { leftComponent, rightComponent } = props;
-    return (
-        <SplitviewContainer>
-            <Left>{leftComponent}</Left>
-            <Right>{rightComponent}</Right>
-        </SplitviewContainer>
-    );
-};
+const IntroHeader = styled.h1`
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 15px;
+    text-align: center;
+
+    @media (min-width: 480px) {
+        text-align: left;
+    }
+
+    @media (min-width: 768px) {
+        font-size: 50px;
+    }
+`;
+
+const IntroDescription = styled.h2`
+    font-size: 18px;
+    font-weight: 300;
+    color: ${colors.textDarkSecondary};
+    line-height: 1.44;
+    margin-bottom: 30px;
+    text-align: center;
+
+    @media (min-width: 480px) {
+        max-width: 340px;
+        text-align: left;
+    }
+
+    @media (min-width: 768px) {
+        margin-bottom: 60px;
+    }
+`;
+
+const IntroMetrics = styled.ul`
+    display: block;
+    padding-top: 30px;
+    position: relative;
+
+    @media (min-width: 480px) {
+        padding-top: 60px;
+
+        &:before {
+            position: absolute;
+            height: 1px;
+            width: 100%;
+            max-width: 340px;
+            background-color: #E3E3E3;
+            top: 0;
+            left: 0;
+            content: '';
+        }
+    }
+`;
+
+const IntroMetric = styled.li`
+    display: block;
+    text-align: center;
+    margin-bottom: 15px;
+
+    @media (min-width: 480px) {
+        text-align: left;
+        display: inline-block;
+        width: 50%;
+    }
+
+    h2 {
+        font-size: 28px;
+        line-height: 1.35;
+        margin-bottom: 7px;
+
+        @media (min-width: 480px) {
+            font-size: 34px;
+            line-height: 1.23;
+            margin-bottom: 15px;
+        }
+    }
+
+    p {
+        font-size: 17px;
+        line-height: 1.44;
+        font-weight: 300;
+        color: ${colors.textDarkSecondary};
+
+        @media (min-width: 480px) {
+            font-size: 18px;
+        }
+    }
+`;
 
 const ErrorButton: React.FC<ErrorButtonProps> = props => {
     const { onSecondaryClick, message, secondaryButtonText } = props;
@@ -171,37 +208,50 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
             <Container>
                 <Splitview
                     leftComponent={
-                        <Timeline
-                            activeItemIndex={0}
-                            header="Start Staking"
-                            description="Use one pool of capital across multiple relayers to trade against a large group."
-                            items={[
-                                {
-                                    date: '22.08',
-                                    fromNow: '2 days',
-                                    title: 'Staking starts',
-                                    description:
-                                        'Your staking pool is included in the Market Maker score along with voting power.',
-                                    isActive: true,
-                                },
-                                {
-                                    date: '22.08',
-                                    fromNow: '2 days',
-                                    title: 'Staking starts',
-                                    description:
-                                        'Your staking pool is included in the Market Maker score along with voting power.',
-                                    isActive: false,
-                                },
-                                {
-                                    date: '22.08',
-                                    fromNow: '2 days',
-                                    title: 'Staking starts',
-                                    description:
-                                        'Your staking pool is included in the Market Maker score along with voting power.',
-                                    isActive: false,
-                                },
-                            ]}
-                        />
+                        <>
+                            <IntroHeader>Start staking your tokens</IntroHeader>
+                            <IntroDescription>Use one pool of capital across multiple relayers to trade against a large group.</IntroDescription>
+
+                            <IntroMetrics>
+                                <IntroMetric>
+                                    <h2>873,435</h2>
+                                    <p>Rewards collected</p>
+                                </IntroMetric>
+                                <IntroMetric>
+                                    <h2>$203M</h2>
+                                    <p>Total stake</p>
+                                </IntroMetric>
+                            </IntroMetrics>
+
+                            {/* <Timeline
+                                activeItemIndex={0}
+                                items={[
+                                    {
+                                        date: '22.08',
+                                        fromNow: '2 days',
+                                        title: 'Removing your stake',
+                                        description: 'Your declared staking pool is going to be locked in smart contract.',
+                                        isActive: true,
+                                    },
+                                    {
+                                        date: '22.08',
+                                        fromNow: '2 days',
+                                        title: 'Lockout period',
+                                        description:
+                                            'Your tokens will be locked from withdrawal until the end of the next Epoch.',
+                                        isActive: false,
+                                    },
+                                    {
+                                        date: '22.08',
+                                        fromNow: '2 days',
+                                        title: 'Tokens unlocked',
+                                        description:
+                                            'You are able to withdraw your tokens to your wallet, which you are free to move or restake',
+                                        isActive: false,
+                                    },
+                                ]}
+                            /> */}
+                        </>
                     }
                     rightComponent={
                         <>
@@ -209,6 +259,10 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                 placeholder="Enter your stake"
                                 heading="Amount"
                                 topLabels={['Amount', 'Available: 1,000,000 ZRX']}
+                                labels={['25%', '50%', '100%']}
+                                onLabelChange={(label: string) => {
+                                    // console.log('Change label');
+                                }}
                                 bottomLabels={[
                                     {
                                         label: 'Based on your ZRX balance',
@@ -286,6 +340,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                     }}
                                 />
                             </Inner>
+                            <Newsletter />
                         </>
                     }
                 />
