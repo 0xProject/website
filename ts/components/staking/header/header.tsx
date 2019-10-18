@@ -135,6 +135,7 @@ const NavItem: React.FC<INavLinkProps> = ({ link }) => {
 
 const StyledHeader = styled.header<IHeaderProps>`
     padding: 30px;
+    background-color: white;
 `;
 
 interface IWalletConnectedIndicatorProps {
@@ -213,6 +214,7 @@ const StyledAnchor = styled.a`
 const HeaderWrap = styled(FlexWrap)`
     justify-content: space-between;
     align-items: center;
+
 
     @media (max-width: 800px) {
         padding-top: 0;
