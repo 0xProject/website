@@ -287,6 +287,7 @@ export const RemoveStake: React.FC<StakingWizardProps> = props => {
                                         marketMakerName="Binance"
                                         marketMakerIconUrl="/images/toshi_logo.jpg"
                                         isActive={true}
+                                        isLeftCaretHidden={true}
                                     />
                                 }
 

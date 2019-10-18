@@ -53,14 +53,35 @@ const InfoHeader = styled.div`
     display: flex;
     justify-content: space-between;
     margin-bottom: 30px;
+    align-items: flex-start;
+    flex-direction: column;
+
+    @media (min-width: 480px) {
+        flex-direction: row;
+    }
+
+    @media (min-width: 768px) {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    @media (min-width: 900px) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    @media (min-width: 1140px) {
+        flex-direction: row;
+        align-items: center;
+    }
 `;
 
 const InfoHeaderItem = styled.span`
-    font-size: 20px;
+    font-size: 18px;
     line-height: 1.35;
 
-    &:last-child {
-        color: ${colors.textDarkSecondary};
+    @media (min-width: 480px) {
+        font-size: 20px;
     }
 `;
 
@@ -97,6 +118,17 @@ const Retry = styled.button`
     font-size: 18px;
     font-family: 'Formular', monospace;
     border-left: 1px solid #898989;
+`;
+
+const NumberRound = styled.span`
+    background-color: ${colors.white};
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: inline-block;
+    text-align: center;
+    padding: 4px 0;
+    border: 1px solid #F6F6F6;
 `;
 
 const IntroHeader = styled.h1`
@@ -146,7 +178,7 @@ const IntroMetrics = styled.ul`
             height: 1px;
             width: 100%;
             max-width: 340px;
-            background-color: #E3E3E3;
+            background-color: #e3e3e3;
             top: 0;
             left: 0;
             content: '';
@@ -210,7 +242,9 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                     leftComponent={
                         <>
                             <IntroHeader>Start staking your tokens</IntroHeader>
-                            <IntroDescription>Use one pool of capital across multiple relayers to trade against a large group.</IntroDescription>
+                            <IntroDescription>
+                                Use one pool of capital across multiple relayers to trade against a large group.
+                            </IntroDescription>
 
                             <IntroMetrics>
                                 <IntroMetric>
@@ -293,9 +327,21 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                 iconUrl="/images/toshi_logo.jpg"
                             />
                             <InfoHeader>
+                                <InfoHeaderItem>
+                                    Recommended market makers <NumberRound>2</NumberRound>
+                                </InfoHeaderItem>
+                                <InfoHeaderItem>
+                                    <Button isWithArrow={true} color={colors.textDarkSecondary}>
+                                        Full list
+                                    </Button>
+                                </InfoHeaderItem>
+                            </InfoHeader>
+
+                            <InfoHeader>
                                 <InfoHeaderItem>Start Staking</InfoHeaderItem>
                                 <InfoHeaderItem>Begins in 2 days</InfoHeaderItem>
                             </InfoHeader>
+
                             <Inner>
                                 <TransactionItem
                                     marketMakerId="0x12345...12345"

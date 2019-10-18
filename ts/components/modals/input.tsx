@@ -103,7 +103,7 @@ const StyledInput = styled.input`
     background-color: #fff;
     border: 1px solid #d5d5d5;
     color: #000;
-    font-size: 1.294117647rem;
+    font-size: 1.111111111rem;
     padding: 16px 15px 14px;
     outline: none;
     width: 100%;
@@ -113,7 +113,8 @@ const StyledInput = styled.input`
     border-color: ${(props: InputProps) => props.isErrors && `#FD0000`};
 
     &::placeholder {
-        color: #c3c3c3;
+        font-color: #C3C3C3;
+        font-family: 'Formular';
     }
 `;
 
