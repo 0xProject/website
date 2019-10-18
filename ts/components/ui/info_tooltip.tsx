@@ -13,17 +13,38 @@ interface InfoTooltipProps {
 
 export const InfoTooltip = (props: InfoTooltipProps) => {
     return (
-        <div className={props.className} data-tip={true} data-for="walletBalance" data-type="light" data-border="true">
-            <StyledIcon name="info" size={13} />
+        <Wrap className={props.className}>
+            <div data-tip={true} data-for="walletBalance" data-type="light" data-border="true">
+                <StyledIcon name="info" size={13} />
 
-            <StyledTooltip id="walletBalance" className="tooltip-light">
-                {props.children}
-            </StyledTooltip>
-        </div>
+                <StyledTooltip id="walletBalance" className="tooltip-light">
+                    {props.children}
+                </StyledTooltip>
+            </div>
+        </Wrap>
     );
 };
 
+const Wrap = styled.div`
+    width: 14px;
+    height: 14px;
+    position: relative;
+
+    > div {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        top: calc(50% - 15px);
+        left: calc(50% - 15px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+`;
+
 const StyledIcon = styled(Icon)`
+    opacity: 0.7;
+
     path {
         fill: ${colors.textDarkSecondary};
     }

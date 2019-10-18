@@ -6,7 +6,6 @@ import styled, { css } from 'styled-components';
 import { Link } from 'ts/components/documentation/shared/link';
 
 import { MobileNav } from 'ts/components/docs/header/mobile_nav';
-import { SearchInput } from 'ts/components/docs/search/search_input';
 import { SubMenu } from 'ts/components/staking/header/sub_menu';
 
 import { Hamburger } from 'ts/components/hamburger';
@@ -90,7 +89,7 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }
                             <Logo />
                         </Link>
                         <DocsLogoWrap>
-                            / <DocsLogoLink to={WebsitePaths.Docs}>Staking</DocsLogoLink>
+                            / <DocsLogoLink to={WebsitePaths.Staking}>Staking</DocsLogoLink>
                         </DocsLogoWrap>
                     </LogoWrap>
 
@@ -100,9 +99,6 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }
                                 <NavItem key={`navlink-${index}`} link={link} />
                             ))}
                         </NavLinks>
-
-                        <SearchInput isHome={false} />
-
                         {subMenu}
                     </MediaQuery>
 
