@@ -6,6 +6,7 @@ import { colors } from 'ts/style/colors';
 interface StakeStatus {
     title: string;
     subtitle: string;
+    className?: string;
 }
 
 interface StatusColors {
@@ -19,9 +20,10 @@ interface StatusTextProps {
 export const StakeStatus: React.StatelessComponent<StakeStatus> = ({
     subtitle,
     title,
+    className,
 }) => {
     return (
-        <>
+        <div className={className}>
             <StatusText status={title}>
                 {title}
             </StatusText>
@@ -29,7 +31,7 @@ export const StakeStatus: React.StatelessComponent<StakeStatus> = ({
             <StatusId>
                 {subtitle}
             </StatusId>
-        </>
+        </div>
     );
 };
 

@@ -118,7 +118,7 @@ export const AccountActivity: React.FC = () => {
                                     {row.date}
                                 </DateCell>
                                 <td>
-                                    <StakeStatus
+                                    <StyledStakeStatus
                                         title={description.title}
                                         subtitle={description.subtitle}
                                     />
@@ -164,5 +164,13 @@ const DateCell = styled.td`
         display: block;
         margin-bottom: 10px;
         color: ${colors.textDarkPrimary}
+    }
+`;
+
+const StyledStakeStatus = styled(StakeStatus)`
+    @media (max-width: 768px) {
+        span {
+            display: none;
+        }
     }
 `;
