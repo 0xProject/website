@@ -122,6 +122,9 @@ export enum ActionTypes {
     UpdateLibraryVersion = 'UPDATE_LIBRARY_VERSION',
     UpdateAvailableLibraryVersions = 'UPDATE_AVAILABLE_LIBRARY_VERSIONS',
 
+    // Staking
+    UpdateIsConnectWalletDialogOpen = 'UPDATE_IS_CONNECT_WALLET_DIALOG_OPEN',
+
     // Shared
     ShowFlashMessage = 'SHOW_FLASH_MESSAGE',
     HideFlashMessage = 'HIDE_FLASH_MESSAGE',

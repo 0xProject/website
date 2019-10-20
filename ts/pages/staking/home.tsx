@@ -6,7 +6,6 @@ import { colors } from 'ts/style/colors';
 import { Button } from 'ts/components/button';
 import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 
-import { ConnectWalletDialog } from 'ts/components/dialogs/connect_wallet_dialog';
 import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
@@ -17,48 +16,43 @@ import { StakingHero } from 'ts/components/staking/hero';
 import { Heading } from 'ts/components/text';
 
 const stakingPools = [
-  {
-    id: '29n5c290cn0cc2943cn239',
-    name: 'Staking 01',
-    thumbnailUrl: 'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg',
-    feesCollectedEth: 0.03281,
-    stakingPercent: 2000,
-    rewardsSharePercent: 100,
-    location: '234 CALIFORNIA',
-  },
-  {
-    id: '29n5c290cn0cc2943cn230',
-    name: 'Staking 02',
-    thumbnailUrl: 'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg',
-    feesCollectedEth: 0.03281,
-    stakingPercent: 2000,
-    rewardsSharePercent: 100,
-    location: '234 CALIFORNIA',
-  },
-  {
-    id: '29n5c290cn0cc2943cn240',
-    name: 'Staking 03',
-    thumbnailUrl: 'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg',
-    feesCollectedEth: 0.03281,
-    stakingPercent: 2000,
-    rewardsSharePercent: 100,
-    location: '234 CALIFORNIA',
-  },
+    {
+        id: '29n5c290cn0cc2943cn239',
+        name: 'Staking 01',
+        thumbnailUrl: 'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg',
+        feesCollectedEth: 0.03281,
+        stakingPercent: 2000,
+        rewardsSharePercent: 100,
+        location: '234 CALIFORNIA',
+    },
+    {
+        id: '29n5c290cn0cc2943cn230',
+        name: 'Staking 02',
+        thumbnailUrl: 'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg',
+        feesCollectedEth: 0.03281,
+        stakingPercent: 2000,
+        rewardsSharePercent: 100,
+        location: '234 CALIFORNIA',
+    },
+    {
+        id: '29n5c290cn0cc2943cn240',
+        name: 'Staking 03',
+        thumbnailUrl: 'https://cdn.worldvectorlogo.com/logos/0x-virtual-money-.svg',
+        feesCollectedEth: 0.03281,
+        stakingPercent: 2000,
+        rewardsSharePercent: 100,
+        location: '234 CALIFORNIA',
+    },
 ];
 
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
     const [isStakingConfirmationOpen, toggleStakingConfirmation] = React.useState(false);
-    const [isDialogConnectOpen, toggleDialogConnect] = React.useState(false);
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
             <StakingConfirmationDialog
-              isOpen={isStakingConfirmationOpen}
-              onDismiss={() => toggleStakingConfirmation(false)}
-            />
-            <ConnectWalletDialog
-              isOpen={isDialogConnectOpen}
-              onDismiss={() => toggleDialogConnect(false)}
+                isOpen={isStakingConfirmationOpen}
+                onDismiss={() => toggleStakingConfirmation(false)}
             />
             <StakingHero
                 title="Start staking your ZRX tokens"
@@ -85,26 +79,24 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                 }
             />
             <SectionWrapper>
-              <Heading
-                  asElement="h3"
-                  fontWeight="400"
-                  isNoMargin={true}
-              >
-                  Staking Pools
-              </Heading>
-              {stakingPools.map(({ id, name, thumbnailUrl, feesCollectedEth, stakingPercent, rewardsSharePercent, location }) => {
-                  return (
-                    <StakingPoolDetailRow
-                      key={id}
-                      name={name}
-                      thumbnailUrl={thumbnailUrl}
-                      totalFeesGeneratedInEth={feesCollectedEth}
-                      totalZrxStaked={stakingPercent}
-                      rewardsSharePercent={rewardsSharePercent}
-                      location={location}
-                    />
-                );
-              })}
+                <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                    Staking Pools
+                </Heading>
+                {stakingPools.map(
+                    ({ id, name, thumbnailUrl, feesCollectedEth, stakingPercent, rewardsSharePercent, location }) => {
+                        return (
+                            <StakingPoolDetailRow
+                                key={id}
+                                name={name}
+                                thumbnailUrl={thumbnailUrl}
+                                totalFeesGeneratedInEth={feesCollectedEth}
+                                totalZrxStaked={stakingPercent}
+                                rewardsSharePercent={rewardsSharePercent}
+                                location={location}
+                            />
+                        );
+                    },
+                )}
             </SectionWrapper>
         </StakingPageLayout>
     );
@@ -116,10 +108,9 @@ const SectionWrapper = styled.div`
     margin: 0 auto;
     padding: 40px;
 
-
     @media (max-width: ${ScreenWidths.Lg}rem) {
-      width: calc(100% - 20px);
-      padding: 20px;
+        width: calc(100% - 20px);
+        padding: 20px;
     }
 
     & + & {

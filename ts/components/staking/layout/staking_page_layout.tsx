@@ -7,6 +7,8 @@ import { DocumentTitle } from 'ts/components/document_title';
 
 import { documentConstants } from 'ts/utils/document_meta_constants';
 
+import { ConnectWalletDialog } from 'ts/containers/connect_wallet_dialog';
+
 interface IStakingPageLayoutProps {
     children: React.ReactNode;
     title: string;
@@ -29,6 +31,7 @@ export const StakingPageLayout: React.FC<IStakingPageLayoutProps> = props => {
             />
 
             {props.children}
+            <ConnectWalletDialog />
         </SiteWrap>
     );
 };

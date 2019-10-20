@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { Heading, Paragraph } from 'ts/components/text';
+import { Dispatcher } from 'ts/redux/dispatcher';
 import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
 // TODO(kimpers): New providers needed!
@@ -242,8 +243,8 @@ const OtherWalletScreen = ({ onDismiss, onGoBack }: IOtherWalletScreenProps) => 
 );
 
 interface IConnectWalletDialogProps {
-    onDismiss: () => void;
     isOpen: boolean;
+    dispatcher: Dispatcher;
 }
 
 interface IProviderInfo {
@@ -259,9 +260,11 @@ interface IWalletProviderCategory {
     providers: IProviderInfo[];
 }
 
-export const ConnectWalletDialog = ({ onDismiss, isOpen }: IConnectWalletDialogProps) => {
+export const ConnectWalletDialog = ({ isOpen, dispatcher }: IConnectWalletDialogProps) => {
     const [shouldShowOtherWallets, setShouldShowOtherWallets] = React.useState(false);
     const isMobile = utils.isMobileOperatingSystem();
+    const onDismiss = () => dispatcher.updateIsConnectWalletDialogOpen(false);
+    const onGoBack = () => setShouldShowOtherWallets(false);
 
     let walletProviders: IWalletProviderCategory[];
     if (isMobile) {
@@ -315,7 +318,7 @@ export const ConnectWalletDialog = ({ onDismiss, isOpen }: IConnectWalletDialogP
         <StyledDialogOverlay isOpen={isOpen}>
             <StyledDialogContent>
                 {isMobile && shouldShowOtherWallets ? (
-                    <OtherWalletScreen onDismiss={onDismiss} onGoBack={() => setShouldShowOtherWallets(false)} />
+                    <OtherWalletScreen onDismiss={onDismiss} onGoBack={onGoBack} />
                 ) : (
                     <>
                         <HeadingRow>
