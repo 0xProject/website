@@ -38,7 +38,7 @@ const FigureItem = styled.div`
     header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: baseline;
         font-size: 17px;
         color: #999;
         font-weight: 200;
