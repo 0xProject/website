@@ -12,41 +12,31 @@ import { zIndex } from 'ts/style/z_index';
 import { Providers } from 'ts/types';
 import { utils } from 'ts/utils/utils';
 
-const MainHeading = styled(Heading).attrs({
-    asElement: 'h3',
-    marginBottom: '0',
-})`
-    font-size: 34px !important;
-    line-height: 42px !important;
-    display: inline-block;
-
-    @media (max-width: 768px) {
-        font-size: 28px !important;
-        line-height: 38px !important;
-    }
-`;
-
 const StyledDialogOverlay = styled(DialogOverlay)`
-    background: none !important;
-    z-index: ${zIndex.overlay};
+    &[data-reach-dialog-overlay] {
+        background: none;
+        z-index: ${zIndex.overlay};
 
-    @media (max-width: 768px) {
-        background: white !important;
+        @media (max-width: 768px) {
+            background: white;
+        }
     }
 `;
 
 const StyledDialogContent = styled(DialogContent)`
-    width: 571px !important;
-    background: ${props => props.theme.bgColor};
-    border: 1px solid #e5e5e5;
+    &[data-reach-dialog-content] {
+        width: 571px;
+        background: ${props => props.theme.bgColor};
+        border: 1px solid #e5e5e5;
 
-    @media (max-width: 768px) {
-        height: 100vh !important;
-        width: 100vw !important;
-        margin: 0 !important;
-        padding: 30px !important;
+        @media (max-width: 768px) {
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 30px;
 
-        border: none;
+            border: none;
+        }
     }
 `;
 
@@ -99,6 +89,20 @@ const HeadingRow = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-bottom: 30px;
+
+    height: 42px;
+    @media (max-width: 768px) {
+        height: 38px;
+    }
+
+    /* Heading */
+    h3 {
+        font-size: 34px;
+
+        @media (max-width: 768px) {
+            font-size: 28px;
+        }
+    }
 `;
 
 const Divider = styled.div`
@@ -205,10 +209,6 @@ const DashboardUrlWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-
-    -webkit-user-select: all;
-    -moz-user-select: all;
-    -ms-user-select: all;
     user-select: all;
 `;
 
@@ -319,8 +319,10 @@ export const ConnectWalletDialog = ({ onDismiss, isOpen }: IConnectWalletDialogP
                 ) : (
                     <>
                         <HeadingRow>
-                            <MainHeading>Connect a wallet</MainHeading>
-                            <ButtonClose isTransparent={true} isNoBorder={true} padding="0px">
+                            <Heading asElement="h3" marginBottom="0">
+                                Connect a wallet
+                            </Heading>
+                            <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onDismiss}>
                                 <Icon name="close-modal" />
                             </ButtonClose>
                         </HeadingRow>

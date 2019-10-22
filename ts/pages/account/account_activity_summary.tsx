@@ -9,7 +9,7 @@ interface AccountActivitySummaryProps {
     title: string;
     subtitle: string;
     avatarSrc?: string;
-    children?: any;
+    children?: React.ReactNode;
     icon?: string;
 }
 
@@ -51,16 +51,9 @@ export const AccountActivitySummary: React.StatelessComponent<AccountActivitySum
 }) => {
     return (
         <Wrap>
-            <PanelHeader
-                title={title}
-                subtitle={subtitle}
-                avatarSrc={avatarSrc}
-                icon={icon}
-            />
+            <PanelHeader title={title} subtitle={subtitle} avatarSrc={avatarSrc} icon={icon} />
 
-            <ChildWrap>
-                {children}
-            </ChildWrap>
+            <ChildWrap>{children}</ChildWrap>
         </Wrap>
     );
 };
