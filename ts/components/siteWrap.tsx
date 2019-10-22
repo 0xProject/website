@@ -29,7 +29,7 @@ export const SiteWrap: React.FC<ISiteWrapProps> = props => {
         window.scrollTo(0, 0);
     }, []);
 
-    const Header = headerComponent == null ? MainHeader : headerComponent;
+    const Header = headerComponent || MainHeader;
 
     const toggleMobileNav = () => setIsMobileNavOpen(!isMobileNavOpen);
 
