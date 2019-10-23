@@ -89,7 +89,7 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }
                             <Logo />
                         </Link>
                         <DocsLogoWrap>
-                            / <DocsLogoLink to={WebsitePaths.Staking}>Staking</DocsLogoLink>
+                            / <DocsLogoLink to={WebsitePaths.Staking}>ZRX</DocsLogoLink>
                         </DocsLogoWrap>
                     </LogoWrap>
 
