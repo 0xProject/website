@@ -203,8 +203,6 @@ export class ModalVote extends React.Component<Props> {
             providerName,
             injectedProviderIfExists,
             web3Wrapper,
-            isLedger,
-            ledgerSubproviderIfExists,
             providerEngine,
         } = props;
 
@@ -217,8 +215,6 @@ export class ModalVote extends React.Component<Props> {
             providerName,
             currentBalance,
             selectedAddress,
-            isLedger,
-            ledgerSubproviderIfExists,
             providerEngine,
         });
 

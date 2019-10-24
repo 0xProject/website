@@ -72,7 +72,9 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                     <Column width="55%" maxWidth="560px">
                         <Countdown deadline={this._proposalData.voteEndDate} />
                         <Heading size="medium">{this._proposalData.title}</Heading>
-                        <Paragraph>{this._proposalData.summary}</Paragraph>
+                        {_.map(this._proposalData.summary, (link, index) => (
+                            <Paragraph>{this._proposalData.summary[index]}</Paragraph>
+                        ))}
                         <Button
                             href={this._proposalData.url}
                             target={this._proposalData.url !== undefined ? '_blank' : undefined}
@@ -95,7 +97,9 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                         <Heading>{this._proposalData.benefit.title}</Heading>
                         <FlexWrap>
                             <Column width="55%" maxWidth="560px">
-                                <Paragraph>{this._proposalData.benefit.summary}</Paragraph>
+                                {_.map(this._proposalData.benefit.summary, (link, index) => (
+                                    <Paragraph>{this._proposalData.benefit.summary[index]}</Paragraph>
+                                ))}
                                 {_.map(this._proposalData.benefit.links, (link, index) => (
                                     <MoreLink
                                         href={link.url}
@@ -121,7 +125,9 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                         <Heading>{this._proposalData.risks.title}</Heading>
                         <FlexWrap>
                             <Column width="55%" maxWidth="560px">
-                                <Paragraph>{this._proposalData.risks.summary}</Paragraph>
+                                {_.map(this._proposalData.risks.summary, (link, index) => (
+                                    <Paragraph>{this._proposalData.risks.summary[index]}</Paragraph>
+                                ))}
                                 {_.map(this._proposalData.risks.links, (link, index) => (
                                     <MoreLink
                                         href={link.url}
