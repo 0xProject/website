@@ -152,7 +152,7 @@ export const RemoveStake: React.FC<StakingWizardProps> = props => {
         step === Steps.WaitingForRemoval;
 
     const onValueChange = (newValue: string): void => {
-        const parsed = parseInt(newValue, 0);
+        const parsed = parseInt(newValue, 10);
 
         setValue(newValue);
 
