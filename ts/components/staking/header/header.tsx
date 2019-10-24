@@ -12,6 +12,7 @@ import { Hamburger } from 'ts/components/hamburger';
 import { Logo } from 'ts/components/logo';
 import { FlexWrap } from 'ts/components/newLayout';
 
+import { Dispatcher } from 'ts/redux/dispatcher';
 import { IThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 
@@ -21,6 +22,7 @@ interface IHeaderProps {
     location?: Location;
     isNavToggled?: boolean;
     toggleMobileNav?: () => void;
+    dispatcher: Dispatcher;
 }
 
 interface INavLinkProps {
@@ -52,22 +54,21 @@ const navItems: INavItems[] = [
     },
 ];
 
-export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }) => {
+export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav, dispatcher }) => {
     const onUnpin = () => {
         if (isNavToggled) {
             toggleMobileNav();
         }
     };
 
-    // TODO(kimpers): hook up wallet connection to sub menu
     const openConnectWalletDialog = () => {
         onUnpin();
-        // tslint:disable-next-line:no-console
-        console.log('TODO: open connect wallet dialog');
+        dispatcher.updateIsConnectWalletDialogOpen(true);
     };
 
     const logoutWallet = () => {
         onUnpin();
+        // TODO(kimpers): connect logout wallet button
         // tslint:disable-next-line:no-console
         console.log('TODO: logout wallet');
     };
@@ -133,7 +134,11 @@ const NavItem: React.FC<INavLinkProps> = ({ link }) => {
     return <LinkWrap>{linkElement}</LinkWrap>;
 };
 
-const StyledHeader = styled.header<IHeaderProps>`
+interface IStyledHeaderProps {
+    isNavToggled?: boolean;
+}
+
+const StyledHeader = styled.header<IStyledHeaderProps>`
     padding: 30px;
     background-color: white;
 `;
@@ -214,7 +219,6 @@ const StyledAnchor = styled.a`
 const HeaderWrap = styled(FlexWrap)`
     justify-content: space-between;
     align-items: center;
-
 
     @media (max-width: 800px) {
         padding-top: 0;
