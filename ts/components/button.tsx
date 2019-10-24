@@ -68,7 +68,7 @@ export const Button: React.StatelessComponent<ButtonInterface> = (props: ButtonI
 };
 
 Button.defaultProps = {
-    borderColor: 'rgba(255, 255, 255, .4)',
+    // borderColor: 'rgba(255, 255, 255, .4)',
     textAlign: 'center',
 };
 
@@ -79,7 +79,7 @@ const ButtonBase = styled.button<ButtonInterface>`
     background-color: ${props => props.bgColor || colors.brandLight};
     background-color: ${props =>
         (props.isTransparent || props.isWithArrow) && (props.transparentBgColor || 'transparent')};
-    border-color: ${props => !props.isWithArrow && props.borderColor };
+    border-color: ${props => props.borderColor || (props.isTransparent && !props.isWithArrow && 'rgba(255, 255, 255, 0.4)')};
     color: ${props => (props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor)};
     padding: ${props =>
         !props.isNoPadding && !props.isWithArrow && ((!!props.padding && props.padding) || (props.isLarge ? '22px 30px' : '18px 30px'))};
