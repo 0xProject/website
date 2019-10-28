@@ -154,10 +154,8 @@ export const proposals: Proposals = {
         zeipId: 56,
         title: '0x Protocol v3',
         summary: [
-            `This vote concerns a major update to 0x protocol. The changes fall mainly in three buckets: the introduction of staking contracts, a new pattern supporting bridged liquidity across protocols, and miscellaneous technical improvements and new features.`,
-            `The new staking contracts support a ZRX staking mechanism that grant 0x market makers greater ownership in the protocol, as they provide the necessary liquidity for the markets running on the network. Maker makers form pools to receive liquidity rewards and participate in governance. Liquidity rewards are sustained by the introduction of a small protocol fee, paid by the taker when filling orders. The fee is calculated as a portion of the gas price. Any ZRX holder can earn a portion of liquidity rewards by delegating their ZRX to market maker pools. Learn more about ZRX staking here.`,
-            `The ERC20BridgeProxy contract allows for the execution of ERC-20 transactions with assets that are locked in other contracts. The design patterns allows for DEX bridges to access sources of on-chain liquidity from DEXs like Kyber, Oasis, and Uniswap. Learn more about liquidity bridges here.`,
-            `Finally, in this vote proposal, the exchange expands and improves multiple features. The most notable ones are: the introduction of arbitrary fees (previously only on ZRX), idempotent order cancellations, a more profitable matching orders function and richer error reverts. Check out the entire changelog on Github. `,
+            `The v3 proposal concerns a major update to 0x protocol. The upgrades fall mainly into three buckets: the introduction of staking contracts, a new pattern supporting bridged liquidity across the DeFi ecosystem, and miscellaneous technical improvements.`,
+            `A ZRX staking mechanism grants 0x market makers greater ownership in the protocol and encourages participation in governance by distributing monetary rewards (in ether) and additional voting power for providing liquidity. 0x v3 also introduces a powerful set of bridge contracts that aggregate liquidity from multiple sources including DEXs like Uniswap, Kyber, and Oasis.`,
         ],
         url: 'https://github.com/0xProject/ZEIPs/issues/56',
         voteStartDate: moment(1571909179, 'X'),
@@ -165,24 +163,33 @@ export const proposals: Proposals = {
         benefit: {
             title: 'Benefit',
             summary: [
-                `ZRX staking introduces a scalable mechanism to sustain the growth of the ecosystem, aligning incentives of token holders with the class of users that participate the most in the network.`,
-                `The DEX bridge use cases powered by the new ERC20Bridge will allow projects integrating with 0x to plug into a superset of off-chain and on-chain pool liquidity, at the best price.`,
-                `The improved exchange functionalities enable, among other things, relayers to introduce fees denominated in any asset, market makers to have more reliable cancellations and matching relayers to maximize their profits. `,
+                `Staking introduces a mechanism to sustain the growth of the 0x ecosystem. It aligns the incentives of token holders with the users that actively participate the most in the network.`,
+                `The DEX bridge use cases powered by the new ERC20Bridge will allow projects integrating with 0x to plug into a superset of off-chain and on-chain liquidity, optimizing for the best price.`,
+                `The improved exchange functionalities enable, among other things, relayers to introduce fees denominated in any asset, reliable order cancellations for market makers and allow matching relayers to optimize their returns.`,
             ],
             rating: 3,
             links: [
                 {
-                    text: 'Technical detail',
-                    url: 'https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1155.md',
+                    text: 'Exchange',
+                    url: 'https://github.com/0xProject/0x-protocol-specification/blob/3.0/v3/v3-specification.md',
+                },
+                {
+                    text: 'Staking',
+                    url:
+                        'https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md',
+                },
+                {
+                    text: 'ERC20 Bridge',
+                    url:
+                        'https://github.com/0xProject/0x-protocol-specification/blob/3.0/asset-proxy/erc20-bridge-proxy.md',
                 },
             ],
         },
         risks: {
             title: 'Risk',
             summary: [
-                `While all the developer tooling has been updated to ease out the transition, the introduction of protocol fees paid by the order taker might require developers to update their architectures, therefore introducing barriers to migration.`,
-
-                `There are three assets that are handled by staking contracts: ZRX, WETH (to pay protocol fees), and rewards calculation and distribution to users. The three areas are isolated in the code. In particular, the ones handling ZRX and WETH balances (the most sensitive ones) were considered safe by auditors. It was flagged that the code implementation for rewards calculation and distribution was complex, which might introduce risk, even though no possible exploits were found.`,
+                `Whilst all the developer tooling has been updated to ease the transition to v3, the introduction of protocol fees paid by the order taker may require developers to update their contract architectures.`,
+                `The staking contracts architecture comes with a complex implementation. However, external audits have not surfaced any major vulnerability that would put user funds at risk. The assets handled by the staking contracts are limited to ZRX, WETH (for protocol fees and liquidity rewards).`,
             ],
             rating: 2,
             links: [
