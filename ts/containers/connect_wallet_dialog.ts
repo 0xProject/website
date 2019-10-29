@@ -6,26 +6,32 @@ import { State } from 'ts/redux/reducer';
 import { ConnectWalletDialog as ConnectWalletDialogComponent } from 'ts/components/dialogs/connect_wallet_dialog';
 import { Dispatcher } from 'ts/redux/dispatcher';
 
-interface IConnectWalletDialogProps {}
+interface ConnectWalletDialogProps {}
 
 // TODO(kimpers): add blockchain integration
-interface IConnectedState {
+interface ConnectedState {
     isOpen: boolean;
 }
 
-interface IConnectedDispatch {
-    dispatcher: Dispatcher;
+interface ConnectedDispatch {
+    onDismiss: () => void;
 }
 
-const mapStateToProps = (state: State, _ownProps: IConnectWalletDialogProps): IConnectedState => ({
+const mapStateToProps = (state: State, _ownProps: ConnectWalletDialogProps): ConnectedState => ({
     isOpen: state.isConnectWalletDialogOpen,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<State>): IConnectedDispatch => ({
-    dispatcher: new Dispatcher(dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => {
+    const dispatcher = new Dispatcher(dispatch);
 
-export const ConnectWalletDialog: React.ComponentClass<IConnectWalletDialogProps> = connect(
+    return {
+        onDismiss: (): void => {
+            dispatcher.updateIsConnectWalletDialogOpen(false);
+        },
+    };
+};
+
+export const ConnectWalletDialog: React.ComponentClass<ConnectWalletDialogProps> = connect(
     mapStateToProps,
     mapDispatchToProps,
 )(ConnectWalletDialogComponent);

@@ -12,31 +12,30 @@ import { Hamburger } from 'ts/components/hamburger';
 import { Logo } from 'ts/components/logo';
 import { FlexWrap } from 'ts/components/newLayout';
 
-import { Dispatcher } from 'ts/redux/dispatcher';
-import { IThemeValuesInterface } from 'ts/style/theme';
+import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 
 import { WebsitePaths } from 'ts/types';
 
-interface IHeaderProps {
+interface HeaderProps {
     location?: Location;
     isNavToggled?: boolean;
     toggleMobileNav?: () => void;
-    dispatcher: Dispatcher;
+    onOpenConnectWalletDialog: () => void;
 }
 
-interface INavLinkProps {
-    link: INavItems;
+interface NavLinkProps {
+    link: NavItems;
     key: string;
 }
 
-interface INavItems {
+interface NavItems {
     url?: string;
     id?: string;
     text?: string;
 }
 
-const navItems: INavItems[] = [
+const navItems: NavItems[] = [
     {
         id: 'staking',
         text: 'Staking',
@@ -54,16 +53,16 @@ const navItems: INavItems[] = [
     },
 ];
 
-export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav, dispatcher }) => {
+export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav, onOpenConnectWalletDialog }) => {
     const onUnpin = () => {
         if (isNavToggled) {
             toggleMobileNav();
         }
     };
 
-    const openConnectWalletDialog = () => {
+    const unpinAndOpenWalletDialog = () => {
         onUnpin();
-        dispatcher.updateIsConnectWalletDialogOpen(true);
+        onOpenConnectWalletDialog();
     };
 
     const logoutWallet = () => {
@@ -73,7 +72,7 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav, 
         console.log('TODO: logout wallet');
     };
 
-    const subMenu = <SubMenu openConnectWalletDialogCB={openConnectWalletDialog} logoutWalletCB={logoutWallet} />;
+    const subMenu = <SubMenu openConnectWalletDialogCB={unpinAndOpenWalletDialog} logoutWalletCB={logoutWallet} />;
     const isWalletConnected = false;
 
     return (
@@ -125,7 +124,7 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav, 
     );
 };
 
-const NavItem: React.FC<INavLinkProps> = ({ link }) => {
+const NavItem: React.FC<NavLinkProps> = ({ link }) => {
     const linkElement = link.url ? (
         <StyledNavLink to={link.url}>{link.text}</StyledNavLink>
     ) : (
@@ -134,20 +133,20 @@ const NavItem: React.FC<INavLinkProps> = ({ link }) => {
     return <LinkWrap>{linkElement}</LinkWrap>;
 };
 
-interface IStyledHeaderProps {
+interface StyledHeaderProps {
     isNavToggled?: boolean;
 }
 
-const StyledHeader = styled.header<IStyledHeaderProps>`
+const StyledHeader = styled.header<StyledHeaderProps>`
     padding: 30px;
     background-color: white;
 `;
 
-interface IWalletConnectedIndicatorProps {
+interface WalletConnectedIndicatorProps {
     isConnected: boolean;
     isNavToggled: boolean;
 }
-const WalletConnectedIndicator = styled.div<IWalletConnectedIndicatorProps>`
+const WalletConnectedIndicator = styled.div<WalletConnectedIndicatorProps>`
     width: 12px;
     height: 12px;
     border-radius: 50%;
@@ -193,7 +192,7 @@ const LinkWrap = styled.li`
     }
 `;
 
-const linkStyles = css<{ theme: IThemeValuesInterface }>`
+const linkStyles = css<{ theme: ThemeValuesInterface }>`
     color: ${({ theme }) => theme.textColor};
     opacity: 0.5;
     transition: opacity 0.35s;

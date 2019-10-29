@@ -2,7 +2,7 @@ import * as styledComponents from 'styled-components';
 
 import { colors } from 'ts/style/colors';
 
-export interface IThemeValuesInterface {
+export interface ThemeValuesInterface {
     bgColor: string;
     darkBgColor?: string;
     lightBgColor: string;
@@ -23,7 +23,7 @@ export interface IThemeValuesInterface {
 }
 
 export interface IThemeInterface {
-    [key: string]: IThemeValuesInterface;
+    [key: string]: ThemeValuesInterface;
 }
 
 // tslint:disable:no-unnecessary-type-assertion

@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { Heading, Paragraph } from 'ts/components/text';
-import { Dispatcher } from 'ts/redux/dispatcher';
 import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
 // TODO(kimpers): New providers needed!
@@ -129,12 +128,12 @@ const WalletCategoryStyling = styled.div`
     }
 `;
 
-interface IWalletCategoryProps {
+interface WalletCategoryProps {
     title: string;
-    providers: IProviderInfo[];
+    providers: ProviderInfo[];
 }
 
-const WalletCategory = ({ title, providers }: IWalletCategoryProps) => {
+const WalletCategory = ({ title, providers }: WalletCategoryProps) => {
     return (
         <WalletCategoryStyling>
             <Heading asElement="h5" color={colors.textDarkSecondary} size={20} marginBottom="15px">
@@ -213,12 +212,12 @@ const DashboardUrlWrapper = styled.div`
     user-select: all;
 `;
 
-interface IOtherWalletScreenProps {
+interface OtherWalletScreenProps {
     onDismiss: () => void;
     onGoBack: () => void;
 }
 
-const OtherWalletScreen = ({ onDismiss, onGoBack }: IOtherWalletScreenProps) => (
+const OtherWalletScreen = ({ onDismiss, onGoBack }: OtherWalletScreenProps) => (
     <>
         <HeadingRow>
             <ButtonBack isTransparent={true} isNoBorder={true} padding="0px" onClick={onGoBack}>
@@ -242,12 +241,12 @@ const OtherWalletScreen = ({ onDismiss, onGoBack }: IOtherWalletScreenProps) => 
     </>
 );
 
-interface IConnectWalletDialogProps {
+interface ConnectWalletDialogProps {
     isOpen: boolean;
-    dispatcher: Dispatcher;
+    onDismiss: () => void;
 }
 
-interface IProviderInfo {
+interface ProviderInfo {
     name: string;
     id: string;
     description?: string;
@@ -255,18 +254,17 @@ interface IProviderInfo {
     onClick?: () => void;
 }
 
-interface IWalletProviderCategory {
+interface WalletProviderCategory {
     title: string;
-    providers: IProviderInfo[];
+    providers: ProviderInfo[];
 }
 
-export const ConnectWalletDialog = ({ isOpen, dispatcher }: IConnectWalletDialogProps) => {
+export const ConnectWalletDialog = ({ isOpen, onDismiss }: ConnectWalletDialogProps) => {
     const [shouldShowOtherWallets, setShouldShowOtherWallets] = React.useState(false);
     const isMobile = utils.isMobileOperatingSystem();
-    const onDismiss = () => dispatcher.updateIsConnectWalletDialogOpen(false);
     const onGoBack = () => setShouldShowOtherWallets(false);
 
-    let walletProviders: IWalletProviderCategory[];
+    let walletProviders: WalletProviderCategory[];
     if (isMobile) {
         walletProviders = [
             {
