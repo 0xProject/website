@@ -194,6 +194,14 @@ export class Dispatcher {
         });
     }
 
+    // Staking
+    public updateIsConnectWalletDialogOpen(isOpen: boolean): void {
+        this._dispatch({
+            type: ActionTypes.UpdateIsConnectWalletDialogOpen,
+            data: isOpen,
+        });
+    }
+
     // Shared
     public showFlashMessage(msg: string | React.ReactNode): void {
         this._dispatch({

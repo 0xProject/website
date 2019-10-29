@@ -50,6 +50,9 @@ export interface State {
     docsVersion: string;
     availableDocVersions: string[];
 
+    // Staking
+    isConnectWalletDialogOpen: boolean;
+
     // Shared
     flashMessage: string | React.ReactNode;
     providerType: ProviderType;
@@ -85,6 +88,8 @@ export const INITIAL_STATE: State = {
     // Docs
     docsVersion: DEFAULT_DOCS_VERSION,
     availableDocVersions: [DEFAULT_DOCS_VERSION],
+    // Staking
+    isConnectWalletDialogOpen: false,
     // Shared
     flashMessage: undefined,
     providerType: ProviderType.Injected,
@@ -323,6 +328,14 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
             return {
                 ...state,
                 availableDocVersions: action.data,
+            };
+        }
+
+        // Staking
+        case ActionTypes.UpdateIsConnectWalletDialogOpen: {
+            return {
+                ...state,
+                isConnectWalletDialogOpen: action.data,
             };
         }
 
