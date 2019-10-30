@@ -84,11 +84,6 @@ const team: TeamMember[] = [
         title: 'Engineer',
     },
     {
-        imageUrl: '/images/team/melo.jpg',
-        name: 'Mel Oberto',
-        title: 'People Operations Specialist',
-    },
-    {
         imageUrl: '/images/team/chrisk.jpg',
         name: 'Chris Kalani',
         title: 'Director of Design',
