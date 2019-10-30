@@ -59,7 +59,7 @@ export interface ColumnProps {
 
 export const Section: React.FunctionComponent<SectionProps> = (props: SectionProps) => {
     if (props.omitWrapper) {
-        return <SectionBase id="here?" {...props} />;
+        return <SectionBase {...props} />;
     }
     return (
         <SectionBase {...props}>
