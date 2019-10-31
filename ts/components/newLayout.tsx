@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -61,9 +62,21 @@ export const Section: React.FunctionComponent<SectionProps> = (props: SectionPro
     if (props.omitWrapper) {
         return <SectionBase {...props} />;
     }
+    const wrapProps = _.pick(props, [
+        'bgColor',
+        'id',
+        'offsetTop',
+        'maxWidth',
+        'wrapWidth',
+        'isFullWidh',
+        'isTextCentered',
+        'isCentered',
+        'isWrapped',
+    ]);
+
     return (
         <SectionBase {...props}>
-            <Wrap {...props}>{props.children}</Wrap>
+            <Wrap {...wrapProps}>{props.children}</Wrap>
         </SectionBase>
     );
 };

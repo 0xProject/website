@@ -45,7 +45,7 @@ export class VoteIndex extends React.Component<VoteIndexProps, VoteIndexState> {
         return (
             <SiteWrap>
                 <DocumentTitle {...documentConstants.VOTE} />
-                <Section isTextCentered={true} isPadded={true} padding="150px 0px 110px">
+                <Section isTextCentered={true} isPadded={true} padding="80px 0 80px">
                     <Column>
                         <Heading size="medium" isCentered={true}>
                             0x Protocol Governance
