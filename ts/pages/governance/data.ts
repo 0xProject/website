@@ -157,9 +157,9 @@ export const proposals: Proposals = {
             `The v3 proposal concerns a major update to 0x protocol. The upgrades fall mainly into three buckets: the introduction of staking contracts, a new pattern supporting bridged liquidity across the DeFi ecosystem, and miscellaneous technical improvements.`,
             `A ZRX staking mechanism grants 0x market makers greater ownership in the protocol and encourages participation in governance by distributing monetary rewards (in ether) and additional voting power for providing liquidity. 0x v3 also introduces a powerful set of bridge contracts that aggregate liquidity from multiple sources including DEXs like Uniswap, Kyber, and Oasis.`,
         ],
-        url: 'https://github.com/0xProject/ZEIPs/issues/56',
-        voteStartDate: moment(1571909179, 'X'),
-        voteEndDate: moment(1574069179, 'X'),
+        url: 'https://blog.0xproject.com/0x-the-community-owned-liquidity-api-26da5732447e',
+        voteStartDate: moment(1572886800, 'X'),
+        voteEndDate: moment(1573491600, 'X'),
         benefit: {
             title: 'Benefit',
             summary: [
@@ -194,7 +194,7 @@ export const proposals: Proposals = {
             rating: 2,
             links: [
                 {
-                    text: 'View Audit',
+                    text: 'View Audit (Available Soon)',
                     url: 'https://github.com/ConsenSys/0x-audit-report-2019-11',
                 },
             ],
