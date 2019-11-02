@@ -14,6 +14,7 @@ export interface WrapProps {
     isTextCentered?: boolean;
     isCentered?: boolean;
     isWrapped?: boolean;
+    isFlex?: boolean;
 }
 
 export interface WrapGridProps {
@@ -27,8 +28,6 @@ export interface WrapStickyProps {
 
 export interface SectionProps extends WrapProps {
     isPadded?: boolean;
-    isFullWidth?: boolean;
-    isFlex?: boolean;
     overflow?: string;
     padding?: string;
     margin?: string;
@@ -36,7 +35,6 @@ export interface SectionProps extends WrapProps {
     hasBorder?: boolean;
     hasHover?: boolean;
     flexBreakpoint?: string;
-    maxWidth?: string;
     minHeight?: string;
     bgColor?: 'dark' | 'light' | string;
     children: any;
@@ -72,6 +70,7 @@ export const Section: React.FunctionComponent<SectionProps> = (props: SectionPro
         'isTextCentered',
         'isCentered',
         'isWrapped',
+        'isFlex',
     ]);
 
     return (
