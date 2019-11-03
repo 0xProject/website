@@ -12,7 +12,6 @@ import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { ZeroExProvider } from 'ethereum-types';
 import * as _ from 'lodash';
-import * as React from 'react';
 import { InjectedProvider, Providers } from 'ts/types';
 import { configs } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
@@ -36,60 +35,20 @@ export interface WalletConnectedProps {
     web3Wrapper?: Web3Wrapper;
 }
 
-interface Props {
-    onDismiss?: () => void;
-    onWalletConnected?: (props: WalletConnectedProps) => void;
-    onVoted?: () => void;
-    onError?: (errorMessage: string) => void;
-    web3Wrapper?: Web3Wrapper;
-    currentBalance: BigNumber;
-}
-
-interface State {
-    providerName?: string;
-    connectionErrMsg: string;
-    isWalletConnected: boolean;
-    isSuccessful: boolean;
-    preferredNetworkId: number;
-    errors: ErrorProps;
-    userAddresses: string[];
-    addressBalances: BigNumber[];
-    derivationErrMsg: string;
-}
-
-interface ErrorProps {
-    [key: string]: string;
-}
-
 const ZERO = new BigNumber(0);
 
-export class Web3Connector extends React.Component<Props, State> {
-    public static defaultProps = {
-        currentBalance: ZERO,
-        isWalletConnected: false,
-        errors: {},
-    };
+export class Web3Connector {
     // blockchain related
     public networkId: number;
+    // User connection related
+    public userAddresses: string[];
+    public addressBalances: BigNumber[];
     private _providerName: string;
     private _contractWrappers: ContractWrappers;
     private _injectedProviderIfExists?: InjectedProvider;
     private _web3Wrapper?: Web3Wrapper;
     private _providerEngine?: ZeroExProvider;
-    public constructor(props: Props) {
-        super(props);
-        this.state = {
-            connectionErrMsg: '',
-            isWalletConnected: false,
-            isSuccessful: false,
-            providerName: null,
-            preferredNetworkId: constants.NETWORK_ID_MAINNET,
-            errors: {},
-            userAddresses: [],
-            addressBalances: [],
-            derivationErrMsg: '',
-        };
-    }
+
     public async getUserAccountsAsync(): Promise<string[]> {
         utils.assert(this._contractWrappers !== undefined, 'ContractWrappers must be instantiated.');
         const provider = this._contractWrappers.getProvider();
@@ -109,72 +68,58 @@ export class Web3Connector extends React.Component<Props, State> {
             return ZERO;
         }
     }
-    // TODO(kimpers): implement then make private
-    public async _onConnectWalletClickAsync(): Promise<boolean> {
+
+    public async connectToWalletAsync(): Promise<WalletConnectedProps | undefined> {
         const networkIdIfExists = await this._getInjectedProviderNetworkIdIfExistsAsync();
         this.networkId = networkIdIfExists !== undefined ? networkIdIfExists : constants.NETWORK_ID_MAINNET;
 
         await this._resetOrInitializeAsync(this.networkId);
 
         const didSucceed = await this._fetchAddressesAndBalancesAsync();
-        if (didSucceed) {
-            this.setState(
-                {
-                    errors: {},
-                    preferredNetworkId: this.networkId,
-                },
-                async () => {
-                    // Always assume selected index is 0 for Metamask
-                    await this._updateSelectedAddressAsync(0);
-                },
-            );
+
+        if (!didSucceed) {
+            return undefined;
         }
 
-        return didSucceed;
+        // Always assume selected index is 0 for Metamask
+        const walletInfo = await this._updateSelectedAddressAsync(0);
+        // tslint:disable-next-line:no-console
+        console.log(walletInfo);
+
+        return walletInfo;
     }
 
     private async _fetchAddressesAndBalancesAsync(): Promise<boolean> {
-        let userAddresses: string[];
+        const userAddresses = await this._getUserAddressesAsync();
         const addressBalances: BigNumber[] = [];
-        try {
-            userAddresses = await this._getUserAddressesAsync();
-            for (const address of userAddresses) {
-                const balanceInZrx = await this.getZrxBalanceAsync(address);
-                addressBalances.push(balanceInZrx);
-            }
-        } catch (err) {
-            const errorMessage = 'Failed to connect. Follow the instructions and try again.';
-            this.props.onError
-                ? this.props.onError(errorMessage)
-                : this.setState({
-                      errors: {
-                          connectionError: errorMessage,
-                      },
-                  });
-            return false;
+        for (const address of userAddresses) {
+            const balanceInZrx = await this.getZrxBalanceAsync(address);
+            addressBalances.push(balanceInZrx);
         }
 
-        this.setState({
-            userAddresses,
-            addressBalances,
-        });
+        this.userAddresses = userAddresses;
+        this.addressBalances = addressBalances;
+
         return true;
     }
-    private async _updateSelectedAddressAsync(index: number): Promise<void> {
-        const { userAddresses, addressBalances } = this.state;
+    private async _updateSelectedAddressAsync(index: number): Promise<WalletConnectedProps | undefined> {
+        const { userAddresses, addressBalances } = this;
         const injectedProviderIfExists = await this._getInjectedProviderIfExistsAsync();
-        if (this.props.onWalletConnected && userAddresses[index] !== undefined) {
-            const walletInfo: WalletConnectedProps = {
-                contractWrappers: this._contractWrappers,
-                injectedProviderIfExists,
-                selectedAddress: userAddresses[index],
-                currentBalance: addressBalances[index],
-                providerEngine: this._providerEngine,
-                providerName: this._providerName,
-                web3Wrapper: this._web3Wrapper,
-            };
-            this.props.onWalletConnected(walletInfo);
+        if (!userAddresses[index]) {
+            return undefined;
         }
+
+        const walletInfo: WalletConnectedProps = {
+            contractWrappers: this._contractWrappers,
+            injectedProviderIfExists,
+            selectedAddress: userAddresses[index],
+            currentBalance: addressBalances[index],
+            providerEngine: this._providerEngine,
+            providerName: this._providerName,
+            web3Wrapper: this._web3Wrapper,
+        };
+
+        return walletInfo;
     }
     private _getNameGivenProvider(provider: ZeroExProvider): string {
         const providerType = utils.getProviderType(provider);
