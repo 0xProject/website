@@ -244,6 +244,7 @@ const OtherWalletScreen = ({ onDismiss, onGoBack }: OtherWalletScreenProps) => (
 interface ConnectWalletDialogProps {
     isOpen: boolean;
     onDismiss: () => void;
+    onConnectWallet: () => void;
 }
 
 interface ProviderInfo {
@@ -259,7 +260,7 @@ interface WalletProviderCategory {
     providers: ProviderInfo[];
 }
 
-export const ConnectWalletDialog = ({ isOpen, onDismiss }: ConnectWalletDialogProps) => {
+export const ConnectWalletDialog = ({ isOpen, onDismiss, onConnectWallet }: ConnectWalletDialogProps) => {
     const [shouldShowOtherWallets, setShouldShowOtherWallets] = React.useState(false);
     const isMobile = utils.isMobileOperatingSystem();
     const onGoBack = () => setShouldShowOtherWallets(false);
@@ -293,7 +294,7 @@ export const ConnectWalletDialog = ({ isOpen, onDismiss }: ConnectWalletDialogPr
         walletProviders = [
             {
                 title: 'Detected wallet',
-                providers: [{ name: 'MetaMask', id: Providers.Metamask }],
+                providers: [{ name: 'MetaMask', id: Providers.Metamask, onClick: () => onConnectWallet() }],
             },
             {
                 title: 'Hardware wallets',

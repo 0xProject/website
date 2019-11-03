@@ -4,13 +4,18 @@ import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import { stateStorage } from 'ts/local_storage/state_storage';
 import { analyticsMiddleware } from 'ts/redux/analyticsMiddleware';
 import { reducer, State } from 'ts/redux/reducer';
+import { sagas } from 'ts/redux/sagas';
+
+import createSagaMiddleware from 'redux-saga';
+
+const sagaMiddleware = createSagaMiddleware();
 
 const ONE_SECOND = 1000;
 
 export const store: ReduxStore<State> = createStore(
     reducer,
     stateStorage.getPersistedDefaultState(),
-    composeWithDevTools(applyMiddleware(analyticsMiddleware)),
+    composeWithDevTools(applyMiddleware(analyticsMiddleware, sagaMiddleware)),
 );
 store.subscribe(
     _.throttle(() => {
@@ -22,3 +27,5 @@ store.subscribe(
         });
     }, ONE_SECOND),
 );
+
+sagaMiddleware.run(sagas);

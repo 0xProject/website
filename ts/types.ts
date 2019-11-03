@@ -124,6 +124,9 @@ export enum ActionTypes {
 
     // Staking
     UpdateIsConnectWalletDialogOpen = 'UPDATE_IS_CONNECT_WALLET_DIALOG_OPEN',
+    ConnectWallet = 'CONNECT_WALLET',
+    ConnectWalletSucceeded = 'CONNECT_WALLET_SUCCEEDED',
+    ConnectWalletFailed = 'CONNECT_WALLET_FAILED',
 
     // Shared
     ShowFlashMessage = 'SHOW_FLASH_MESSAGE',
@@ -639,6 +642,12 @@ export enum Deco {
 export interface MaterialUIPosition {
     vertical: 'bottom' | 'top' | 'center';
     horizontal: 'left' | 'middle' | 'right';
+}
+
+export interface ConnectedWalletDetails {
+    providerName: string;
+    selectedAddress: string;
+    currentBalance: BigNumber;
 }
 
 export enum Providers {

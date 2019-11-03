@@ -202,6 +202,13 @@ export class Dispatcher {
         });
     }
 
+    // TODO(kimpers): take provider as argument
+    public connectWallet(): void {
+        this._dispatch({
+            type: ActionTypes.ConnectWallet,
+        });
+    }
+
     // Shared
     public showFlashMessage(msg: string | React.ReactNode): void {
         this._dispatch({

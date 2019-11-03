@@ -6,6 +6,7 @@ import {
     Action,
     ActionTypes,
     BlockchainErrs,
+    ConnectedWalletDetails,
     PortalOrder,
     ProviderType,
     ScreenWidths,
@@ -52,6 +53,8 @@ export interface State {
 
     // Staking
     isConnectWalletDialogOpen: boolean;
+    isWalletConnected: boolean;
+    walletDetails?: ConnectedWalletDetails;
 
     // Shared
     flashMessage: string | React.ReactNode;
@@ -90,6 +93,7 @@ export const INITIAL_STATE: State = {
     availableDocVersions: [DEFAULT_DOCS_VERSION],
     // Staking
     isConnectWalletDialogOpen: false,
+    isWalletConnected: false,
     // Shared
     flashMessage: undefined,
     providerType: ProviderType.Injected,
@@ -336,6 +340,23 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
             return {
                 ...state,
                 isConnectWalletDialogOpen: action.data,
+            };
+        }
+
+        // TODO: implement
+        case ActionTypes.ConnectWalletSucceeded: {
+            return {
+                ...state,
+                isWalletConnected: true,
+                walletDetails: action.data,
+            };
+        }
+
+        case ActionTypes.ConnectWalletFailed: {
+            return {
+                ...state,
+                isWalletConnected: false,
+                walletDetails: undefined,
             };
         }
 

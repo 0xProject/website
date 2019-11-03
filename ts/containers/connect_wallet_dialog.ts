@@ -15,6 +15,7 @@ interface ConnectedState {
 
 interface ConnectedDispatch {
     onDismiss: () => void;
+    onConnectWallet: () => void;
 }
 
 const mapStateToProps = (state: State, _ownProps: ConnectWalletDialogProps): ConnectedState => ({
@@ -27,6 +28,9 @@ const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => {
     return {
         onDismiss: (): void => {
             dispatcher.updateIsConnectWalletDialogOpen(false);
+        },
+        onConnectWallet: (): void => {
+            dispatcher.connectWallet();
         },
     };
 };

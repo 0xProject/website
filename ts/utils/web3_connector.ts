@@ -12,7 +12,7 @@ import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { ZeroExProvider } from 'ethereum-types';
 import * as _ from 'lodash';
-import { InjectedProvider, Providers } from 'ts/types';
+import { ConnectedWalletDetails, InjectedProvider, Providers } from 'ts/types';
 import { configs } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
@@ -24,16 +24,6 @@ const providerToName: { [provider: string]: string } = {
     [Providers.CoinbaseWallet]: constants.PROVIDER_NAME_COINBASE_WALLET,
     [Providers.Cipher]: constants.PROVIDER_NAME_CIPHER,
 };
-
-export interface WalletConnectedProps {
-    providerName: string;
-    selectedAddress: string;
-    currentBalance: BigNumber;
-    contractWrappers?: ContractWrappers;
-    injectedProviderIfExists?: InjectedProvider;
-    providerEngine?: ZeroExProvider;
-    web3Wrapper?: Web3Wrapper;
-}
 
 const ZERO = new BigNumber(0);
 
@@ -47,6 +37,8 @@ export class Web3Connector {
     private _contractWrappers: ContractWrappers;
     private _injectedProviderIfExists?: InjectedProvider;
     private _web3Wrapper?: Web3Wrapper;
+    // TODO(kimpers): is _providerEngine needed?
+    // @ts-ignore
     private _providerEngine?: ZeroExProvider;
 
     public async getUserAccountsAsync(): Promise<string[]> {
@@ -69,27 +61,21 @@ export class Web3Connector {
         }
     }
 
-    public async connectToWalletAsync(): Promise<WalletConnectedProps | undefined> {
+    public async connectToWalletAsync(): Promise<ConnectedWalletDetails | undefined> {
         const networkIdIfExists = await this._getInjectedProviderNetworkIdIfExistsAsync();
         this.networkId = networkIdIfExists !== undefined ? networkIdIfExists : constants.NETWORK_ID_MAINNET;
 
         await this._resetOrInitializeAsync(this.networkId);
 
-        const didSucceed = await this._fetchAddressesAndBalancesAsync();
-
-        if (!didSucceed) {
-            return undefined;
-        }
+        await this._fetchAddressesAndBalancesAsync();
 
         // Always assume selected index is 0 for Metamask
         const walletInfo = await this._updateSelectedAddressAsync(0);
-        // tslint:disable-next-line:no-console
-        console.log(walletInfo);
 
         return walletInfo;
     }
 
-    private async _fetchAddressesAndBalancesAsync(): Promise<boolean> {
+    private async _fetchAddressesAndBalancesAsync(): Promise<void> {
         const userAddresses = await this._getUserAddressesAsync();
         const addressBalances: BigNumber[] = [];
         for (const address of userAddresses) {
@@ -99,24 +85,17 @@ export class Web3Connector {
 
         this.userAddresses = userAddresses;
         this.addressBalances = addressBalances;
-
-        return true;
     }
-    private async _updateSelectedAddressAsync(index: number): Promise<WalletConnectedProps | undefined> {
+    private async _updateSelectedAddressAsync(index: number): Promise<ConnectedWalletDetails | undefined> {
         const { userAddresses, addressBalances } = this;
-        const injectedProviderIfExists = await this._getInjectedProviderIfExistsAsync();
         if (!userAddresses[index]) {
             return undefined;
         }
 
-        const walletInfo: WalletConnectedProps = {
-            contractWrappers: this._contractWrappers,
-            injectedProviderIfExists,
+        const walletInfo: ConnectedWalletDetails = {
             selectedAddress: userAddresses[index],
             currentBalance: addressBalances[index],
-            providerEngine: this._providerEngine,
             providerName: this._providerName,
-            web3Wrapper: this._web3Wrapper,
         };
 
         return walletInfo;
@@ -208,6 +187,8 @@ export class Web3Connector {
         return networkIdIfExists;
     }
     private async _resetOrInitializeAsync(networkId: number): Promise<void> {
+        this.userAddresses = [];
+        this.addressBalances = [];
         this.networkId = networkId;
         const injectedProviderIfExists = await this._getInjectedProviderIfExistsAsync();
         const [provider] = await this._getProviderAsync(injectedProviderIfExists, networkId);

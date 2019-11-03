@@ -79,6 +79,7 @@
         "react-transition-group": "^4.2.1",
         "redux": "^3.6.0",
         "redux-devtools-extension": "^2.13.2",
+        "redux-saga": "^1.1.1",
         "rollbar": "^2.4.7",
         "sass-loader": "^7.1.0",
         "semver": "5.5.0",
