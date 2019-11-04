@@ -1,6 +1,5 @@
 import { ContractWrappers } from '@0x/contract-wrappers';
 import { signatureUtils } from '@0x/order-utils';
-import { LedgerSubprovider } from '@0x/subproviders';
 import { ECSignature, SignatureType } from '@0x/types';
 import { BigNumber, signTypedDataUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -14,7 +13,6 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { Input } from 'ts/components/modals/input';
 import { Heading, Paragraph } from 'ts/components/text';
-import { LedgerSignNote } from 'ts/pages/governance/ledger_sign_note';
 import { PreferenceSelecter } from 'ts/pages/governance/preference_selecter';
 import { colors } from 'ts/style/colors';
 import { InjectedProvider } from 'ts/types';
@@ -41,9 +39,7 @@ interface Props {
     contractWrappers?: ContractWrappers;
     currentBalance?: BigNumber;
     selectedAddress: string;
-    isLedger: boolean;
     injectedProvider?: InjectedProvider;
-    ledgerSubproviderIfExists?: LedgerSubprovider;
     provider?: ZeroExProvider;
     zeipId: number;
 }
@@ -52,7 +48,6 @@ interface State {
     isWalletConnected: boolean;
     isSubmitting: boolean;
     isSuccessful: boolean;
-    isAwaitingLedgerSignature: boolean;
     isVoted: boolean;
     selectedAddress?: string;
     votePreference?: string;
@@ -87,14 +82,12 @@ export class VoteForm extends React.Component<Props> {
         isWalletConnected: false,
         isSubmitting: false,
         isSuccessful: false,
-        isLedger: false,
         isVoted: false,
         errors: {},
     };
     public networkId: number;
     public state: State = {
         isWalletConnected: false,
-        isAwaitingLedgerSignature: false,
         isSubmitting: false,
         isSuccessful: false,
         isVoted: false,
@@ -107,7 +100,7 @@ export class VoteForm extends React.Component<Props> {
         super(props);
     }
     public render(): React.ReactNode {
-        const { votePreference, errors, isSuccessful, isAwaitingLedgerSignature } = this.state;
+        const { votePreference, errors, isSuccessful } = this.state;
         const { currentBalance, selectedAddress, zeipId } = this.props;
         const bigNumberFormat = {
             decimalSeparator: '.',
@@ -176,10 +169,6 @@ export class VoteForm extends React.Component<Props> {
                         Back
                     </Button>
                     <ButtonDisabled disabled={!votePreference}>Submit</ButtonDisabled>
-                    <LedgerSignNote
-                        text={'Accept or reject signature on the Ledger'}
-                        isVisible={isAwaitingLedgerSignature}
-                    />
                 </ButtonRow>
             </Form>
         );
@@ -188,12 +177,8 @@ export class VoteForm extends React.Component<Props> {
         e.preventDefault();
 
         const { votePreference, comment } = this.state;
-        const { currentBalance, selectedAddress, isLedger, zeipId } = this.props;
+        const { currentBalance, selectedAddress, zeipId } = this.props;
         const makerAddress = selectedAddress;
-
-        if (isLedger) {
-            this.setState({ isAwaitingLedgerSignature: true });
-        }
 
         const domainType = [{ name: 'name', type: 'string' }];
         const voteType = [
@@ -229,7 +214,6 @@ export class VoteForm extends React.Component<Props> {
                 signedVote,
                 voteHash: voteHashHex,
                 isSuccessful: true,
-                isAwaitingLedgerSignature: false,
             }));
 
             const voteDomain = environments.isProduction()
@@ -270,11 +254,7 @@ export class VoteForm extends React.Component<Props> {
                       signError: errorMessage,
                   },
                   isSuccessful: false,
-                  isAwaitingLedgerSignature: false,
               });
-        this.setState({
-            isAwaitingLedgerSignature: false,
-        });
     }
     private async _signVoteAsync(signerAddress: string, typedData: any): Promise<SignedVote> {
         const { provider: providerEngine } = this.props;

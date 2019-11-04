@@ -1,7 +1,6 @@
 import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses';
 import { ContractWrappers, ERC20TokenContract } from '@0x/contract-wrappers';
 import {
-    ledgerEthereumBrowserClientFactoryAsync,
     LedgerSubprovider,
     MetamaskSubprovider,
     RedundantSubprovider,
@@ -15,13 +14,9 @@ import '@reach/dialog/styles.css';
 import { ZeroExProvider } from 'ethereum-types';
 import * as _ from 'lodash';
 import * as React from 'react';
-import styled from 'styled-components';
-
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { Heading, Paragraph } from 'ts/components/text';
-import { AddressTable } from 'ts/pages/governance/address_table';
-import { DerivationPathInput } from 'ts/pages/governance/derivation_path_input';
 import { colors } from 'ts/style/colors';
 import { InjectedProvider, Providers } from 'ts/types';
 import { configs } from 'ts/utils/configs';
@@ -43,8 +38,6 @@ export interface WalletConnectedProps {
     contractWrappers?: ContractWrappers;
     injectedProviderIfExists?: InjectedProvider;
     providerEngine?: ZeroExProvider;
-    ledgerSubproviderIfExists?: LedgerSubprovider;
-    isLedger?: boolean;
     web3Wrapper?: Web3Wrapper;
 }
 
@@ -61,25 +54,17 @@ interface State {
     providerName?: string;
     connectionErrMsg: string;
     isWalletConnected: boolean;
-    isLedgerConnected: boolean;
     isSubmitting: boolean;
     isSuccessful: boolean;
     preferredNetworkId: number;
-    selectedUserAddressIndex: number;
     errors: ErrorProps;
     userAddresses: string[];
     addressBalances: BigNumber[];
-    derivationPath: string;
     derivationErrMsg: string;
 }
 
 interface ErrorProps {
     [key: string]: string;
-}
-
-enum ConnectSteps {
-    Connect,
-    SelectAddress,
 }
 
 const ZERO = new BigNumber(0);
@@ -93,29 +78,22 @@ export class ConnectForm extends React.Component<Props, State> {
     // blockchain related
     public networkId: number;
     private _providerName: string;
-    private _userAddressIfExists: string;
     private _contractWrappers: ContractWrappers;
     private _injectedProviderIfExists?: InjectedProvider;
     private _web3Wrapper?: Web3Wrapper;
     private _providerEngine?: ZeroExProvider;
-    private _ledgerSubprovider: LedgerSubprovider;
     public constructor(props: Props) {
         super(props);
-        const derivationPathIfExists = this.getLedgerDerivationPathIfExists();
         this.state = {
             connectionErrMsg: '',
             isWalletConnected: false,
-            isLedgerConnected: false,
             isSubmitting: false,
             isSuccessful: false,
             providerName: null,
             preferredNetworkId: constants.NETWORK_ID_MAINNET,
-            selectedUserAddressIndex: 0,
             errors: {},
             userAddresses: [],
             addressBalances: [],
-            derivationPath:
-                derivationPathIfExists === undefined ? configs.DEFAULT_DERIVATION_PATH : derivationPathIfExists,
             derivationErrMsg: '',
         };
     }
@@ -129,13 +107,7 @@ export class ConnectForm extends React.Component<Props, State> {
         );
     }
     public _renderContent(errors: ErrorProps): React.ReactNode {
-        switch (this.state.isLedgerConnected) {
-            case true:
-                return this._renderChooseAddressContent(errors);
-            case false:
-            default:
-                return this._renderButtonsContent(errors);
-        }
+        return this._renderButtonsContent(errors);
     }
     public _renderButtonsContent(errors: ErrorProps): React.ReactNode {
         return (
@@ -146,10 +118,8 @@ export class ConnectForm extends React.Component<Props, State> {
                 <Paragraph isMuted={true} color={colors.textDarkPrimary}>
                     In order to vote on this issue you will need to connect a wallet with a balance of ZRX tokens.
                 </Paragraph>
-                <ButtonRow>
-                    <ButtonHalf onClick={this._onConnectWalletClickAsync.bind(this)}>Connect Wallet</ButtonHalf>
-                    <ButtonHalf onClick={this._onConnectLedgerClickAsync.bind(this)}>Connect Ledger</ButtonHalf>
-                </ButtonRow>
+                <Button onClick={this._onConnectWalletClickAsync.bind(this)}>Connect Wallet</Button>
+
                 {errors.connectionError !== undefined && (
                     <Paragraph isMuted={true} color={colors.red}>
                         {errors.connectionError}
@@ -158,64 +128,12 @@ export class ConnectForm extends React.Component<Props, State> {
             </div>
         );
     }
-    public _renderChooseAddressContent(errors: ErrorProps): React.ReactNode {
-        const { userAddresses, addressBalances, derivationPath } = this.state;
-        return (
-            <>
-                <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
-                    Choose Address to Vote From
-                </Heading>
-                <AddressTable
-                    userAddresses={userAddresses}
-                    addressBalances={addressBalances}
-                    networkId={this.networkId}
-                    onSelectAddress={this._onSelectAddressIndex.bind(this)}
-                />
-                {errors.connectionError !== undefined && <ErrorParagraph>{errors.connectionError}</ErrorParagraph>}
-                <DerivationPathInput
-                    path={derivationPath}
-                    onChangePath={this._onChangeDerivationPathAsync.bind(this)}
-                />
-                <ButtonRow>
-                    <Button type="button" onClick={this._onGoBack.bind(this, ConnectSteps.Connect)}>
-                        Back
-                    </Button>
-                    <Button type="button" onClick={this._onSelectedLedgerAddressAsync.bind(this)}>
-                        Next
-                    </Button>
-                </ButtonRow>
-            </>
-        );
-    }
-    public async _onChangeDerivationPathAsync(path: string): Promise<void> {
-        this.setState(
-            {
-                derivationPath: path,
-            },
-            async () => {
-                await this._onFetchAddressesForDerivationPathAsync();
-            },
-        );
-    }
     public async getUserAccountsAsync(): Promise<string[]> {
         utils.assert(this._contractWrappers !== undefined, 'ContractWrappers must be instantiated.');
         const provider = this._contractWrappers.getProvider();
         const web3Wrapper = new Web3Wrapper(provider);
         const userAccountsIfExists = await web3Wrapper.getAvailableAddressesAsync();
         return userAccountsIfExists;
-    }
-    public getLedgerDerivationPathIfExists(): string | undefined {
-        if (this._ledgerSubprovider === undefined) {
-            return undefined;
-        }
-        const path = this._ledgerSubprovider.getPath();
-        return path;
-    }
-    public updateLedgerDerivationPathIfExists(path: string): void {
-        if (this._ledgerSubprovider === undefined) {
-            return; // noop
-        }
-        this._ledgerSubprovider.setPath(path);
     }
     public async getZrxBalanceAsync(owner: string): Promise<BigNumber> {
         utils.assert(this._contractWrappers !== undefined, 'ContractWrappers must be instantiated.');
@@ -230,11 +148,10 @@ export class ConnectForm extends React.Component<Props, State> {
         }
     }
     private async _onConnectWalletClickAsync(): Promise<boolean> {
-        const shouldUseLedgerProvider = false;
         const networkIdIfExists = await this._getInjectedProviderNetworkIdIfExistsAsync();
         this.networkId = networkIdIfExists !== undefined ? networkIdIfExists : constants.NETWORK_ID_MAINNET;
 
-        await this._resetOrInitializeAsync(this.networkId, shouldUseLedgerProvider);
+        await this._resetOrInitializeAsync(this.networkId);
 
         const didSucceed = await this._fetchAddressesAndBalancesAsync();
         if (didSucceed) {
@@ -250,64 +167,6 @@ export class ConnectForm extends React.Component<Props, State> {
             );
         }
 
-        return didSucceed;
-    }
-    private async _onConnectLedgerClickAsync(): Promise<boolean> {
-        const isU2FSupported = await utils.isU2FSupportedAsync();
-        if (!isU2FSupported) {
-            const errorMessage = 'U2F not supported by this browser. Try using Chrome.';
-            this.props.onError
-                ? this.props.onError(errorMessage)
-                : this.setState({
-                      errors: {
-                          connectionError: errorMessage,
-                      },
-                  });
-
-            return false;
-        }
-
-        // We don't want to be out of sync with the network the injected provider declares.
-        const networkId = constants.NETWORK_ID_MAINNET;
-        await this._updateProviderToLedgerAsync(networkId);
-
-        const didSucceed = await this._fetchAddressesAndBalancesAsync();
-        if (didSucceed) {
-            this.setState({
-                errors: {},
-                isLedgerConnected: true,
-            });
-        }
-        return didSucceed;
-    }
-    private _onSelectAddressIndex(index: number): void {
-        this.setState({
-            selectedUserAddressIndex: index,
-        });
-    }
-    private async _onSelectedLedgerAddressAsync(): Promise<void> {
-        await this._updateSelectedAddressAsync(this.state.selectedUserAddressIndex);
-    }
-    private async _onFetchAddressesForDerivationPathAsync(): Promise<boolean> {
-        const currentlySetPath = this.getLedgerDerivationPathIfExists();
-        let didSucceed;
-
-        if (currentlySetPath === this.state.derivationPath) {
-            didSucceed = true;
-            return didSucceed;
-        }
-        this.updateLedgerDerivationPathIfExists(this.state.derivationPath);
-        didSucceed = await this._fetchAddressesAndBalancesAsync();
-        if (!didSucceed) {
-            const errorMessage = 'Failed to connect to Ledger.';
-            this.props.onError
-                ? this.props.onError(errorMessage)
-                : this.setState({
-                      errors: {
-                          connectionError: errorMessage,
-                      },
-                  });
-        }
         return didSucceed;
     }
     private async _fetchAddressesAndBalancesAsync(): Promise<boolean> {
@@ -338,26 +197,20 @@ export class ConnectForm extends React.Component<Props, State> {
         return true;
     }
     private async _updateSelectedAddressAsync(index: number): Promise<void> {
-        const { userAddresses, addressBalances, isLedgerConnected } = this.state;
+        const { userAddresses, addressBalances } = this.state;
         const injectedProviderIfExists = await this._getInjectedProviderIfExistsAsync();
         if (this.props.onWalletConnected && userAddresses[index] !== undefined) {
             const walletInfo: WalletConnectedProps = {
                 contractWrappers: this._contractWrappers,
                 injectedProviderIfExists,
-                ledgerSubproviderIfExists: this._ledgerSubprovider,
                 selectedAddress: userAddresses[index],
                 currentBalance: addressBalances[index],
                 providerEngine: this._providerEngine,
                 providerName: this._providerName,
                 web3Wrapper: this._web3Wrapper,
-                isLedger: isLedgerConnected,
             };
             this.props.onWalletConnected(walletInfo);
         }
-    }
-    private async _updateProviderToLedgerAsync(networkId: number): Promise<void> {
-        const shouldUserLedgerProvider = true;
-        await this._resetOrInitializeAsync(networkId, shouldUserLedgerProvider);
     }
     private _getNameGivenProvider(provider: ZeroExProvider): string {
         const providerType = utils.getProviderType(provider);
@@ -370,12 +223,10 @@ export class ConnectForm extends React.Component<Props, State> {
     private async _getProviderAsync(
         injectedProviderIfExists?: InjectedProvider,
         networkIdIfExists?: number,
-        shouldUserLedgerProvider: boolean = false,
     ): Promise<[ZeroExProvider, LedgerSubprovider | undefined]> {
         // This code is based off of the Blockchain.ts code.
         // TODO refactor to re-use this utility outside of Blockchain.ts
         const doesInjectedProviderExist = injectedProviderIfExists !== undefined;
-        const isNetworkIdAvailable = networkIdIfExists !== undefined;
         const publicNodeUrlsIfExistsForNetworkId = configs.PUBLIC_NODE_URLS_BY_NETWORK_ID[networkIdIfExists];
         const isPublicNodeAvailableForNetworkId = publicNodeUrlsIfExistsForNetworkId !== undefined;
         const provider = new Web3ProviderEngine();
@@ -383,21 +234,7 @@ export class ConnectForm extends React.Component<Props, State> {
             return new RPCSubprovider(publicNodeUrl);
         });
 
-        if (shouldUserLedgerProvider && isNetworkIdAvailable) {
-            const isU2FSupported = await utils.isU2FSupportedAsync();
-            if (!isU2FSupported) {
-                throw new Error('Cannot update providerType to LEDGER without U2F support');
-            }
-            const ledgerWalletConfigs = {
-                networkId: networkIdIfExists,
-                ledgerEthereumClientFactoryAsync: ledgerEthereumBrowserClientFactoryAsync,
-            };
-            const ledgerSubprovider = new LedgerSubprovider(ledgerWalletConfigs);
-            provider.addProvider(ledgerSubprovider);
-            provider.addProvider(new RedundantSubprovider(rpcSubproviders));
-            provider.start();
-            return [provider, ledgerSubprovider];
-        } else if (doesInjectedProviderExist && isPublicNodeAvailableForNetworkId) {
+        if (doesInjectedProviderExist && isPublicNodeAvailableForNetworkId) {
             // We catch all requests involving a users account and send it to the injectedWeb3
             // instance. All other requests go to the public hosted node.
             const providerName = this._getNameGivenProvider(injectedProviderIfExists);
@@ -461,14 +298,10 @@ export class ConnectForm extends React.Component<Props, State> {
         }
         return networkIdIfExists;
     }
-    private async _resetOrInitializeAsync(networkId: number, shouldUserLedgerProvider: boolean = false): Promise<void> {
+    private async _resetOrInitializeAsync(networkId: number): Promise<void> {
         this.networkId = networkId;
         const injectedProviderIfExists = await this._getInjectedProviderIfExistsAsync();
-        const [provider, ledgerSubproviderIfExists] = await this._getProviderAsync(
-            injectedProviderIfExists,
-            networkId,
-            shouldUserLedgerProvider,
-        );
+        const [provider] = await this._getProviderAsync(injectedProviderIfExists, networkId);
         this._web3Wrapper = new Web3Wrapper(provider);
         this._providerEngine = provider;
         this.networkId = await this._web3Wrapper.getNetworkIdAsync();
@@ -480,14 +313,6 @@ export class ConnectForm extends React.Component<Props, State> {
             networkId,
         };
         this._contractWrappers = new ContractWrappers(provider, contractWrappersConfig);
-        if (shouldUserLedgerProvider && ledgerSubproviderIfExists !== undefined) {
-            delete this._userAddressIfExists;
-            this._ledgerSubprovider = ledgerSubproviderIfExists;
-        } else {
-            delete this._ledgerSubprovider;
-            const userAddresses = await this._web3Wrapper.getAvailableAddressesAsync();
-            this._userAddressIfExists = userAddresses[0];
-        }
     }
     private async _getUserAddressesAsync(): Promise<string[]> {
         let userAddresses: string[];
@@ -498,59 +323,6 @@ export class ConnectForm extends React.Component<Props, State> {
         }
         return userAddresses;
     }
-    private _onGoBack(step: number): void {
-        switch (step) {
-            case ConnectSteps.SelectAddress:
-                // @todo support going back to select address
-                this.setState({
-                    isLedgerConnected: false,
-                });
-                break;
-            default:
-            case ConnectSteps.Connect:
-                this.setState({
-                    isLedgerConnected: false,
-                });
-        }
-    }
 }
 
-const InputRow = styled.div`
-    width: 100%;
-    flex: 0 0 auto;
-
-    @media (min-width: 768px) {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 30px;
-    }
-`;
-
-const ButtonRow = styled(InputRow)`
-    @media (max-width: 768px) {
-        display: flex;
-        flex-direction: column;
-
-        button:nth-child(1) {
-            order: 2;
-        }
-
-        button:nth-child(2) {
-            order: 1;
-            margin-bottom: 10px;
-        }
-    }
-`;
-
-const ButtonHalf = styled(Button)`
-    width: calc(50% - 15px);
-    padding: 18px 18px;
-`;
 // tslint:disable:max-file-line-count
-
-const ErrorParagraph = styled(Paragraph).attrs({
-    color: colors.red,
-    isMuted: true,
-})`
-    margin: 10px 0 0 30px;
-`;

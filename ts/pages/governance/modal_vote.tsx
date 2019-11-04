@@ -1,5 +1,4 @@
 import { ContractWrappers } from '@0x/contract-wrappers';
-import { LedgerSubprovider } from '@0x/subproviders';
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
@@ -33,11 +32,8 @@ interface State {
     isWalletConnected: boolean;
     providerName: string;
     isSubmitting: boolean;
-    isLedger: boolean;
-    ledgerSubproviderIfExists?: LedgerSubprovider;
     isSuccessful: boolean;
     isErrorModalOpen?: boolean;
-    isU2fSupported: boolean;
     isVoted: boolean;
     votePreference: string | null;
     voteHash?: string;
@@ -67,12 +63,9 @@ export class ModalVote extends React.Component<Props> {
     public state: State = {
         currentBalance: new BigNumber(0),
         isWalletConnected: false,
-        isU2fSupported: false,
         providerName: 'Metamask',
         selectedAddress: null,
         isSubmitting: false,
-        isLedger: false,
-        ledgerSubproviderIfExists: null,
         providerEngine: null,
         isSuccessful: false,
         isVoted: false,
@@ -168,15 +161,7 @@ export class ModalVote extends React.Component<Props> {
         );
     }
     private _renderVoteFormContent(): React.ReactNode {
-        const {
-            currentBalance,
-            selectedAddress,
-            web3Wrapper,
-            isLedger,
-            web3,
-            ledgerSubproviderIfExists,
-            providerEngine,
-        } = this.state;
+        const { currentBalance, selectedAddress, web3Wrapper, web3, providerEngine } = this.state;
         return (
             <>
                 <VoteForm
@@ -185,8 +170,6 @@ export class ModalVote extends React.Component<Props> {
                     web3Wrapper={web3Wrapper}
                     injectedProvider={web3}
                     onDismiss={this.props.onDismiss}
-                    isLedger={isLedger}
-                    ledgerSubproviderIfExists={ledgerSubproviderIfExists}
                     provider={providerEngine}
                     zeipId={this.props.zeipId}
                     onVoted={this._onVoted.bind(this)}
@@ -203,8 +186,6 @@ export class ModalVote extends React.Component<Props> {
             providerName,
             injectedProviderIfExists,
             web3Wrapper,
-            isLedger,
-            ledgerSubproviderIfExists,
             providerEngine,
         } = props;
 
@@ -217,8 +198,6 @@ export class ModalVote extends React.Component<Props> {
             providerName,
             currentBalance,
             selectedAddress,
-            isLedger,
-            ledgerSubproviderIfExists,
             providerEngine,
         });
 

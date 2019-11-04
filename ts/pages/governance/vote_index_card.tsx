@@ -13,7 +13,7 @@ import { TallyInterface, VoteOutcome, VoteTime } from 'ts/types';
 export interface VoteIndexCardProps {
     title: string;
     zeipId: number;
-    summary: string;
+    summary: string[];
     voteStartDate: moment.Moment;
     voteEndDate: moment.Moment;
     // Non-static properties
@@ -86,7 +86,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = ({
                             <Muted>{`(ZEIP-${zeipId})`}</Muted>
                         </Heading>
 
-                        <Paragraph>{summary}</Paragraph>
+                        <Paragraph>{summary[0]}</Paragraph>
                     </Column>
                     <Column>
                         <div className="flex flex-column items-end">
