@@ -18,13 +18,35 @@ The following are examples of types of vulnerabilities that are of interest:
 -   Unintended contract state
     -   A user is able to update the state of a contract such that it is no longer useable (e.g permanently lock a mutex).
     -   Any assets get unexpectedly "stuck" in a contract with regular use of the contract's public methods.
+    -   An action taken in the staking contracts is applied to an incorrect epoch.
 -   Bypassing time locks
-    -   The `AssetProxyOwner` is allowed to bypass the timelock for transactions where it is not explicitly allowed to do so.
-    -   A user is allowed to bypass the `AssetProxyOwner`.
+    -   The `ZeroExGovernor` is allowed to bypass the timelock for transactions where it is not explicitly allowed to do so.
+    -   A user is allowed to bypass the `ZeroExGovernor`.
+-   Incorrect math calculations
+    -   Overflows or underflow result in unexpected behavior.
+    -   The staking reward payouts are incorrect.
 
 # Scope
 
 The following contracts are in scope of the bug bounty. Please note that any bugs already reported are considered out of scope.
+
+## 3.0
+
+3.0 submissions should be based off of the contracts as of commit [fb8360edfd4f42f2d2b127b95c156eb1b0daa02b](https://github.com/0xProject/0x-monorepo/tree/fb8360edfd4f42f2d2b127b95c156eb1b0daa02b/contracts).
+The following contracts are considered within scope of this bug bounty:
+
+-   [asset-proxy/contracts/src/ERC20BridgeProxy.sol](https://github.com/0xProject/0x-monorepo/blob/fb8360edfd4f42f2d2b127b95c156eb1b0daa02b/contracts/asset-proxy/contracts/src/ERC20BridgeProxy.sol) ([specification](https://github.com/0xProject/0x-protocol-specification/blob/master/asset-proxy/erc20-bridge-proxy.md))
+-   [exchange/contracts/src/Exchange.sol](https://github.com/0xProject/0x-monorepo/blob/fb8360edfd4f42f2d2b127b95c156eb1b0daa02b/contracts/exchange/contracts/src/Exchange.sol) ([specification](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md))
+-   [multisig/contracts/src/ZeroExGovernor.sol](https://github.com/0xProject/0x-monorepo/blob/fb8360edfd4f42f2d2b127b95c156eb1b0daa02b/contracts/multisig/contracts/src/ZeroExGovernor.sol) ([specification](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/zero-ex-governor.md))
+-   [staking/contracts/src/Staking.sol](https://github.com/0xProject/0x-monorepo/blob/fb8360edfd4f42f2d2b127b95c156eb1b0daa02b/contracts/staking/contracts/src/Staking.sol) ([specification](https://github.com/0xProject/0x-protocol-specification/blob/master/staking/staking-specification.md))
+-   [staking/contracts/src/StakingProxy.sol](https://github.com/0xProject/0x-monorepo/blob/fb8360edfd4f42f2d2b127b95c156eb1b0daa02b/contracts/staking/contracts/src/StakingProxy.sol) ([specification](https://github.com/0xProject/0x-protocol-specification/blob/master/staking/staking-specification.md))
+-   [staking/contracts/src/ZrxVault.sol](https://github.com/0xProject/0x-monorepo/blob/fb8360edfd4f42f2d2b127b95c156eb1b0daa02b/contracts/staking/contracts/src/ZrxVault.sol) ([specification](https://github.com/0xProject/0x-protocol-specification/blob/master/staking/staking-specification.md))
+
+Security audits of these contracts were conducted by Trail of Bits and Consensys Diligence.
+
+-   [Trail of Bits report](http://zeips.0x.org.s3-website.us-east-2.amazonaws.com/audits/56/trail-of-bits/audit.pdf)
+-   [Consensys Diligence Exchange report](https://diligence.consensys.net/audits/2019/09/0x-v3-exchange/)
+-   [Consensys Diligence Staking report](https://diligence.consensys.net/audits/2019/10/0x-v3-staking/)
 
 ## 2.1
 
@@ -33,7 +55,6 @@ The contracts found in the following directories are considered within scope of 
 
 -   `src/2.0.0/protocol`
 -   `src/2.0.0/utils`
--   `src/2.0.0/multisig/MultiSigWalletWithTimeLock`
 
 Security audits of these contracts can be found [here](https://docs.google.com/document/d/1jYv6V21MfCSwCS5fxD6ZyaLWGzkpRSUO0lZpST94XsA/edit) and [here](https://github.com/ConsenSys/0x_audit_report_2018-07-23).
 
@@ -61,6 +82,13 @@ The security audit for this contract can be found [here](https://github.com/Cons
 The only contract within the scope of this bug bounty is:
 
 -   `contracts/src/StaticCallProxy.sol`
+
+## ERC20BridgeProxy
+
+`ERC20BridgeProxy` submissions should be based off of the contracts as of commit [281658ba349a2c5088b40b503998bea5020284a6](https://github.com/0xProject/0x-monorepo/tree/281658ba349a2c5088b40b503998bea5020284a6/contracts/asset-proxy).
+The only contract within the scope of this bug bounty is:
+
+-   `contracts/src/ERC20BridgeProxy.sol`
 
 # Disclosures
 
