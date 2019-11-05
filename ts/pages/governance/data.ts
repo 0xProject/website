@@ -194,8 +194,16 @@ export const proposals: Proposals = {
             rating: 2,
             links: [
                 {
-                    text: 'View Audit (Available Soon)',
-                    url: 'https://github.com/ConsenSys/0x-audit-report-2019-11',
+                    text: 'Trail of Bits',
+                    url: 'http://zeips.0x.org.s3-website.us-east-2.amazonaws.com/audits/56/trail-of-bits/audit.pdf',
+                },
+                {
+                    text: 'Consensys - Exchange',
+                    url: 'https://diligence.consensys.net/audits/2019/09/0x-v3-exchange/',
+                },
+                {
+                    text: 'Consensys - Staking',
+                    url: 'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
                 },
             ],
         },

@@ -73,7 +73,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                         <Countdown deadline={this._proposalData.voteEndDate} />
                         <Heading size="medium">{this._proposalData.title}</Heading>
                         {_.map(this._proposalData.summary, (link, index) => (
-                            <Paragraph>{this._proposalData.summary[index]}</Paragraph>
+                            <Paragraph key={`summarytext-${index}`}>{this._proposalData.summary[index]}</Paragraph>
                         ))}
                         <Button
                             href={this._proposalData.url}
@@ -98,7 +98,9 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                         <FlexWrap>
                             <Column width="55%" maxWidth="560px">
                                 {_.map(this._proposalData.benefit.summary, (link, index) => (
-                                    <Paragraph>{this._proposalData.benefit.summary[index]}</Paragraph>
+                                    <Paragraph key={`benefittext-${index}`}>
+                                        {this._proposalData.benefit.summary[index]}
+                                    </Paragraph>
                                 ))}
                                 {_.map(this._proposalData.benefit.links, (link, index) => (
                                     <MoreLink
@@ -126,18 +128,22 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                         <FlexWrap>
                             <Column width="55%" maxWidth="560px">
                                 {_.map(this._proposalData.risks.summary, (link, index) => (
-                                    <Paragraph>{this._proposalData.risks.summary[index]}</Paragraph>
+                                    <Paragraph key={`risktext-${index}`}>
+                                        {this._proposalData.risks.summary[index]}
+                                    </Paragraph>
                                 ))}
                                 {_.map(this._proposalData.risks.links, (link, index) => (
-                                    <MoreLink
-                                        href={link.url}
-                                        target={link.url !== undefined ? '_blank' : undefined}
-                                        isWithArrow={true}
-                                        isAccentColor={true}
-                                        key={`risklink-${index}`}
-                                    >
-                                        {link.text}
-                                    </MoreLink>
+                                    <div key={`risklink-${index}`}>
+                                        <MoreLink
+                                            href={link.url}
+                                            target={link.url !== undefined ? '_blank' : undefined}
+                                            isWithArrow={true}
+                                            isAccentColor={true}
+                                        >
+                                            {link.text}
+                                        </MoreLink>
+                                        <br />
+                                    </div>
                                 ))}
                             </Column>
                             <Column width="30%" maxWidth="360px">
