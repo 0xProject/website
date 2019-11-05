@@ -15,13 +15,14 @@ import { FlexWrap } from 'ts/components/newLayout';
 import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 
-import { WebsitePaths } from 'ts/types';
+import { ConnectedWalletDetails, WebsitePaths } from 'ts/types';
 
 interface HeaderProps {
     location?: Location;
     isNavToggled?: boolean;
     toggleMobileNav?: () => void;
     onOpenConnectWalletDialog: () => void;
+    walletDetails?: ConnectedWalletDetails;
 }
 
 interface NavLinkProps {
@@ -53,7 +54,12 @@ const navItems: NavItems[] = [
     },
 ];
 
-export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav, onOpenConnectWalletDialog }) => {
+export const Header: React.FC<HeaderProps> = ({
+    isNavToggled,
+    walletDetails,
+    toggleMobileNav,
+    onOpenConnectWalletDialog,
+}) => {
     const onUnpin = () => {
         if (isNavToggled) {
             toggleMobileNav();
@@ -72,8 +78,15 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav, o
         console.log('TODO: logout wallet');
     };
 
-    const subMenu = <SubMenu openConnectWalletDialogCB={unpinAndOpenWalletDialog} logoutWalletCB={logoutWallet} />;
-    const isWalletConnected = false;
+    const subMenu = (
+        <SubMenu
+            walletDetails={walletDetails}
+            openConnectWalletDialogCB={unpinAndOpenWalletDialog}
+            logoutWalletCB={logoutWallet}
+        />
+    );
+
+    const isWalletConnected = !!walletDetails;
 
     return (
         <Headroom

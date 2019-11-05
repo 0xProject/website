@@ -53,7 +53,6 @@ export interface State {
 
     // Staking
     isConnectWalletDialogOpen: boolean;
-    isWalletConnected: boolean;
     walletDetails?: ConnectedWalletDetails;
 
     // Shared
@@ -93,7 +92,6 @@ export const INITIAL_STATE: State = {
     availableDocVersions: [DEFAULT_DOCS_VERSION],
     // Staking
     isConnectWalletDialogOpen: false,
-    isWalletConnected: false,
     // Shared
     flashMessage: undefined,
     providerType: ProviderType.Injected,
@@ -343,11 +341,9 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
             };
         }
 
-        // TODO: implement
         case ActionTypes.ConnectWalletSucceeded: {
             return {
                 ...state,
-                isWalletConnected: true,
                 walletDetails: action.data,
             };
         }
@@ -355,7 +351,6 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
         case ActionTypes.ConnectWalletFailed: {
             return {
                 ...state,
-                isWalletConnected: false,
                 walletDetails: undefined,
             };
         }

@@ -4,14 +4,15 @@ import { Web3Connector } from 'ts/utils/web3_connector';
 
 const web3Connector = new Web3Connector();
 
-function* connectWallet(_: Action): Iterator<undefined> {
+function* connectWallet(action: Action): Iterator<undefined> {
     try {
+        yield put({ type: ActionTypes.UpdateIsConnectWalletDialogOpen, data: false });
+
         const walletDetails: ConnectedWalletDetails = yield call(
-            web3Connector.connectToWalletAsync.bind(web3Connector),
+            web3Connector.connectToWalletAsync.bind(web3Connector, action.data),
         );
 
         yield put({ type: ActionTypes.ConnectWalletSucceeded, data: walletDetails });
-        yield put({ type: ActionTypes.UpdateIsConnectWalletDialogOpen, data: false });
     } catch (error) {
         yield put({ type: ActionTypes.ConnectWalletFailed, data: error });
     }

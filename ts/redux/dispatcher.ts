@@ -7,6 +7,7 @@ import {
     BlockchainErrs,
     Language,
     PortalOrder,
+    Providers,
     ProviderType,
     ScreenWidths,
     Side,
@@ -202,10 +203,10 @@ export class Dispatcher {
         });
     }
 
-    // TODO(kimpers): take provider as argument
-    public connectWallet(): void {
+    public connectWallet(provider: Providers): void {
         this._dispatch({
             type: ActionTypes.ConnectWallet,
+            data: provider,
         });
     }
 

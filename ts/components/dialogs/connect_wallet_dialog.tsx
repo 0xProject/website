@@ -244,7 +244,7 @@ const OtherWalletScreen = ({ onDismiss, onGoBack }: OtherWalletScreenProps) => (
 interface ConnectWalletDialogProps {
     isOpen: boolean;
     onDismiss: () => void;
-    onConnectWallet: () => void;
+    onConnectWallet: (provider: Providers) => void;
 }
 
 interface ProviderInfo {
@@ -294,7 +294,9 @@ export const ConnectWalletDialog = ({ isOpen, onDismiss, onConnectWallet }: Conn
         walletProviders = [
             {
                 title: 'Detected wallet',
-                providers: [{ name: 'MetaMask', id: Providers.Metamask, onClick: () => onConnectWallet() }],
+                providers: [
+                    { name: 'MetaMask', id: Providers.Metamask, onClick: () => onConnectWallet(Providers.Metamask) },
+                ],
             },
             {
                 title: 'Hardware wallets',

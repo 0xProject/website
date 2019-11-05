@@ -33,7 +33,7 @@ export class Web3Connector {
     // User connection related
     public userAddresses: string[];
     public addressBalances: BigNumber[];
-    private _providerName: string;
+    // private _providerName: string;
     private _contractWrappers: ContractWrappers;
     private _injectedProviderIfExists?: InjectedProvider;
     private _web3Wrapper?: Web3Wrapper;
@@ -61,7 +61,7 @@ export class Web3Connector {
         }
     }
 
-    public async connectToWalletAsync(): Promise<ConnectedWalletDetails | undefined> {
+    public async connectToWalletAsync(provider: Providers): Promise<ConnectedWalletDetails | undefined> {
         const networkIdIfExists = await this._getInjectedProviderNetworkIdIfExistsAsync();
         this.networkId = networkIdIfExists !== undefined ? networkIdIfExists : constants.NETWORK_ID_MAINNET;
 
@@ -70,9 +70,14 @@ export class Web3Connector {
         await this._fetchAddressesAndBalancesAsync();
 
         // Always assume selected index is 0 for Metamask
-        const walletInfo = await this._updateSelectedAddressAsync(0);
+        const accountInfo = await this._updateSelectedAddressAsync(0);
+        const providerName = providerToName[provider] || constants.PROVIDER_NAME_GENERIC;
 
-        return walletInfo;
+        return {
+            ...accountInfo,
+            provider,
+            providerName,
+        };
     }
 
     private async _fetchAddressesAndBalancesAsync(): Promise<void> {
@@ -86,20 +91,21 @@ export class Web3Connector {
         this.userAddresses = userAddresses;
         this.addressBalances = addressBalances;
     }
-    private async _updateSelectedAddressAsync(index: number): Promise<ConnectedWalletDetails | undefined> {
+
+    private async _updateSelectedAddressAsync(
+        index: number,
+    ): Promise<{ selectedAddress: string; currentBalance: BigNumber }> {
         const { userAddresses, addressBalances } = this;
         if (!userAddresses[index]) {
-            return undefined;
+            throw new Error(`Could not get address at index ${index}`);
         }
 
-        const walletInfo: ConnectedWalletDetails = {
+        return {
             selectedAddress: userAddresses[index],
             currentBalance: addressBalances[index],
-            providerName: this._providerName,
         };
-
-        return walletInfo;
     }
+
     private _getNameGivenProvider(provider: ZeroExProvider): string {
         const providerType = utils.getProviderType(provider);
         const providerNameIfExists = providerToName[providerType];
@@ -195,7 +201,7 @@ export class Web3Connector {
         this._web3Wrapper = new Web3Wrapper(provider);
         this._providerEngine = provider;
         this.networkId = await this._web3Wrapper.getNetworkIdAsync();
-        this._providerName = this._getNameGivenProvider(provider);
+        // this._providerName = this._getNameGivenProvider(provider);
         if (this._contractWrappers !== undefined) {
             this._contractWrappers.unsubscribeAll();
         }

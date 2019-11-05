@@ -645,6 +645,7 @@ export interface MaterialUIPosition {
 }
 
 export interface ConnectedWalletDetails {
+    provider: Providers;
     providerName: string;
     selectedAddress: string;
     currentBalance: BigNumber;
