@@ -1,0 +1,149 @@
+# How to setup and manage a ZRX staking pool
+
+
+0x v3 introduces a staking system that allows market makers to grant ownership over the protocol while receiving monetary rewards based on their share of liquidity provided, and the share of ZRX tokens staked in their pools.
+For more information about the rationale behind the stake-based liquidity incentives, refer to [the first proposal](https://blog.0xproject.com/0x-roadmap-2019-part-4-proposal-for-stake-based-liquidity-incentive-52c16558df29) and the [v3 vote blog post](https://blog.0xproject.com/0x-the-community-owned-liquidity-api-26da5732447e).
+
+This guide is meant to assist existing and prospective market makers in setting up their staking pools.
+
+## What is a staking pool?
+
+For each 0x trade, the buyer (also known as a taker) pays a small protocol fee denominated in Ether that is calculated as a multiple of the trade’s gas price. The fees are routed into the Staking Pool owned by the maker of the specific order, provided that the address has been registered as a pool operator or as a market maker address by the operator.
+
+Fees are accumulated in staking pools over the course of a 10 day interval (known as an epoch). At the end of each period, the Liquidity Rewards are automatically distributed to the pool operators based on their trade activity and the amount of ZRX staked over the epoch. Any rewards that were not distributed (due to liquidity providers not being fully staked) will automatically roll over to the next epoch, bootstrapping the future Liquidity Rewards Pool for market makers.
+
+**As a market maker, it’s very important you create a staking pool and register all the address you use to create orders to avoid losing the liquidity rewards you are eligible for.**
+
+<!-- <Image src="https://s3.eu-west-2.amazonaws.com/0x-wiki-images/instant_screenshot.png" align="center" alt="0x Instant" width="350px" padding="20px" marginBottom="40px"/>-->
+
+The creation of a staking pool is completely anonymous, as the only information needed are the addresses providing liquidity. Optionally, you will be able to add simple metadata to your staking pool that will be stored in a publicly available github repo that will power the ZRX Portal.
+
+
+## What do I need to get started?
+
+In order to get started, you need the following information: 
+
+* **a unique address set as the pool operator**. This does not need necessarily need to be the primary address you use to create 0x orders as a maker. This address is the one you will use to manage the staking pool.
+* (optional) **other addresses you are using to create 0x orders as a maker**.
+* **an initial amount of ZRX** . You can later add more ZRX, or widthdraw them. Other ZRX token holders can decide to stake with your pool, if they find an incentive (see next point). The minimum amount required to route protocol fees into the pool is 100 ZRX at any time (see [here](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#801-logic-of-payprotocolfee)). 
+* **your operator share**. This value represents the percentage of rewards that the pool operator is willing to share with its delegators. The value can be set between 100 (the total rewards are assigned to the pool operator) to 0 (all rewards are assigned to delegators). A market maker can decide to decrease the operator share value to attract delegators to stake more ZRX tokens with them. Once a staking pool is created, it is possible to only decrease this value.
+
+If you are interested in adding metadata to your (name, bio, website, logo), please contact us at.
+
+## How do I create and manage a staking pool?
+
+It really is just a matter of sending transactions to the staking contract. Depending 
+The code examples listed below can be found in the [0x starter project](https://github.com/0xProject/0x-starter-project/tree/3.0) repo, where you can find the 0x TS tooling implementation.
+
+
+### Create a staking pool
+
+Relevant function: [createStakingPool](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#611-logic-of-createstakingpool)
+```
+// Staking Proxy is a delegate contract. We initialize a Staking Contract (ABI) pointing to the delegate proxy
+// at stakingProxyContractAddress
+const stakingContract = new StakingContract(stakingProxyContractAddress, providerEngine, { from: maker });
+
+const operatorShare = new BigNumber(2);
+const stakingPoolReceipt = await stakingContract.createStakingPool.awaitTransactionSuccessAsync(
+    operatorShare,
+    true,
+    {z
+        from: maker,
+    },
+);
+const createStakingPoolLog = stakingPoolReceipt.logs[0];
+const poolId = (createStakingPoolLog as any).args.poolId
+```
+
+### Register additional addresses
+
+Relevant function: [joinStakingPoolAsMaker](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#615-logic-of-joinstakingpoolasmaker
+The transaction needs to be sent by the addresses you want to register in the pool.
+
+### Add more ZRX to the pool
+
+Relevant function: [moveStake](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#521-logic-of-movestake)
+```
+const stakingContract = new StakingContract(stakingProxyContractAddress, providerEngine, { from: maker });
+const poolId = '0x0000000000000000000000000000000000000000000000000000000000000001';
+const stakeAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(100), 18);
+// Add stake to the vault
+const stakeReceipt = await stakingContract.stake.awaitTransactionSuccessAsync(stakeAmount, { from: maker });
+// Move the staked ZRX to delegate the Staking Pool
+const moveStakeReceipt = await stakingContract.moveStake.awaitTransactionSuccessAsync(
+    { status: StakeStatus.Undelegated, poolId: NIL_POOL_ID }, // From undelegated
+    { status: StakeStatus.Delegated, poolId }, // To the pool
+    stakeAmount,
+    { from: maker },
+);
+```
+
+### Widthdraw stake
+
+Relevant function: [moveStake](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#521-logic-of-movestake)
+```
+const stakingContract = new StakingContract(stakingProxyContractAddress, providerEngine, { from: maker });
+const poolId = '0x0000000000000000000000000000000000000000000000000000000000000001';
+const stakeAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(100), 18);
+// Add stake to the vault
+const stakeReceipt = await stakingContract.stake.awaitTransactionSuccessAsync(stakeAmount, { from: maker });
+// Move the staked ZRX to delegate the Staking Pool
+const moveStakeReceipt = await stakingContract.moveStake.awaitTransactionSuccessAsync(
+    { status: StakeStatus.Delegated, poolId }, // from the pool
+    { status: StakeStatus.Undelegated, poolId: NIL_POOL_ID }, // to the undelegated
+    stakeAmount,
+    { from: maker },
+);
+// Witdraw stake from the contracts
+await stakingContract.unstake.awaitTransactionSuccessAsync(stakeAmount, { from: maker })
+```
+
+### Decrease the operator share
+
+Relevant function: [decreaseStakingPoolOperatorShare](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#613-logic-of-decreasestakingpooloperatorshare)
+To be successful, the transaction needs to be signed and sent by the pool operator address. 
+
+
+## How do I choose the optimal parameters?
+
+The system is designed to behave dynamically, based on your and other network players’ actions, so there’s no ‘one size fits all’ solution to maximize .
+
+However, it’s helpful to use this rule of thumb: the rewards per unit of ZRX generated by a staking pool are maximized when the relative share of ZRX staked (your ZRX staked divided by the total ZRX staked in the system) matches the your 'liquidity share' (the fees your orders have generated divided by the total fees generated).
+
+When your staking pool is under-staked (the relative share of ZRX is smaller than the liquidity share), your pool will not be allocated the entirety of the eligible fees. Increasing the balance of ZRX staked (by adding them yourself or incentivizing other token holders to delegate) will progressively maximize the liquidity rewards received.
+
+When your staking pool is over-staked (the relative share of ZRX is smaller than the liquidity share), your pool will not be maximizing the rewards per unit of ZRX staked. Differently than the previous scenario, this is an allocation efficiency problem: your rewards will always increase the more ZRX are staked in your pool. By doing that, though, you will be decreasing the stake ratio of other staking pools whom might be incentivized in adding more ZRX stake or incentivizing other ZRX token holders to stake with them.
+
+ For more comprehensive math, you can refer to [this section of the specs](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#62-paying-liquidity-rewards-finalization) or [the original whitepaper](https://github.com/0xProject/0x-protocol-specification/blob/3.0/v3/protocol-fees.pdf).
+
+As part of the launch, 0x will release a Staking Portal where all the information about the liquidity pools (including the metrics described above) will be available, so to allow market makers and delegators to optimally allocate their stake.
+
+
+<!--
+<CodeTabs tabs={['Typescript', 'Python']}>
+```
+// Staking Proxy is a delegate contract. We initialize a Staking Contract (ABI) pointing to the delegate proxy
+// at stakingProxyContractAddress
+const stakingContract = new StakingContract(stakingProxyContractAddress, providerEngine, { from: maker });
+
+const operatorShare = new BigNumber(2);
+const stakingPoolReceipt = await stakingContract.createStakingPool.awaitTransactionSuccessAsync(
+    operatorShare,
+    true,
+    {z
+        from: maker,
+    },
+);
+const createStakingPoolLog = stakingPoolReceipt.logs[0];
+const poolId = (createStakingPoolLog as any).args.poolId
+```
+
+```
+import { TruffleArtifactAdapter } from '@0x/sol-coverage';
+const projectRoot = '.';
+const solcVersion = '0.5.0';
+const artifactAdapter = new TruffleArtifactAdapter(projectRoot, solcVersion);
+```
+</CodeTabs>
+-->
