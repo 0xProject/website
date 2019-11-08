@@ -13,6 +13,15 @@
         }
     },
     "guides": {
+        "create-staking-pool": {
+            "title": "Create and manage your staking pool",
+            "subtitle": "Learn how to create and manage your staking pool to collect liquidity rewards",
+            "description": "Learn how to create and manage your staking pool to collect liquidity rewards",
+            "tags": ["Staking"],
+            "topics": ["Staking"],
+            "difficulty": "Intermediate",
+            "path": "guides/create-staking-pool.mdx"
+        },
         "mesh-beta-participation-guide": {
             "title": "0x Mesh beta participation guide",
             "description": "Learn how to spin up a telemetry-enabled Mesh node and participate in the Beta!",
