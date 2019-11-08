@@ -39,32 +39,105 @@ The code examples listed below can be found in the [0x starter project](https://
 ### Create a staking pool
 
 Relevant function: [createStakingPool](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#611-logic-of-createstakingpool)
+
+This is a one-off transaction to create the pool. The caller of the function becomes the pool operator. This address does not need to be used for creating 0x orders.
+
+<CodeTabs tabs={['Solidity', 'Typescript']}>
+
+```js
+/// @dev Create a new staking pool. The sender will be the operator of this pool.
+/// Note that an operator must be payable.
+/// @param operatorShare Portion of rewards owned by the operator, in ppm.
+/// @param addOperatorAsMaker Adds operator to the created pool as a maker for convenience iff true.
+/// @return poolId The unique pool id generated for this pool.
+function createStakingPool(uint32 operatorShare, bool addOperatorAsMaker)
+    external
+    returns (bytes32 poolId);
 ```
+
+```js
 // Staking Proxy is a delegate contract. We initialize a Staking Contract (ABI) pointing to the delegate proxy
 // at stakingProxyContractAddress
 const stakingContract = new StakingContract(stakingProxyContractAddress, providerEngine, { from: maker });
 
-const operatorShare = new BigNumber(2);
+const operatorShare = new BigNumber(900000); // 90%
 const stakingPoolReceipt = await stakingContract.createStakingPool.awaitTransactionSuccessAsync(
     operatorShare,
     true,
-    {z
+    {
         from: maker,
     },
 );
 const createStakingPoolLog = stakingPoolReceipt.logs[0];
-const poolId = (createStakingPoolLog as any).args.poolId
+const poolId = (createStakingPoolLog as any).args.poolId;
 ```
+
+</CodeTabs>
 
 ### Register additional addresses
 
 Relevant function: [joinStakingPoolAsMaker](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#615-logic-of-joinstakingpoolasmaker
-The transaction needs to be sent by the addresses you want to register in the pool.
+The transaction needs to be sent by the addresses you want to register into the pool. These are the addresses you will be utilizing to post orders as a makerAddress.
 
-### Add more ZRX to the pool
+<CodeTabs tabs={['Solidity', 'Typescript']}>
+
+```js
+/// @dev Allows caller to join a staking pool as a maker.
+/// @param poolId Unique id of pool.
+function joinStakingPoolAsMaker(bytes32 poolId)
+    public;
+```
+
+```js
+await stakingContract.joinStakingPoolAsMaker.awaitTransactionSuccessAsync(poolId, { from: otherMaker });
+```
+
+</CodeTabs>
+
+### Deposit stake
+
+Relevant contract function: [stake](https://github.com/0xProject/0x-protocol-specification/blob/master/staking/staking-specification.md#501-logic-of-stake)
+
+ZRX must be deposited into the StakingProxy contract before moving it into a pool. Before calling this function, the user must authorize the ERC20Proxy contract to transfer its tokens by calling zrxToken.approve.
+<CodeTabs tabs={['Solidity', 'Typescript']}>
+
+```js
+/// @dev Stake ZRX tokens. Tokens are deposited into the ZRX Vault.
+///      Unstake to retrieve the ZRX. Stake is in the 'undelegated' status.
+/// @param amount of ZRX to stake.
+function stake(uint256 amount)
+    external;
+```
+
+```js
+```
+
+</CodeTabs>
+
+### Stake ZRX with a pool
 
 Relevant function: [moveStake](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#521-logic-of-movestake)
+
+This transaction is used to stake ZRX with a pool (after being deposited). Note that any ZRX staked to a pool by an address that is not an operator will be weighted at 90%. For this reason, the pool operator address should also be used to stake ZRX into it’s own pool. Note changes made from calling this function will only become effective in the next epoch.
+
+<CodeTabs tabs={['Solidity', 'Typescript']}>
+
+```js
+/// @dev Moves stake between statuses: 'undelegated' or 'delegated'.
+///      Delegated stake can also be moved between pools.
+///      This change comes into effect next epoch.
+/// @param from status to move stake out of.
+/// @param to status to move stake into.
+/// @param amount of stake to move.
+function moveStake(
+    IStructs.StakeInfo calldata from,
+    IStructs.StakeInfo calldata to,
+    uint256 amount
+)
+    external;
 ```
+
+```js
 const stakingContract = new StakingContract(stakingProxyContractAddress, providerEngine, { from: maker });
 const poolId = '0x0000000000000000000000000000000000000000000000000000000000000001';
 const stakeAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(100), 18);
@@ -79,10 +152,32 @@ const moveStakeReceipt = await stakingContract.moveStake.awaitTransactionSuccess
 );
 ```
 
-### Widthdraw stake
+</CodeTabs>
 
-Relevant function: [moveStake](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#521-logic-of-movestake)
+### Unstake from a pool
+
+Relevant contract function: [moveStake](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#521-logic-of-movestake)
+
+In case you need to reduce the amount of ZRX you have staked in your staking pool, you can do so by calling this function. Only the ZRX previously staked by the same address can be unstaked. This is another reason why we recommend  having the pool operator handling ZRX balances.
+
+<CodeTabs tabs={['Solidity', 'Typescript']}>
+
+```js
+/// @dev Moves stake between statuses: 'undelegated' or 'delegated'.
+///      Delegated stake can also be moved between pools.
+///      This change comes into effect next epoch.
+/// @param from status to move stake out of.
+/// @param to status to move stake into.
+/// @param amount of stake to move.
+function moveStake(
+    IStructs.StakeInfo calldata from,
+    IStructs.StakeInfo calldata to,
+    uint256 amount
+)
+    external;
 ```
+
+```js
 const stakingContract = new StakingContract(stakingProxyContractAddress, providerEngine, { from: maker });
 const poolId = '0x0000000000000000000000000000000000000000000000000000000000000001';
 const stakeAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(100), 18);
@@ -99,51 +194,45 @@ const moveStakeReceipt = await stakingContract.moveStake.awaitTransactionSuccess
 await stakingContract.unstake.awaitTransactionSuccessAsync(stakeAmount, { from: maker })
 ```
 
+</CodeTabs>
+
+### Widthdraw stake
+
+
+
 ### Decrease the operator share
 
-Relevant function: [decreaseStakingPoolOperatorShare](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#613-logic-of-decreasestakingpooloperatorshare)
+Relevant contract function: [decreaseStakingPoolOperatorShare](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#613-logic-of-decreasestakingpooloperatorshare)
 To be successful, the transaction needs to be signed and sent by the pool operator address. 
 
+<CodeTabs tabs={['Solidity', 'Typescript']}>
+
+```js
+/// @dev Decreases the operator share for the given pool (i.e. increases pool rewards for members).
+/// @param poolId Unique Id of pool.
+/// @param newOperatorShare The newly decreased percentage of any rewards owned by the operator.
+function decreaseStakingPoolOperatorShare(bytes32 poolId, uint32 newOperatorShare)
+    external
+```
+
+```js
+await stakingContract.decreaseStakingPoolOperatorShare.sendTransactionAsync(poolId, new BigNumber(1), {
+    from: maker,
+});
+```
+
+</CodeTabs>
 
 ## How do I choose the optimal parameters?
 
 The system is designed to behave dynamically, based on your and other network players’ actions, so there’s no ‘one size fits all’ solution to maximize .
 
-However, it’s helpful to use this rule of thumb: the rewards per unit of ZRX generated by a staking pool are maximized when the relative share of ZRX staked (your ZRX staked divided by the total ZRX staked in the system) matches the your 'liquidity share' (the fees your orders have generated divided by the total fees generated).
-
+However, it is helpful to use this rule of thumb: the rewards per unit of ZRX staked are **maximized when your stake ratio is equal to 1**. The stake ratio is calculated dividing the relative share of ZRX staked (your ZRX staked divided by the total ZRX staked in the system) by your 'liquidity share' (the fees your orders have generated divided by the total fees generated by other staked market makers). When these two quantities are equal, your stake ratio is 1, and your rewards per unit of ZRX staked are maximized.
 When your staking pool is under-staked (the relative share of ZRX is smaller than the liquidity share), your pool will not be allocated the entirety of the eligible fees. Increasing the balance of ZRX staked (by adding them yourself or incentivizing other token holders to delegate) will progressively maximize the liquidity rewards received.
 
 When your staking pool is over-staked (the relative share of ZRX is smaller than the liquidity share), your pool will not be maximizing the rewards per unit of ZRX staked. Differently than the previous scenario, this is an allocation efficiency problem: your rewards will always increase the more ZRX are staked in your pool. By doing that, though, you will be decreasing the stake ratio of other staking pools whom might be incentivized in adding more ZRX stake or incentivizing other ZRX token holders to stake with them.
 
  For more comprehensive math, you can refer to [this section of the specs](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#62-paying-liquidity-rewards-finalization) or [the original whitepaper](https://github.com/0xProject/0x-protocol-specification/blob/3.0/v3/protocol-fees.pdf).
 
-As part of the launch, 0x will release a Staking Portal where all the information about the liquidity pools (including the metrics described above) will be available, so to allow market makers and delegators to optimally allocate their stake.
 
 
-<!--
-<CodeTabs tabs={['Typescript', 'Python']}>
-```
-// Staking Proxy is a delegate contract. We initialize a Staking Contract (ABI) pointing to the delegate proxy
-// at stakingProxyContractAddress
-const stakingContract = new StakingContract(stakingProxyContractAddress, providerEngine, { from: maker });
-
-const operatorShare = new BigNumber(2);
-const stakingPoolReceipt = await stakingContract.createStakingPool.awaitTransactionSuccessAsync(
-    operatorShare,
-    true,
-    {z
-        from: maker,
-    },
-);
-const createStakingPoolLog = stakingPoolReceipt.logs[0];
-const poolId = (createStakingPoolLog as any).args.poolId
-```
-
-```
-import { TruffleArtifactAdapter } from '@0x/sol-coverage';
-const projectRoot = '.';
-const solcVersion = '0.5.0';
-const artifactAdapter = new TruffleArtifactAdapter(projectRoot, solcVersion);
-```
-</CodeTabs>
--->

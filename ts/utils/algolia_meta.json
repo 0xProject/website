@@ -15,8 +15,8 @@
     "guides": {
         "create-staking-pool": {
             "title": "Create and manage your staking pool",
-            "subtitle": "Learn how to create and manage your staking pool",
-            "description": "Learn how to create and manage your staking pool",
+            "subtitle": "Learn how to create and manage your staking pool to collect liquidity rewards",
+            "description": "Learn how to create and manage your staking pool to collect liquidity rewards",
             "tags": ["Staking"],
             "topics": ["Staking"],
             "difficulty": "Intermediate",
