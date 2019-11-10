@@ -7,6 +7,9 @@ import { ConnectWalletDialog as ConnectWalletDialogComponent } from 'ts/componen
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { Providers } from 'ts/types';
 
+import { asyncDispatcher } from 'ts/redux/async_dispatcher';
+import { providerStateFactory } from 'ts/utils/providers/provider_state_factory';
+
 interface ConnectWalletDialogProps {}
 
 // TODO(kimpers): add blockchain integration
@@ -32,8 +35,12 @@ const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => {
         onDismiss: (): void => {
             dispatcher.updateIsConnectWalletDialogOpen(false);
         },
-        onConnectWallet: (provider: Providers): void => {
-            dispatcher.connectWallet(provider);
+        onConnectWallet: async (_: Providers): Promise<void> => {
+            // TODO: get real network and clean up Providers
+            dispatcher.updateIsConnectWalletDialogOpen(false);
+            const network = 1;
+            const providerState = providerStateFactory.getInitialProviderState(network);
+            await asyncDispatcher.fetchAccountInfoAndDispatchToStore(providerState, dispatcher);
         },
     };
 };

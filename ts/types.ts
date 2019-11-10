@@ -5,8 +5,13 @@ import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
 
 // Types copied from instant
-// TODO(kimpers): remove cleanup when consolidating providers into a package
+// TODO(kimpers): cleanup when consolidating providers into a package
 export type Maybe<T> = T | undefined;
+
+export interface AddressAndEthBalanceInWei {
+    address: string;
+    ethBalanceInWei: BigNumber;
+}
 
 export interface AccountReady {
     state: AccountState.Ready;
@@ -150,9 +155,10 @@ export enum ActionTypes {
 
     // Staking
     UpdateIsConnectWalletDialogOpen = 'UPDATE_IS_CONNECT_WALLET_DIALOG_OPEN',
-    ConnectWallet = 'CONNECT_WALLET',
-    ConnectWalletSucceeded = 'CONNECT_WALLET_SUCCEEDED',
-    ConnectWalletFailed = 'CONNECT_WALLET_FAILED',
+    SetAccountStateLoading = 'SET_ACCOUNT_STATE_LOADING',
+    SetAccountStateLocked = 'SET_ACCOUNT_STATE_LOCKED',
+    SetAccountStateReady = 'SET_ACCOUNT_STATE_READY',
+    UpdateAccountEthBalance = 'UPDATE_ACCOUNT_ETH_BALANCE',
 
     // Shared
     ShowFlashMessage = 'SHOW_FLASH_MESSAGE',
@@ -668,13 +674,6 @@ export enum Deco {
 export interface MaterialUIPosition {
     vertical: 'bottom' | 'top' | 'center';
     horizontal: 'left' | 'middle' | 'right';
-}
-
-export interface ConnectedWalletDetails {
-    provider: Providers;
-    providerName: string;
-    selectedAddress: string;
-    currentBalance: BigNumber;
 }
 
 export enum Providers {

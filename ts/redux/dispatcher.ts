@@ -3,11 +3,11 @@ import { Dispatch } from 'redux';
 import { State } from 'ts/redux/reducer';
 import {
     ActionTypes,
+    AddressAndEthBalanceInWei,
     AssetToken,
     BlockchainErrs,
     Language,
     PortalOrder,
-    Providers,
     ProviderType,
     ScreenWidths,
     Side,
@@ -203,10 +203,29 @@ export class Dispatcher {
         });
     }
 
-    public connectWallet(provider: Providers): void {
+    public setAccountStateLoading(): void {
         this._dispatch({
-            type: ActionTypes.ConnectWallet,
-            data: provider,
+            type: ActionTypes.SetAccountStateLoading,
+        });
+    }
+
+    public setAccountStateLocked(): void {
+        this._dispatch({
+            type: ActionTypes.SetAccountStateLocked,
+        });
+    }
+
+    public setAccountStateReady(address: string): void {
+        this._dispatch({
+            type: ActionTypes.SetAccountStateReady,
+            data: address,
+        });
+    }
+
+    public updateAccountEthBalance(addressAndBalance: AddressAndEthBalanceInWei): void {
+        this._dispatch({
+            type: ActionTypes.UpdateAccountEthBalance,
+            data: addressAndBalance,
         });
     }
 

@@ -3,11 +3,14 @@ import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import {
+    Account,
+    AccountReady,
+    AccountState,
     Action,
     ActionTypes,
     BlockchainErrs,
-    ConnectedWalletDetails,
     PortalOrder,
+    ProviderState,
     ProviderType,
     ScreenWidths,
     Side,
@@ -15,6 +18,7 @@ import {
     TokenByAddress,
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
+import { LOADING_ACCOUNT, LOCKED_ACCOUNT } from 'ts/utils/providers/constants';
 import { Translate } from 'ts/utils/translate';
 import { utils } from 'ts/utils/utils';
 
@@ -53,7 +57,7 @@ export interface State {
 
     // Staking
     isConnectWalletDialogOpen: boolean;
-    walletDetails?: ConnectedWalletDetails;
+    providerState?: ProviderState; // TODO: Can this be optional or should it have a default value?
 
     // Shared
     flashMessage: string | React.ReactNode;
@@ -92,6 +96,7 @@ export const INITIAL_STATE: State = {
     availableDocVersions: [DEFAULT_DOCS_VERSION],
     // Staking
     isConnectWalletDialogOpen: false,
+    providerState: undefined,
     // Shared
     flashMessage: undefined,
     providerType: ProviderType.Injected,
@@ -341,18 +346,46 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
             };
         }
 
-        case ActionTypes.ConnectWalletSucceeded: {
-            return {
-                ...state,
-                walletDetails: action.data,
-            };
+        case ActionTypes.SetAccountStateLoading: {
+            return reduceStateWithAccount(state, LOADING_ACCOUNT);
         }
 
-        case ActionTypes.ConnectWalletFailed: {
-            return {
-                ...state,
-                walletDetails: undefined,
+        case ActionTypes.SetAccountStateLocked: {
+            return reduceStateWithAccount(state, LOCKED_ACCOUNT);
+        }
+
+        case ActionTypes.SetAccountStateReady: {
+            const address = action.data;
+            let newAccount: AccountReady = {
+                state: AccountState.Ready,
+                address,
             };
+
+            if (state.providerState) {
+                const currentAccount = state.providerState.account;
+                if (currentAccount.state === AccountState.Ready && currentAccount.address === address) {
+                    newAccount = {
+                        ...newAccount,
+                        ethBalanceInWei: currentAccount.ethBalanceInWei,
+                    };
+                }
+            }
+
+            return reduceStateWithAccount(state, newAccount);
+        }
+
+        case ActionTypes.UpdateAccountEthBalance: {
+            const { address, ethBalanceInWei } = action.data;
+            const currentAccount = state.providerState.account;
+            if (currentAccount.state !== AccountState.Ready || currentAccount.address !== address) {
+                return state;
+            } else {
+                const newAccount: AccountReady = {
+                    ...currentAccount,
+                    ethBalanceInWei,
+                };
+                return reduceStateWithAccount(state, newAccount);
+            }
         }
 
         // Shared
@@ -388,3 +421,15 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
             return state;
     }
 }
+
+const reduceStateWithAccount = (state: State, account: Account) => {
+    const oldProviderState = state.providerState;
+    const newProviderState: ProviderState = {
+        ...oldProviderState,
+        account,
+    };
+    return {
+        ...state,
+        providerState: newProviderState,
+    };
+};
