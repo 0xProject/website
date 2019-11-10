@@ -9,6 +9,7 @@ import {
     Action,
     ActionTypes,
     BlockchainErrs,
+    Network,
     PortalOrder,
     ProviderState,
     ProviderType,
@@ -19,6 +20,7 @@ import {
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { LOADING_ACCOUNT, LOCKED_ACCOUNT } from 'ts/utils/providers/constants';
+import { providerStateFactory } from 'ts/utils/providers/provider_state_factory';
 import { Translate } from 'ts/utils/translate';
 import { utils } from 'ts/utils/utils';
 
@@ -57,7 +59,7 @@ export interface State {
 
     // Staking
     isConnectWalletDialogOpen: boolean;
-    providerState?: ProviderState; // TODO: Can this be optional or should it have a default value?
+    providerState: ProviderState;
 
     // Shared
     flashMessage: string | React.ReactNode;
@@ -66,11 +68,12 @@ export interface State {
     translate: Translate;
 }
 
+const DEFAULT_NETWORK_ID = Network.Mainnet;
 export const INITIAL_STATE: State = {
     // Portal
     blockchainErr: BlockchainErrs.NoError,
     blockchainIsLoaded: false,
-    networkId: undefined,
+    networkId: DEFAULT_NETWORK_ID,
     orderExpiryTimestamp: utils.initialOrderExpiryUnixTimestampSec(),
     orderFillAmount: undefined,
     orderSignature: '',
@@ -96,7 +99,7 @@ export const INITIAL_STATE: State = {
     availableDocVersions: [DEFAULT_DOCS_VERSION],
     // Staking
     isConnectWalletDialogOpen: false,
-    providerState: undefined,
+    providerState: providerStateFactory.getInitialProviderState(DEFAULT_NETWORK_ID),
     // Shared
     flashMessage: undefined,
     providerType: ProviderType.Injected,

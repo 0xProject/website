@@ -5,27 +5,27 @@ import { State } from 'ts/redux/reducer';
 
 import { ConnectWalletDialog as ConnectWalletDialogComponent } from 'ts/components/dialogs/connect_wallet_dialog';
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { Providers } from 'ts/types';
+import { Network } from 'ts/types';
 
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { providerStateFactory } from 'ts/utils/providers/provider_state_factory';
 
 interface ConnectWalletDialogProps {}
 
-// TODO(kimpers): add blockchain integration
 interface ConnectedState {
     isOpen: boolean;
-    isWalletConnected: boolean;
+    networkId: Network;
 }
 
 interface ConnectedDispatch {
     onDismiss: () => void;
-    onConnectWallet: (provider: Providers) => void;
+    // TODO: is there a nicer way to handle this than passing it back through the component?
+    onConnectWallet: (fallbackNetworkId: Network) => void;
 }
 
 const mapStateToProps = (state: State, _ownProps: ConnectWalletDialogProps): ConnectedState => ({
     isOpen: state.isConnectWalletDialogOpen,
-    isWalletConnected: !!state.walletDetails,
+    networkId: state.networkId,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => {
@@ -35,12 +35,20 @@ const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => {
         onDismiss: (): void => {
             dispatcher.updateIsConnectWalletDialogOpen(false);
         },
-        onConnectWallet: async (_: Providers): Promise<void> => {
-            // TODO: get real network and clean up Providers
-            dispatcher.updateIsConnectWalletDialogOpen(false);
-            const network = 1;
-            const providerState = providerStateFactory.getInitialProviderState(network);
-            await asyncDispatcher.fetchAccountInfoAndDispatchToStore(providerState, dispatcher);
+        onConnectWallet: async (fallbackNetworkId: Network): Promise<void> => {
+            try {
+                dispatcher.updateIsConnectWalletDialogOpen(false);
+                const providerState = providerStateFactory.getInitialProviderState(fallbackNetworkId);
+
+                const networkId = await providerState.web3Wrapper.getNetworkIdAsync();
+                if (networkId !== fallbackNetworkId) {
+                    dispatcher.updateNetworkId(networkId);
+                }
+
+                await asyncDispatcher.fetchAccountInfoAndDispatchToStore(providerState, dispatcher);
+            } catch (e) {
+                // TODO: handle
+            }
         },
     };
 };

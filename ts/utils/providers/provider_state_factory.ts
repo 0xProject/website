@@ -12,7 +12,7 @@ import { providerFactory } from 'ts/utils/providers/provider_factory';
 // TODO(kimpers): Copied from instant, migrate to a package that can be shared
 export const providerStateFactory = {
     getInitialProviderState: (
-        network: Network,
+        fallbackNetworkId: Network,
         supportedProvider?: SupportedProvider,
         walletDisplayName?: string,
     ): ProviderState => {
@@ -26,7 +26,7 @@ export const providerStateFactory = {
         if (providerStateFromWindowIfExits) {
             return providerStateFromWindowIfExits;
         } else {
-            return providerStateFactory.getInitialProviderStateFallback(network, walletDisplayName);
+            return providerStateFactory.getInitialProviderStateFallback(fallbackNetworkId, walletDisplayName);
         }
     },
 

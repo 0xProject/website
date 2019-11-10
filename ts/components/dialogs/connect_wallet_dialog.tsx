@@ -8,8 +8,7 @@ import { Icon } from 'ts/components/icon';
 import { Heading, Paragraph } from 'ts/components/text';
 import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
-// TODO(kimpers): New providers needed!
-import { Providers } from 'ts/types';
+import { Network, Providers } from 'ts/types';
 import { utils } from 'ts/utils/utils';
 
 const StyledDialogOverlay = styled(DialogOverlay)`
@@ -243,8 +242,9 @@ const OtherWalletScreen = ({ onDismiss, onGoBack }: OtherWalletScreenProps) => (
 
 interface ConnectWalletDialogProps {
     isOpen: boolean;
+    networkId: Network;
     onDismiss: () => void;
-    onConnectWallet: (provider: Providers) => void;
+    onConnectWallet: (fallbackNetworkId: Network) => void;
 }
 
 interface ProviderInfo {
@@ -260,7 +260,7 @@ interface WalletProviderCategory {
     providers: ProviderInfo[];
 }
 
-export const ConnectWalletDialog = ({ isOpen, onDismiss, onConnectWallet }: ConnectWalletDialogProps) => {
+export const ConnectWalletDialog = ({ isOpen, onDismiss, networkId, onConnectWallet }: ConnectWalletDialogProps) => {
     const [shouldShowOtherWallets, setShouldShowOtherWallets] = React.useState(false);
     const isMobile = utils.isMobileOperatingSystem();
     const onGoBack = () => setShouldShowOtherWallets(false);
@@ -294,9 +294,7 @@ export const ConnectWalletDialog = ({ isOpen, onDismiss, onConnectWallet }: Conn
         walletProviders = [
             {
                 title: 'Detected wallet',
-                providers: [
-                    { name: 'MetaMask', id: Providers.Metamask, onClick: () => onConnectWallet(Providers.Metamask) },
-                ],
+                providers: [{ name: 'MetaMask', id: Providers.Metamask, onClick: () => onConnectWallet(networkId) }],
             },
             {
                 title: 'Hardware wallets',
