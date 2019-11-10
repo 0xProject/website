@@ -22,6 +22,7 @@ interface HeaderProps {
     isNavToggled?: boolean;
     toggleMobileNav?: () => void;
     onOpenConnectWalletDialog: () => void;
+    onLogoutWallet: () => void;
     providerState: ProviderState;
 }
 
@@ -59,6 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
     providerState,
     toggleMobileNav,
     onOpenConnectWalletDialog,
+    onLogoutWallet,
 }) => {
     const onUnpin = () => {
         if (isNavToggled) {
@@ -73,9 +75,7 @@ export const Header: React.FC<HeaderProps> = ({
 
     const logoutWallet = () => {
         onUnpin();
-        // TODO(kimpers): connect logout wallet button
-        // tslint:disable-next-line:no-console
-        console.log('TODO: logout wallet');
+        onLogoutWallet();
     };
 
     const subMenu = (

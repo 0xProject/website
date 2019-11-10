@@ -15,6 +15,7 @@ interface HeaderProps {
 
 interface ConnectedDispatch {
     onOpenConnectWalletDialog: () => void;
+    onLogoutWallet: () => void;
 }
 
 interface ConnectedState {
@@ -31,6 +32,9 @@ const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => {
     return {
         onOpenConnectWalletDialog: (): void => {
             dispatcher.updateIsConnectWalletDialogOpen(true);
+        },
+        onLogoutWallet: (): void => {
+            dispatcher.setAccountStateLoading();
         },
     };
 };
