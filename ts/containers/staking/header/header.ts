@@ -5,7 +5,7 @@ import { State } from 'ts/redux/reducer';
 
 import { Header as HeaderComponent } from 'ts/components/staking/header/header';
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { ConnectedWalletDetails } from 'ts/types';
+import { ProviderState } from 'ts/types';
 
 interface HeaderProps {
     location?: Location;
@@ -18,12 +18,11 @@ interface ConnectedDispatch {
 }
 
 interface ConnectedState {
-    walletDetails?: ConnectedWalletDetails;
+    providerState: ProviderState;
 }
 
-// TODO(kimpers): Get connected wallet from state after connecting with blockchain
 const mapStateToProps = (state: State, _ownProps: HeaderProps): ConnectedState => ({
-    walletDetails: state.walletDetails,
+    providerState: state.providerState,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => {

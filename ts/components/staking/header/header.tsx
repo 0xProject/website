@@ -15,14 +15,14 @@ import { FlexWrap } from 'ts/components/newLayout';
 import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 
-import { ConnectedWalletDetails, WebsitePaths } from 'ts/types';
+import { AccountState, ProviderState, WebsitePaths } from 'ts/types';
 
 interface HeaderProps {
     location?: Location;
     isNavToggled?: boolean;
     toggleMobileNav?: () => void;
     onOpenConnectWalletDialog: () => void;
-    walletDetails?: ConnectedWalletDetails;
+    providerState: ProviderState;
 }
 
 interface NavLinkProps {
@@ -56,7 +56,7 @@ const navItems: NavItems[] = [
 
 export const Header: React.FC<HeaderProps> = ({
     isNavToggled,
-    walletDetails,
+    providerState,
     toggleMobileNav,
     onOpenConnectWalletDialog,
 }) => {
@@ -80,14 +80,13 @@ export const Header: React.FC<HeaderProps> = ({
 
     const subMenu = (
         <SubMenu
-            walletDetails={walletDetails}
             openConnectWalletDialogCB={unpinAndOpenWalletDialog}
             logoutWalletCB={logoutWallet}
+            providerState={providerState}
         />
     );
 
-    const isWalletConnected = !!walletDetails;
-
+    const isWalletConnected = providerState.account.state === AccountState.Ready;
     return (
         <Headroom
             onUnpin={onUnpin}
