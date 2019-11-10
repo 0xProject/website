@@ -1,47 +1,12 @@
-import * as bowser from 'bowser';
 import { ZeroExProvider } from 'ethereum-types';
 import * as _ from 'lodash';
 
-import { PROVIDER_TYPE_TO_NAME } from 'ts/utils/providers/constants';
-import { Browser, OperatingSystem, ProviderType } from 'ts/utils/providers/types';
+import { BrowserType } from 'ts/types';
+import { PROVIDER_TYPE_TO_ICON, PROVIDER_TYPE_TO_NAME } from 'ts/utils/providers/constants';
+import { ProviderType } from 'ts/utils/providers/types';
+import { utils } from 'ts/utils/utils';
 
 export const envUtil = {
-    getBrowser(): Browser {
-        if (bowser.chrome) {
-            return Browser.Chrome;
-        } else if (bowser.firefox) {
-            return Browser.Firefox;
-        } else if (bowser.opera) {
-            return Browser.Opera;
-        } else if (bowser.msedge) {
-            return Browser.Edge;
-        } else if (bowser.safari) {
-            return Browser.Safari;
-        } else {
-            return Browser.Other;
-        }
-    },
-    isMobileOperatingSystem(): boolean {
-        return bowser.mobile;
-    },
-    getOperatingSystem(): OperatingSystem {
-        if (bowser.android) {
-            return OperatingSystem.Android;
-        } else if (bowser.ios) {
-            return OperatingSystem.iOS;
-        } else if (bowser.mac) {
-            return OperatingSystem.Mac;
-        } else if (bowser.windows) {
-            return OperatingSystem.Windows;
-        } else if (bowser.windowsphone) {
-            return OperatingSystem.WindowsPhone;
-        } else if (bowser.linux) {
-            return OperatingSystem.Linux;
-        } else {
-            return OperatingSystem.Other;
-        }
-    },
-
     getProviderType(provider: ZeroExProvider): ProviderType | undefined {
         const anyProvider = provider as any;
         if (provider.constructor.name === 'EthereumProvider') {
@@ -56,7 +21,7 @@ export const envUtil = {
             return ProviderType.CoinbaseWallet;
         } else if (_.get(window, '__CIPHER__') !== undefined) {
             return ProviderType.Cipher;
-        } else if (envUtil.getBrowser() === Browser.Opera && !anyProvider.isMetaMask) {
+        } else if (utils.getBrowserType() === BrowserType.Opera && !anyProvider.isMetaMask) {
             return ProviderType.Opera;
         }
 
@@ -77,5 +42,13 @@ export const envUtil = {
             return 'Wallet';
         }
         return PROVIDER_TYPE_TO_NAME[providerTypeIfExists];
+    },
+
+    getProviderTypeIcon(providerType?: ProviderType): string | undefined {
+        if (providerType === undefined) {
+            return undefined;
+        }
+
+        return PROVIDER_TYPE_TO_ICON[providerType];
     },
 };

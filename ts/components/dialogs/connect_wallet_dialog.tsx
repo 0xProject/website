@@ -8,7 +8,9 @@ import { Icon } from 'ts/components/icon';
 import { Heading, Paragraph } from 'ts/components/text';
 import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
-import { Network, Providers } from 'ts/types';
+import { AccountState, Network, ProviderState } from 'ts/types';
+import { envUtil } from 'ts/utils/providers/env';
+import { ProviderType } from 'ts/utils/providers/types';
 import { utils } from 'ts/utils/utils';
 
 const StyledDialogOverlay = styled(DialogOverlay)`
@@ -132,6 +134,30 @@ interface WalletCategoryProps {
     providers: ProviderInfo[];
 }
 
+const IconIfExists = ({ provider }: { provider: ProviderInfo }) => {
+    if (provider.icon) {
+        return (
+            <>
+                {provider.icon}
+                <Divider />
+            </>
+        );
+    }
+
+    const iconName = envUtil.getProviderTypeIcon(provider.providerType);
+
+    if (iconName) {
+        return (
+            <>
+                <Icon name={iconName} size={30} />
+                <Divider />
+            </>
+        );
+    }
+
+    return null;
+};
+
 const WalletCategory = ({ title, providers }: WalletCategoryProps) => {
     return (
         <WalletCategoryStyling>
@@ -141,8 +167,7 @@ const WalletCategory = ({ title, providers }: WalletCategoryProps) => {
             <div>
                 {providers.map(provider => (
                     <WalletProviderButton onClick={provider.onClick} key={provider.name}>
-                        {provider.icon || <Icon name={`${provider.id.toLowerCase()}_icon`} size={30} />}
-                        <Divider />
+                        <IconIfExists provider={provider} />
                         <div style={{ textAlign: 'left' }}>
                             <Heading asElement="h5" size={20} marginBottom="0">
                                 {provider.name}
@@ -243,13 +268,14 @@ const OtherWalletScreen = ({ onDismiss, onGoBack }: OtherWalletScreenProps) => (
 interface ConnectWalletDialogProps {
     isOpen: boolean;
     networkId: Network;
+    providerState: ProviderState;
     onDismiss: () => void;
     onConnectWallet: (fallbackNetworkId: Network) => void;
 }
 
 interface ProviderInfo {
     name: string;
-    id: string;
+    providerType?: ProviderType;
     description?: string;
     icon?: React.ReactNode;
     onClick?: () => void;
@@ -260,63 +286,53 @@ interface WalletProviderCategory {
     providers: ProviderInfo[];
 }
 
-export const ConnectWalletDialog = ({ isOpen, onDismiss, networkId, onConnectWallet }: ConnectWalletDialogProps) => {
+export const ConnectWalletDialog = ({
+    isOpen,
+    onDismiss,
+    networkId,
+    providerState,
+    onConnectWallet,
+}: ConnectWalletDialogProps) => {
     const [shouldShowOtherWallets, setShouldShowOtherWallets] = React.useState(false);
     const isMobile = utils.isMobileOperatingSystem();
     const onGoBack = () => setShouldShowOtherWallets(false);
 
-    let walletProviders: WalletProviderCategory[];
+    const walletProviders: WalletProviderCategory[] = [];
+
+    if (providerState.account.state !== AccountState.None) {
+        walletProviders.push({
+            title: 'Detected wallet',
+            providers: [
+                {
+                    name: providerState.displayName,
+                    providerType: providerState.providerType,
+                    onClick: () => onConnectWallet(networkId),
+                },
+            ],
+        });
+    }
+
     if (isMobile) {
-        walletProviders = [
-            {
-                title: 'Mobile wallet',
-                providers: [
-                    { name: 'Coinbase', id: Providers.CoinbaseWallet },
-                    { name: 'Trust', id: Providers.TrustWallet },
-                    {
-                        name: 'Other mobile wallets',
-                        id: 'OTHER_WALLETS',
-                        icon: (
-                            <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
-                                <IconPlus />
-                            </div>
-                        ),
-                        onClick: () => setShouldShowOtherWallets(true),
-                    },
-                ],
-            },
-            {
-                title: 'Hardware wallets',
-                providers: [{ name: 'Ledger X', id: 'LEDGER' }],
-            },
-        ];
-    } else {
-        walletProviders = [
-            {
-                title: 'Detected wallet',
-                providers: [{ name: 'MetaMask', id: Providers.Metamask, onClick: () => onConnectWallet(networkId) }],
-            },
-            {
-                title: 'Hardware wallets',
-                providers: [{ name: 'Trezor', id: 'TREZOR' }, { name: 'Ledger', id: 'LEDGER' }],
-            },
-            {
-                title: 'Mobile wallets',
-                providers: [
-                    {
-                        name: 'Wallet connect',
-                        id: Providers.WalletConnect,
-                        description: 'Walleth, Trust, Tokenary, Rainbow, Pillar, Argent, etc',
-                    },
-                ],
-            },
-        ];
+        walletProviders.push({
+            title: 'Mobile wallet',
+            providers: [
+                {
+                    name: 'Other mobile wallets',
+                    icon: (
+                        <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
+                            <IconPlus />
+                        </div>
+                    ),
+                    onClick: () => setShouldShowOtherWallets(true),
+                },
+            ],
+        });
     }
 
     return (
         <StyledDialogOverlay isOpen={isOpen}>
             <StyledDialogContent>
-                {isMobile && shouldShowOtherWallets ? (
+                {shouldShowOtherWallets ? (
                     <OtherWalletScreen onDismiss={onDismiss} onGoBack={onGoBack} />
                 ) : (
                     <>
@@ -328,9 +344,15 @@ export const ConnectWalletDialog = ({ isOpen, onDismiss, networkId, onConnectWal
                                 <Icon name="close-modal" />
                             </ButtonClose>
                         </HeadingRow>
-                        {walletProviders.map(({ title, providers }, i) => (
-                            <WalletCategory key={`wallet-category-${i}`} title={title} providers={providers} />
-                        ))}
+                        {walletProviders.length ? (
+                            walletProviders.map(({ title, providers }, i) => (
+                                <WalletCategory key={`wallet-category-${i}`} title={title} providers={providers} />
+                            ))
+                        ) : (
+                            <Heading asElement="h5" size={20} marginBottom="0">
+                                No wallet found
+                            </Heading>
+                        )}
                     </>
                 )}
             </StyledDialogContent>

@@ -7,6 +7,7 @@ import { AccountReady, AccountState, ProviderState } from 'ts/types';
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
+import { envUtil } from 'ts/utils/providers/env';
 import { utils } from 'ts/utils/utils';
 
 const SubMenuWrapper = styled.div`
@@ -123,12 +124,13 @@ const ConnectedWallet = ({ providerState, openConnectWalletDialogCB, logoutWalle
     const toggleExpanded = () => setIsExpanded(!isExpanded);
 
     const account = providerState.account as AccountReady;
+    const iconName = envUtil.getProviderTypeIcon(providerState.providerType);
 
     // TODO(kimpers): add svgs for all providers
     return (
         <SubMenuWrapper onClick={toggleExpanded}>
             <WalletAddressWrapper>
-                <Icon name={`${providerState.name.toLowerCase()}_icon`} size={30} />
+                {iconName && <Icon name={iconName} size={30} />}
                 <MediaQuery maxWidth={1199}>
                     {(isMobile: boolean) => (
                         <EthAddress>

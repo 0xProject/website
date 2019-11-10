@@ -5,7 +5,7 @@ import { State } from 'ts/redux/reducer';
 
 import { ConnectWalletDialog as ConnectWalletDialogComponent } from 'ts/components/dialogs/connect_wallet_dialog';
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { Network } from 'ts/types';
+import { Network, ProviderState } from 'ts/types';
 
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { providerStateFactory } from 'ts/utils/providers/provider_state_factory';
@@ -15,6 +15,7 @@ interface ConnectWalletDialogProps {}
 interface ConnectedState {
     isOpen: boolean;
     networkId: Network;
+    providerState: ProviderState;
 }
 
 interface ConnectedDispatch {
@@ -26,6 +27,7 @@ interface ConnectedDispatch {
 const mapStateToProps = (state: State, _ownProps: ConnectWalletDialogProps): ConnectedState => ({
     isOpen: state.isConnectWalletDialogOpen,
     networkId: state.networkId,
+    providerState: state.providerState,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => {

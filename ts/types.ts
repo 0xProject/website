@@ -4,6 +4,8 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
 
+import { ProviderType as SupportedProviderType } from 'ts/utils/providers/types';
+
 // Types copied from instant
 // TODO(kimpers): cleanup when consolidating providers into a package
 export type Maybe<T> = T | undefined;
@@ -27,6 +29,7 @@ export type Account = AccountReady | AccountNotReady;
 export interface ProviderState {
     name: string;
     displayName: string;
+    providerType?: SupportedProviderType;
     provider: ZeroExProvider;
     web3Wrapper: Web3Wrapper;
     account: Account;
@@ -375,6 +378,7 @@ export interface S3FileObject {
     };
 }
 
+// TOOD(kimpers): Remove when all of the site uses providers lib
 export enum ProviderType {
     Injected = 'INJECTED',
     Ledger = 'LEDGER',

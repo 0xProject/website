@@ -34,6 +34,7 @@ export const providerStateFactory = {
         const providerState: ProviderState = {
             name: envUtil.getProviderName(provider),
             displayName: walletDisplayName || envUtil.getProviderDisplayName(provider),
+            providerType: envUtil.getProviderType(provider),
             provider,
             web3Wrapper: new Web3Wrapper(provider),
             account: LOADING_ACCOUNT,
@@ -47,6 +48,7 @@ export const providerStateFactory = {
             const providerState: ProviderState = {
                 name: envUtil.getProviderName(injectedProviderIfExists),
                 displayName: walletDisplayName || envUtil.getProviderDisplayName(injectedProviderIfExists),
+                providerType: envUtil.getProviderType(injectedProviderIfExists),
                 provider: injectedProviderIfExists,
                 web3Wrapper: new Web3Wrapper(injectedProviderIfExists),
                 account: LOADING_ACCOUNT,
