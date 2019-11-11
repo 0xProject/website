@@ -48,8 +48,8 @@ const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => {
                 }
 
                 await asyncDispatcher.fetchAccountInfoAndDispatchToStore(providerState, dispatcher, true);
-            } catch (e) {
-                // TODO: handle
+            } catch (err) {
+                // TODO(kimpers): handle errors
             }
         },
     };

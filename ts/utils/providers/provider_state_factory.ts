@@ -4,8 +4,8 @@ import { SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as _ from 'lodash';
 
 import { Maybe, Network, ProviderState } from 'ts/types';
-import { LOADING_ACCOUNT, NO_ACCOUNT } from 'ts/utils/providers/constants';
-import { envUtil } from 'ts/utils/providers/env';
+import { constants } from 'ts/utils/constants';
+import { utils } from 'ts/utils/utils';
 
 import { providerFactory } from 'ts/utils/providers/provider_factory';
 
@@ -32,12 +32,12 @@ export const providerStateFactory = {
 
     getInitialProviderStateFromProvider: (provider: ZeroExProvider, walletDisplayName?: string): ProviderState => {
         const providerState: ProviderState = {
-            name: envUtil.getProviderName(provider),
-            displayName: walletDisplayName || envUtil.getProviderDisplayName(provider),
-            providerType: envUtil.getProviderType(provider),
+            name: utils.getProviderName(provider),
+            displayName: walletDisplayName || utils.getProviderDisplayName(provider),
+            providerType: utils.getProviderType(provider),
             provider,
             web3Wrapper: new Web3Wrapper(provider),
-            account: LOADING_ACCOUNT,
+            account: constants.LOADING_ACCOUNT,
         };
         return providerState;
     },
@@ -46,12 +46,12 @@ export const providerStateFactory = {
         const injectedProviderIfExists = providerFactory.getInjectedProviderIfExists();
         if (injectedProviderIfExists !== undefined) {
             const providerState: ProviderState = {
-                name: envUtil.getProviderName(injectedProviderIfExists),
-                displayName: walletDisplayName || envUtil.getProviderDisplayName(injectedProviderIfExists),
-                providerType: envUtil.getProviderType(injectedProviderIfExists),
+                name: utils.getProviderName(injectedProviderIfExists),
+                displayName: walletDisplayName || utils.getProviderDisplayName(injectedProviderIfExists),
+                providerType: utils.getProviderType(injectedProviderIfExists),
                 provider: injectedProviderIfExists,
                 web3Wrapper: new Web3Wrapper(injectedProviderIfExists),
-                account: LOADING_ACCOUNT,
+                account: constants.LOADING_ACCOUNT,
             };
             return providerState;
         } else {
@@ -63,10 +63,10 @@ export const providerStateFactory = {
         const provider = providerFactory.getFallbackNoSigningProvider(network);
         const providerState: ProviderState = {
             name: 'Fallback',
-            displayName: walletDisplayName || envUtil.getProviderDisplayName(provider),
+            displayName: walletDisplayName || utils.getProviderDisplayName(provider),
             provider,
             web3Wrapper: new Web3Wrapper(provider),
-            account: NO_ACCOUNT,
+            account: constants.NO_ACCOUNT,
         };
         return providerState;
     },

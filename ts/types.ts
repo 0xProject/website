@@ -4,8 +4,6 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
 
-import { ProviderType as SupportedProviderType } from 'ts/utils/providers/types';
-
 // Types copied from instant
 // TODO(kimpers): cleanup when consolidating providers into a package
 export type Maybe<T> = T | undefined;
@@ -29,12 +27,11 @@ export type Account = AccountReady | AccountNotReady;
 export interface ProviderState {
     name: string;
     displayName: string;
-    providerType?: SupportedProviderType;
+    providerType?: Providers;
     provider: ZeroExProvider;
     web3Wrapper: Web3Wrapper;
     account: Account;
 }
-
 // End of copy from instant
 
 export enum Side {
@@ -688,6 +685,8 @@ export enum Providers {
     Cipher = 'CIPHER',
     TrustWallet = 'TRUST_WALLET',
     WalletConnect = 'WALLET_CONNECT',
+    Opera = 'OPERA',
+    Fallback = 'FALLBACK',
 }
 
 export interface InjectedProviderUpdate {

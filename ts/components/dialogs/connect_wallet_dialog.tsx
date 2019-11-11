@@ -8,9 +8,7 @@ import { Icon } from 'ts/components/icon';
 import { Heading, Paragraph } from 'ts/components/text';
 import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
-import { AccountState, Network, ProviderState } from 'ts/types';
-import { envUtil } from 'ts/utils/providers/env';
-import { ProviderType } from 'ts/utils/providers/types';
+import { AccountState, Network, Providers, ProviderState } from 'ts/types';
 import { utils } from 'ts/utils/utils';
 
 const StyledDialogOverlay = styled(DialogOverlay)`
@@ -144,7 +142,7 @@ const IconIfExists = ({ provider }: { provider: ProviderInfo }) => {
         );
     }
 
-    const iconName = envUtil.getProviderTypeIcon(provider.providerType);
+    const iconName = utils.getProviderTypeIcon(provider.providerType);
 
     if (iconName) {
         return (
@@ -275,7 +273,7 @@ interface ConnectWalletDialogProps {
 
 interface ProviderInfo {
     name: string;
-    providerType?: ProviderType;
+    providerType?: Providers;
     description?: string;
     icon?: React.ReactNode;
     onClick?: () => void;

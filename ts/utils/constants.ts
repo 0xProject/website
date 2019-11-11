@@ -1,5 +1,5 @@
 import { BigNumber } from '@0x/utils';
-import { Networks, WebsitePaths } from 'ts/types';
+import { AccountNotReady, AccountState, Networks, Providers, WebsitePaths } from 'ts/types';
 
 import { SupportedDocJson } from '../types';
 
@@ -40,6 +40,29 @@ export const constants = {
     PROVIDER_NAME_COINBASE_WALLET: 'Coinbase Wallet',
     PROVIDER_NAME_GENERIC: 'Injected Web3',
     PROVIDER_NAME_PUBLIC: '0x Public',
+    PROVIDER_TYPE_TO_NAME: {
+        [Providers.Cipher]: 'Cipher',
+        [Providers.Metamask]: 'MetaMask',
+        [Providers.Mist]: 'Mist',
+        [Providers.CoinbaseWallet]: 'Coinbase Wallet',
+        [Providers.Parity]: 'Parity',
+        [Providers.TrustWallet]: 'Trust Wallet',
+        [Providers.Opera]: 'Opera Wallet',
+        [Providers.Fallback]: 'Fallback',
+        [Providers.WalletConnect]: 'Wallet Connect',
+    } as { [key in Providers]: string },
+    PROVIDER_TYPE_TO_ICON: {
+        [Providers.Metamask]: 'metamask_icon',
+    } as { [key: string]: string | undefined },
+    NO_ACCOUNT: {
+        state: AccountState.None,
+    } as AccountNotReady,
+    LOADING_ACCOUNT: {
+        state: AccountState.Loading,
+    } as AccountNotReady,
+    LOCKED_ACCOUNT: {
+        state: AccountState.Locked,
+    } as AccountNotReady,
     ROLLBAR_ACCESS_TOKEN: '32c39bfa4bb6440faedc1612a9c13d28',
     S3_DOC_BUCKET_ROOT: 'https://s3.amazonaws.com/doc-jsons',
     S3_STAGING_DOC_BUCKET_ROOT: 'https://s3.amazonaws.com/staging-doc-jsons',

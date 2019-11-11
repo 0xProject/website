@@ -19,7 +19,6 @@ import {
     TokenByAddress,
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
-import { LOADING_ACCOUNT, LOCKED_ACCOUNT } from 'ts/utils/providers/constants';
 import { providerStateFactory } from 'ts/utils/providers/provider_state_factory';
 import { Translate } from 'ts/utils/translate';
 import { utils } from 'ts/utils/utils';
@@ -350,11 +349,11 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
         }
 
         case ActionTypes.SetAccountStateLoading: {
-            return reduceStateWithAccount(state, LOADING_ACCOUNT);
+            return reduceStateWithAccount(state, constants.LOADING_ACCOUNT);
         }
 
         case ActionTypes.SetAccountStateLocked: {
-            return reduceStateWithAccount(state, LOCKED_ACCOUNT);
+            return reduceStateWithAccount(state, constants.LOCKED_ACCOUNT);
         }
 
         case ActionTypes.SetAccountStateReady: {
