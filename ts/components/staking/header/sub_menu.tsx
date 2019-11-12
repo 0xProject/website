@@ -2,7 +2,7 @@ import * as React from 'react';
 import MediaQuery from 'react-responsive';
 import styled from 'styled-components';
 
-import { Providers, ProviderType } from 'ts/types';
+import { AccountReady, AccountState, ProviderState } from 'ts/types';
 
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
@@ -118,26 +118,22 @@ const MobileMenuWrapper = styled.div`
     }
 `;
 
-type ProviderName = Providers.Metamask | Providers.CoinbaseWallet | Providers.Cipher | ProviderType.Ledger;
-
-const ConnectedWallet = ({
-    userEthAddress,
-    providerName,
-    openConnectWalletDialogCB,
-    logoutWalletCB,
-}: ISubMenuProps) => {
+const ConnectedWallet = ({ providerState, openConnectWalletDialogCB, logoutWalletCB }: ISubMenuProps) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
     const toggleExpanded = () => setIsExpanded(!isExpanded);
+
+    const account = providerState.account as AccountReady;
+    const iconName = utils.getProviderTypeIcon(providerState.providerType);
 
     // TODO(kimpers): add svgs for all providers
     return (
         <SubMenuWrapper onClick={toggleExpanded}>
             <WalletAddressWrapper>
-                <Icon name={`${providerName.toLowerCase()}_icon`} size={30} />
+                {iconName && <Icon name={iconName} size={30} />}
                 <MediaQuery maxWidth={1199}>
                     {(isMobile: boolean) => (
                         <EthAddress>
-                            {utils.getAddressBeginAndEnd(userEthAddress, isMobile ? 9 : 5, isMobile ? 7 : 4)}
+                            {utils.getAddressBeginAndEnd(account.address, isMobile ? 9 : 5, isMobile ? 7 : 4)}
                         </EthAddress>
                     )}
                 </MediaQuery>
@@ -166,9 +162,7 @@ const ConnectedWallet = ({
 interface ISubMenuProps {
     openConnectWalletDialogCB: () => void;
     logoutWalletCB: () => void;
-
-    userEthAddress?: string;
-    providerName?: ProviderName;
+    providerState: ProviderState;
 }
 
 const ConnectButton = styled(Button).attrs({
@@ -184,9 +178,9 @@ const ConnectButton = styled(Button).attrs({
 `;
 
 export const SubMenu = (props: ISubMenuProps) => {
-    const isConnected = Boolean(props.userEthAddress && props.providerName);
+    const isWalletConnected = props.providerState.account.state === AccountState.Ready;
 
-    if (isConnected) {
+    if (isWalletConnected) {
         return <ConnectedWallet {...props} />;
     }
 

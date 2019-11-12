@@ -1,7 +1,38 @@
 import { AssetProxyId, ObjectMap, SignedOrder } from '@0x/types';
 import { BigNumber } from '@0x/utils';
-import { Provider, SupportedProvider } from 'ethereum-types';
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
+
+// Types copied from instant
+// TODO(kimpers): cleanup when consolidating providers into a package
+export type Maybe<T> = T | undefined;
+
+export interface AddressAndEthBalanceInWei {
+    address: string;
+    ethBalanceInWei: BigNumber;
+}
+
+export interface AccountReady {
+    state: AccountState.Ready;
+    address: string;
+    ethBalanceInWei?: BigNumber;
+}
+export interface AccountNotReady {
+    state: AccountState.None | AccountState.Loading | AccountState.Locked;
+}
+
+export type Account = AccountReady | AccountNotReady;
+
+export interface ProviderState {
+    name: string;
+    displayName: string;
+    providerType?: Providers;
+    provider: ZeroExProvider;
+    web3Wrapper: Web3Wrapper;
+    account: Account;
+}
+// End of copy from instant
 
 export enum Side {
     Receive = 'RECEIVE',
@@ -124,6 +155,10 @@ export enum ActionTypes {
 
     // Staking
     UpdateIsConnectWalletDialogOpen = 'UPDATE_IS_CONNECT_WALLET_DIALOG_OPEN',
+    SetAccountStateLoading = 'SET_ACCOUNT_STATE_LOADING',
+    SetAccountStateLocked = 'SET_ACCOUNT_STATE_LOCKED',
+    SetAccountStateReady = 'SET_ACCOUNT_STATE_READY',
+    UpdateAccountEthBalance = 'UPDATE_ACCOUNT_ETH_BALANCE',
 
     // Shared
     ShowFlashMessage = 'SHOW_FLASH_MESSAGE',
@@ -340,6 +375,7 @@ export interface S3FileObject {
     };
 }
 
+// TOOD(kimpers): Remove when all of the site uses providers lib
 export enum ProviderType {
     Injected = 'INJECTED',
     Ledger = 'LEDGER',
@@ -649,6 +685,8 @@ export enum Providers {
     Cipher = 'CIPHER',
     TrustWallet = 'TRUST_WALLET',
     WalletConnect = 'WALLET_CONNECT',
+    Opera = 'OPERA',
+    Fallback = 'FALLBACK',
 }
 
 export interface InjectedProviderUpdate {
@@ -812,6 +850,7 @@ export enum AccountState {
     Ready = 'Ready',
     Loading = 'Loading',
     Locked = 'Locked',
+    None = 'None',
 }
 
 export interface InjectedProvider extends Provider {

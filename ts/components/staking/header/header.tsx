@@ -15,13 +15,15 @@ import { FlexWrap } from 'ts/components/newLayout';
 import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 
-import { WebsitePaths } from 'ts/types';
+import { AccountState, ProviderState, WebsitePaths } from 'ts/types';
 
 interface HeaderProps {
     location?: Location;
     isNavToggled?: boolean;
     toggleMobileNav?: () => void;
     onOpenConnectWalletDialog: () => void;
+    onLogoutWallet: () => void;
+    providerState: ProviderState;
 }
 
 interface NavLinkProps {
@@ -53,7 +55,13 @@ const navItems: NavItems[] = [
     },
 ];
 
-export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav, onOpenConnectWalletDialog }) => {
+export const Header: React.FC<HeaderProps> = ({
+    isNavToggled,
+    providerState,
+    toggleMobileNav,
+    onOpenConnectWalletDialog,
+    onLogoutWallet,
+}) => {
     const onUnpin = () => {
         if (isNavToggled) {
             toggleMobileNav();
@@ -67,14 +75,18 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav, o
 
     const logoutWallet = () => {
         onUnpin();
-        // TODO(kimpers): connect logout wallet button
-        // tslint:disable-next-line:no-console
-        console.log('TODO: logout wallet');
+        onLogoutWallet();
     };
 
-    const subMenu = <SubMenu openConnectWalletDialogCB={unpinAndOpenWalletDialog} logoutWalletCB={logoutWallet} />;
-    const isWalletConnected = false;
+    const subMenu = (
+        <SubMenu
+            openConnectWalletDialogCB={unpinAndOpenWalletDialog}
+            logoutWalletCB={logoutWallet}
+            providerState={providerState}
+        />
+    );
 
+    const isWalletConnected = providerState.account.state === AccountState.Ready;
     return (
         <Headroom
             onUnpin={onUnpin}
