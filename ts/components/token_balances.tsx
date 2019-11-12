@@ -1,4 +1,4 @@
-import { BigNumber, errorUtils, fetchAsync, logUtils } from '@0x/utils';
+import { BigNumber, errorUtils, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
 import Dialog from 'material-ui/Dialog';
@@ -43,7 +43,6 @@ const ETHER_TOKEN_SYMBOL = 'WETH';
 const ZRX_TOKEN_SYMBOL = 'ZRX';
 
 const ICON_DIMENSION = 40;
-const ARTIFICIAL_FAUCET_REQUEST_DELAY = 1000;
 const TOKEN_TABLE_ROW_HEIGHT = 60;
 const MAX_TOKEN_TABLE_HEIGHT = 420;
 const TOKEN_COL_SPAN_LG = 2;
@@ -218,16 +217,6 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
                                 )}
                             </TableRowColumn>
                             <TableRowColumn className="sm-hide xs-hide" style={stubColumnStyle} />
-                            {isTestNetwork && (
-                                <TableRowColumn style={{ paddingLeft: 3 }}>
-                                    <LifeCycleRaisedButton
-                                        labelReady="Request"
-                                        labelLoading="Sending..."
-                                        labelComplete="Sent!"
-                                        onClickAsyncFn={this._faucetRequestAsync.bind(this, true)}
-                                    />
-                                </TableRowColumn>
-                            )}
                             <TableRowColumn>
                                 <SendButton
                                     userAddress={this.props.userAddress}
@@ -456,25 +445,6 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
     }
     private _renderErrorDialogBody(): React.ReactNode {
         switch (this.state.errorType) {
-            case BalanceErrs.IncorrectNetworkForFaucet:
-                return (
-                    <div>
-                        Our faucet can only send test Ether to addresses on testnets. Please make sure you are connected
-                        to a testnet and try requesting again.
-                    </div>
-                );
-
-            case BalanceErrs.FaucetRequestFailed:
-                return (
-                    <div>
-                        An unexpected error occurred while trying to request test Ether from our faucet. Please refresh
-                        the page and try again.
-                    </div>
-                );
-
-            case BalanceErrs.FaucetQueueIsFull:
-                return <div>Our test Ether faucet queue is full. Please try requesting test Ether again later.</div>;
-
             case BalanceErrs.MintingFailed:
                 return <div>Minting your test tokens failed unexpectedly. Please refresh the page and try again.</div>;
 
@@ -523,54 +493,6 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
             return false;
         }
     }
-    private async _faucetRequestAsync(isEtherRequest: boolean): Promise<boolean> {
-        if (this.props.userAddress === '') {
-            this.props.dispatcher.updateShouldBlockchainErrDialogBeOpen(true);
-            return false;
-        }
-
-        // If on another network other then the testnet our faucet serves test ether
-        // from, we must show user an error message
-        if (!utils.isTestNetwork(this.props.blockchain.networkId)) {
-            this.setState({
-                errorType: BalanceErrs.IncorrectNetworkForFaucet,
-            });
-            return false;
-        }
-
-        await utils.sleepAsync(ARTIFICIAL_FAUCET_REQUEST_DELAY);
-
-        const segment = isEtherRequest ? 'ether' : 'zrx';
-        const response = await fetchAsync(
-            `${constants.URL_TESTNET_FAUCET}/${segment}/${this.props.userAddress}?networkId=${this.props.networkId}`,
-        );
-        const responseBody = await response.text();
-        if (response.status !== constants.SUCCESS_STATUS) {
-            logUtils.log(`Unexpected status code: ${response.status} -> ${responseBody}`);
-            const errorType =
-                response.status === constants.UNAVAILABLE_STATUS
-                    ? BalanceErrs.FaucetQueueIsFull
-                    : BalanceErrs.FaucetRequestFailed;
-            this.setState({
-                errorType,
-            });
-            errorReporter.report(new Error(`Faucet returned non-200: ${JSON.stringify(response)}`));
-            return false;
-        }
-
-        if (isEtherRequest) {
-            this.setState({
-                isBalanceSpinnerVisible: true,
-            });
-        } else {
-            this.setState({
-                isZRXSpinnerVisible: true,
-            });
-            // tslint:disable-next-line:no-floating-promises
-            this._startPollingZrxBalanceAsync();
-        }
-        return true;
-    }
     private _onErrorDialogToggle(_isOpen: boolean): void {
         this.setState({
             errorType: undefined,
@@ -586,21 +508,6 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
         this.setState({
             isTokenPickerOpen: true,
             isAddingToken: false,
-        });
-    }
-    private async _startPollingZrxBalanceAsync(): Promise<void> {
-        const tokens = _.values(this.props.tokenByAddress);
-        const zrxToken = _.find(tokens, t => t.symbol === ZRX_TOKEN_SYMBOL);
-
-        // tslint:disable-next-line:no-floating-promises
-        const balance = await this.props.blockchain.pollTokenBalanceAsync(zrxToken);
-        const trackedTokenStateByAddress = this.state.trackedTokenStateByAddress;
-        trackedTokenStateByAddress[zrxToken.address] = {
-            ...trackedTokenStateByAddress[zrxToken.address],
-            balance,
-        };
-        this.setState({
-            isZRXSpinnerVisible: false,
         });
     }
     private async _fetchBalancesAndAllowancesAsync(tokenAddresses: string[]): Promise<void> {

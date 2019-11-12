@@ -82,9 +82,6 @@ export interface Fill {
 }
 
 export enum BalanceErrs {
-    IncorrectNetworkForFaucet,
-    FaucetRequestFailed,
-    FaucetQueueIsFull,
     MintingFailed,
     SendFailed,
     AllowanceSettingFailed,
