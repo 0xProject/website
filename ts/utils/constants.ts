@@ -82,7 +82,6 @@ export const constants = {
     URL_ECOSYSTEM_BLOG_POST: 'https://blog.0xproject.com/announcing-the-0x-ecosystem-acceleration-program-89d1cb89d565',
     URL_VOTE_BLOG_POST: 'https://blog.0xproject.com/zeip-23-trade-bundles-of-assets-fe69eb3ed960',
     URL_FIREFOX_U2F_ADDON: 'https://addons.mozilla.org/en-US/firefox/addon/u2f-support-add-on/',
-    URL_TESTNET_FAUCET: 'https://faucet.0x.org',
     URL_GITHUB_ORG: 'https://github.com/0xProject',
     URL_GITHUB_WIKI: 'https://github.com/0xProject/wiki',
     URL_FORUM,
