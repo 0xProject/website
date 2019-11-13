@@ -15,6 +15,7 @@ import { AccountFigure } from 'ts/pages/account/account_figure';
 import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { colors } from 'ts/style/colors';
+import { WebsitePaths } from 'ts/types';
 
 export interface AccountProps {}
 
@@ -133,7 +134,7 @@ export const Account: React.FC<AccountProps> = () => {
                         color={colors.brandDark}
                         isWithArrow={true}
                         isTransparent={true}
-                        to="/account/activity"
+                        to={WebsitePaths.AccountActivity}
                     >
                         Show all activity
                     </Button>
