@@ -20,6 +20,7 @@ interface InputProps {
     errors?: ErrorProps;
     isErrors?: boolean;
     required?: boolean;
+    placeholder?: string;
     onChange?: (e: React.ChangeEvent) => void;
 }
 
@@ -67,7 +68,7 @@ export const CheckBoxInput = (props: CheckBoxProps) => {
 };
 
 export const Input = React.forwardRef((props: InputProps, ref?: React.Ref<HTMLInputElement>) => {
-    const { name, label, type, errors, defaultValue, onChange, width, className } = props;
+    const { name, label, type, errors, defaultValue, onChange, width, className, placeholder } = props;
     const id = `input-${name}`;
     const componentType = type === 'textarea' ? 'textarea' : 'input';
     const isErrors = errors.hasOwnProperty(name) && errors[name] !== null;
@@ -84,6 +85,7 @@ export const Input = React.forwardRef((props: InputProps, ref?: React.Ref<HTMLIn
                 isErrors={isErrors}
                 defaultValue={defaultValue}
                 onChange={onChange}
+                placeholder={placeholder}
                 {...inputProps}
             />
             {isErrors && <Error>{errorMessage}</Error>}
@@ -101,7 +103,7 @@ const StyledInput = styled.input`
     background-color: #fff;
     border: 1px solid #d5d5d5;
     color: #000;
-    font-size: 1.294117647rem;
+    font-size: 1.111111111rem;
     padding: 16px 15px 14px;
     outline: none;
     width: 100%;
@@ -111,7 +113,8 @@ const StyledInput = styled.input`
     border-color: ${(props: InputProps) => props.isErrors && `#FD0000`};
 
     &::placeholder {
-        color: #c3c3c3;
+        font-color: #C3C3C3;
+        font-family: 'Formular';
     }
 `;
 

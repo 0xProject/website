@@ -74,7 +74,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = ({
             <Section
                 hasBorder={isPastProposal}
                 bgColor={!isPastProposal ? 'dark' : 'none'}
-                padding="60px 30px 40px"
+                padding="30px 30px 10px"
                 hasHover={true}
                 margin="30px auto"
                 maxWidth="100%"

@@ -37,4 +37,8 @@ const StyledButtonClose = styled.button.attrs({
         visibility: hidden;
         position: absolute;
     }
+
+    path {
+        fill: ${props => props.theme.textColor};
+    }
 `;

@@ -181,8 +181,8 @@ export const utils = {
             _.includes(errMsg, ledgerDenialErrMsg);
         return isUserDeniedErrMsg;
     },
-    getAddressBeginAndEnd(address: string): string {
-        const truncatedAddress = `${address.substring(0, 6)}...${address.substr(-4)}`; // 0x3d5a...b287
+    getAddressBeginAndEnd(address: string, beginCharCount: number = 6, endCharCount: number = 4): string {
+        const truncatedAddress = `${address.substring(0, beginCharCount)}...${address.substr(-endCharCount)}`; // 0x3d5a...b287
         return truncatedAddress;
     },
     getReadableAccountState(accountState: AccountState, userAddress: string): string {
@@ -305,29 +305,49 @@ export const utils = {
         }
         window.onload = () => resolve();
     }),
-    getProviderType(provider: ZeroExProvider): Providers | string {
-        const constructorName = provider.constructor.name;
-        let parsedProviderName = constructorName;
-        // https://ethereum.stackexchange.com/questions/24266/elegant-way-to-detect-current-provider-int-web3-js
-        switch (constructorName) {
-            case 'EthereumProvider':
-                parsedProviderName = Providers.Mist;
-                break;
-
-            default:
-                parsedProviderName = constructorName;
-                break;
-        }
-        if ((provider as any).isParity) {
-            parsedProviderName = Providers.Parity;
-        } else if ((provider as any).isMetaMask) {
-            parsedProviderName = Providers.Metamask;
+    // Copied from Instant
+    getProviderType(provider: ZeroExProvider): Providers | undefined {
+        const anyProvider = provider as any;
+        if (provider.constructor.name === 'EthereumProvider') {
+            return Providers.Mist;
+        } else if (anyProvider.isTrust) {
+            return Providers.TrustWallet;
+        } else if (anyProvider.isParity) {
+            return Providers.Parity;
+        } else if (anyProvider.isMetaMask) {
+            return Providers.Metamask;
         } else if (_.get(window, 'SOFA') !== undefined) {
-            parsedProviderName = Providers.CoinbaseWallet;
+            return Providers.CoinbaseWallet;
         } else if (_.get(window, '__CIPHER__') !== undefined) {
-            parsedProviderName = Providers.Cipher;
+            return Providers.Cipher;
+        } else if (utils.getBrowserType() === BrowserType.Opera && !anyProvider.isMetaMask) {
+            return Providers.Opera;
         }
-        return parsedProviderName;
+
+        return undefined;
+    },
+    getProviderName(provider: ZeroExProvider): string {
+        const providerTypeIfExists = utils.getProviderType(provider);
+        if (providerTypeIfExists === undefined) {
+            return provider.constructor.name;
+        }
+        return constants.PROVIDER_TYPE_TO_NAME[providerTypeIfExists];
+    },
+
+    getProviderDisplayName(provider: ZeroExProvider): string {
+        const providerTypeIfExists = utils.getProviderType(provider);
+        if (providerTypeIfExists === undefined) {
+            return 'Wallet';
+        }
+        return constants.PROVIDER_TYPE_TO_NAME[providerTypeIfExists];
+    },
+    // End of copy from Instant
+    getProviderTypeIcon(providerType?: Providers): string | undefined {
+        if (providerType === undefined) {
+            return undefined;
+        }
+
+        return constants.PROVIDER_TYPE_TO_ICON[providerType];
     },
     getBackendBaseUrl(): string {
         if (environments.isDogfood()) {

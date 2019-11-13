@@ -1,7 +1,38 @@
 import { AssetProxyId, ObjectMap, SignedOrder } from '@0x/types';
 import { BigNumber } from '@0x/utils';
-import { Provider, SupportedProvider } from 'ethereum-types';
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
+
+// Types copied from instant
+// TODO(kimpers): cleanup when consolidating providers into a package
+export type Maybe<T> = T | undefined;
+
+export interface AddressAndEthBalanceInWei {
+    address: string;
+    ethBalanceInWei: BigNumber;
+}
+
+export interface AccountReady {
+    state: AccountState.Ready;
+    address: string;
+    ethBalanceInWei?: BigNumber;
+}
+export interface AccountNotReady {
+    state: AccountState.None | AccountState.Loading | AccountState.Locked;
+}
+
+export type Account = AccountReady | AccountNotReady;
+
+export interface ProviderState {
+    name: string;
+    displayName: string;
+    providerType?: Providers;
+    provider: ZeroExProvider;
+    web3Wrapper: Web3Wrapper;
+    account: Account;
+}
+// End of copy from instant
 
 export enum Side {
     Receive = 'RECEIVE',
@@ -118,6 +149,13 @@ export enum ActionTypes {
     // Docs
     UpdateLibraryVersion = 'UPDATE_LIBRARY_VERSION',
     UpdateAvailableLibraryVersions = 'UPDATE_AVAILABLE_LIBRARY_VERSIONS',
+
+    // Staking
+    UpdateIsConnectWalletDialogOpen = 'UPDATE_IS_CONNECT_WALLET_DIALOG_OPEN',
+    SetAccountStateLoading = 'SET_ACCOUNT_STATE_LOADING',
+    SetAccountStateLocked = 'SET_ACCOUNT_STATE_LOCKED',
+    SetAccountStateReady = 'SET_ACCOUNT_STATE_READY',
+    UpdateAccountEthBalance = 'UPDATE_ACCOUNT_ETH_BALANCE',
 
     // Shared
     ShowFlashMessage = 'SHOW_FLASH_MESSAGE',
@@ -334,6 +372,7 @@ export interface S3FileObject {
     };
 }
 
+// TOOD(kimpers): Remove when all of the site uses providers lib
 export enum ProviderType {
     Injected = 'INJECTED',
     Ledger = 'LEDGER',
@@ -457,7 +496,14 @@ export enum WebsitePaths {
     Instant = '/instant',
     Ecosystem = '/eap',
     MarketMaker = '/market-maker',
-    Governance = '/governance',
+    Governance = '/vote',
+    Staking = '/stake',
+    StakingWizard = '/staking/start',
+    RemoveStake = '/staking/remove',
+    MarketMakerProfile = '/market-maker-profile',
+    Account = '/account',
+    AccountActivity = '/account/activity',
+    AccountHistory = '/account/history',
     Why = '/why',
     PrivacyPolicy = '/privacy',
     TermsOfService = '/terms',
@@ -634,6 +680,10 @@ export enum Providers {
     Mist = 'MIST',
     CoinbaseWallet = 'COINBASE_WALLET',
     Cipher = 'CIPHER',
+    TrustWallet = 'TRUST_WALLET',
+    WalletConnect = 'WALLET_CONNECT',
+    Opera = 'OPERA',
+    Fallback = 'FALLBACK',
 }
 
 export interface InjectedProviderUpdate {
@@ -706,6 +756,56 @@ export interface WebsiteBackendJobInfo {
     url: string;
 }
 
+export interface WebsiteBackendCurrency {
+    name: string;
+    iconUrl: string;
+}
+
+export interface WebsiteBackendTradingPair {
+    id: string;
+    price: string;
+    currency: string;
+    firstCurrency: WebsiteBackendCurrency;
+    secondCurrency: WebsiteBackendCurrency;
+    // Is there a link to a trading pair detail url?
+    url: string;
+}
+
+export interface WebsiteBackendTradingPairs {
+    tradingPairs: WebsiteBackendTradingPair[];
+}
+
+export interface StakingPoolMetrics {
+    totalVolume: string;
+    totalStaked: string;
+    feesGenerated: string;
+    rewardsShared: string;
+}
+
+export interface WebsiteBackendStakingPoolInfo {
+    // 0x1234...1234 <= is this the id?
+    id: string;
+    website: string;
+    rewardsShared: number;
+    iconUrl: string;
+    estimatedStake: number;
+    nextEpoch: string;
+    currentEpochMetrics: StakingPoolMetrics;
+    allTimeMetrics: StakingPoolMetrics;
+}
+
+export interface StakingHistoryDataset {
+    // 'Fees collected' or 'Rewards shared'
+    title: string;
+    data: StakingHistoryTimePoint[];
+}
+
+export interface StakingHistoryTimePoint {
+    date: string;
+    value: number;
+    epoch: string;
+}
+
 export interface ExchangeSlippageData {
     exchange: string;
     slippage: string;
@@ -747,6 +847,7 @@ export enum AccountState {
     Ready = 'Ready',
     Loading = 'Loading',
     Locked = 'Locked',
+    None = 'None',
 }
 
 export interface InjectedProvider extends Provider {

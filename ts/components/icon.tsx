@@ -70,8 +70,8 @@ const StyledIcon = styled.figure<IconProps>`
     max-width: 100%;
 
     svg {
-        width: ${props => (props.size === 'natural' ? '' : '100%')};
-        height: ${props => (props.size === 'natural' ? '' : '100%')};
+        width: ${props => (props.size === 'natural' ? '' : (props.size && `${props.size}px`) || '100%')};
+        height: ${props => (props.size === 'natural' ? '' : (props.size && `${props.size}px`) || '100%')};
         object-fit: cover;
     }
 `;
