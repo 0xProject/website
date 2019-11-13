@@ -26,7 +26,7 @@ import { Explore } from 'ts/pages/explore';
 
 import { AccountActivity } from 'ts/pages/account/activity';
 import { Account } from 'ts/pages/account/dashboard';
-import { AccountHistory } from 'ts/pages/account/history';
+import { StakingPoolActivity } from 'ts/pages/staking/history';
 
 import { CFL } from 'ts/pages/cfl';
 import { NextEcosystem } from 'ts/pages/ecosystem';
@@ -39,7 +39,7 @@ import { NextLaunchKit } from 'ts/pages/launch_kit';
 import { NextMarketMaker } from 'ts/pages/market_maker';
 import { PrivacyPolicy } from 'ts/pages/privacy';
 import { StakingIndex } from 'ts/pages/staking/home';
-import { MarketMakerProfile } from 'ts/pages/staking/market_maker_profile';
+import { StakingPool } from 'ts/pages/staking/staking_pool';
 
 import { RemoveStake } from 'ts/pages/staking/wizard/remove';
 import { StakingWizard } from 'ts/pages/staking/wizard/wizard';
@@ -82,18 +82,17 @@ render(
                         <Route exact={true} path={WebsitePaths.Instant} component={Next0xInstant as any} />
                         <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit as any} />
                         <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem as any} />
-                        <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance as any} />
 
                         <Route exact={true} path={WebsitePaths.Account} component={Account as any} />
                         <Route exact={true} path={WebsitePaths.AccountActivity} component={AccountActivity as any} />
-                        <Route exact={true} path={WebsitePaths.AccountHistory} component={AccountHistory as any} />
-
                         <Route exact={true} path={WebsitePaths.Staking} component={StakingIndex as any} />
                         <Route exact={true} path={WebsitePaths.StakingWizard} component={StakingWizard as any} />
-                        <Route exact={true} path={WebsitePaths.RemoveStake} component={RemoveStake as any} />
-                        <Route exact={true} path={WebsitePaths.MarketMakerProfile} component={MarketMakerProfile as any} />
-
+                        <Route exact={true} path={WebsitePaths.StakingWizardRemove} component={RemoveStake as any} />
+                        <Route exact={true} path={WebsitePaths.StakingPool} component={StakingPool as any} />
+                        <Route exact={true} path={WebsitePaths.StakingPoolActivity} component={StakingPoolActivity as any} />
                         <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex as any} />
+                        <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance as any} />
+
                         <Route exact={true} path={WebsitePaths.Extensions} component={Extensions as any} />
                         <Route exact={true} path={WebsitePaths.AssetSwapperPage} component={CFL as any} />
                         <Route exact={true} path={WebsitePaths.PrivacyPolicy} component={PrivacyPolicy as any} />

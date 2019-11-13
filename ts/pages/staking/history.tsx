@@ -81,7 +81,7 @@ const strings: Strings = {
     },
 };
 
-export const AccountHistory: React.FC = () => {
+export const StakingPoolActivity: React.FC = () => {
     const crumbs = [
         {
             label: utils.getAddressBeginAndEnd('0x12345344345', 7, 3),
