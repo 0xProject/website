@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { RouteComponentProps } from 'react-router-dom';
 
 import { Button } from 'ts/components/button';
 import { DashboardHero } from 'ts/components/staking/dashboard_hero';
