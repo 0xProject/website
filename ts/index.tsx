@@ -41,8 +41,8 @@ import { PrivacyPolicy } from 'ts/pages/privacy';
 import { StakingIndex } from 'ts/pages/staking/home';
 import { StakingPool } from 'ts/pages/staking/staking_pool';
 
+import { StakingWizard } from 'ts/containers/staking/wizard';
 import { RemoveStake } from 'ts/pages/staking/wizard/remove';
-import { StakingWizard } from 'ts/pages/staking/wizard/wizard';
 
 import { TermsOfService } from 'ts/pages/terms';
 import { NextWhy } from 'ts/pages/why';

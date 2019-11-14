@@ -18,7 +18,12 @@ import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
 import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
-export interface StakingWizardProps {}
+import { ProviderState } from 'ts/types';
+
+export interface StakingWizardProps {
+    providerState: ProviderState;
+    onOpenConnectWalletDialog: () => void;
+}
 
 interface ErrorButtonProps {
     message: string;
@@ -128,7 +133,7 @@ const NumberRound = styled.span`
     display: inline-block;
     text-align: center;
     padding: 4px 0;
-    border: 1px solid #F6F6F6;
+    border: 1px solid #f6f6f6;
 `;
 
 const IntroHeader = styled.h1`
@@ -234,7 +239,7 @@ const ErrorButton: React.FC<ErrorButtonProps> = props => {
     );
 };
 
-export const StakingWizard: React.FC<StakingWizardProps> = props => {
+export const StakingWizard: React.FC<StakingWizardProps> = ({ onOpenConnectWalletDialog }) => {
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
             <Container>
@@ -310,7 +315,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                     },
                                 ]}
                             />
-                            <ConnectWalletButton color={colors.white}>
+                            <ConnectWalletButton color={colors.white} onClick={onOpenConnectWalletDialog}>
                                 Connect your wallet to start staking
                             </ConnectWalletButton>
                             <Status
