@@ -220,30 +220,6 @@
             "path": "tools/@0x/subproviders/v5.0.4/reference.mdx",
             "versions": ["v5.0.4"]
         },
-        "asset-buyer": {
-            "title": "0x Asset Buyer (Deprecated)",
-            "description": "Convenience package for discovering and buying assets with Ether",
-            "difficulty": "Intermediate",
-            "isCommunity": false,
-            "isFeatured": false,
-            "tags": ["Trader", "Protocol Developer"],
-            "type": "Typescript Libraries",
-            "path": "tools/@0x/asset-buyer/v6.1.14/reference.mdx",
-            "versions": ["v6.1.14"],
-            "isHidden": true
-        },
-        "ethereum-types": {
-            "title": "ethereum-types",
-            "description": "Typescript types shared across Ethereum-related packages/libraries/tools",
-            "difficulty": "Beginner",
-            "isCommunity": false,
-            "isFeatured": false,
-            "tags": [],
-            "type": "Typescript Libraries",
-            "path": "tools/ethereum-types/v2.1.6/reference.mdx",
-            "versions": ["v2.1.6"],
-            "isHidden": true
-        },
         "contract-wrappers": {
             "title": "0x Contract Wrappers",
             "description": "0x smart contract wrappers",
@@ -330,18 +306,6 @@
             "isHidden": true,
             "path": "tools/@0x/sol-trace/v2.0.20/reference.mdx",
             "versions": ["v2.0.20"]
-        },
-        "web3-wrapper": {
-            "title": "Web3Wrapper",
-            "description": "An Ethereum JSON RPC client",
-            "difficulty": "Intermediate",
-            "isCommunity": false,
-            "isFeatured": false,
-            "tags": ["Relayer", "Trader"],
-            "type": "Typescript Libraries",
-            "isHidden": true,
-            "path": "tools/@0x/web3-wrapper/v6.0.13/reference.mdx",
-            "versions": ["v6.0.13"]
         },
         "mesh-ts-client": {
             "title": "TS/JS Mesh RPC Client",
