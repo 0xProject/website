@@ -46,7 +46,7 @@ const navItems: NavItems[] = [
     {
         id: 'governance',
         text: 'Governance',
-        url: WebsitePaths.Governance,
+        url: WebsitePaths.Vote,
     },
     {
         id: 'your-account',

@@ -8,6 +8,7 @@ import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { PanelHeader } from 'ts/components/ui/panel_header';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { colors } from 'ts/style/colors';
+import { WebsitePaths } from 'ts/types';
 
 interface UserData {
     amountInEth: string | number;
@@ -120,7 +121,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                     </InlineStats>
 
                     <Button
-                        to="/account/history"
+                        to={WebsitePaths.AccountActivity}
                         color={colors.white}
                         fontSize="17px"
                         fontWeight="300"
@@ -133,7 +134,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
 
             <MobileActions>
                 <Button
-                    to="/account/history"
+                    to={WebsitePaths.AccountActivity}
                     color={colors.white}
                     fontSize="17px"
                     fontWeight="300"

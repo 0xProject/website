@@ -15,7 +15,7 @@ export interface ActionProps {
     figure: string;
 }
 
-export interface MarketMakerProfileProps {
+export interface StakingPoolProps {
   websiteUrl: string;
   isVerified: boolean;
 }
@@ -234,9 +234,11 @@ const tradingPairs = [
     },
 ];
 
-export const MarketMakerProfile: React.FC<MarketMakerProfileProps> = props => {
+export const StakingPool: React.FC<StakingPoolProps> = props => {
+    // const poolId = props.match.params.poolId;
+    // console.log("poolId", poolId);
     return (
-        <StakingPageLayout isHome={true} title="Market Maker Profile">
+        <StakingPageLayout isHome={true} title="Staking pool">
             <DashboardHero
                 title="Binance Staking Pool"
                 websiteUrl="mywebsite.com"
