@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
                     dispatcher.updateNetworkId(networkId);
                 }
 
-                await asyncDispatcher.fetchAccountInfoAndDispatchToStore(providerState, dispatcher, true);
+                await asyncDispatcher.fetchAccountInfoAndDispatchToStore(providerState, networkId, dispatcher, true);
             } catch (err) {
                 // TODO(kimpers): handle errors
             }

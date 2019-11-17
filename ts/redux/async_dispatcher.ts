@@ -1,19 +1,24 @@
-import { Web3Wrapper } from '@0x/web3-wrapper';
+import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses';
+import { ERC20TokenContract } from '@0x/contract-wrappers';
+import { BigNumber } from '@0x/utils';
+import { Web3Wrapper, ZeroExProvider } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
 
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { AccountState, ProviderState } from 'ts/types';
+import { AccountState, Network, ProviderState } from 'ts/types';
+
+const ZERO = new BigNumber(0);
 
 // NOTE: Copied from Instant
 export const asyncDispatcher = {
     fetchAccountInfoAndDispatchToStore: async (
         providerState: ProviderState,
+        networkId: Network,
         dispatcher: Dispatcher,
         shouldAttemptUnlock: boolean = false,
         shouldSetToLoading: boolean = false,
     ) => {
-        const web3Wrapper = providerState.web3Wrapper;
-        const provider = providerState.provider;
+        const { web3Wrapper, provider } = providerState;
         if (shouldSetToLoading && providerState.account.state !== AccountState.Loading) {
             dispatcher.setAccountStateLoading();
         }
@@ -35,7 +40,9 @@ export const asyncDispatcher = {
 
             await asyncDispatcher.fetchAccountBalanceAndDispatchToStore(
                 activeAddress,
-                providerState.web3Wrapper,
+                web3Wrapper,
+                provider,
+                networkId,
                 dispatcher,
             );
         } else {
@@ -46,14 +53,32 @@ export const asyncDispatcher = {
     fetchAccountBalanceAndDispatchToStore: async (
         address: string,
         web3Wrapper: Web3Wrapper,
+        provider: ZeroExProvider,
+        networkId: Network,
         dispatcher: Dispatcher,
     ) => {
         try {
-            const ethBalanceInWei = await web3Wrapper.getBalanceInWeiAsync(address);
-            dispatcher.updateAccountEthBalance({ address, ethBalanceInWei });
-        } catch (e) {
+            const [ethBalanceInWei, zrxBalance] = await Promise.all([
+                web3Wrapper.getBalanceInWeiAsync(address),
+                asyncDispatcher._fetchZrxBalance(address, provider, networkId),
+            ]);
+
+            dispatcher.updateAccountBalances({ address, ethBalanceInWei, zrxBalance });
+        } catch (err) {
             // leave balance as is
             return;
+        }
+    },
+
+    _fetchZrxBalance: async (address: string, provider: ZeroExProvider, networkId: number) => {
+        const contractAddresses = getContractAddressesForNetworkOrThrow(networkId);
+        const tokenAddress: string = contractAddresses.zrxToken;
+        const erc20Token = new ERC20TokenContract(tokenAddress, provider);
+        try {
+            const amount = await erc20Token.balanceOf.callAsync(address);
+            return amount;
+        } catch (err) {
+            return ZERO;
         }
     },
 };

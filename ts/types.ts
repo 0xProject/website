@@ -8,15 +8,17 @@ import * as React from 'react';
 // TODO(kimpers): cleanup when consolidating providers into a package
 export type Maybe<T> = T | undefined;
 
-export interface AddressAndEthBalanceInWei {
+export interface AddressAndBalances {
     address: string;
     ethBalanceInWei: BigNumber;
+    zrxBalance: BigNumber;
 }
 
 export interface AccountReady {
     state: AccountState.Ready;
     address: string;
     ethBalanceInWei?: BigNumber;
+    zrxBalance?: BigNumber;
 }
 export interface AccountNotReady {
     state: AccountState.None | AccountState.Loading | AccountState.Locked;
@@ -155,7 +157,7 @@ export enum ActionTypes {
     SetAccountStateLoading = 'SET_ACCOUNT_STATE_LOADING',
     SetAccountStateLocked = 'SET_ACCOUNT_STATE_LOCKED',
     SetAccountStateReady = 'SET_ACCOUNT_STATE_READY',
-    UpdateAccountEthBalance = 'UPDATE_ACCOUNT_ETH_BALANCE',
+    UpdateAccountBalances = 'UPDATE_ACCOUNT_BALANCES',
 
     // Shared
     ShowFlashMessage = 'SHOW_FLASH_MESSAGE',

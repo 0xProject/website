@@ -309,9 +309,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = ({ onOpenConnectWalle
                                     {
                                         label: 'Change wallet',
                                         link: '#',
-                                        onClick: () => {
-                                            // console.log('Change wallet');
-                                        },
+                                        onClick: onOpenConnectWalletDialog,
                                     },
                                 ]}
                             />
