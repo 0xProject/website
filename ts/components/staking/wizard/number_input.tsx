@@ -16,6 +16,7 @@ interface NumberInputProps {
     shouldFocusOnInit?: boolean;
     onChange?: (newValue: React.ChangeEvent<HTMLInputElement>) => void;
     onLabelChange?: (newValue: string) => void;
+    isLabelSelected?: boolean;
 }
 
 interface BottomLabelProps {
@@ -198,12 +199,14 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
         placeholder,
         bottomLabels,
         labels,
+        value,
         onChange,
         onLabelChange,
         topLabels,
         heading,
         isError,
         shouldFocusOnInit,
+        isLabelSelected,
     } = props;
 
     const input = React.useRef(null);
@@ -221,6 +224,10 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
         setSelectedOption(label);
     };
 
+    if (selectedOption !== null && isLabelSelected !== undefined && !isLabelSelected) {
+        setSelectedOption(null);
+    }
+
     return (
         <Container>
             {heading && <Heading>{heading}</Heading>}
@@ -233,7 +240,14 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
                 <ZrxIcon>
                     <Icon name="logo-mark" size={40} />
                 </ZrxIcon>
-                <Input type="number" name="stake" placeholder={placeholder} onChange={onChange} ref={input} />
+                <Input
+                    type="number"
+                    name="stake"
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={onChange}
+                    ref={input}
+                />
                 {labels != null && labels.length > 0 && (
                     <Labels>
                         {labels.map((label, index) => {

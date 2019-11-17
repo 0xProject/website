@@ -1,3 +1,4 @@
+import { BigNumber } from '@0x/utils';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -18,7 +19,9 @@ import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
 import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
-import { ProviderState } from 'ts/types';
+import { AccountState, ProviderState } from 'ts/types';
+import { constants } from 'ts/utils/constants';
+import { utils } from 'ts/utils/utils';
 
 export interface StakingWizardProps {
     providerState: ProviderState;
@@ -239,7 +242,18 @@ const ErrorButton: React.FC<ErrorButtonProps> = props => {
     );
 };
 
-export const StakingWizard: React.FC<StakingWizardProps> = ({ onOpenConnectWalletDialog }) => {
+const formatZrxAmount = (amount: BigNumber) => utils.getFormattedAmount(amount, constants.DECIMAL_PLACES_ZRX);
+
+export const StakingWizard: React.FC<StakingWizardProps> = ({ onOpenConnectWalletDialog, providerState }) => {
+    const [stakingAmount, setStakingAmount] = React.useState<string>('');
+    const [isLabelSelected, setIsLabelSelected] = React.useState(false);
+    let zrxBalance: BigNumber;
+    if (providerState.account.state === AccountState.Ready) {
+        zrxBalance = providerState.account.zrxBalance;
+    }
+
+    zrxBalance = zrxBalance || constants.ZERO;
+    const formattedZrxBalance = formatZrxAmount(zrxBalance);
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
             <Container>
@@ -297,11 +311,27 @@ export const StakingWizard: React.FC<StakingWizardProps> = ({ onOpenConnectWalle
                             <NumberInput
                                 placeholder="Enter your stake"
                                 heading="Amount"
-                                topLabels={['Amount', 'Available: 1,000,000 ZRX']}
+                                topLabels={['Amount', `Available: ${formattedZrxBalance} ZRX`]}
                                 labels={['25%', '50%', '100%']}
-                                onLabelChange={(label: string) => {
-                                    // console.log('Change label');
+                                value={stakingAmount}
+                                onChange={e => {
+                                    const value = e.target.value;
+                                    setStakingAmount(value);
+                                    setIsLabelSelected(false);
                                 }}
+                                onLabelChange={(label: string) => {
+                                    let divisor = 1;
+                                    if (label === '50%') {
+                                        divisor = 2;
+                                    } else if (label === '25%') {
+                                        divisor = 4;
+                                    }
+
+                                    const amount = zrxBalance.dividedToIntegerBy(divisor);
+                                    setStakingAmount(formatZrxAmount(amount));
+                                    setIsLabelSelected(true);
+                                }}
+                                isLabelSelected={isLabelSelected}
                                 bottomLabels={[
                                     {
                                         label: 'Based on your ZRX balance',

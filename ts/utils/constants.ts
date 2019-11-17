@@ -165,4 +165,5 @@ export const constants = {
         [Networks.Rinkeby]: 4,
         [Networks.Kovan]: 42,
     } as { [networkName: string]: number },
+    ZERO: new BigNumber(0),
 };

@@ -139,7 +139,7 @@ const getData = async (): Promise<Data> => {
 
 export const RemoveStake: React.FC<StakingWizardProps> = props => {
     const [step, setStep] = React.useState<Steps>(Steps.Initial);
-    const [value, setValue] = React.useState<null | string>(null);
+    const [value, setValue] = React.useState<null | string>('');
     const [parsedValue, setParsedValue] = React.useState<null | number>(null);
     const [isError, setIsError] = React.useState<boolean>(false);
     const [data, setData] = React.useState<Data>({
