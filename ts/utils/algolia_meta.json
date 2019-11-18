@@ -22,6 +22,15 @@
             "difficulty": "Intermediate",
             "path": "guides/create-staking-pool.mdx"
         },
+        "browsing-docs-on-github": {
+            "title": "How to browse docs on Github",
+            "subtitle": "How to find the docs for older versions of 0x libraries on Github",
+            "description": "How to find the docs for older versions of 0x libraries on Github",
+            "tags": ["Testing", "Relayer", "Protocol Developer", "Trader"],
+            "topics": ["Testing", "Relayer", "Protocol Developer", "Trader"],
+            "difficulty": "Intermediate",
+            "path": "guides/browsing-docs-on-github.mdx"
+        },
         "mesh-beta-participation-guide": {
             "title": "0x Mesh beta participation guide",
             "description": "Learn how to spin up a telemetry-enabled Mesh node and participate in the Beta!",
