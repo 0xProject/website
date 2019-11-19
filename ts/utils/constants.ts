@@ -20,6 +20,7 @@ export const constants = {
         3: 1719261,
         4: 1570919,
     } as { [networkId: number]: number },
+    GUIDE_OLDER_VERSIONS: 'browsing-docs-on-github',
     HOME_SCROLL_DURATION_MS: 500,
     HTTP_NO_CONTENT_STATUS_CODE: 204,
     LOCAL_STORAGE_KEY_ACCEPT_DISCLAIMER: 'didAcceptPortalDisclaimer',

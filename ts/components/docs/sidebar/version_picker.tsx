@@ -5,6 +5,9 @@ import styled from 'styled-components';
 import { Paragraph } from 'ts/components/text';
 
 import { colors } from 'ts/style/colors';
+import { constants } from 'ts/utils/constants';
+
+const OTHER_VERSION = 'OTHER';
 
 interface IVersionPickerProps extends RouteComponentProps<IMatchParams> {
     versions: string[];
@@ -21,7 +24,10 @@ const VersionSelect: React.FC<IVersionPickerProps> = ({ history, location, match
 
     const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const version = e.target.value;
-        const url = `/docs/${type}/${page}/${version}`;
+        let url = `/docs/${type}/${page}/${version}`;
+        if (version === OTHER_VERSION) {
+           url = `/docs/guides/${constants.GUIDE_OLDER_VERSIONS}`;
+        }
         history.push(url);
         window.scrollTo(0, 0);
     };
@@ -45,6 +51,9 @@ const VersionSelect: React.FC<IVersionPickerProps> = ({ history, location, match
                             {getNumericVersion(version)}
                         </option>
                     ))}
+                    <option key={OTHER_VERSION} value={OTHER_VERSION}>
+                            Older versions
+                    </option>
                 </StyledSelect>
                 <svg width="12" height="8" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M1 7l5-5 5 5" stroke={colors.brandDark} strokeWidth="1.5" />
