@@ -25,7 +25,9 @@ import { utils } from 'ts/utils/utils';
 
 export interface StakingWizardProps {
     providerState: ProviderState;
+    networkId: number;
     onOpenConnectWalletDialog: () => void;
+    onStartStaking(networkId: number, providerState: ProviderState, amountToStake: BigNumber): Promise<void>;
 }
 
 interface ErrorButtonProps {
@@ -244,7 +246,12 @@ const ErrorButton: React.FC<ErrorButtonProps> = props => {
 
 const formatZrxAmount = (amount: BigNumber) => utils.getFormattedAmount(amount, constants.DECIMAL_PLACES_ZRX);
 
-export const StakingWizard: React.FC<StakingWizardProps> = ({ onOpenConnectWalletDialog, providerState }) => {
+export const StakingWizard: React.FC<StakingWizardProps> = ({
+    onOpenConnectWalletDialog,
+    onStartStaking,
+    providerState,
+    networkId,
+}) => {
     const [stakingAmount, setStakingAmount] = React.useState<string>('');
     const [isLabelSelected, setIsLabelSelected] = React.useState(false);
     let zrxBalance: BigNumber;
@@ -345,6 +352,15 @@ export const StakingWizard: React.FC<StakingWizardProps> = ({ onOpenConnectWalle
                             />
                             <ConnectWalletButton color={colors.white} onClick={onOpenConnectWalletDialog}>
                                 Connect your wallet to start staking
+                            </ConnectWalletButton>
+                            {/* TODO: remove button below */}
+                            <ConnectWalletButton
+                                color={colors.white}
+                                onClick={async () => {
+                                    await onStartStaking(networkId, providerState, new BigNumber(stakingAmount, 10));
+                                }}
+                            >
+                                Start staking
                             </ConnectWalletButton>
                             <Status
                                 linkText="or explore market maker list"

@@ -747,6 +747,10 @@ export interface WebsiteBackendGasInfo {
     average: number;
     fast: number;
     fastest: number;
+    safeLowWait: number;
+    avgWait: number;
+    fastWait: number;
+    fastestWait: number;
 }
 
 export interface WebsiteBackendJobInfo {
