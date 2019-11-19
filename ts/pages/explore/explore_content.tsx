@@ -250,6 +250,17 @@ export const PROJECTS: { [s: string]: ExploreProject } = {
         url: 'https://www.godsunchained.com',
         keywords: ['collectibles'],
     },
+    tokentrove: {
+        name: 'tokentrove',
+        label: 'TokenTrove',
+        description:
+            'A smarter marketplace for digital collectibles. Buy and sell the most popular crypto assets and tokens.',
+        logo_url: '/images/explore/tokentrove.svg',
+        theme_color: '#202225',
+        logo_max_width: '160px',
+        url: 'https://tokentrove.io',
+        keywords: ['collectibles'],
+    },
     veridex: {
         name: 'veridex',
         label: 'VeriDex',
@@ -345,6 +356,7 @@ export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
             'rex_relay',
             'veridex',
             'odee',
+            'tokentrove',
         ],
     },
     [ExploreTilesOrdering.RecentlyAdded]: {
@@ -352,6 +364,7 @@ export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
         ordering: ExploreTilesOrdering.RecentlyAdded,
         type: ExploreTilesOrderingType.HardCodedByName,
         hardCoded: [
+            'tokentrove',
             'odee',
             'veridex',
             'dydx',
