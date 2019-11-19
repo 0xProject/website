@@ -48,7 +48,6 @@ module.exports = (_env, argv) => {
                     exclude: [
                         // instead of /\/node_modules\//
                         path.join(process.cwd(), 'node_modules'),
-                        path.join(process.cwd(), '../..', 'node_modules'),
                     ],
                 },
                 {

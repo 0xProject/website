@@ -22,6 +22,15 @@
             "difficulty": "Intermediate",
             "path": "guides/create-staking-pool.mdx"
         },
+        "browsing-docs-on-github": {
+            "title": "How to browse docs on Github",
+            "subtitle": "How to find the docs for older versions of 0x libraries on Github",
+            "description": "How to find the docs for older versions of 0x libraries on Github",
+            "tags": ["Testing", "Relayer", "Protocol Developer", "Trader"],
+            "topics": ["Testing", "Relayer", "Protocol Developer", "Trader"],
+            "difficulty": "Intermediate",
+            "path": "guides/browsing-docs-on-github.mdx"
+        },
         "mesh-beta-participation-guide": {
             "title": "0x Mesh beta participation guide",
             "description": "Learn how to spin up a telemetry-enabled Mesh node and participate in the Beta!",
@@ -184,8 +193,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Protocol Developer"],
             "type": "Typescript Libraries",
-            "path": "tools/@0x/asset-swapper/v2.0.0/reference.mdx",
-            "versions": ["v2.0.0"]
+            "path": "tools/@0x/asset-swapper/v2.1.0-beta.1/reference.mdx",
+            "versions": ["v2.1.0-beta.1"]
         },
         "0x.js": {
             "title": "0x.js",
@@ -195,8 +204,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Relayer", "Protocol Developer"],
             "type": "Typescript Libraries",
-            "path": "tools/0x.js/v7.0.2/reference.mdx",
-            "versions": ["v7.0.2"]
+            "path": "tools/0x.js/v8.0.0-beta.0/reference.mdx",
+            "versions": ["v8.0.0-beta.0"]
         },
         "connect": {
             "title": "0x Connect",
@@ -206,8 +215,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Relayer"],
             "type": "Typescript Libraries",
-            "path": "tools/@0x/connect/v5.0.19/reference.mdx",
-            "versions": ["v5.0.19"]
+            "path": "tools/@0x/connect/v5.1.0-beta.1/reference.mdx",
+            "versions": ["v5.1.0-beta.1"]
         },
         "subproviders": {
             "title": "Subproviders",
@@ -217,32 +226,8 @@
             "isFeatured": false,
             "tags": ["Relayer", "Trader"],
             "type": "Typescript Libraries",
-            "path": "tools/@0x/subproviders/v5.0.4/reference.mdx",
-            "versions": ["v5.0.4"]
-        },
-        "asset-buyer": {
-            "title": "0x Asset Buyer (Deprecated)",
-            "description": "Convenience package for discovering and buying assets with Ether",
-            "difficulty": "Intermediate",
-            "isCommunity": false,
-            "isFeatured": false,
-            "tags": ["Trader", "Protocol Developer"],
-            "type": "Typescript Libraries",
-            "path": "tools/@0x/asset-buyer/v6.1.14/reference.mdx",
-            "versions": ["v6.1.14"],
-            "isHidden": true
-        },
-        "ethereum-types": {
-            "title": "ethereum-types",
-            "description": "Typescript types shared across Ethereum-related packages/libraries/tools",
-            "difficulty": "Beginner",
-            "isCommunity": false,
-            "isFeatured": false,
-            "tags": [],
-            "type": "Typescript Libraries",
-            "path": "tools/ethereum-types/v2.1.6/reference.mdx",
-            "versions": ["v2.1.6"],
-            "isHidden": true
+            "path": "tools/@0x/subproviders/v5.1.0-beta.1/reference.mdx",
+            "versions": ["v5.1.0-beta.1"]
         },
         "contract-wrappers": {
             "title": "0x Contract Wrappers",
@@ -252,9 +237,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Relayer"],
             "type": "Typescript Libraries",
-            "isHidden": true,
-            "path": "tools/@0x/contract-wrappers/v12.1.0/reference.mdx",
-            "versions": ["v12.1.0"]
+            "path": "tools/@0x/contract-wrappers/v12.2.0-beta.1/reference.mdx",
+            "versions": ["v12.2.0-beta.1"]
         },
         "json-schemas": {
             "title": "0x JSON Schemas",
@@ -265,8 +249,8 @@
             "tags": ["Trader", "Relayer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/json-schemas/v4.0.2/reference.mdx",
-            "versions": ["v4.0.2"]
+            "path": "tools/@0x/json-schemas/v4.1.0-beta.1/reference.mdx",
+            "versions": ["v4.1.0-beta.1"]
         },
         "order-utils": {
             "title": "0x Order Utils",
@@ -277,8 +261,8 @@
             "tags": ["Trader", "Relayer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/order-utils/v8.4.0/reference.mdx",
-            "versions": ["v8.4.0"]
+            "path": "tools/@0x/order-utils/v8.5.0-beta.1/reference.mdx",
+            "versions": ["v8.5.0-beta.1"]
         },
         "sol-compiler": {
             "title": "sol-compiler",
@@ -289,8 +273,8 @@
             "tags": ["Protocol Developer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/sol-compiler/v3.1.15/reference.mdx",
-            "versions": ["v3.1.15"]
+            "path": "tools/@0x/sol-compiler/v3.2.0-beta.1/reference.mdx",
+            "versions": ["v3.2.0-beta.1"]
         },
         "sol-coverage": {
             "title": "sol-coverage",
@@ -302,8 +286,8 @@
             "tags": ["Protocol Developer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/sol-coverage/v3.0.12/reference.mdx",
-            "versions": ["v3.0.12"]
+            "path": "tools/@0x/sol-coverage/v3.1.0-beta.1/reference.mdx",
+            "versions": ["v3.1.0-beta.1"]
         },
         "sol-profiler": {
             "title": "sol-profiler",
@@ -315,8 +299,8 @@
             "tags": ["Protocol Developer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/sol-profiler/v3.1.14/reference.mdx",
-            "versions": ["v3.1.14"]
+            "path": "tools/@0x/sol-profiler/v3.2.0-beta.1/reference.mdx",
+            "versions": ["v3.2.0-beta.1"]
         },
         "sol-trace": {
             "title": "sol-trace",
@@ -328,20 +312,8 @@
             "tags": ["Protocol Developer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/sol-trace/v2.0.20/reference.mdx",
-            "versions": ["v2.0.20"]
-        },
-        "web3-wrapper": {
-            "title": "Web3Wrapper",
-            "description": "An Ethereum JSON RPC client",
-            "difficulty": "Intermediate",
-            "isCommunity": false,
-            "isFeatured": false,
-            "tags": ["Relayer", "Trader"],
-            "type": "Typescript Libraries",
-            "isHidden": true,
-            "path": "tools/@0x/web3-wrapper/v6.0.13/reference.mdx",
-            "versions": ["v6.0.13"]
+            "path": "tools/@0x/sol-trace/v2.1.0-beta.1/reference.mdx",
+            "versions": ["v2.1.0-beta.1"]
         },
         "mesh-ts-client": {
             "title": "TS/JS Mesh RPC Client",
@@ -501,8 +473,8 @@
             "isFeatured": false,
             "tags": ["Protocol Developer", "Relayer"],
             "type": "CLI",
-            "path": "tools/@0x/migrations/v4.3.2/reference.mdx",
-            "versions": ["v4.3.2"]
+            "path": "tools/@0x/migrations/v4.4.0-beta.1/reference.mdx",
+            "versions": ["v4.4.0-beta.1"]
         },
         "launch-kit-wizard": {
             "title": "Launch Kit Wizard",
