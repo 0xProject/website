@@ -5,7 +5,7 @@ import { analytics } from 'ts/utils/analytics';
 
 export const analyticsMiddleware: Middleware = store => next => action => {
     const nextAction = next(action);
-    const nextState = (store.getState() as any) as State;
+    const nextState = (store.getState()) as State;
     switch (action.type) {
         case ActionTypes.UpdateInjectedProviderName:
             analytics.addEventProperties({

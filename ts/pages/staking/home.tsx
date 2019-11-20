@@ -13,13 +13,14 @@ import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_
 
 import { StakingHero } from 'ts/components/staking/hero';
 import { Heading } from 'ts/components/text';
+import { useAPIClient } from 'ts/hooks/use_api_client';
 import { PoolWithStats, ScreenWidths } from 'ts/types';
-import { apiClient } from 'ts/utils/api_client';
 
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
     const [isStakingConfirmationOpen, toggleStakingConfirmation] = React.useState(false);
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
+    const apiClient = useAPIClient();
     React.useEffect(() => {
         const fetchAndSetPoolsAsync = async () => {
             const resp = await apiClient.getStakingPoolsAsync();
