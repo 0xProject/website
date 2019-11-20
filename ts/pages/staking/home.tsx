@@ -28,7 +28,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
         };
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPoolsAsync();
-    });
+    }, [apiClient]);
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
             <StakingConfirmationDialog
