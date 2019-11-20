@@ -12,7 +12,7 @@
         "build:dev": "node --max-old-space-size=16384 ./node_modules/webpack/bin/webpack.js --mode development",
         "clean": "shx rm -rf public/bundle* mdx/tools",
         "lint": "tslint --format stylish --project . 'ts/**/*.ts' 'ts/**/*.tsx'",
-        "fix": "tslint --fix --format stylish --project . 'ts/**/*.ts' 'ts/**/*.tsx'",
+        "fix": "yarn lint --fix",
         "pre_push": "yarn tsc --noEmit && yarn lint",
         "update:tools": "aws s3 sync --delete s3://docs-markdown/ mdx/tools/",
         "dev": "npm run update:tools; node --max-old-space-size=16384 ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --mode development --content-base public --https",

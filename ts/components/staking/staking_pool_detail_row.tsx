@@ -20,11 +20,11 @@ const PoolWebsiteLink = ({ websiteUrl }: { websiteUrl: string }) => (
 
 interface IStakingPoolDetailRowProps {
     name: string;
-    location: string;
+    address: string;
     totalFeesGeneratedInEth: number;
-    totalZrxStaked: number;
-    rewardsSharePercent: number;
-
+    stakeRatio: number;
+    rewardsSharedRatio: number;
+    isVerified: boolean;
     websiteUrl?: string;
     thumbnailUrl?: string;
 }
@@ -32,11 +32,12 @@ interface IStakingPoolDetailRowProps {
 export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
     name,
     thumbnailUrl,
-    location,
+    address,
     websiteUrl,
+    isVerified,
     totalFeesGeneratedInEth,
-    rewardsSharePercent,
-    totalZrxStaked,
+    rewardsSharedRatio,
+    stakeRatio,
 }) => (
     <StakingPoolDetailRowWrapper>
         {thumbnailUrl && (
@@ -47,12 +48,14 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
         <PoolOverviewSection>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Heading>{name}</Heading>
-                <DesktopOnlyWrapper style={{ margin: '7px' }}>
-                    <CircleCheckMark width="22px" height="22px" />
-                </DesktopOnlyWrapper>
+                {isVerified &&
+                    <DesktopOnlyWrapper style={{ margin: '7px' }}>
+                        <CircleCheckMark width="22px" height="22px" />
+                    </DesktopOnlyWrapper>
+                }
             </div>
             <DesktopOnlyWrapper style={{ height: '23px', alignItems: 'center' }}>
-                <ShortenedEthAddress address={location} />
+                <ShortenedEthAddress address={address} />
                 {websiteUrl && (
                     <>
                         <Ellipse />
@@ -68,11 +71,11 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
             </PoolPerformanceItem>
             <PoolPerformanceItem>
                 <span>Rewards Shared</span>
-                <RoundedPercentage percentage={rewardsSharePercent} />
+                <RoundedPercentage percentage={rewardsSharedRatio * 100} />
             </PoolPerformanceItem>
             <PoolPerformanceItem cutOffRem={ScreenWidths.Sm}>
                 <span>Staked</span>
-                <RoundedPercentage percentage={totalZrxStaked} />
+                <RoundedPercentage percentage={stakeRatio * 100} />
             </PoolPerformanceItem>
         </PoolPerformanceSection>
     </StakingPoolDetailRowWrapper>

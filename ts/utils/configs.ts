@@ -8,6 +8,9 @@ export const configs = {
     BACKEND_BASE_PROD_URL: 'https://website-api.0x.org',
     BACKEND_BASE_STAGING_URL: 'https://staging-website-api.0x.org',
     BACKEND_BASE_DEV_URL: 'https://localhost:3001',
+    API_BASE_PROD_URL: 'https://api.0x.org',
+    API_BASE_STAGING_URL: 'https://staging.api.0x.org',
+    API_BASE_DEV_URL: 'http://localhost:3000',
     GOOGLE_SHEETS_LEAD_FORMS: {
         CREDITS: 'https://script.google.com/macros/s/AKfycbyN1lJaSGWg2OIzqT8bou4GiqwCmOVjV2v_fiPO/exec',
     } as GoogleSheetLeadUrls,

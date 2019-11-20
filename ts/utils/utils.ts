@@ -357,6 +357,14 @@ export const utils = {
         }
         return configs.BACKEND_BASE_PROD_URL;
     },
+    getAPIBaseUrl(): string {
+        if (environments.isDogfood()) {
+            return configs.API_BASE_STAGING_URL;
+        } else if (environments.isDevelopment()) {
+            return configs.API_BASE_DEV_URL;
+        }
+        return configs.API_BASE_PROD_URL;
+    },
     isExternallyInjected(providerType: ProviderType, injectedProviderName: string): boolean {
         return providerType === ProviderType.Injected && injectedProviderName !== constants.PROVIDER_NAME_PUBLIC;
     },

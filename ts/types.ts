@@ -1031,3 +1031,51 @@ export interface ZeroExInstantOptionalBaseConfig {
 
 export type ZeroExInstantBaseConfig = ZeroExInstantRequiredBaseConfig & Partial<ZeroExInstantOptionalBaseConfig>;
 // tslint:disable:max-file-line-count
+
+// 0x API Response types
+export interface TransactionDate {
+    blockNumber: number;
+    txHash: string;
+    timestamp?: number;
+}
+
+export interface Epoch {
+    epochId: number;
+    epochStart: TransactionDate;
+}
+
+export interface PoolMetadata {
+    isVerified: boolean;
+    logoUrl?: string;
+    location?: string;
+    bio?: string;
+    websiteUrl?: string;
+    name?: string;
+}
+
+export interface Pool {
+    poolId: number;
+    operatorAddress: string;
+    createdAt: TransactionDate;
+    metaData: PoolMetadata;
+}
+
+export interface PoolWithStats extends Pool {
+    currentEpochStats: EpochPoolStats;
+    nextEpochStats: EpochPoolStats;
+}
+
+export interface EpochPoolStats {
+    poolId: number;
+    zrxStaked: number;
+    operatorShare: number;
+    makerAddresses: string[];
+    protocolFeesGeneratedInEth: number;
+    stakeRatio: number;
+}
+
+export interface StakingAPIPoolsResponse {
+    currentEpoch: Epoch;
+    nextEpoch: Epoch;
+    stakingPools: PoolWithStats[];
+}
