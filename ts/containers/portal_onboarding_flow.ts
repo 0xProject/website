@@ -1,5 +1,4 @@
 import { BigNumber } from '@0x/utils';
-import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Blockchain } from 'ts/blockchain';
@@ -62,7 +61,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => ({
     },
 });
 
-export const PortalOnboardingFlow: React.ComponentClass<PortalOnboardingFlowProps> = connect(
+export const PortalOnboardingFlow = connect(
     mapStateToProps,
     mapDispatchToProps,
 )(PortalOnboardingFlowComponent);

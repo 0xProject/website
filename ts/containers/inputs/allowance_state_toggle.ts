@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Blockchain } from 'ts/blockchain';
@@ -36,7 +35,7 @@ const mapDispatchTopProps = (dispatch: Dispatch<Action>): ConnectedDispatch => (
     dispatcher: new Dispatcher(dispatch),
 });
 
-export const AllowanceStateToggle: React.ComponentClass<AllowanceStateToggleProps> = connect(
+export const AllowanceStateToggle = connect(
     mapStateToProps,
     mapDispatchTopProps,
 )(AllowanceStateToggleComponent);

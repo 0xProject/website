@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
@@ -24,7 +23,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => ({
     dispatcher: new Dispatcher(dispatch),
 });
 
-export const NotFound: React.ComponentClass<NotFoundProps> = connect(
+export const NotFound = connect(
     mapStateToProps,
     mapDispatchToProps,
 )(NotFoundComponent);

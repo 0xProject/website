@@ -1,6 +1,5 @@
 import { BigNumber } from '@0x/utils';
 import { Dispatch } from 'redux';
-import { State } from 'ts/redux/reducer';
 import {
     Action,
     ActionTypes,

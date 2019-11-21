@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { State } from 'ts/redux/reducer';
@@ -55,7 +54,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
     };
 };
 
-export const ConnectWalletDialog: React.ComponentClass<ConnectWalletDialogProps> = connect(
+export const ConnectWalletDialog = connect(
     mapStateToProps,
     mapDispatchToProps,
 )(ConnectWalletDialogComponent);
