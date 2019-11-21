@@ -18,6 +18,7 @@ import {
     BlockchainCallErrs,
     BrowserType,
     EtherscanLinkSuffixes,
+    Network,
     Networks,
     OperatingSystemType,
     PortalOrder,
@@ -356,6 +357,16 @@ export const utils = {
             return configs.BACKEND_BASE_DEV_URL;
         }
         return configs.BACKEND_BASE_PROD_URL;
+    },
+    getAPIBaseUrl(networkId: Network): string {
+        if (environments.isDevelopment()) {
+            return configs.API_BASE_DEV_URL;
+        } else if (networkId === Network.Kovan) {
+            return configs.API_BASE_KOVAN_URL;
+        } else if (environments.isDogfood()) {
+            return configs.API_BASE_STAGING_URL;
+        }
+        return configs.API_BASE_PROD_URL;
     },
     isExternallyInjected(providerType: ProviderType, injectedProviderName: string): boolean {
         return providerType === ProviderType.Injected && injectedProviderName !== constants.PROVIDER_NAME_PUBLIC;

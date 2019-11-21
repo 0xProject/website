@@ -1,9 +1,8 @@
 import { BigNumber } from '@0x/utils';
-import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Blockchain } from 'ts/blockchain';
-import { ActionTypes, ProviderType, ScreenWidths, TokenByAddress, TokenStateByAddress } from 'ts/types';
+import { Action, ActionTypes, ProviderType, ScreenWidths, TokenByAddress, TokenStateByAddress } from 'ts/types';
 
 import { PortalOnboardingFlow as PortalOnboardingFlowComponent } from 'ts/components/onboarding/portal_onboarding_flow';
 import { State } from 'ts/redux/reducer';
@@ -47,7 +46,7 @@ const mapStateToProps = (state: State, _ownProps: PortalOnboardingFlowProps): Co
     screenWidth: state.screenWidth,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => ({
     updateIsRunning: (isRunning: boolean): void => {
         dispatch({
             type: ActionTypes.UpdatePortalOnboardingShowing,
@@ -62,7 +61,7 @@ const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => ({
     },
 });
 
-export const PortalOnboardingFlow: React.ComponentClass<PortalOnboardingFlowProps> = connect(
+export const PortalOnboardingFlow = connect(
     mapStateToProps,
     mapDispatchToProps,
 )(PortalOnboardingFlowComponent);

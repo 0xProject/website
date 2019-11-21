@@ -40,7 +40,7 @@ yarn build
 ### Run dev server
 
 ```bash
-yarn watch
+yarn dev
 ```
 
 Visit [0xproject.localhost:3572](http://0xproject.localhost:3572) in your browser.

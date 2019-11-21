@@ -1,11 +1,10 @@
-import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { State } from 'ts/redux/reducer';
 
 import { Header as HeaderComponent } from 'ts/components/staking/header/header';
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { ProviderState } from 'ts/types';
+import { Action, ProviderState } from 'ts/types';
 
 interface HeaderProps {
     location?: Location;
@@ -26,7 +25,7 @@ const mapStateToProps = (state: State, _ownProps: HeaderProps): ConnectedState =
     providerState: state.providerState,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => {
+const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
     const dispatcher = new Dispatcher(dispatch);
 
     return {
@@ -39,7 +38,7 @@ const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => {
     };
 };
 
-export const Header: React.ComponentClass<HeaderProps> = connect(
+export const Header = connect(
     mapStateToProps,
     mapDispatchToProps,
 )(HeaderComponent);

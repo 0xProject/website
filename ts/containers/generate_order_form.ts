@@ -1,5 +1,4 @@
 import { BigNumber } from '@0x/utils';
-import * as React from 'react';
 import { connect } from 'react-redux';
 import { Blockchain } from 'ts/blockchain';
 import { GenerateOrderForm as GenerateOrderFormComponent } from 'ts/components/generate_order/generate_order_form';
@@ -43,6 +42,6 @@ const mapStateToProps = (state: State, _ownProps: GenerateOrderFormProps): Conne
     lastForceTokenStateRefetch: state.lastForceTokenStateRefetch,
 });
 
-export const GenerateOrderForm: React.ComponentClass<GenerateOrderFormProps> = connect(mapStateToProps)(
+export const GenerateOrderForm = connect(mapStateToProps)(
     GenerateOrderFormComponent,
 );
