@@ -2,6 +2,7 @@ import { BigNumber } from '@0x/utils';
 import { Dispatch } from 'redux';
 import { State } from 'ts/redux/reducer';
 import {
+    Action,
     ActionTypes,
     AddressAndEthBalanceInWei,
     AssetToken,
@@ -17,8 +18,8 @@ import {
 } from 'ts/types';
 
 export class Dispatcher {
-    private readonly _dispatch: Dispatch<State>;
-    constructor(dispatch: Dispatch<State>) {
+    private readonly _dispatch: Dispatch<Action>;
+    constructor(dispatch: Dispatch<Action>) {
         this._dispatch = dispatch;
     }
     // Portal
