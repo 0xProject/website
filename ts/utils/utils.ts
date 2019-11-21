@@ -365,8 +365,6 @@ export const utils = {
             return configs.API_BASE_KOVAN_URL;
         } else if (environments.isDogfood()) {
             return configs.API_BASE_STAGING_URL;
-        } else if (environments.isDevelopment()) {
-            return configs.API_BASE_DEV_URL;
         }
         return configs.API_BASE_PROD_URL;
     },
