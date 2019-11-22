@@ -334,8 +334,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = ({
                                         divisor = 4;
                                     }
 
-                                    const amount = zrxBalance.dividedToIntegerBy(divisor);
-                                    setStakingAmount(formatZrxAmount(amount));
+                                    const amount = zrxBalance.dividedBy(constants.ZRX_BASE_UNIT).dividedBy(divisor);
+                                    setStakingAmount(amount.toFixed(2, BigNumber.ROUND_DOWN));
                                     setIsLabelSelected(true);
                                 }}
                                 isLabelSelected={isLabelSelected}

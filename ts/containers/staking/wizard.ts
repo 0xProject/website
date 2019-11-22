@@ -12,8 +12,6 @@ import { AccountReady, Action, ProviderState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 
-const DECIMALS_ZRX = new BigNumber(10 ** constants.DECIMAL_PLACES_ZRX);
-
 interface ConnectedWizardProps {}
 
 interface ConnectedState {
@@ -46,7 +44,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
         ): Promise<void> => {
             const { provider } = providerState;
             const ownerAddress = (providerState.account as AccountReady).address;
-            const amountToStakeBaseUnits = amountToStake.multipliedBy(DECIMALS_ZRX);
+            const amountToStakeBaseUnits = amountToStake.multipliedBy(constants.ZRX_BASE_UNIT);
             const gasInfo = await backendClient.getGasInfoAsync();
             const gasPriceInGwei = new BigNumber(gasInfo.fast / 10);
             const gasPriceInWei = gasPriceInGwei.multipliedBy(1000000000);
