@@ -1,5 +1,5 @@
 import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses';
-import { ERC20TokenContract } from '@0x/contract-wrappers';
+import { ContractWrappers, ERC20TokenContract } from '@0x/contract-wrappers';
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper, ZeroExProvider } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
@@ -58,27 +58,44 @@ export const asyncDispatcher = {
         dispatcher: Dispatcher,
     ) => {
         try {
-            const [ethBalanceInWei, zrxBalance] = await Promise.all([
+            const [ethBalanceInWei, { zrxBalance, zrxAllowance }] = await Promise.all([
                 web3Wrapper.getBalanceInWeiAsync(address),
-                asyncDispatcher._fetchZrxBalance(address, provider, networkId),
+                asyncDispatcher._fetchZrxBalanceAndAllowance(address, provider, networkId),
             ]);
 
-            dispatcher.updateAccountBalances({ address, ethBalanceInWei, zrxBalance });
+            dispatcher.updateAccountBalancesAndAllowance({ address, ethBalanceInWei, zrxBalance, zrxAllowance });
         } catch (err) {
             // leave balance as is
             return;
         }
     },
 
-    _fetchZrxBalance: async (address: string, provider: ZeroExProvider, networkId: number) => {
+    _fetchZrxBalanceAndAllowance: async (
+        address: string,
+        provider: ZeroExProvider,
+        networkId: number,
+    ): Promise<ZrxBalanceAndAllowance> => {
         const contractAddresses = getContractAddressesForNetworkOrThrow(networkId);
         const tokenAddress: string = contractAddresses.zrxToken;
         const erc20Token = new ERC20TokenContract(tokenAddress, provider);
+        const contractWrappers = new ContractWrappers(provider, { networkId });
+
         try {
-            const amount = await erc20Token.balanceOf.callAsync(address);
-            return amount;
+            const [zrxBalance, zrxAllowance] = await Promise.all([
+                erc20Token.balanceOf.callAsync(address),
+                erc20Token.allowance.callAsync(address, contractWrappers.contractAddresses.erc20Proxy),
+            ]);
+            return { zrxBalance, zrxAllowance };
         } catch (err) {
-            return ZERO;
+            return {
+                zrxBalance: ZERO,
+                zrxAllowance: ZERO,
+            };
         }
     },
 };
+
+interface ZrxBalanceAndAllowance {
+    zrxBalance: BigNumber;
+    zrxAllowance: BigNumber;
+}

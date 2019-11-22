@@ -377,8 +377,8 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
             return reduceStateWithAccount(state, newAccount);
         }
 
-        case ActionTypes.UpdateAccountBalances: {
-            const { address, ethBalanceInWei, zrxBalance } = action.data;
+        case ActionTypes.UpdateAccountBalancesAndAllowance: {
+            const { address, ethBalanceInWei, zrxBalance, zrxAllowance } = action.data;
             const currentAccount = state.providerState.account;
             if (currentAccount.state !== AccountState.Ready || currentAccount.address !== address) {
                 return state;
@@ -387,6 +387,7 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
                     ...currentAccount,
                     ethBalanceInWei,
                     zrxBalance,
+                    zrxAllowance,
                 };
                 return reduceStateWithAccount(state, newAccount);
             }
