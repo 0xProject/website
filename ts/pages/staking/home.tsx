@@ -14,7 +14,7 @@ import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_
 import { StakingHero } from 'ts/components/staking/hero';
 import { Heading } from 'ts/components/text';
 import { useAPIClient } from 'ts/hooks/use_api_client';
-import { PoolWithStats, ScreenWidths } from 'ts/types';
+import { PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
 
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
@@ -28,7 +28,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
         };
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPoolsAsync();
-    }, [apiClient]);
+    }, [apiClient.networkId]);
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
             <StakingConfirmationDialog
@@ -44,7 +44,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                 videoId="c04eIt3FQ5I"
                 actions={
                     <>
-                        <Button href="/" isInline={true} color={colors.white}>
+                        <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
                             Get Started
                         </Button>
                         <Button
@@ -73,7 +73,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                                 isVerified={pool.metaData.isVerified}
                                 address={_.head(pool.nextEpochStats.makerAddresses)}
                                 totalFeesGeneratedInEth={pool.currentEpochStats.protocolFeesGeneratedInEth}
-                                stakeRatio={pool.nextEpochStats.stakeRatio}
+                                stakeRatio={pool.nextEpochStats.approximateStakeRatio}
                                 rewardsSharedRatio={1 - pool.nextEpochStats.operatorShare}
                             />
                         );

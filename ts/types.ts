@@ -1,3 +1,4 @@
+import { ContractWrappers } from '@0x/contract-wrappers';
 import { AssetProxyId, ObjectMap, SignedOrder } from '@0x/types';
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -17,6 +18,7 @@ export interface AccountReady {
     state: AccountState.Ready;
     address: string;
     ethBalanceInWei?: BigNumber;
+    zrxBalanceBaseUnitAmount?: BigNumber;
 }
 export interface AccountNotReady {
     state: AccountState.None | AccountState.Loading | AccountState.Locked;
@@ -156,6 +158,7 @@ export enum ActionTypes {
     SetAccountStateLocked = 'SET_ACCOUNT_STATE_LOCKED',
     SetAccountStateReady = 'SET_ACCOUNT_STATE_READY',
     UpdateAccountEthBalance = 'UPDATE_ACCOUNT_ETH_BALANCE',
+    UpdateAccountZrxBalance = 'UPDATE_ACCOUNT_ZRX_BALANCE',
 
     // Shared
     ShowFlashMessage = 'SHOW_FLASH_MESSAGE',
@@ -1071,11 +1074,11 @@ export interface EpochPoolStats {
     operatorShare: number;
     makerAddresses: string[];
     protocolFeesGeneratedInEth: number;
-    stakeRatio: number;
+    approximateStakeRatio: number;
 }
 
 export interface StakingAPIPoolsResponse {
     currentEpoch: Epoch;
-    nextEpoch: Epoch;
+    approximateNextEpoch: Epoch;
     stakingPools: PoolWithStats[];
 }

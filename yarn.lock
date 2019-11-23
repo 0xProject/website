@@ -82,6 +82,13 @@
   dependencies:
     lodash "^4.17.11"
 
+"@0x/contract-addresses@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.npmjs.org/@0x/contract-addresses/-/contract-addresses-3.2.0.tgz#606307696d9622764220a34e9d4638b899093eec"
+  integrity sha512-jCVEOgXPa3his4h2qm+O7tn9A2r8UJDgSzDhqhk+za237XxFc2No8TnnMP6qjew3l9ElNM1L+exZHxSd06xB/w==
+  dependencies:
+    lodash "^4.17.11"
+
 "@0x/contract-artifacts@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@0x/contract-artifacts/-/contract-artifacts-2.2.1.tgz#3fc38c90816907f5a68838e682d0e76523f32879"

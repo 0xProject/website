@@ -1,8 +1,12 @@
+import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
+import { AccountState, ProviderState, WebsitePaths } from 'ts/types';
+import { constants } from 'ts/utils/constants';
+import { utils } from 'ts/utils/utils';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 
@@ -18,7 +22,10 @@ import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
 import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
-export interface StakingWizardProps {}
+export interface StakingWizardProps {
+    providerState: ProviderState;
+    onOpenConnectWalletDialog: () => void;
+}
 
 interface ErrorButtonProps {
     message: string;
@@ -234,161 +241,206 @@ const ErrorButton: React.FC<ErrorButtonProps> = props => {
     );
 };
 
+export interface StakingWizardHeaderProps {
+    title: string;
+    description: string;
+}
+
+const StakingWizardHeader: React.FC<StakingWizardHeaderProps> = ({title, description}) => (
+    <>
+        <IntroHeader>{title}</IntroHeader>
+        <IntroDescription>
+            {description}
+        </IntroDescription>
+    </>
+);
+
+const getLeftComponent = (): React.ReactNode => {
+    /* <Timeline
+        activeItemIndex={0}
+        items={[
+            {
+                date: '22.08',
+                fromNow: '2 days',
+                title: 'Removing your stake',
+                description: 'Your declared staking pool is going to be locked in smart contract.',
+                isActive: true,
+            },
+            {
+                date: '22.08',
+                fromNow: '2 days',
+                title: 'Lockout period',
+                description:
+                    'Your tokens will be locked from withdrawal until the end of the next Epoch.',
+                isActive: false,
+            },
+            {
+                date: '22.08',
+                fromNow: '2 days',
+                title: 'Tokens unlocked',
+                description:
+                    'You are able to withdraw your tokens to your wallet, which you are free to move or restake',
+                isActive: false,
+            },
+        ]}
+    /> */
+
+    /* <MarketMaker
+            name="Binance staking pool"
+            collectedFees="3.212,032 ETH"
+            rewards="95%"
+            staked="52%"
+            difference="+500,000 ZRX"
+            iconUrl="/images/toshi_logo.jpg"
+        />
+        <InfoHeader>
+            <InfoHeaderItem>
+                Recommended market makers <NumberRound>2</NumberRound>
+            </InfoHeaderItem>
+            <InfoHeaderItem>
+                <Button isWithArrow={true} color={colors.textDarkSecondary}>
+                    Full list
+                </Button>
+            </InfoHeaderItem>
+        </InfoHeader>
+
+        <InfoHeader>
+            <InfoHeaderItem>Start Staking</InfoHeaderItem>
+            <InfoHeaderItem>Begins in 2 days</InfoHeaderItem>
+        </InfoHeader>
+
+        <Inner>
+            <TransactionItem
+                marketMakerId="0x12345...12345"
+                selfId="0x12345...12345"
+                sendAmount="1520 ZRX"
+                selfIconUrl="/images/toshi_logo.jpg"
+                receiveAmount="1520 ZRX"
+                marketMakerName="Binance"
+                marketMakerIconUrl="/images/toshi_logo.jpg"
+                isActive={true}
+            />
+            <TransactionItem
+                marketMakerId="0x12345...12345"
+                selfId="0x12345...12345"
+                sendAmount="1520 ZRX"
+                selfIconUrl="/images/toshi_logo.jpg"
+                receiveAmount="1520 ZRX"
+                marketMakerName="Binance"
+                marketMakerIconUrl="/images/toshi_logo.jpg"
+                isActive={false}
+            />
+            <ButtonWithIcon
+                isTransparent={true}
+                borderColor="#DFE7E1"
+                color={colors.textDarkSecondary}
+                isDisabled={true}
+            >
+                <SpinnerContainer>
+                    <Spinner color="#BEBEBE" />
+                </SpinnerContainer>
+                <span>Waiting for signature</span>
+            </ButtonWithIcon>
+
+            <ErrorButton
+                message="Transaction aborted"
+                secondaryButtonText="Retry"
+                onClose={() => {
+                    alert('close');
+                }}
+                onSecondaryClick={() => {
+                    alert('close');
+                }}
+            />
+        </Inner>
+        <Newsletter /> */
+    return (
+        <>
+            <StakingWizardHeader title="Start staking your tokens" description="Use one pool of capital across multiple relayers to trade against a large group."/>
+            <IntroMetrics>
+                <IntroMetric>
+                    <h2>873,435 ETH</h2>
+                    <p>Total rewards collected</p>
+                </IntroMetric>
+                <IntroMetric>
+                    <h2>203,000 ZRX</h2>
+                    <p>Total ZRX Staked</p>
+                </IntroMetric>
+            </IntroMetrics>
+        </>
+    );
+};
+
+const getRightComponent = (props: StakingWizardProps): React.ReactNode => {
+    if (props.providerState.account.state !== AccountState.Ready) {
+        return (
+            <>
+                <ConnectWalletButton color={colors.white} onClick={props.onOpenConnectWalletDialog}>
+                    Connect your wallet to start staking
+                </ConnectWalletButton>
+                <Status
+                    title="Please connect your wallet, so we can find suitable market maker."
+                    linkText="or explore market maker list"
+                    to={WebsitePaths.Staking}
+                />
+            </>
+        );
+    }
+    const { zrxBalanceBaseUnitAmount } = props.providerState.account;
+    if (!zrxBalanceBaseUnitAmount) {
+        // Fetching balance
+        return (
+            <Status title=""/>
+        );
+    }
+    if (!zrxBalanceBaseUnitAmount.gt(0)) {
+        return (
+            <Status
+                title="You have no ZRX balance. You will need some to stake."
+                linkText="Go buy some ZRX"
+                linkUrl={`https://www.rexrelay.com/instant/?defaultSelectedAssetData=${constants.ZRX_ASSET_DATA}`}
+            />
+        );
+    }
+    const formattedAmount = utils.getFormattedAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
+    return (
+        <>
+        <NumberInput
+            placeholder="Enter your stake"
+            heading="Amount"
+            topLabels={['Amount', `Available: ${formattedAmount} ZRX`]}
+            labels={['25%', '50%', '100%']}
+            onLabelChange={(label: string) => {
+                // console.log('Change label');
+            }}
+            bottomLabels={[
+                {
+                    label: 'Based on your ZRX balance',
+                },
+                {
+                    label: 'Change wallet',
+                    onClick: props.onOpenConnectWalletDialog,
+                },
+            ]}
+        />
+        <Status
+                title="Please select an amount of staked ZRX above to see matching Staking Pool."
+                linkText="or explore market maker list"
+                to={WebsitePaths.Staking}
+            />
+            </>
+    );
+};
+
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
+    const leftComponent = getLeftComponent();
+    const rightComponent = getRightComponent(props);
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
             <Container>
                 <Splitview
-                    leftComponent={
-                        <>
-                            <IntroHeader>Start staking your tokens</IntroHeader>
-                            <IntroDescription>
-                                Use one pool of capital across multiple relayers to trade against a large group.
-                            </IntroDescription>
-
-                            <IntroMetrics>
-                                <IntroMetric>
-                                    <h2>873,435</h2>
-                                    <p>Rewards collected</p>
-                                </IntroMetric>
-                                <IntroMetric>
-                                    <h2>$203M</h2>
-                                    <p>Total stake</p>
-                                </IntroMetric>
-                            </IntroMetrics>
-
-                            {/* <Timeline
-                                activeItemIndex={0}
-                                items={[
-                                    {
-                                        date: '22.08',
-                                        fromNow: '2 days',
-                                        title: 'Removing your stake',
-                                        description: 'Your declared staking pool is going to be locked in smart contract.',
-                                        isActive: true,
-                                    },
-                                    {
-                                        date: '22.08',
-                                        fromNow: '2 days',
-                                        title: 'Lockout period',
-                                        description:
-                                            'Your tokens will be locked from withdrawal until the end of the next Epoch.',
-                                        isActive: false,
-                                    },
-                                    {
-                                        date: '22.08',
-                                        fromNow: '2 days',
-                                        title: 'Tokens unlocked',
-                                        description:
-                                            'You are able to withdraw your tokens to your wallet, which you are free to move or restake',
-                                        isActive: false,
-                                    },
-                                ]}
-                            /> */}
-                        </>
-                    }
-                    rightComponent={
-                        <>
-                            <NumberInput
-                                placeholder="Enter your stake"
-                                heading="Amount"
-                                topLabels={['Amount', 'Available: 1,000,000 ZRX']}
-                                labels={['25%', '50%', '100%']}
-                                onLabelChange={(label: string) => {
-                                    // console.log('Change label');
-                                }}
-                                bottomLabels={[
-                                    {
-                                        label: 'Based on your ZRX balance',
-                                    },
-                                    {
-                                        label: 'Change wallet',
-                                        link: '#',
-                                        onClick: () => {
-                                            // console.log('Change wallet');
-                                        },
-                                    },
-                                ]}
-                            />
-                            <ConnectWalletButton color={colors.white}>
-                                Connect your wallet to start staking
-                            </ConnectWalletButton>
-                            <Status
-                                linkText="or explore market maker list"
-                                linkUrl="/"
-                                title="Please connect your wallet, so we can find suitable market maker."
-                            />
-                            <MarketMaker
-                                name="Binance staking pool"
-                                collectedFees="3.212,032 ETH"
-                                rewards="95%"
-                                staked="52%"
-                                difference="+500,000 ZRX"
-                                iconUrl="/images/toshi_logo.jpg"
-                            />
-                            <InfoHeader>
-                                <InfoHeaderItem>
-                                    Recommended market makers <NumberRound>2</NumberRound>
-                                </InfoHeaderItem>
-                                <InfoHeaderItem>
-                                    <Button isWithArrow={true} color={colors.textDarkSecondary}>
-                                        Full list
-                                    </Button>
-                                </InfoHeaderItem>
-                            </InfoHeader>
-
-                            <InfoHeader>
-                                <InfoHeaderItem>Start Staking</InfoHeaderItem>
-                                <InfoHeaderItem>Begins in 2 days</InfoHeaderItem>
-                            </InfoHeader>
-
-                            <Inner>
-                                <TransactionItem
-                                    marketMakerId="0x12345...12345"
-                                    selfId="0x12345...12345"
-                                    sendAmount="1520 ZRX"
-                                    selfIconUrl="/images/toshi_logo.jpg"
-                                    receiveAmount="1520 ZRX"
-                                    marketMakerName="Binance"
-                                    marketMakerIconUrl="/images/toshi_logo.jpg"
-                                    isActive={true}
-                                />
-                                <TransactionItem
-                                    marketMakerId="0x12345...12345"
-                                    selfId="0x12345...12345"
-                                    sendAmount="1520 ZRX"
-                                    selfIconUrl="/images/toshi_logo.jpg"
-                                    receiveAmount="1520 ZRX"
-                                    marketMakerName="Binance"
-                                    marketMakerIconUrl="/images/toshi_logo.jpg"
-                                    isActive={false}
-                                />
-                                <ButtonWithIcon
-                                    isTransparent={true}
-                                    borderColor="#DFE7E1"
-                                    color={colors.textDarkSecondary}
-                                    isDisabled={true}
-                                >
-                                    <SpinnerContainer>
-                                        <Spinner color="#BEBEBE" />
-                                    </SpinnerContainer>
-                                    <span>Waiting for signature</span>
-                                </ButtonWithIcon>
-
-                                <ErrorButton
-                                    message="Transaction aborted"
-                                    secondaryButtonText="Retry"
-                                    onClose={() => {
-                                        alert('close');
-                                    }}
-                                    onSecondaryClick={() => {
-                                        alert('close');
-                                    }}
-                                />
-                            </Inner>
-                            <Newsletter />
-                        </>
-                    }
+                    leftComponent={leftComponent}
+                    rightComponent={rightComponent}
                 />
             </Container>
         </StakingPageLayout>

@@ -390,6 +390,16 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
             }
         }
 
+        case ActionTypes.UpdateAccountZrxBalance: {
+            const zrxBalanceBaseUnitAmount = action.data;
+            const currentAccount = state.providerState.account;
+            const newAccount = {
+                ...currentAccount,
+                zrxBalanceBaseUnitAmount,
+            };
+            return reduceStateWithAccount(state, newAccount);
+        }
+
         // Shared
         case ActionTypes.ShowFlashMessage: {
             return {

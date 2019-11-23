@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { MetaTags } from 'ts/components/meta_tags';
 import { NotFound } from 'ts/containers/not_found';
+import { StakingWizard } from 'ts/containers/staking/wizard/wizard';
 import { createLazyComponent } from 'ts/lazy_component';
 import { trackedTokenStorage } from 'ts/local_storage/tracked_token_storage';
 import { tradeHistoryStorage } from 'ts/local_storage/trade_history_storage';
@@ -42,7 +43,6 @@ import { StakingIndex } from 'ts/pages/staking/home';
 import { StakingPool } from 'ts/pages/staking/staking_pool';
 
 import { RemoveStake } from 'ts/pages/staking/wizard/remove';
-import { StakingWizard } from 'ts/pages/staking/wizard/wizard';
 
 import { TermsOfService } from 'ts/pages/terms';
 import { NextWhy } from 'ts/pages/why';

@@ -1,14 +1,18 @@
+import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses';
+import { ERC20TokenContract } from '@0x/contract-wrappers';
+import { logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
 
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { AccountState, ProviderState } from 'ts/types';
+import { AccountState, Network, ProviderState } from 'ts/types';
 
 // NOTE: Copied from Instant
 export const asyncDispatcher = {
-    fetchAccountInfoAndDispatchToStore: async (
+    fetchAccountInfoAndDispatchToStoreAsync: async (
         providerState: ProviderState,
         dispatcher: Dispatcher,
+        networkId: Network,
         shouldAttemptUnlock: boolean = false,
         shouldSetToLoading: boolean = false,
     ) => {
@@ -33,26 +37,36 @@ export const asyncDispatcher = {
             const activeAddress = availableAddresses[0];
             dispatcher.setAccountStateReady(activeAddress);
 
-            await asyncDispatcher.fetchAccountBalanceAndDispatchToStore(
+            await asyncDispatcher.fetchAccountBalanceAndDispatchToStoreAsync(
                 activeAddress,
                 providerState.web3Wrapper,
                 dispatcher,
+                networkId,
             );
         } else {
             dispatcher.setAccountStateLocked();
         }
     },
 
-    fetchAccountBalanceAndDispatchToStore: async (
+    fetchAccountBalanceAndDispatchToStoreAsync: async (
         address: string,
         web3Wrapper: Web3Wrapper,
         dispatcher: Dispatcher,
+        networkId: Network,
     ) => {
         try {
-            const ethBalanceInWei = await web3Wrapper.getBalanceInWeiAsync(address);
+            const provider = web3Wrapper.getProvider();
+            const contractAddresses = getContractAddressesForNetworkOrThrow(networkId as number);
+            const zrxTokenContract = new ERC20TokenContract(contractAddresses.zrxToken, provider);
+            const [ethBalanceInWei, zrxBalance] = await Promise.all([
+                web3Wrapper.getBalanceInWeiAsync(address),
+                zrxTokenContract.balanceOf.callAsync(address),
+            ]);
             dispatcher.updateAccountEthBalance({ address, ethBalanceInWei });
+            dispatcher.updateAccountZrxBalance(zrxBalance);
         } catch (e) {
-            // leave balance as is
+            console.log(e);
+            logUtils.warn(e);
             return;
         }
     },

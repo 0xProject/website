@@ -11,6 +11,7 @@ interface StatusProps {
     title: string;
     linkText?: string;
     linkUrl?: string;
+    to?: string;
 }
 
 const StatusContainer = styled.div`
@@ -52,13 +53,14 @@ const StatusIcon = styled(Icon)`
 `;
 
 export const Status: React.FC<StatusProps> = props => {
-    const { title, linkText, linkUrl } = props;
+    const { title, linkText, linkUrl, to } = props;
+    const target = linkUrl && !to ? '_blank' : undefined;
     return (
         <StatusContainer>
             <StatusIcon color={colors.brandLight} name="getStartedThin" size={145} />
             <Title>{title}</Title>
-            {linkText != null && linkUrl != null &&
-                <Link href={linkUrl} isWithArrow={true} color={colors.brandLight}>
+            {linkText && (linkUrl || to) &&
+                <Link href={linkUrl} to={to} isWithArrow={true} color={colors.brandLight} target={target}>
                     {linkText}
                 </Link>
             }
