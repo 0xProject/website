@@ -240,14 +240,12 @@ export class Blockchain {
 
         this._showFlashMessageIfLedger();
         const erc20Token = new ERC20TokenContract(token.address, this._contractWrappers.getProvider());
-        const txHash = await erc20Token.approve.sendTransactionAsync(
-            this._contractWrappers.contractAddresses.erc20Proxy,
-            amountInBaseUnits,
-            {
+        const txHash = await erc20Token
+            .approve(this._contractWrappers.contractAddresses.erc20Proxy, amountInBaseUnits)
+            .sendTransactionAsync({
                 from: this._userAddressIfExists,
                 gasPrice: this._defaultGasPrice,
-            },
-        );
+            });
         await this._showEtherScanLinkAndAwaitTransactionMinedAsync(txHash);
     }
     public async sendAsync(toAddress: string, amountInBaseUnits: BigNumber): Promise<void> {
@@ -330,7 +328,7 @@ export class Blockchain {
     public async getUnavailableTakerAmountAsync(orderHash: string): Promise<BigNumber> {
         utils.assert(orderHashUtils.isValidOrderHash(orderHash), 'Must be valid orderHash');
         utils.assert(this._contractWrappers !== undefined, 'ContractWrappers must be instantiated.');
-        const unavailableTakerAmount = await this._contractWrappers.exchange.filled.callAsync(orderHash);
+        const unavailableTakerAmount = await this._contractWrappers.exchange.filled(orderHash).callAsync();
         return unavailableTakerAmount;
     }
     public getExchangeContractAddressIfExists(): string | undefined {
@@ -341,14 +339,11 @@ export class Blockchain {
         fillTakerTokenAmount: BigNumber,
         takerAddress: string,
     ): Promise<void> {
-        await this._contractWrappers.exchange.fillOrder.callAsync(
-            signedOrder,
-            fillTakerTokenAmount,
-            signedOrder.signature,
-            {
+        await this._contractWrappers.exchange
+            .fillOrder(signedOrder, fillTakerTokenAmount, signedOrder.signature)
+            .callAsync({
                 from: takerAddress,
-            },
-        );
+            });
     }
     public isValidAddress(address: string): boolean {
         const lowercaseAddress = address.toLowerCase();
@@ -472,11 +467,10 @@ export class Blockchain {
         if (this._doesUserAddressExist()) {
             const erc20Token = new ERC20TokenContract(tokenAddress, this._contractWrappers.getProvider());
             [balance, allowance] = await Promise.all([
-                erc20Token.balanceOf.callAsync(ownerAddressIfExists),
-                erc20Token.allowance.callAsync(
-                    ownerAddressIfExists,
-                    this._contractWrappers.contractAddresses.erc20Proxy,
-                ),
+                erc20Token.balanceOf(ownerAddressIfExists).callAsync(),
+                erc20Token
+                    .allowance(ownerAddressIfExists, this._contractWrappers.contractAddresses.erc20Proxy)
+                    .callAsync(),
             ]);
         }
         return [balance, allowance];
@@ -862,7 +856,7 @@ export class Blockchain {
             this._contractWrappers.unsubscribeAll();
         }
         const contractWrappersConfig = {
-            networkId,
+            chainId: networkId,
         };
         this._contractWrappers = new ContractWrappers(provider, contractWrappersConfig);
         if (this._blockchainWatcher !== undefined) {

@@ -1,4 +1,4 @@
-import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses';
+import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -57,12 +57,12 @@ export const asyncDispatcher = {
     ) => {
         try {
             const provider = web3Wrapper.getProvider();
-            const contractAddresses = getContractAddressesForNetworkOrThrow(networkId as number);
+            const contractAddresses = getContractAddressesForChainOrThrow(networkId as number);
             const zrxTokenContract = new ERC20TokenContract(contractAddresses.zrxToken, provider);
             const [ethBalanceInWei, zrxBalance, zrxAllowance] = await Promise.all([
                 web3Wrapper.getBalanceInWeiAsync(address),
-                zrxTokenContract.balanceOf.callAsync(address),
-                zrxTokenContract.allowance.callAsync(address, contractAddresses.erc20Proxy),
+                zrxTokenContract.balanceOf(address).callAsync(),
+                zrxTokenContract.allowance(address, contractAddresses.erc20Proxy).callAsync(),
             ]);
 
             dispatcher.updateAccountEthBalance({ address, ethBalanceInWei });
@@ -87,16 +87,16 @@ export const asyncDispatcher = {
         const gasPriceInGwei = new BigNumber(gasInfo.fast / 10);
         const gasPriceInWei = gasPriceInGwei.multipliedBy(1000000000);
 
-        const contractAddresses = getContractAddressesForNetworkOrThrow(networkId as number);
+        const contractAddresses = getContractAddressesForChainOrThrow(networkId as number);
         const erc20ProxyAddress = contractAddresses.erc20Proxy;
         const zrxTokenContract = new ERC20TokenContract(contractAddresses.zrxToken, provider);
 
-        const currentAllowance = await zrxTokenContract.allowance.callAsync(ownerAddress, erc20ProxyAddress);
+        const currentAllowance = await zrxTokenContract.allowance(ownerAddress, erc20ProxyAddress).callAsync();
 
         // TODO: some information modal needed?
         if (currentAllowance.isLessThan(amountToStakeBaseUnits)) {
             // tslint:disable:await-promise
-            await zrxTokenContract.approve.awaitTransactionSuccessAsync(erc20ProxyAddress, amountToStakeBaseUnits, {
+            await zrxTokenContract.approve(erc20ProxyAddress, amountToStakeBaseUnits).awaitTransactionSuccessAsync({
                 from: ownerAddress,
                 gasPrice: gasPriceInWei,
             });
