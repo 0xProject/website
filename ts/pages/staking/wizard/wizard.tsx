@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { ProviderState } from 'ts/types';
+import { Network, ProviderState } from 'ts/types';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 
@@ -11,7 +11,13 @@ import { WizardInfo } from 'ts/components/staking/wizard/wizard_info';
 
 export interface StakingWizardProps {
     providerState: ProviderState;
+    networkId: Network;
     onOpenConnectWalletDialog: () => void;
+    onDepositAndStartStakingAsync: (
+        providerState: ProviderState,
+        networkId: Network,
+        amountToStakeInput: string,
+    ) => Promise<void>;
 }
 
 const Container = styled.div`
@@ -24,10 +30,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
             <Container>
-                <Splitview
-                    leftComponent={<WizardInfo/>}
-                    rightComponent={<WizardFlow {...props}/>}
-                />
+                <Splitview leftComponent={<WizardInfo />} rightComponent={<WizardFlow {...props} />} />
             </Container>
         </StakingPageLayout>
     );

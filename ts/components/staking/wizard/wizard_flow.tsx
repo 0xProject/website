@@ -330,7 +330,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
                 }}
                 onChange={(newValue: React.ChangeEvent<HTMLInputElement>) => {
                     const newAmount = newValue.target.value;
-                    setStakeAmount(newValue.target.value);
+                    setStakeAmount(newAmount);
                     setSelectedLabel(undefined);
                 }}
                 bottomLabels={[
