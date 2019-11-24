@@ -6,13 +6,16 @@ import { SupportedDocJson } from '../types';
 const URL_FORUM = 'https://forum.0x.org';
 const URL_ZEROEX_CHAT = 'https://discord.gg/d3FTX3M';
 
+const DECIMAL_PLACES_ZRX = 18;
+
 export const constants = {
     DECIMAL_PLACES_ETH: 18,
-    DECIMAL_PLACES_ZRX: 18,
+    DECIMAL_PLACES_ZRX,
     ETHER_TOKEN_SYMBOL: 'WETH',
     ZRX_TOKEN_SYMBOL: 'ZRX',
     ETHER_SYMBOL: 'ETH',
     ZRX_ASSET_DATA: '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
+    ZRX_BASE_UNIT: new BigNumber(10 ** DECIMAL_PLACES_ZRX),
     TOKEN_AMOUNT_DISPLAY_PRECISION: 4,
     GENESIS_ORDER_BLOCK_BY_NETWORK_ID: {
         1: 4145578,

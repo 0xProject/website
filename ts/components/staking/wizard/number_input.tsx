@@ -16,6 +16,7 @@ interface NumberInputProps {
     shouldFocusOnInit?: boolean;
     onChange?: (newValue: React.ChangeEvent<HTMLInputElement>) => void;
     onLabelChange?: (newValue: string) => void;
+    selectedLabel?: string;
 }
 
 interface BottomLabelProps {
@@ -198,8 +199,10 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
         placeholder,
         bottomLabels,
         labels,
+        value,
         onChange,
         onLabelChange,
+        selectedLabel,
         topLabels,
         heading,
         isError,
@@ -214,13 +217,6 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
         }
     }, []);
 
-    const [selectedOption, setSelectedOption] = React.useState(null);
-
-    const onLabelSelect = (label: string): void => {
-        onLabelChange(label);
-        setSelectedOption(label);
-    };
-
     return (
         <Container>
             {heading && <Heading>{heading}</Heading>}
@@ -233,15 +229,22 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
                 <ZrxIcon>
                     <Icon name="logo-mark" size={40} />
                 </ZrxIcon>
-                <Input type="number" name="stake" placeholder={placeholder} onChange={onChange} ref={input} />
+                <Input
+                    type="number"
+                    name="stake"
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={onChange}
+                    ref={input}
+                />
                 {labels != null && labels.length > 0 && (
                     <Labels>
                         {labels.map((label, index) => {
                             return (
                                 <Label
                                     key={index.toString()}
-                                    isActive={selectedOption === label}
-                                    onClick={() => onLabelSelect(label)}
+                                    isActive={selectedLabel === label}
+                                    onClick={() => onLabelChange(label)}
                                 >
                                     {label}
                                 </Label>

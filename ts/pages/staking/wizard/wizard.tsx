@@ -1,3 +1,4 @@
+import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -135,7 +136,7 @@ const NumberRound = styled.span`
     display: inline-block;
     text-align: center;
     padding: 4px 0;
-    border: 1px solid #F6F6F6;
+    border: 1px solid #f6f6f6;
 `;
 
 const IntroHeader = styled.h1`
@@ -246,12 +247,10 @@ export interface StakingWizardHeaderProps {
     description: string;
 }
 
-const StakingWizardHeader: React.FC<StakingWizardHeaderProps> = ({title, description}) => (
+const StakingWizardHeader: React.FC<StakingWizardHeaderProps> = ({ title, description }) => (
     <>
         <IntroHeader>{title}</IntroHeader>
-        <IntroDescription>
-            {description}
-        </IntroDescription>
+        <IntroDescription>{description}</IntroDescription>
     </>
 );
 
@@ -356,7 +355,10 @@ const getLeftComponent = (): React.ReactNode => {
         <Newsletter /> */
     return (
         <>
-            <StakingWizardHeader title="Start staking your tokens" description="Use one pool of capital across multiple relayers to trade against a large group."/>
+            <StakingWizardHeader
+                title="Start staking your tokens"
+                description="Use one pool of capital across multiple relayers to trade against a large group."
+            />
             <IntroMetrics>
                 <IntroMetric>
                     <h2>873,435 ETH</h2>
@@ -389,9 +391,7 @@ const getRightComponent = (props: StakingWizardProps): React.ReactNode => {
     const { zrxBalanceBaseUnitAmount } = props.providerState.account;
     if (!zrxBalanceBaseUnitAmount) {
         // Fetching balance
-        return (
-            <Status title=""/>
-        );
+        return <Status title="" />;
     }
     if (!zrxBalanceBaseUnitAmount.gt(0)) {
         return (
@@ -402,33 +402,57 @@ const getRightComponent = (props: StakingWizardProps): React.ReactNode => {
             />
         );
     }
-    const formattedAmount = utils.getFormattedAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
+
+    const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
+    const [stakingAmount, setStakingAmount] = React.useState<string>('');
+
+    const formattedBalance = utils.getFormattedAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
+
     return (
         <>
-        <NumberInput
-            placeholder="Enter your stake"
-            heading="Amount"
-            topLabels={['Amount', `Available: ${formattedAmount} ZRX`]}
-            labels={['25%', '50%', '100%']}
-            onLabelChange={(label: string) => {
-                // console.log('Change label');
-            }}
-            bottomLabels={[
-                {
-                    label: 'Based on your ZRX balance',
-                },
-                {
-                    label: 'Change wallet',
-                    onClick: props.onOpenConnectWalletDialog,
-                },
-            ]}
-        />
-        <Status
+            <NumberInput
+                placeholder="Enter your stake"
+                heading="Amount"
+                value={stakingAmount}
+                topLabels={['Amount', `Available: ${formattedBalance} ZRX`]}
+                labels={['25%', '50%', '100%']}
+                selectedLabel={selectedLabel}
+                onChange={e => {
+                    setStakingAmount(e.target.value);
+                    setSelectedLabel(undefined);
+                }}
+                onLabelChange={(label: string) => {
+                    let divisor = 1;
+                    if (label === '50%') {
+                        divisor = 2;
+                    } else if (label === '25%') {
+                        divisor = 4;
+                    }
+
+                    const amount = zrxBalanceBaseUnitAmount
+                        .dividedBy(constants.ZRX_BASE_UNIT)
+                        .dividedBy(divisor)
+                        .decimalPlaces(2, BigNumber.ROUND_DOWN);
+
+                    setStakingAmount(amount.toString());
+                    setSelectedLabel(label);
+                }}
+                bottomLabels={[
+                    {
+                        label: 'Based on your ZRX balance',
+                    },
+                    {
+                        label: 'Change wallet',
+                        onClick: props.onOpenConnectWalletDialog,
+                    },
+                ]}
+            />
+            <Status
                 title="Please select an amount of staked ZRX above to see matching Staking Pool."
                 linkText="or explore market maker list"
                 to={WebsitePaths.Staking}
             />
-            </>
+        </>
     );
 };
 
@@ -438,10 +462,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
             <Container>
-                <Splitview
-                    leftComponent={leftComponent}
-                    rightComponent={rightComponent}
-                />
+                <Splitview leftComponent={leftComponent} rightComponent={rightComponent} />
             </Container>
         </StakingPageLayout>
     );
