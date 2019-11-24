@@ -1,11 +1,12 @@
 import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
-import { logUtils } from '@0x/utils';
+import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
 
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { AccountState, Network, ProviderState } from 'ts/types';
+import { AccountReady, AccountState, Network, ProviderState } from 'ts/types';
+import { backendClient } from 'ts/utils/backend_client';
 
 // NOTE: Copied from Instant
 export const asyncDispatcher = {
@@ -58,15 +59,47 @@ export const asyncDispatcher = {
             const provider = web3Wrapper.getProvider();
             const contractAddresses = getContractAddressesForNetworkOrThrow(networkId as number);
             const zrxTokenContract = new ERC20TokenContract(contractAddresses.zrxToken, provider);
-            const [ethBalanceInWei, zrxBalance] = await Promise.all([
+            const [ethBalanceInWei, zrxBalance, zrxAllowance] = await Promise.all([
                 web3Wrapper.getBalanceInWeiAsync(address),
                 zrxTokenContract.balanceOf.callAsync(address),
+                zrxTokenContract.allowance.callAsync(address, contractAddresses.erc20Proxy),
             ]);
+
             dispatcher.updateAccountEthBalance({ address, ethBalanceInWei });
             dispatcher.updateAccountZrxBalance(zrxBalance);
+            dispatcher.updateAccountZrxAllowance(zrxAllowance);
         } catch (e) {
             logUtils.warn(e);
             return;
+        }
+    },
+
+    increaseZrxAllowanceAndDispatchToStoreIfNeededAsync: async (
+        providerState: ProviderState,
+        networkId: Network,
+        amountToStakeBaseUnits: BigNumber,
+        dispatcher: Dispatcher,
+    ) => {
+        const { provider } = providerState;
+        const ownerAddress = (providerState.account as AccountReady).address;
+        const gasInfo = await backendClient.getGasInfoAsync();
+        const gasPriceInGwei = new BigNumber(gasInfo.fast / 10);
+        const gasPriceInWei = gasPriceInGwei.multipliedBy(1000000000);
+
+        const contractAddresses = getContractAddressesForNetworkOrThrow(networkId as number);
+        const erc20ProxyAddress = contractAddresses.erc20Proxy;
+        const zrxTokenContract = new ERC20TokenContract(contractAddresses.zrxToken, provider);
+
+        const currentAllowance = await zrxTokenContract.allowance.callAsync(ownerAddress, erc20ProxyAddress);
+
+        // TODO: some information modal needed?
+        if (currentAllowance.isLessThan(amountToStakeBaseUnits)) {
+            // tslint:disable:await-promise
+            await zrxTokenContract.approve.awaitTransactionSuccessAsync(erc20ProxyAddress, amountToStakeBaseUnits, {
+                from: ownerAddress,
+                gasPrice: gasPriceInWei,
+            });
+            dispatcher.updateAccountZrxAllowance(amountToStakeBaseUnits);
         }
     },
 };
