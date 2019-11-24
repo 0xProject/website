@@ -17,6 +17,7 @@ interface ConnectedDispatch {
         providerState: ProviderState,
         networkId: Network,
         amountToStakeInput: string,
+        poolId: string,
     ) => Promise<void>;
 }
 
@@ -41,6 +42,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
             providerState: ProviderState,
             networkId: Network,
             amountToStakeInput: string,
+            poolId: string,
         ): Promise<void> => {
             const amountToStakeBaseUnits = new BigNumber(amountToStakeInput, 10).multipliedBy(constants.ZRX_BASE_UNIT);
 
@@ -55,6 +57,13 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
                     dispatcher,
                 );
             }
+
+            await asyncDispatcher.depositStakeToContractAndStakeWithPoolAsync(
+                providerState,
+                networkId,
+                amountToStakeBaseUnits,
+                poolId,
+            );
         },
     };
 };
