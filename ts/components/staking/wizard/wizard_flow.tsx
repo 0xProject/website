@@ -251,6 +251,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
         <Newsletter /> */
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
+    const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
     const apiClient = useAPIClient();
     useDebounce(() => {
         const fetchAndSetPools = async () => {
@@ -312,20 +313,25 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
                 topLabels={['Amount', `Available: ${formattedAmount} ZRX`]}
                 labels={[StakingPercentageValue.Fourth, StakingPercentageValue.Half, StakingPercentageValue.All]}
                 value={stakeAmount}
+                selectedLabel={selectedLabel}
                 onLabelChange={(label: string) => {
                     if (label === StakingPercentageValue.Fourth) {
                         setStakeAmount(`${(unitAmount / 4).toFixed(2)}`);
+                        setSelectedLabel(StakingPercentageValue.Fourth);
                     }
                     if (label === StakingPercentageValue.Half) {
                         setStakeAmount(`${(unitAmount / 2).toFixed(2)}`);
+                        setSelectedLabel(StakingPercentageValue.Half);
                     }
                     if (label === StakingPercentageValue.All) {
-                        setStakeAmount(`${(unitAmount).toFixed(2)}`);
+                        setStakeAmount(`${unitAmount.toFixed(2)}`);
+                        setSelectedLabel(StakingPercentageValue.All);
                     }
                 }}
                 onChange={(newValue: React.ChangeEvent<HTMLInputElement>) => {
                     const newAmount = newValue.target.value;
                     setStakeAmount(newValue.target.value);
+                    setSelectedLabel(undefined);
                 }}
                 bottomLabels={[
                     {
