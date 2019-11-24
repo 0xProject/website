@@ -1,3 +1,4 @@
+import { StakingContract } from '@0x/abi-gen-wrappers';
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
 import { BigNumber, logUtils } from '@0x/utils';
@@ -5,7 +6,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
 
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { AccountReady, AccountState, Network, ProviderState } from 'ts/types';
+import { AccountReady, AccountState, Network, ProviderState, StakeStatus } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 
@@ -105,5 +106,30 @@ export const asyncDispatcher = {
             );
             dispatcher.updateAccountZrxAllowance(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);
         }
+    },
+
+    depositStakeToContractAndStakeWithPoolAsync: async (
+        providerState: ProviderState,
+        networkId: Network,
+        amountToStakeBaseUnits: BigNumber,
+        poolId: string,
+    ) => {
+        const ownerAddress = (providerState.account as AccountReady).address;
+        const contractAddresses = getContractAddressesForChainOrThrow(networkId as number);
+
+        const stakingContract = new StakingContract(contractAddresses.stakingProxy, providerState.provider, {
+            from: ownerAddress,
+        });
+
+        // TODO(kimpers): update quip docs with new way to call methods
+        // TODO(kimpers): use batch fn
+        await stakingContract.stake(amountToStakeBaseUnits).awaitTransactionSuccessAsync({ from: ownerAddress });
+        await stakingContract
+            .moveStake(
+                { status: StakeStatus.Undelegated, poolId: constants.STAKING.NIL_POOL_ID }, // From undelegated
+                { status: StakeStatus.Delegated, poolId }, // To the pool
+                amountToStakeBaseUnits,
+            )
+            .awaitTransactionSuccessAsync({ from: ownerAddress });
     },
 };

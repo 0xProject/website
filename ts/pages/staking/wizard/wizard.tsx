@@ -17,6 +17,7 @@ export interface StakingWizardProps {
         providerState: ProviderState,
         networkId: Network,
         amountToStakeInput: string,
+        poolId: string,
     ) => Promise<void>;
 }
 

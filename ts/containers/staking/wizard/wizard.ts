@@ -18,6 +18,7 @@ interface ConnectedDispatch {
         providerState: ProviderState,
         networkId: Network,
         amountToStakeInput: string,
+        poolId: string,
     ) => Promise<void>;
 }
 
@@ -42,6 +43,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
             providerState: ProviderState,
             networkId: Network,
             amountToStakeInput: string,
+            poolId: string,
         ): Promise<void> => {
             const amountToStakeBaseUnits = Web3Wrapper.toBaseUnitAmount(
                 new BigNumber(amountToStakeInput, 10),
@@ -59,6 +61,13 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
                     dispatcher,
                 );
             }
+
+            await asyncDispatcher.depositStakeToContractAndStakeWithPoolAsync(
+                providerState,
+                networkId,
+                amountToStakeBaseUnits,
+                poolId,
+            );
         },
     };
 };
