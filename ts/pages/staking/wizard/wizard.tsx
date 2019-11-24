@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
-import { AccountState, ProviderState, WebsitePaths } from 'ts/types';
+import { AccountState, Network, ProviderState, WebsitePaths } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
@@ -25,7 +25,13 @@ import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
 export interface StakingWizardProps {
     providerState: ProviderState;
+    networkId: Network;
     onOpenConnectWalletDialog: () => void;
+    onDepositAndStartStakingAsync: (
+        providerState: ProviderState,
+        networkId: Network,
+        amountToStakeInput: string,
+    ) => Promise<void>;
 }
 
 interface ErrorButtonProps {
