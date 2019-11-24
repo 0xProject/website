@@ -238,7 +238,7 @@ export const utils = {
         const ContractErrorToHumanReadableError: { [error: string]: string } = {
             [BlockchainCallErrs.UserHasNoAssociatedAddresses]: 'User has no addresses available',
             [TypedDataError.InvalidSignature]: 'Order signature is not valid',
-            [ContractError.ContractNotDeployedOnNetwork]: 'Contract is not deployed on the detected network',
+            [ContractError.ContractNotDeployedOnChain]: 'Contract is not deployed on the detected chain',
             [ContractError.InvalidJump]: 'Invalid jump occured while executing the transaction',
             [ContractError.OutOfGas]: 'Transaction ran out of gas',
         };

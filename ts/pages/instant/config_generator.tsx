@@ -201,7 +201,8 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
         if (value.orderSource !== undefined && _.isString(value.orderSource)) {
             this.setState({ isLoadingAvailableTokens: true });
             const networkId = constants.NETWORK_ID_MAINNET;
-            const sraOrderProvider = new StandardRelayerAPIOrderProvider(value.orderSource, networkId);
+            // TODO(kimpers): is this correct??
+            const sraOrderProvider = new StandardRelayerAPIOrderProvider(value.orderSource);
             const etherTokenAddress = getContractAddressesForChainOrThrow(networkId).etherToken;
             const etherTokenAssetData = assetDataUtils.encodeERC20AssetData(etherTokenAddress);
             const assetDatas = await sraOrderProvider.getAvailableMakerAssetDatasAsync(etherTokenAssetData);
