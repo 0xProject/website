@@ -1,4 +1,4 @@
-import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses';
+import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ContractWrappers, ERC20TokenContract } from '@0x/contract-wrappers';
 import {
     LedgerSubprovider,
@@ -137,7 +137,7 @@ export class ConnectForm extends React.Component<Props, State> {
     }
     public async getZrxBalanceAsync(owner: string): Promise<BigNumber> {
         utils.assert(this._contractWrappers !== undefined, 'ContractWrappers must be instantiated.');
-        const contractAddresses = getContractAddressesForNetworkOrThrow(this.networkId);
+        const contractAddresses = getContractAddressesForChainOrThrow(this.networkId);
         const tokenAddress: string = contractAddresses.zrxToken;
         const erc20Token = new ERC20TokenContract(tokenAddress, this._contractWrappers.getProvider());
         try {
