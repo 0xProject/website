@@ -203,6 +203,7 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
         topLabels,
         heading,
         isError,
+        value,
         shouldFocusOnInit,
     } = props;
 
@@ -233,7 +234,7 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
                 <ZrxIcon>
                     <Icon name="logo-mark" size={40} />
                 </ZrxIcon>
-                <Input type="number" name="stake" placeholder={placeholder} onChange={onChange} ref={input} />
+                <Input type="number" name="stake" value={value} placeholder={placeholder} onChange={onChange} ref={input} />
                 {labels != null && labels.length > 0 && (
                     <Labels>
                         {labels.map((label, index) => {

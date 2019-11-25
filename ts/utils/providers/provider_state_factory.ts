@@ -1,4 +1,3 @@
-import { ContractWrappers } from '@0x/contract-wrappers';
 import { providerUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { SupportedProvider, ZeroExProvider } from 'ethereum-types';
