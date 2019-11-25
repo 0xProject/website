@@ -9,9 +9,10 @@ import { colors } from 'ts/style/colors';
 interface MarketMakerProps {
     name: string;
     iconUrl: string;
-    collectedFees: string;
-    rewards: string;
-    staked: string;
+    collectedFees: number;
+    rewards: number;
+    staked: number;
+    website: string;
     difference: string;
 }
 
@@ -154,37 +155,37 @@ const TitleContainer = styled.div`
 `;
 
 export const MarketMaker: React.FC<MarketMakerProps> = props => {
-    const { name, collectedFees, rewards, staked, difference, iconUrl } = props;
+    const { name, collectedFees, rewards, staked, difference, iconUrl, website } = props;
     return (
         <Container>
             <Heading>
-                <MarketMakerIcon src={iconUrl} alt={name} />
+                {iconUrl && <MarketMakerIcon src={iconUrl} alt={name} />}
                 <TitleContainer>
                     <Title>{name} <CheckIcon name="checkmark" size={15} /></Title>
-                    <Website href="https://binance.com" target="_blank">https://binance.com</Website>
+                    <Website href={website} target="_blank">{website}</Website>
                 </TitleContainer>
-                <Difference>{difference}</Difference>
+                <Difference>+{difference} ZRX</Difference>
             </Heading>
             <Metrics>
                 <Metric>
                     <MetricTitle>Collected fees</MetricTitle>
-                    <MetricAmount>{collectedFees}</MetricAmount>
-                    <StyledInfoTooltip>
-                        Lorem ipsum dolor sit amet
+                    <MetricAmount>{collectedFees} ETH</MetricAmount>
+                    <StyledInfoTooltip id="fees">
+                        The fees the pool has collected in the current epoch
                     </StyledInfoTooltip>
                 </Metric>
                 <Metric>
                     <MetricTitle>Rewards</MetricTitle>
-                    <MetricAmount>{rewards}</MetricAmount>
-                    <StyledInfoTooltip>
-                        Lorem ipsum dolor sit amet
+                    <MetricAmount>{Math.round(rewards * 100)}%</MetricAmount>
+                    <StyledInfoTooltip id="rewards">
+                        The percent of rewards the pool is sharing with stakers
                     </StyledInfoTooltip>
                 </Metric>
                 <Metric>
                     <MetricTitle>Staked</MetricTitle>
-                    <MetricAmount>{staked}</MetricAmount>
-                    <StyledInfoTooltip>
-                        Lorem ipsum dolor sit amet
+                    <MetricAmount>{Math.round(staked * 100)}</MetricAmount>
+                    <StyledInfoTooltip id="staked">
+                        An approximation for how fully staked the pool is for the upcoming epoch
                     </StyledInfoTooltip>
                 </Metric>
             </Metrics>

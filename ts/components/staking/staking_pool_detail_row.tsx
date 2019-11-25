@@ -4,12 +4,13 @@ import styled, { css } from 'styled-components';
 import { colors } from 'ts/style/colors';
 import { ScreenWidths } from 'ts/types';
 import { configs } from 'ts/utils/configs';
+import { utils } from 'ts/utils/utils';
 
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 const RoundedPercentage = ({ percentage }: { percentage: number }) => <span>{Math.round(percentage)}%</span>;
 
 const ShortenedEthAddress = ({ address }: { address: string }) => (
-    <DetailsText>{`${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`}</DetailsText>
+    <DetailsText>{utils.getAddressBeginAndEnd(address)}</DetailsText>
 );
 
 const PoolWebsiteLink = ({ websiteUrl }: { websiteUrl: string }) => (

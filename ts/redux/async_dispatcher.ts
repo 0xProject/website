@@ -65,7 +65,6 @@ export const asyncDispatcher = {
             dispatcher.updateAccountEthBalance({ address, ethBalanceInWei });
             dispatcher.updateAccountZrxBalance(zrxBalance);
         } catch (e) {
-            console.log(e);
             logUtils.warn(e);
             return;
         }
