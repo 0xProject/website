@@ -18,6 +18,7 @@ export interface AccountReady {
     address: string;
     ethBalanceInWei?: BigNumber;
     zrxBalanceBaseUnitAmount?: BigNumber;
+    zrxAllowanceBaseUnitAmount?: BigNumber;
 }
 export interface AccountNotReady {
     state: AccountState.None | AccountState.Loading | AccountState.Locked;
@@ -158,6 +159,7 @@ export enum ActionTypes {
     SetAccountStateReady = 'SET_ACCOUNT_STATE_READY',
     UpdateAccountEthBalance = 'UPDATE_ACCOUNT_ETH_BALANCE',
     UpdateAccountZrxBalance = 'UPDATE_ACCOUNT_ZRX_BALANCE',
+    UpdateAccountZrxAllowance = 'UPDATE_ACCOUNT_ZRX_ALLOWANCE',
 
     // Shared
     ShowFlashMessage = 'SHOW_FLASH_MESSAGE',
@@ -742,11 +744,23 @@ export interface WebsiteBackendTokenInfo {
     symbol: string;
 }
 
+export interface GasInfo {
+    gasPriceInWei: BigNumber;
+    estimatedTimeMs: number;
+}
+
 export interface WebsiteBackendGasInfo {
-    safeSlow: number;
     average: number;
+    fastestWait: number;
+    fastWait: number;
     fast: number;
+    safeLowWait: number;
+    blockNum: number;
+    avgWait: number;
+    block_time: number;
+    speed: number;
     fastest: number;
+    safeLow: number;
 }
 
 export interface WebsiteBackendJobInfo {
