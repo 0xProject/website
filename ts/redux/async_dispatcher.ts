@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { AccountReady, AccountState, Network, ProviderState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
+import { constants } from 'ts/utils/constants';
 
 // NOTE: Copied from Instant
 export const asyncDispatcher = {
@@ -77,7 +78,7 @@ export const asyncDispatcher = {
     increaseZrxAllowanceAndDispatchToStoreIfNeededAsync: async (
         providerState: ProviderState,
         networkId: Network,
-        amountToStakeBaseUnits: BigNumber,
+        _: BigNumber,
         dispatcher: Dispatcher,
     ) => {
         const { provider } = providerState;
@@ -93,13 +94,17 @@ export const asyncDispatcher = {
         const currentAllowance = await zrxTokenContract.allowance.callAsync(ownerAddress, erc20ProxyAddress);
 
         // TODO: some information modal needed?
-        if (currentAllowance.isLessThan(amountToStakeBaseUnits)) {
+        if (currentAllowance.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
             // tslint:disable:await-promise
-            await zrxTokenContract.approve.awaitTransactionSuccessAsync(erc20ProxyAddress, amountToStakeBaseUnits, {
-                from: ownerAddress,
-                gasPrice: gasPriceInWei,
-            });
-            dispatcher.updateAccountZrxAllowance(amountToStakeBaseUnits);
+            await zrxTokenContract.approve.awaitTransactionSuccessAsync(
+                erc20ProxyAddress,
+                constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS,
+                {
+                    from: ownerAddress,
+                    gasPrice: gasPriceInWei,
+                },
+            );
+            dispatcher.updateAccountZrxAllowance(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);
         }
     },
 };
