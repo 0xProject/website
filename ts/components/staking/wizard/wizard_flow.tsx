@@ -16,7 +16,6 @@ import { MarketMaker } from 'ts/components/staking/wizard/market_maker';
 import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
 import { useAPIClient } from 'ts/hooks/use_api_client';
-import { OrderStateUtils } from '@0x/order-utils';
 
 export interface WizardFlowProps {
     providerState: ProviderState;
