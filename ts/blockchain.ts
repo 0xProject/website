@@ -937,9 +937,7 @@ export class Blockchain {
     }
     private async _updateDefaultGasPriceAsync(): Promise<void> {
         try {
-            const gasInfo = await backendClient.getGasInfoAsync();
-            const gasPriceInGwei = new BigNumber(gasInfo.fast / 10);
-            const gasPriceInWei = gasPriceInGwei.multipliedBy(1000000000);
+            const { gasPriceInWei } = await backendClient.getGasInfoAsync();
             this._defaultGasPrice = gasPriceInWei;
         } catch (err) {
             return;

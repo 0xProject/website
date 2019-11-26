@@ -78,14 +78,13 @@ export const asyncDispatcher = {
     increaseZrxAllowanceAndDispatchToStoreIfNeededAsync: async (
         providerState: ProviderState,
         networkId: Network,
-        _: BigNumber,
+        // tslint:disable-next-line:no-unused-variable
+        amountToStake: BigNumber,
         dispatcher: Dispatcher,
     ) => {
         const { provider } = providerState;
         const ownerAddress = (providerState.account as AccountReady).address;
         const gasInfo = await backendClient.getGasInfoAsync();
-        const gasPriceInGwei = new BigNumber(gasInfo.fast / 10);
-        const gasPriceInWei = gasPriceInGwei.multipliedBy(1000000000);
 
         const contractAddresses = getContractAddressesForNetworkOrThrow(networkId as number);
         const erc20ProxyAddress = contractAddresses.erc20Proxy;
@@ -101,7 +100,7 @@ export const asyncDispatcher = {
                 constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS,
                 {
                     from: ownerAddress,
-                    gasPrice: gasPriceInWei,
+                    gasPrice: gasInfo.gasPriceInWei,
                 },
             );
             dispatcher.updateAccountZrxAllowance(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);

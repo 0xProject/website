@@ -1,6 +1,8 @@
+import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 
 import {
+    GasInfo,
     WebsiteBackendCFLMetricsData,
     WebsiteBackendGasInfo,
     WebsiteBackendJobInfo,
@@ -10,6 +12,7 @@ import {
     WebsiteBackendTokenInfo,
     WebsiteBackendTradingPairs,
 } from 'ts/types';
+import { constants } from 'ts/utils/constants';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { utils } from 'ts/utils/utils';
 
@@ -24,9 +27,17 @@ const TRADING_PAIRS_ENDPOINT = '/trading-pairs';
 const STAKING_POOLS_ENDPOINT = '/staking-pools';
 
 export const backendClient = {
-    async getGasInfoAsync(): Promise<WebsiteBackendGasInfo> {
-        const result = await fetchUtils.requestAsync(utils.getBackendBaseUrl(), ETH_GAS_STATION_ENDPOINT);
-        return result;
+    async getGasInfoAsync(): Promise<GasInfo> {
+        const gasInfo = (await fetchUtils.requestAsync(
+            utils.getBackendBaseUrl(),
+            ETH_GAS_STATION_ENDPOINT,
+        )) as WebsiteBackendGasInfo;
+
+        // Eth Gas Station result is gwei * 10
+        const gasPriceInGwei = new BigNumber(gasInfo.fast / 10);
+        // Time is in minutes
+        const estimatedTimeMs = gasInfo.fastWait * 60 * 1000; // Minutes to MS
+        return { gasPriceInWei: gasPriceInGwei.multipliedBy(constants.GWEI_IN_WEI), estimatedTimeMs };
     },
     async getJobInfosAsync(): Promise<WebsiteBackendJobInfo[]> {
         const result = await fetchUtils.requestAsync(utils.getBackendBaseUrl(), JOBS_ENDPOINT);
