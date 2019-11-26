@@ -16,6 +16,7 @@ import { MarketMaker } from 'ts/components/staking/wizard/market_maker';
 import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
 import { useAPIClient } from 'ts/hooks/use_api_client';
+import { OrderStateUtils } from '@0x/order-utils';
 
 export interface WizardFlowProps {
     providerState: ProviderState;
@@ -146,6 +147,39 @@ const ErrorButton: React.FC<ErrorButtonProps> = props => {
     );
 };
 
+const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.ReactNode => {
+    if (stakeAmount === '') {
+        return (
+            <Status
+                title="Please select an amount of staked ZRX above to see matching Staking Pool."
+                linkText="or explore market maker list"
+                to={WebsitePaths.Staking}
+            />
+        );
+    }
+    if (stakingPools === undefined) {
+        return (
+            <Status
+                title="Looking for most suitable
+                market makers"
+                iconName="search_big"
+                to={WebsitePaths.Staking}
+            />
+        );
+    }
+    if (stakingPools.length === 0) {
+        return (
+            <Status
+                title="We didn’t find a suitable staking pool. Try again later or adjust ZRX amount."
+                linkText="or explore market maker list"
+                iconName="getStartedThin"
+                to={WebsitePaths.Staking}
+            />
+        );
+    }
+    return null;
+};
+
 export const WizardFlow: React.FC<WizardFlowProps> = props => {
         /* <MarketMaker
             name="Binance staking pool"
@@ -270,6 +304,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
     }
     const formattedAmount = utils.getFormattedAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
     const unitAmount = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX).toNumber();
+    const statusNode = getStatus(stakeAmount, stakingPools);
     return (
         <>
             <NumberInput
@@ -303,9 +338,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
                     },
                 ]}
             />
-            {stakingPools && (
-                <>
-                {stakingPools.length > 0 &&
+            {stakingPools && stakingPools.length > 0 && (
                     <InfoHeader>
                     <InfoHeaderItem>
                         Recommended staking pools {stakingPools.length > 1 && <NumberRound>{stakingPools.length}</NumberRound>}
@@ -316,53 +349,29 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
                         </Button>
                     </InfoHeaderItem>
                     </InfoHeader>
-                }
-                {!stakingPools.length &&
-                    <Status
-                        title="We didn’t find a suitable staking pool. Try again later or adjust ZRX amount."
-                        linkText="or explore market maker list"
-                        iconName="getStartedThin"
-                        to={WebsitePaths.Staking}
-                    />
-                }
-                {stakingPools.map(pool => {
-                    return (
-                        <MarketMaker
-                            key={pool.poolId}
-                            name={pool.metaData.name || utils.getAddressBeginAndEnd(_.head(pool.nextEpochStats.makerAddresses))}
-                            collectedFees={pool.currentEpochStats.protocolFeesGeneratedInEth}
-                            rewards={1 - pool.nextEpochStats.approximateStakeRatio}
-                            staked={pool.nextEpochStats.approximateStakeRatio}
-                            iconUrl={pool.metaData.logoUrl}
-                            website={pool.metaData.websiteUrl}
-                            // TODO: implement difference correctly
-                            difference={formattedAmount}
-                        />
-                    );
-                })}
-                {stakingPools.length > 0 &&
-                    <ButtonWithIcon
-                        color={colors.white}
-                    >
-                        Start staking
-                    </ButtonWithIcon>
-                }
-                </>
             )}
-            {stakingPools === undefined && stakeAmount !== '' &&
-                <Status
-                    title="Looking for most suitable
-                    market makers"
-                    iconName="search_big"
-                    to={WebsitePaths.Staking}
-                />
-            }
-            {stakeAmount === '' &&
-                <Status
-                    title="Please select an amount of staked ZRX above to see matching Staking Pool."
-                    linkText="or explore market maker list"
-                    to={WebsitePaths.Staking}
-                />
+            {stakingPools && stakingPools.map(pool => {
+                return (
+                    <MarketMaker
+                        key={pool.poolId}
+                        name={pool.metaData.name || utils.getAddressBeginAndEnd(_.head(pool.nextEpochStats.makerAddresses))}
+                        collectedFees={pool.currentEpochStats.protocolFeesGeneratedInEth}
+                        rewards={1 - pool.nextEpochStats.approximateStakeRatio}
+                        staked={pool.nextEpochStats.approximateStakeRatio}
+                        iconUrl={pool.metaData.logoUrl}
+                        website={pool.metaData.websiteUrl}
+                        // TODO: implement difference correctly
+                        difference={formattedAmount}
+                    />
+                );
+            })}
+            {statusNode}
+            {stakingPools && stakingPools.length > 0 &&
+                <ButtonWithIcon
+                    color={colors.white}
+                >
+                    Start staking
+                </ButtonWithIcon>
             }
         </>
     );
