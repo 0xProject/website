@@ -57,7 +57,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
                 await asyncDispatcher.increaseZrxAllowanceAndDispatchToStoreIfNeededAsync(
                     providerState,
                     networkId,
-                    amountToStakeBaseUnits,
                     dispatcher,
                 );
             }

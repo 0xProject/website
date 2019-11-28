@@ -79,8 +79,6 @@ export const asyncDispatcher = {
     increaseZrxAllowanceAndDispatchToStoreIfNeededAsync: async (
         providerState: ProviderState,
         networkId: Network,
-        // tslint:disable-next-line:no-unused-variable
-        amountToStake: BigNumber,
         dispatcher: Dispatcher,
     ) => {
         const { provider } = providerState;
@@ -96,14 +94,12 @@ export const asyncDispatcher = {
         // TODO: some information modal needed?
         if (currentAllowance.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
             // tslint:disable:await-promise
-            await zrxTokenContract.approve.awaitTransactionSuccessAsync(
-                erc20ProxyAddress,
-                constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS,
-                {
+            await zrxTokenContract
+                .approve(erc20ProxyAddress, constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)
+                .awaitTransactionSuccessAsync({
                     from: ownerAddress,
                     gasPrice: gasInfo.gasPriceInWei,
-                },
-            );
+                });
             dispatcher.updateAccountZrxAllowance(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);
         }
     },
