@@ -1,4 +1,4 @@
-import { StakingContract } from '@0x/abi-gen-wrappers';
+import { StakingContract, StakingProxyContract } from '@0x/abi-gen-wrappers';
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
 import { BigNumber, logUtils } from '@0x/utils';
@@ -118,16 +118,22 @@ export const asyncDispatcher = {
         const stakingContract = new StakingContract(contractAddresses.stakingProxy, providerState.provider, {
             from: ownerAddress,
         });
+        const stakingProxyContract = new StakingProxyContract(contractAddresses.stakingProxy, providerState.provider, {
+            from: ownerAddress,
+        });
 
         // TODO(kimpers): update quip docs with new way to call methods
-        // TODO(kimpers): use batch fn
-        await stakingContract.stake(amountToStakeBaseUnits).awaitTransactionSuccessAsync({ from: ownerAddress });
-        await stakingContract
-            .moveStake(
-                { status: StakeStatus.Undelegated, poolId: constants.STAKING.NIL_POOL_ID }, // From undelegated
-                { status: StakeStatus.Delegated, poolId }, // To the pool
-                amountToStakeBaseUnits,
-            )
-            .awaitTransactionSuccessAsync({ from: ownerAddress });
+        const data = [
+            stakingContract.stake(amountToStakeBaseUnits).getABIEncodedTransactionData(),
+            stakingContract
+                .moveStake(
+                    { status: StakeStatus.Undelegated, poolId: constants.STAKING.NIL_POOL_ID }, // From undelegated
+                    { status: StakeStatus.Delegated, poolId }, // To the pool
+                    amountToStakeBaseUnits,
+                )
+                .getABIEncodedTransactionData(),
+        ];
+
+        await stakingProxyContract.batchExecute(data).awaitTransactionSuccessAsync({ from: ownerAddress });
     },
 };
