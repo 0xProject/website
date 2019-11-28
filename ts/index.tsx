@@ -137,10 +137,6 @@ render(
                             to={`${WebsitePaths.Docs}/tools/ethereum-types/:version?`}
                         />
                         <Redirect
-                            from={`${WebsiteLegacyPaths.AssetBuyer}/:version?`}
-                            to={`${WebsitePaths.Docs}/tools/asset-buyer/:version?`}
-                        />
-                        <Redirect
                             from={`${WebsiteLegacyPaths.AssetSwapperDocs}/:version?`}
                             to={`${WebsitePaths.Docs}/tools/asset-swapper/:version?`}
                         />
