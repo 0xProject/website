@@ -2,7 +2,7 @@ https://0x.org/
 https://0x.org/explore
 https://0x.org/portal
 https://0x.org/docs/guides
-https://0x.org/docs/guides/v2-coordinatior-specification
+https://0x.org/docs/guides/v2-coordinator-specification
 https://0x.org/docs/guides/v2-forwarder-specification
 https://0x.org/docs/guides/legal-guide
 https://0x.org/docs/guides/v2-specification

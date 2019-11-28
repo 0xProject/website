@@ -1,21 +1,6 @@
-# 0x 3.0 Coordinator Specification
-
-1.  [Architecture](#architecture)
-1.  [Message Types](#message-types)
-    1. [Orders](#orders)
-    1. [Transactions](#transactions)
-    1. [Approvals](#approvals)
-1.  [Contracts](#contracts)
-    1.  [Coordinator](#Coordinator)
-    1.  [CoordinatorRegistry](#Coordinator-registry)
-1.  [Signature Types](#signature-types)
-1.  [Contract Events](#events)
-1.  [Reference Coordinator Server](#reference-Coordinator-server)
-1.  [Standard Coordinator API](#standard-Coordinator-api)
-
 # Architecture
 
-The Coordinator model leverages [0x transactions](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions) to interact with the [`Exchange` contract](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#exchange). 0x transactions allow external accounts or contracts to execute `Exchange` methods in the context of the transaction signer, which makes it possible to add custom logic to the execution of trades or cancels.
+The Coordinator model leverages [0x transactions](/docs/guides/v3-specification#transactions) to interact with the [`Exchange` contract](/docs/guides/v3-specification#exchange). 0x transactions allow external accounts or contracts to execute `Exchange` methods in the context of the transaction signer, which makes it possible to add custom logic to the execution of trades or cancels.
 
 In particular, the Coordinator model introduces an additional layer of verification to `Exchange` interactions. An order may specify a Coordinator's address that is responsible for approving any fills of the order. The Coordinator can set custom rules that may be used to prevent trade collisions, enable free and instant cancels, or add time delays to filling order.
 A Coordinator has two components that differentiate it from a traditional relayer:
@@ -32,21 +17,19 @@ This specification will describe a specific implementation of each component tha
 5. The taker submits the signed 0x transaction and approval to the `Coordinator` contract by calling `Coordinator.executeTransaction`.
 6. The `Coordinator` contract verifies that the approval is valid/unexpired and executes the 0x transaction by calling `Exchange.executeTransaction`.
 
-<div style="text-align: center;">
-<img src="../img/0x_coordinator.png" style="padding-bottom: 20px; padding-top: 20px;" width="80%" />
-</div>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/img/0x_coordinator.png" width="750" /></p>
 
 # Message Types
 
 ## Orders
 
-The [`Coordinator` contract](#Coordinator) is compatible with orders where the [`senderAddress`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#senderaddress) is equal to the address of this contract or the null address. If an order's `senderAddress` is null, that order may be filled or cancelled through the `Coordinator` contract or directly through the `Exchange` contract. For a full specification of the order schema, please see the [orders section](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#orders) of the 0x 3.0 specification.
+The [`Coordinator` contract](#Coordinator) is compatible with orders where the [`senderAddress`](/docs/guides/v3-specification#senderaddress) is equal to the address of this contract or the null address. If an order's `senderAddress` is null, that order may be filled or cancelled through the `Coordinator` contract or directly through the `Exchange` contract. For a full specification of the order schema, please see the [orders section](/docs/guides/v3-specification#orders) of the 0x 3.0 specification.
 
 For the purposes of this specification, orders that specify the `Coordinator` contract as the `senderAddress` will be referred to as "Coordinator orders".
 
 ## Transactions
 
-The `Coordinator` contract processes [0x transaction](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions) messages, using the `Exchange` 3.0 EIP712 domain header (read more [here](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions#hashing-a-transaction)). Transactions may be signed with any valid [0x 3.0 signature type](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#signature-types).
+The `Coordinator` contract processes [0x transaction](/docs/guides/v3-specification#transactions) messages, using the `Exchange` 3.0 EIP712 domain header (read more [here](/docs/guides/v3-specification#transactions#hashing-a-transaction)). Transactions may be signed with any valid [0x 3.0 signature type](/docs/guides/v3-specification#signature-types).
 
 In Solidity, a transaction is represented as:
 
@@ -149,20 +132,20 @@ When interacting with Coordinator orders, the following Exchange methods must be
 
 | Method                                                                                                                                         | Approval required |
 | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| [`fillOrder`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#fillorder)                             | Yes               |
-| [`fillOrKillOrder`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#fillorkillorder)                 | Yes               |
-| [`batchFillOrders`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#batchfillorders)                 | Yes               |
-| [`batchFillOrdersNoThrow`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#batchfillordersnothrow)   | Yes               |
-| [`batchFillOrKillOrders`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#batchfillorkillorders)     | Yes               |
-| [`marketBuyOrdersNoThrow`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#marketbuyordersnothrow)   | Yes               |
-| [`marketBuyOrdersFillOrKill`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#marketbuyordersfillorkill)   | Yes               |
-| [`marketSellOrdersNoThrow`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#marketsellordersnothrow) | Yes               |
-| [`marketSellOrdersFillOrKill`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#marketsellordersfillorkill) | Yes               |
-| [`matchOrders`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#matchorders)                         | Yes               |
-| [`matchOrdersWithMaximalFill`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#matchorderswithmaximalfill)                         | Yes               |
-| [`cancelOrder`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#cancelorder)                         | No                |
-| [`batchCancelOrders`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#batchcancelorders)             | No                |
-| [`cancelOrdersUpTo`](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#cancelordersupto)               | No                |
+| [`fillOrder`](/docs/guides/v3-specification#fillorder)                             | Yes               |
+| [`fillOrKillOrder`](/docs/guides/v3-specification#fillorkillorder)                 | Yes               |
+| [`batchFillOrders`](/docs/guides/v3-specification#batchfillorders)                 | Yes               |
+| [`batchFillOrdersNoThrow`](/docs/guides/v3-specification#batchfillordersnothrow)   | Yes               |
+| [`batchFillOrKillOrders`](/docs/guides/v3-specification#batchfillorkillorders)     | Yes               |
+| [`marketBuyOrdersNoThrow`](/docs/guides/v3-specification#marketbuyordersnothrow)   | Yes               |
+| [`marketBuyOrdersFillOrKill`](/docs/guides/v3-specification#marketbuyordersfillorkill)   | Yes               |
+| [`marketSellOrdersNoThrow`](/docs/guides/v3-specification#marketsellordersnothrow) | Yes               |
+| [`marketSellOrdersFillOrKill`](/docs/guides/v3-specification#marketsellordersfillorkill) | Yes               |
+| [`matchOrders`](/docs/guides/v3-specification#matchorders)                         | Yes               |
+| [`matchOrdersWithMaximalFill`](/docs/guides/v3-specification#matchorderswithmaximalfill)                         | Yes               |
+| [`cancelOrder`](/docs/guides/v3-specification#cancelorder)                         | No                |
+| [`batchCancelOrders`](/docs/guides/v3-specification#batchcancelorders)             | No                |
+| [`cancelOrdersUpTo`](/docs/guides/v3-specification#cancelordersupto)               | No                |
 
 
 Note that the `Coordinator` contract currently does not support `batchMatchOrders` or `batchMatchOrdersWithMaximalFill` transactions.
@@ -262,7 +245,7 @@ function decodeOrdersFromFillData(bytes memory data)
 
 ### Protocol Fees
 
-The Coordinator contract can pay [protocol fees](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#protocol-fees) in either ETH or WETH.
+The Coordinator contract can pay [protocol fees](/docs/guides/v3-specification#protocol-fees) in either ETH or WETH.
 Any ETH that is sent in a `Coordinator.executeTransaction` will be forwarded to the `Exchange` contract. For each order filled in the transaction, the `Exchange` will attempt to pay the protocol fee using ETH, and fall back to charging WETH from the taker if there is not enough. Any ETH value left over at the end is returned to the transaction sender.
 
 Note that if the transaction is submitted by someone besides the taker (e.g. by the Coordinator operator), the sender can subsidize the protocol fee on behalf of the taker by sending enough ETH in the `Coordinator.executeTransaction` to cover one or more orders.
@@ -298,7 +281,7 @@ function getCoordinatorEndpoint(address coordinatorOperator)
 
 # Signature Types
 
-All signatures submitted to the `Coordinator` contract are represented as a byte array of arbitrary length, where the last byte (the "signature byte") specifies the signatures type. The signature type is read from the signature byte array before validation. The allowed Coordinator signature types are symmetric to the [Exchange signature types](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#signature-types), but do not include `Wallet`, `Validator`, `PreSigned`, and `EIP1271Wallet` types. The following signature types are supported:
+All signatures submitted to the `Coordinator` contract are represented as a byte array of arbitrary length, where the last byte (the "signature byte") specifies the signatures type. The signature type is read from the signature byte array before validation. The allowed Coordinator signature types are symmetric to the [Exchange signature types](/docs/guides/v3-specification#signature-types), but do not include `Wallet`, `Validator`, `PreSigned`, and `EIP1271Wallet` types. The following signature types are supported:
 
 | Signature byte | Signature type      |
 | -------------- | ------------------- |
@@ -533,7 +516,7 @@ Submit a signed 0x transaction encoding either a 0x fill or cancellation. If the
 }
 ```
 
-- `signedTransaction` - A signed [0x transaction](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions) along with the `verifyingContractAddress` which is part of it's [EIP712 domain](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md#definition-of-domainseparator).
+- `signedTransaction` - A signed [0x transaction](/docs/guides/v3-specification#transactions) along with the `verifyingContractAddress` which is part of it's [EIP712 domain](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md#definition-of-domainseparator).
 - `txOrigin` - The address that will eventually submit the Ethereum transaction executing this 0x transaction on-chain. This will be enforced by the `Coordinator` extension contract.
 
 #### Response

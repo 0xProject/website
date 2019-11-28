@@ -192,9 +192,9 @@ The two main 0x smart contract interfaces are:
 
 -   _Exchange_: The main 0x exchange protocol smart contract interface
     -   Specifically asset-swapper interacts with `marketBuyNoThrow` and `marketSellNoThrow` functions
--   _Forwarder_: An extension contract that abstracts wrapping ether and a number of other computations; only supports \*/WETH pairs. Read more about forwarder [here](https://0x.org/docs/guides/v3-forwarder-specification)
+-   _Forwarder_: An extension contract that abstracts wrapping ether and a number of other computations; only supports \*/WETH pairs. Read more about forwarder [here](/docs/guides/v3-forwarder-specification)
     -   Specifically asset-swapper interacts with `marketBuyWithEth` and `marketSellWithEth` functions
--   (Future) _Coordinator_: An extension contract that enables the filling of coordinator orders; read more about coordinator 0x orders [here](https://0x.org/docs/guides/v3-coordinatior-specification).
+-   (Future) _Coordinator_: An extension contract that enables the filling of coordinator orders; read more about coordinator 0x orders [here](/docs/guides/v3-coordinator-specification).
 
 SwapQuoteConsumer has a router logic that, dependent on the takerAddress and asset trading pair, determine the best 0x interface to provide output for.
 

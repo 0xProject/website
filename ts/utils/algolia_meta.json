@@ -121,13 +121,18 @@
             "difficulty": "Intermediate",
             "path": "guides/using-the-standard-relayer-api.mdx"
         },
-        "v2-coordinatior-specification": {
+        "v2-coordinator-specification": {
             "title": "0x Coordinator Specification (v2)",
             "description": "A comprehensive technical spec of the first coordinator model developer by the 0x core team (soft-cancel variant)",
             "tags": ["Coordinator", "Relayer", "Trader", "Protocol Developer"],
-            "topics": ["Coordinator", "Relayer", "Trader", "Protocol Developer"],
+            "topics": [
+                "Coordinator",
+                "Relayer",
+                "Trader",
+                "Protocol Developer"
+            ],
             "difficulty": "Advanced",
-            "path": "guides/v2-coordinatior-specification.mdx"
+            "path": "guides/v2-coordinator-specification.mdx"
         },
         "v2-forwarder-specification": {
             "title": "0x Forwarder Specification (v2)",
@@ -164,10 +169,42 @@
         "v3-staking-specification": {
             "title": "0x Staking Specification (v3)",
             "description": "The technical spec for the Staking in 0x protocol v3. Allowing Market Makers to receive rebates when orders are filled.",
-            "tags": ["Specs", "Relayer", "Trader", "Market Maker", "Protocol Developer"],
-            "topics": ["Specs", "Relayer", "Trader", "Market Maker", "Protocol Developer"],
+            "tags": [
+                "Specs",
+                "Relayer",
+                "Trader",
+                "Market Maker",
+                "Protocol Developer"
+            ],
+            "topics": [
+                "Specs",
+                "Relayer",
+                "Trader",
+                "Market Maker",
+                "Protocol Developer"
+            ],
             "difficulty": "Advanced",
             "path": "guides/v3-staking-specification.mdx"
+        },
+        "v3-coordinator-specification": {
+            "title": "0x Coordinator Specification (v3)",
+            "description": "A comprehensive technical spec of the first coordinator model developer by the 0x core team (soft-cancel variant)",
+            "tags": [
+                "Coordinator",
+                "Relayer",
+                "Trader",
+                "Market Maker",
+                "Protocol Developer"
+            ],
+            "topics": [
+                "Coordinator",
+                "Relayer",
+                "Trader",
+                "Market Maker",
+                "Protocol Developer"
+            ],
+            "difficulty": "Advanced",
+            "path": "guides/v3-coordinator-specification.mdx"
         },
         "web3-provider-explained": {
             "title": "Web3 Providers Explained",
