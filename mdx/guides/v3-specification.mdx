@@ -1,48 +1,3 @@
-# 0x protocol 3.0 specification
-
-## Table of contents
-
-1.  [Architecture](#architecture)
-1.  [Contracts](#contracts)
-    1.  [Exchange](#exchange)
-    1.  [AssetProxy](#assetproxy)
-    1.  [ZeroExGovernor](#zeroexgovernor)
-    1.  [Staking](#staking)
-1.  [Contract Interactions](#contract-interactions)
-    1.  [Trade settlement](#trade-settlement)
-    1.  [Protocol fees](#protocol-fees)
-1.  [Orders](#orders)
-    1.  [Message format](#order-message-format)
-    1.  [Hashing an order](#hashing-an-order)
-    1.  [Creating an order](#creating-an-order)
-    1.  [Filling orders](#filling-orders)
-    1.  [Matching orders](#matching-orders)
-    1.  [Cancelling orders](#cancelling-orders)
-    1.  [Querying state of an order](#querying-state-of-an-order)
-    1.  [Simulating fill transfers](#simulating-fill-transfers)
-1.  [Transactions](#transactions)
-    1.  [Message format](#transaction-message-format)
-    1.  [Hashing a transaction](#hashing-a-transaction)
-    1.  [Creating a transaction](#creating-a-transaction)
-    1.  [Executing a transaction](#executing-a-transaction)
-    1.  [Transaction context](#transaction-context)
-1.  [Signatures](#signatures)
-    1.  [Validating signatures](#validating-signatures)
-    1.  [Signature types](#signature-types)
-1.  [Events](#events)
-    1.  [Exchange events](#exchange-events)
-    1.  [AssetProxy events](#assetproxy-events)
-    1.  [ZeroExGovernor events](#zeroexgovernor-events)
-    1.  [Staking events](#staking-events)
-1.  [Types](#types)
-1.  [Rich Reverts](#rich-reverts)
-1.  [Miscellaneous](#miscellaneous)
-    1.  [EIP-712 usage](#eip-712-usage)
-    1.  [EIP-1271 Usage](#eip-1271-usage)
-    1.  [ECRECOVER usage](#ecrecover-usage)
-    1.  [Rounding errors](#rounding-errors)
-    1.  [Differences from 2.0](#differences-from-20)
-
 # Architecture
 
 0x protocol uses an approach we refer to as **off-chain order relay with on-chain settlement**. In this approach, cryptographically signed [orders](#orders) are broadcast off of the blockchain through any arbitrary communication channel; an interested counterparty may inject one or more of these [orders](#orders) into 0x protocol's [`Exchange`](#exchange) contract to execute and settle trades directly to the blockchain.
@@ -102,20 +57,20 @@ contract IAssetProxy {
 
 Currently, the protocol includes the following [`AssetProxy`](#assetproxy) contracts:
 
-- [`ERC20Proxy`](../asset-proxy/erc20-proxy.md)
-- [`ERC721Proxy`](../asset-proxy/erc721-proxy.md)
-- [`ERC1155Proxy`](../asset-proxy/erc1155-proxy.md)
-- [`MultiAssetProxy`](../asset-proxy/multi-asset-proxy.md)
-- [`StaticCallProxy`](../asset-proxy/static-call-proxy.md)
-- [`ERC20BridgeProxy`](../asset-proxy/erc20-bridge-proxy.md)
+- ERC20Proxy
+- ERC721Proxy
+- ERC1155Proxy
+- MultiAssetProxy
+- StaticCallProxy
+- ERC20BridgeProxy
 
 ## ZeroExGovernor
 
-The `ZeroExGovernor` is a time-locked multi-signature wallet that has permission to perform administrative functions within the protocol. For specific information on its authorized functionality, please refer to the [ZeroExGovernor specification](./zero-ex-governor.md).
+The `ZeroExGovernor` is a time-locked multi-signature wallet that has permission to perform administrative functions within the protocol. For specific information on its authorized functionality, please refer to the [ZeroExGovernor specification](/docs/guides/v3-governor-specification).
 
 ## Staking
 
-Please refer to the [Staking specification](../staking/staking-specification.md) for details on how the staking system is used within the protocol.
+Please refer to the [Staking specification](/docs/guides/v3-staking-specification) for details on how the staking system is used within the protocol.
 
 # Contract Interactions
 
@@ -125,40 +80,36 @@ The diagrams provided below demonstrate interactions between various 0x smart co
 
 A trade is initiated when an [order](#orders) is passed into the [`Exchange`](#exchange) contract. If the [order](#orders) is valid, the [`Exchange`](#exchange) contract will attempt to settle each leg of the trade by calling into the appropriate [`AssetProxy`](#assetproxy) contract for each asset being exchanged. Each [`AssetProxy`](#assetproxy) accepts and processes a payload of asset metadata and initiates a transfer. To simplify the trade settlement diagrams below, we assume that the orders being settled have zero fees.
 
-### ERC20 <> ERC20
+### ERC20 <-> ERC20
 
-<div style="text-align: center;">
-<img src="../img/0x_v2_trade_erc20_erc20.png" style="padding-bottom: 20px; padding-top: 20px;" width="80%" />
-</div>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/img/0x_v2_trade_erc20_erc20.png" width="750" /></p>
 
 Transaction #1
 
-1.  `Exchange.fillOrder(order, value)`
-2.  `ERC20Proxy.transferFrom(assetData, from, to, value)`
-3.  `ERC20Token(assetData.address).transferFrom(from, to, value)`
+1.  Exchange.fillOrder(order, value)
+2.  ERC20Proxy.transferFrom(assetData, from, to, value)
+3.  ERC20Token(assetData.address).transferFrom(from, to, value)
 4.  ERC20Token: (revert on failure)
 5.  ERC20Proxy: (revert on failure)
-6.  `ERC20Proxy.transferFrom(assetData, from, to, value)`
-7.  `ERC20Token(assetData.address).transferFrom(from, to, value)`
+6.  ERC20Proxy.transferFrom(assetData, from, to, value)
+7.  ERC20Token(assetData.address).transferFrom(from, to, value)
 8.  ERC20Token: (revert on failure)
 9.  ERC20Proxy: (revert on failure)
 10. Exchange: (return [`FillResults`](#fillresults))
 
-### ERC20 <> ERC721
+### ERC20 <-> ERC721
 
-<div style="text-align: center;">
-<img src="../img/0x_v2_trade_erc20_erc721.png" style="padding-bottom: 20px; padding-top: 20px;" width="80%" />
-</div>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/img/0x_v2_trade_erc20_erc721.png" width="750" /></p>
 
 Transaction #1
 
-1.  `Exchange.fillOrder(order, value)`
-2.  `ERC721Proxy.transferFrom(assetData, from, to, value)`
-3.  `ERC721Token(assetData.address).transferFrom(from, to, assetData.tokenId)`
+1.  Exchange.fillOrder(order, value)
+2.  ERC721Proxy.transferFrom(assetData, from, to, value)
+3.  ERC721Token(assetData.address).transferFrom(from, to, assetData.tokenId)
 4.  ERC721Token: (revert on failure)
 5.  ERC721Proxy: (revert on failure)
-6.  `ERC20Proxy.transferFrom(assetData, from, to, value)`
-7.  `ERC20Token(assetData.address).transferFrom(from, to, value)`
+6.  ERC20Proxy.transferFrom(assetData, from, to, value)
+7.  ERC20Token(assetData.address).transferFrom(from, to, value)
 8.  ERC20Token: (revert on failure)
 9.  ERC20Proxy: (revert on failure)
 10. Exchange: (return [`FillResults`](#fillresults))
@@ -167,7 +118,7 @@ Transaction #1
 
 Every individual fill executed through the `Exchange` contract charges a protocol fee to the taker that is used to incentivize liquidity provision in the system.
 
-A detailed paper explaining the economics of protocol fees in 0x protocol can be found [here](./protocol-fees.pdf). The [Staking specification](../staking/staking-specification.md#6-liquidity-incentives) also provides details on specific smart contract interactions and reward calculations within the system.
+A detailed paper explaining the economics of protocol fees in 0x protocol can be found [here](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/protocol-fees.pdf). The [Staking specification](/docs/guides/v3-staking-specification) also provides details on specific smart contract interactions and reward calculations within the system.
 
 ### Calculating the protocol fee
 
@@ -1635,7 +1586,7 @@ event Execution(uint256 indexed transactionId);
 
 ## Staking events
 
-See the [Staking specification](../staking/staking-specification.md#10-events) for a list of events that are used within the system of staking contracts.
+See the [Staking specification](/docs/guides/v3-staking-specification) for a list of events that are used within the system of staking contracts.
 
 # Types
 

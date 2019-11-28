@@ -1,74 +1,4 @@
-# 0x protocol Staking specification
-
-## Table of Contents
-
-1. [Overview](#overview)
-   1. [Motivation](#motivation)
-   1. [Utility of Stake](#utility-of-stake)
-   1. [Staking Pools](#staking-pools)
-1. [Architecture](#architecture)
-   1. [Normal Mode](#normal-mode)
-   1. [Catastrophic Failure Mode](#catastrophic-failure-mode)
-1. [Contract Migrations](#contract-migrations)
-   1. [Deploying the system](#deploying-the-system)
-   1. [Upgrading `StakingProxy`](#upgrading-stakingproxy)
-   1. [Upgrading `Staking` contract](#upgrading-staking-contract)
-   1. [Upgrading `ZrxVault`](#upgrading-zrxvault)
-   1. [Handling upgrades to the ERC20Proxy](#handling-upgrades-to-the-erc20proxy)
-   1. [Setting Parameters](#setting-parameters)
-   1. [Managing Exchange Addresses](#managing-exchange-addresses)
-1. [Epochs & Scheduling](#epochs--scheduling)
-   1. [Ending One Epoch, and Starting a New One](#ending-one-epoch-and-starting-a-new-one)
-   1. [Logic of `endEpoch`](#logic-of-endepoch)
-   1. [Errors by `endEpoch`](#errors-by-endepoch)
-1. [Staking](#staking)
-   1. [Logic of `stake`](#logic-of-stake)
-   1. [Errors by `stake`](#errors-by-stake)
-   1. [Logic of `unstake`](#logic-of-unstake)
-   1. [Errors by `unstake`](#errors-by-unstake)
-   1. [Staking Pools](#staking-pools)
-   1. [Stake Status](#stake-status)
-   1. [Logic of `moveStake`](#logic-of-movestake)
-   1. [Errors by `moveStake`](#errors-by-movestake)
-   1. [Querying Stake](#querying-stake)
-1. [Liquidity Incentives](#liquidity-incentives)
-   1. [Market Making](#market-making)
-   1. [Logic of `createStakingPool`](#logic-of-createstakingpool)
-   1. [Errors by `createStakingPool`](#errors-by-createstakingpool)
-   1. [Logic of `decreaseStakingPoolOperatorShare`](#logic-of-decreasestakingpooloperatorshare)
-   1. [Errors by `decreaseStakingPoolOperatorShare`](#errors-by-decreasestakingpooloperatorshare)
-   1. [Logic of `joinStakingPoolAsMaker`](#logic-of-joinstakingpoolasmaker)
-   1. [Errors by `joinStakingPoolAsMaker`](#errors-by-joinstakingpoolasmaker)
-   1. [Paying Liquidity Rewards (Finalization)](#paying-liquidity-rewards-finalization)
-   1. [Logic of `finalizePool`](#logic-of-finalizepool)
-   1. [Precision of Rewards Computation](#precision-of-rewards-computation)
-   1. [Errors by `finalizePool`](#errors-by-finalizepool)
-   1. [Logic of `withdrawDelegatorRewards`](#logic-of-withdrawdelegatorrewards)
-   1. [Errors by `withdrawDelegatorRewards`](#errors-by-withdrawdelegatorrewards)
-1. [Batch Calls](#batch-calls)
-   1. [Logic of `batchExecute`](#logic-of-batchexecute)
-   1. [Errors by `batchExecute`](#errors-by-batchexecute)
-1. [Paying the Protocol Fee](#paying-the-protocol-fee)
-   1. [Logic of `payProtocolFee`](#logic-of-payprotocolfee)
-   1. [Errors by `payProtocolFee`](#errors-by-payprotocolfee)
-1. [Interfaces](#interfaces)
-   1. [Staking Logic Contract](#staking-logic-contract)
-   1. [`Staking` Contract State](#staking-contract-state)
-   1. [`StakingProxy` Contract](#staking-proxy-contract)
-   1. [`ZrxVault`](#zrx-vault)
-   1. [Structs](#structs)
-1. [Events](#events)
-   1. [Staking Logic Contract](#staking-logic-contract)
-   1. [`StakingProxy` Contract](#staking-proxy-contract)
-   1. [`ZrxVault`](#zrx-vault)
-1. [Algorithms, Data Structures & Design Patterns](#algorithms-data-structures--design-patterns)
-   1. [Securing the Proxy Pattern](#securing-the-proxy-pattern)
-   1. [Tracking for Reward Balances for Pool Members](#tracking-for-reward-balances-for-pool-members)
-   1. [Computing Rewards in Practice](#computing-rewards-in-practice)
-   1. [Handling Epochs With No Rewards](#handling-epochs-with-no-rewards)
-   1. [Stake Management](#stake-management)
-
-## 1 Overview
+## Overview
 
 This spec outlines the architecture, implementation and usage of 0x stake-based liquidity incentives.
 
@@ -80,7 +10,7 @@ Staking aligns all market participants with the long-term mission and objectives
 
 Token holders stake their ZRX to unlock utility within the 0x ecosystem. This includes earning liquidity rewards through market making on the 0x protocol and participating in governance over the protocol.
 
-A market maker provides liquidity by creating 0x orders that are filled by takers through the [`Exchange`](../v3/v3-specifications.md#exchange) contract. The `Exchange` charges a fee to the taker on each fill and forwards it to the [`Staking`](#staking) contract. The fee is attributed to the maker so long as they have created a staking pool that holds at least 100 ZRX. After every 10 day epoch, the fees are aggregated and distributed to the makers as a liquidity reward: the reward is proportional to the maker's collected fees and stake relative to other makers.
+A market maker provides liquidity by creating 0x orders that are filled by takers through the [`Exchange`]() contract. The `Exchange` charges a fee to the taker on each fill and forwards it to the [`Staking`](#staking) contract. The fee is attributed to the maker so long as they have created a staking pool that holds at least 100 ZRX. After every 10 day epoch, the fees are aggregated and distributed to the makers as a liquidity reward: the reward is proportional to the maker's collected fees and stake relative to other makers.
 
 Governance over the protocol is conducted by voting on [ZEIPs (ZeroEx Improvement Proposals)](https://github.com/0xProject/ZEIPs). A ZEIP generally corresponds to a modification or upgrade to the 0x protocol. The ecosystem votes on the proposal, collectively deciding whether the feature will be included in a future version of the protocol. One Staked ZRX equals one vote.
 
@@ -104,7 +34,7 @@ The system of staking contracts is composed of three contracts.
 
 The diagram below shows how the staking contracts connect to each other and the broader 0x ecosystem.
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/Staking%20Architecture%20-%20Basic.png" width="700" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/Staking%20Architecture%20-%20Basic.png" width="700" /></p>
 
 ### Catastrophic Failure Mode
 
@@ -114,11 +44,11 @@ In this worst-case scenario, state has been irreparably corrupted and the stakin
 2. The `ZrxVault` is detached from the staking contract.
 3. Users withdraw their funds from the `ZrxVault` directly.
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/Staking%20Architecture%20-%20Catastrophic%20Failure.png" width="750" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/Staking%20Architecture%20-%20Catastrophic%20Failure.png" width="750" /></p>
 
 ## Contract Migrations
 
-This section outlines steps for managing the system of smart contracts. Operations are atomically executed as a group. Contracts are owned by the [`ZeroExGovernor`](../v3/zero-ex-governor.md).
+This section outlines steps for managing the system of smart contracts. Operations are atomically executed as a group. Contracts are owned by the [`ZeroExGovernor`]().
 
 ### Deploying the system
 
@@ -217,7 +147,7 @@ function validExchanges(address addr)
 
 All processes in the system are segmented into contiguous time intervals, called epochs. Epochs have a fixed minimum period (10 days at time of writing), which is configurable via [MixinParams](https://github.com/0xProject/0x-monorepo/blob/development/contracts/staking/contracts/src/sys/MixinParams.sol). Epochs serve as the basis for all other timeframes within the system, which provides a more stable and consistent scheduling metric than blocks or block timestamps.
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/Epochs.png" width="700" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/Epochs.png" width="700" /></p>
 
 ### Ending One Epoch, and Starting a New One
 
@@ -258,7 +188,7 @@ When this function is called:
 
 ZRX is staked by depositing tokens into the `Staking` contract. The diagram below illustrates this workflow.
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/Staking.png" width="700" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/Staking.png" width="700" /></p>
 
 ZRX can simlarly be unstaked by withdrawing tokens from the Staking contract. There are time-restrictions on unstaking, which are discussed later in this section.
 
@@ -459,7 +389,7 @@ function getTotalStakeDelegatedToPool(bytes32 poolId)
 
 Liquidity incentives are used to align market participants with long-term objectives of the 0x protocol. Fees are charged by the 0x protocol and paid to market makers as a reward for their trade volume and amount of ZRX staked.
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/ProtocolFee.png" width="750" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/ProtocolFee.png" width="750" /></p>
 
 The protocol fee is paid in either WETH or ETH. If ETH is not included in the transaction (by setting `msg.value`) then the fee will be taken in WETH from the taker, as illustrated in the diagram above.
 
@@ -473,7 +403,7 @@ A maker creates a pool, which can be delegated to by any other staker. When comp
 
 Market makers incentivize delegators to join their pool by setting aside a fixed percentage of their reward for the members of their pool. A member receives an amount of this percentage that is proportional to how much stake they have delegated to the pool.
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/Rewards.png" width="700" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/Rewards.png" width="700" /></p>
 
 The interface below describes how to create a pool, add market making addresses, and set the percentage of rewards for pool members.
 
@@ -559,7 +489,7 @@ No errors are triggered by this function.
 
 The Cobb-Douglas function is used to compute how much of the aggregate fees should be rewarded to each market maker.
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/CobbDouglas.png" width="200" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/CobbDouglas.png" width="200" /></p>
 
 | Term | Definition                                                                   |
 | ---- | ---------------------------------------------------------------------------- |
@@ -665,7 +595,7 @@ The errors in finalize pool are all math errors related to reward computation. I
 
 The staking contract supports arbitrary batch function calls to the staking logic contract, allowing for several operations in a single transaction. For example, finalizing several pools in one transaction.
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/Batch-Calls.png" width="400" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/Batch-Calls.png" width="400" /></p>
 
 ```solidity
 /// @dev Batch executes a series of calls to the staking contract.
@@ -1395,11 +1325,11 @@ This section describes the workflow for tracking and computing the portion of a 
 
 A pool with _D_ delegated stake that earned _R_ rewards for its pool members in a given epoch, the reward (_r_) for a member that delegated _d_ stake is computed by:
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/reward_tracking/RewardSingleEpoch.png" height="60" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/reward_tracking/RewardSingleEpoch.png" height="60" /></p>
 
 The member's reward after n epochs (given member does not change their stake) is then given by:
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/reward_tracking/RewardAfterManyEpochs.png" height="60" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/reward_tracking/RewardAfterManyEpochs.png" height="60" /></p>
 
 When a member modifies their stake in the pool, the [StoredBalance struct](https://github.com/0xProject/0x-monorepo/blob/development/contracts/staking/contracts/src/interfaces/IStructs.sol) gives us:
 
@@ -1410,15 +1340,15 @@ In addition to these values, we also need sum of ratios `R_k / D_k`, for each ep
 
 We store the following ratio for each epoch that a reward is earned for the pool:
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/reward_tracking/WhatWeStore.png" height="60" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/reward_tracking/WhatWeStore.png" height="60" /></p>
 
 We compute a member's reward using the following equation:
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/reward_tracking/RewardFromWhatWeStore.png" height="40" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/reward_tracking/RewardFromWhatWeStore.png" height="40" /></p>
 
 Example:
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/reward_tracking/RewardFromWhatWeStore-Example.png" height="60" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/reward_tracking/RewardFromWhatWeStore-Example.png" height="60" /></p>
 
 With the cumulative reward along with the stored balance of a member, we are able to compute their reward in the pool at any time.
 
@@ -1441,11 +1371,11 @@ In the equations above, a staker earned rewards from epochs `[0..n]`. This means
 
 In practice, this equation becomes:
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/reward_tracking/RewardAfterManyEpochs-InPractice.png" height="60" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/reward_tracking/RewardAfterManyEpochs-InPractice.png" height="60" /></p>
 
 The final equation for computing a member's reward during epoch `n` becomes:
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/reward_tracking/Reward-Final.png" height="60" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/reward_tracking/Reward-Final.png" height="60" /></p>
 
 #### Handling Epochs With No Rewards
 
@@ -1481,4 +1411,4 @@ The amount that can be unstaked is equal to `min(undelegated.cur, undelegated.ne
 
 The figure below illustrates how these fields are updated to track a user's stake.
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/blob/master/staking/assets/StakeManagementExample2.png" width="640" /></p>
+<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/staking/assets/StakeManagementExample2.png" width="640" /></p>
