@@ -1,3 +1,4 @@
+/*
 import { assetDataUtils, orderHashUtils } from '@0x/order-utils';
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -660,4 +661,6 @@ export class FillOrder extends React.Component<FillOrderProps, FillOrderState> {
             tokensToTrack: [],
         });
     }
-} // tslint:disable:max-file-line-count
+}
+*/
+// tslint:disable:max-file-line-count
