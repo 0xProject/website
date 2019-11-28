@@ -17,8 +17,8 @@
             "title": "Create and manage your staking pool",
             "subtitle": "Learn how to create and manage your staking pool to collect liquidity rewards",
             "description": "Learn how to create and manage your staking pool to collect liquidity rewards",
-            "tags": ["Staking"],
-            "topics": ["Staking"],
+            "tags": ["Staking", "Market Maker"],
+            "topics": ["Staking", "Market Maker"],
             "difficulty": "Intermediate",
             "path": "guides/create-staking-pool.mdx"
         },
@@ -125,12 +125,7 @@
             "title": "0x Coordinator Specification (v2)",
             "description": "A comprehensive technical spec of the first coordinator model developer by the 0x core team (soft-cancel variant)",
             "tags": ["Coordinator", "Relayer", "Trader", "Protocol Developer"],
-            "topics": [
-                "Coordinator",
-                "Relayer",
-                "Trader",
-                "Protocol Developer"
-            ],
+            "topics": ["Coordinator", "Relayer", "Trader", "Protocol Developer"],
             "difficulty": "Advanced",
             "path": "guides/v2-coordinatior-specification.mdx"
         },
@@ -150,6 +145,30 @@
             "difficulty": "Advanced",
             "path": "guides/v2-specification.mdx"
         },
+        "v3-coordinatior-specification": {
+            "title": "0x Coordinator Specification (v3)",
+            "description": "A comprehensive technical spec of the first coordinator model developer by the 0x core team (soft-cancel variant)",
+            "tags": ["Coordinator", "Relayer", "Trader", "Protocol Developer"],
+            "topics": ["Coordinator", "Relayer", "Trader", "Protocol Developer"],
+            "difficulty": "Advanced",
+            "path": "guides/v3-coordinatior-specification.mdx"
+        },
+        "v3-forwarder-specification": {
+            "title": "0x Forwarder Specification (v3)",
+            "description": "The technical spec for the Forwarder 0x extension contract that is used by 0x Instant to abstract away wrapping ETH, setting allowances and paying fees. Learn how it works and how you can use it directly in your own projects.",
+            "tags": ["Instant", "Relayer"],
+            "topics": ["Instant", "Relayer"],
+            "difficulty": "Advanced",
+            "path": "guides/v3-forwarder-specification.mdx"
+        },
+        "v3-specification": {
+            "title": "0x Protocol Specification (v3)",
+            "description": "A comprehensive, technical specification of the 0x protocol v3 useful for anyone trying to understand how the protocol works in precise detail.",
+            "tags": ["Specs", "Relayer", "Trader", "Protocol Developer"],
+            "topics": ["Specs", "Relayer", "Trader", "Protocol Developer"],
+            "difficulty": "Advanced",
+            "path": "guides/v3-specification.mdx"
+        },
         "web3-provider-explained": {
             "title": "Web3 Providers Explained",
             "description": "Learn more about what an Web3 Provider is and how it enables your dApp to communicate with the Ethereum blockchain and request transaction signatures from users.",
@@ -161,8 +180,8 @@
         "market-making-on-0x": {
             "title": "Market-making on 0x",
             "description": "Learn how to market-make on 0x, and what the differences are between trading on a CEX vs. DEX",
-            "tags": ["Trader"],
-            "topics": ["Trader"],
+            "tags": ["Trader", "Market Maker"],
+            "topics": ["Trader", "Market Maker"],
             "difficulty": "Beginner",
             "path": "guides/market-making-on-0x.mdx"
         },

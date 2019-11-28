@@ -2,7 +2,14 @@
 
 0x Instant is a product from the 0x core team that offers a convenient way for people to get access to a wide variety of tokens and other crypto-assets in just a few clicks. Developers can integrate the free, open source library into their applications or websites in order to both offer seamless access to crypto-assets, as well as gain a new source of revenue, with just a few lines of code.
 
-<Image src="https://s3.eu-west-2.amazonaws.com/0x-wiki-images/instant_screenshot.png" align="center" alt="0x Instant" width="350px" padding="20px" marginBottom="40px"/>
+<Image
+    src="https://s3.eu-west-2.amazonaws.com/0x-wiki-images/instant_screenshot.png"
+    align="center"
+    alt="0x Instant"
+    width="350px"
+    padding="20px"
+    marginBottom="40px"
+/>
 
 Check out a live example on [mainnet](http://0x-instant-staging.s3-website-us-east-1.amazonaws.com/) and [kovan](http://0x-instant-staging.s3-website-us-east-1.amazonaws.com/?networkId=42&assetData=0xf47261b00000000000000000000000002002d3812f58e35f0ea1ffbf80a75a38c32175fa&liquiditySource=provided).
 
@@ -22,19 +29,21 @@ As an end host of 0x Instant, you can charge users a fee on all trades made thro
 
 The 0x Instant UI and Asset Swapper are bundled together in a convenient JS package for you. You can either download and serve the package yourself, or use the CDN-hosted version from 0x.
 
+<CodeTabs tabs={['html']}>
+
 ```html
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
-        <script src="https://instant.0x.org/instant.js" ></script>
+        <script src="https://instant.0x.org/instant.js"></script>
     </head>
     <body>
-        <script type='text/javascript'>
+        <script type="text/javascript">
             function renderZeroExInstant() {
                 zeroExInstant.render(
                     {
-                        orderSource: 'https://api.radarrelay.com/0x/v2/',
+                        orderSource: 'https://api.0x.org/sra/',
                     },
                     'body',
                 );
@@ -45,7 +54,9 @@ The 0x Instant UI and Asset Swapper are bundled together in a convenient JS pack
 </html>
 ```
 
-Codepen [example](https://codepen.io/bmillman19/pen/qQzQQK)
+</CodeTabs>
+
+Codepen [example](https://codepen.io/dekz/pen/LYYwyqm)
 
 ## Options Configuration
 
@@ -53,25 +64,25 @@ Codepen [example](https://codepen.io/bmillman19/pen/qQzQQK)
 
 ## Required
 
-| Option      | Description                                                                                                                                                                       |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `orderSource` | Accepts either a [Standard Relayer API HTTP endpoint](https://github.com/0xProject/standard-relayer-api/blob/master/http/v2.md) or an array of signed [0x orders](https://0x.org/docs/tools/order-utils#interface-signedorder) |
+| Option        | Description                                                                                                                                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `orderSource` | Accepts either a [Standard Relayer API HTTP endpoint](https://github.com/0xProject/standard-relayer-api/blob/master/http/v3.md) or an array of signed [0x orders](https://0x.org/docs/tools/order-utils#interface-signedorder) |
 
 ## Optional
 
-| Option                         | Description                                                                                                                                                                                                                                                                                                                                          |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `provider`                       | An instance of an Ethereum [provider](#q-what-is-a-provider), but teams may optionally source liquidity themselves and pass in specific [SignedOrders](#faqs). If none is provided, 0x instant will try to grab the injected provider if one exists, otherwise it will suggest the user to install MetaMask                                                                                                                     |
-| `walletDisplayName`              | A display string for the wallet you are connected to. Defaults to our best guess (i.e. MetaMask, Coinbase Wallet) but should be provided if a custom provider is supplied as an optional config.                                                                                                                                                     |
-| `availableAssetDatas`            | An array of [assetDatas](#q-what-is-assetdata), but teams may optionally source liquidity themselves and pass in specific [SignedOrders](#q-what-is-a-signedorder) that can be purchased through Instant. Defaults to all token pairs from orderSource. Will throw an error if empty.                                                                                                                                                             |
-| `defaultSelectedAssetData`       | The asset that should be opened by default. If this is not provided, Instant will show "Select Token" if there are multiple availableAssetDatas.                                                                                                                                                                                                     |
-| `defaultAssetBuyAmount`          | Pre-fill the amount of tokens to purchase. Defaults to 0.                                                                                                                                                                                                                                                                                            |
+| Option                           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `provider`                       | An instance of an Ethereum [provider](#q-what-is-a-provider), but teams may optionally source liquidity themselves and pass in specific [SignedOrders](#faqs). If none is provided, 0x instant will try to grab the injected provider if one exists, otherwise it will suggest the user to install MetaMask                                                                                                                                           |
+| `walletDisplayName`              | A display string for the wallet you are connected to. Defaults to our best guess (i.e. MetaMask, Coinbase Wallet) but should be provided if a custom provider is supplied as an optional config.                                                                                                                                                                                                                                                      |
+| `availableAssetDatas`            | An array of [assetDatas](#q-what-is-assetdata), but teams may optionally source liquidity themselves and pass in specific [SignedOrders](#q-what-is-a-signedorder) that can be purchased through Instant. Defaults to all token pairs from orderSource. Will throw an error if empty.                                                                                                                                                                 |
+| `defaultSelectedAssetData`       | The asset that should be opened by default. If this is not provided, Instant will show "Select Token" if there are multiple availableAssetDatas.                                                                                                                                                                                                                                                                                                      |
+| `defaultAssetBuyAmount`          | Pre-fill the amount of tokens to purchase. Defaults to 0.                                                                                                                                                                                                                                                                                                                                                                                             |
 | `additionalAssetMetaDataMap`     | An object with keys that are assetData strings and values that are objects that adhere to the [AssetMetaData schema](#q-what-is-assetmetadata), but teams may optionally source liquidity themselves and pass in specific [SignedOrders](#q-what-is-a-signedorder). The values represent the meta data for that asset. There is an internal mapping for popular tokens that cannot be overriden and only appended to using this configuration option. |
-| `networkId`                      | Id of Ethereum network to connect to. Defaults to 1 (mainnet).                                                                                                                                                                                                                                                                                       |
-| `affiliateInfo`                  | An object specifying what % ETH fee should be added to orders and where the fee should be sent. Max feePercentage is .05 (See examples below)                                                                                                                                                                                                        |
-| `shouldDisableAnalyticsTracking` | An option to turn on / off analytics used to make Instant a better experience. Defaults to false.                                                                                                                                                                                                                                                    |
-| `onSuccess` | a function handler that is called when the token purchase through 0x Instant is complete. The function handler requests one argument: the transaction hash.                                                                                                                                                                                                                                                                                       |
-| `onClose` | a function handler that is called when the Instant overlay is closed. The function handler does not request any argument                                                                                                                                                                                                                                                                                       |
+| `chainId`                        | Chain Id of Ethereum network to connect to. Defaults to 1 (mainnet).                                                                                                                                                                                                                                                                                                                                                                                  |
+| `affiliateInfo`                  | An object specifying what % ETH fee should be added to orders and where the fee should be sent. Max feePercentage is .05 (See examples below)                                                                                                                                                                                                                                                                                                         |
+| `shouldDisableAnalyticsTracking` | An option to turn on / off analytics used to make Instant a better experience. Defaults to false.                                                                                                                                                                                                                                                                                                                                                     |
+| `onSuccess`                      | a function handler that is called when the token purchase through 0x Instant is complete. The function handler requests one argument: the transaction hash.                                                                                                                                                                                                                                                                                           |
+| `onClose`                        | a function handler that is called when the Instant overlay is closed. The function handler does not request any argument                                                                                                                                                                                                                                                                                                                              |
 
 # Examples
 
@@ -89,12 +100,12 @@ zeroExInstant.render(
 
 ## Using All Standard Relayer API Available Assets
 
-Using [/asset_pairs](https://github.com/0xProject/standard-relayer-api/blob/master/http/v2.md#get-v2asset_pairs) to find all \*/WETH pairs
+Using [/asset_pairs](https://github.com/0xProject/standard-relayer-api/blob/master/http/v3.md#get-v3asset_pairs) to find all `*/WETH` pairs
 
 ```typescript
 zeroExInstant.render(
     {
-        orderSource: 'https://api.radarrelay.com/0x/v2/',
+        orderSource: 'https://api.0x.org/sra/',
     },
     'body',
 );
@@ -107,7 +118,7 @@ This will give you more control over what provider is passed in and where RPC ca
 ```typescript
 zeroExInstant.render(
     {
-        orderSource: 'https://api.radarrelay.com/0x/v2/',
+        orderSource: 'https://api.0x.org/sra/',
         provider: window.ethereum,
         walletDisplayName: 'Trust Wallet',
     },
@@ -120,26 +131,9 @@ zeroExInstant.render(
 ```typescript
 zeroExInstant.render(
     {
-        orderSource: 'https://api.radarrelay.com/0x/v2/',
+        orderSource: 'https://api.0x.org/sra/',
         availableAssetDatas: ['0xf47261b0000000000000000000000000744d70fdbe2bc4cf95131626614a1764df805b9e'],
         defaultSelectedAssetData: '0xf47261b0000000000000000000000000744d70fdbe2bc4cf95131626614a1764df805b9e',
-    },
-    'body',
-);
-```
-
-## Earning affiliate fees
-
-3% of transaction volume will de deposited into 0x50ff5828a216170cf224389f1c5b0301a5d0a230
-
-```typescript
-zeroExInstant.render(
-    {
-        orderSource: 'https://api.radarrelay.com/0x/v2/',
-        affiliateInfo: {
-            feeRecipient: '0x50ff5828a216170cf224389f1c5b0301a5d0a230',
-            feePercentage: 0.03,
-        },
     },
     'body',
 );
@@ -150,10 +144,10 @@ zeroExInstant.render(
 ```typescript
 zeroExInstant.render(
     {
-        orderSource: 'https://api.radarrelay.com/0x/v2/',
-        onSuccess: (txHash) => {
-            console.log('Success! Transaction hash is: ' + txHash)
-        }
+        orderSource: 'https://api.0x.org/sra/',
+        onSuccess: txHash => {
+            console.log('Success! Transaction hash is: ' + txHash);
+        },
     },
     'body',
 );
@@ -216,20 +210,12 @@ zeroExInstant.render(
 
 As an end host of 0x Instant, you can charge users a fee on all trades made through Instant with the `affiliateFee` option. Simply specify an ethereum address and feePercentage (up to 5%), and a percentage of each transaction will be deposited into the specified address (denominated in ETH).
 
-Example: 3% of transaction volume (in ETH) will de deposited into 0x50ff5828a216170cf224389f1c5b0301a5d0a230
-
-```html
-<head>
-    ...
-    <script src="https://instant.0x.org/instant.js"></script>
-    ...
-</head>
-```
+Example: 3% of transaction volume (in ETH) will be deposited into 0x50ff5828a216170cf224389f1c5b0301a5d0a230
 
 ```typescript
 zeroExInstant.render(
     {
-        orderSource: 'https://api.radarrelay.com/0x/v2/',
+        orderSource: 'https://api.0x.org/sra/',
         affiliateInfo: {
             feeRecipient: '0x50ff5828a216170cf224389f1c5b0301a5d0a230',
             feePercentage: 0.03,
@@ -245,11 +231,13 @@ zeroExInstant.render(
 
 ### Q: What is a SignedOrder?
 
-A SignedOrder is a basic primitive of the 0x protocol. You can think of the SignedOrder as a set of parameters that define the terms of a trade, plus a signature that proves that the creator (also known as the 'maker') of an order has approved the trade. For example, a SignedOrder can specify: address A wants to trade 5 REP tokens in exchange for 1 WETH token. The order also includes signature produced by address A's private key and a hash of the order parameters. For exact JavaScript / TypeScript definition of a SignedOrder, refer to our [docs](https://github.com/0xProject/0x-monorepo/blob/development/packages/types/src/index.ts#L40).
+A SignedOrder is a basic primitive of the 0x protocol. You can think of the SignedOrder as a set of parameters that define the terms of a trade, plus a signature that proves that the creator (also known as the 'maker') of an order has approved the trade. For example, a SignedOrder can specify: address A wants to trade 5 REP tokens in exchange for 1 WETH token.  
+
+The order includes a signature produced by address A's private key which is the signed hash of the order parameters. For exact JavaScript / TypeScript definition of a SignedOrder, refer to our [docs](https://github.com/0xProject/0x-monorepo/blob/development/packages/types/src/index.ts#L40).
 
 ### Q: What is the Standard Relayer API?
 
-The Standard relayer API is an HTTP specification that facilitates discovering and publishing SignedOrders. As an integrator of 0x Instant you will want to grab an API url from the [Relayer Registry](https://github.com/0xProject/0x-relayer-registry/blob/master/relayers.json). Check out the exact specification of the API in the [documentation](http://sra-spec.s3-website-us-east-1.amazonaws.com/).
+The Standard relayer API is an HTTP specification that facilitates discovering and publishing SignedOrders. As an integrator of 0x Instant you will want to grab an API url from the [Relayer Registry](https://github.com/0xProject/0x-relayer-registry/blob/master/relayers.json). Check out the exact specification of the API in the [documentation](http://sra3-spec.s3-website-us-east-1.amazonaws.com/).
 
 ### Q: What is a provider?
 
@@ -259,7 +247,7 @@ Check out this [article](https://0x.org/docs/guides/web3-provider-explained) in 
 
 There is a helper method available at `zeroExInstant.hasLiquidityForAssetDataAsync` which takes in an assetData string and order source (Standard Relayer API url or an array of signed orders) and returns a Promise which resolves a boolean value indicating if there is an liquidity available for a given assetData.
 
-See below for an example of how to check liquidity on Radar Relay for a given ERC20 token address:
+<CodeTabs tabs={['html']}>
 
 ```html
 <div id="liquidityContainer">Loading...</div>
@@ -267,17 +255,19 @@ See below for an example of how to check liquidity on Radar Relay for a given ER
     const erc20TokenAddress = '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07';
     const assetData = zeroExInstant.assetDataForERC20TokenAddress(erc20TokenAddress);
 
-    zeroExInstant.hasLiquidityForAssetDataAsync(assetData, 'https://api.radarrelay.com/0x/v2/').then(l => {
+    zeroExInstant.hasLiquidityForAssetDataAsync(assetData, 'https://api.0x.org/sra/').then(l => {
         document.getElementById('liquidityContainer').innerHTML = `Relayer has liquidity: ${l ? 'Yes' : 'No'}`;
     });
 </script>
 ```
 
-Codepen [example](https://codepen.io/steveklebanoff/pen/dwExJz)
+</CodeTabs>
+
+Codepen [example](https://codepen.io/dekz/pen/yLLmbrV)
 
 ### Q: What is assetData?
 
-As we now support multiple [token transfer proxies](https://0x.org/docs/guides/v2-specification#assetproxy), the identifier of which proxy to use for the token transfer must be encoded, along with the token information. Each proxy in 0x v2 has a unique identifier. If you're using 0x.js there will be helper methods for this [encoding](https://0x.org/docs/tools/0x.js#encodeerc20assetdata) and [decoding](https://0x.org/docs/tools/0x.js#decodeassetproxyid).
+As we now support multiple [token transfer proxies](https://0x.org/docs/guides/v3-specification#assetproxy), the identifier of which proxy to use for the token transfer must be encoded, along with the token information. Each proxy in 0x has a unique identifier. If you're using `@0x/contract-wrappers` there are helper methods for this [encoding](https://0x.org/docs/tools/contract-wrappers#encodeerc20assetdata) and [decoding](https://0x.org/docs/tools/contract-wrappers#decodeerc20assetdata).
 
 The identifier for the Proxy uses a similar scheme to [ABI function selectors](https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI#function-selector).
 
@@ -304,7 +294,7 @@ Encoding the ERC721 token contract (address: `0x371b13d97f4bf77d724e78c16b7dc740
 
 For convenience, zeroExInstant exposes a `zeroExInstant.assetDataForERC20TokenAddress` method, which returns the `assetData` for a given ERC20 address.
 
-For more information see [the Asset Proxy](https://0x.org/docs/guides/v2-specification#erc20proxy) section of the v2 spec and the [Ethereum ABI Spec](https://solidity.readthedocs.io/en/develop/abi-spec.html).
+For more information see [the Asset Proxy](https://0x.org/docs/guides/v3-specification#erc20proxy) section of the v3 spec and the [Ethereum ABI Spec](https://solidity.readthedocs.io/en/develop/abi-spec.html).
 
 ### Q: What is assetMetaData?
 
