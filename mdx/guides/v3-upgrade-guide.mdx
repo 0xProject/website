@@ -1,8 +1,6 @@
-# V3 Upgrade Guide
+The core 0x team have been hard at work the past year to add new features to the 0x protocol in v3. There are a number of exciting changes and below we will walk through the most important changes for projects in the ecosystem.
 
-The core 0x team have been hard at work the past year to add new features to the 0x protocol. There are a number of exciting changes and below we will walk through the most important changes for projects in the ecosystem.
-
-For a full list of differences in the protocol refer to the [changelog here](https://0x.org/docs/guides/v3-specification#differences-from-20).
+For a full list of differences in the protocol refer to the [changelog here](/docs/guides/v3-specification#differences-from-20).
 
 ### Code Examples
 
@@ -12,36 +10,34 @@ For a full list of differences in the protocol refer to the [changelog here](htt
 
 ## As a Market Maker
 
--   Sharing liquidity via Mesh is the fastest and widest distribution channel to reach prospective takers. Deploy your own Mesh node and subscribe to events to allow you to discover other orders and receive fill updates on your orders. Mesh works with 0x v2, so it is good idea to become acquainted with Mesh and adopt it into your architecture before migrating to v3. [Mesh And Networked Liquidity](#mesh-and-networked-liquidity)
--   When transitioning to v3, the only required action is to cancel your v2 orders and create new orders on v3. Orders from v2 cannot be reposted to v3 as there is replay protection. Cancellation can be performed efficiently using `cancelOrdersUpTo` (if using an incrementing salt) or can be performed order by order with `batchCancelOrders`. Ensure your orders are cancelled on v2 prior to creating new orders on v3.
+-   Sharing liquidity via [Mesh](#mesh-and-networked-liquidity) is the fastest and widest distribution channel to reach prospective takers. Deploy your own Mesh node, subscribe to order update events, share and discover orders in the decentralized Mesh p2p network.
+-   When transitioning to v3, the only required action is to cancel your v2 orders and create new orders on v3. Orders from v2 cannot be reposted to v3 due to 0x's replay protection. Cancellation can be performed efficiently using `cancelOrdersUpTo` (if using an incrementing salt) or can be performed order by order with `batchCancelOrders`. Ensure your orders are cancelled on v2 prior to creating new orders on v3.
 -   Upgrade to the latest 0x packages using the `protocolV3` tag. For example, `yarn upgrade @0x/order-utils@protocolV3`
--   The exchange address and order format changes from v2 to v3, see [Order Format](#order-format). Mainnet Exchange address is TBD.
--   As part of the 0x governance upgrade, the ERC20 approvals set on the 0x Asset Proxies will be migrated to v3. So no additional approvals are required.
--   You will begin to receive rebates from takers that fill your orders, see [Staking And Rebates](#staking-and-rebates) for more information. The 0x team will be reaching out to known Market Makers to assist in setup.
+-   Exchange address and order format changes from v2 to v3, see [Order Format](#order-format). Addresses can be found in the [0x Cheat Sheet](/docs/guides/0x-cheat-sheet)
+-   As part of the 0x governance upgrade, the ERC20 approvals set on the 0x Asset Proxies will be migrated to v3. No additional approvals are required.
+-   It is now possible to receive rebates from takers that fill your orders, see [Staking And Rebates](#staking-and-rebates) for more information. Follow this guide on [creating a Staking Pool](/docs/guides/create-staking-pool).
 
 ## Taker/CFL
 
--   The ecosystem is moving to using 0x Mesh to share and discover liquidity. 0x Mesh is a decentralized network where all participants share orders equally with each other, see [Mesh And Networked Liquidity](#mesh-and-networked-liquidity). We recommend projects deploy their own Mesh nodes to contribute to the network. For light clients we have made gateway to Mesh [available as an endpoint](https://api.0x.org/sra/orders) which follows the [SRA specification.](https://github.com/0xProject/standard-relayer-api)
+-   The ecosystem is moving to using 0x Mesh to share and discover liquidity. [Mesh](#mesh-and-networked-liquidity) is a decentralized p2p network where all participants share and discover orders. We recommend projects deploy their own Mesh nodes to contribute to the network. For light clients we have deployed an endpoint to serve orders in the p2p to Mesh network. It is [available as an HTTP endpoint](https://api.0x.org/sra/orders) which follows the [SRA specification.](https://github.com/0xProject/standard-relayer-api)
 -   Upgrade to the latest 0x packages using the `protocolV3` tag. For example, `yarn upgrade @0x/order-utils@protocolV3`
 -   For Takers that Fill orders via a Contract
-    -   Takers now pay a [Protocol Fee](#protocol-fee) which is ultimately rebated to Market Makers. The entrypoint function used may need to become payable in order to forward the fee from `msg.sender`. This fee can also be paid in WETH with an additional allowance.
+    -   Takers now pay a [Protocol Fee](#protocol-fee) which is ultimately rebated to Market Makers via Staking Pools. The entrypoint function used may need to become `payable` in order to forward the fee from `msg.sender`. This fee can also be paid in WETH with an additional allowance.
     -   The 0x [Order Format](#order-format) has changed with new additional fields. Ensure your contracts are updated to the new Order struct.
     -   As part of the 0x governance upgrade, the ERC20 approvals set on the 0x Asset Proxies will be migrated to v3. So no additional approvals are required.
 -   For Takers that Fill orders via an Externally Owned Account
-    -   Takers now pay a [Protocol Fee](#protocol-fee) which is ultimately rebated to Market Makers. This fee is paid by attaching ETH to the transaction.
+    -   Takers now pay a [Protocol Fee](#protocol-fee) which is ultimately rebated to Market Makers. This fee is paid by sending ETH in the transaction.
     -   As part of the 0x governance upgrade, the ERC20 approvals set on the 0x Asset Proxies will be migrated to v3. So no additional approvals are required.
--   As part of the 0x governance upgrade, the ERC20 approvals set on the 0x Asset Proxies will be migrated to v3. So no additional approvals are required
--   The Exchange contract is new and has a different Exchange address
+-   The Exchange contract for v3 is new and has a different Exchange address. Addresses can be found in the [0x Cheat Sheet](/docs/guides/0x-cheat-sheet)
 
 ## Relayer
 
--   The ecosystem is moving to using 0x Mesh to share and discover liquidity. 0x Mesh is a decentralized network where all participants share orders equally with each other, see [Mesh And Networked Liquidity](#mesh-and-networked-liquidity). We recommend projects deploy their own Mesh nodes to contribute to the network.
+-   The ecosystem is moving to using 0x Mesh to share and discover liquidity. [Mesh](#mesh-and-networked-liquidity) is a decentralized p2p network where all participants share and discover orders. We recommend projects deploy their own Mesh nodes to contribute to the network.
 -   Upgrade to the latest 0x packages using the `protocolV3` tag. For example, `yarn upgrade @0x/order-utils@protocolV3`
--   Follow along the [Important Dates](https://github.com/0xProject/ZEIPs/issues/56) section to know the exact dates milestones are occurring
--   Inform your users of the upcoming v2 to v3 upgrade
--   Allow your users to cancel v2 orders and create new orders for v3. The exchange address will be known ahead of time, so orders can be created prior to the protocol being upgraded.
+-   Inform your users of your transition from v2 to v3
+-   Allow your users to cancel v2 orders and create new orders for v3. Orders can be created prior to the protocol being upgraded.
 -   [Protocol Fee](#protocol-fee)s will be paid by takers of 0x liquidity, educate your users on this process. It is roughly equivalent to the gas fee already being paid to the miner. Your users will see an increase in the transaction cost in ETH.
--   Become acquainted with the calculation of the protocol fee, `150,000 * ordersFilled * gasPrice`. If your users **lower** their gas price in the wallet the protocol will return the excess fees. If your users **increase **the gas price it is possible the provided ETH value in the transaction is not enough to cover the Protocol Fee.
+-   Become acquainted with the calculation of the protocol fee, `150,000 * ordersFilled * gasPrice`. If your users **lower** their gas price in the wallet the protocol will return the excess fees. If your users **increase** the gas price it is possible the provided ETH value in the transaction is not enough to cover the Protocol Fee.
 
 # Concepts
 
@@ -51,21 +47,21 @@ Mesh is our latest evolution of networked liquidity. Prior to Mesh, users were r
 
 We believe in creating an open protocol where value can flow freely. There should not be a single, centralized place where liquidity for certain pairs is available. As such, Mesh uses a peer to peer network to share orders in a decentralised network. Access to this network is open and orders are shared throughout the network. This improves the distribution of orders and to all users without a centralized party controlling access. In the past a maker published their orders to a particular Relayer using `@0x/connect`. Going forward Mesh is the best distribution channel for orders to the greater ecosystem.
 
-Receiving timely updates when orders are filled, cancelled or expired is critical to operational success for a professional market maker. From knowing the state of their open positions, to keeping an up-to-date model of available orders, fast and quick updates to on-chain activity are critical. Mesh provides optimized state watching functionality. If in the past you have used our `@0x/order-watcher` package, this is a significant improvement and is a replacement for OrderWatcher.
+Receiving timely updates when orders are filled, cancelled or expired is critical to operational success for a professional market maker. From knowing the state of their open positions, to keeping an up-to-date view of available orders, fast and quick updates to on-chain activity are critical. If in the past you have used the `@0x/order-watcher` package, this is a significant improvement and is a replacement for OrderWatcher.
 
 For more information on Mesh refer to [the documentation](https://0x-org.gitbook.io/mesh/) and watch the [video](https://www.youtube.com/watch?v=CIfQUW4oi-g).
 
-The 0x team will provide a queryable Gateway over HTTP to Mesh to ease implementation. This can be used by takers or any other projects interested in discovering orders in the Mesh network.
+The 0x team has deployed a HTTP endpoint which serves the orders from the decentralized Mesh network, this can be used by light clients to find available orders to fill. The endpoint is located at [`https://api.0x.org/sra/orders`](https://api.0x.org/sra/orders).
 
 Docker image for Mesh using V3 can be found [here](https://hub.docker.com/repository/docker/0xorg/mesh).
 
 ```bash
-docker pull 0xorg/mesh:0xv3
+docker pull 0xorg/mesh:0xV3
 ```
 
 ### Order Format
 
-With the change to support arbitrary fee tokens (see [Arbitrary Fee Token](#arbitrary-fee-token)) there are two additional fields in the Order structure. They are the maker fee asset and the taker fee asset, encoded as Asset Data.
+With the change to support arbitrary fee tokens (see [Arbitrary Fee Token](#arbitrary-fee-token)) there are two additional fields in the Order structure. They are the maker fee asset and the taker fee asset, encoded as [Asset Data](/docs/guides/v3-specification#assetdata).
 
 ```solidity
 Order(
@@ -90,13 +86,13 @@ Order(
 
 More information to come on Staking and Rebates. For now you tune into the [video explaining the changes](https://www.youtube.com/watch?v=s2wlzlQxd5E).
 
-For more information on the Staking and Rebates refer to the [specification](https://0x.org/docs/guides/v3-specification#staking).
+For more information on the Staking and Rebates refer to the [specification](/docs/guides/v3-specification#staking).
 
 ### Accessing on-chain liquidity
 
-0x v3 now has the ability to access sources of on-chain liquidity. This enables developers and their users to use a single interface to tap into both off-chain and on-chain liquidity. A developer can choose which model works best for them and over time optimize and lower spread for their users with minimal code changes. For example, orders filled by a taker on 0x can consist of native 0x orders as well as Kyber reserves.
+0x v3 now has the ability to access sources of on-chain liquidity. This enables developers and their users to use a single interface to tap into both off-chain and on-chain liquidity. A developer can choose which model works best for them and over time optimize and lower spread for their users with minimal code changes. For example, orders filled by a taker on 0x can consist of native 0x orders as well as Uniswap reserves.
 
-In essence the Maker is a contract with arbitrary logic that is executed. 0x Protocol guarantees the takers balance increases by the specified amount. The settlement flows from the taker to the maker, maker contract is executed and transfers funds to the taker, the 0x Protocol enforces the user’s balance of the specified token increases by the expected amount.
+In essence the Maker is a contract with arbitrary logic that is executed during settlement. 0x Protocol guarantees the takers balance increases by the specified amount. The settlement flows from the taker to the maker, the maker contract is executed and transfers funds to the taker, the 0x Protocol enforces the user’s balance of the specified token increases by the expected amount.
 
 ```solidity
 // 0x Protocol will call the bridgeTransferFrom function of the bridge contract
@@ -124,11 +120,13 @@ Example On-chain bridges:
 
 ### Protocol fee
 
-To foster a sustainable ecosystem, v3 has introduced Protocol Fees. These fees are paid by the Taker and ultimately result in a rebate for the Maker. The Protocol Fee scales with the Gas Price used by the transaction. In the wild we have seen high gas prices used by arbitrage bots when there is an opportunity for arbitrage. We see that these arbitrage bots compete with each other, resulting in high gas prices and in this competition the miner captures the most value. With Protocol Fees, a portion of funds used in this gas price auction can be redirected from the Miner to the Maker. Over time Makers receive the rebate from the Protocol Fees and are able to lower their operational costs, thus resulting in better prices. This is our next step in creating a sustainable ecosystem which rewards the users of the protocol.
+To foster a sustainable ecosystem, v3 has introduced [Protocol Fees](/docs/guides/v3-specification#protocol-fees). These fees are paid by the Taker and ultimately result in a rebate for the Maker. The Protocol Fee scales with the Gas Price used by the transaction.
+
+In the wild we have seen high gas prices used by arbitrage bots when there is an opportunity for arbitrage. We see that these arbitrage bots compete with each other, resulting in high gas prices and in this competition the miner captures most of the value. With Protocol Fees, a portion of funds used in this gas price auction can be redirected from the Miner to the Maker. Over time Makers receive the rebate from the Protocol Fees and are able to lower their operational costs, thus resulting in better prices. This is our next step in creating a sustainable ecosystem which rewards the users of the protocol.
 
 Protocol Fees are paid by the Taker in ETH or in wETH and are calculated as follows: `150,000 * gasPrice * orders filled`. When filling via a contract, be sure to take the protocol fee into account as a payable function, or to ensure the contract has an available wETH balance and allowance set.
 
-The Fill operations in the protocol have been changed to payable functions. Takers trading from an Externally Owned Account (EOA) must send a sufficient amount of ETH to pay the protocol feel. Contracts which use 0x Liquidity need to ensure their implementation passes down the required ETH through the various contracts. Alternatively the contract which performs the fill operation can have a WETH balance and allowance set to pay the fee. It is safe to overfund the amount of ETH for the Protocol Fee, the excess will be returned.
+The Fill operations in the protocol have been changed to payable functions. Takers trading from an Externally Owned Account (EOA) must send a sufficient amount of ETH to pay the protocol fee. Contracts that use 0x Liquidity must ensure their implementation forwards the required ETH through their various contracts. It is safe to overfund the amount of ETH for the Protocol Fee, the excess will be returned. Alternatively the contract which performs the fill operation can have a WETH balance and allowance to pay the fee.
 
 ```solidity
 contract MyContract {
@@ -141,7 +139,7 @@ contract MyContract {
 }
 ```
 
-For more information on the Protocol Fee refer to the [documentation](https://github.com/0xProject/0x-protocol-specification/blob/3.0/v3/protocol-fees.pdf) and the [specification](https://0x.org/docs/guides/v3-specification#protocol-fees). See [Staking And Rebates](#staking-and-rebates) for additional background information on the reasoning behind the Protocol Fee.
+For more information on the Protocol Fee refer to the [documentation](https://github.com/0xProject/0x-protocol-specification/blob/3.0/v3/protocol-fees.pdf) and the [specification](/docs/guides/v3-specification#protocol-fees). See [Staking And Rebates](#staking-and-rebates) for additional background information on the reasoning behind the Protocol Fee.
 
 The Protocol Fee can be paid in ETH on all of the fill functions, the ETH is sent in as the value to the transaction:
 
@@ -207,7 +205,7 @@ bytes4(keccak256("AssetProxyTransferError(bytes32,bytes,bytes)")),
 
 These improvements are not siloed to the tools like the typescript packages, but built into the core contracts. So no matter which language or web3 library you use to interact with the 0x contracts, you will receive informative errors when things don’t go according to plan.
 
-For more information on Rich Reverts refer to the [documentation here](https://0x.org/docs/guides/v3-specification#rich-reverts).
+For more information on Rich Reverts refer to the [documentation here](/docs/guides/v3-specification#rich-reverts).
 
 ### Support for more languages
 
@@ -218,7 +216,7 @@ DevUtils allows you to perform the following with only a web3 package:
 -   Encoding and Decoding Asset Data
 -   Validation of Orders, Order Status and Signatures
 
-Our primary on-chain core module is called DevUtils and [more information can be found here](https://0x.org/docs/tools/contract-wrappers).
+Our primary on-chain core module is called DevUtils and [more information can be found here](/docs/tools/contract-wrappers).
 
 ### Market Buy and Sell Operations
 
@@ -236,6 +234,8 @@ Those who use cancelOrder or batchCancelOrders may have experienced frustration 
 
 0x Released a [v3 specification](https://github.com/0xProject/standard-relayer-api#sra-v3) for a Standard Relayer API (SRA). The primary purpose of this was to enable Relayers to share orders with other Relayers, and allow other participants in the ecosystem to discover orders programatically. With the release of 0x Mesh ([Mesh And Networked Liquidity](#mesh-and-networked-liquidity)), this has replaced the need for Relayers to share orders with other Relayers as now all orders can be shared in a decentralized peer-to-peer network. In the interim we have updated the SRA to support v3 with the new [Order Format](#order-format). User facing tools such as AssetSwapper and 0x Instant will still rely on the SRA to discover orders.
 
+0x has deployed an v3 SRA compatible endpoint which sources orders directly from the decentralized p2p Mesh network. The endpoint is located at [`https://api.0x.org/sra/orders`](https://api.0x.org/sra/orders).
+
 ### Contract Addresses
 
-The contract addresses for each network can be found in the [0x Cheat Sheet](https://0x.org/docs/guides/0x-cheat-sheet).
+The contract addresses for each network can be found in the [0x Cheat Sheet](/docs/guides/0x-cheat-sheet).
