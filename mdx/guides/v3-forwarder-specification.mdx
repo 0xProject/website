@@ -1,6 +1,8 @@
 # Architecture
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/img/0x_forwarder.png" width="750" /></p>
+<p align="center">
+    <img src="https://github.com/0xProject/0x-protocol-specification/raw/master/img/0x_forwarder.png" width="750" />
+</p>
 
 The Forwarder contract acts as a middleman between a prospective taker and the 0x Exchange contract. Its purpose is to perform a number of useful actions on the taker's behalf, conveniently reducing the number of steps and transactions.
 
@@ -14,10 +16,10 @@ For a first time token purchaser, this is non-trivial setup necessitated by the 
 
 The Forwarder contains all of the following logic:
 
-- Presets approval to the [ERC20Proxy](/docs/guides/v3-specification#erc20proxy) and the [ERC721Proxy](/docs/guides/v3-specification#erc721proxy)
-- Converts ETH into WETH on behalf of the user
-- Performs the token exchange via the 0x Exchange contract
-- Transfers the newly purchased asset to the user
+-   Presets approval to the [ERC20Proxy](/docs/guides/v3-specification#erc20proxy) and the [ERC721Proxy](/docs/guides/v3-specification#erc721proxy)
+-   Converts ETH into WETH on behalf of the user
+-   Performs the token exchange via the 0x Exchange contract
+-   Transfers the newly purchased asset to the user
 
 The Forwarder contract has two public entry points: `marketSellOrdersWithEth` and `marketBuyOrdersWithEth`.
 
@@ -38,12 +40,12 @@ This function buys a specific amount of asset (ERC20 or ERC721) given a set of T
 
 This function will revert under the following conditions:
 
-- No ETH value was included in the transaction
-- The `makerAssetData` contains an [`assetProxyId`](/docs/guides/v3-specification#assetdata) that is not supported (currently ERC20 and ERC721 only)
-- The contract attempts to fill an order with an unsupported fee (i.e. neither WETH nor the maker asset)
-- The entire `makerAssetBuyAmount` cannot be bought
-- The supplied `feePercentage` is greater than 5% (represented as 0.05 \* 10^18)
-- The required ETH fee cannot be paid
+-   No ETH value was included in the transaction
+-   The `makerAssetData` contains an [`assetProxyId`](/docs/guides/v3-specification#assetdata) that is not supported (currently ERC20 and ERC721 only)
+-   The contract attempts to fill an order with an unsupported fee (i.e. neither WETH nor the maker asset)
+-   The entire `makerAssetBuyAmount` cannot be bought
+-   The supplied `feePercentage` is greater than 5% (represented as 0.05 \* 10^18)
+-   The required ETH fee cannot be paid
 
 ```solidity
     /// @dev Attempt to buy makerAssetBuyAmount of makerAsset by selling ETH provided with transaction.
@@ -82,11 +84,11 @@ This function attempts to buy as many tokens as possible given the amount of ETH
 
 This function will revert under the following conditions:
 
-- No ETH value was included in the transaction
-- The `makerAssetData` contains an [`assetProxyId`](https://github.com/0xProject/0x-protocol-specification/blob/master/v2/v2-specification.md#assetdata) that is not supported (currently ERC20 and ERC721 only)
-- The contract attempts to fill an order with an unsupported fee (i.e. neither WETH nor the maker asset)
-- The supplied `feePercentage` is greater than 5% (represented as 0.05 \* 10^18)
-- More ETH is sold than the value included in the transaction
+-   No ETH value was included in the transaction
+-   The `makerAssetData` contains an [`assetProxyId`](/docs/guides/v3-specification#assetdata) that is not supported (currently ERC20 and ERC721 only)
+-   The contract attempts to fill an order with an unsupported fee (i.e. neither WETH nor the maker asset)
+-   The supplied `feePercentage` is greater than 5% (represented as 0.05 \* 10^18)
+-   More ETH is sold than the value included in the transaction
 
 ```solidity
     /// @dev Purchases as much of orders' makerAssets as possible by selling as much of the ETH value sent
@@ -129,7 +131,7 @@ There are no additional events emitted by the Forwarding contract. However, `Tra
 
 ### Rounding
 
-As a byproduct of rounding, up to 1 wei worth of WETH may be oversold in the last order filled by `marketSellOrdersWithEth` (equivalently, up to 1 wei worth of maker asset may be overbought in the last order filled by  `marketBuyOrdersWithEth`).
+As a byproduct of rounding, up to 1 wei worth of WETH may be oversold in the last order filled by `marketSellOrdersWithEth` (equivalently, up to 1 wei worth of maker asset may be overbought in the last order filled by `marketBuyOrdersWithEth`).
 
 ### feePercentage and feeRecipient modifications
 

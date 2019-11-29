@@ -17,7 +17,9 @@ This specification will describe a specific implementation of each component tha
 5. The taker submits the signed 0x transaction and approval to the `Coordinator` contract by calling `Coordinator.executeTransaction`.
 6. The `Coordinator` contract verifies that the approval is valid/unexpired and executes the 0x transaction by calling `Exchange.executeTransaction`.
 
-<p align="center"><img src="https://github.com/0xProject/0x-protocol-specification/raw/master/img/0x_coordinator.png" width="750" /></p>
+<p align="center">
+    <img src="https://github.com/0xProject/0x-protocol-specification/raw/master/img/0x_coordinator.png" width="750" />
+</p>
 
 # Message Types
 
@@ -47,11 +49,11 @@ struct ZeroExTransaction {
 
 0x transactions that call any `Exchange` fill methods must be approved by a Coordinator. The approval includes the following fields:
 
-| Parameter                     | Type    | Description                                                                           |
-| ----------------------------- | ------- | ------------------------------------------------------------------------------------- |
-| txOrigin                      | address | Address of Ethereum transaction signer that is allowed to execute this 0x transaction |
-| transactionHash               | bytes32 | EIP712 hash of the 0x transaction.                                                    |
-| transactionSignature          | bytes   | Signature of 0x transaction.                                                          |
+| Parameter            | Type    | Description                                                                           |
+| -------------------- | ------- | ------------------------------------------------------------------------------------- |
+| txOrigin             | address | Address of Ethereum transaction signer that is allowed to execute this 0x transaction |
+| transactionHash      | bytes32 | EIP712 hash of the 0x transaction.                                                    |
+| transactionSignature | bytes   | Signature of 0x transaction.                                                          |
 
 In Solidity, this approval is represented as:
 
@@ -130,32 +132,31 @@ The `Coordinator` contract contains a single function that is allowed to execute
 
 When interacting with Coordinator orders, the following Exchange methods must be called through `executeTransaction` on the `Coordinator` contract:
 
-| Method                                                                                                                                         | Approval required |
-| ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| [`fillOrder`](/docs/guides/v3-specification#fillorder)                             | Yes               |
-| [`fillOrKillOrder`](/docs/guides/v3-specification#fillorkillorder)                 | Yes               |
-| [`batchFillOrders`](/docs/guides/v3-specification#batchfillorders)                 | Yes               |
-| [`batchFillOrdersNoThrow`](/docs/guides/v3-specification#batchfillordersnothrow)   | Yes               |
-| [`batchFillOrKillOrders`](/docs/guides/v3-specification#batchfillorkillorders)     | Yes               |
-| [`marketBuyOrdersNoThrow`](/docs/guides/v3-specification#marketbuyordersnothrow)   | Yes               |
+| Method                                                                                   | Approval required |
+| ---------------------------------------------------------------------------------------- | ----------------- |
+| [`fillOrder`](/docs/guides/v3-specification#fillorder)                                   | Yes               |
+| [`fillOrKillOrder`](/docs/guides/v3-specification#fillorkillorder)                       | Yes               |
+| [`batchFillOrders`](/docs/guides/v3-specification#batchfillorders)                       | Yes               |
+| [`batchFillOrdersNoThrow`](/docs/guides/v3-specification#batchfillordersnothrow)         | Yes               |
+| [`batchFillOrKillOrders`](/docs/guides/v3-specification#batchfillorkillorders)           | Yes               |
+| [`marketBuyOrdersNoThrow`](/docs/guides/v3-specification#marketbuyordersnothrow)         | Yes               |
 | [`marketBuyOrdersFillOrKill`](/docs/guides/v3-specification#marketbuyordersfillorkill)   | Yes               |
-| [`marketSellOrdersNoThrow`](/docs/guides/v3-specification#marketsellordersnothrow) | Yes               |
+| [`marketSellOrdersNoThrow`](/docs/guides/v3-specification#marketsellordersnothrow)       | Yes               |
 | [`marketSellOrdersFillOrKill`](/docs/guides/v3-specification#marketsellordersfillorkill) | Yes               |
-| [`matchOrders`](/docs/guides/v3-specification#matchorders)                         | Yes               |
-| [`matchOrdersWithMaximalFill`](/docs/guides/v3-specification#matchorderswithmaximalfill)                         | Yes               |
-| [`cancelOrder`](/docs/guides/v3-specification#cancelorder)                         | No                |
-| [`batchCancelOrders`](/docs/guides/v3-specification#batchcancelorders)             | No                |
-| [`cancelOrdersUpTo`](/docs/guides/v3-specification#cancelordersupto)               | No                |
-
+| [`matchOrders`](/docs/guides/v3-specification#matchorders)                               | Yes               |
+| [`matchOrdersWithMaximalFill`](/docs/guides/v3-specification#matchorderswithmaximalfill) | Yes               |
+| [`cancelOrder`](/docs/guides/v3-specification#cancelorder)                               | No                |
+| [`batchCancelOrders`](/docs/guides/v3-specification#batchcancelorders)                   | No                |
+| [`cancelOrdersUpTo`](/docs/guides/v3-specification#cancelordersupto)                     | No                |
 
 Note that the `Coordinator` contract currently does not support `batchMatchOrders` or `batchMatchOrdersWithMaximalFill` transactions.
 
 `executeTransaction` will revert under the following conditions:
 
-- The `tx.origin` (Ethereum transaction signer) differs from the passed in `txOrigin` parameter.
-- Any of the Coordinator orders include a `feeRecipientAddress` that do not have a corresponding valid signature in `approvalSignatures`.
-- The transaction `expirationTimeSeconds` has passed.
-- The `Exchange` function call in `transaction.data` reverts for any reason.
+-   The `tx.origin` (Ethereum transaction signer) differs from the passed in `txOrigin` parameter.
+-   Any of the Coordinator orders include a `feeRecipientAddress` that do not have a corresponding valid signature in `approvalSignatures`.
+-   The transaction `expirationTimeSeconds` has passed.
+-   The `Exchange` function call in `transaction.data` reverts for any reason.
 
 ```solidity
 /// @dev Executes a 0x transaction that has been signed by the feeRecipients that correspond to
@@ -300,7 +301,7 @@ An `Invalid` signature will always revert, much like the `Illegal` type. An inva
 
 ## EIP712
 
-An `EIP712` signature is considered valid if the address recovered from calling [`ecrecover`](https://github.com/0xProject/0x-protocol-specification/blob/master/v2/v2-specification.md#ecrecover-usage) with the given hash and decoded `v`, `r`, `s` values is the same as the specified signer. In this case, the signature is encoded in the following way:
+An `EIP712` signature is considered valid if the address recovered from calling [`ecrecover`](/docs/guides/v3-specification#ecrecover-usage) with the given hash and decoded `v`, `r`, `s` values is the same as the specified signer. In this case, the signature is encoded in the following way:
 
 | Offset | Length | Contents            |
 | ------ | ------ | ------------------- |
@@ -310,7 +311,7 @@ An `EIP712` signature is considered valid if the address recovered from calling 
 
 ## EthSign
 
-An `EthSign` signature is considered valid if the address recovered from calling [`ecrecover`](https://github.com/0xProject/0x-protocol-specification/blob/master/v2/v2-specification.md#ecrecover-usage) with the an EthSign-prefixed hash and decoded `v`, `r`, `s` values matches the specified signer.
+An `EthSign` signature is considered valid if the address recovered from calling [`ecrecover`](/docs/guides/v3-specification#ecrecover-usage) with the an EthSign-prefixed hash and decoded `v`, `r`, `s` values matches the specified signer.
 
 The prefixed `msgHash` is calculated with:
 
@@ -364,10 +365,10 @@ The delay is set to 1000ms in the reference implementation.
 
 The Coordinator server must maintain state in order to determine the validity of transaction requests.
 
-- The server must be able to identify orders for which it has issued a cancellation receipt (e.g by storing their hashes). This information can be discarded after the order has expired or been invalidated.
-- For each order with at least one approved fill, the server must store the sum of approved `takerAssetFillAmount`s for each approved taker. This information can be discarded after the order has been filled or invalidated. Note that this information should persist even if outstanding approvals that involve the order have expired.
-- For each order with at least one approved fill, the server must store any outstanding approval signatures for fill transactions that contain the order.
-- The server must be able to identify transactions that it has already approved (e.g by storing its hash). This information can be discarded after the transaction has been executed or expired.
+-   The server must be able to identify orders for which it has issued a cancellation receipt (e.g by storing their hashes). This information can be discarded after the order has expired or been invalidated.
+-   For each order with at least one approved fill, the server must store the sum of approved `takerAssetFillAmount`s for each approved taker. This information can be discarded after the order has been filled or invalidated. Note that this information should persist even if outstanding approvals that involve the order have expired.
+-   For each order with at least one approved fill, the server must store any outstanding approval signatures for fill transactions that contain the order.
+-   The server must be able to identify transactions that it has already approved (e.g by storing its hash). This information can be discarded after the transaction has been executed or expired.
 
 ## Handling fills
 
@@ -375,10 +376,10 @@ _Note: `matchOrders` is not currently implemented in [0x-Coordinator-server](htt
 
 Fill transaction requests should be rejected under the following conditions:
 
-- The transaction is in any way invalid (incorrect formatting, signature, unsupported function, etc).
-- A transaction with the same hash has already been approved.
-- The taker has requested fills for an included order with total `takerAssetFillAmount`s that exceed the `takerAssetAmount` of the order. This creates a cost for requesting fills and should prevent takers from frequently requesting fills that they do not intend on executing.
-- An included order has been soft cancelled.
+-   The transaction is in any way invalid (incorrect formatting, signature, unsupported function, etc).
+-   A transaction with the same hash has already been approved.
+-   The taker has requested fills for an included order with total `takerAssetFillAmount`s that exceed the `takerAssetAmount` of the order. This creates a cost for requesting fills and should prevent takers from frequently requesting fills that they do not intend on executing.
+-   An included order has been soft cancelled.
 
 All other fill requests must be approved by the Coordinator server exactly `SELECTIVE_DELAY_MS` milliseconds after the request is received.
 
@@ -472,15 +473,15 @@ If a certain network is not supported, the response should **400** as specified 
 
 ```json
 {
-  "code": 100,
-  "reason": "Validation failed",
-  "validationErrors": [
-    {
-      "field": "networkId",
-      "code": 1006,
-      "reason": "Network id 42 is not supported"
-    }
-  ]
+    "code": 100,
+    "reason": "Validation failed",
+    "validationErrors": [
+        {
+            "field": "networkId",
+            "code": 1006,
+            "reason": "Network id 42 is not supported"
+        }
+    ]
 }
 ```
 
@@ -492,8 +493,8 @@ This endpoint returns the specific configurations chosen by this Coordinator ser
 
 ```json
 {
-  "selectiveDelayMs": 1000,
-  "supportedNetworkIds": [1, 42]
+    "selectiveDelayMs": 1000,
+    "supportedNetworkIds": [1, 42]
 }
 ```
 
@@ -505,19 +506,19 @@ Submit a signed 0x transaction encoding either a 0x fill or cancellation. If the
 
 ```json
 {
-  "signedTransaction": {
-    "salt": "62799490869714002130337144204631467715674661702713158022807378407578488540214",
-    "signerAddress": "0xe834ec434daba538cd1b9fe1582052b880bd7e63",
-    "data": "0xb4be83d500000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000000000000000000000000000000000000000002a0000000000000000000000000e36ea790bc9d7ab70c55260c66d52b1eca985f84000000000000000000000000000000000000000000000000000000000000000000000000000000000000000078dc5d2d739606d31509c31d654056a45185ecb60000000000000000000000006ecbe1db9ef729cbe972c83fb886247691fb6beb0000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000000000000000000000000000ad78ebc5ac62000000000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000005c879733d9cbe51a7e6b6c5e1f057d3d3ba3c1b57c8734fe0f523afa6250aff64aa9db37000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000024f47261b000000000000000000000000034d402f14d58e001d8efbe6585051bf9706aa064000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b000000000000000000000000025b8fe1de9daf8ba351890744ff28cf7dfa8f5e30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000421c9e99c16367e608d75d943549b49fbeedcf58c84897b69daf0646e6184086a44107dda6e675826189c4bf509061880b5fe3e4707f449203249b98a39480bbee4803000000000000000000000000000000000000000000000000000000000000",
-    "verifyingContractAddress": "0x48bacb9266a570d521063ef5dd96e61686dbe788",
-    "signature": "0x1b36fca95c03d4e28b0ffb7796194841612005f0913e60f9da36f477a432e478240af81e8be55368b1a43f21266c6964e2b3d6c55b9d11dd5318ab76e63ff0c6f903"
-  },
-  "txOrigin": "0xe834ec434daba538cd1b9fe1582052b880bd7e63"
+    "signedTransaction": {
+        "salt": "62799490869714002130337144204631467715674661702713158022807378407578488540214",
+        "signerAddress": "0xe834ec434daba538cd1b9fe1582052b880bd7e63",
+        "data": "0xb4be83d500000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000000000000000000000000000000000000000002a0000000000000000000000000e36ea790bc9d7ab70c55260c66d52b1eca985f84000000000000000000000000000000000000000000000000000000000000000000000000000000000000000078dc5d2d739606d31509c31d654056a45185ecb60000000000000000000000006ecbe1db9ef729cbe972c83fb886247691fb6beb0000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000000000000000000000000000ad78ebc5ac62000000000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000005c879733d9cbe51a7e6b6c5e1f057d3d3ba3c1b57c8734fe0f523afa6250aff64aa9db37000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000024f47261b000000000000000000000000034d402f14d58e001d8efbe6585051bf9706aa064000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b000000000000000000000000025b8fe1de9daf8ba351890744ff28cf7dfa8f5e30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000421c9e99c16367e608d75d943549b49fbeedcf58c84897b69daf0646e6184086a44107dda6e675826189c4bf509061880b5fe3e4707f449203249b98a39480bbee4803000000000000000000000000000000000000000000000000000000000000",
+        "verifyingContractAddress": "0x48bacb9266a570d521063ef5dd96e61686dbe788",
+        "signature": "0x1b36fca95c03d4e28b0ffb7796194841612005f0913e60f9da36f477a432e478240af81e8be55368b1a43f21266c6964e2b3d6c55b9d11dd5318ab76e63ff0c6f903"
+    },
+    "txOrigin": "0xe834ec434daba538cd1b9fe1582052b880bd7e63"
 }
 ```
 
-- `signedTransaction` - A signed [0x transaction](/docs/guides/v3-specification#transactions) along with the `verifyingContractAddress` which is part of it's [EIP712 domain](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md#definition-of-domainseparator).
-- `txOrigin` - The address that will eventually submit the Ethereum transaction executing this 0x transaction on-chain. This will be enforced by the `Coordinator` extension contract.
+-   `signedTransaction` - A signed [0x transaction](/docs/guides/v3-specification#transactions) along with the `verifyingContractAddress` which is part of it's [EIP712 domain](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md#definition-of-domainseparator).
+-   `txOrigin` - The address that will eventually submit the Ethereum transaction executing this 0x transaction on-chain. This will be enforced by the `Coordinator` extension contract.
 
 #### Response
 
@@ -525,14 +526,14 @@ Submit a signed 0x transaction encoding either a 0x fill or cancellation. If the
 
 ```json
 {
-  "signatures": [
-    "0x1cc07d7ae39679690a91418d46491520f058e4fb14debdf2e98f2376b3970de8512ace44af0be6d1c65617f7aae8c2364ff63f241515ee1559c3eeecb0f671d9e903"
-  ]
+    "signatures": [
+        "0x1cc07d7ae39679690a91418d46491520f058e4fb14debdf2e98f2376b3970de8512ace44af0be6d1c65617f7aae8c2364ff63f241515ee1559c3eeecb0f671d9e903"
+    ]
 }
 ```
 
-- `signatures` - the Coordinator signatures required to submit the 0x transaction
-- `expirationTimeSeconds` - when the signatures will expire and no longer be valid
+-   `signatures` - the Coordinator signatures required to submit the 0x transaction
+-   `expirationTimeSeconds` - when the signatures will expire and no longer be valid
 
 Usually a single signature will be returned. Only when someone requests to batchFill multiple orders from the Coordinator that were created with different supported feeRecipientAddresses, will this return a signature per `feeRecipientAddress` involved.
 
@@ -540,23 +541,23 @@ Usually a single signature will be returned. Only when someone requests to batch
 
 ```json
 {
-  "outstandingFillSignatures": [
-    {
-      "orderHash": "0xd1dc61f3e7e5f41d72beae7863487beea108971de678ca00d903756f842ef3ce",
-      "approvalSignatures": [
-        "0x1c7383ca8ebd6de8b5b20b1c2d49bea166df7dfe4af1932c9c52ec07334e859cf2176901da35f4480ceb3ab63d8d0339d851c31929c40d88752689b9a8a535671303"
-      ],
-      "takerAssetFillAmount": "100000000000000000000"
-    }
-  ],
-  "cancellationSignatures": [
-    "0x2ea3117a8ebd6de8b5b20b1c2d49bea166df7dfe4af1932c9c52ec07334e859cf2176901da35f4480ceb3ab63d8d0339d851c31929c40d88752689b9a855b5a7b401"
-  ]
+    "outstandingFillSignatures": [
+        {
+            "orderHash": "0xd1dc61f3e7e5f41d72beae7863487beea108971de678ca00d903756f842ef3ce",
+            "approvalSignatures": [
+                "0x1c7383ca8ebd6de8b5b20b1c2d49bea166df7dfe4af1932c9c52ec07334e859cf2176901da35f4480ceb3ab63d8d0339d851c31929c40d88752689b9a8a535671303"
+            ],
+            "takerAssetFillAmount": "100000000000000000000"
+        }
+    ],
+    "cancellationSignatures": [
+        "0x2ea3117a8ebd6de8b5b20b1c2d49bea166df7dfe4af1932c9c52ec07334e859cf2176901da35f4480ceb3ab63d8d0339d851c31929c40d88752689b9a855b5a7b401"
+    ]
 }
 ```
 
-- `outstandingFillSignatures` - Information about the outstanding signatures to fill the order(s) that have been soft-cancelled.
-- `cancellationSignatures` - An approval signature of the cancellation 0x transaction submitted to the Coordinator (with the expiration hard-coded to 0 -- although these never expire). These signatures can be used to prove that a soft-cancel was granted for these order(s).
+-   `outstandingFillSignatures` - Information about the outstanding signatures to fill the order(s) that have been soft-cancelled.
+-   `cancellationSignatures` - An approval signature of the cancellation 0x transaction submitted to the Coordinator (with the expiration hard-coded to 0 -- although these never expire). These signatures can be used to prove that a soft-cancel was granted for these order(s).
 
 ### POST /v1/soft_cancels
 
@@ -566,9 +567,10 @@ Within the Coordinator model, the Coordinator server is the source-of-truth when
 
 ```json
 {
-  "orderHashes": [
-    "0xd1dc61f3e7e5f41d72beae7863487beea108971de678ca00d903756f842ef3ce", "0xabcc372e3812bba31a35958dc32d0beadf27595d51fb953709944559404e1b61"
-  ]
+    "orderHashes": [
+        "0xd1dc61f3e7e5f41d72beae7863487beea108971de678ca00d903756f842ef3ce",
+        "0xabcc372e3812bba31a35958dc32d0beadf27595d51fb953709944559404e1b61"
+    ]
 }
 ```
 
@@ -576,9 +578,7 @@ Within the Coordinator model, the Coordinator server is the source-of-truth when
 
 ```json
 {
-  "orderHashes": [
-    "0xabcc372e3812bba31a35958dc32d0beadf27595d51fb953709944559404e1b61"
-  ]
+    "orderHashes": ["0xabcc372e3812bba31a35958dc32d0beadf27595d51fb953709944559404e1b61"]
 }
 ```
 
@@ -596,10 +596,10 @@ A fill request was received and is valid. The request has not yet been granted a
 
 ```json
 {
-  "type": "FILL_REQUEST_RECEIVED",
-  "data": {
-    "transactionHash": "0xef5c67ee7812fba2da35958dc32d0beadf27595d51fb953709944559404e1b6b"
-  }
+    "type": "FILL_REQUEST_RECEIVED",
+    "data": {
+        "transactionHash": "0xef5c67ee7812fba2da35958dc32d0beadf27595d51fb953709944559404e1b6b"
+    }
 }
 ```
 
@@ -609,38 +609,38 @@ The fill request has been accepted and a signature issued. The corresponding 0x 
 
 ```json
 {
-  "type": "FILL_REQUEST_ACCEPTED",
-  "data": {
-    "functionName": "fillOrder",
-    "orders": [
-      {
-        "makerAddress": "0xe36ea790bc9d7ab70c55260c66d52b1eca985f84",
-        "takerAddress": "0x0000000000000000000000000000000000000000",
-        "feeRecipientAddress": "0x78dc5d2d739606d31509c31d654056a45185ecb6",
-        "senderAddress": "0x6ecbe1db9ef729cbe972c83fb886247691fb6beb",
-        "makerAssetAmount": "100000000000000000000",
-        "takerAssetAmount": "200000000000000000000",
-        "makerFee": "1000000000000000000",
-        "takerFee": "1000000000000000000",
-        "expirationTimeSeconds": "1552396423",
-        "salt": "66097384406870180066678463045003379626790660770396923976862707230261946348951",
-        "makerAssetData": "0xf47261b000000000000000000000000034d402f14d58e001d8efbe6585051bf9706aa064",
-        "takerAssetData": "0xf47261b000000000000000000000000025b8fe1de9daf8ba351890744ff28cf7dfa8f5e3",
-        "exchangeAddress": "0x4f833a24e1f95d70f028921e27040ca56e09ab0b"
-      }
-    ],
-    "txOrigin": "0x2ebac44a8b1218cabe972c83fb886247691fb6beb",
-    "signedTransaction": {
-      "salt": "1495510454898017617137906367124143312199249786920467590762356946976468764317",
-      "signerAddress": "0xe834ec434daba538cd1b9fe1582052b880bd7e63",
-      "data": "0xb4be83d500000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000000000000000000000000000000000000000002a0000000000000000000000000e36ea790bc9d7ab70c55260c66d52b1eca985f84000000000000000000000000000000000000000000000000000000000000000000000000000000000000000078dc5d2d739606d31509c31d654056a45185ecb60000000000000000000000006ecbe1db9ef729cbe972c83fb886247691fb6beb0000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000000000000000000000000000ad78ebc5ac62000000000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000005c87b0879221cb37dcf690e02b0f9aecf44fcaa5ed9ce99697e86743795fa132596ff597000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000024f47261b000000000000000000000000034d402f14d58e001d8efbe6585051bf9706aa064000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b000000000000000000000000025b8fe1de9daf8ba351890744ff28cf7dfa8f5e30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000421ce8e3c600d933423172b5021158a6be2e818613ff8e762d70ef490c752fd98a626a215f09f169668990414de75a53da221c294a3002f796d004827258b641876e03000000000000000000000000000000000000000000000000000000000000",
-      "verifyingContractAddress": "0x48bacb9266a570d521063ef5dd96e61686dbe788",
-      "signature": "0x1b36fca95c03d4e28b0ffb7796194841612005f0913e60f9da36f477a432e478240af81e8be55368b1a43f21266c6964e2b3d6c55b9d11dd5318ab76e63ff0c6f903"
-    },
-    "approvalSignatures": [
-      "0x1b98e8b81249e49de6a76ae515108215621a2ad85909580de16a960280c97830eb2b417c7675775dc1ccaeca596deee5c8a0613058a48649e9b0ee2696b0cb975703"
-    ],
-  }
+    "type": "FILL_REQUEST_ACCEPTED",
+    "data": {
+        "functionName": "fillOrder",
+        "orders": [
+            {
+                "makerAddress": "0xe36ea790bc9d7ab70c55260c66d52b1eca985f84",
+                "takerAddress": "0x0000000000000000000000000000000000000000",
+                "feeRecipientAddress": "0x78dc5d2d739606d31509c31d654056a45185ecb6",
+                "senderAddress": "0x6ecbe1db9ef729cbe972c83fb886247691fb6beb",
+                "makerAssetAmount": "100000000000000000000",
+                "takerAssetAmount": "200000000000000000000",
+                "makerFee": "1000000000000000000",
+                "takerFee": "1000000000000000000",
+                "expirationTimeSeconds": "1552396423",
+                "salt": "66097384406870180066678463045003379626790660770396923976862707230261946348951",
+                "makerAssetData": "0xf47261b000000000000000000000000034d402f14d58e001d8efbe6585051bf9706aa064",
+                "takerAssetData": "0xf47261b000000000000000000000000025b8fe1de9daf8ba351890744ff28cf7dfa8f5e3",
+                "exchangeAddress": "0x4f833a24e1f95d70f028921e27040ca56e09ab0b"
+            }
+        ],
+        "txOrigin": "0x2ebac44a8b1218cabe972c83fb886247691fb6beb",
+        "signedTransaction": {
+            "salt": "1495510454898017617137906367124143312199249786920467590762356946976468764317",
+            "signerAddress": "0xe834ec434daba538cd1b9fe1582052b880bd7e63",
+            "data": "0xb4be83d500000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000000000000000000000000000000000000000002a0000000000000000000000000e36ea790bc9d7ab70c55260c66d52b1eca985f84000000000000000000000000000000000000000000000000000000000000000000000000000000000000000078dc5d2d739606d31509c31d654056a45185ecb60000000000000000000000006ecbe1db9ef729cbe972c83fb886247691fb6beb0000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000000000000000000000000000ad78ebc5ac62000000000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000005c87b0879221cb37dcf690e02b0f9aecf44fcaa5ed9ce99697e86743795fa132596ff597000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000024f47261b000000000000000000000000034d402f14d58e001d8efbe6585051bf9706aa064000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b000000000000000000000000025b8fe1de9daf8ba351890744ff28cf7dfa8f5e30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000421ce8e3c600d933423172b5021158a6be2e818613ff8e762d70ef490c752fd98a626a215f09f169668990414de75a53da221c294a3002f796d004827258b641876e03000000000000000000000000000000000000000000000000000000000000",
+            "verifyingContractAddress": "0x48bacb9266a570d521063ef5dd96e61686dbe788",
+            "signature": "0x1b36fca95c03d4e28b0ffb7796194841612005f0913e60f9da36f477a432e478240af81e8be55368b1a43f21266c6964e2b3d6c55b9d11dd5318ab76e63ff0c6f903"
+        },
+        "approvalSignatures": [
+            "0x1b98e8b81249e49de6a76ae515108215621a2ad85909580de16a960280c97830eb2b417c7675775dc1ccaeca596deee5c8a0613058a48649e9b0ee2696b0cb975703"
+        ]
+    }
 }
 ```
 
@@ -650,31 +650,31 @@ A cancellation request has been recevied and processed. The 0x orders included i
 
 ```json
 {
-  "type": "CANCEL_REQUEST_ACCEPTED",
-  "data": {
-    "orders": [
-      {
-        "makerAddress": "0xe36ea790bc9d7ab70c55260c66d52b1eca985f84",
-        "takerAddress": "0x0000000000000000000000000000000000000000",
-        "feeRecipientAddress": "0x78dc5d2d739606d31509c31d654056a45185ecb6",
-        "senderAddress": "0x6ecbe1db9ef729cbe972c83fb886247691fb6beb",
-        "makerAssetAmount": "100000000000000000000",
-        "takerAssetAmount": "200000000000000000000",
-        "makerFee": "1000000000000000000",
-        "takerFee": "1000000000000000000",
-        "expirationTimeSeconds": "1552396423",
-        "salt": "77312126688742331532122416049113540452139616608135326468253415920865328290216",
-        "makerAssetData": "0xf47261b000000000000000000000000034d402f14d58e001d8efbe6585051bf9706aa064",
-        "takerAssetData": "0xf47261b000000000000000000000000025b8fe1de9daf8ba351890744ff28cf7dfa8f5e3",
-        "exchangeAddress": "0x4f833a24e1f95d70f028921e27040ca56e09ab0b"
-      }
-    ],
-    "transaction": {
-      "salt": "30502121252152069340049118328369905364578815501441646224439039476012324011326",
-      "signerAddress": "0xe36ea790bc9d7ab70c55260c66d52b1eca985f84",
-      "data": "0xd46b02c30000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e36ea790bc9d7ab70c55260c66d52b1eca985f84000000000000000000000000000000000000000000000000000000000000000000000000000000000000000078dc5d2d739606d31509c31d654056a45185ecb60000000000000000000000006ecbe1db9ef729cbe972c83fb886247691fb6beb0000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000000000000000000000000000ad78ebc5ac62000000000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000005c87b087aaed1cee5db78cfae5b9be5a1a30c67fc3515aacfa536bea1aa33deb90e4d9a8000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000024f47261b000000000000000000000000034d402f14d58e001d8efbe6585051bf9706aa064000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b000000000000000000000000025b8fe1de9daf8ba351890744ff28cf7dfa8f5e300000000000000000000000000000000000000000000000000000000",
-      "verifyingContractAddress": "0x48bacb9266a570d521063ef5dd96e61686dbe788"
+    "type": "CANCEL_REQUEST_ACCEPTED",
+    "data": {
+        "orders": [
+            {
+                "makerAddress": "0xe36ea790bc9d7ab70c55260c66d52b1eca985f84",
+                "takerAddress": "0x0000000000000000000000000000000000000000",
+                "feeRecipientAddress": "0x78dc5d2d739606d31509c31d654056a45185ecb6",
+                "senderAddress": "0x6ecbe1db9ef729cbe972c83fb886247691fb6beb",
+                "makerAssetAmount": "100000000000000000000",
+                "takerAssetAmount": "200000000000000000000",
+                "makerFee": "1000000000000000000",
+                "takerFee": "1000000000000000000",
+                "expirationTimeSeconds": "1552396423",
+                "salt": "77312126688742331532122416049113540452139616608135326468253415920865328290216",
+                "makerAssetData": "0xf47261b000000000000000000000000034d402f14d58e001d8efbe6585051bf9706aa064",
+                "takerAssetData": "0xf47261b000000000000000000000000025b8fe1de9daf8ba351890744ff28cf7dfa8f5e3",
+                "exchangeAddress": "0x4f833a24e1f95d70f028921e27040ca56e09ab0b"
+            }
+        ],
+        "transaction": {
+            "salt": "30502121252152069340049118328369905364578815501441646224439039476012324011326",
+            "signerAddress": "0xe36ea790bc9d7ab70c55260c66d52b1eca985f84",
+            "data": "0xd46b02c30000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e36ea790bc9d7ab70c55260c66d52b1eca985f84000000000000000000000000000000000000000000000000000000000000000000000000000000000000000078dc5d2d739606d31509c31d654056a45185ecb60000000000000000000000006ecbe1db9ef729cbe972c83fb886247691fb6beb0000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000000000000000000000000000ad78ebc5ac62000000000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000005c87b087aaed1cee5db78cfae5b9be5a1a30c67fc3515aacfa536bea1aa33deb90e4d9a8000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000024f47261b000000000000000000000000034d402f14d58e001d8efbe6585051bf9706aa064000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b000000000000000000000000025b8fe1de9daf8ba351890744ff28cf7dfa8f5e300000000000000000000000000000000000000000000000000000000",
+            "verifyingContractAddress": "0x48bacb9266a570d521063ef5dd96e61686dbe788"
+        }
     }
-  }
 }
 ```
