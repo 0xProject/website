@@ -43,7 +43,7 @@ const extensionData: Extension[] = [
         links: [
             {
                 text: 'Explore the Docs',
-                url: 'https://0x.org/docs/guides/v2-forwarder-specification',
+                url: 'https://0x.org/docs/guides/v3-forwarder-specification',
             },
         ],
     },

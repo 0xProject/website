@@ -68,11 +68,11 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 **utils** Contains helpers like BigNumber, a JavaScript library for arbitrary-precision decimal and non-decimal arithmetic.
 **connect** is a Standard Relayer API client implementation that allows you to easily query any Standard Relayer API endpoint.
 **web3-wrapper** is a package for interacting with an Ethereum node, retrieving account information. This is an optional package and you can choose to use alternatives like Web3.js or Ethers.js.
-**order-utils** is a package where we have our deployed contract addresses for the various networks. This also includes an address for a deployed Wrapped Ether contract.
+**order-utils** is a package to assist in creating and signing 0x orders.
 
 # Instantiating a Provider and ContractWrappers
 
-First, we need to instantiate an instance of ContractWrappers and a Provider. In our case, since we are using our local node (ganache), we will use **http://localhost:8545**. You can read about what providers are [here](https://0x.org/docs/guides/web3-provider-explained).
+First, we need to instantiate an instance of ContractWrappers and a Provider. In our case, since we are using our local node (ganache), we will use **http://localhost:8545**. You can read about what providers are [here](/docs/guides/web3-provider-explained).
 
 ```typescript
 import { RPCSubprovider, Web3ProviderEngine } from '@0x/subproviders';

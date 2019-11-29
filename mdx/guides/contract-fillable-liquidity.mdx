@@ -16,15 +16,15 @@ There are two key concepts that will be good to understand in order to make best
 
 ## 0x order
 
-The 0x order is a message with a [specific structure](https://0x.org/docs/guides/v3-specification#orders). Conceptually, you can think of a 0x order as a promise from one user (the maker) to swap their token (the makerAsset) with another token (the takerAsset) at a specified rate. These orders can be fulfilled by interacting with the [0x exchange contract](https://etherscan.io/address/0x61935cbdd02287b511119ddb11aeb42f1593b7ef).
+The 0x order is a message with a [specific structure](/docs/guides/v3-specification#orders). Conceptually, you can think of a 0x order as a promise from one user (the maker) to swap their token (the makerAsset) with another token (the takerAsset) at a specified rate. These orders can be fulfilled by interacting with the [0x exchange contract](https://etherscan.io/address/0x61935cbdd02287b511119ddb11aeb42f1593b7ef).
 
 ## 0x exchange contract
 
-The 0x exchange contract is a smart contract deployed on the [Ethereum mainnet](https://etherscan.io/address/0x61935cbdd02287b511119ddb11aeb42f1593b7ef) and most [testnets](https://0x.org/docs/guides/0x-cheat-sheet#deployed-contract-addresses). Users send transactions to this smart contract in order to fulfill 0x orders. There are many options for filling orders using the contract, they are listed [here](https://0x.org/docs/guides/v3-specification#fillorder).
+The 0x exchange contract is a smart contract deployed on the [Ethereum mainnet](https://etherscan.io/address/0x61935cbdd02287b511119ddb11aeb42f1593b7ef) and most [testnets](/docs/guides/0x-cheat-sheet#deployed-contract-addresses). Users send transactions to this smart contract in order to fulfill 0x orders. There are many options for filling orders using the contract, they are listed [here](/docs/guides/v3-specification#fillorder).
 
 ## 0x extension contracts
 
-The 0x exchange contract is designed to be easily extendible through varying smart contracts that are referred to as extension contracts. Users can send their orders to an extension contract and expect augmented behavior that is not provided by the core 0x exchange contract. While any developer can develop and leverage extension contracts, the 0x core team has built, audited, and deployed a number of open source extension contracts. Learn more about them [here](https://0x.org/docs/guides/0x-extensions-explained).
+The 0x exchange contract is designed to be easily extendible through varying smart contracts that are referred to as extension contracts. Users can send their orders to an extension contract and expect augmented behavior that is not provided by the core 0x exchange contract. While any developer can develop and leverage extension contracts, the 0x core team has built, audited, and deployed a number of open source extension contracts. Learn more about them [here](/docs/guides/0x-extensions-explained).
 
 ---
 
@@ -124,7 +124,7 @@ contract MyContract {
 
 _Note:_ Contract fillable liquidity integrations will be filling 0x orders “on behalf” of the user. Smart contract’s integrating 0x CFL would need to set an allowance for 0x exchange contracts before hand in the constructor or through an admin operated function.
 
-There are many different ways to fill orders; developers in the 0x ecosystem have built a number of ways to interact with 0x protocol on-chain. For a complete list of options for filling 0x orders, check out the [0x protocol specification](https://0x.org/docs/guides/v3-specification#fillorder). A non-exhaustive list of great 0x integrations can be found here:
+There are many different ways to fill orders; developers in the 0x ecosystem have built a number of ways to interact with 0x protocol on-chain. For a complete list of options for filling 0x orders, check out the [0x protocol specification](/docs/guides/v3-specification#fillorder). A non-exhaustive list of great 0x integrations can be found here:
 
 -   dYdX's exchange wrappers repo: https://github.com/dydxprotocol/exchange-wrappers
 -   Set protocol’s exchange wrappers repo: https://github.com/SetProtocol/set-protocol-contracts/tree/master/contracts/core/exchange-wrappers
