@@ -34,7 +34,11 @@ export interface ConfigGeneratorState {
     availableTokens?: ObjectMap<ERC20AssetMetaData>;
 }
 
-const SRA_ENDPOINTS = ['https://api.radarrelay.com/0x/v2/', 'https://sra.bamboorelay.com/0x/v2/'];
+const SRA_ENDPOINTS = [
+    'https://api.0x.org/sra/',
+    'https://api.radarrelay.com/0x/v3/',
+    'https://sra.bamboorelay.com/0x/v3/',
+];
 
 export class ConfigGenerator extends React.Component<ConfigGeneratorProps, ConfigGeneratorState> {
     public state: ConfigGeneratorState = {
