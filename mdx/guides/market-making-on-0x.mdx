@@ -1,4 +1,4 @@
-This tutorial will attempt to bridge the knowledge-gap between market-making on centralized cryptocurrency exchanges (e.g Binance) and market-making on 0x, a decentralised exchange protocol built on Ethereum (see: [technical protocol specification](https://0x.org/docs/guides/v2-specification)).
+This tutorial will attempt to bridge the knowledge-gap between market-making on centralized cryptocurrency exchanges (e.g Binance) and market-making on 0x, a decentralised exchange protocol built on Ethereum (see: [technical protocol specification](https://0x.org/docs/guides/v3-specification)).
 
 # High-level primer
 
@@ -18,7 +18,7 @@ Trading on a CEX (centralized exchange) requires that you deposit your assets in
 
 0x orders can be hosted by anyone, rather than there being a single entity hosting the orders. Any entity that hosts and distributes 0x orders is called a "relayer". Currently most relayers are centralized entities hosting an API from which orders can be retrieved.
 
-A 0x order is any data packet that contains an [order's details](https://0x.org/docs/guides/v2-specification#order-message-format) together with a [valid signature](https://0x.org/docs/guides/v2-specification#signature-types) (e.g. a valid elliptic curve signature generated from the traders Ethereum address) of it's contents.
+A 0x order is any data packet that contains an [order's details](https://0x.org/docs/guides/v3-specification#order-message-format) together with a [valid signature](https://0x.org/docs/guides/v3-specification#signature-types) (e.g. a valid elliptic curve signature generated from the traders Ethereum address) of it's contents.
 
 ## 3. Settlement of trades
 
@@ -38,49 +38,49 @@ In both models, the relayer never has custody over a trader's assets.
 
 0x orders only exist off-chain and are completely free to create. In order to create a valid 0x order, you can use the [@0x/order-utils](https://0x.org/docs/tools/order-utils) TypeScript/Javascript library, or alternatively the [0x-order-utils.py](http://0x-order-utils-py.s3-website-us-east-1.amazonaws.com/) Python library. These libraries will help you:
 
-1. Generate an order in the proper format (e.g encoding/decoding [`assetData`](https://0x.org/docs/guides/v2-specification#assetdata))
+1. Generate an order in the proper format (e.g encoding/decoding [`assetData`](https://0x.org/docs/guides/v3-specification#assetdata))
 2. Generating a proper hash for the order contents
 3. Sign the order with your elliptic curve signature
 
 For a set of scenarios show-casing the above steps, as well as allowance setting, take a look at the [0x Starter Project](https://github.com/0xProject/0x-starter-project).
 
-Note that the `salt` field of an order should be set to the current unix timestamp in milliseconds for full compatibility with the [`cancelOrdersUpTo`](#cancelling-orders) function. For low level details of how an order is created, please reference the [orders](https://0x.org/docs/guides/v2-specification#orders) section of the protocol specification.
+Note that the `salt` field of an order should be set to the current unix timestamp in milliseconds for full compatibility with the [`cancelOrdersUpTo`](#cancelling-orders) function. For low level details of how an order is created, please reference the [orders](https://0x.org/docs/guides/v3-specification#orders) section of the protocol specification.
 
-Once you have a valid 0x order, it can be submitted to a relayer or the Mesh network. You can use the [POST /v2/order](https://github.com/0xProject/standard-relayer-api/blob/master/http/v2.md#post-v2order) endpoint of the Standard Relayer API (see: [submitOrderAsync in 0x Connect](https://0x.org/docs/tools/connect#submitorderasync)) or the [mesh_addOrders](https://0x-org.gitbook.io/mesh/getting-started/usage#mesh_addorders) Mesh JSON-RPC method (see: [addOrdersAsync in `@0x/mesh-rpc-client`](https://0x-org.gitbook.io/mesh/json-rpc-clients/typescript/reference#addordersasync)) respectively.
+Once you have a valid 0x order, it can be submitted to a relayer or the Mesh network. You can use the [POST /v3/order](https://github.com/0xProject/standard-relayer-api/blob/master/http/v3.md#post-v3order) endpoint of the Standard Relayer API (see: [submitOrderAsync in 0x Connect](https://0x.org/docs/tools/connect#submitorderasync)) or the [mesh_addOrders](https://0x-org.gitbook.io/mesh/getting-started/usage#mesh_addorders) Mesh JSON-RPC method (see: [addOrdersAsync in `@0x/mesh-rpc-client`](https://0x-org.gitbook.io/mesh/json-rpc-clients/typescript/reference#addordersasync)) respectively.
 
 If you want to be notified whenever the order is filled by a trader, you should also submit the order to a [0x Mesh node](https://0x-org.gitbook.io/mesh/) instance you are running.
 
 # Filling orders
 
-Orders may be filled by calling various methods on the [Exchange contract](https://0x.org/docs/guides/v2-specification#exchange), as described in the [filling orders](https://0x.org/docs/guides/v2-specification#filling-orders) section of the protocol specification. In general, these methods can be broken down into 3 categories:
+Orders may be filled by calling various methods on the [Exchange contract](https://0x.org/docs/guides/v3-specification#exchange), as described in the [filling orders](https://0x.org/docs/guides/v3-specification#filling-orders) section of the protocol specification. In general, these methods can be broken down into 3 categories:
 
 ## Single order fills
 
 These methods are useful for filling single orders. All of these methods have slightly different failure conditions:
 
--   [fillOrder](https://0x.org/docs/guides/v2-specification#fillorder)
--   [fillOrKillOrder](https://0x.org/docs/guides/v2-specification#fillorkillorder)
--   [fillOrderNoThrow](https://0x.org/docs/guides/v2-specification#fillordernothrow)
+-   [fillOrder](https://0x.org/docs/guides/v3-specification#fillorder)
+-   [fillOrKillOrder](https://0x.org/docs/guides/v3-specification#fillorkillorder)
+-   [fillOrderNoThrow](https://0x.org/docs/guides/v3-specification#fillordernothrow)
 
 ## Multiple order fills
 
 These methods are useful for filling multiple orders in a single transaction. Each method has different conditions around transaction failures and execution:
 
--   [batchFillOrders](https://0x.org/docs/guides/v2-specification#batchfillorders)
--   [batchFillOrKillOrders](https://0x.org/docs/guides/v2-specification#batchfillorkillorders)
--   [batchFillOrdersNoThrow](https://0x.org/docs/guides/v2-specification#batchfillordersnothrow)
--   [marketSellOrders](https://0x.org/docs/guides/v2-specification#marketsellorders)
--   [marketSellOrdersNoThrow](https://0x.org/docs/guides/v2-specification#marketsellordersnothrow)
--   [marketBuyOrders](https://0x.org/docs/guides/v2-specification#marketbuyorders)
--   [marketBuyOrdersNoThrow](https://0x.org/docs/guides/v2-specification#marketbuyordersnothrow)
+-   [batchFillOrders](https://0x.org/docs/guides/v3-specification#batchfillorders)
+-   [batchFillOrKillOrders](https://0x.org/docs/guides/v3-specification#batchfillorkillorders)
+-   [batchFillOrdersNoThrow](https://0x.org/docs/guides/v3-specification#batchfillordersnothrow)
+-   [marketSellOrders](https://0x.org/docs/guides/v3-specification#marketsellorders)
+-   [marketSellOrdersNoThrow](https://0x.org/docs/guides/v3-specification#marketsellordersnothrow)
+-   [marketBuyOrders](https://0x.org/docs/guides/v3-specification#marketbuyorders)
+-   [marketBuyOrdersNoThrow](https://0x.org/docs/guides/v3-specification#marketbuyordersnothrow)
 
 ## Matching order fills
 
-A special case exists when filling both a buy and sell order of the same asset pair where the price of the sell order is less than or equal to the price of the buy order. These 2 orders can be simultaneously filled with no capital requirements by calling the [matchOrders](https://0x.org/docs/guides/v2-specification#matchorders) function.
+A special case exists when filling both a buy and sell order of the same asset pair where the price of the sell order is less than or equal to the price of the buy order. These 2 orders can be simultaneously filled with no capital requirements by calling the [matchOrders](https://0x.org/docs/guides/v3-specification#matchorders) function.
 
 ## Interacting with different relayer models
 
-Note that the process for filling orders differs when interacting with an [open orderbook](https://0x.org/docs/guides/relayer-strategies#open-orderbook) relayer or a [matching](https://0x.org/docs/guides/relayer-strategies#matching) relayer. These orders can be differentiated by looking at an order's [senderAddress](https://0x.org/docs/guides/v2-specification#senderaddress) and [takerAddress](https://0x.org/docs/guides/v2-specification#order-message-format) fields.
+Note that the process for filling orders differs when interacting with an [open orderbook](https://0x.org/docs/guides/relayer-strategies#open-orderbook) relayer or a [matching](https://0x.org/docs/guides/relayer-strategies#matching) relayer. These orders can be differentiated by looking at an order's [senderAddress](https://0x.org/docs/guides/v3-specification#senderaddress) and [takerAddress](https://0x.org/docs/guides/v3-specification#order-message-format) fields.
 
 When both fields are set to 0 (as in the open orderbook model), the order can be filled directly by calling the desired fill function on the Exchange contract. The taker filling an order in this way benefits from [Ethereum transaction atomicity](#transaction-atomicity) and more granular control over [transaction failures](#transaction-failures). However, the onus of paying gas and choosing which specific orders to be matched with falls on the taker in this scenario.
 
@@ -88,7 +88,7 @@ In the matching model, the taker first submits a signed order to the matcher (wh
 
 # Cancelling orders
 
-There are multiple ways to cancel 0x orders by interacting with the [Exchange contract](https://0x.org/docs/guides/v2-specification#exchange), each of which is described in the [cancelling orders](https://0x.org/docs/guides/v2-specification#cancelling-orders) section of the protocol specification.
+There are multiple ways to cancel 0x orders by interacting with the [Exchange contract](https://0x.org/docs/guides/v3-specification#exchange), each of which is described in the [cancelling orders](https://0x.org/docs/guides/v3-specification#cancelling-orders) section of the protocol specification.
 
 The `cancelOrdersUpTo` approach is perhaps the least straight forward but also the most powerful for a market maker. It allows for the cancellation of an arbitrary number of orders for a fixed amount of gas. By creating orders where the `salt` field is equal to the current unix timestamp in milliseconds, you can cancel all orders that were created at or before a certain time in a single `cancelOrdersUpTo` call (a fixed size transaction). Note that any future orders created with a `salt` that is below the largest `salt` argument of a `cancelOrdersUpTo` call by your address will automatically be invalid.
 
@@ -126,7 +126,7 @@ Because the 0x Protocol checks order expiration using block timestamps, the orde
 
 In most blockchains, the miner decides which valid transactions to include in the next block they attempt to mine. They are expected to be economically rational agents who will prioritize transactions that pay them the most fees, however they have full discretion over transaction ordering.
 
-Let's say a trader submits an order cancellation transaction; there are no guarantees about the order in which this transaction will be included in the blockchain. You can try and incentize miners to include it sooner by increasing the `gasPrice` (read: fee) paid for the transaction, but so can any other trader attempting to fill the order (read more about this problem in our [front-running, griefing and the perils of virtual settlement](https://blog.0xproject.com/front-running-griefing-and-the-perils-of-virtual-settlement-part-1-8554ab283e97) blog post series). Because of this race-condition, we recommend you use shorter expiration times on your orders rather than relying heavily on on-chain cancellations. Alternatively, you can use our [cancelOrdersUpTo](https://0x.org/docs/guides/v2-specification#cancelordersupto) feature to cancel multiple orders in a single transaction.
+Let's say a trader submits an order cancellation transaction; there are no guarantees about the order in which this transaction will be included in the blockchain. You can try and incentize miners to include it sooner by increasing the `gasPrice` (read: fee) paid for the transaction, but so can any other trader attempting to fill the order (read more about this problem in our [front-running, griefing and the perils of virtual settlement](https://blog.0xproject.com/front-running-griefing-and-the-perils-of-virtual-settlement-part-1-8554ab283e97) blog post series). Because of this race-condition, we recommend you use shorter expiration times on your orders rather than relying heavily on on-chain cancellations. Alternatively, you can use our [cancelOrdersUpTo](https://0x.org/docs/guides/v3-specification#cancelordersupto) feature to cancel multiple orders in a single transaction.
 
 ## Transaction failures
 
@@ -174,7 +174,7 @@ Currently we have the best tooling support for Javascript/TypeScript and are act
 If you plan on implementing custom infrastructure, you will need the following functionality at a bare minimum:
 
 -   Interacting with relayers over Websockets or HTTPS
--   Encoding the [`assetData`](https://0x.org/docs/guides/v2-specification#assetdata) of an order using [ABIv2](https://solidity.readthedocs.io/en/latest/abi-spec.html)
+-   Encoding the [`assetData`](https://0x.org/docs/guides/v3-specification#assetdata) of an order using [ABIv2](https://solidity.readthedocs.io/en/latest/abi-spec.html)
 -   Hashing orders
 -   Cryptographically signing orders with the address you wish to trade with
 
