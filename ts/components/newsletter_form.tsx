@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { fadeIn } from 'ts/style/keyframes';
 
+import { backendClient } from 'ts/utils/backend_client';
 import { errorReporter } from 'ts/utils/error_reporter';
-import { utils } from 'ts/utils/utils';
 
 interface IFormProps {
     color?: string;
@@ -40,14 +40,7 @@ export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
         }
 
         try {
-            await fetch(`${utils.getBackendBaseUrl()}/newsletter_subscriber/substack`, {
-                method: 'post',
-                mode: 'cors',
-                headers: {
-                    'content-type': 'application/json; charset=utf-8',
-                },
-                body: JSON.stringify({ email, referrer }),
-            });
+            await backendClient.subscribeToNewsletterAsync(email, referrer);
         } catch (e) {
             errorReporter.report(e);
         }
