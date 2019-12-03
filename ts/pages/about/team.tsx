@@ -206,7 +206,7 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/kimp.jpg',
         name: 'Kim Persson',
-        title: 'Front-end Engineer',
+        title: 'Software Engineer',
     },
     {
         imageUrl: '/images/team/johnj.jpg',
