@@ -360,7 +360,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
                     <MarketMaker
                         key={pool.poolId}
                         name={pool.metaData.name || utils.getAddressBeginAndEnd(_.head(pool.nextEpochStats.makerAddresses))}
-                        collectedFees={pool.currentEpochStats.protocolFeesGeneratedInEth}
+                        collectedFees={pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
                         rewards={1 - pool.nextEpochStats.approximateStakeRatio}
                         staked={pool.nextEpochStats.approximateStakeRatio}
                         iconUrl={pool.metaData.logoUrl}

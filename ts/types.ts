@@ -1086,7 +1086,8 @@ export interface EpochPoolStats {
     zrxStaked: number;
     operatorShare: number;
     makerAddresses: string[];
-    protocolFeesGeneratedInEth: number;
+    totalProtocolFeesGeneratedInEth: number;
+    sevenDayProtocolFeesGeneratedInEth: number;
     approximateStakeRatio: number;
 }
 
