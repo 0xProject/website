@@ -44,7 +44,7 @@ export const stakingUtils = {
             const bestPool = poolsSummary[bestPoolIndex];
             stakingDecisions[bestPool.poolId] = stakingDecisions[bestPool.poolId] || 0;
             stakingDecisions[bestPool.poolId] += amountZrxToStake / numIterations;
-            bestPool.zrxStaked += amountZrxToStake + (amountZrxToStake / numIterations);
+            bestPool.zrxStaked += (amountZrxToStake / numIterations);
         }
         const recs = Object.keys(stakingDecisions).map(poolId => ({
             pool: pools.find(pool => pool.poolId === poolId),
