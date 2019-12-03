@@ -2,7 +2,6 @@ import { logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
 import * as React from 'react';
-import useDebounce from 'react-use/lib/useDebounce';
 import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
@@ -15,7 +14,8 @@ import { Button } from 'ts/components/button';
 import { MarketMaker } from 'ts/components/staking/wizard/market_maker';
 import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
-import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useAPIClient} from 'ts/hooks/use_api_client';
+import { stakingUtils } from 'ts/utils/staking_utils';
 
 export interface WizardFlowProps {
     providerState: ProviderState;
@@ -253,25 +253,20 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
     const apiClient = useAPIClient();
-    useDebounce(() => {
+    React.useEffect(() => {
         const fetchAndSetPools = async () => {
             let pools: PoolWithStats[] = [];
             try {
                 const poolsResponse = await apiClient.getStakingPoolsAsync();
-                // TODO: Pick pool more intelligently
-                pools = [_.head(poolsResponse.stakingPools)];
+                pools = poolsResponse.stakingPools;
             } catch (err) {
                 logUtils.warn(err);
             } finally {
                 setStakingPools(pools);
             }
         };
-        setStakingPools(undefined);
-        if (stakeAmount) {
-            // tslint:disable-next-line:no-floating-promises
-            fetchAndSetPools();
-        }
-    }, 200, [stakeAmount]);
+        fetchAndSetPools();
+    }, []);
     if (props.providerState.account.state !== AccountState.Ready) {
         return (
             <>
@@ -305,6 +300,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
     const formattedAmount = utils.getFormattedAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
     const unitAmount = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX).toNumber();
     const statusNode = getStatus(stakeAmount, stakingPools);
+    const recommendedPools = stakingUtils.getRecommendedStakingPools(Number(stakeAmount), stakingPools);
     return (
         <>
             <NumberInput
@@ -343,10 +339,10 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
                     },
                 ]}
             />
-            {stakingPools && stakingPools.length > 0 && (
+            {recommendedPools && recommendedPools.length > 0 && (
                     <InfoHeader>
                     <InfoHeaderItem>
-                        Recommended staking pools {stakingPools.length > 1 && <NumberRound>{stakingPools.length}</NumberRound>}
+                        Recommended staking pools {recommendedPools.length > 1 && <NumberRound>{recommendedPools.length}</NumberRound>}
                     </InfoHeaderItem>
                     <InfoHeaderItem>
                         <Button isWithArrow={true} color={colors.textDarkSecondary} to={WebsitePaths.Staking}>
@@ -355,18 +351,17 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
                     </InfoHeaderItem>
                     </InfoHeader>
             )}
-            {stakingPools && stakingPools.map(pool => {
+            {recommendedPools && recommendedPools.map(rec => {
                 return (
                     <MarketMaker
-                        key={pool.poolId}
-                        name={pool.metaData.name || utils.getAddressBeginAndEnd(_.head(pool.nextEpochStats.makerAddresses))}
-                        collectedFees={pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
-                        rewards={1 - pool.nextEpochStats.approximateStakeRatio}
-                        staked={pool.nextEpochStats.approximateStakeRatio}
-                        iconUrl={pool.metaData.logoUrl}
-                        website={pool.metaData.websiteUrl}
-                        // TODO: implement difference correctly
-                        difference={formattedAmount}
+                        key={rec.pool.poolId}
+                        name={rec.pool.metaData.name || utils.getAddressBeginAndEnd(_.head(rec.pool.nextEpochStats.makerAddresses))}
+                        collectedFees={rec.pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
+                        rewards={1 - rec.pool.nextEpochStats.approximateStakeRatio}
+                        staked={rec.pool.nextEpochStats.approximateStakeRatio}
+                        iconUrl={rec.pool.metaData.logoUrl}
+                        website={rec.pool.metaData.websiteUrl}
+                        difference={rec.zrxAmount}
                     />
                 );
             })}

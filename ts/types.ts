@@ -1096,3 +1096,8 @@ export interface StakingAPIPoolsResponse {
     approximateNextEpoch: Epoch;
     stakingPools: PoolWithStats[];
 }
+
+export interface StakingPoolReccomendation {
+    pool: PoolWithStats;
+    zrxAmount: number;
+}

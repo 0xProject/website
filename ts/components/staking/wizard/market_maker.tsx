@@ -13,7 +13,7 @@ interface MarketMakerProps {
     rewards: number;
     staked: number;
     website: string;
-    difference: string;
+    difference: string | number;
 }
 
 const Container = styled.div`
