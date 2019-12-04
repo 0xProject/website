@@ -119,7 +119,6 @@ export const asyncDispatcher = {
             from: ownerAddress,
         });
 
-        // TODO(kimpers): update quip docs with new way to call methods
         const data = [
             stakingContract.stake(amountToStakeBaseUnits).getABIEncodedTransactionData(),
             stakingContract
