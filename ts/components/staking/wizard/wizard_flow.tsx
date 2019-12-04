@@ -16,11 +16,16 @@ import { MarketMaker } from 'ts/components/staking/wizard/market_maker';
 import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
 import { useAPIClient } from 'ts/hooks/use_api_client';
+import { Inner } from 'ts/components/staking/wizard/inner';
+import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
+import { Spinner } from 'ts/components/ui/spinner';
 
 export interface WizardFlowProps {
     providerState: ProviderState;
     onOpenConnectWalletDialog: () => void;
     networkId: Network;
+    setSelectedStakingPools: React.Dispatch<React.SetStateAction<PoolWithStats[]>>;
+    selectedStakingPools: PoolWithStats[] | undefined;
 }
 
 enum StakingPercentageValue {
@@ -180,7 +185,35 @@ const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.R
     return null;
 };
 
-export const WizardFlow: React.FC<WizardFlowProps> = props => {
+export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools, selectedStakingPools, ...props }) => {
+    if (selectedStakingPools) {
+        return (
+            <Inner>
+            <TransactionItem
+                marketMakerId="0x12345...12345"
+                selfId="0x12345...12345"
+                sendAmount="1520 ZRX"
+                selfIconUrl="/images/toshi_logo.jpg"
+                receiveAmount="1520 ZRX"
+                marketMakerName="Binance"
+                marketMakerIconUrl="/images/toshi_logo.jpg"
+                isActive={true}
+            />
+            <TransactionItem
+                marketMakerId="0x12345...12345"
+                selfId="0x12345...12345"
+                sendAmount="1520 ZRX"
+                selfIconUrl="/images/toshi_logo.jpg"
+                receiveAmount="1520 ZRX"
+                marketMakerName="Binance"
+                marketMakerIconUrl="/images/toshi_logo.jpg"
+                isActive={false}
+            />
+    
+        </Inner>
+        )
+    }
+
         /* <MarketMaker
             name="Binance staking pool"
             collectedFees="3.212,032 ETH"
@@ -251,6 +284,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
         </Inner>
         <Newsletter /> */
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
+    // Found staking pools, not necessarily 'selected'
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
     const apiClient = useAPIClient();
@@ -373,7 +407,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
             })}
             {statusNode}
             {stakingPools && stakingPools.length > 0 &&
-                <ButtonWithIcon
+                <ButtonWithIcon onClick={() => setSelectedStakingPools(stakingPools)}
                     color={colors.white}
                 >
                     Start staking
