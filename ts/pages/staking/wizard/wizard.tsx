@@ -13,12 +13,6 @@ export interface StakingWizardProps {
     providerState: ProviderState;
     networkId: Network;
     onOpenConnectWalletDialog: () => void;
-    onDepositAndStartStakingAsync: (
-        providerState: ProviderState,
-        networkId: Network,
-        amountToStakeInput: string,
-        poolId: string,
-    ) => Promise<void>;
 }
 
 const Container = styled.div`

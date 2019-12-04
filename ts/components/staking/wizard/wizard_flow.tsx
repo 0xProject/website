@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
-import { AccountState, PoolWithStats, ProviderState, WebsitePaths, Network } from 'ts/types';
+import { AccountState, Network, PoolWithStats, ProviderState, WebsitePaths } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
@@ -20,12 +20,6 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 export interface WizardFlowProps {
     providerState: ProviderState;
     onOpenConnectWalletDialog: () => void;
-    onDepositAndStartStakingAsync: (
-        providerState: ProviderState,
-        networkId: Network,
-        amountToStakeInput: string,
-        poolId: string,
-    ) => Promise<void>;
     networkId: Network;
 }
 
