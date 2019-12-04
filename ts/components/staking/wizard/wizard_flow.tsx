@@ -190,9 +190,6 @@ const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.R
 
 // todo(jj) refactor this to imitate the remove flow
 export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools, selectedStakingPools, ...props }) => {
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-   
         /* <MarketMaker
             name="Binance staking pool"
             collectedFees="3.212,032 ETH"
@@ -263,9 +260,10 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
         </Inner>
         <Newsletter /> */
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
-    // Found staking pools, not necessarily 'selected'
-    const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
+    const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined); // available pools
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+
     const apiClient = useAPIClient();
     useDebounce(() => {
         const fetchAndSetPools = async () => {
@@ -286,7 +284,6 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
             fetchAndSetPools();
         }
     }, 200, [stakeAmount]);
-
 
     // Confirmation page stage, ready to stake (may need to approve first)
     if (selectedStakingPools) {
@@ -331,7 +328,6 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
             </>
         );
     }
-
 
     if (props.providerState.account.state !== AccountState.Ready) {
         return (
