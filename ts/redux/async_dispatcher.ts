@@ -1,6 +1,5 @@
-import { StakingContract, StakingProxyContract } from '@0x/abi-gen-wrappers';
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
-import { ERC20TokenContract } from '@0x/contract-wrappers';
+import { ERC20TokenContract, StakingContract, StakingProxyContract } from '@0x/contract-wrappers';
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
