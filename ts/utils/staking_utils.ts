@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { PoolWithStats, StakingPoolReccomendation } from '../types';
+import { PoolWithStats, StakingPoolRecomendation } from '../types';
 
 interface PoolStatSummary {
     poolId: string;
@@ -15,7 +15,7 @@ interface GetRecommendedStakingPoolsOptions {
 }
 
 export const stakingUtils = {
-    getRecommendedStakingPools: (amountZrxToStake: number, pools: PoolWithStats[], opts?: Partial<GetRecommendedStakingPoolsOptions>): StakingPoolReccomendation[] => {
+    getRecommendedStakingPools: (amountZrxToStake: number, pools: PoolWithStats[], opts?: Partial<GetRecommendedStakingPoolsOptions>): StakingPoolRecomendation[] => {
         if (!pools || amountZrxToStake === 0) {
             return [];
         }

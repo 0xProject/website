@@ -1097,7 +1097,7 @@ export interface StakingAPIPoolsResponse {
     stakingPools: PoolWithStats[];
 }
 
-export interface StakingPoolReccomendation {
+export interface StakingPoolRecomendation {
     pool: PoolWithStats;
     zrxAmount: number;
 }
