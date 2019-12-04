@@ -21,6 +21,8 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
+import { ApproveTokensInfoDialog } from 'ts/components/dialogs/approve_tokens_info_dialog';
+
 export interface WizardFlowProps {
     providerState: ProviderState;
     onOpenConnectWalletDialog: () => void;
@@ -188,36 +190,9 @@ const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.R
 
 // todo(jj) refactor this to imitate the remove flow
 export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools, selectedStakingPools, ...props }) => {
-    if (selectedStakingPools) {
-        return (
-            <>
-                {/* TODO find the correct header component */}
-                <InfoHeader>
-                    <InfoHeaderItem>
-                    You're delegating {6000} ZRX to {'Neptune'}
-                    </InfoHeaderItem>
-                </InfoHeader>
-                <Inner>
-                    <TransactionItem
-                        marketMakerId="0x12345...12345"
-                        selfId="0x12345...12345"
-                        sendAmount="1520 ZRX"
-                        selfIconUrl="/images/toshi_logo.jpg"
-                        receiveAmount="1520 ZRX"
-                        marketMakerName="Binance"
-                        marketMakerIconUrl="/images/toshi_logo.jpg"
-                        isActive={true}
-                    />
-                    <ButtonWithIcon
-                        onClick={() => { /*do the allowance + staking */}}
-                        color={colors.white}
-                    >
-                        Start staking
-                    </ButtonWithIcon>
-                </Inner>
-            </>
-        );
-    }
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+   
         /* <MarketMaker
             name="Binance staking pool"
             collectedFees="3.212,032 ETH"
@@ -311,6 +286,53 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
             fetchAndSetPools();
         }
     }, 200, [stakeAmount]);
+
+
+    // Confirmation page stage, ready to stake (may need to approve first)
+    if (selectedStakingPools) {
+        return (
+            <>
+                {/* TODO find the correct header component */}
+                <ApproveTokensInfoDialog
+                    isOpen={isModalOpen}
+                    onDismiss={() => setIsModalOpen(false)}
+                    providerName={props.providerState.displayName}
+                />
+                <InfoHeader>
+                    <InfoHeaderItem>
+                    You're delegating {6000} ZRX to {'Neptune'}
+                    </InfoHeaderItem>
+                </InfoHeader>
+                <Inner>
+                    <TransactionItem
+                        marketMakerId="0x12345...12345"
+                        selfId="0x12345...12345"
+                        sendAmount="1520 ZRX"
+                        selfIconUrl="/images/toshi_logo.jpg"
+                        receiveAmount="1520 ZRX"
+                        marketMakerName="Binance"
+                        marketMakerIconUrl="/images/toshi_logo.jpg"
+                        isActive={true}
+                    />
+                    <ButtonWithIcon
+                        onClick={() => {
+                            if (/*// IF ALLOWANCE IS NOT SET...*/ true) {
+                                setIsModalOpen(true);
+                                // Also do the web3 allowance call...
+                            } else {
+                                // Just do the staking directly here...
+                            }
+                        }}
+                        color={colors.white}
+                    >
+                        Start staking
+                    </ButtonWithIcon>
+                </Inner>
+            </>
+        );
+    }
+
+
     if (props.providerState.account.state !== AccountState.Ready) {
         return (
             <>
