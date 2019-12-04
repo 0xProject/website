@@ -23,6 +23,9 @@ export const constants = {
         3: 1719261,
         4: 1570919,
     } as { [networkId: number]: number },
+    STAKING: {
+        NIL_POOL_ID: '0x0000000000000000000000000000000000000000000000000000000000000000',
+    },
     GUIDE_OLDER_VERSIONS: 'browsing-docs-on-github',
     HOME_SCROLL_DURATION_MS: 500,
     HTTP_NO_CONTENT_STATUS_CODE: 204,

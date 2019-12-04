@@ -1,5 +1,3 @@
-import { BigNumber } from '@0x/utils';
-import { Web3Wrapper } from '@0x/web3-wrapper';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
@@ -7,17 +5,17 @@ import { StakingWizard as StakingWizardComponent } from 'ts/pages/staking/wizard
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
-import { AccountReady, Action, Network, ProviderState } from 'ts/types';
-import { constants } from 'ts/utils/constants';
+import { Action, Network, ProviderState } from 'ts/types';
 
 interface StakingWizardProps {}
 
 interface ConnectedDispatch {
     onOpenConnectWalletDialog: () => void;
-    onDepositAndStartStakingAsync: (
+    onSetZrxAllowanceIfNeededAsync: (
         providerState: ProviderState,
         networkId: Network,
         amountToStakeInput: string,
+        poolId: string,
     ) => Promise<void>;
 }
 
@@ -38,27 +36,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
         onOpenConnectWalletDialog: (): void => {
             dispatcher.updateIsConnectWalletDialogOpen(true);
         },
-        onDepositAndStartStakingAsync: async (
-            providerState: ProviderState,
-            networkId: Network,
-            amountToStakeInput: string,
-        ): Promise<void> => {
-            const amountToStakeBaseUnits = Web3Wrapper.toBaseUnitAmount(
-                new BigNumber(amountToStakeInput, 10),
-                constants.DECIMAL_PLACES_ZRX,
-            );
-
-            const account = providerState.account as AccountReady;
-            const currentAllowance = account.zrxAllowanceBaseUnitAmount || new BigNumber(0);
-
-            if (amountToStakeBaseUnits.isGreaterThan(currentAllowance)) {
-                await asyncDispatcher.increaseZrxAllowanceAndDispatchToStoreIfNeededAsync(
-                    providerState,
-                    networkId,
-                    amountToStakeBaseUnits,
-                    dispatcher,
-                );
-            }
+        onSetZrxAllowanceIfNeededAsync: async (providerState: ProviderState, networkId: Network): Promise<void> => {
+            await asyncDispatcher.setZrxAllowanceAndDispatchToStoreIfNeededAsync(providerState, networkId, dispatcher);
         },
     };
 };

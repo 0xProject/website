@@ -4,6 +4,16 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
 
+export enum StakeStatus {
+    Undelegated,
+    Delegated,
+}
+
+export interface StakePoolData {
+    poolId: string;
+    amount: string;
+}
+
 // Types copied from instant
 // TODO(kimpers): cleanup when consolidating providers into a package
 export type Maybe<T> = T | undefined;

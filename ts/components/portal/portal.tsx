@@ -1,3 +1,4 @@
+/*
 import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 import * as React from 'react';
@@ -763,4 +764,6 @@ const SmallLayout = (props: SmallLayoutProps) => {
             </Container>
         </div>
     );
-}; // tslint:disable:max-file-line-count
+};
+*/
+// tslint:disable:max-file-line-count

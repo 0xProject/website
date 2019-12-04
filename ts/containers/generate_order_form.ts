@@ -1,3 +1,4 @@
+/*
 import { BigNumber } from '@0x/utils';
 import { connect } from 'react-redux';
 import { Blockchain } from 'ts/blockchain';
@@ -45,3 +46,4 @@ const mapStateToProps = (state: State, _ownProps: GenerateOrderFormProps): Conne
 export const GenerateOrderForm = connect(mapStateToProps)(
     GenerateOrderFormComponent,
 );
+*/
