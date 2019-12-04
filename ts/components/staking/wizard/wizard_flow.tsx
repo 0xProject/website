@@ -12,13 +12,14 @@ import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
 import { Button } from 'ts/components/button';
+import { Inner } from 'ts/components/staking/wizard/inner';
 import { MarketMaker } from 'ts/components/staking/wizard/market_maker';
 import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
-import { useAPIClient } from 'ts/hooks/use_api_client';
-import { Inner } from 'ts/components/staking/wizard/inner';
-import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 import { Spinner } from 'ts/components/ui/spinner';
+import { useAPIClient } from 'ts/hooks/use_api_client';
+
+import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
 export interface WizardFlowProps {
     providerState: ProviderState;
@@ -190,7 +191,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
     if (selectedStakingPools) {
         return (
             <>
-                {/* TODO find the correct header component */}    
+                {/* TODO find the correct header component */}
                 <InfoHeader>
                     <InfoHeaderItem>
                     You're delegating {6000} ZRX to {'Neptune'}
@@ -207,14 +208,15 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
                         marketMakerIconUrl="/images/toshi_logo.jpg"
                         isActive={true}
                     />
-                    <ButtonWithIcon onClick={() => console.log('do the approval then the staking')}
+                    <ButtonWithIcon
+                        onClick={() => { /*do the allowance + staking */}}
                         color={colors.white}
                     >
                         Start staking
                     </ButtonWithIcon>
                 </Inner>
             </>
-        )
+        );
     }
         /* <MarketMaker
             name="Binance staking pool"
@@ -409,7 +411,8 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
             })}
             {statusNode}
             {stakingPools && stakingPools.length > 0 &&
-                <ButtonWithIcon onClick={() => setSelectedStakingPools(stakingPools)}
+                <ButtonWithIcon
+                    onClick={() => setSelectedStakingPools(stakingPools)}
                     color={colors.white}
                 >
                     Start staking

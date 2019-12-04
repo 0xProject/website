@@ -7,7 +7,7 @@ import { PoolWithStats } from 'ts/types';
 import { Timeline } from 'ts/components/staking/wizard/timeline';
 
 export interface WizardInfoProps {
-    selectedStakingPools: PoolWithStats[] | undefined
+    selectedStakingPools: PoolWithStats[] | undefined;
 }
 
 const IntroHeader = styled.h1`
@@ -162,8 +162,7 @@ export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools }) 
                     isActive: false,
                 },
             ]}
-        /> 
+        />
         </>
-    )
-
+    );
 };

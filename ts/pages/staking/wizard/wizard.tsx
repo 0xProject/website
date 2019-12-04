@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Network, ProviderState, PoolWithStats } from 'ts/types';
+import { Network, PoolWithStats, ProviderState } from 'ts/types';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 
