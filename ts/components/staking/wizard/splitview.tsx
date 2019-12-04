@@ -52,6 +52,7 @@ const Right = styled.div`
     @media (min-width: 768px) {
         padding: 30px;
         background-color: ${colors.backgroundLightGrey};
+        max-height: 750px;
     }
     @media (min-width: 1140px) {
         padding: 60px;

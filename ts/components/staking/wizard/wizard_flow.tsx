@@ -51,6 +51,10 @@ const SpinnerContainer = styled.span`
     margin-right: 10px;
 `;
 
+const PoolsContainer = styled.div`
+    overflow: scroll;
+`;
+
 const InfoHeader = styled.div`
     display: flex;
     justify-content: space-between;
@@ -351,20 +355,24 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
                     </InfoHeaderItem>
                     </InfoHeader>
             )}
-            {recommendedPools && recommendedPools.map(rec => {
-                return (
-                    <MarketMaker
-                        key={rec.pool.poolId}
-                        name={rec.pool.metaData.name || utils.getAddressBeginAndEnd(_.head(rec.pool.nextEpochStats.makerAddresses))}
-                        collectedFees={rec.pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
-                        rewards={1 - rec.pool.nextEpochStats.approximateStakeRatio}
-                        staked={rec.pool.nextEpochStats.approximateStakeRatio}
-                        iconUrl={rec.pool.metaData.logoUrl}
-                        website={rec.pool.metaData.websiteUrl}
-                        difference={rec.zrxAmount}
-                    />
-                );
-            })}
+            {recommendedPools && (
+                <PoolsContainer>
+                    {recommendedPools.map(rec => {
+                        return (
+                            <MarketMaker
+                                key={rec.pool.poolId}
+                                name={rec.pool.metaData.name || utils.getAddressBeginAndEnd(_.head(rec.pool.nextEpochStats.makerAddresses))}
+                                collectedFees={rec.pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
+                                rewards={1 - rec.pool.nextEpochStats.approximateStakeRatio}
+                                staked={rec.pool.nextEpochStats.approximateStakeRatio}
+                                iconUrl={rec.pool.metaData.logoUrl}
+                                website={rec.pool.metaData.websiteUrl}
+                                difference={rec.zrxAmount}
+                            />
+                        );
+                    })}
+                </PoolsContainer>
+            )}
             {statusNode}
             {stakingPools && stakingPools.length > 0 &&
                 <ButtonWithIcon
