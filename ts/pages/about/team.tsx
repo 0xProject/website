@@ -121,7 +121,7 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/jasons.jpg',
         name: 'Jason Somensatto',
-        title: 'Strategic Legal Counsel',
+        title: 'Senior Counsel',
     },
     {
         imageUrl: '/images/team/steve.jpg',
