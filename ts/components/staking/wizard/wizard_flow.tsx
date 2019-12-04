@@ -185,35 +185,37 @@ const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.R
     return null;
 };
 
+// todo(jj) refactor this to imitate the remove flow
 export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools, selectedStakingPools, ...props }) => {
     if (selectedStakingPools) {
         return (
-            <Inner>
-            <TransactionItem
-                marketMakerId="0x12345...12345"
-                selfId="0x12345...12345"
-                sendAmount="1520 ZRX"
-                selfIconUrl="/images/toshi_logo.jpg"
-                receiveAmount="1520 ZRX"
-                marketMakerName="Binance"
-                marketMakerIconUrl="/images/toshi_logo.jpg"
-                isActive={true}
-            />
-            <TransactionItem
-                marketMakerId="0x12345...12345"
-                selfId="0x12345...12345"
-                sendAmount="1520 ZRX"
-                selfIconUrl="/images/toshi_logo.jpg"
-                receiveAmount="1520 ZRX"
-                marketMakerName="Binance"
-                marketMakerIconUrl="/images/toshi_logo.jpg"
-                isActive={false}
-            />
-    
-        </Inner>
+            <>
+                {/* TODO find the correct header component */}    
+                <InfoHeader>
+                    <InfoHeaderItem>
+                    You're delegating {6000} ZRX to {'Neptune'}
+                    </InfoHeaderItem>
+                </InfoHeader>
+                <Inner>
+                    <TransactionItem
+                        marketMakerId="0x12345...12345"
+                        selfId="0x12345...12345"
+                        sendAmount="1520 ZRX"
+                        selfIconUrl="/images/toshi_logo.jpg"
+                        receiveAmount="1520 ZRX"
+                        marketMakerName="Binance"
+                        marketMakerIconUrl="/images/toshi_logo.jpg"
+                        isActive={true}
+                    />
+                    <ButtonWithIcon onClick={() => console.log('do the approval then the staking')}
+                        color={colors.white}
+                    >
+                        Start staking
+                    </ButtonWithIcon>
+                </Inner>
+            </>
         )
     }
-
         /* <MarketMaker
             name="Binance staking pool"
             collectedFees="3.212,032 ETH"
