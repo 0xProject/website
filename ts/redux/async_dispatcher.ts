@@ -75,7 +75,7 @@ export const asyncDispatcher = {
         }
     },
 
-    increaseZrxAllowanceAndDispatchToStoreIfNeededAsync: async (
+    setZrxAllowanceAndDispatchToStoreIfNeededAsync: async (
         providerState: ProviderState,
         networkId: Network,
         dispatcher: Dispatcher,

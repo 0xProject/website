@@ -11,7 +11,7 @@ interface StakingWizardProps {}
 
 interface ConnectedDispatch {
     onOpenConnectWalletDialog: () => void;
-    onDepositAndStartStakingAsync: (
+    onSetZrxAllowanceIfNeededAsync: (
         providerState: ProviderState,
         networkId: Network,
         amountToStakeInput: string,
@@ -36,12 +36,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
         onOpenConnectWalletDialog: (): void => {
             dispatcher.updateIsConnectWalletDialogOpen(true);
         },
-        onDepositAndStartStakingAsync: async (providerState: ProviderState, networkId: Network): Promise<void> => {
-            await asyncDispatcher.increaseZrxAllowanceAndDispatchToStoreIfNeededAsync(
-                providerState,
-                networkId,
-                dispatcher,
-            );
+        onSetZrxAllowanceIfNeededAsync: async (providerState: ProviderState, networkId: Network): Promise<void> => {
+            await asyncDispatcher.setZrxAllowanceAndDispatchToStoreIfNeededAsync(providerState, networkId, dispatcher);
         },
     };
 };
