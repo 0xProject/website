@@ -2,6 +2,8 @@ import * as _ from 'lodash';
 
 import { PoolWithStats, StakingPoolRecomendation } from '../types';
 
+import { constants } from './constants';
+
 interface PoolStatSummary {
     poolId: string;
     operatorShare: number;
@@ -16,18 +18,18 @@ interface GetRecommendedStakingPoolsOptions {
 
 export const stakingUtils = {
     getRecommendedStakingPools: (amountZrxToStake: number, pools: PoolWithStats[], opts?: Partial<GetRecommendedStakingPoolsOptions>): StakingPoolRecomendation[] => {
-        if (!pools || amountZrxToStake === 0) {
+        if (!pools || !amountZrxToStake) {
             return [];
         }
         const { alpha, numIterations } = {
-            alpha: 2 / 3,
-            numIterations: 10,
+            alpha: constants.COBBS_DOUGLAS_ALPHA,
+            numIterations: 3,
             ...opts,
         };
         const poolsSummary: PoolStatSummary[] = pools.map(pool => ({
             poolId: pool.poolId,
             operatorShare: pool.nextEpochStats.operatorShare,
-            sevenDayProtocolFeesGeneratedInEth: pool.currentEpochStats.sevenDayProtocolFeesGeneratedInEth,
+            sevenDayProtocolFeesGeneratedInEth: pool.sevenDayProtocolFeesGeneratedInEth,
             zrxStaked: pool.nextEpochStats.zrxStaked,
         }));
         const stakingDecisions: { [poolId: string]: number } = {};

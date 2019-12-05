@@ -1079,6 +1079,7 @@ export interface Pool {
 export interface PoolWithStats extends Pool {
     currentEpochStats: EpochPoolStats;
     nextEpochStats: EpochPoolStats;
+    sevenDayProtocolFeesGeneratedInEth: number;
 }
 
 export interface EpochPoolStats {
@@ -1087,7 +1088,6 @@ export interface EpochPoolStats {
     operatorShare: number;
     makerAddresses: string[];
     totalProtocolFeesGeneratedInEth: number;
-    sevenDayProtocolFeesGeneratedInEth: number;
     approximateStakeRatio: number;
 }
 

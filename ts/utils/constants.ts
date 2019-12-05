@@ -147,6 +147,7 @@ export const constants = {
     URL_VOTE_FAQ: 'https://blog.0xproject.com/0x-protocol-governance-voting-walkthrough-and-faq-3becfd57a370',
     URL_ZEIP_REPO: 'https://github.com/0xProject/ZEIPs/',
     TYPES_SECTION_NAME: 'types',
+    COBBS_DOUGLAS_ALPHA: 2 / 3,
     EXTERNAL_EXPORTS_SECTION_NAME: 'external exports',
     TYPE_TO_SYNTAX: {
         [SupportedDocJson.SolDoc]: 'solidity',
