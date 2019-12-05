@@ -142,8 +142,8 @@ export class CFLMetrics extends React.Component<CFLMetricsProps, CFLMetricsState
     }
     private _getSlippageMetrics(): MetricValue[] {
         const data = this._getSelectedPairData();
+        const placeholder = '—';
         if (!data.exchangeAverageSlippagePercentage) {
-            const placeholder = '—';
             return [
                 {
                     label: <Icon name="small_0x_logo" size="natural" />,
@@ -172,15 +172,15 @@ export class CFLMetrics extends React.Component<CFLMetricsProps, CFLMetricsState
         return [
             {
                 label: <Icon name="small_0x_logo" size="natural" />,
-                value: formatSlippage(zeroExSlippage.slippage),
+                value: zeroExSlippage ? formatSlippage(zeroExSlippage.slippage) : placeholder,
             },
             {
                 label: <Icon name="small_kyber_logo" size="natural" />,
-                value: formatSlippage(kyberSlippage.slippage),
+                value: kyberSlippage ? formatSlippage(kyberSlippage.slippage) : placeholder,
             },
             {
                 label: <Icon name="small_uniswap_logo" size="natural" />,
-                value: formatSlippage(uniswapSlippage.slippage),
+                value: uniswapSlippage ? formatSlippage(uniswapSlippage.slippage) : placeholder,
             },
         ];
     }
