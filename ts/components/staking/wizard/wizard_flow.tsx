@@ -1,4 +1,4 @@
-import { logUtils } from '@0x/utils';
+import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
 import * as React from 'react';
@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
-import { AccountState, Network, PoolWithStats, ProviderState, WebsitePaths } from 'ts/types';
+import { AccountReady, AccountState, Network, PoolWithStats, ProviderState, WebsitePaths } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
@@ -18,6 +18,7 @@ import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
 import { Spinner } from 'ts/components/ui/spinner';
 import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useStake } from 'ts/hooks/use_stake';
 
 import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
@@ -26,6 +27,7 @@ import { ApproveTokensInfoDialog } from 'ts/components/dialogs/approve_tokens_in
 export interface WizardFlowProps {
     providerState: ProviderState;
     onOpenConnectWalletDialog: () => void;
+    onSetZrxAllowanceIfNeededAsync: (providerState: ProviderState, networkId: Network) => Promise<void>;
     networkId: Network;
     setSelectedStakingPools: React.Dispatch<React.SetStateAction<PoolWithStats[]>>;
     selectedStakingPools: PoolWithStats[] | undefined;
@@ -263,6 +265,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined); // available pools
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const { isLoading, error, result, estimatedTimeMs, depositAndStake } = useStake();
 
     const apiClient = useAPIClient();
     useDebounce(() => {
@@ -312,12 +315,21 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
                         isActive={true}
                     />
                     <ButtonWithIcon
-                        onClick={() => {
-                            if (/*// IF ALLOWANCE IS NOT SET...*/ true) {
+                        onClick={async () => {
+                            const allowanceBaseUnits =
+                                (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount ||
+                                new BigNumber(0);
+                            if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
                                 setIsModalOpen(true);
-                                // Also do the web3 allowance call...
+                                await props.onSetZrxAllowanceIfNeededAsync(props.providerState, props.networkId);
                             } else {
-                                // Just do the staking directly here...
+                                // TODO: put actual values here
+                                depositAndStake([
+                                    {
+                                        poolId: '0x0000000000000000000000000000000000000000000000000000000000000001',
+                                        amount: stakeAmount,
+                                    },
+                                ]);
                             }
                         }}
                         color={colors.white}

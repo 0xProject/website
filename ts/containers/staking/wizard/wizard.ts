@@ -11,12 +11,7 @@ interface StakingWizardProps {}
 
 interface ConnectedDispatch {
     onOpenConnectWalletDialog: () => void;
-    onSetZrxAllowanceIfNeededAsync: (
-        providerState: ProviderState,
-        networkId: Network,
-        amountToStakeInput: string,
-        poolId: string,
-    ) => Promise<void>;
+    onSetZrxAllowanceIfNeededAsync: (providerState: ProviderState, networkId: Network) => Promise<void>;
 }
 
 interface ConnectedState {

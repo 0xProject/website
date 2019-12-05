@@ -13,6 +13,7 @@ export interface StakingWizardProps {
     providerState: ProviderState;
     networkId: Network;
     onOpenConnectWalletDialog: () => void;
+    onSetZrxAllowanceIfNeededAsync: (providerState: ProviderState, networkId: Network) => Promise<void>;
 }
 
 const Container = styled.div`
