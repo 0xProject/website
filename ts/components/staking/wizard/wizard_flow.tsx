@@ -269,6 +269,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = props => {
                 setStakingPools(pools);
             }
         };
+        // tslint:disable-next-line:no-floating-promises
         fetchAndSetPools();
     }, []);
     if (props.providerState.account.state !== AccountState.Ready) {
