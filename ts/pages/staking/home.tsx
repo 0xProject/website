@@ -18,7 +18,7 @@ import { PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
 
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
-    const [isStakingConfirmationOpen, toggleStakingConfirmation] = React.useState(false);
+    const [isStakingConfirmationOpen, setStakingConfirmationOpen] = React.useState(false);
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
     const apiClient = useAPIClient();
     React.useEffect(() => {
@@ -33,7 +33,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
         <StakingPageLayout isHome={true} title="0x Staking">
             <StakingConfirmationDialog
                 isOpen={isStakingConfirmationOpen}
-                onDismiss={() => toggleStakingConfirmation(false)}
+                onDismiss={() => setStakingConfirmationOpen(false)}
             />
             <StakingHero
                 title="Start staking your ZRX tokens"
