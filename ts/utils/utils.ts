@@ -542,4 +542,14 @@ export const utils = {
         const etherScanPrefix = networkName === Networks.Mainnet ? '' : `${networkName.toLowerCase()}.`;
         return `https://${etherScanPrefix}etherscan.io/${suffix}/${addressOrTxHash}`;
     },
+    // TODO(kimpers): Consolidate with https://github.com/0xProject/0x-monorepo/pull/2373
+    toPaddedHex(n: number | string | BigNumber): string {
+        if (typeof n === 'string' && /^0x[0-9a-f]+$/i.test(n) && n.length === 66) {
+            // Already a padded hex.
+            return n;
+        }
+        const _n = new BigNumber(n);
+
+        return `0x${_n.toString(16).padStart(64, '0')}`;
+    },
 }; // tslint:disable:max-file-line-count

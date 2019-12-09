@@ -276,7 +276,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined); // available pools
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const { isLoading, error, result, estimatedTimeMs, depositAndStake } = useStake();
+    const { loadingState, error, result, estimatedTimeMs, depositAndStake } = useStake();
 
     const apiClient = useAPIClient();
     React.useEffect(() => {
@@ -364,41 +364,28 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
                                 isActive={true}
                             />
                         );
-                    })
-                }
+                    })}
 
-                <ButtonWithIcon
-                    onClick={async () => {
-                        const allowanceBaseUnits =
-                            (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount ||
-                            new BigNumber(0);
-                        if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
-                            setIsModalOpen(true);
-                            await props.onSetZrxAllowanceIfNeededAsync(props.providerState, props.networkId);
-                        } else {
-                            // TODO: put actual values here
-                            // const amountsToStake = selectedStakingPools.map(stakingPool =>
-                            //     ({
-                            //         poolId: stakingPool.pool.operatorAddress, // is this the correct address to use?
-                            //         amount: stakingPool.zrxAmount.toString(10),
-                            // }));
-                            // depositAndStake(amountsToStake);
-                            depositAndStake([
-                                {
-                                    poolId: '0x0000000000000000000000000000000000000000000000000000000000000001',
-                                    amount: stakeAmount,
-                                },
-                            ]);
-                        }
-                    }}
-                    color={colors.white}
-                >
-                    Start staking
-                </ButtonWithIcon>
-            </Inner>
-        </>
-    );
-}
+                    <ButtonWithIcon
+                        onClick={async () => {
+                            const allowanceBaseUnits =
+                                (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount ||
+                                new BigNumber(0);
+                            if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
+                                setIsModalOpen(true);
+                                await props.onSetZrxAllowanceIfNeededAsync(props.providerState, props.networkId);
+                            } else {
+                                depositAndStake(selectedStakingPools);
+                            }
+                        }}
+                        color={colors.white}
+                    >
+                        Start staking
+                    </ButtonWithIcon>
+                </Inner>
+            </>
+        );
+    }
 
     return (
         <>

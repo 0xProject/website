@@ -1,22 +1,23 @@
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { StakingContract, StakingProxyContract } from '@0x/contract-wrappers';
-import { BigNumber } from '@0x/utils';
+import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 
 import { State } from 'ts/redux/reducer';
-import { AccountReady, StakePoolData, StakeStatus } from 'ts/types';
+import { AccountReady, StakeStatus, StakingPoolRecomendation, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
+import { utils } from 'ts/utils/utils';
 
 export const useStake = () => {
     const networkId = useSelector((state: State) => state.networkId);
     const providerState = useSelector((state: State) => state.providerState);
 
-    const [stakePoolData, setStakePoolData] = React.useState<StakePoolData[]>([]);
-    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [stakePoolData, setStakePoolData] = React.useState<StakingPoolRecomendation[]>([]);
+    const [loadingState, setLoadingState] = React.useState<undefined | TransactionLoadingState>(undefined);
     const [error, setError] = React.useState<Error | undefined>(undefined);
     const [result, setResult] = React.useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
     const [estimatedTimeMs, setEstimatedTimeMs] = React.useState<number | undefined>(undefined);
@@ -27,11 +28,14 @@ export const useStake = () => {
         }
 
         const depositAndStake = async () => {
-            setIsLoading(true);
+            setLoadingState(TransactionLoadingState.WaitingForSignature);
 
-            const normalizedPoolData = stakePoolData.map(({ amount, poolId }) => ({
-                poolId,
-                amountBaseUnits: Web3Wrapper.toBaseUnitAmount(new BigNumber(amount, 10), constants.DECIMAL_PLACES_ZRX),
+            const normalizedPoolData = stakePoolData.map(stakingPoolReccomendation => ({
+                poolId: utils.toPaddedHex(stakingPoolReccomendation.pool.poolId),
+                amountBaseUnits: Web3Wrapper.toBaseUnitAmount(
+                    new BigNumber(stakingPoolReccomendation.zrxAmount, 10),
+                    constants.DECIMAL_PLACES_ZRX,
+                ),
             }));
 
             const totalStakeBaseUnits = normalizedPoolData.reduce(
@@ -70,28 +74,36 @@ export const useStake = () => {
                 ),
             ];
 
-            // tslint:disable:await-promise
-            const txResult = await stakingProxyContract
+            const txPromise = stakingProxyContract
                 .batchExecute(data)
                 .awaitTransactionSuccessAsync({ from: ownerAddress, gasPrice: gasInfo.gasPriceInWei });
 
+            await txPromise.txHashPromise;
             setEstimatedTimeMs(gasInfo.estimatedTimeMs);
+            setLoadingState(TransactionLoadingState.WaitingForTransaction);
+            // tslint:disable:await-promise
+            const txResult = await txPromise;
             setResult(txResult);
-            setIsLoading(false);
+            setLoadingState(TransactionLoadingState.Success);
         };
 
-        if (isLoading) {
+        if (
+            [TransactionLoadingState.WaitingForTransaction, TransactionLoadingState.WaitingForSignature].includes(
+                loadingState,
+            )
+        ) {
             return;
         }
 
         depositAndStake().catch(err => {
-            setIsLoading(false);
+            setLoadingState(TransactionLoadingState.Failed);
             setError(err);
+            logUtils.log(err);
         });
     }, [stakePoolData]);
 
     return {
-        isLoading,
+        loadingState,
         result,
         error,
         depositAndStake: setStakePoolData,
