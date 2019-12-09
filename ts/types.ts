@@ -4,6 +4,11 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
 
+export interface StakePoolData {
+    poolId: string;
+    zrxAmount: number;
+}
+
 export enum TransactionLoadingState {
     WaitingForSignature = 'WAITING_FOR_SIGNATURE',
     WaitingForTransaction = 'WAITING_FOR_TRANSACTION',

@@ -14,6 +14,7 @@ import {
     Network,
     PoolWithStats,
     ProviderState,
+    StakePoolData,
     TransactionLoadingState,
     UserStakingChoice,
     WebsitePaths,
@@ -384,6 +385,13 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                                     allowance.setAllowance();
                                 } else {
                                     setIsStakingConfirmationModalOpen(true);
+
+                                    const stakePools: StakePoolData[] = selectedStakingPools.map(recommendation => ({
+                                        poolId: recommendation.pool.poolId,
+                                        zrxAmount: recommendation.zrxAmount,
+                                    }));
+
+                                    stake.depositAndStake(stakePools);
                                 }
                             }}
                             color={colors.white}
