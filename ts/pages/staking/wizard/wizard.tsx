@@ -54,7 +54,12 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         <StakingPageLayout isHome={false} title="Start Staking">
             <Container>
                 <Splitview
-                    leftComponent={<WizardInfo selectedStakingPools={userStakingPoolsToStake} />}
+                    leftComponent={
+                        <WizardInfo
+                            nextEpochApproxStats={nextEpochApproxStats}
+                            currentEpochStats={currentEpochStats}
+                            selectedStakingPools={userStakingPoolsToStake}
+                        />}
                     rightComponent={
                         <WizardFlow
                             selectedStakingPools={userStakingPoolsToStake}
