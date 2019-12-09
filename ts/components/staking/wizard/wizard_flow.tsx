@@ -28,7 +28,7 @@ const getShortAddress = (address: string): string => {
     if (address.length < 12) {
         return address;
     }
-    return `${address.substr(0, 7)}...${address.substr(address.length - 5)}`
+    return `${address.substr(0, 7)}...${address.substr(address.length - 5)}`;
 };
 
 export interface WizardFlowProps {
@@ -377,6 +377,12 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
                             await props.onSetZrxAllowanceIfNeededAsync(props.providerState, props.networkId);
                         } else {
                             // TODO: put actual values here
+                            // const amountsToStake = selectedStakingPools.map(stakingPool =>
+                            //     ({
+                            //         poolId: stakingPool.pool.operatorAddress, // is this the correct address to use?
+                            //         amount: stakingPool.zrxAmount.toString(10),
+                            // }));
+                            // depositAndStake(amountsToStake);
                             depositAndStake([
                                 {
                                     poolId: '0x0000000000000000000000000000000000000000000000000000000000000001',
