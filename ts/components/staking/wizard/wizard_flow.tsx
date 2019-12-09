@@ -276,7 +276,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined); // available pools
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const { isLoading, error, result, estimatedTimeMs, depositAndStake } = useStake();
+    const { loadingState, error, result, estimatedTimeMs, depositAndStake } = useStake();
 
     const apiClient = useAPIClient();
     React.useEffect(() => {
