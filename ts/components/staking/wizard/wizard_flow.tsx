@@ -340,7 +340,10 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
         // Fetching balance
         return <Status title="" />;
     }
-    if (!zrxBalanceBaseUnitAmount.gt(0)) {
+
+    const unitAmount = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX).toNumber();
+
+    if (unitAmount < 1) {
         return (
             <Status
                 title="You have no ZRX balance. You will need some to stake."
@@ -351,7 +354,6 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     }
 
     const formattedAmount = utils.getFormattedAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
-    const unitAmount = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX).toNumber();
     const statusNode = getStatus(stakeAmount, stakingPools);
     const recommendedPools = stakingUtils.getRecommendedStakingPools(Number(stakeAmount), stakingPools);
 
