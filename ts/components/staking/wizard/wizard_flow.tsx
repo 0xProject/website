@@ -454,8 +454,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
         <>
             <NumberInput
                 placeholder="Enter your stake"
-                heading="Amount"
-                topLabels={['Amount', `Available: ${formattedAmount} ZRX`]}
+                topLabels={[`Available: ${formattedAmount} ZRX`]}
                 labels={[StakingPercentageValue.Fourth, StakingPercentageValue.Half, StakingPercentageValue.All]}
                 value={stakeAmount}
                 selectedLabel={selectedLabel}
@@ -525,7 +524,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
             {statusNode}
             {recommendedPools && recommendedPools.length > 0 && (
                 <ButtonWithIcon onClick={() => setSelectedStakingPools(recommendedPools)} color={colors.white}>
-                    Start staking
+                    Proceed to staking
                 </ButtonWithIcon>
             )}
         </>
