@@ -33,6 +33,7 @@ import { stakingUtils } from 'ts/utils/staking_utils';
 import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
 import { ApproveTokensInfoDialog } from 'ts/components/dialogs/approve_tokens_info_dialog';
+import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
 
 export interface WizardFlowProps {
     providerState: ProviderState;
@@ -295,7 +296,8 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
         <Newsletter /> */
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [isApproveTokenModalOpen, setIsApproveTokenModalOpen] = React.useState(false);
+    const [isStakingConfirmationModalOpen, setIsStakingConfirmationModalOpen] = React.useState(false);
     const stake = useStake();
     const allowance = useAllowance();
     const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = React.useState<Date | undefined>(
@@ -363,11 +365,14 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
             <>
                 {/* TODO find the correct header component */}
                 <ApproveTokensInfoDialog
-                    isOpen={isModalOpen}
-                    onDismiss={() => setIsModalOpen(false)}
+                    isOpen={isApproveTokenModalOpen}
+                    onDismiss={() => setIsApproveTokenModalOpen(false)}
                     providerName={props.providerState.displayName}
                 />
-
+                <StakingConfirmationDialog
+                    isOpen={isStakingConfirmationModalOpen}
+                    onDismiss={() => setIsStakingConfirmationModalOpen(false)}
+                />
                 {/* <InfoHeader>
                 <InfoHeaderItem>
                     Remove Stake
@@ -434,7 +439,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                                     new BigNumber(0);
 
                                 if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
-                                    setIsModalOpen(true);
+                                    setIsApproveTokenModalOpen(true);
                                     allowance.setAllowance();
                                 } else {
                                     stake.depositAndStake(selectedStakingPools);
