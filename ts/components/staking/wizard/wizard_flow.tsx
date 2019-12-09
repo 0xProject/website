@@ -1,6 +1,6 @@
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { addMilliseconds, differenceInSeconds, formatDistanceStrict, formatDistance } from 'date-fns';
+import { addMilliseconds, differenceInSeconds, formatDistance, formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -10,13 +10,13 @@ import { colors } from 'ts/style/colors';
 import {
     AccountReady,
     AccountState,
+    Epoch,
     Network,
     PoolWithStats,
     ProviderState,
     TransactionLoadingState,
     UserStakingChoice,
     WebsitePaths,
-    Epoch,
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
@@ -293,11 +293,8 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     const recommendedPools = stakingUtils.getRecommendedStakingPools(Number(stakeAmount), stakingPools);
 
     // Confirmation page stage, ready to stake (may need to approve first)
-
-    // TODO(jj) consolidate with wizard_info date calcs
-
-
     if (selectedStakingPools) {
+        // TODO(jj) consolidate with wizard_info date calcs
         const stakingStartsFormattedTime = formatDistance(new Date(), new Date(props.nextEpochApproxStats.epochStart.timestamp));
         return (
             <>
