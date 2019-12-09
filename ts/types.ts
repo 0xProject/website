@@ -1111,3 +1111,5 @@ export interface StakingPoolRecomendation {
     pool: PoolWithStats;
     zrxAmount: number;
 }
+
+export type UserStakingChoice = StakingPoolRecomendation;

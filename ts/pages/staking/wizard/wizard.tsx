@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Network, PoolWithStats, ProviderState } from 'ts/types';
+import { Network, PoolWithStats, ProviderState, StakingPoolRecomendation, UserStakingChoice } from 'ts/types';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 
@@ -23,12 +23,11 @@ const Container = styled.div`
 `;
 
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
-    const [selectedStakingPools, setSelectedStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
-
+    const [userStakingPoolsToStake, setUserStakingPoolsToStake] = React.useState<UserStakingChoice[] | undefined>(undefined);
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
             <Container>
-                <Splitview leftComponent={<WizardInfo selectedStakingPools={selectedStakingPools} />} rightComponent={<WizardFlow selectedStakingPools={selectedStakingPools} setSelectedStakingPools={setSelectedStakingPools} {...props} />} />
+                <Splitview leftComponent={<WizardInfo selectedStakingPools={userStakingPoolsToStake} />} rightComponent={<WizardFlow selectedStakingPools={userStakingPoolsToStake} setSelectedStakingPools={setUserStakingPoolsToStake} {...props} />} />
             </Container>
         </StakingPageLayout>
     );

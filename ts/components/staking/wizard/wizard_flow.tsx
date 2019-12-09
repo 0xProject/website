@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
-import { AccountReady, AccountState, Network, PoolWithStats, ProviderState, WebsitePaths } from 'ts/types';
+import { AccountReady, AccountState, Network, PoolWithStats, ProviderState, UserStakingChoice, WebsitePaths } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
@@ -24,13 +24,20 @@ import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
 import { ApproveTokensInfoDialog } from 'ts/components/dialogs/approve_tokens_info_dialog';
 
+const getShortAddress = (address: string): string => {
+    if (address.length < 12) {
+        return address;
+    }
+    return `${address.substr(0, 7)}...${address.substr(address.length - 5)}`
+};
+
 export interface WizardFlowProps {
     providerState: ProviderState;
     onOpenConnectWalletDialog: () => void;
     onSetZrxAllowanceIfNeededAsync: (providerState: ProviderState, networkId: Network) => Promise<void>;
     networkId: Network;
-    setSelectedStakingPools: React.Dispatch<React.SetStateAction<PoolWithStats[]>>;
-    selectedStakingPools: PoolWithStats[] | undefined;
+    setSelectedStakingPools: React.Dispatch<React.SetStateAction<UserStakingChoice[]>>;
+    selectedStakingPools: UserStakingChoice[] | undefined;
 }
 
 enum StakingPercentageValue {
@@ -291,59 +298,6 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
         }
     }, [stakeAmount]);
 
-    // Confirmation page stage, ready to stake (may need to approve first)
-    if (selectedStakingPools) {
-        return (
-            <>
-                {/* TODO find the correct header component */}
-                <ApproveTokensInfoDialog
-                    isOpen={isModalOpen}
-                    onDismiss={() => setIsModalOpen(false)}
-                    providerName={props.providerState.displayName}
-                />
-                <InfoHeader>
-                    <InfoHeaderItem>
-                        You're delegating {6000} ZRX to {'Neptune'}
-                    </InfoHeaderItem>
-                </InfoHeader>
-                <Inner>
-                    <TransactionItem
-                        marketMakerId="0x12345...12345"
-                        selfId="0x12345...12345"
-                        sendAmount="1520 ZRX"
-                        selfIconUrl="/images/toshi_logo.jpg"
-                        receiveAmount="1520 ZRX"
-                        marketMakerName="Binance"
-                        marketMakerIconUrl="/images/toshi_logo.jpg"
-                        isActive={true}
-                    />
-                    <ButtonWithIcon
-                        onClick={async () => {
-                            const allowanceBaseUnits =
-                                (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount ||
-                                new BigNumber(0);
-                            if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
-                                setIsModalOpen(true);
-                                await props.onSetZrxAllowanceIfNeededAsync(props.providerState, props.networkId);
-                            } else {
-                                // TODO: put actual values here
-                                depositAndStake([
-                                    {
-                                        poolId: '0x0000000000000000000000000000000000000000000000000000000000000001',
-                                        amount: stakeAmount,
-                                    },
-                                ]);
-                            }
-                        }}
-                        color={colors.white}
-                    >
-                        Start staking
-                    </ButtonWithIcon>
-                </Inner>
-            </>
-        );
-    }
-
     if (props.providerState.account.state !== AccountState.Ready) {
         return (
             <>
@@ -358,7 +312,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
             </>
         );
     }
-    const { zrxBalanceBaseUnitAmount } = props.providerState.account;
+    const { zrxBalanceBaseUnitAmount, address } = props.providerState.account;
     if (!zrxBalanceBaseUnitAmount) {
         // Fetching balance
         return <Status title="" />;
@@ -372,10 +326,74 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
             />
         );
     }
+
     const formattedAmount = utils.getFormattedAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
     const unitAmount = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX).toNumber();
     const statusNode = getStatus(stakeAmount, stakingPools);
     const recommendedPools = stakingUtils.getRecommendedStakingPools(Number(stakeAmount), stakingPools);
+
+    // Confirmation page stage, ready to stake (may need to approve first)
+    if (selectedStakingPools) {
+    return (
+        <>
+            {/* TODO find the correct header component */}
+            <ApproveTokensInfoDialog
+                isOpen={isModalOpen}
+                onDismiss={() => setIsModalOpen(false)}
+                providerName={props.providerState.displayName}
+            />
+            <InfoHeader>
+                <InfoHeaderItem>
+                    You're delegating {stakeAmount} ZRX to {selectedStakingPools.length > 1 ? `${selectedStakingPools.length} pools` : (selectedStakingPools[0].pool.metaData.name || '1 pool')}
+                </InfoHeaderItem>
+            </InfoHeader>
+            <Inner>
+                {
+                    selectedStakingPools.map(stakingPool => {
+                        return (
+                            <TransactionItem
+                                key={stakingPool.pool.poolId}
+                                marketMakerId={getShortAddress(stakingPool.pool.operatorAddress)}
+                                selfId={getShortAddress(address)}
+                                sendAmount={`${stakingPool.zrxAmount} ZRX`}
+                                selfIconUrl={'/images/toshi_logo.jpg'}
+                                // todo(jj) Not sure how to get this? Should be a percent (see figma)
+                                receiveAmount="Staking rewards"
+                                marketMakerName={stakingPool.pool.metaData.name}
+                                marketMakerIconUrl={stakingPool.pool.metaData.logoUrl || '/images/toshi_logo.jpg'}
+                                isActive={true}
+                            />
+                        );
+                    })
+                }
+
+                <ButtonWithIcon
+                    onClick={async () => {
+                        const allowanceBaseUnits =
+                            (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount ||
+                            new BigNumber(0);
+                        if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
+                            setIsModalOpen(true);
+                            await props.onSetZrxAllowanceIfNeededAsync(props.providerState, props.networkId);
+                        } else {
+                            // TODO: put actual values here
+                            depositAndStake([
+                                {
+                                    poolId: '0x0000000000000000000000000000000000000000000000000000000000000001',
+                                    amount: stakeAmount,
+                                },
+                            ]);
+                        }
+                    }}
+                    color={colors.white}
+                >
+                    Start staking
+                </ButtonWithIcon>
+            </Inner>
+        </>
+    );
+}
+
     return (
         <>
             <NumberInput
@@ -449,8 +467,8 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
                 </PoolsContainer>
             )}
             {statusNode}
-            {stakingPools && stakingPools.length > 0 && (
-                <ButtonWithIcon onClick={() => setSelectedStakingPools(stakingPools)} color={colors.white}>
+            {recommendedPools && recommendedPools.length > 0 && (
+                <ButtonWithIcon onClick={() => setSelectedStakingPools(recommendedPools)} color={colors.white}>
                     Start staking
                 </ButtonWithIcon>
             )}

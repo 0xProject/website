@@ -2,12 +2,12 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { colors } from 'ts/style/colors';
-import { PoolWithStats } from 'ts/types';
+import { PoolWithStats, UserStakingChoice } from 'ts/types';
 
 import { Timeline } from 'ts/components/staking/wizard/timeline';
 
 export interface WizardInfoProps {
-    selectedStakingPools: PoolWithStats[] | undefined;
+    selectedStakingPools: UserStakingChoice[] | undefined;
 }
 
 const IntroHeader = styled.h1`

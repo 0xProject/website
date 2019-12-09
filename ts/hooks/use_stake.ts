@@ -22,6 +22,10 @@ export const useStake = () => {
     const [estimatedTimeMs, setEstimatedTimeMs] = React.useState<number | undefined>(undefined);
 
     React.useEffect(() => {
+        if (!stakePoolData || stakePoolData.length === 0) {
+            return;
+        }
+
         const depositAndStake = async () => {
             setIsLoading(true);
 
