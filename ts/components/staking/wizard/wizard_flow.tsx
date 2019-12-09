@@ -1,6 +1,6 @@
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { addMilliseconds, differenceInSeconds, formatDistanceStrict } from 'date-fns';
+import { addMilliseconds, differenceInSeconds, formatDistanceStrict, formatDistance } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -16,6 +16,7 @@ import {
     TransactionLoadingState,
     UserStakingChoice,
     WebsitePaths,
+    Epoch,
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
@@ -42,6 +43,7 @@ export interface WizardFlowProps {
     setSelectedStakingPools: React.Dispatch<React.SetStateAction<UserStakingChoice[]>>;
     selectedStakingPools: UserStakingChoice[] | undefined;
     stakingPools?: PoolWithStats[];
+    nextEpochApproxStats?: Epoch;
 }
 
 enum StakingPercentageValue {
@@ -225,75 +227,6 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     stakingPools,
     ...props
 }) => {
-    /* <MarketMaker
-            name="Binance staking pool"
-            collectedFees="3.212,032 ETH"
-            rewards="95%"
-            staked="52%"
-            difference="+500,000 ZRX"
-            iconUrl="/images/toshi_logo.jpg"
-        />
-        <InfoHeader>
-            <InfoHeaderItem>
-                Recommended market makers <NumberRound>2</NumberRound>
-            </InfoHeaderItem>
-            <InfoHeaderItem>
-                <Button isWithArrow={true} color={colors.textDarkSecondary}>
-                    Full list
-                </Button>
-            </InfoHeaderItem>
-        </InfoHeader>
-
-        <InfoHeader>
-            <InfoHeaderItem>Start Staking</InfoHeaderItem>
-            <InfoHeaderItem>Begins in 2 days</InfoHeaderItem>
-        </InfoHeader>
-
-        <Inner>
-            <TransactionItem
-                marketMakerId="0x12345...12345"
-                selfId="0x12345...12345"
-                sendAmount="1520 ZRX"
-                selfIconUrl="/images/toshi_logo.jpg"
-                receiveAmount="1520 ZRX"
-                marketMakerName="Binance"
-                marketMakerIconUrl="/images/toshi_logo.jpg"
-                isActive={true}
-            />
-            <TransactionItem
-                marketMakerId="0x12345...12345"
-                selfId="0x12345...12345"
-                sendAmount="1520 ZRX"
-                selfIconUrl="/images/toshi_logo.jpg"
-                receiveAmount="1520 ZRX"
-                marketMakerName="Binance"
-                marketMakerIconUrl="/images/toshi_logo.jpg"
-                isActive={false}
-            />
-            <ButtonWithIcon
-                isTransparent={true}
-                borderColor="#DFE7E1"
-                color={colors.textDarkSecondary}
-                isDisabled={true}
-            >
-                <SpinnerContainer>
-                    <Spinner color="#BEBEBE" />
-                </SpinnerContainer>
-                <span>Waiting for signature</span>
-            </ButtonWithIcon>
-
-            <ErrorButton
-                message="Transaction aborted"
-                secondaryButtonText="Retry"
-                onClose={() => {
-                    alert('close');
-                }}
-                onSecondaryClick={() => {
-                    alert('close');
-                }}
-            />
-        </Inner>
-        <Newsletter /> */
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
     const [isApproveTokenModalOpen, setIsApproveTokenModalOpen] = React.useState(false);
@@ -360,35 +293,35 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     const recommendedPools = stakingUtils.getRecommendedStakingPools(Number(stakeAmount), stakingPools);
 
     // Confirmation page stage, ready to stake (may need to approve first)
+
+    // TODO(jj) consolidate with wizard_info date calcs
+
+
     if (selectedStakingPools) {
+        const stakingStartsFormattedTime = formatDistance(new Date(), new Date(props.nextEpochApproxStats.epochStart.timestamp));
         return (
             <>
-                {/* TODO find the correct header component */}
                 <ApproveTokensInfoDialog
                     isOpen={isApproveTokenModalOpen}
                     onDismiss={() => setIsApproveTokenModalOpen(false)}
-                    providerName={props.providerState.displayName}
+                    onButtonClick={() => setIsApproveTokenModalOpen(false)}
                 />
                 <StakingConfirmationDialog
                     isOpen={isStakingConfirmationModalOpen}
-                    // TODO(jj) we're overloading onDismiss to also use onClick (pressing x should not do staking...)
-                    onDismiss={() => {
+                    onDismiss={() => setIsStakingConfirmationModalOpen(false)}
+                    onButtonClick={() => {
                         stake.depositAndStake(selectedStakingPools);
                         setIsStakingConfirmationModalOpen(false);
                     }}
                 />
-                {/* <InfoHeader>
-                <InfoHeaderItem>
-                    Remove Stake
-                </InfoHeaderItem>
-
-                {data != null && data.amountStaked != null && (
+                <InfoHeader>
                     <InfoHeaderItem>
-                        Total Staked: {utils.getFormattedAmount(data.amountStaked, 0)}
+                        Start staking
                     </InfoHeaderItem>
-                )}
-            </InfoHeader> */}
-
+                    <InfoHeaderItem style={{ color: colors.textDarkSecondary }}>
+                        Begins in {stakingStartsFormattedTime}
+                    </InfoHeaderItem>
+                </InfoHeader>
                 <Inner>
                     <CenteredHeader>
                         {stake.loadingState === TransactionLoadingState.WaitingForSignature
@@ -486,15 +419,15 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                     setStakeAmount(newAmount);
                     setSelectedLabel(undefined);
                 }}
-                bottomLabels={[
-                    {
-                        label: 'Based on your ZRX balance',
-                    },
-                    {
-                        label: 'Change wallet',
-                        onClick: props.onOpenConnectWalletDialog,
-                    },
-                ]}
+                // bottomLabels={[
+                //     {
+                //         label: 'Based on your ZRX balance',
+                //     },
+                //     {
+                //         label: 'Change wallet',
+                //         onClick: props.onOpenConnectWalletDialog,
+                //     },
+                // ]}
             />
             {recommendedPools && recommendedPools.length > 0 && (
                 <InfoHeader>

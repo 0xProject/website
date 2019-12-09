@@ -62,6 +62,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                         />}
                     rightComponent={
                         <WizardFlow
+                            nextEpochApproxStats={nextEpochApproxStats}
                             selectedStakingPools={userStakingPoolsToStake}
                             setSelectedStakingPools={setUserStakingPoolsToStake}
                             stakingPools={stakingPools}
