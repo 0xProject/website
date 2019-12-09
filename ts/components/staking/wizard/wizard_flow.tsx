@@ -371,7 +371,11 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                 />
                 <StakingConfirmationDialog
                     isOpen={isStakingConfirmationModalOpen}
-                    onDismiss={() => setIsStakingConfirmationModalOpen(false)}
+                    // TODO(jj) we're overloading onDismiss to also use onClick (pressing x should not do staking...)
+                    onDismiss={() => {
+                        stake.depositAndStake(selectedStakingPools);
+                        setIsStakingConfirmationModalOpen(false);
+                    }}
                 />
                 {/* <InfoHeader>
                 <InfoHeaderItem>
@@ -442,7 +446,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                                     setIsApproveTokenModalOpen(true);
                                     allowance.setAllowance();
                                 } else {
-                                    stake.depositAndStake(selectedStakingPools);
+                                    setIsStakingConfirmationModalOpen(true);
                                 }
                             }}
                             color={colors.white}
