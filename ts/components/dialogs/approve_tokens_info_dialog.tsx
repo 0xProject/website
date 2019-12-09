@@ -17,7 +17,6 @@ interface Props {
 }
 
 // An informational popup telling users to approve permissions from their wallet
-// todo(jj) get finalized copy
 export const ApproveTokensInfoDialog: React.FunctionComponent<Props> = ({ isOpen, onDismiss, providerName }) => {
     return (
         <DialogOverlay
@@ -30,10 +29,10 @@ export const ApproveTokensInfoDialog: React.FunctionComponent<Props> = ({ isOpen
                     Unlock Your ZRX
                 </Heading>
                 <Paragraph isMuted={false} color={colors.textDarkSecondary}>
-                    In order to stake you ZRX tokens you must first grant permission to {providerName}. This will allow the ZRX staking contract to do stuff.
+                    In order to stake you ZRX tokens you must first grant permissions to the 0x Staking Proxy contract. This will allow the contract to transfer the ZRX tokens you decide to stake, and start earning rewards.
                 </Paragraph>
                 <Paragraph isMuted={false} color={colors.textDarkSecondary}>
-                    In order to stake you ZRX tokens you must first grant permission to {providerName}. This will allow the ZRX staking contract to do stuff.
+                    You should have seen a message appearing in your web wallet. Please confirm to continue, then you can close this pop-up. You will receive confirmation once the transaction is mined so you can proceed staking.
                 </Paragraph>
                 <ButtonClose onClick={onDismiss} />
                 <Button onClick={onDismiss} isInline={true} isFullWidth={true} color={colors.white}>
