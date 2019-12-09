@@ -36,7 +36,7 @@ export const ApproveTokensInfoDialog: React.FunctionComponent<Props> = ({ isOpen
                 </Paragraph>
                 <ButtonClose onClick={onDismiss} />
                 <Button onClick={onDismiss} isInline={true} isFullWidth={true} color={colors.white}>
-                    I approved my tokens
+                    I approved the transaction in my web wallet
                 </Button>
             </StyledDialogContent>
         </DialogOverlay>
