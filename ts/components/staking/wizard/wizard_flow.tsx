@@ -1,4 +1,4 @@
-import { BigNumber, logUtils } from '@0x/utils';
+import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { addMilliseconds, differenceInSeconds, formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
@@ -7,7 +7,16 @@ import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
-import { AccountReady, AccountState, Network, PoolWithStats, ProviderState, TransactionLoadingState, UserStakingChoice, WebsitePaths} from 'ts/types';
+import {
+    AccountReady,
+    AccountState,
+    Network,
+    PoolWithStats,
+    ProviderState,
+    TransactionLoadingState,
+    UserStakingChoice,
+    WebsitePaths,
+} from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
@@ -17,7 +26,7 @@ import { MarketMaker } from 'ts/components/staking/wizard/market_maker';
 import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
 import { Spinner } from 'ts/components/ui/spinner';
-import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useAllowance } from 'ts/hooks/use_allowance';
 import { useStake } from 'ts/hooks/use_stake';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
@@ -28,10 +37,10 @@ import { ApproveTokensInfoDialog } from 'ts/components/dialogs/approve_tokens_in
 export interface WizardFlowProps {
     providerState: ProviderState;
     onOpenConnectWalletDialog: () => void;
-    onSetZrxAllowanceIfNeededAsync: (providerState: ProviderState, networkId: Network) => Promise<void>;
     networkId: Network;
     setSelectedStakingPools: React.Dispatch<React.SetStateAction<UserStakingChoice[]>>;
     selectedStakingPools: UserStakingChoice[] | undefined;
+    stakingPools?: PoolWithStats[];
 }
 
 enum StakingPercentageValue {
@@ -209,7 +218,12 @@ const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.R
 };
 
 // todo(jj) refactor this to imitate the remove flow
-export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools, selectedStakingPools, ...props }) => {
+export const WizardFlow: React.FC<WizardFlowProps> = ({
+    setSelectedStakingPools,
+    selectedStakingPools,
+    stakingPools,
+    ...props
+}) => {
     /* <MarketMaker
             name="Binance staking pool"
             collectedFees="3.212,032 ETH"
@@ -280,46 +294,32 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
         </Inner>
         <Newsletter /> */
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
-    const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined); // available pools
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const { loadingState: stakingLoadingState, error: stakingError, result: stakingResult, estimatedTimeMs, depositAndStake } = useStake();
-    const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = React.useState<Date | undefined>(undefined);
+    const stake = useStake();
+    const allowance = useAllowance();
+    const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = React.useState<Date | undefined>(
+        undefined,
+    );
 
     React.useEffect(() => {
-        if (!estimatedTimeMs) {
+        if (!stake.estimatedTimeMs) {
             return setEstimatedTransactionFinishTime(undefined);
         }
-        const estimate = addMilliseconds(new Date(), estimatedTimeMs);
+        const estimate = addMilliseconds(new Date(), stake.estimatedTimeMs);
         setEstimatedTransactionFinishTime(estimate);
-    }, [estimatedTimeMs]);
+    }, [stake.estimatedTimeMs]);
 
     // TODO(jj) need an interval hook here for updating the seconds
     let secondsLeftUntilStakingTransactionDone: number | undefined;
     let timeLeftValue: string | undefined;
     if (estimatedTransactionFinishTime) {
-        secondsLeftUntilStakingTransactionDone = Math.max(0, differenceInSeconds(estimatedTransactionFinishTime, new Date()));
+        secondsLeftUntilStakingTransactionDone = Math.max(
+            0,
+            differenceInSeconds(estimatedTransactionFinishTime, new Date()),
+        );
         timeLeftValue = formatDistanceStrict(estimatedTransactionFinishTime, new Date(), { unit: 'second' });
     }
-    const apiClient = useAPIClient();
-    React.useEffect(() => {
-        const fetchAndSetPools = async () => {
-            let pools: PoolWithStats[] = [];
-            try {
-                const poolsResponse = await apiClient.getStakingPoolsAsync();
-                pools = poolsResponse.stakingPools;
-            } catch (err) {
-                logUtils.warn(err);
-            } finally {
-                setStakingPools(pools);
-            }
-        };
-        setStakingPools(undefined);
-        if (stakeAmount) {
-            // tslint:disable-next-line:no-floating-promises
-            fetchAndSetPools();
-        }
-    }, [stakeAmount]);
 
     if (props.providerState.account.state !== AccountState.Ready) {
         return (
@@ -357,16 +357,16 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
 
     // Confirmation page stage, ready to stake (may need to approve first)
     if (selectedStakingPools) {
-    return (
-        <>
-            {/* TODO find the correct header component */}
-            <ApproveTokensInfoDialog
-                isOpen={isModalOpen}
-                onDismiss={() => setIsModalOpen(false)}
-                providerName={props.providerState.displayName}
-            />
+        return (
+            <>
+                {/* TODO find the correct header component */}
+                <ApproveTokensInfoDialog
+                    isOpen={isModalOpen}
+                    onDismiss={() => setIsModalOpen(false)}
+                    providerName={props.providerState.displayName}
+                />
 
-            {/* <InfoHeader>
+                {/* <InfoHeader>
                 <InfoHeaderItem>
                     Remove Stake
                 </InfoHeaderItem>
@@ -378,19 +378,20 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
                 )}
             </InfoHeader> */}
 
-            <Inner>
-                <CenteredHeader>
-                    {
-                        stakingLoadingState === TransactionLoadingState.WaitingForSignature
-                        ? `Please confirm in ${props.providerState.displayName || 'wallet'}`
-                        : stakingLoadingState === TransactionLoadingState.WaitingForTransaction
+                <Inner>
+                    <CenteredHeader>
+                        {stake.loadingState === TransactionLoadingState.WaitingForSignature
+                            ? `Please confirm in ${props.providerState.displayName || 'wallet'}`
+                            : stake.loadingState === TransactionLoadingState.WaitingForTransaction
                             ? `Locking your tokens into staking pool`
-                            // Default case
-                            : `You're delegating ${stakeAmount} ZRX to ${selectedStakingPools.length > 1 ? `${selectedStakingPools.length} pools` : `${(selectedStakingPools[0].pool.metaData.name || '1 pool')}`}`
-                    }
-                </CenteredHeader>
-                {
-                    selectedStakingPools.map(stakingPool => {
+                            : // Default case
+                              `You're delegating ${stakeAmount} ZRX to ${
+                                  selectedStakingPools.length > 1
+                                      ? `${selectedStakingPools.length} pools`
+                                      : `${selectedStakingPools[0].pool.metaData.name || '1 pool'}`
+                              }`}
+                    </CenteredHeader>
+                    {selectedStakingPools.map(stakingPool => {
                         return (
                             <TransactionItem
                                 key={stakingPool.pool.poolId}
@@ -406,7 +407,8 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
                         );
                     })}
                     {/* Waiting for a signature... */}
-                    {(stakingLoadingState === TransactionLoadingState.WaitingForSignature || stakingLoadingState === TransactionLoadingState.WaitingForTransaction) ?
+                    {stake.loadingState === TransactionLoadingState.WaitingForSignature ||
+                    stake.loadingState === TransactionLoadingState.WaitingForTransaction ? (
                         <ButtonWithIcon
                             isTransparent={true}
                             borderColor="#DFE7E1"
@@ -417,29 +419,30 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
                                 <Spinner color="#BEBEBE" />
                             </SpinnerContainer>
                             <span>
-                                { stakingLoadingState === TransactionLoadingState.WaitingForSignature
+                                {stake.loadingState === TransactionLoadingState.WaitingForSignature
                                     ? 'Waiting for signature'
                                     : `${timeLeftValue} left`}
                             </span>
                         </ButtonWithIcon>
-                        : (
+                    ) : (
                         <ButtonWithIcon
                             onClick={async () => {
                                 const allowanceBaseUnits =
                                     (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount ||
                                     new BigNumber(0);
+
                                 if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
                                     setIsModalOpen(true);
-                                    await props.onSetZrxAllowanceIfNeededAsync(props.providerState, props.networkId);
+                                    allowance.setAllowance();
                                 } else {
-                                    depositAndStake(selectedStakingPools);
+                                    stake.depositAndStake(selectedStakingPools);
                                 }
                             }}
                             color={colors.white}
                         >
                             Start staking
-                        </ButtonWithIcon>)
-                    }
+                        </ButtonWithIcon>
+                    )}
                 </Inner>
             </>
         );
@@ -525,5 +528,5 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
             )}
         </>
     );
-// tslint:disable-next-line: max-file-line-count
+    // tslint:disable-next-line: max-file-line-count
 };
