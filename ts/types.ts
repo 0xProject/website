@@ -1089,6 +1089,7 @@ export interface Pool {
 export interface PoolWithStats extends Pool {
     currentEpochStats: EpochPoolStats;
     nextEpochStats: EpochPoolStats;
+    sevenDayProtocolFeesGeneratedInEth: number;
 }
 
 export interface EpochPoolStats {
@@ -1096,7 +1097,7 @@ export interface EpochPoolStats {
     zrxStaked: number;
     operatorShare: number;
     makerAddresses: string[];
-    protocolFeesGeneratedInEth: number;
+    totalProtocolFeesGeneratedInEth: number;
     approximateStakeRatio: number;
 }
 
@@ -1104,4 +1105,9 @@ export interface StakingAPIPoolsResponse {
     currentEpoch: Epoch;
     approximateNextEpoch: Epoch;
     stakingPools: PoolWithStats[];
+}
+
+export interface StakingPoolRecomendation {
+    pool: PoolWithStats;
+    zrxAmount: number;
 }

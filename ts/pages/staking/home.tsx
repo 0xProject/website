@@ -72,7 +72,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                                 thumbnailUrl={pool.metaData.logoUrl}
                                 isVerified={pool.metaData.isVerified}
                                 address={_.head(pool.nextEpochStats.makerAddresses)}
-                                totalFeesGeneratedInEth={pool.currentEpochStats.protocolFeesGeneratedInEth}
+                                totalFeesGeneratedInEth={pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
                                 stakeRatio={pool.nextEpochStats.approximateStakeRatio}
                                 rewardsSharedRatio={1 - pool.nextEpochStats.operatorShare}
                             />

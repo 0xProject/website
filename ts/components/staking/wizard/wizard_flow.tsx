@@ -2,7 +2,6 @@ import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
 import * as React from 'react';
-import useDebounce from 'react-use/lib/useDebounce';
 import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
@@ -19,6 +18,7 @@ import { Status } from 'ts/components/staking/wizard/status';
 import { Spinner } from 'ts/components/ui/spinner';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useStake } from 'ts/hooks/use_stake';
+import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
@@ -60,6 +60,10 @@ const ButtonWithIcon = styled(Button)`
 const SpinnerContainer = styled.span`
     display: inline-block;
     margin-right: 10px;
+`;
+
+const PoolsContainer = styled.div`
+    overflow: scroll;
 `;
 
 const InfoHeader = styled.div`
@@ -141,7 +145,7 @@ const NumberRound = styled.span`
     display: inline-block;
     text-align: center;
     padding: 4px 0;
-    border: 1px solid #F6F6F6;
+    border: 1px solid #f6f6f6;
 `;
 
 const ErrorButton: React.FC<ErrorButtonProps> = props => {
@@ -192,7 +196,7 @@ const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.R
 
 // todo(jj) refactor this to imitate the remove flow
 export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools, selectedStakingPools, ...props }) => {
-        /* <MarketMaker
+    /* <MarketMaker
             name="Binance staking pool"
             collectedFees="3.212,032 ETH"
             rewards="95%"
@@ -268,13 +272,12 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
     const { isLoading, error, result, estimatedTimeMs, depositAndStake } = useStake();
 
     const apiClient = useAPIClient();
-    useDebounce(() => {
+    React.useEffect(() => {
         const fetchAndSetPools = async () => {
             let pools: PoolWithStats[] = [];
             try {
                 const poolsResponse = await apiClient.getStakingPoolsAsync();
-                // TODO: Pick pool more intelligently
-                pools = [_.head(poolsResponse.stakingPools)];
+                pools = poolsResponse.stakingPools;
             } catch (err) {
                 logUtils.warn(err);
             } finally {
@@ -286,7 +289,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
             // tslint:disable-next-line:no-floating-promises
             fetchAndSetPools();
         }
-    }, 200, [stakeAmount]);
+    }, [stakeAmount]);
 
     // Confirmation page stage, ready to stake (may need to approve first)
     if (selectedStakingPools) {
@@ -296,11 +299,11 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
                 <ApproveTokensInfoDialog
                     isOpen={isModalOpen}
                     onDismiss={() => setIsModalOpen(false)}
-                    providerName={props.providerState.displayName}
+                    providerName={props.providerState.displayName}
                 />
                 <InfoHeader>
                     <InfoHeaderItem>
-                    You're delegating {6000} ZRX to {'Neptune'}
+                        You're delegating {6000} ZRX to {'Neptune'}
                     </InfoHeaderItem>
                 </InfoHeader>
                 <Inner>
@@ -358,9 +361,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
     const { zrxBalanceBaseUnitAmount } = props.providerState.account;
     if (!zrxBalanceBaseUnitAmount) {
         // Fetching balance
-        return (
-            <Status title=""/>
-        );
+        return <Status title="" />;
     }
     if (!zrxBalanceBaseUnitAmount.gt(0)) {
         return (
@@ -374,6 +375,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
     const formattedAmount = utils.getFormattedAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
     const unitAmount = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX).toNumber();
     const statusNode = getStatus(stakeAmount, stakingPools);
+    const recommendedPools = stakingUtils.getRecommendedStakingPools(Number(stakeAmount), stakingPools);
     return (
         <>
             <NumberInput
@@ -412,42 +414,46 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
                     },
                 ]}
             />
-            {stakingPools && stakingPools.length > 0 && (
-                    <InfoHeader>
+            {recommendedPools && recommendedPools.length > 0 && (
+                <InfoHeader>
                     <InfoHeaderItem>
-                        Recommended staking pools {stakingPools.length > 1 && <NumberRound>{stakingPools.length}</NumberRound>}
+                        Recommended staking pools{' '}
+                        {recommendedPools.length > 1 && <NumberRound>{recommendedPools.length}</NumberRound>}
                     </InfoHeaderItem>
                     <InfoHeaderItem>
                         <Button isWithArrow={true} color={colors.textDarkSecondary} to={WebsitePaths.Staking}>
                             Full list
                         </Button>
                     </InfoHeaderItem>
-                    </InfoHeader>
+                </InfoHeader>
             )}
-            {stakingPools && stakingPools.map(pool => {
-                return (
-                    <MarketMaker
-                        key={pool.poolId}
-                        name={pool.metaData.name || utils.getAddressBeginAndEnd(_.head(pool.nextEpochStats.makerAddresses))}
-                        collectedFees={pool.currentEpochStats.protocolFeesGeneratedInEth}
-                        rewards={1 - pool.nextEpochStats.approximateStakeRatio}
-                        staked={pool.nextEpochStats.approximateStakeRatio}
-                        iconUrl={pool.metaData.logoUrl}
-                        website={pool.metaData.websiteUrl}
-                        // TODO: implement difference correctly
-                        difference={formattedAmount}
-                    />
-                );
-            })}
+            {recommendedPools && (
+                <PoolsContainer>
+                    {recommendedPools.map(rec => {
+                        return (
+                            <MarketMaker
+                                key={rec.pool.poolId}
+                                name={
+                                    rec.pool.metaData.name ||
+                                    utils.getAddressBeginAndEnd(_.head(rec.pool.nextEpochStats.makerAddresses))
+                                }
+                                collectedFees={rec.pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
+                                rewards={1 - rec.pool.nextEpochStats.approximateStakeRatio}
+                                staked={rec.pool.nextEpochStats.approximateStakeRatio}
+                                iconUrl={rec.pool.metaData.logoUrl}
+                                website={rec.pool.metaData.websiteUrl}
+                                difference={rec.zrxAmount}
+                            />
+                        );
+                    })}
+                </PoolsContainer>
+            )}
             {statusNode}
-            {stakingPools && stakingPools.length > 0 &&
-                <ButtonWithIcon
-                    onClick={() => setSelectedStakingPools(stakingPools)}
-                    color={colors.white}
-                >
+            {stakingPools && stakingPools.length > 0 && (
+                <ButtonWithIcon onClick={() => setSelectedStakingPools(stakingPools)} color={colors.white}>
                     Start staking
                 </ButtonWithIcon>
-            }
+            )}
         </>
     );
 };
