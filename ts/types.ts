@@ -9,11 +9,6 @@ export enum StakeStatus {
     Delegated,
 }
 
-export interface StakePoolData {
-    poolId: string;
-    amount: string;
-}
-
 // Types copied from instant
 // TODO(kimpers): cleanup when consolidating providers into a package
 export type Maybe<T> = T | undefined;

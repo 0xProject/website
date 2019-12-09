@@ -1,21 +1,22 @@
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { StakingContract, StakingProxyContract } from '@0x/contract-wrappers';
-import { BigNumber } from '@0x/utils';
+import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 
 import { State } from 'ts/redux/reducer';
-import { AccountReady, StakePoolData, StakeStatus } from 'ts/types';
+import { AccountReady, StakeStatus, StakingPoolRecomendation } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
+import { utils } from 'ts/utils/utils';
 
 export const useStake = () => {
     const networkId = useSelector((state: State) => state.networkId);
     const providerState = useSelector((state: State) => state.providerState);
 
-    const [stakePoolData, setStakePoolData] = React.useState<StakePoolData[]>([]);
+    const [stakePoolData, setStakePoolData] = React.useState<StakingPoolRecomendation[]>([]);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const [error, setError] = React.useState<Error | undefined>(undefined);
     const [result, setResult] = React.useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
@@ -29,9 +30,12 @@ export const useStake = () => {
         const depositAndStake = async () => {
             setIsLoading(true);
 
-            const normalizedPoolData = stakePoolData.map(({ amount, poolId }) => ({
-                poolId,
-                amountBaseUnits: Web3Wrapper.toBaseUnitAmount(new BigNumber(amount, 10), constants.DECIMAL_PLACES_ZRX),
+            const normalizedPoolData = stakePoolData.map(stakingPoolReccomendation => ({
+                poolId: utils.toPaddedHex(stakingPoolReccomendation.pool.poolId),
+                amountBaseUnits: Web3Wrapper.toBaseUnitAmount(
+                    new BigNumber(stakingPoolReccomendation.zrxAmount, 10),
+                    constants.DECIMAL_PLACES_ZRX,
+                ),
             }));
 
             const totalStakeBaseUnits = normalizedPoolData.reduce(
@@ -87,6 +91,7 @@ export const useStake = () => {
         depositAndStake().catch(err => {
             setIsLoading(false);
             setError(err);
+            logUtils.log(err);
         });
     }, [stakePoolData]);
 
