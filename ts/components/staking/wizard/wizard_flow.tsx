@@ -35,6 +35,7 @@ import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 
 import { ApproveTokensInfoDialog } from 'ts/components/dialogs/approve_tokens_info_dialog';
 import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
+import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
 export interface WizardFlowProps {
     providerState: ProviderState;
@@ -220,7 +221,7 @@ const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.R
     return null;
 };
 
-// todo(jj) refactor this to imitate the remove flow
+// todo(jj) refactor and organize this, right now it's messy
 export const WizardFlow: React.FC<WizardFlowProps> = ({
     setSelectedStakingPools,
     selectedStakingPools,
@@ -291,6 +292,12 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     const formattedAmount = utils.getFormattedAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
     const statusNode = getStatus(stakeAmount, stakingPools);
     const recommendedPools = stakingUtils.getRecommendedStakingPools(Number(stakeAmount), stakingPools);
+
+    // Success! Show success/newsletter signup
+    if (selectedStakingPools && stake.result) {
+        // TODO needs the info header (start staking + begins in n days)
+        return <Newsletter/>;
+    }
 
     // Confirmation page stage, ready to stake (may need to approve first)
     if (selectedStakingPools) {
