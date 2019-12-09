@@ -1,13 +1,16 @@
+import { addDays, format, formatDistance } from 'date-fns';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { colors } from 'ts/style/colors';
-import { PoolWithStats, UserStakingChoice } from 'ts/types';
+import { Epoch, UserStakingChoice } from 'ts/types';
 
 import { Timeline } from 'ts/components/staking/wizard/timeline';
 
 export interface WizardInfoProps {
     selectedStakingPools: UserStakingChoice[] | undefined;
+    currentEpochStats: Epoch | undefined;
+    nextEpochApproxStats: Epoch | undefined;
 }
 
 const IntroHeader = styled.h1`
@@ -114,7 +117,7 @@ const WizardInfoHeader: React.FC<WizardInfoHeaderProps> = ({title, description})
     </>
 );
 
-export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools }) => {
+export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, currentEpochStats, nextEpochApproxStats }) => {
     if (!selectedStakingPools) {
         return (
             <>
@@ -132,6 +135,22 @@ export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools }) 
             </>
         );
     }
+
+    const stakingStartsEpochDate = new Date(nextEpochApproxStats.epochStart.timestamp);
+    const EPOCH_DAY_LENGTH = 7;
+    const firstRewardsEpochDate = addDays(stakingStartsEpochDate, EPOCH_DAY_LENGTH);
+
+    const now = new Date();
+    const DATE_FORMAT = 'MM.dd';
+    const nowFormattedDate = format(now, DATE_FORMAT);
+    const nowFormattedTime = 'Now';
+
+    const stakingStartsFormattedTime = formatDistance(now, stakingStartsEpochDate);
+    const stakingStartsFormattedDate = format(stakingStartsEpochDate, DATE_FORMAT);
+
+    const firstRewardsFormattedTime = formatDistance(now, firstRewardsEpochDate);
+    const firstRewardsFormattedDate = format(firstRewardsEpochDate, DATE_FORMAT);
+
     return (
         <>
         <WizardInfoHeader title="Confirmation" description="Use one pool of capital across multiple relayers to trade against a large group."/>
@@ -139,23 +158,23 @@ export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools }) 
             activeItemIndex={0}
             items={[
                 {
-                    date: '22.08',
-                    fromNow: '2 days',
+                    date: nowFormattedDate,
+                    fromNow: nowFormattedTime,
                     title: 'Locking your ZRX',
                     description: 'Your declared staking pool is going to be locked in smart contract.',
                     isActive: true,
                 },
                 {
-                    date: '22.08',
-                    fromNow: '2 days',
+                    date: stakingStartsFormattedDate,
+                    fromNow: stakingStartsFormattedTime,
                     title: 'Staking starts',
                     description:
                         'Your staking pool is included in the Market Maker score along with voting power.',
                     isActive: false,
                 },
                 {
-                    date: '22.08',
-                    fromNow: '2 days',
+                    date: firstRewardsFormattedDate,
+                    fromNow: firstRewardsFormattedTime,
                     title: 'First rewards',
                     description:
                         'You are going to receive first rewards, at this point you can opt out without consequences.',
