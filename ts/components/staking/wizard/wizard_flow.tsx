@@ -37,7 +37,6 @@ import { ApproveTokensInfoDialog } from 'ts/components/dialogs/approve_tokens_in
 export interface WizardFlowProps {
     providerState: ProviderState;
     onOpenConnectWalletDialog: () => void;
-    onSetZrxAllowanceIfNeededAsync: (providerState: ProviderState, networkId: Network) => Promise<void>;
     networkId: Network;
     setSelectedStakingPools: React.Dispatch<React.SetStateAction<UserStakingChoice[]>>;
     selectedStakingPools: UserStakingChoice[] | undefined;

@@ -5,9 +5,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
 
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { AccountReady, AccountState, Network, ProviderState } from 'ts/types';
-import { backendClient } from 'ts/utils/backend_client';
-import { constants } from 'ts/utils/constants';
+import { AccountState, Network, ProviderState } from 'ts/types';
 
 // NOTE: Copied from Instant
 export const asyncDispatcher = {
@@ -72,34 +70,6 @@ export const asyncDispatcher = {
         } catch (e) {
             logUtils.warn(e);
             return;
-        }
-    },
-
-    setZrxAllowanceAndDispatchToStoreIfNeededAsync: async (
-        providerState: ProviderState,
-        networkId: Network,
-        dispatcher: Dispatcher,
-    ) => {
-        const { provider } = providerState;
-        const ownerAddress = (providerState.account as AccountReady).address;
-        const gasInfo = await backendClient.getGasInfoAsync();
-
-        const contractAddresses = getContractAddressesForChainOrThrow(networkId as number);
-        const erc20ProxyAddress = contractAddresses.erc20Proxy;
-        const zrxTokenContract = new ERC20TokenContract(contractAddresses.zrxToken, provider);
-
-        const currentAllowance = await zrxTokenContract.allowance(ownerAddress, erc20ProxyAddress).callAsync();
-
-        // TODO: some information modal needed?
-        if (currentAllowance.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
-            // tslint:disable:await-promise
-            await zrxTokenContract
-                .approve(erc20ProxyAddress, constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)
-                .awaitTransactionSuccessAsync({
-                    from: ownerAddress,
-                    gasPrice: gasInfo.gasPriceInWei,
-                });
-            dispatcher.updateAccountZrxAllowance(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);
         }
     },
 };
