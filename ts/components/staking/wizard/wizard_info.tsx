@@ -141,24 +141,24 @@ export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools }) 
                 {
                     date: '22.08',
                     fromNow: '2 days',
-                    title: 'Removing your stake',
+                    title: 'Locking your ZRX',
                     description: 'Your declared staking pool is going to be locked in smart contract.',
                     isActive: true,
                 },
                 {
                     date: '22.08',
                     fromNow: '2 days',
-                    title: 'Lockout period',
+                    title: 'Staking starts',
                     description:
-                        'Your tokens will be locked from withdrawal until the end of the next Epoch.',
+                        'Your staking pool is included in the Market Maker score along with voting power.',
                     isActive: false,
                 },
                 {
                     date: '22.08',
                     fromNow: '2 days',
-                    title: 'Tokens unlocked',
+                    title: 'First rewards',
                     description:
-                        'You are able to withdraw your tokens to your wallet, which you are free to move or restake',
+                        'You are going to receive first rewards, at this point you can opt out without consequences.',
                     isActive: false,
                 },
             ]}
