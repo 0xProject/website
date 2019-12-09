@@ -13,11 +13,11 @@ import { zIndex } from 'ts/style/z_index';
 interface Props {
     isOpen?: boolean;
     onDismiss?: () => void;
-    providerName: string;
+    onButtonClick?: () => void;
 }
 
 // An informational popup telling users to approve permissions from their wallet
-export const ApproveTokensInfoDialog: React.FunctionComponent<Props> = ({ isOpen, onDismiss, providerName }) => {
+export const ApproveTokensInfoDialog: React.FunctionComponent<Props> = ({ isOpen, onDismiss, onButtonClick }) => {
     return (
         <DialogOverlay
             style={{ background: 'rgba(255, 255, 255, 0.8)', zIndex: zIndex.overlay }}
@@ -35,7 +35,7 @@ export const ApproveTokensInfoDialog: React.FunctionComponent<Props> = ({ isOpen
                     You should have seen a message appearing in your web wallet. Please confirm to continue, then you can close this pop-up. You will receive confirmation once the transaction is mined so you can proceed staking.
                 </Paragraph>
                 <ButtonClose onClick={onDismiss} />
-                <Button onClick={onDismiss} isInline={true} isFullWidth={true} color={colors.white}>
+                <Button onClick={onButtonClick} isInline={true} isFullWidth={true} color={colors.white}>
                     I approved the transaction in my web wallet
                 </Button>
             </StyledDialogContent>

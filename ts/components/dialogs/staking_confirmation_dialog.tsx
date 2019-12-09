@@ -13,9 +13,10 @@ import { zIndex } from 'ts/style/z_index';
 interface Props {
     isOpen?: boolean;
     onDismiss?: () => void;
+    onButtonClick?: () => void;
 }
 
-export const StakingConfirmationDialog: React.FunctionComponent<Props> = ({ isOpen, onDismiss }) => {
+export const StakingConfirmationDialog: React.FunctionComponent<Props> = ({ isOpen, onDismiss, onButtonClick }) => {
     return (
         <DialogOverlay
             style={{ background: 'rgba(255, 255, 255, 0.8)', zIndex: zIndex.overlay }}
@@ -38,7 +39,7 @@ export const StakingConfirmationDialog: React.FunctionComponent<Props> = ({ isOp
                     50% of your ZRX voting power will go to the owner(s) of the staking pool(s)
                 </Paragraph>
                 <ButtonClose onClick={onDismiss} />
-                <Button onClick={onDismiss} isInline={true} isFullWidth={true} color={colors.white}>
+                <Button onClick={onButtonClick} isInline={true} isFullWidth={true} color={colors.white}>
                     I understand, Stake my ZRX
                 </Button>
             </StyledDialogContent>
@@ -48,7 +49,7 @@ export const StakingConfirmationDialog: React.FunctionComponent<Props> = ({ isOp
 
 const StyledDialogContent = styled(DialogContent)`
     position: relative;
-    max-width: 800px;
+    max-width: 540px;
     background-color: #f6f6f6 !important;
     padding: 60px 60px !important;
 
