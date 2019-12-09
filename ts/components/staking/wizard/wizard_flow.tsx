@@ -17,7 +17,6 @@ import { MarketMaker } from 'ts/components/staking/wizard/market_maker';
 import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
 import { Spinner } from 'ts/components/ui/spinner';
-import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useStake } from 'ts/hooks/use_stake';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
@@ -32,6 +31,7 @@ export interface WizardFlowProps {
     networkId: Network;
     setSelectedStakingPools: React.Dispatch<React.SetStateAction<UserStakingChoice[]>>;
     selectedStakingPools: UserStakingChoice[] | undefined;
+    stakingPools?: PoolWithStats[];
 }
 
 enum StakingPercentageValue {
@@ -209,7 +209,12 @@ const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.R
 };
 
 // todo(jj) refactor this to imitate the remove flow
-export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools, selectedStakingPools, ...props }) => {
+export const WizardFlow: React.FC<WizardFlowProps> = ({
+    setSelectedStakingPools,
+    selectedStakingPools,
+    stakingPools,
+    ...props
+}) => {
     /* <MarketMaker
             name="Binance staking pool"
             collectedFees="3.212,032 ETH"
@@ -280,7 +285,6 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
         </Inner>
         <Newsletter /> */
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
-    const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined); // available pools
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const { loadingState: stakingLoadingState, error: stakingError, result: stakingResult, estimatedTimeMs, depositAndStake } = useStake();
@@ -301,25 +305,6 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({ setSelectedStakingPools,
         secondsLeftUntilStakingTransactionDone = Math.max(0, differenceInSeconds(estimatedTransactionFinishTime, new Date()));
         timeLeftValue = formatDistanceStrict(estimatedTransactionFinishTime, new Date(), { unit: 'second' });
     }
-    const apiClient = useAPIClient();
-    React.useEffect(() => {
-        const fetchAndSetPools = async () => {
-            let pools: PoolWithStats[] = [];
-            try {
-                const poolsResponse = await apiClient.getStakingPoolsAsync();
-                pools = poolsResponse.stakingPools;
-            } catch (err) {
-                logUtils.warn(err);
-            } finally {
-                setStakingPools(pools);
-            }
-        };
-        setStakingPools(undefined);
-        if (stakeAmount) {
-            // tslint:disable-next-line:no-floating-promises
-            fetchAndSetPools();
-        }
-    }, [stakeAmount]);
 
     if (props.providerState.account.state !== AccountState.Ready) {
         return (
