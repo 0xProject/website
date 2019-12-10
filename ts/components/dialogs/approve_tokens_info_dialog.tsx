@@ -16,7 +16,8 @@ interface Props {
     onButtonClick?: () => void;
 }
 
-export const StakingConfirmationDialog: React.FunctionComponent<Props> = ({ isOpen, onDismiss, onButtonClick }) => {
+// An informational popup telling users to approve permissions from their wallet
+export const ApproveTokensInfoDialog: React.FunctionComponent<Props> = ({ isOpen, onDismiss, onButtonClick }) => {
     return (
         <DialogOverlay
             style={{ background: 'rgba(255, 255, 255, 0.8)', zIndex: zIndex.overlay }}
@@ -25,22 +26,17 @@ export const StakingConfirmationDialog: React.FunctionComponent<Props> = ({ isOp
         >
             <StyledDialogContent>
                 <Heading asElement="h3" fontWeight="400" marginBottom="20px">
-                    Staking Confirmation
+                    Unlock Your ZRX
                 </Heading>
-
                 <Paragraph isMuted={false} color={colors.textDarkSecondary}>
-                    This will lock your tokens. To unlock, you will need to remove your stake and wait until the epoch
-                    after next before withdrawal is available.
+                    In order to stake you ZRX tokens you must first grant permissions to the 0x Staking Proxy contract. This will allow the contract to transfer the ZRX tokens you decide to stake, and start earning rewards.
                 </Paragraph>
-                <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-                    Unlocking will take between 2-4 weeks (1-2 Epochs)
-                </Paragraph>
-                <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-                    50% of your ZRX voting power will go to the owner(s) of the staking pool(s)
+                <Paragraph isMuted={false} color={colors.textDarkSecondary}>
+                    You should have seen a message appearing in your web wallet. Please confirm to continue, then you can close this pop-up. You will receive confirmation once the transaction is mined so you can proceed staking.
                 </Paragraph>
                 <ButtonClose onClick={onDismiss} />
                 <Button onClick={onButtonClick} isInline={true} isFullWidth={true} color={colors.white}>
-                    I understand, Stake my ZRX
+                    I approved the transaction in my web wallet
                 </Button>
             </StyledDialogContent>
         </DialogOverlay>
@@ -49,7 +45,7 @@ export const StakingConfirmationDialog: React.FunctionComponent<Props> = ({ isOp
 
 const StyledDialogContent = styled(DialogContent)`
     position: relative;
-    max-width: 540px;
+    max-width: 800px;
     background-color: #f6f6f6 !important;
     padding: 60px 60px !important;
 

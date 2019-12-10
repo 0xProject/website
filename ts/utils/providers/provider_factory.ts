@@ -12,8 +12,9 @@ export const providerFactory = {
     getInjectedProviderIfExists: (): Maybe<ZeroExProvider> => {
         const injectedProviderIfExists = (window as any).ethereum;
         if (injectedProviderIfExists !== undefined) {
-            const provider = providerUtils.standardizeOrThrow(injectedProviderIfExists);
-            return provider;
+            return injectedProviderIfExists;
+            // const provider = providerUtils.standardizeOrThrow(injectedProviderIfExists);
+            // return provider;
         }
         const injectedWeb3IfExists = (window as any).web3;
         if (injectedWeb3IfExists !== undefined && injectedWeb3IfExists.currentProvider !== undefined) {

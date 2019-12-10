@@ -1,11 +1,17 @@
+import { addDays, format, formatDistance } from 'date-fns';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { colors } from 'ts/style/colors';
+import { Epoch, UserStakingChoice } from 'ts/types';
 
-// import { Timeline } from 'ts/components/staking/wizard/timeline';
+import { Timeline } from 'ts/components/staking/wizard/timeline';
 
-export interface WizardInfoProps {}
+export interface WizardInfoProps {
+    selectedStakingPools: UserStakingChoice[] | undefined;
+    currentEpochStats: Epoch | undefined;
+    nextEpochApproxStats: Epoch | undefined;
+}
 
 const IntroHeader = styled.h1`
     font-size: 36px;
@@ -111,48 +117,71 @@ const WizardInfoHeader: React.FC<WizardInfoHeaderProps> = ({title, description})
     </>
 );
 
-export const WizardInfo: React.FC<WizardInfoProps> = () => {
-    /* <Timeline
-        activeItemIndex={0}
-        items={[
-            {
-                date: '22.08',
-                fromNow: '2 days',
-                title: 'Removing your stake',
-                description: 'Your declared staking pool is going to be locked in smart contract.',
-                isActive: true,
-            },
-            {
-                date: '22.08',
-                fromNow: '2 days',
-                title: 'Lockout period',
-                description:
-                    'Your tokens will be locked from withdrawal until the end of the next Epoch.',
-                isActive: false,
-            },
-            {
-                date: '22.08',
-                fromNow: '2 days',
-                title: 'Tokens unlocked',
-                description:
-                    'You are able to withdraw your tokens to your wallet, which you are free to move or restake',
-                isActive: false,
-            },
-        ]}
-    /> */
+export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, currentEpochStats, nextEpochApproxStats }) => {
+    if (!selectedStakingPools) {
+        return (
+            <>
+                <WizardInfoHeader title="Start staking your tokens" description="Use one pool of capital across multiple relayers to trade against a large group."/>
+                <IntroMetrics>
+                    <IntroMetric>
+                        <h2>873,435 ETH</h2>
+                        <p>Total rewards collected</p>
+                    </IntroMetric>
+                    <IntroMetric>
+                        <h2>203,000 ZRX</h2>
+                        <p>Total ZRX Staked</p>
+                    </IntroMetric>
+                </IntroMetrics>
+            </>
+        );
+    }
+
+    const stakingStartsEpochDate = new Date(nextEpochApproxStats.epochStart.timestamp);
+    const EPOCH_DAY_LENGTH = 7;
+    const firstRewardsEpochDate = addDays(stakingStartsEpochDate, EPOCH_DAY_LENGTH);
+
+    const now = new Date();
+    const DATE_FORMAT = 'MM.dd';
+    const nowFormattedDate = format(now, DATE_FORMAT);
+    const nowFormattedTime = 'Now';
+
+    const stakingStartsFormattedTime = formatDistance(now, stakingStartsEpochDate);
+    const stakingStartsFormattedDate = format(stakingStartsEpochDate, DATE_FORMAT);
+
+    const firstRewardsFormattedTime = formatDistance(now, firstRewardsEpochDate);
+    const firstRewardsFormattedDate = format(firstRewardsEpochDate, DATE_FORMAT);
+
     return (
         <>
-            <WizardInfoHeader title="Start staking your tokens" description="Use one pool of capital across multiple relayers to trade against a large group."/>
-            <IntroMetrics>
-                <IntroMetric>
-                    <h2>873,435 ETH</h2>
-                    <p>Total rewards collected</p>
-                </IntroMetric>
-                <IntroMetric>
-                    <h2>203,000 ZRX</h2>
-                    <p>Total ZRX Staked</p>
-                </IntroMetric>
-            </IntroMetrics>
+        <WizardInfoHeader title="Confirmation" description="Use one pool of capital across multiple relayers to trade against a large group."/>
+        <Timeline
+            activeItemIndex={0}
+            items={[
+                {
+                    date: nowFormattedDate,
+                    fromNow: nowFormattedTime,
+                    title: 'Locking your ZRX',
+                    description: 'Your declared staking pool is going to be locked in smart contract.',
+                    isActive: true,
+                },
+                {
+                    date: stakingStartsFormattedDate,
+                    fromNow: stakingStartsFormattedTime,
+                    title: 'Staking starts',
+                    description:
+                        'Your staking pool is included in the Market Maker score along with voting power.',
+                    isActive: false,
+                },
+                {
+                    date: firstRewardsFormattedDate,
+                    fromNow: firstRewardsFormattedTime,
+                    title: 'First rewards',
+                    description:
+                        'You are going to receive first rewards, at this point you can opt out without consequences.',
+                    isActive: false,
+                },
+            ]}
+        />
         </>
     );
 };
