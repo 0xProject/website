@@ -423,15 +423,15 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                     setStakeAmount(newAmount);
                     setSelectedLabel(undefined);
                 }}
-                // bottomLabels={[
-                //     {
-                //         label: 'Based on your ZRX balance',
-                //     },
-                //     {
-                //         label: 'Change wallet',
-                //         onClick: props.onOpenConnectWalletDialog,
-                //     },
-                // ]}
+                bottomLabels={[
+                    {
+                        label: 'Based on your ZRX balance',
+                    },
+                    {
+                        label: 'Change wallet',
+                        onClick: props.onOpenConnectWalletDialog,
+                    },
+                ]}
             />
             {recommendedPools && recommendedPools.length > 0 && (
                 <InfoHeader>
