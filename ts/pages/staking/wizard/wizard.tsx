@@ -48,7 +48,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         setStakingPools(undefined);
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPools();
-    }, []);
+    }, [apiClient.networkId]);
 
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
@@ -59,7 +59,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                             nextEpochApproxStats={nextEpochApproxStats}
                             currentEpochStats={currentEpochStats}
                             selectedStakingPools={userStakingPoolsToStake}
-                        />}
+                        />
+                    }
                     rightComponent={
                         <WizardFlow
                             nextEpochApproxStats={nextEpochApproxStats}
