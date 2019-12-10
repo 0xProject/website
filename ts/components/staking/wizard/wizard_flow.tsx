@@ -454,7 +454,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                                 key={rec.pool.poolId}
                                 name={
                                     rec.pool.metaData.name ||
-                                    utils.getAddressBeginAndEnd(_.head(rec.pool.nextEpochStats.makerAddresses))
+                                    utils.getAddressBeginAndEnd(rec.pool.operatorAddress)
                                 }
                                 collectedFees={rec.pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
                                 rewards={1 - rec.pool.nextEpochStats.approximateStakeRatio}
