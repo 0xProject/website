@@ -315,7 +315,12 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                     isOpen={isStakingConfirmationModalOpen}
                     onDismiss={() => setIsStakingConfirmationModalOpen(false)}
                     onButtonClick={() => {
-                        stake.depositAndStake(selectedStakingPools);
+                        const selectedPoolsData= selectedStakingPools.map(recomendation => ({
+                            poolId: recomendation.pool.poolId,
+                            zrxAmount: recomendation.zrxAmount
+                        }));
+
+                        stake.depositAndStake(selectedPoolsData);
                         setIsStakingConfirmationModalOpen(false);
                     }}
                 />
