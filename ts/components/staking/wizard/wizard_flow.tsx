@@ -1,6 +1,6 @@
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { addMilliseconds, differenceInSeconds, formatDistance, formatDistanceStrict } from 'date-fns';
+import { addMilliseconds, formatDistance } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -27,20 +27,18 @@ import { MarketMaker } from 'ts/components/staking/wizard/market_maker';
 import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
 import { Spinner } from 'ts/components/ui/spinner';
+
 import { useAllowance } from 'ts/hooks/use_allowance';
+import { useTimeRemaining } from 'ts/hooks/use_seconds_remaining';
 import { useStake } from 'ts/hooks/use_stake';
+
 import { stakingUtils } from 'ts/utils/staking_utils';
 
-import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
-
 import { ApproveTokensInfoDialog } from 'ts/components/dialogs/approve_tokens_info_dialog';
-import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
+import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
-const getTimeLeftDisplayValue = (dateInFuture: Date): string => {
-    const timeLeftDisplayValue = formatDistanceStrict(dateInFuture, new Date(), { unit: 'second' });
-    return timeLeftDisplayValue;
-};
+import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
 
 export interface WizardFlowProps {
     providerState: ProviderState;
@@ -242,6 +240,8 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     const allowance = useAllowance();
     const [estimatedAllowanceApprovalFinishTime, setEstimatedAllowanceApprovalFinishTime] = React.useState<Date | undefined>(undefined);
     const [estimatedStakingTransactionFinishTime, setEstimatedStakingTransactionFinishTime] = React.useState<Date | undefined>(undefined);
+    const timeRemainingForAllowanceApproval = useTimeRemaining(estimatedAllowanceApprovalFinishTime);
+    const timeRemainingForStakingTransaction = useTimeRemaining(estimatedStakingTransactionFinishTime);
 
     React.useEffect(() => {
         if (!stake.estimatedTimeMs) {
@@ -319,7 +319,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                         <span>
                             {allowance.loadingState === TransactionLoadingState.WaitingForSignature
                                 ? 'Waiting for signature'
-                                : `${getTimeLeftDisplayValue(estimatedAllowanceApprovalFinishTime)} left`}
+                                : `${timeRemainingForAllowanceApproval} left`}
                         </span>
                     </ButtonWithIcon>
                 );
@@ -350,7 +350,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                         <span>
                             {stake.loadingState === TransactionLoadingState.WaitingForSignature
                                 ? 'Waiting for signature'
-                                : `${getTimeLeftDisplayValue(estimatedStakingTransactionFinishTime)} left`}
+                                : `${timeRemainingForStakingTransaction} left`}
                         </span>
                     </ButtonWithIcon>
                 );
