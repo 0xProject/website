@@ -12,6 +12,9 @@ import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
+const isTxInProgress = (loadingState: TransactionLoadingState) =>
+    [TransactionLoadingState.WaitingForTransaction, TransactionLoadingState.WaitingForSignature].includes(loadingState);
+
 const toZrxBaseUnits = (zrxAmount: number) =>
     Web3Wrapper.toBaseUnitAmount(new BigNumber(zrxAmount, 10), constants.DECIMAL_PLACES_ZRX);
 
@@ -72,15 +75,7 @@ export const useStake = () => {
     };
 
     const depositAndStakeAsync = async (stakePoolData: StakePoolData[]) => {
-        if (!stakePoolData || stakePoolData.length === 0) {
-            return;
-        }
-
-        if (
-            [TransactionLoadingState.WaitingForTransaction, TransactionLoadingState.WaitingForSignature].includes(
-                loadingState,
-            )
-        ) {
+        if (!stakePoolData || stakePoolData.length === 0 || isTxInProgress(loadingState)) {
             return;
         }
 
@@ -110,15 +105,7 @@ export const useStake = () => {
     };
 
     const unstakeFromPoolsAsync = async (stakePoolData: StakePoolData[]) => {
-        if (!stakePoolData || stakePoolData.length === 0) {
-            return;
-        }
-
-        if (
-            [TransactionLoadingState.WaitingForTransaction, TransactionLoadingState.WaitingForSignature].includes(
-                loadingState,
-            )
-        ) {
+        if (!stakePoolData || stakePoolData.length === 0 || isTxInProgress(loadingState)) {
             return;
         }
 
@@ -160,7 +147,19 @@ export const useStake = () => {
         setLoadingState(TransactionLoadingState.Success);
     };
 
-    const handleErr = (err: Error) => {
+    const withdrawRewardsAsync = async (poolIds: string[]) => {
+        if (!poolIds.length || isTxInProgress(loadingState)) {
+            return;
+        }
+
+        const data: string[] = poolIds.map(poolId =>
+            stakingContract.withdrawDelegatorRewards(poolId).getABIEncodedTransactionData(),
+        );
+
+        await executeWithData(data);
+    };
+
+    const handleError = (err: Error) => {
         setLoadingState(TransactionLoadingState.Failed);
         setError(err);
         logUtils.log(err);
@@ -170,15 +169,18 @@ export const useStake = () => {
         loadingState,
         result,
         error,
+        estimatedTimeMs,
         depositAndStake: (stakePoolData: StakePoolData[]) => {
-            depositAndStakeAsync(stakePoolData).catch(handleErr);
+            depositAndStakeAsync(stakePoolData).catch(handleError);
         },
         unstake: (stakePoolData: StakePoolData[]) => {
-            unstakeFromPoolsAsync(stakePoolData).catch(handleErr);
+            unstakeFromPoolsAsync(stakePoolData).catch(handleError);
         },
         withdrawStake: (zrxAmount: number) => {
-            withdrawStakeAsync(zrxAmount).catch(handleErr);
+            withdrawStakeAsync(zrxAmount).catch(handleError);
         },
-        estimatedTimeMs,
+        withdrawRewards: (poolIds: string[]) => {
+            withdrawRewardsAsync(poolIds).catch(handleError);
+        },
     };
 };
