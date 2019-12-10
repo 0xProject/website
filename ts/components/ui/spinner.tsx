@@ -7,6 +7,7 @@ import { dash, rotate } from 'ts/style/keyframes';
 interface SpinnerSvgProps {
     color: string;
     size: number;
+    height?: number;
     viewBox?: string;
 }
 
@@ -14,13 +15,13 @@ const SpinnerSvg: React.StatelessComponent<SpinnerSvgProps> = props => <svg {...
 
 const StyledSpinner = styled(SpinnerSvg)`
     animation: ${rotate} 3s linear infinite;
-    margin: ${props => `-${props.size / 2}px 0 0 -${props.size / 2}px`};
-    margin-top: ${props => `-${props.size / 2}px`};
-    margin-left: ${props => `-${props.size / 2}px`};
-    margin-bottom: 0px;
-    margin-right: 0px;
+    // margin: ${props => `-${props.size / 2}px 0 0 -${props.size / 2}px`};
+    // margin-top: ${props => `-${props.size / 2}px`};
+    // margin-left: ${props => `-${props.size / 2}px`};
+    // margin-bottom: 0px;
+    // margin-right: 0px;
     size: ${props => `${props.size}px`};
-    height: ${props => `${props.size}px`};
+    height: ${props => `${ props.height || props.size}px`};
 
     & .path {
         stroke: ${props => props.color};
@@ -31,15 +32,16 @@ const StyledSpinner = styled(SpinnerSvg)`
 
 export interface SpinnerProps {
     size?: number;
+    height?: number;
     strokeSize?: number;
     color?: string;
 }
 
-export const Spinner: React.StatelessComponent<SpinnerProps> = ({ size, strokeSize, color }) => {
+export const Spinner: React.StatelessComponent<SpinnerProps> = ({ size, strokeSize, color, height }) => {
     const c = size / 2;
     const r = c - strokeSize;
     return (
-        <StyledSpinner color={color} size={size} viewBox={`0 0 ${size} ${size}`}>
+        <StyledSpinner color={color} size={size} viewBox={`0 0 ${size} ${size}`} height={height || size}>
             <circle className="path" cx={c} cy={c} r={r} fill="none" strokeWidth={strokeSize} />
         </StyledSpinner>
     );

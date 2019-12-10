@@ -37,6 +37,11 @@ import { ApproveTokensInfoDialog } from 'ts/components/dialogs/approve_tokens_in
 import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
 import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
+const getTimeLeftDisplayValue = (dateInFuture: Date): string => {
+    const timeLeftDisplayValue = formatDistanceStrict(dateInFuture, new Date(), { unit: 'second' });
+    return timeLeftDisplayValue;
+};
+
 export interface WizardFlowProps {
     providerState: ProviderState;
     onOpenConnectWalletDialog: () => void;
@@ -74,6 +79,7 @@ const ButtonWithIcon = styled(Button)`
 const SpinnerContainer = styled.span`
     display: inline-block;
     margin-right: 10px;
+    height: 26px;
 `;
 
 // TODO(jj) consolidate with remove page
@@ -162,6 +168,7 @@ const Retry = styled.button`
     font-size: 18px;
     font-family: 'Formular', monospace;
     border-left: 1px solid #898989;
+    cursor: pointer;
 `;
 
 const NumberRound = styled.span`
@@ -221,7 +228,6 @@ const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.R
     return null;
 };
 
-// todo(jj) refactor and organize this, right now it's messy
 export const WizardFlow: React.FC<WizardFlowProps> = ({
     setSelectedStakingPools,
     selectedStakingPools,
@@ -234,28 +240,24 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     const [isStakingConfirmationModalOpen, setIsStakingConfirmationModalOpen] = React.useState(false);
     const stake = useStake();
     const allowance = useAllowance();
-    const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = React.useState<Date | undefined>(
-        undefined,
-    );
+    const [estimatedAllowanceApprovalFinishTime, setEstimatedAllowanceApprovalFinishTime] = React.useState<Date | undefined>(undefined);
+    const [estimatedStakingTransactionFinishTime, setEstimatedStakingTransactionFinishTime] = React.useState<Date | undefined>(undefined);
 
     React.useEffect(() => {
         if (!stake.estimatedTimeMs) {
-            return setEstimatedTransactionFinishTime(undefined);
+            return setEstimatedStakingTransactionFinishTime(undefined);
         }
         const estimate = addMilliseconds(new Date(), stake.estimatedTimeMs);
-        setEstimatedTransactionFinishTime(estimate);
+        setEstimatedStakingTransactionFinishTime(estimate);
     }, [stake.estimatedTimeMs]);
 
-    // TODO(jj) need an interval hook here for updating the seconds
-    let secondsLeftUntilStakingTransactionDone: number | undefined;
-    let timeLeftValue: string | undefined;
-    if (estimatedTransactionFinishTime) {
-        secondsLeftUntilStakingTransactionDone = Math.max(
-            0,
-            differenceInSeconds(estimatedTransactionFinishTime, new Date()),
-        );
-        timeLeftValue = formatDistanceStrict(estimatedTransactionFinishTime, new Date(), { unit: 'second' });
-    }
+    React.useEffect(() => {
+        if (!allowance.estimatedTimeMs) {
+            return setEstimatedAllowanceApprovalFinishTime(undefined);
+        }
+        const estimate = addMilliseconds(new Date(), allowance.estimatedTimeMs);
+        setEstimatedAllowanceApprovalFinishTime(estimate);
+    }, [allowance.estimatedTimeMs]);
 
     if (props.providerState.account.state !== AccountState.Ready) {
         return (
@@ -299,9 +301,94 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
         return <Newsletter/>;
     }
 
+    // Determine button to show based on state
+    let ActiveButon = null;
+    if (allowance.loadingState) {
+        if (allowance.loadingState === TransactionLoadingState.WaitingForSignature ||
+            allowance.loadingState === TransactionLoadingState.WaitingForTransaction) {
+                ActiveButon = (
+                    <ButtonWithIcon
+                        isTransparent={true}
+                        borderColor="#DFE7E1"
+                        color={colors.textDarkSecondary}
+                        isDisabled={true}
+                    >
+                        <SpinnerContainer>
+                            <Spinner height={22} color="#BEBEBE" />
+                        </SpinnerContainer>
+                        <span>
+                            {allowance.loadingState === TransactionLoadingState.WaitingForSignature
+                                ? 'Waiting for signature'
+                                : `${getTimeLeftDisplayValue(estimatedAllowanceApprovalFinishTime)} left`}
+                        </span>
+                    </ButtonWithIcon>
+                );
+        } else if (allowance.loadingState === TransactionLoadingState.Failed) {
+            ActiveButon = (
+                <ErrorButton
+                    message={'Allowance transaction aborted'}
+                    secondaryButtonText={'Retry'}
+                    onClose={() => {/*noop*/}}
+                    onSecondaryClick={() => allowance.setAllowance()}
+                />
+            );
+        }
+    }
+    if (stake.loadingState) {
+        if (stake.loadingState === TransactionLoadingState.WaitingForSignature ||
+            stake.loadingState === TransactionLoadingState.WaitingForTransaction) {
+                ActiveButon = (
+                    <ButtonWithIcon
+                        isTransparent={true}
+                        borderColor="#DFE7E1"
+                        color={colors.textDarkSecondary}
+                        isDisabled={true}
+                    >
+                        <SpinnerContainer>
+                            <Spinner height={22} color="#BEBEBE" />
+                        </SpinnerContainer>
+                        <span>
+                            {stake.loadingState === TransactionLoadingState.WaitingForSignature
+                                ? 'Waiting for signature'
+                                : `${getTimeLeftDisplayValue(estimatedStakingTransactionFinishTime)} left`}
+                        </span>
+                    </ButtonWithIcon>
+                );
+            } else if (stake.loadingState === TransactionLoadingState.Failed) {
+                ActiveButon = (
+                    <ErrorButton
+                        message={'Transaction aborted'}
+                        secondaryButtonText={'Retry'}
+                        onClose={() => {/*noop*/}}
+                        onSecondaryClick={() => stake.depositAndStake(selectedStakingPools)}
+                    />
+                );
+            }
+    }
+    if (!ActiveButon) {
+        ActiveButon = (
+            <ButtonWithIcon
+                onClick={async () => {
+                    const allowanceBaseUnits =
+                        (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount ||
+                        new BigNumber(0);
+
+                    if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
+                        setIsApproveTokenModalOpen(true);
+                        allowance.setAllowance();
+                    } else {
+                        setIsStakingConfirmationModalOpen(true);
+                    }
+                }}
+                color={colors.white}
+            >
+                Start staking
+            </ButtonWithIcon>
+        );
+    }
+
     // Confirmation page stage, ready to stake (may need to approve first)
     if (selectedStakingPools) {
-        // TODO(jj) consolidate with wizard_info date calcs
         const stakingStartsFormattedTime = formatDistance(new Date(), new Date(props.nextEpochApproxStats.epochStart.timestamp));
         return (
             <>
@@ -354,43 +441,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                             />
                         );
                     })}
-                    {/* Waiting for a signature... */}
-                    {stake.loadingState === TransactionLoadingState.WaitingForSignature ||
-                    stake.loadingState === TransactionLoadingState.WaitingForTransaction ? (
-                        <ButtonWithIcon
-                            isTransparent={true}
-                            borderColor="#DFE7E1"
-                            color={colors.textDarkSecondary}
-                            isDisabled={true}
-                        >
-                            <SpinnerContainer>
-                                <Spinner color="#BEBEBE" />
-                            </SpinnerContainer>
-                            <span>
-                                {stake.loadingState === TransactionLoadingState.WaitingForSignature
-                                    ? 'Waiting for signature'
-                                    : `${timeLeftValue} left`}
-                            </span>
-                        </ButtonWithIcon>
-                    ) : (
-                        <ButtonWithIcon
-                            onClick={async () => {
-                                const allowanceBaseUnits =
-                                    (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount ||
-                                    new BigNumber(0);
-
-                                if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
-                                    setIsApproveTokenModalOpen(true);
-                                    allowance.setAllowance();
-                                } else {
-                                    setIsStakingConfirmationModalOpen(true);
-                                }
-                            }}
-                            color={colors.white}
-                        >
-                            Start staking
-                        </ButtonWithIcon>
-                    )}
+                    {ActiveButon}
                 </Inner>
             </>
         );
