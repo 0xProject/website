@@ -12,10 +12,13 @@ import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
+const toZrxBaseUnits = (zrxAmount: number) =>
+    Web3Wrapper.toBaseUnitAmount(new BigNumber(zrxAmount, 10), constants.DECIMAL_PLACES_ZRX);
+
 const normalizeStakePoolData = (stakePoolData: StakePoolData[]) =>
     stakePoolData.map(pool => ({
         poolId: utils.toPaddedHex(pool.poolId),
-        amountBaseUnits: Web3Wrapper.toBaseUnitAmount(new BigNumber(pool.zrxAmount, 10), constants.DECIMAL_PLACES_ZRX),
+        amountBaseUnits: toZrxBaseUnits(pool.zrxAmount),
     }));
 
 export const useStake = () => {
@@ -68,34 +71,6 @@ export const useStake = () => {
         setLoadingState(TransactionLoadingState.Success);
     };
 
-    const unstakeFromPoolsAsync = async (stakePoolData: StakePoolData[]) => {
-        if (!stakePoolData || stakePoolData.length === 0) {
-            return;
-        }
-
-        if (
-            [TransactionLoadingState.WaitingForTransaction, TransactionLoadingState.WaitingForSignature].includes(
-                loadingState,
-            )
-        ) {
-            return;
-        }
-
-        const normalizedPoolData = normalizeStakePoolData(stakePoolData);
-
-        const data: string[] = normalizedPoolData.map(({ poolId, amountBaseUnits }) =>
-            stakingContract
-                .moveStake(
-                    { status: StakeStatus.Delegated, poolId }, // From the pool
-                    { status: StakeStatus.Undelegated, poolId: constants.STAKING.NIL_POOL_ID }, // To undelegated
-                    amountBaseUnits,
-                )
-                .getABIEncodedTransactionData(),
-        );
-
-        await executeWithData(data);
-    };
-
     const depositAndStakeAsync = async (stakePoolData: StakePoolData[]) => {
         if (!stakePoolData || stakePoolData.length === 0) {
             return;
@@ -134,6 +109,57 @@ export const useStake = () => {
         await executeWithData(data);
     };
 
+    const unstakeFromPoolsAsync = async (stakePoolData: StakePoolData[]) => {
+        if (!stakePoolData || stakePoolData.length === 0) {
+            return;
+        }
+
+        if (
+            [TransactionLoadingState.WaitingForTransaction, TransactionLoadingState.WaitingForSignature].includes(
+                loadingState,
+            )
+        ) {
+            return;
+        }
+
+        const normalizedPoolData = normalizeStakePoolData(stakePoolData);
+
+        const data: string[] = normalizedPoolData.map(({ poolId, amountBaseUnits }) =>
+            stakingContract
+                .moveStake(
+                    { status: StakeStatus.Delegated, poolId }, // From the pool
+                    { status: StakeStatus.Undelegated, poolId: constants.STAKING.NIL_POOL_ID }, // To undelegated
+                    amountBaseUnits,
+                )
+                .getABIEncodedTransactionData(),
+        );
+
+        await executeWithData(data);
+    };
+
+    const withdrawStakeAsync = async (zrxAmount: number) => {
+        if (!zrxAmount || isTxInProgress(loadingState)) {
+            return;
+        }
+
+        setLoadingState(TransactionLoadingState.WaitingForSignature);
+
+        const gasInfo = await backendClient.getGasInfoAsync();
+
+        const zrxAmountBaseUnits = toZrxBaseUnits(zrxAmount);
+        const txPromise = stakingContract
+            .unstake(zrxAmountBaseUnits)
+            .awaitTransactionSuccessAsync({ from: ownerAddress, gasPrice: gasInfo.gasPriceInWei });
+
+        await txPromise.txHashPromise;
+        setEstimatedTimeMs(gasInfo.estimatedTimeMs);
+        setLoadingState(TransactionLoadingState.WaitingForTransaction);
+        // tslint:disable:await-promise
+        const txResult = await txPromise;
+        setResult(txResult);
+        setLoadingState(TransactionLoadingState.Success);
+    };
+
     const handleErr = (err: Error) => {
         setLoadingState(TransactionLoadingState.Failed);
         setError(err);
@@ -149,6 +175,9 @@ export const useStake = () => {
         },
         unstake: (stakePoolData: StakePoolData[]) => {
             unstakeFromPoolsAsync(stakePoolData).catch(handleErr);
+        },
+        withdrawStake: (zrxAmount: number) => {
+            withdrawStakeAsync(zrxAmount).catch(handleErr);
         },
         estimatedTimeMs,
     };
