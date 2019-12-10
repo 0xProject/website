@@ -63,22 +63,21 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                 <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
                     Staking Pools
                 </Heading>
-                {stakingPools && stakingPools.map(
-                    pool => {
+                {stakingPools &&
+                    stakingPools.map(pool => {
                         return (
                             <StakingPoolDetailRow
                                 key={pool.poolId}
                                 name={pool.metaData.name}
                                 thumbnailUrl={pool.metaData.logoUrl}
                                 isVerified={pool.metaData.isVerified}
-                                address={_.head(pool.nextEpochStats.makerAddresses)}
+                                address={pool.operatorAddress}
                                 totalFeesGeneratedInEth={pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
                                 stakeRatio={pool.nextEpochStats.approximateStakeRatio}
                                 rewardsSharedRatio={1 - pool.nextEpochStats.operatorShare}
                             />
                         );
-                    },
-                )}
+                    })}
             </SectionWrapper>
         </StakingPageLayout>
     );
