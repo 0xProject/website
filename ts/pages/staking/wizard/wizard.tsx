@@ -16,7 +16,7 @@ import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
 
 import { State } from 'ts/redux/reducer';
-import { Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice } from 'ts/types';
+import { Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice, UserStakingChoiceNormalized } from 'ts/types';
 
 export interface StakingWizardProps {
     providerState: ProviderState;
@@ -45,6 +45,10 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
 
     const stake = useStake(networkId, providerState);
     const allowance = useAllowance();
+
+    // useEffect(() => {
+    //     setUserSelectedStakingPools
+    // }, [poolId]);
 
     useEffect(() => {
         const fetchAndSetPools = async () => {
@@ -84,8 +88,6 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                             stakingPools={stakingPools}
                             stake={stake}
                             allowance={allowance}
-                            estimatedAllowanceTransactionFinishTime={allowance.estimatedTransactionFinishTime}
-                            estimatedStakingTransactionFinishTime={stake.estimatedTransactionFinishTime}
                             {...props}
                         />
                     }
