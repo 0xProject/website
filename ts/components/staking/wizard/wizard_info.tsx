@@ -1,4 +1,4 @@
-import { addDays, format, formatDistance } from 'date-fns';
+import { addDays, format, formatDistanceStrict } from 'date-fns';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -145,10 +145,10 @@ export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, cu
     const nowFormattedDate = format(now, DATE_FORMAT);
     const nowFormattedTime = 'Now';
 
-    const stakingStartsFormattedTime = formatDistance(now, stakingStartsEpochDate);
+    const stakingStartsFormattedTime = formatDistanceStrict(now, stakingStartsEpochDate);
     const stakingStartsFormattedDate = format(stakingStartsEpochDate, DATE_FORMAT);
 
-    const firstRewardsFormattedTime = formatDistance(now, firstRewardsEpochDate);
+    const firstRewardsFormattedTime = formatDistanceStrict(now, firstRewardsEpochDate);
     const firstRewardsFormattedDate = format(firstRewardsEpochDate, DATE_FORMAT);
 
     return (

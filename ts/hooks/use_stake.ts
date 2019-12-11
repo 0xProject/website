@@ -1,25 +1,22 @@
-import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
+import { ChainId, getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { StakingContract, StakingProxyContract } from '@0x/contract-wrappers';
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import { addMilliseconds } from 'date-fns';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
-import * as React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 
-import { State } from 'ts/redux/reducer';
-import { AccountReady, StakeStatus, StakingPoolRecomendation, TransactionLoadingState } from 'ts/types';
+import { AccountReady, ProviderState, StakeStatus, StakingPoolRecomendation, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
-export const useStake = () => {
-    const networkId = useSelector((state: State) => state.networkId);
-    const providerState = useSelector((state: State) => state.providerState);
-
-    const [loadingState, setLoadingState] = React.useState<undefined | TransactionLoadingState>(undefined);
-    const [error, setError] = React.useState<Error | undefined>(undefined);
-    const [result, setResult] = React.useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
-    const [estimatedTimeMs, setEstimatedTimeMs] = React.useState<number | undefined>(undefined);
+export const useStake = (networkId: ChainId, providerState: ProviderState) => {
+    const [loadingState, setLoadingState] = useState<undefined | TransactionLoadingState>(undefined);
+    const [error, setError] = useState<Error | undefined>(undefined);
+    const [result, setResult] = useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
+    const [estimatedTimeMs, setEstimatedTimeMs] = useState<number | undefined>(undefined);
+    const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = useState<Date | undefined>(undefined);
 
     const depositAndStake = async (stakePoolData: StakingPoolRecomendation[]) => {
         if (!stakePoolData || stakePoolData.length === 0) {
@@ -89,6 +86,14 @@ export const useStake = () => {
         setLoadingState(TransactionLoadingState.Success);
     };
 
+    useEffect(() => {
+        if (!estimatedTimeMs) {
+            return setEstimatedTransactionFinishTime(undefined);
+        }
+        const estimate = addMilliseconds(new Date(), estimatedTimeMs);
+        setEstimatedTransactionFinishTime(estimate);
+    }, [estimatedTimeMs]);
+
     return {
         loadingState,
         result,
@@ -101,5 +106,6 @@ export const useStake = () => {
             });
         },
         estimatedTimeMs,
+        estimatedTransactionFinishTime,
     };
 };

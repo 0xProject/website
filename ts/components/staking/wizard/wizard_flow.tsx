@@ -1,6 +1,6 @@
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { addMilliseconds, formatDistance } from 'date-fns';
+import { formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -28,9 +28,7 @@ import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
 import { Spinner } from 'ts/components/ui/spinner';
 
-import { useAllowance } from 'ts/hooks/use_allowance';
 import { useTimeRemaining } from 'ts/hooks/use_seconds_remaining';
-import { useStake } from 'ts/hooks/use_stake';
 
 import { stakingUtils } from 'ts/utils/staking_utils';
 
@@ -48,6 +46,10 @@ export interface WizardFlowProps {
     selectedStakingPools: UserStakingChoice[] | undefined;
     stakingPools?: PoolWithStats[];
     nextEpochApproxStats?: Epoch;
+    stake: { result: any; loadingState: TransactionLoadingState; depositAndStake: any };
+    allowance: { loadingState: TransactionLoadingState; setAllowance: { (): void; (): void }};
+    estimatedAllowanceTransactionFinishTime: Date;
+    estimatedStakingTransactionFinishTime: Date;
 }
 
 enum StakingPercentageValue {
@@ -230,34 +232,19 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     setSelectedStakingPools,
     selectedStakingPools,
     stakingPools,
+    stake,
+    allowance,
+    estimatedAllowanceTransactionFinishTime,
+    estimatedStakingTransactionFinishTime,
     ...props
 }) => {
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
     const [isApproveTokenModalOpen, setIsApproveTokenModalOpen] = React.useState(false);
     const [isStakingConfirmationModalOpen, setIsStakingConfirmationModalOpen] = React.useState(false);
-    const stake = useStake();
-    const allowance = useAllowance();
-    const [estimatedAllowanceApprovalFinishTime, setEstimatedAllowanceApprovalFinishTime] = React.useState<Date | undefined>(undefined);
-    const [estimatedStakingTransactionFinishTime, setEstimatedStakingTransactionFinishTime] = React.useState<Date | undefined>(undefined);
-    const timeRemainingForAllowanceApproval = useTimeRemaining(estimatedAllowanceApprovalFinishTime);
+
+    const timeRemainingForAllowanceApproval = useTimeRemaining(estimatedAllowanceTransactionFinishTime);
     const timeRemainingForStakingTransaction = useTimeRemaining(estimatedStakingTransactionFinishTime);
-
-    React.useEffect(() => {
-        if (!stake.estimatedTimeMs) {
-            return setEstimatedStakingTransactionFinishTime(undefined);
-        }
-        const estimate = addMilliseconds(new Date(), stake.estimatedTimeMs);
-        setEstimatedStakingTransactionFinishTime(estimate);
-    }, [stake.estimatedTimeMs]);
-
-    React.useEffect(() => {
-        if (!allowance.estimatedTimeMs) {
-            return setEstimatedAllowanceApprovalFinishTime(undefined);
-        }
-        const estimate = addMilliseconds(new Date(), allowance.estimatedTimeMs);
-        setEstimatedAllowanceApprovalFinishTime(estimate);
-    }, [allowance.estimatedTimeMs]);
 
     if (props.providerState.account.state !== AccountState.Ready) {
         return (
@@ -389,7 +376,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
 
     // Confirmation page stage, ready to stake (may need to approve first)
     if (selectedStakingPools) {
-        const stakingStartsFormattedTime = formatDistance(new Date(), new Date(props.nextEpochApproxStats.epochStart.timestamp));
+        const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(props.nextEpochApproxStats.epochStart.timestamp));
         return (
             <>
                 <ApproveTokensInfoDialog
@@ -426,7 +413,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                                       : `${selectedStakingPools[0].pool.metaData.name || '1 pool'}`
                               }`}
                     </CenteredHeader>
-                    {selectedStakingPools.map(stakingPool => {
+                    {selectedStakingPools && selectedStakingPools.map(stakingPool => {
                         return (
                             <TransactionItem
                                 key={stakingPool.pool.poolId}

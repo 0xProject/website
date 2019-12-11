@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
@@ -10,7 +10,9 @@ import { Splitview } from 'ts/components/staking/wizard/splitview';
 import { WizardFlow } from 'ts/components/staking/wizard/wizard_flow';
 import { WizardInfo } from 'ts/components/staking/wizard/wizard_info';
 
+import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useStake } from 'ts/hooks/use_stake';
 
 import { State } from 'ts/redux/reducer';
 import { Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice } from 'ts/types';
@@ -28,15 +30,19 @@ const Container = styled.div`
 `;
 
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
-    const [userStakingPoolsToStake, setUserStakingPoolsToStake] = React.useState<UserStakingChoice[] | undefined>(
-        undefined,
-    );
-    const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined); // available pools
-    const [currentEpochStats, setCurrentEpochStats] = React.useState<Epoch | undefined>(undefined);
-    const [nextEpochApproxStats, setNextEpochApproxStats] = React.useState<Epoch | undefined>(undefined);
     const networkId = useSelector((state: State) => state.networkId);
+    const providerState = useSelector((state: State) => state.providerState);
     const apiClient = useAPIClient(networkId);
-    React.useEffect(() => {
+
+    const [stakingPools, setStakingPools] = useState<PoolWithStats[] | undefined>(undefined);
+    const [userSelectedStakingPools, setUserSelectedStakingPools] = React.useState<UserStakingChoice[] | undefined>(undefined);
+    const [currentEpochStats, setCurrentEpochStats] = useState<Epoch | undefined>(undefined);
+    const [nextEpochApproxStats, setNextEpochApproxStats] = useState<Epoch | undefined>(undefined);
+
+    const stake = useStake(networkId, providerState);
+    const allowance = useAllowance();
+
+    useEffect(() => {
         const fetchAndSetPools = async () => {
             try {
                 const poolsResponse = await apiClient.getStakingPoolsAsync();
@@ -53,7 +59,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         setStakingPools(undefined);
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPools();
-    }, [networkId]);
+    }, [networkId, apiClient]);
 
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
@@ -63,15 +69,19 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                         <WizardInfo
                             nextEpochApproxStats={nextEpochApproxStats}
                             currentEpochStats={currentEpochStats}
-                            selectedStakingPools={userStakingPoolsToStake}
+                            selectedStakingPools={userSelectedStakingPools}
                         />
                     }
                     rightComponent={
                         <WizardFlow
                             nextEpochApproxStats={nextEpochApproxStats}
-                            selectedStakingPools={userStakingPoolsToStake}
-                            setSelectedStakingPools={setUserStakingPoolsToStake}
+                            selectedStakingPools={userSelectedStakingPools}
+                            setSelectedStakingPools={setUserSelectedStakingPools}
                             stakingPools={stakingPools}
+                            stake={stake}
+                            allowance={allowance}
+                            estimatedAllowanceTransactionFinishTime={allowance.estimatedTransactionFinishTime}
+                            estimatedStakingTransactionFinishTime={stake.estimatedTransactionFinishTime}
                             {...props}
                         />
                     }
