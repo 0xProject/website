@@ -61,16 +61,6 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         fetchAndSetPools();
     }, [networkId, apiClient]);
 
-    // const {
-    //     stake,
-    //     allowance,
-    //     estimatedAllowanceTransactionFinishTime,
-    //     estimatedStakingTransactionFinishTime,
-    // } = useStakingWizard({
-    //     networkId,
-    //     providerState,
-    // });
-
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
             <Container>

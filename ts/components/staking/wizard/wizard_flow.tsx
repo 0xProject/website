@@ -1,6 +1,6 @@
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { addMilliseconds, formatDistanceStrict } from 'date-fns';
+import { formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -28,9 +28,7 @@ import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
 import { Spinner } from 'ts/components/ui/spinner';
 
-import { useAllowance } from 'ts/hooks/use_allowance';
 import { useTimeRemaining } from 'ts/hooks/use_seconds_remaining';
-import { useStake } from 'ts/hooks/use_stake';
 
 import { stakingUtils } from 'ts/utils/staking_utils';
 
