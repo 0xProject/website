@@ -1,7 +1,8 @@
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
 import { logUtils } from '@0x/utils';
-import * as React from 'react';
+import { addMilliseconds } from 'date-fns';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Dispatcher } from 'ts/redux/dispatcher';
@@ -16,10 +17,11 @@ export const useAllowance = () => {
     const dispatch = useDispatch();
     const dispatcher = new Dispatcher(dispatch);
 
-    const [isStarted, setIsStarted] = React.useState<boolean>(false);
-    const [loadingState, setLoadingState] = React.useState<undefined | TransactionLoadingState>(undefined);
-    const [error, setError] = React.useState<Error | undefined>(undefined);
-    const [estimatedTimeMs, setEstimatedTimeMs] = React.useState<number | undefined>(undefined);
+    const [isStarted, setIsStarted] = useState<boolean>(false);
+    const [loadingState, setLoadingState] = useState<undefined | TransactionLoadingState>(undefined);
+    const [error, setError] = useState<Error | undefined>(undefined);
+    const [estimatedTimeMs, setEstimatedTimeMs] = useState<number | undefined>(undefined);
+    const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = useState<Date | undefined>(undefined);
 
     const setAllowanceIfNeeded = async () => {
         if (isStarted) {
@@ -57,6 +59,14 @@ export const useAllowance = () => {
         setIsStarted(false);
     };
 
+    useEffect(() => {
+        if (!estimatedTimeMs) {
+            return setEstimatedTransactionFinishTime(undefined);
+        }
+        const estimate = addMilliseconds(new Date(), estimatedTimeMs);
+        setEstimatedTransactionFinishTime(estimate);
+    }, [estimatedTimeMs]);
+
     return {
         loadingState,
         error,
@@ -69,5 +79,6 @@ export const useAllowance = () => {
             });
         },
         estimatedTimeMs,
+        estimatedTransactionFinishTime,
     };
 };

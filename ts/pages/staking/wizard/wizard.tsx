@@ -10,8 +10,9 @@ import { Splitview } from 'ts/components/staking/wizard/splitview';
 import { WizardFlow } from 'ts/components/staking/wizard/wizard_flow';
 import { WizardInfo } from 'ts/components/staking/wizard/wizard_info';
 
+import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
-import { useStakingWizard } from 'ts/pages/staking/wizard/use-staking-wizard';
+import { useStake } from 'ts/hooks/use_stake';
 
 import { State } from 'ts/redux/reducer';
 import { Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice } from 'ts/types';
@@ -38,6 +39,9 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const [currentEpochStats, setCurrentEpochStats] = useState<Epoch | undefined>(undefined);
     const [nextEpochApproxStats, setNextEpochApproxStats] = useState<Epoch | undefined>(undefined);
 
+    const stake = useStake(networkId, providerState);
+    const allowance = useAllowance();
+
     useEffect(() => {
         const fetchAndSetPools = async () => {
             try {
@@ -57,15 +61,15 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         fetchAndSetPools();
     }, [networkId, apiClient]);
 
-    const {
-        stake,
-        allowance,
-        estimatedAllowanceTransactionFinishTime,
-        estimatedStakingTransactionFinishTime,
-    } = useStakingWizard({
-        networkId,
-        providerState,
-    });
+    // const {
+    //     stake,
+    //     allowance,
+    //     estimatedAllowanceTransactionFinishTime,
+    //     estimatedStakingTransactionFinishTime,
+    // } = useStakingWizard({
+    //     networkId,
+    //     providerState,
+    // });
 
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
@@ -86,8 +90,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                             stakingPools={stakingPools}
                             stake={stake}
                             allowance={allowance}
-                            estimatedAllowanceTransactionFinishTime={estimatedAllowanceTransactionFinishTime}
-                            estimatedStakingTransactionFinishTime={estimatedStakingTransactionFinishTime}
+                            estimatedAllowanceTransactionFinishTime={allowance.estimatedTransactionFinishTime}
+                            estimatedStakingTransactionFinishTime={stake.estimatedTransactionFinishTime}
                             {...props}
                         />
                     }
