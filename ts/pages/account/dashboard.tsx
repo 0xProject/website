@@ -1,4 +1,4 @@
-import { logUtils } from '@0x/utils';
+import { BigNumber, logUtils } from '@0x/utils';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
@@ -20,6 +20,8 @@ import { AccountVote } from 'ts/pages/account/account_vote';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { AccountReady, StakingAPIDelegatorResponse, WebsitePaths } from 'ts/types';
+import { constants } from 'ts/utils/constants';
+import { utils } from 'ts/utils/utils';
 
 export interface AccountProps {}
 
@@ -73,21 +75,56 @@ const MOCK_DATA = {
     ],
 };
 
+interface AvailableZrxBalanceProps {
+    account?: AccountReady;
+    delegatorData?: StakingAPIDelegatorResponse;
+}
+
+const AvailableZrxBalance = ({ account, delegatorData }: AvailableZrxBalanceProps) => {
+    let availableBalance: BigNumber = new BigNumber(0);
+    if (account && account.zrxBalanceBaseUnitAmount) {
+        availableBalance = account.zrxBalanceBaseUnitAmount;
+    }
+
+    if (delegatorData) {
+        const depositedBalance = new BigNumber(delegatorData.forCurrentEpoch.zrxDeposited).shiftedBy(
+            constants.DECIMAL_PLACES_ZRX,
+        );
+        availableBalance = availableBalance.plus(depositedBalance);
+    }
+
+    return <span>{`${utils.getFormattedAmount(availableBalance, constants.DECIMAL_PLACES_ZRX)} ZRX`}</span>;
+};
+
+interface DelegatorDataProps {
+    delegatorData?: StakingAPIDelegatorResponse;
+}
+
+const StakedZrxBalance = ({ delegatorData }: DelegatorDataProps) => {
+    let balance = new BigNumber(0);
+
+    if (delegatorData) {
+        balance = new BigNumber(delegatorData.forCurrentEpoch.zrxStaked);
+    }
+
+    return <span>{`${utils.getFormattedUnitAmount(balance)} ZRX`}</span>;
+};
+
 export const Account: React.FC<AccountProps> = () => {
     const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
     const [isFetchingDelegatorData, setIsFetchingDelegatorData] = React.useState<boolean>(false);
     const [delegatorData, setDelegatorData] = React.useState<StakingAPIDelegatorResponse | undefined>(undefined);
 
     const apiClient = useAPIClient();
-    const userAddress = useSelector((state: State) => (state.providerState.account as AccountReady).address);
+    const account = useSelector((state: State) => state.providerState.account as AccountReady);
 
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
-            const response = await apiClient.getDelegatorAsync(userAddress);
+            const response = await apiClient.getDelegatorAsync(account.address);
             setDelegatorData(response);
         };
 
-        if (!userAddress || isFetchingDelegatorData) {
+        if (!account.address || isFetchingDelegatorData) {
             return;
         }
 
@@ -101,29 +138,28 @@ export const Account: React.FC<AccountProps> = () => {
                 setIsFetchingDelegatorData(false);
                 logUtils.warn(err);
             });
-    }, [userAddress, apiClient.networkId]);
+    }, [account.address, apiClient.networkId]);
 
-    console.log(delegatorData);
+    const rewards = delegatorData
+        ? new BigNumber(_.sumBy(delegatorData.allTime.poolData, 'rewards'))
+        : new BigNumber(0);
 
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
                 <Inner>
-                    <AccountDetail
-                        userEthAddress="0x123451234512345"
-                        userImageSrc="https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png"
-                    />
+                    <AccountDetail userEthAddress={(account && account.address) || ''} />
 
                     <Figures>
                         <AccountFigure
-                            label="Wallet balance"
+                            label="Available balance"
                             headerComponent={() => (
                                 <InfoTooltip>
                                     This is the amount available for delegation starting in the next Epoch
                                 </InfoTooltip>
                             )}
                         >
-                            21,000,000 ZRX
+                            <AvailableZrxBalance account={account} delegatorData={delegatorData} />
                         </AccountFigure>
 
                         <AccountFigure
@@ -134,23 +170,29 @@ export const Account: React.FC<AccountProps> = () => {
                                 </InfoTooltip>
                             )}
                         >
-                            1,322,000 ZRX
+                            <StakedZrxBalance delegatorData={delegatorData} />
                         </AccountFigure>
 
                         <AccountFigure
                             label="Rewards"
-                            headerComponent={() => (
-                                <Button
-                                    isWithArrow={true}
-                                    isTransparent={true}
-                                    fontSize="17px"
-                                    color={colors.brandLight}
-                                >
-                                    Withdraw
-                                </Button>
-                            )}
+                            headerComponent={() => {
+                                if (rewards.isGreaterThan(0)) {
+                                    return (
+                                        <Button
+                                            isWithArrow={true}
+                                            isTransparent={true}
+                                            fontSize="17px"
+                                            color={colors.brandLight}
+                                        >
+                                            Withdraw
+                                        </Button>
+                                    );
+                                }
+
+                                return null;
+                            }}
                         >
-                            .000213 ETH
+                            <span>{`${utils.getFormattedUnitAmount(rewards)} ETH`}</span>
                         </AccountFigure>
                     </Figures>
                 </Inner>
