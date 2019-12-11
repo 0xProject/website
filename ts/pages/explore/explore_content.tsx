@@ -247,7 +247,7 @@ export const PROJECTS: { [s: string]: ExploreProject } = {
         logo_url: '/images/explore/tokentrove.svg',
         theme_color: '#202225',
         logo_max_width: '160px',
-        url: 'https://tokentrove.io',
+        url: 'https://tokentrove.com',
         keywords: ['collectibles'],
     },
     veridex: {
