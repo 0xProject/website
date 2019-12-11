@@ -2,23 +2,12 @@ import { ChainId } from '@0x/contract-addresses';
 import { addMilliseconds } from 'date-fns';
 import { useEffect, useState } from 'react';
 
-import { ProviderState } from 'ts/types';
-
 import { useAllowance } from 'ts/hooks/use_allowance';
 import { useStake } from 'ts/hooks/use_stake';
 
-import { APIClient } from '../../../utils/api_client';
-
-enum Steps {
-    Initial,
-    Confirm,
-    WaitingForRemoval,
-    WaitingForConfirmation,
-    Done,
-}
+import { ProviderState } from 'ts/types';
 
 export interface Config {
-    // stakingMode?: 'AUTO' | 'ADVANCED';
     networkId: ChainId;
     providerState: ProviderState;
 }
@@ -27,8 +16,6 @@ const useStakingWizard = ({
     networkId,
     providerState,
 }: Config) => {
-
-    const [step, setStep] = useState<Steps>(Steps.Initial);
 
     const stake = useStake(networkId, providerState);
     const allowance = useAllowance();
@@ -55,7 +42,6 @@ const useStakingWizard = ({
     return {
         stake,
         allowance,
-        step,
         estimatedAllowanceTransactionFinishTime,
         estimatedStakingTransactionFinishTime,
     };
