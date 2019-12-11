@@ -46,10 +46,6 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const stake = useStake(networkId, providerState);
     const allowance = useAllowance();
 
-    // useEffect(() => {
-    //     setUserSelectedStakingPools
-    // }, [poolId]);
-
     useEffect(() => {
         const fetchAndSetPools = async () => {
             try {
@@ -88,7 +84,9 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                             stakingPools={stakingPools}
                             stake={stake}
                             allowance={allowance}
-                            {...props}
+                            networkId={networkId}
+                            providerState={providerState}
+                            onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
                         />
                     }
                 />

@@ -50,8 +50,6 @@ export interface WizardFlowProps {
     nextEpochApproxStats?: Epoch;
     stake: UseStakeHookResult;
     allowance: UseAllowanceHookResult;
-    estimatedAllowanceTransactionFinishTime: Date;
-    estimatedStakingTransactionFinishTime: Date;
 }
 
 enum StakingPercentageValue {
@@ -547,8 +545,6 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     stakingPools,
     stake,
     allowance,
-    estimatedAllowanceTransactionFinishTime,
-    estimatedStakingTransactionFinishTime,
     ...props,
 }) => {
     if (!selectedStakingPools || props.providerState.account.state !== AccountState.Ready) {
