@@ -368,7 +368,6 @@ const MarketMarkerEntryPoint = () => {
 
 export interface StartStakingProps {
     providerState: ProviderState;
-    onOpenConnectWalletDialog: () => void;
     stake: UseStakeHookResult;
     allowance: UseAllowanceHookResult;
     nextEpochApproxStats?: Epoch;
@@ -482,7 +481,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                 const newTotal = total.plus(new BigNumber(cur.zrxAmount));
                 return newTotal;
             }, new BigNumber(0));
-            const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(props.nextEpochApproxStats.epochStart.timestamp));
+            const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(nextEpochApproxStats.epochStart.timestamp));
             return (
                 <>
                     <ApproveTokensInfoDialog
@@ -569,7 +568,6 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
             allowance={allowance}
             stake={stake}
             nextEpochApproxStats={props.nextEpochApproxStats}
-            onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
             providerState={props.providerState}
             selectedStakingPools={selectedStakingPools}
         />
