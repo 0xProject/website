@@ -4,14 +4,23 @@ import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { addMilliseconds } from 'date-fns';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { AccountReady, ProviderState, StakeStatus, StakingPoolRecomendation, TransactionLoadingState } from 'ts/types';
+import { AccountReady, ProviderState, StakeStatus, StakingPoolRecomendation, TransactionLoadingState, UserStakingChoice } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
-export const useStake = (networkId: ChainId, providerState: ProviderState) => {
+export interface UseStakeHookResult {
+    loadingState?: TransactionLoadingState;
+    error?: Error;
+    depositAndStake: (stakingPools: UserStakingChoice[]) => void;
+    result?: TransactionReceiptWithDecodedLogs;
+    estimatedTimeMs?: number;
+    estimatedTransactionFinishTime?: Date;
+}
+
+export const useStake = (networkId: ChainId, providerState: ProviderState): UseStakeHookResult => {
     const [loadingState, setLoadingState] = useState<undefined | TransactionLoadingState>(undefined);
     const [error, setError] = useState<Error | undefined>(undefined);
     const [result, setResult] = useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
