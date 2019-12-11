@@ -11,7 +11,15 @@ import { AccountReady, ProviderState, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 
-export const useAllowance = () => {
+export interface UseAllowanceHookResult {
+    loadingState?: TransactionLoadingState;
+    error?: Error;
+    setAllowance: () => void;
+    estimatedTimeMs?: number;
+    estimatedTransactionFinishTime?: Date;
+}
+
+export const useAllowance = (): UseAllowanceHookResult => {
     const networkId: number = useSelector((state: State) => state.networkId);
     const providerState: ProviderState = useSelector((state: State) => state.providerState);
     const dispatch = useDispatch();

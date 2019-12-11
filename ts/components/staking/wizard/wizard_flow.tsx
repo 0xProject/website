@@ -1,3 +1,4 @@
+import { ChainId } from '@0x/contract-addresses';
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { formatDistanceStrict } from 'date-fns';
@@ -28,7 +29,9 @@ import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
 import { Spinner } from 'ts/components/ui/spinner';
 
+import { UseAllowanceHookResult } from 'ts/hooks/use_allowance';
 import { useTimeRemaining } from 'ts/hooks/use_seconds_remaining';
+import { UseStakeHookResult } from 'ts/hooks/use_stake';
 
 import { stakingUtils } from 'ts/utils/staking_utils';
 
@@ -46,8 +49,8 @@ export interface WizardFlowProps {
     selectedStakingPools: UserStakingChoice[] | undefined;
     stakingPools?: PoolWithStats[];
     nextEpochApproxStats?: Epoch;
-    stake: { result: any; loadingState: TransactionLoadingState; depositAndStake: any };
-    allowance: { loadingState: TransactionLoadingState; setAllowance: { (): void; (): void }};
+    stake: UseStakeHookResult;
+    allowance: UseAllowanceHookResult;
     estimatedAllowanceTransactionFinishTime: Date;
     estimatedStakingTransactionFinishTime: Date;
 }
