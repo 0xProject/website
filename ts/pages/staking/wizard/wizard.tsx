@@ -1,15 +1,19 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { logUtils } from '@0x/utils';
+
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
-import { Epoch, Network, PoolWithStats, ProviderState, StakingPoolRecomendation, UserStakingChoice } from 'ts/types';
 
 import { Splitview } from 'ts/components/staking/wizard/splitview';
 import { WizardFlow } from 'ts/components/staking/wizard/wizard_flow';
 import { WizardInfo } from 'ts/components/staking/wizard/wizard_info';
 
 import { useAPIClient } from 'ts/hooks/use_api_client';
+
+import { State } from 'ts/redux/reducer';
+import { Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice } from 'ts/types';
 
 export interface StakingWizardProps {
     providerState: ProviderState;
@@ -30,7 +34,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined); // available pools
     const [currentEpochStats, setCurrentEpochStats] = React.useState<Epoch | undefined>(undefined);
     const [nextEpochApproxStats, setNextEpochApproxStats] = React.useState<Epoch | undefined>(undefined);
-    const apiClient = useAPIClient();
+    const networkId = useSelector((state: State) => state.networkId);
+    const apiClient = useAPIClient(networkId);
     React.useEffect(() => {
         const fetchAndSetPools = async () => {
             try {
