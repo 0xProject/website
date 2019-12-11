@@ -1120,3 +1120,35 @@ export interface StakingPoolRecomendation {
 }
 
 export type UserStakingChoice = StakingPoolRecomendation;
+
+export interface StakingAPIDelegatorResponse {
+    delegatorAddress: string;
+    forCurrentEpoch: EpochDelegatorStats;
+    forNextEpoch: EpochDelegatorStats;
+    allTime: AllTimeDelegatorStats;
+}
+
+export interface RawAllTimeDelegatorPoolsStats {
+    pool_id: string;
+    reward: string;
+}
+
+export interface PoolEpochDelegatorStats {
+    poolId: string;
+    zrxStaked: number;
+}
+
+export interface EpochDelegatorStats {
+    zrxDeposited: number;
+    zrxStaked: number;
+    poolData: PoolEpochDelegatorStats[];
+}
+
+export interface AllTimeDelegatorPoolStats {
+    poolId: string;
+    rewards: number;
+}
+
+export interface AllTimeDelegatorStats {
+    poolData: AllTimeDelegatorPoolStats[];
+}

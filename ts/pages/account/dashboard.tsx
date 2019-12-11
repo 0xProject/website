@@ -1,5 +1,7 @@
+import { logUtils } from '@0x/utils';
 import * as _ from 'lodash';
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -8,14 +10,16 @@ import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_lay
 import { Heading } from 'ts/components/text';
 import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { StatFigure } from 'ts/components/ui/stat_figure';
+import { useAPIClient } from 'ts/hooks/use_api_client';
 import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
 import { AccountApplyModal } from 'ts/pages/account/account_apply_modal';
 import { AccountDetail } from 'ts/pages/account/account_detail';
 import { AccountFigure } from 'ts/pages/account/account_figure';
 import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
+import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { WebsitePaths } from 'ts/types';
+import { AccountReady, StakingAPIDelegatorResponse, WebsitePaths } from 'ts/types';
 
 export interface AccountProps {}
 
@@ -49,25 +53,57 @@ const MOCK_DATA = {
             title: 'StaticCallAssetProxy',
             zeip: 39,
             vote: 'yes',
-            summary: 'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
+            summary:
+                'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
         },
         {
             title: 'AssetProxy',
             zeip: 40,
             vote: 'no',
-            summary: 'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
+            summary:
+                'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
         },
         {
             title: 'TestVoteTitle',
             zeip: 41,
             vote: 'yes',
-            summary: 'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
+            summary:
+                'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
         },
     ],
 };
 
 export const Account: React.FC<AccountProps> = () => {
     const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
+    const [isFetchingDelegatorData, setIsFetchingDelegatorData] = React.useState<boolean>(false);
+    const [delegatorData, setDelegatorData] = React.useState<StakingAPIDelegatorResponse | undefined>(undefined);
+
+    const apiClient = useAPIClient();
+    const userAddress = useSelector((state: State) => (state.providerState.account as AccountReady).address);
+
+    React.useEffect(() => {
+        const fetchDelegatorData = async () => {
+            const response = await apiClient.getDelegatorAsync(userAddress);
+            setDelegatorData(response);
+        };
+
+        if (!userAddress || isFetchingDelegatorData) {
+            return;
+        }
+
+        setIsFetchingDelegatorData(true);
+        fetchDelegatorData()
+            .then(() => {
+                setIsFetchingDelegatorData(false);
+            })
+            .catch((err: Error) => {
+                setDelegatorData(undefined);
+                setIsFetchingDelegatorData(false);
+                logUtils.warn(err);
+            });
+    }, [userAddress, apiClient.networkId]);
+
+    console.log(delegatorData);
 
     return (
         <StakingPageLayout title="0x Staking | Account">
@@ -122,11 +158,7 @@ export const Account: React.FC<AccountProps> = () => {
 
             <SectionWrapper>
                 <SectionHeader>
-                    <Heading
-                        asElement="h3"
-                        fontWeight="400"
-                        isNoMargin={true}
-                    >
+                    <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
                         Activity
                     </Heading>
 
@@ -146,10 +178,7 @@ export const Account: React.FC<AccountProps> = () => {
                     avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
                     icon={MOCK_DATA.activitySummary.icon}
                 >
-                    <StatFigure
-                        label="Withdraw date"
-                        value="9/19/29"
-                    />
+                    <StatFigure label="Withdraw date" value="9/19/29" />
                 </AccountActivitySummary>
 
                 <AccountActivitySummary
@@ -175,11 +204,7 @@ export const Account: React.FC<AccountProps> = () => {
 
             <SectionWrapper>
                 <SectionHeader>
-                    <Heading
-                        asElement="h3"
-                        fontWeight="400"
-                        isNoMargin={true}
-                    >
+                    <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
                         Your staking pools
                     </Heading>
 
@@ -206,22 +231,13 @@ export const Account: React.FC<AccountProps> = () => {
                 />
 
                 {_.map(MOCK_DATA.stakes, (item, index) => {
-                    return (
-                        <AccountStakeOverview
-                            key={`stake-${index}`}
-                            {...item}
-                        />
-                    );
+                    return <AccountStakeOverview key={`stake-${index}`} {...item} />;
                 })}
             </SectionWrapper>
 
             <SectionWrapper>
                 <SectionHeader>
-                    <Heading
-                        asElement="h3"
-                        fontWeight="400"
-                        isNoMargin={true}
-                    >
+                    <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
                         Your voting history
                     </Heading>
                 </SectionHeader>
@@ -240,10 +256,7 @@ export const Account: React.FC<AccountProps> = () => {
                 </Grid>
             </SectionWrapper>
 
-            <AccountApplyModal
-                isOpen={isApplyModalOpen}
-                onDismiss={() => toggleApplyModal(false)}
-            />
+            <AccountApplyModal isOpen={isApplyModalOpen} onDismiss={() => toggleApplyModal(false)} />
         </StakingPageLayout>
     );
 };
@@ -304,7 +317,8 @@ const SectionHeader = styled.header`
             font-size: 28px;
         }
 
-        a, button {
+        a,
+        button {
             display: none;
         }
     }
