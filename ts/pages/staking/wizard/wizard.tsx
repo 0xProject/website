@@ -1,11 +1,9 @@
+import { logUtils } from '@0x/utils';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { logUtils } from '@0x/utils';
-
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
-
 import { Splitview } from 'ts/components/staking/wizard/splitview';
 import { WizardFlow } from 'ts/components/staking/wizard/wizard_flow';
 import { WizardInfo } from 'ts/components/staking/wizard/wizard_info';
@@ -16,7 +14,7 @@ import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
 
 import { State } from 'ts/redux/reducer';
-import { Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice, UserStakingChoiceNormalized } from 'ts/types';
+import { Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice } from 'ts/types';
 
 export interface StakingWizardProps {
     providerState: ProviderState;
