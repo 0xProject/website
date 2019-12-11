@@ -12,6 +12,7 @@ import { WizardInfo } from 'ts/components/staking/wizard/wizard_info';
 
 import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
 
 import { State } from 'ts/redux/reducer';
@@ -30,6 +31,9 @@ const Container = styled.div`
 `;
 
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
+    // If coming from the market maker page, poolId will be provided
+    const { poolId } = useQuery<{ poolId: string | undefined }>();
+
     const networkId = useSelector((state: State) => state.networkId);
     const providerState = useSelector((state: State) => state.providerState);
     const apiClient = useAPIClient(networkId);
