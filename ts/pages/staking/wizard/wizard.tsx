@@ -53,7 +53,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         setStakingPools(undefined);
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPools();
-    }, [apiClient.networkId]);
+    }, [networkId]);
 
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
