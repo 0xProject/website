@@ -3,6 +3,7 @@ import { StakingContract, StakingProxyContract } from '@0x/contract-wrappers';
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
+import * as _ from 'lodash';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -152,9 +153,10 @@ export const useStake = () => {
             return;
         }
 
-        const data: string[] = poolIds.map(poolId =>
+        const data: string[] = _.flatMap(poolIds, poolId => [
+            stakingContract.finalizePool(poolId).getABIEncodedTransactionData(),
             stakingContract.withdrawDelegatorRewards(poolId).getABIEncodedTransactionData(),
-        );
+        ]);
 
         await executeWithData(data);
     };
