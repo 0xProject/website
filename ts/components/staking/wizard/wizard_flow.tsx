@@ -14,6 +14,7 @@ import {
     Network,
     PoolWithStats,
     ProviderState,
+    StakingPoolRecomendation,
     TransactionLoadingState,
     UserStakingChoice,
     WebsitePaths,
@@ -51,6 +52,7 @@ export interface WizardFlowProps {
     nextEpochStats?: Epoch;
     stake: UseStakeHookResult;
     allowance: UseAllowanceHookResult;
+    poolId?: string;
 }
 
 enum StakingPercentageValue {
@@ -228,52 +230,34 @@ const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.R
     return null;
 };
 
-export interface WizardEntryPointProps {
-    providerState: ProviderState;
+const ConnectWalletPane =  ({ onOpenConnectWalletDialog }: { onOpenConnectWalletDialog: () => any}) => {
+    return (
+        <>
+            <ConnectWalletButton color={colors.white} onClick={onOpenConnectWalletDialog}>
+                Connect your wallet to start staking
+            </ConnectWalletButton>
+            <Status
+                title="Please connect your wallet, so we can find suitable market maker."
+                linkText="or explore market maker list"
+                to={WebsitePaths.Staking}
+            />
+        </>
+    );
+};
+
+export interface StakingInputPaneProps {
+    setSelectedStakingPools: any;
+    stakingPools: any;
+    zrxBalanceBaseUnitAmount: BigNumber;
+    unitAmount: number;
     onOpenConnectWalletDialog: () => any;
-    stakingPools: PoolWithStats[];
-    setSelectedStakingPools: React.Dispatch<React.SetStateAction<UserStakingChoice[]>>;
 }
 
-const WizardEntryPoint: React.FC<WizardEntryPointProps> = props => {
-    const { stakingPools, setSelectedStakingPools } = props;
+const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => {
+    const { stakingPools, setSelectedStakingPools, zrxBalanceBaseUnitAmount, unitAmount } = props;
 
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
-
-    if (props.providerState.account.state !== AccountState.Ready) {
-        return (
-            <>
-                <ConnectWalletButton color={colors.white} onClick={props.onOpenConnectWalletDialog}>
-                    Connect your wallet to start staking
-                </ConnectWalletButton>
-                <Status
-                    title="Please connect your wallet, so we can find suitable market maker."
-                    linkText="or explore market maker list"
-                    to={WebsitePaths.Staking}
-                />
-            </>
-        );
-    }
-
-    const { zrxBalanceBaseUnitAmount } = props.providerState.account;
-
-    if (!zrxBalanceBaseUnitAmount) {
-        // Fetching balance
-        return <Status title="" />;
-    }
-
-    const unitAmount = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX).toNumber();
-
-    if (unitAmount < 1) {
-        return (
-            <Status
-                title="You have no ZRX balance. You will need some to stake."
-                linkText="Go buy some ZRX"
-                linkUrl={`https://www.rexrelay.com/instant/?defaultSelectedAssetData=${constants.ZRX_ASSET_DATA}`}
-            />
-        );
-    }
 
     const formattedAmount = utils.getFormattedAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
     const statusNode = getStatus(stakeAmount, stakingPools);
@@ -360,11 +344,102 @@ const WizardEntryPoint: React.FC<WizardEntryPointProps> = props => {
     );
 };
 
-const MarketMarkerEntryPoint = () => {
-    // (pool already chosen)
+export interface MarketMakerStakeInputPaneProps {
+    setSelectedStakingPools: React.Dispatch<React.SetStateAction<StakingPoolRecomendation[]>>;
+    stakingPools: PoolWithStats[];
+    zrxBalanceBaseUnitAmount: BigNumber;
+    unitAmount: number;
+    onOpenConnectWalletDialog: () => any;
+    poolId: string;
+}
 
-    // allocate zrx
+const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
+
+    const [stakeAmount, setStakeAmount] = React.useState<string>('');
+    const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
+
+    const { stakingPools, setSelectedStakingPools, zrxBalanceBaseUnitAmount, unitAmount } = props;
+
+    const formattedAmount = utils.getFormattedAmount(props.zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
+    const statusNode = getStatus(stakeAmount, props.stakingPools);
+
+    if (!stakingPools) {
+        return null;
+    }
+
+    const marketMakerPool = _.find(stakingPools, p => p.poolId === props.poolId);
+
+    if (!marketMakerPool) {
+        return null;
+    }
+
+    return (
+        <>
+            <NumberInput
+                placeholder="Enter your stake"
+                topLabels={[`Available: ${formattedAmount} ZRX`]}
+                labels={[StakingPercentageValue.Fourth, StakingPercentageValue.Half, StakingPercentageValue.All]}
+                value={stakeAmount}
+                selectedLabel={selectedLabel}
+                onLabelChange={(label: string) => {
+                    if (label === StakingPercentageValue.Fourth) {
+                        setStakeAmount(`${(unitAmount / 4).toFixed(2)}`);
+                        setSelectedLabel(StakingPercentageValue.Fourth);
+                    }
+                    if (label === StakingPercentageValue.Half) {
+                        setStakeAmount(`${(unitAmount / 2).toFixed(2)}`);
+                        setSelectedLabel(StakingPercentageValue.Half);
+                    }
+                    if (label === StakingPercentageValue.All) {
+                        setStakeAmount(`${unitAmount.toFixed(2)}`);
+                        setSelectedLabel(StakingPercentageValue.All);
+                    }
+                }}
+                onChange={(newValue: React.ChangeEvent<HTMLInputElement>) => {
+                    const newAmount = newValue.target.value;
+                    setStakeAmount(newAmount);
+                    setSelectedLabel(undefined);
+                }}
+                bottomLabels={[
+                    {
+                        label: 'Based on your ZRX balance',
+                    },
+                    {
+                        label: 'Change wallet',
+                        onClick: props.onOpenConnectWalletDialog,
+                    },
+                ]}
+            />
+            <PoolsContainer>
+                <MarketMaker
+                    key={marketMakerPool.poolId}
+                    name={
+                        marketMakerPool.metaData.name ||
+                        utils.getAddressBeginAndEnd(marketMakerPool.operatorAddress)
+                    }
+                    collectedFees={marketMakerPool.currentEpochStats.totalProtocolFeesGeneratedInEth}
+                    rewards={1 - marketMakerPool.nextEpochStats.approximateStakeRatio}
+                    staked={marketMakerPool.nextEpochStats.approximateStakeRatio}
+                    iconUrl={marketMakerPool.metaData.logoUrl}
+                    website={marketMakerPool.metaData.websiteUrl}
+                    difference={''}
+                />
+            </PoolsContainer>
+            {marketMakerPool && (
+                <ButtonWithIcon
+                    onClick={() => setSelectedStakingPools([{
+                        zrxAmount: Number(stakeAmount),
+                        pool: marketMakerPool,
+                    }])}
+                    color={colors.white}
+                >
+                    Proceed to staking
+                </ButtonWithIcon>
+            )}
+        </>
+    );
 };
+
 
 export interface StartStakingProps {
     providerState: ProviderState;
@@ -375,6 +450,7 @@ export interface StartStakingProps {
     address?: string;
 }
 
+// Core
 const StartStaking: React.FC<StartStakingProps> = props => {
     const { selectedStakingPools, stake, allowance, address, currentEpochStats } = props;
 
@@ -389,7 +465,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
         return <Newsletter/>;
     }
 
-        // Determine button to show based on state
+    // Determine button to show based on state
     let ActiveButon = null;
     if (allowance.loadingState) {
             if (allowance.loadingState === TransactionLoadingState.WaitingForSignature ||
@@ -545,25 +621,61 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     setSelectedStakingPools,
     selectedStakingPools,
     stakingPools,
+    poolId,
     stake,
     allowance,
     providerState,
     onOpenConnectWalletDialog,
     currentEpochStats,
-    nextEpochStats,
-    ...props,
 }) => {
-    if (!selectedStakingPools || providerState.account.state !== AccountState.Ready) {
-        return (
-            <WizardEntryPoint
-                onOpenConnectWalletDialog={onOpenConnectWalletDialog}
-                providerState={providerState}
-                setSelectedStakingPools={setSelectedStakingPools}
-                stakingPools={stakingPools}
-                {...props}
-            />);
+    if (providerState.account.state !== AccountState.Ready) {
+        return <ConnectWalletPane onOpenConnectWalletDialog={onOpenConnectWalletDialog} />;
     }
 
+    const { zrxBalanceBaseUnitAmount } = providerState.account;
+
+    if (!zrxBalanceBaseUnitAmount) {
+        return <Status title="" />;
+    }
+
+    const unitAmount = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX).toNumber();
+
+    if (unitAmount < 1) {
+        return (
+            <Status
+                title="You have no ZRX balance. You will need some to stake."
+                linkText="Go buy some ZRX"
+                linkUrl={`https://www.rexrelay.com/instant/?defaultSelectedAssetData=${constants.ZRX_ASSET_DATA}`}
+            />
+        );
+    }
+
+    // Coming from market maker entry
+    if (!selectedStakingPools && poolId) {
+        return (
+            <MarketMakerStakeInputPane
+                poolId={poolId}
+                unitAmount={unitAmount}
+                stakingPools={stakingPools}
+                onOpenConnectWalletDialog={onOpenConnectWalletDialog}
+                setSelectedStakingPools={setSelectedStakingPools}
+                zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
+            />
+        );
+    }
+
+    // Coming from wizard/recommendation entry
+    if (!selectedStakingPools || providerState.account.state !== AccountState.Ready) {
+        return (
+            <RecommendedPoolsStakeInputPane
+                onOpenConnectWalletDialog={onOpenConnectWalletDialog}
+                setSelectedStakingPools={setSelectedStakingPools}
+                stakingPools={stakingPools}
+                unitAmount={unitAmount}
+                zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
+            />
+        );
+    }
     return (
         <StartStaking
             address={(providerState.account.address)}

@@ -101,6 +101,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                             networkId={networkId}
                             providerState={providerState}
                             onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
+                            poolId={poolId}
                         />
                     }
                 />
