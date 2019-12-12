@@ -370,14 +370,13 @@ export interface StartStakingProps {
     providerState: ProviderState;
     stake: UseStakeHookResult;
     allowance: UseAllowanceHookResult;
-    nextEpochStats?: Epoch;
+    selectedStakingPools: UserStakingChoice[] | undefined;
     currentEpochStats?: Epoch;
     address?: string;
-    selectedStakingPools: UserStakingChoice[] | undefined;
 }
 
 const StartStaking: React.FC<StartStakingProps> = props => {
-    const { selectedStakingPools, stake, allowance, address, nextEpochStats } = props;
+    const { selectedStakingPools, stake, allowance, address, currentEpochStats } = props;
 
     const [isApproveTokenModalOpen, setIsApproveTokenModalOpen] = React.useState(false);
     const [isStakingConfirmationModalOpen, setIsStakingConfirmationModalOpen] = React.useState(false);
@@ -482,7 +481,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                 const newTotal = total.plus(new BigNumber(cur.zrxAmount));
                 return newTotal;
             }, new BigNumber(0));
-            const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(nextEpochStats.epochStart.timestamp));
+            const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(currentEpochStats.epochStart.timestamp));
             return (
                 <>
                     <ApproveTokensInfoDialog
@@ -571,7 +570,6 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
             allowance={allowance}
             stake={stake}
             currentEpochStats={currentEpochStats}
-            nextEpochStats={nextEpochStats}
             providerState={providerState}
             selectedStakingPools={selectedStakingPools}
         />
