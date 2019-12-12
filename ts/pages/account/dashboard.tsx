@@ -325,21 +325,27 @@ export const Account: React.FC<AccountProps> = () => {
                     </Button>
                 </SectionHeader>
 
-                <CallToAction
-                    icon="revenue"
-                    title="You haven't staked ZRX"
-                    description="Start staking your ZRX and getting interest."
-                    actions={[
-                        {
-                            label: 'Start staking',
-                            onClick: () => null,
-                        },
-                    ]}
-                />
-
-                {_.map(MOCK_DATA.stakes, (item, index) => {
-                    return <AccountStakeOverview key={`stake-${index}`} {...item} />;
-                })}
+                {/* If we have data and user does not have any pools now or in next epoch show CTA */}
+                {delegatorData &&
+                    (delegatorData.forCurrentEpoch.poolData.length === 0 &&
+                    delegatorData.forNextEpoch.poolData.length === 0 ? (
+                        <CallToAction
+                            icon="revenue"
+                            title="You haven't staked ZRX"
+                            description="Start staking your ZRX and getting interest."
+                            actions={[
+                                {
+                                    label: 'Start staking',
+                                    url: '/zrx/staking/wizard',
+                                    isSameTarget: true,
+                                },
+                            ]}
+                        />
+                    ) : (
+                        _.map(MOCK_DATA.stakes, (item, index) => {
+                            return <AccountStakeOverview key={`stake-${index}`} {...item} />;
+                        })
+                    ))}
             </SectionWrapper>
 
             <SectionWrapper>
