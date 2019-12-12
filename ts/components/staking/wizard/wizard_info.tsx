@@ -10,7 +10,7 @@ import { Timeline } from 'ts/components/staking/wizard/timeline';
 export interface WizardInfoProps {
     selectedStakingPools: UserStakingChoice[] | undefined;
     currentEpochStats: Epoch | undefined;
-    nextEpochApproxStats: Epoch | undefined;
+    nextEpochStats: Epoch | undefined;
 }
 
 const IntroHeader = styled.h1`
@@ -117,7 +117,7 @@ const WizardInfoHeader: React.FC<WizardInfoHeaderProps> = ({title, description})
     </>
 );
 
-export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, currentEpochStats, nextEpochApproxStats }) => {
+export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, currentEpochStats, nextEpochStats }) => {
     if (!selectedStakingPools) {
         return (
             <>
@@ -136,9 +136,8 @@ export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, cu
         );
     }
 
-    const stakingStartsEpochDate = new Date(nextEpochApproxStats.epochStart.timestamp);
-    const EPOCH_DAY_LENGTH = 7;
-    const firstRewardsEpochDate = addDays(stakingStartsEpochDate, EPOCH_DAY_LENGTH);
+    const stakingStartsEpochDate = new Date(currentEpochStats.epochStart.timestamp);
+    const firstRewardsEpochDate = new Date(nextEpochStats.epochStart.timestamp);
 
     const now = new Date();
     const DATE_FORMAT = 'MM.dd';

@@ -1070,6 +1070,10 @@ export interface TransactionDate {
 export interface Epoch {
     epochId: number;
     epochStart: TransactionDate;
+    epochEnd?: TransactionDate;
+    zrxStaked: number;
+    zrxDeposited: number;
+    protocolFeesGeneratedInEth: number;
 }
 
 export interface PoolMetadata {
@@ -1104,9 +1108,12 @@ export interface EpochPoolStats {
 }
 
 export interface StakingAPIPoolsResponse {
-    currentEpoch: Epoch;
-    approximateNextEpoch: Epoch;
     stakingPools: PoolWithStats[];
+}
+
+export interface StakingAPIEpochsResponse {
+    currentEpoch: Epoch;
+    nextEpoch: Epoch;
 }
 
 export interface StakingPoolRecomendation {
