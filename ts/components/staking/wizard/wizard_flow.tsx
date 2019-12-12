@@ -48,7 +48,8 @@ export interface WizardFlowProps {
     setSelectedStakingPools: React.Dispatch<React.SetStateAction<UserStakingChoice[]>>;
     selectedStakingPools: UserStakingChoice[] | undefined;
     stakingPools?: PoolWithStats[];
-    nextEpochApproxStats?: Epoch;
+    currentEpochStats?: Epoch;
+    nextEpochStats?: Epoch;
     stake: UseStakeHookResult;
     allowance: UseAllowanceHookResult;
     estimatedAllowanceTransactionFinishTime: Date;
@@ -239,7 +240,9 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     allowance,
     estimatedAllowanceTransactionFinishTime,
     estimatedStakingTransactionFinishTime,
-    ...props
+    providerState,
+    onOpenConnectWalletDialog,
+    currentEpochStats,
 }) => {
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
@@ -249,10 +252,10 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     const timeRemainingForAllowanceApproval = useTimeRemaining(estimatedAllowanceTransactionFinishTime);
     const timeRemainingForStakingTransaction = useTimeRemaining(estimatedStakingTransactionFinishTime);
 
-    if (props.providerState.account.state !== AccountState.Ready) {
+    if (providerState.account.state !== AccountState.Ready) {
         return (
             <>
-                <ConnectWalletButton color={colors.white} onClick={props.onOpenConnectWalletDialog}>
+                <ConnectWalletButton color={colors.white} onClick={onOpenConnectWalletDialog}>
                     Connect your wallet to start staking
                 </ConnectWalletButton>
                 <Status
@@ -263,7 +266,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
             </>
         );
     }
-    const { zrxBalanceBaseUnitAmount, address } = props.providerState.account;
+    const { zrxBalanceBaseUnitAmount, address } = providerState.account;
     if (!zrxBalanceBaseUnitAmount) {
         // Fetching balance
         return <Status title="" />;
@@ -360,7 +363,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
             <ButtonWithIcon
                 onClick={async () => {
                     const allowanceBaseUnits =
-                        (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount ||
+                        (providerState.account as AccountReady).zrxAllowanceBaseUnitAmount ||
                         new BigNumber(0);
 
                     if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
@@ -379,7 +382,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
 
     // Confirmation page stage, ready to stake (may need to approve first)
     if (selectedStakingPools) {
-        const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(props.nextEpochApproxStats.epochStart.timestamp));
+        const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(currentEpochStats.epochStart.timestamp));
         return (
             <>
                 <ApproveTokensInfoDialog
@@ -406,7 +409,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                 <Inner>
                     <CenteredHeader>
                         {stake.loadingState === TransactionLoadingState.WaitingForSignature
-                            ? `Please confirm in ${props.providerState.displayName || 'wallet'}`
+                            ? `Please confirm in ${providerState.displayName || 'wallet'}`
                             : stake.loadingState === TransactionLoadingState.WaitingForTransaction
                             ? `Locking your tokens into staking pool`
                             : // Default case
@@ -470,7 +473,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                     },
                     {
                         label: 'Change wallet',
-                        onClick: props.onOpenConnectWalletDialog,
+                        onClick: onOpenConnectWalletDialog,
                     },
                 ]}
             />

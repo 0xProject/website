@@ -37,7 +37,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const [stakingPools, setStakingPools] = useState<PoolWithStats[] | undefined>(undefined);
     const [userSelectedStakingPools, setUserSelectedStakingPools] = React.useState<UserStakingChoice[] | undefined>(undefined);
     const [currentEpochStats, setCurrentEpochStats] = useState<Epoch | undefined>(undefined);
-    const [nextEpochApproxStats, setNextEpochApproxStats] = useState<Epoch | undefined>(undefined);
+    const [nextEpochStats, setNextEpochStats] = useState<Epoch | undefined>(undefined);
 
     const stake = useStake(networkId, providerState);
     const allowance = useAllowance();
@@ -64,14 +64,14 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
             try {
                 const epochsResponse = await apiClient.getStakingEpochsAsync();
                 setCurrentEpochStats(epochsResponse.currentEpoch);
-                setNextEpochApproxStats(epochsResponse.nextEpoch);
+                setNextEpochStats(epochsResponse.nextEpoch);
             } catch (err) {
                 logUtils.warn(err);
                 setStakingPools([]);
             }
         };
         setCurrentEpochStats(undefined);
-        setNextEpochApproxStats(undefined);
+        setNextEpochStats(undefined);
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetEpochs();
     }, [networkId, apiClient]);
@@ -82,14 +82,15 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                 <Splitview
                     leftComponent={
                         <WizardInfo
-                            nextEpochApproxStats={nextEpochApproxStats}
+                            nextEpochStats={nextEpochStats}
                             currentEpochStats={currentEpochStats}
                             selectedStakingPools={userSelectedStakingPools}
                         />
                     }
                     rightComponent={
                         <WizardFlow
-                            nextEpochApproxStats={nextEpochApproxStats}
+                            currentEpochStats={currentEpochStats}
+                            nextEpochStats={nextEpochStats}
                             selectedStakingPools={userSelectedStakingPools}
                             setSelectedStakingPools={setUserSelectedStakingPools}
                             stakingPools={stakingPools}
