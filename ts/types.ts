@@ -1070,6 +1070,10 @@ export interface TransactionDate {
 export interface Epoch {
     epochId: number;
     epochStart: TransactionDate;
+    epochEnd?: TransactionDate;
+    zrxStaked: number;
+    zrxDeposited: number;
+    protocolFeesGeneratedInEth: number;
 }
 
 export interface PoolMetadata {
