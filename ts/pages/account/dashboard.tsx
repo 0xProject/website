@@ -1,4 +1,5 @@
-import { BigNumber, logUtils } from '@0x/utils';
+import { BigNumber, hexUtils, logUtils } from '@0x/utils';
+import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
@@ -10,7 +11,6 @@ import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_lay
 import { Heading } from 'ts/components/text';
 import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { StatFigure } from 'ts/components/ui/stat_figure';
-import { useAPIClient } from 'ts/hooks/use_api_client';
 import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
 import { AccountApplyModal } from 'ts/pages/account/account_apply_modal';
 import { AccountDetail } from 'ts/pages/account/account_detail';
@@ -22,6 +22,9 @@ import { colors } from 'ts/style/colors';
 import { AccountReady, StakingAPIDelegatorResponse, WebsitePaths } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
+
+import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useStake } from 'ts/hooks/use_stake';
 
 export interface AccountProps {}
 
@@ -110,17 +113,31 @@ const StakedZrxBalance = ({ delegatorData }: DelegatorDataProps) => {
     return <span>{`${utils.getFormattedUnitAmount(balance)} ZRX`}</span>;
 };
 
+interface PoolToRewardsMap {
+    [key: string]: BigNumber;
+}
+interface PoolReward {
+    poolId: string;
+    rewardsInEth: BigNumber;
+}
+
+// NOTE: TESTING ONLY! REMOVE THIS BEFORE MERGING
+const ADDRESS_OVERRIDE = '0xe36ea790bc9d7ab70c55260c66d52b1eca985f84';
+
 export const Account: React.FC<AccountProps> = () => {
     const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
     const [isFetchingDelegatorData, setIsFetchingDelegatorData] = React.useState<boolean>(false);
     const [delegatorData, setDelegatorData] = React.useState<StakingAPIDelegatorResponse | undefined>(undefined);
+    const [availableRewardsMap, setAvailableRewardsMap] = React.useState<PoolToRewardsMap>({});
+    const [totalAvailableRewards, setTotalAvailableRewards] = React.useState<BigNumber>(new BigNumber(0));
 
     const apiClient = useAPIClient();
+    const { stakingContract } = useStake();
     const account = useSelector((state: State) => state.providerState.account as AccountReady);
 
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
-            const response = await apiClient.getDelegatorAsync(account.address);
+            const response = await apiClient.getDelegatorAsync(ADDRESS_OVERRIDE);
             setDelegatorData(response);
         };
 
@@ -140,21 +157,69 @@ export const Account: React.FC<AccountProps> = () => {
             });
     }, [account.address, apiClient.networkId]);
 
-    const rewards = delegatorData
-        ? new BigNumber(_.sumBy(delegatorData.allTime.poolData, 'rewards'))
-        : new BigNumber(0);
+    React.useEffect(() => {
+        const fetchAvailableRewards = async () => {
+            const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter(
+                poolData => poolData.rewardsInEth > 0,
+            );
+            const poolRewards: PoolReward[] = await Promise.all(
+                poolsWithAllTimeRewards.map(async poolData => {
+                    const paddedHexPoolId = hexUtils.leftPad(hexUtils.toHex(poolData.poolId));
+
+                    const availableRewardInEth = await stakingContract
+                        .computeRewardBalanceOfDelegator(paddedHexPoolId, ADDRESS_OVERRIDE)
+                        .callAsync();
+
+                    // TODO(kimpers): There is some typing issue here, circle back later to remove the BigNumber conversion
+                    return {
+                        poolId: poolData.poolId,
+                        rewardsInEth: Web3Wrapper.toUnitAmount(
+                            new BigNumber(availableRewardInEth.toString()),
+                            constants.DECIMAL_PLACES_ETH,
+                        ),
+                    };
+                }),
+            );
+
+            const _availableRewardsMap: PoolToRewardsMap = poolRewards.reduce<PoolToRewardsMap>(
+                (memo: PoolToRewardsMap, poolReward: PoolReward) => {
+                    memo[poolReward.poolId] = poolReward.rewardsInEth;
+
+                    return memo;
+                },
+                {},
+            );
+
+            const _totalAvailableRewards = poolRewards.reduce(
+                (memo: BigNumber, poolReward: PoolReward) => memo.plus(poolReward.rewardsInEth),
+                new BigNumber(0),
+            );
+
+            setAvailableRewardsMap(_availableRewardsMap);
+            setTotalAvailableRewards(_totalAvailableRewards);
+        };
+
+        if (!stakingContract || !delegatorData || !account.address) {
+            return;
+        }
+
+        fetchAvailableRewards().catch((err: Error) => {
+            setTotalAvailableRewards(new BigNumber(0));
+            logUtils.warn(err);
+        });
+    }, [stakingContract, delegatorData, account.address]);
 
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
                 <Inner>
-                    <AccountDetail userEthAddress={(account && account.address) || ''} />
+                    {account && account.address && <AccountDetail userEthAddress={account.address} />}
 
                     <Figures>
                         <AccountFigure
                             label="Available balance"
                             headerComponent={() => (
-                                <InfoTooltip>
+                                <InfoTooltip id="available-balance">
                                     This is the amount available for delegation starting in the next Epoch
                                 </InfoTooltip>
                             )}
@@ -165,8 +230,8 @@ export const Account: React.FC<AccountProps> = () => {
                         <AccountFigure
                             label="Staked balance"
                             headerComponent={() => (
-                                <InfoTooltip>
-                                    This is the amount available for delegation starting in the next Epoch
+                                <InfoTooltip id="staked-balance">
+                                    This is the amount currently delegated to a pool
                                 </InfoTooltip>
                             )}
                         >
@@ -176,7 +241,7 @@ export const Account: React.FC<AccountProps> = () => {
                         <AccountFigure
                             label="Rewards"
                             headerComponent={() => {
-                                if (rewards.isGreaterThan(0)) {
+                                if (totalAvailableRewards.gt(0)) {
                                     return (
                                         <Button
                                             isWithArrow={true}
@@ -192,7 +257,7 @@ export const Account: React.FC<AccountProps> = () => {
                                 return null;
                             }}
                         >
-                            <span>{`${utils.getFormattedUnitAmount(rewards)} ETH`}</span>
+                            <span>{`${utils.getFormattedUnitAmount(totalAvailableRewards)} ETH`}</span>
                         </AccountFigure>
                     </Figures>
                 </Inner>

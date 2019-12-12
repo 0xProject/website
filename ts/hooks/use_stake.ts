@@ -170,6 +170,7 @@ export const useStake = () => {
         result,
         error,
         estimatedTimeMs,
+        stakingContract,
         depositAndStake: (stakePoolData: StakePoolData[]) => {
             depositAndStakeAsync(stakePoolData).catch(handleError);
         },

@@ -1146,7 +1146,7 @@ export interface EpochDelegatorStats {
 
 export interface AllTimeDelegatorPoolStats {
     poolId: string;
-    rewards: number;
+    rewardsInEth: number;
 }
 
 export interface AllTimeDelegatorStats {
