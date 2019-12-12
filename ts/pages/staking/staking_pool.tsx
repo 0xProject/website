@@ -1,4 +1,6 @@
+import { stringify } from 'query-string';
 import * as React from 'react';
+import { Redirect, RouteChildrenProps, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -8,6 +10,7 @@ import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_lay
 import { TradingPair } from 'ts/components/staking/trading_pair';
 
 import { colors } from 'ts/style/colors';
+import { WebsitePaths } from 'ts/types';
 
 export interface ActionProps {
     children: React.ReactNode;
@@ -15,7 +18,7 @@ export interface ActionProps {
     figure: string;
 }
 
-export interface StakingPoolProps {
+export interface StakingPoolProps extends RouteChildrenProps {
   websiteUrl: string;
   isVerified: boolean;
 }
@@ -234,12 +237,20 @@ const tradingPairs = [
     },
 ];
 
-export const StakingPool: React.FC<StakingPoolProps> = props => {
-    // const poolId = props.match.params.poolId;
-    // console.log("poolId", poolId);
+export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = props => {
+    const { poolId } = useParams();
+
+    // Ensure poolId exists else redirect back to home page
+    if (!poolId) {
+        return (
+            <Redirect to={WebsitePaths.Staking}/>
+        );
+    }
+
     return (
         <StakingPageLayout isHome={true} title="Staking pool">
             <DashboardHero
+                onButtonClick={() => props.history.push(`${WebsitePaths.StakingWizard}?${stringify({ poolId })}`)}
                 title="Binance Staking Pool"
                 websiteUrl="mywebsite.com"
                 poolId="0x1234...1234"
