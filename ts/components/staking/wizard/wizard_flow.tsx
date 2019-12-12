@@ -47,7 +47,8 @@ export interface WizardFlowProps {
     setSelectedStakingPools: React.Dispatch<React.SetStateAction<UserStakingChoice[]>>;
     selectedStakingPools: UserStakingChoice[] | undefined;
     stakingPools?: PoolWithStats[];
-    nextEpochApproxStats?: Epoch;
+    currentEpochStats?: Epoch;
+    nextEpochStats?: Epoch;
     stake: UseStakeHookResult;
     allowance: UseAllowanceHookResult;
 }
@@ -256,6 +257,7 @@ const WizardEntryPoint: React.FC<WizardEntryPointProps> = props => {
     }
 
     const { zrxBalanceBaseUnitAmount } = props.providerState.account;
+
     if (!zrxBalanceBaseUnitAmount) {
         // Fetching balance
         return <Status title="" />;
@@ -368,13 +370,14 @@ export interface StartStakingProps {
     providerState: ProviderState;
     stake: UseStakeHookResult;
     allowance: UseAllowanceHookResult;
-    nextEpochApproxStats?: Epoch;
+    nextEpochStats?: Epoch;
+    currentEpochStats?: Epoch;
     address?: string;
     selectedStakingPools: UserStakingChoice[] | undefined;
 }
 
 const StartStaking: React.FC<StartStakingProps> = props => {
-    const { selectedStakingPools, stake, allowance, nextEpochApproxStats, address } = props;
+    const { selectedStakingPools, stake, allowance, address, nextEpochStats } = props;
 
     const [isApproveTokenModalOpen, setIsApproveTokenModalOpen] = React.useState(false);
     const [isStakingConfirmationModalOpen, setIsStakingConfirmationModalOpen] = React.useState(false);
@@ -479,7 +482,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                 const newTotal = total.plus(new BigNumber(cur.zrxAmount));
                 return newTotal;
             }, new BigNumber(0));
-            const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(nextEpochApproxStats.epochStart.timestamp));
+            const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(nextEpochStats.epochStart.timestamp));
             return (
                 <>
                     <ApproveTokensInfoDialog
@@ -545,13 +548,17 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     stakingPools,
     stake,
     allowance,
+    providerState,
+    onOpenConnectWalletDialog,
+    currentEpochStats,
+    nextEpochStats,
     ...props,
 }) => {
-    if (!selectedStakingPools || props.providerState.account.state !== AccountState.Ready) {
+    if (!selectedStakingPools || providerState.account.state !== AccountState.Ready) {
         return (
             <WizardEntryPoint
-                onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
-                providerState={props.providerState}
+                onOpenConnectWalletDialog={onOpenConnectWalletDialog}
+                providerState={providerState}
                 setSelectedStakingPools={setSelectedStakingPools}
                 stakingPools={stakingPools}
                 {...props}
@@ -560,11 +567,12 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
 
     return (
         <StartStaking
-            address={(props.providerState.account.address)}
+            address={(providerState.account.address)}
             allowance={allowance}
             stake={stake}
-            nextEpochApproxStats={props.nextEpochApproxStats}
-            providerState={props.providerState}
+            currentEpochStats={currentEpochStats}
+            nextEpochStats={nextEpochStats}
+            providerState={providerState}
             selectedStakingPools={selectedStakingPools}
         />
     );

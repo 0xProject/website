@@ -39,28 +39,43 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const [stakingPools, setStakingPools] = useState<PoolWithStats[] | undefined>(undefined);
     const [userSelectedStakingPools, setUserSelectedStakingPools] = React.useState<UserStakingChoice[] | undefined>(undefined);
     const [currentEpochStats, setCurrentEpochStats] = useState<Epoch | undefined>(undefined);
-    const [nextEpochApproxStats, setNextEpochApproxStats] = useState<Epoch | undefined>(undefined);
+    const [nextEpochStats, setNextEpochStats] = useState<Epoch | undefined>(undefined);
 
     const stake = useStake(networkId, providerState);
     const allowance = useAllowance();
 
+    // Load stakingPools
     useEffect(() => {
         const fetchAndSetPools = async () => {
             try {
                 const poolsResponse = await apiClient.getStakingPoolsAsync();
                 setStakingPools(poolsResponse.stakingPools);
-                setCurrentEpochStats(poolsResponse.currentEpoch);
-                setNextEpochApproxStats(poolsResponse.approximateNextEpoch);
             } catch (err) {
                 logUtils.warn(err);
                 setStakingPools([]);
-                setCurrentEpochStats(undefined);
-                setNextEpochApproxStats(undefined);
             }
         };
         setStakingPools(undefined);
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPools();
+    }, [networkId, apiClient]);
+
+    // Load current and next epoch
+    useEffect(() => {
+        const fetchAndSetEpochs = async () => {
+            try {
+                const epochsResponse = await apiClient.getStakingEpochsAsync();
+                setCurrentEpochStats(epochsResponse.currentEpoch);
+                setNextEpochStats(epochsResponse.nextEpoch);
+            } catch (err) {
+                logUtils.warn(err);
+                setStakingPools([]);
+            }
+        };
+        setCurrentEpochStats(undefined);
+        setNextEpochStats(undefined);
+        // tslint:disable-next-line:no-floating-promises
+        fetchAndSetEpochs();
     }, [networkId, apiClient]);
 
     return (
@@ -69,14 +84,15 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                 <Splitview
                     leftComponent={
                         <WizardInfo
-                            nextEpochApproxStats={nextEpochApproxStats}
+                            nextEpochStats={nextEpochStats}
                             currentEpochStats={currentEpochStats}
                             selectedStakingPools={userSelectedStakingPools}
                         />
                     }
                     rightComponent={
                         <WizardFlow
-                            nextEpochApproxStats={nextEpochApproxStats}
+                            currentEpochStats={currentEpochStats}
+                            nextEpochStats={nextEpochStats}
                             selectedStakingPools={userSelectedStakingPools}
                             setSelectedStakingPools={setUserSelectedStakingPools}
                             stakingPools={stakingPools}
