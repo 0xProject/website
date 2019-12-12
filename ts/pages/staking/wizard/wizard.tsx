@@ -42,23 +42,38 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const stake = useStake(networkId, providerState);
     const allowance = useAllowance();
 
+    // Load stakingPools
     useEffect(() => {
         const fetchAndSetPools = async () => {
             try {
                 const poolsResponse = await apiClient.getStakingPoolsAsync();
                 setStakingPools(poolsResponse.stakingPools);
-                setCurrentEpochStats(poolsResponse.currentEpoch);
-                setNextEpochApproxStats(poolsResponse.approximateNextEpoch);
             } catch (err) {
                 logUtils.warn(err);
                 setStakingPools([]);
-                setCurrentEpochStats(undefined);
-                setNextEpochApproxStats(undefined);
             }
         };
         setStakingPools(undefined);
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPools();
+    }, [networkId, apiClient]);
+
+    // Load current and next epoch
+    useEffect(() => {
+        const fetchAndSetEpochs = async () => {
+            try {
+                const epochsResponse = await apiClient.getStakingEpochsAsync();
+                setCurrentEpochStats(epochsResponse.currentEpoch);
+                setNextEpochApproxStats(epochsResponse.nextEpoch);
+            } catch (err) {
+                logUtils.warn(err);
+                setStakingPools([]);
+            }
+        };
+        setCurrentEpochStats(undefined);
+        setNextEpochApproxStats(undefined);
+        // tslint:disable-next-line:no-floating-promises
+        fetchAndSetEpochs();
     }, [networkId, apiClient]);
 
     return (

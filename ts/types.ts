@@ -1104,9 +1104,12 @@ export interface EpochPoolStats {
 }
 
 export interface StakingAPIPoolsResponse {
-    currentEpoch: Epoch;
-    approximateNextEpoch: Epoch;
     stakingPools: PoolWithStats[];
+}
+
+export interface StakingAPIEpochsResponse {
+    currentEpoch: Epoch;
+    nextEpoch: Epoch;
 }
 
 export interface StakingPoolRecomendation {
