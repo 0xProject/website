@@ -267,6 +267,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
     if (!stakingPool) {
         return null;
     }
+    
     const currentEpoch = _.last(stakingPool.epochRewards);
 
     return (
@@ -283,10 +284,11 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                     {
                         title: 'Current Epoch',
                         metrics: [
-                            {
-                                title: 'Total Volume',
-                                number: '1.23M USD', // volume missing
-                            },
+                            // todo(johnrjj) Cutting volume for MVP
+                            // {
+                            //     title: 'Total Volume',
+                            //     number: '1.23M USD',
+                            // },
                             {
                                 title: 'ZRX Staked',
                                 number: '1,288,229', // zrx staked missing
@@ -304,10 +306,11 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                     {
                         title: 'All Time',
                         metrics: [
-                            {
-                                title: 'All Volume',
-                                number: '1.23M USD',
-                            },
+                            // todo(johnrjj) Cutting volume for MVP
+                            // {
+                            //     title: 'All Volume',
+                            //     number: '1.23M USD',
+                            // },
                             {
                                 title: 'ZRX Staked',
                                 number: '1,288,229',
