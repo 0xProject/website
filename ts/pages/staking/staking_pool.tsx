@@ -267,7 +267,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
     if (!stakingPool) {
         return null;
     }
-    
+
     const currentEpoch = _.last(stakingPool.epochRewards);
 
     return (
