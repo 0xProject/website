@@ -11,13 +11,13 @@ import { colors } from 'ts/style/colors';
 import { WebsitePaths } from 'ts/types';
 
 interface UserData {
-    amountInEth: string | number;
-    rewardsReceived: string | number;
+    zrxStakedFormatted: string;
+    rewardsReceivedFormatted: string;
 }
 
 interface StakeOverviewProps {
     name: string;
-    websiteUrl: string;
+    websiteUrl?: string;
     logoUrl?: string;
     rewardsShared: string;
     feesGenerated: string;
@@ -41,27 +41,14 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
     return (
         <Wrap>
             <Flex>
-                <PanelHeader
-                    subtitle={websiteUrl}
-                    avatarSrc={logoUrl}
-                    isResponsiveAvatar={true}
-                >
+                <PanelHeader subtitle={websiteUrl} avatarSrc={logoUrl} isResponsiveAvatar={true}>
                     {renderTitle(name, isVerified)}
                 </PanelHeader>
 
                 <Stats>
-                    <StatFigure
-                        label="Fees Generated"
-                        value={feesGenerated}
-                    />
-                    <StatFigure
-                        label="Rewards Shared"
-                        value={rewardsShared}
-                    />
-                    <StatFigure
-                        label="Staked"
-                        value={totalStaked}
-                    />
+                    <StatFigure label="Fees Generated" value={feesGenerated} />
+                    <StatFigure label="Rewards Shared" value={rewardsShared} />
+                    <StatFigure label="Staked" value={totalStaked} />
                 </Stats>
             </Flex>
 
@@ -69,14 +56,10 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                 <Action>
                     <InlineStats>
                         <div>
-                            <Heading
-                                size={14}
-                                marginBottom="12px"
-                            >
+                            <Heading size={14} marginBottom="12px">
                                 Your stake
                             </Heading>
-
-                            {userData.amountInEth} ZRX
+                            {userData.zrxStakedFormatted} ZRX
                         </div>
                     </InlineStats>
 
@@ -97,21 +80,14 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                 <Action>
                     <InlineStats>
                         <div>
-                            <Heading
-                                size={14}
-                                marginBottom="12px"
-                            >
+                            <Heading size={14} marginBottom="12px">
                                 Your rewards
                             </Heading>
-
-                            {userData.rewardsReceived} ETH
+                            {userData.rewardsReceivedFormatted} ETH
                         </div>
 
                         <div>
-                            <Heading
-                                size={14}
-                                marginBottom="12px"
-                            >
+                            <Heading size={14} marginBottom="12px">
                                 Next epoch
                             </Heading>
 
@@ -167,9 +143,7 @@ const renderTitle = (name: string, isVerified: boolean): React.ReactNode => {
     return (
         <Title>
             {name}
-            {isVerified &&
-                <CircleCheckMark />
-            }
+            {isVerified && <CircleCheckMark />}
         </Title>
     );
 };
@@ -247,7 +221,8 @@ const Action = styled(FlexBase)`
             padding-left: 30px;
         }
 
-        button, a {
+        button,
+        a {
             display: none;
         }
     }

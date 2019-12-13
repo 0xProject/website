@@ -19,7 +19,13 @@ import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { AccountReady, StakingAPIDelegatorResponse, WebsitePaths } from 'ts/types';
+import {
+    AccountReady,
+    PoolWithStats,
+    StakingAPIDelegatorResponse,
+    StakingAPIPoolsResponse,
+    WebsitePaths,
+} from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
@@ -99,6 +105,9 @@ const AvailableZrxBalance = ({ account, delegatorData }: AvailableZrxBalanceProp
     return <span>{`${utils.getFormattedAmount(availableBalance, constants.DECIMAL_PLACES_ZRX)} ZRX`}</span>;
 };
 
+const getFormattedAmount = (amount: number, currency: string) =>
+    `${utils.getFormattedUnitAmount(new BigNumber(amount))} ${currency}`;
+
 interface DelegatorDataProps {
     delegatorData?: StakingAPIDelegatorResponse;
 }
@@ -121,6 +130,10 @@ interface PoolReward {
     rewardsInEth: BigNumber;
 }
 
+interface PoolWithStatsMap {
+    [key: string]: PoolWithStats;
+}
+
 // NOTE: TESTING ONLY! REMOVE THIS BEFORE MERGING
 const ADDRESS_OVERRIDE = '0xe36ea790bc9d7ab70c55260c66d52b1eca985f84';
 
@@ -128,17 +141,30 @@ export const Account: React.FC<AccountProps> = () => {
     const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
     const [isFetchingDelegatorData, setIsFetchingDelegatorData] = React.useState<boolean>(false);
     const [delegatorData, setDelegatorData] = React.useState<StakingAPIDelegatorResponse | undefined>(undefined);
-    const [availableRewardsMap, setAvailableRewardsMap] = React.useState<PoolToRewardsMap>({});
+    const [poolWithStatsMap, setPoolWithStatsMap] = React.useState<PoolWithStatsMap | undefined>(undefined);
+    const [availableRewardsMap, setAvailableRewardsMap] = React.useState<PoolToRewardsMap | undefined>(undefined);
     const [totalAvailableRewards, setTotalAvailableRewards] = React.useState<BigNumber>(new BigNumber(0));
 
     const apiClient = useAPIClient();
     const { stakingContract } = useStake();
     const account = useSelector((state: State) => state.providerState.account as AccountReady);
 
+    const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
+
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
-            const response = await apiClient.getDelegatorAsync(ADDRESS_OVERRIDE);
-            setDelegatorData(response);
+            const [delegatorResponse, poolsResponse] = await Promise.all([
+                apiClient.getDelegatorAsync(ADDRESS_OVERRIDE),
+                apiClient.getStakingPoolsAsync(),
+            ]);
+
+            const _poolWithStatsMap = poolsResponse.stakingPools.reduce<PoolWithStatsMap>((memo, pool) => {
+                memo[pool.poolId] = pool;
+                return memo;
+            }, {});
+
+            setDelegatorData(delegatorResponse);
+            setPoolWithStatsMap(_poolWithStatsMap);
         };
 
         if (!account.address || isFetchingDelegatorData) {
@@ -326,9 +352,8 @@ export const Account: React.FC<AccountProps> = () => {
                 </SectionHeader>
 
                 {/* If we have data and user does not have any pools now or in next epoch show CTA */}
-                {delegatorData &&
-                    (delegatorData.forCurrentEpoch.poolData.length === 0 &&
-                    delegatorData.forNextEpoch.poolData.length === 0 ? (
+                {hasDataLoaded() &&
+                    (delegatorData.forCurrentEpoch.poolData.length === 0 ? (
                         <CallToAction
                             icon="revenue"
                             title="You haven't staked ZRX"
@@ -342,8 +367,38 @@ export const Account: React.FC<AccountProps> = () => {
                             ]}
                         />
                     ) : (
-                        _.map(MOCK_DATA.stakes, (item, index) => {
-                            return <AccountStakeOverview key={`stake-${index}`} {...item} />;
+                        _.map(delegatorData.forCurrentEpoch.poolData, (delegatorPoolStats, index) => {
+                            const poolId = delegatorPoolStats.poolId;
+                            const pool = poolWithStatsMap[poolId];
+
+                            if (!pool) {
+                                return null;
+                            }
+
+                            const availablePoolRewards =
+                                (availableRewardsMap[poolId] && availableRewardsMap[poolId]) || new BigNumber(0);
+
+                            const userData = {
+                                rewardsReceivedFormatted: utils.getFormattedUnitAmount(availablePoolRewards),
+                                zrxStakedFormatted: utils.getFormattedUnitAmount(
+                                    new BigNumber(delegatorData.forCurrentEpoch.zrxStaked),
+                                ),
+                            };
+
+                            return (
+                                <AccountStakeOverview
+                                    key={`stake-${pool.poolId}`}
+                                    name={pool.metaData.name || pool.operatorAddress}
+                                    websiteUrl={pool.metaData.websiteUrl}
+                                    logoUrl={pool.metaData.logoUrl}
+                                    rewardsShared={'101%'} // TODO: FIX
+                                    totalStaked={'101%'} // TODO: FIX
+                                    feesGenerated={getFormattedAmount(pool.sevenDayProtocolFeesGeneratedInEth, 'ETH')}
+                                    userData={userData}
+                                    approximateTimestamp={new Date().getTime()} // TODO: implement
+                                    isVerified={pool.metaData.isVerified}
+                                />
+                            );
                         })
                     ))}
             </SectionWrapper>
