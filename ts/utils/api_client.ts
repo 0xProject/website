@@ -1,10 +1,6 @@
 import * as _ from 'lodash';
 
-import {
-    Network,
-    StakingAPIEpochsResponse,
-    StakingAPIPoolsResponse,
-} from 'ts/types';
+import { Network, StakingAPIEpochsResponse, StakingAPIPoolsResponse } from 'ts/types';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { utils } from 'ts/utils/utils';
 
