@@ -266,17 +266,18 @@ export const Account: React.FC<AccountProps> = () => {
             <SectionWrapper>
                 <SectionHeader>
                     <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
-                        Activity
+                        Pending
                     </Heading>
-
-                    <Button
-                        color={colors.brandDark}
-                        isWithArrow={true}
-                        isTransparent={true}
-                        to={WebsitePaths.AccountActivity}
-                    >
-                        Show all activity
-                    </Button>
+                    {/* TODO(kimpers): Add this back when we have implemented the activity page
+                            <Button
+                                color={colors.brandDark}
+                                isWithArrow={true}
+                                isTransparent={true}
+                                to={WebsitePaths.AccountActivity}
+                            >
+                                Show all activity
+                            </Button>
+                        */}
                 </SectionHeader>
 
                 <AccountActivitySummary

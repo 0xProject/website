@@ -96,29 +96,33 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                         </div>
                     </InlineStats>
 
+                    {/* TODO(kimpers): Add this back when we have implemented the activity page
+                        <Button
+                            to={WebsitePaths.AccountActivity}
+                            color={colors.white}
+                            fontSize="17px"
+                            fontWeight="300"
+                            padding="15px 35px"
+                        >
+                            View History
+                        </Button>
+                    */}
+                </Action>
+            </Flex>
+
+            <MobileActions>
+                {/* TODO(kimpers): Add this back when we have implemented the activity page
                     <Button
                         to={WebsitePaths.AccountActivity}
                         color={colors.white}
                         fontSize="17px"
                         fontWeight="300"
                         padding="15px 35px"
+                        isFullWidth={true}
                     >
                         View History
                     </Button>
-                </Action>
-            </Flex>
-
-            <MobileActions>
-                <Button
-                    to={WebsitePaths.AccountActivity}
-                    color={colors.white}
-                    fontSize="17px"
-                    fontWeight="300"
-                    padding="15px 35px"
-                    isFullWidth={true}
-                >
-                    View History
-                </Button>
+                */}
 
                 <Button
                     to="/"
