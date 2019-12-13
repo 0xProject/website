@@ -117,7 +117,7 @@ const WizardInfoHeader: React.FC<WizardInfoHeaderProps> = ({title, description})
     </>
 );
 
-export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, currentEpochStats, nextEpochStats }) => {
+export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, nextEpochStats }) => {
     if (!selectedStakingPools) {
         return (
             <>
@@ -136,8 +136,9 @@ export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, cu
         );
     }
 
-    const stakingStartsEpochDate = new Date(currentEpochStats.epochStart.timestamp);
-    const firstRewardsEpochDate = new Date(nextEpochStats.epochStart.timestamp);
+    const stakingStartsEpochDate = new Date(nextEpochStats.epochStart.timestamp);
+    const ESTIMATED_EPOCH_LENGTH_IN_DAYS = 10;
+    const firstRewardsEpochDate = addDays(new Date(nextEpochStats.epochStart.timestamp), ESTIMATED_EPOCH_LENGTH_IN_DAYS);
 
     const now = new Date();
     const DATE_FORMAT = 'MM.dd';
