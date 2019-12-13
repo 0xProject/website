@@ -1,14 +1,13 @@
-import { ContractAddresses, getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
+import { ChainId, ContractAddresses, getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { StakingContract, StakingProxyContract } from '@0x/contract-wrappers';
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import { addMilliseconds } from 'date-fns';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as _ from 'lodash';
-import * as React from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
-import { State } from 'ts/redux/reducer';
-import { AccountReady, StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
+import { AccountReady, ProviderState, StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
@@ -25,21 +24,32 @@ const normalizeStakePoolData = (stakePoolData: StakePoolData[]) =>
         amountBaseUnits: toZrxBaseUnits(pool.zrxAmount),
     }));
 
-export const useStake = () => {
-    const networkId = useSelector((state: State) => state.networkId);
-    const providerState = useSelector((state: State) => state.providerState);
+export interface UseStakeHookResult {
+    depositAndStake: (stakingPools: StakePoolData[]) => void;
+    unstake: (stakePoolData: StakePoolData[]) => void;
+    withdrawStake: (zrxAmount: number) => void;
+    withdrawRewards: (poolIds: string[]) => void;
+    stakingContract?: StakingContract;
+    loadingState?: TransactionLoadingState;
+    error?: Error;
+    result?: TransactionReceiptWithDecodedLogs;
+    estimatedTimeMs?: number;
+    estimatedTransactionFinishTime?: Date;
+}
 
-    const [loadingState, setLoadingState] = React.useState<undefined | TransactionLoadingState>(undefined);
-    const [error, setError] = React.useState<Error | undefined>(undefined);
-    const [result, setResult] = React.useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
-    const [estimatedTimeMs, setEstimatedTimeMs] = React.useState<number | undefined>(undefined);
+export const useStake = (networkId: ChainId, providerState: ProviderState): UseStakeHookResult => {
+    const [loadingState, setLoadingState] = useState<undefined | TransactionLoadingState>(undefined);
+    const [error, setError] = useState<Error | undefined>(undefined);
+    const [result, setResult] = useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
+    const [estimatedTimeMs, setEstimatedTimeMs] = useState<number | undefined>(undefined);
+    const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = useState<Date | undefined>(undefined);
 
-    const [ownerAddress, setOwnerAddress] = React.useState<string | undefined>(undefined);
-    const [stakingContract, setStakingContract] = React.useState<StakingContract | undefined>(undefined);
-    const [stakingProxyContract, setStakingProxyContract] = React.useState<StakingProxyContract | undefined>(undefined);
-    const [contractAddresses, setContractAddresses] = React.useState<ContractAddresses | undefined>(undefined);
+    const [ownerAddress, setOwnerAddress] = useState<string | undefined>(undefined);
+    const [stakingContract, setStakingContract] = useState<StakingContract | undefined>(undefined);
+    const [stakingProxyContract, setStakingProxyContract] = useState<StakingProxyContract | undefined>(undefined);
+    const [contractAddresses, setContractAddresses] = useState<ContractAddresses | undefined>(undefined);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const _ownerAddress = (providerState.account as AccountReady).address;
         const _contractAddresses = getContractAddressesForChainOrThrow(networkId);
 
@@ -167,6 +177,14 @@ export const useStake = () => {
         logUtils.log(err);
     };
 
+    useEffect(() => {
+        if (!estimatedTimeMs) {
+            return setEstimatedTransactionFinishTime(undefined);
+        }
+        const estimate = addMilliseconds(new Date(), estimatedTimeMs);
+        setEstimatedTransactionFinishTime(estimate);
+    }, [estimatedTimeMs]);
+
     return {
         loadingState,
         result,
@@ -185,5 +203,6 @@ export const useStake = () => {
         withdrawRewards: (poolIds: string[]) => {
             withdrawRewardsAsync(poolIds).catch(handleError);
         },
+        estimatedTransactionFinishTime,
     };
 };

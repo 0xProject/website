@@ -1,8 +1,11 @@
 import * as _ from 'lodash';
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { colors } from 'ts/style/colors';
+
+import { State } from 'ts/redux/reducer';
 
 import { Button } from 'ts/components/button';
 import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
@@ -20,7 +23,8 @@ export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
     const [isStakingConfirmationOpen, setStakingConfirmationOpen] = React.useState(false);
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
-    const apiClient = useAPIClient();
+    const networkId = useSelector((state: State) => state.networkId);
+    const apiClient = useAPIClient(networkId);
     React.useEffect(() => {
         const fetchAndSetPoolsAsync = async () => {
             const resp = await apiClient.getStakingPoolsAsync();
@@ -63,22 +67,21 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                 <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
                     Staking Pools
                 </Heading>
-                {stakingPools && stakingPools.map(
-                    pool => {
+                {stakingPools &&
+                    stakingPools.map(pool => {
                         return (
                             <StakingPoolDetailRow
                                 key={pool.poolId}
                                 name={pool.metaData.name}
                                 thumbnailUrl={pool.metaData.logoUrl}
                                 isVerified={pool.metaData.isVerified}
-                                address={_.head(pool.nextEpochStats.makerAddresses)}
+                                address={pool.operatorAddress}
                                 totalFeesGeneratedInEth={pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
                                 stakeRatio={pool.nextEpochStats.approximateStakeRatio}
                                 rewardsSharedRatio={1 - pool.nextEpochStats.operatorShare}
                             />
                         );
-                    },
-                )}
+                    })}
             </SectionWrapper>
         </StakingPageLayout>
     );

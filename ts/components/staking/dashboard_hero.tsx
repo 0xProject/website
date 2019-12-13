@@ -28,6 +28,7 @@ interface DashboardHeroProps {
     rewardsShared: number;
     iconUrl: string;
     tabs: DashBoardHeroTabs[];
+    onButtonClick: (poolId: string) => any;
 }
 
 interface WrapperProps {}
@@ -221,6 +222,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
     estimatedStake,
     rewardsShared,
     iconUrl,
+    onButtonClick,
 }) => {
     const [selectedTabIndex, setSelectedTabIndex] = React.useState<number>(0);
 
@@ -256,7 +258,14 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                             )}
                         </HorizontalList>
                         <ButtonContainer>
-                            <StakingButton href="/" color={colors.white} isFullWidth={true} isLarge={true}>
+                            {/* todo(johnrjj), convert to use react-router <Link> instead of history.push */}
+                            <StakingButton
+                                onClick={(_e: string) => onButtonClick(poolId)}
+                                href="#"
+                                color={colors.white}
+                                isFullWidth={true}
+                                isLarge={true}
+                            >
                                 Start Staking
                             </StakingButton>
                             <Progressbar progress={75} />
