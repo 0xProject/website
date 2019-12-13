@@ -19,7 +19,16 @@ import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { AccountReady, Epoch, PoolWithStats, StakingAPIDelegatorResponse, VoteHistory, WebsitePaths } from 'ts/types';
+import {
+    AccountReady,
+    Epoch,
+    PoolWithHistoricalStats,
+    PoolWithStats,
+    StakingAPIDelegatorResponse,
+    StakingPoolResponse,
+    VoteHistory,
+    WebsitePaths,
+} from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
@@ -28,32 +37,10 @@ import { useStake } from 'ts/hooks/use_stake';
 
 export interface AccountProps {}
 
-// Mock data: not sure how this would be designed from a backend perspective,
-// but I think this gives an overview of what the components take in as props
-const MOCK_DATA = {
-    activitySummary: {
-        title: '500 ZRX will be removed from Binance Pool in 10 days',
-        subtitle: 'Your tokens will need to be manually withdrawn once they are removed ',
-        avatarSrc: 'https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png',
-        icon: 'clock',
-    },
-    stakes: [
-        {
-            name: 'Binance Staking Pool',
-            websiteUrl: 'https://binance.com',
-            logoUrl: 'https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png',
-            rewardsShared: '95%',
-            feesGenerated: '0.03212 ETH',
-            totalStaked: '52%',
-            userData: {
-                amountInEth: 213425,
-                rewardsReceived: 0.0342,
-            },
-            isVerified: true,
-            approximateTimestamp: 778435, // Maybe this would be in another format and need a convert method in the component
-        },
-    ],
-};
+interface PendingUnstakePool extends PoolWithHistoricalStats {
+    poolId: string;
+    zrxToBeUnstaked: number;
+}
 
 interface AvailableZrxBalanceProps {
     account?: AccountReady;
@@ -122,6 +109,7 @@ export const Account: React.FC<AccountProps> = () => {
     const [availableRewardsMap, setAvailableRewardsMap] = React.useState<PoolToRewardsMap | undefined>(undefined);
     const [totalAvailableRewards, setTotalAvailableRewards] = React.useState<BigNumber>(new BigNumber(0));
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
+    const [pendingUnstakePools, setPendingUnstakePools] = React.useState<PendingUnstakePool[]>([]);
 
     const apiClient = useAPIClient(networkId);
     const { stakingContract } = useStake(networkId, providerState);
@@ -204,12 +192,46 @@ export const Account: React.FC<AccountProps> = () => {
             setTotalAvailableRewards(_totalAvailableRewards);
         };
 
+        const fetchPendingActivityData = async () => {
+            // pools being staked with now but not next epoch are pending unstake
+            // TODO(kimpers): handle partial unstake
+            const pendingUnstakePoolData = _.differenceBy(
+                delegatorData.forCurrentEpoch.poolData,
+                delegatorData.forNextEpoch.poolData,
+                'poolId',
+            );
+
+            const pools = await Promise.all<StakingPoolResponse>(
+                pendingUnstakePoolData.map(async poolData => apiClient.getStakingPoolAsync(poolData.poolId)),
+            );
+
+            const zrxToBeUnstakedPoolMap = pendingUnstakePoolData.reduce<{ [key: string]: number }>(
+                (memo, poolData) => {
+                    memo[poolData.poolId] = poolData.zrxStaked;
+                    return memo;
+                },
+                {},
+            );
+
+            const _pendingUnstakePools: PendingUnstakePool[] = pools.map(pool => ({
+                ...pool.stakingPool,
+                zrxToBeUnstaked: zrxToBeUnstakedPoolMap[pool.poolId],
+            }));
+
+            setPendingUnstakePools(_pendingUnstakePools);
+        };
+
         if (!stakingContract || !delegatorData || !account.address) {
             return;
         }
 
         fetchAvailableRewards().catch((err: Error) => {
             setTotalAvailableRewards(new BigNumber(0));
+            logUtils.warn(err);
+        });
+
+        fetchPendingActivityData().catch((err: Error) => {
+            // TODO: unset values
             logUtils.warn(err);
         });
     }, [stakingContract, delegatorData, account.address]);
@@ -268,52 +290,37 @@ export const Account: React.FC<AccountProps> = () => {
                 </Inner>
             </HeaderWrapper>
 
-            <SectionWrapper>
-                <SectionHeader>
-                    <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
-                        Pending
-                    </Heading>
-                    {/* TODO(kimpers): Add this back when we have implemented the activity page
-                            <Button
-                                color={colors.brandDark}
-                                isWithArrow={true}
-                                isTransparent={true}
-                                to={WebsitePaths.AccountActivity}
-                            >
-                                Show all activity
-                            </Button>
-                        */}
-                </SectionHeader>
-
-                <AccountActivitySummary
-                    title={MOCK_DATA.activitySummary.title}
-                    subtitle={MOCK_DATA.activitySummary.subtitle}
-                    avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
-                    icon={MOCK_DATA.activitySummary.icon}
-                >
-                    <StatFigure label="Withdraw date" value="9/19/29" />
-                </AccountActivitySummary>
-
-                <AccountActivitySummary
-                    title="Your ZRX is unlocked and ready for withdrawal"
-                    subtitle="6,000 ZRX  →  0x12345...12345"
-                    avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
-                    icon="checkmark"
-                >
-                    <Button
-                        to="/"
-                        color={colors.brandLight}
-                        bgColor={colors.white}
-                        borderColor={colors.border}
-                        fontSize="17px"
-                        fontWeight="300"
-                        padding="15px 35px"
-                        isFullWidth={true}
-                    >
-                        Withdraw ZRX
-                    </Button>
-                </AccountActivitySummary>
-            </SectionWrapper>
+            {pendingUnstakePools.length > 0 && (
+                <SectionWrapper>
+                    <SectionHeader>
+                        <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                            Pending
+                        </Heading>
+                        {/* TODO(kimpers): Add this back when we have implemented the activity page
+                                <Button
+                                    color={colors.brandDark}
+                                    isWithArrow={true}
+                                    isTransparent={true}
+                                    to={WebsitePaths.AccountActivity}
+                                >
+                                    Show all activity
+                                </Button>
+                            */}
+                    </SectionHeader>
+                    {pendingUnstakePools.map((pool, index) => (
+                        <AccountActivitySummary
+                            key={`account-acctivity-summary-${index}`}
+                            title={`${getFormattedAmount(pool.zrxToBeUnstaked, 'ZRX')} will be removed from ${pool
+                                .metaData.name || `Pool ${pool.poolId}`}`}
+                            subtitle="Your tokens will need to be manually withdrawn once they are removed"
+                            avatarSrc={pool.metaData.logoUrl || undefined}
+                            icon="clock"
+                        >
+                            <StatFigure label="Withdraw date" value="9/19/29" />
+                        </AccountActivitySummary>
+                    ))}
+                </SectionWrapper>
+            )}
 
             {/* TODO add loadin animations or display partially loaded data */}
             {hasDataLoaded() && (

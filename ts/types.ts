@@ -1132,6 +1132,30 @@ export interface StakingAPIPoolsResponse {
     stakingPools: PoolWithStats[];
 }
 
+export interface StakingPoolResponse {
+    poolId: string;
+    stakingPool: PoolWithHistoricalStats;
+}
+
+export interface PoolWithHistoricalStats extends Pool {
+    allTimeStats: AllTimePoolStats;
+    epochRewards: PoolEpochRewards[];
+}
+
+export interface AllTimePoolStats extends RewardsStats {
+    protocolFeesGeneratedInEth: number;
+}
+
+export interface RewardsStats {
+    operatorRewardsPaidInEth: number;
+    membersRewardsPaidInEth: number;
+    totalRewardsPaidInEth: number;
+}
+
+export interface PoolEpochRewards extends RewardsStats {
+    epochId: number;
+}
+
 export interface StakingAPIEpochsResponse {
     currentEpoch: Epoch;
     nextEpoch: Epoch;
