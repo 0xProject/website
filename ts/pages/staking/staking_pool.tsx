@@ -1,3 +1,4 @@
+import { logUtils } from '@0x/utils';
 import * as _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -13,10 +14,10 @@ import { TradingPair } from 'ts/components/staking/trading_pair';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { colors } from 'ts/style/colors';
+import { utils } from 'ts/utils/utils';
 
 import { State } from 'ts/redux/reducer';
 import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
-import { utils } from 'ts/utils/utils';
 
 export interface ActionProps {
     children: React.ReactNode;
@@ -253,9 +254,8 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
     useEffect(() => {
         apiClient.getStakingPoolByIdAsync(poolId)
             .then(res => setStakingPool(res.stakingPool))
-            .catch(e => console.error(e));
-    }, []);
-
+            .catch(e => logUtils.warn(e));
+    }, [poolId, setStakingPool, apiClient]);
 
     // Ensure poolId exists else redirect back to home page
     if (!poolId) {
