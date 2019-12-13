@@ -26,8 +26,8 @@ export interface ActionProps {
 }
 
 export interface StakingPoolProps extends RouteChildrenProps {
-  websiteUrl: string;
-  isVerified: boolean;
+    websiteUrl: string;
+    isVerified: boolean;
 }
 
 const Container = styled.div`
@@ -252,16 +252,15 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
     const [stakingPool, setStakingPool] = useState<PoolWithHistoricalStats | undefined>(undefined);
 
     useEffect(() => {
-        apiClient.getStakingPoolByIdAsync(poolId)
+        apiClient
+            .getStakingPoolByIdAsync(poolId)
             .then(res => setStakingPool(res.stakingPool))
             .catch(e => logUtils.warn(e));
     }, [poolId, setStakingPool, apiClient]);
 
     // Ensure poolId exists else redirect back to home page
     if (!poolId) {
-        return (
-            <Redirect to={WebsitePaths.Staking}/>
-        );
+        return <Redirect to={WebsitePaths.Staking} />;
     }
 
     if (!stakingPool) {

@@ -27,7 +27,10 @@ export class APIClient {
         return result;
     }
     public async getStakingPoolByIdAsync(poolId: string): Promise<StakingAPIPoolByIdResponse> {
-        const result = await fetchUtils.requestAsync(utils.getAPIBaseUrl(this.networkId), getStakingPoolByIdEndpoint(poolId));
+        const result = await fetchUtils.requestAsync(
+            utils.getAPIBaseUrl(this.networkId),
+            getStakingPoolByIdEndpoint(poolId),
+        );
         return result;
     }
     constructor(networkId: Network) {
