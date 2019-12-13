@@ -71,6 +71,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                     stakingPools.map(pool => {
                         return (
                             <StakingPoolDetailRow
+                                to={_.replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}
                                 key={pool.poolId}
                                 name={pool.metaData.name}
                                 thumbnailUrl={pool.metaData.logoUrl}

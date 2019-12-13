@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { colors } from 'ts/style/colors';
@@ -28,6 +29,7 @@ interface IStakingPoolDetailRowProps {
     isVerified: boolean;
     websiteUrl?: string;
     thumbnailUrl?: string;
+    to?: string;
 }
 
 export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
@@ -39,8 +41,12 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
     totalFeesGeneratedInEth,
     rewardsSharedRatio,
     stakeRatio,
+    to,
 }) => (
-    <StakingPoolDetailRowWrapper>
+    <StakingPoolDetailRowWrapper
+        as={to && Link}
+        to={to}
+    >
         {thumbnailUrl && (
             <Logo>
                 <img src={thumbnailUrl} />
@@ -48,7 +54,7 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
         )}
         <PoolOverviewSection>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Heading>{name}</Heading>
+                <Heading hasHoverEffect={!!to}>{name}</Heading>
                 {isVerified &&
                     <DesktopOnlyWrapper style={{ margin: '7px' }}>
                         <CircleCheckMark width="22px" height="22px" />
@@ -94,7 +100,7 @@ const DesktopOnlyWrapper = styled.div`
     ${desktopOnlyStyle};
 `;
 
-const StakingPoolDetailRowWrapper = styled.div`
+const StakingPoolDetailRowWrapper = styled.div<{ to?: string }>`
     min-height: 120px;
     border: 1px solid #d9d9d9;
     display: flex;
@@ -110,6 +116,9 @@ const StakingPoolDetailRowWrapper = styled.div`
         line-height: 27px;
         align-items: center;
         padding: 20px;
+    }
+    :hover,:active {
+        border: ${props => props.to ? '1px solid #B4B4B4' : 'inherit'};
     }
 `;
 
@@ -132,14 +141,19 @@ const PoolOverviewSection = styled.div`
     }
 `;
 
-const Heading = styled.span`
+const Heading = styled.span<{ hasHoverEffect?: boolean }>`
     font-size: 24px;
     line-height: 32px;
     font-feature-settings: 'tnum' on, 'lnum' on;
-
     @media (max-width: ${ScreenWidths.Lg}rem) {
         font-size: 20px;
         line-height: 27px;
+    }
+    ${StakingPoolDetailRowWrapper}:hover & {
+        color: ${props => props.hasHoverEffect ? '#00AE99' : 'inherit'};
+    }
+    ${StakingPoolDetailRowWrapper}:active & {
+        color: ${props => props.hasHoverEffect ? '#00AE99' : 'inherit'};
     }
 `;
 
