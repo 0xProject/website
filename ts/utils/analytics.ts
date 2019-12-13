@@ -60,9 +60,11 @@ export class Analytics {
         try {
             const takerTokenAmount = order.signedOrder.takerAssetAmount.toString();
             const makerTokenAmount = order.signedOrder.makerAssetAmount.toString();
+            // tslint:disable-next-line:no-unnecessary-type-assertion
             const takerToken = (assetDataUtils.decodeAssetDataOrThrow(
                 order.signedOrder.takerAssetData,
             ) as ERC20AssetData).tokenAddress;
+            // tslint:disable-next-line:no-unnecessary-type-assertion
             const makerToken = (assetDataUtils.decodeAssetDataOrThrow(
                 order.signedOrder.makerAssetData,
             ) as ERC20AssetData).tokenAddress;

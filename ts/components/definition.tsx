@@ -10,7 +10,7 @@ export interface Action {
     url?: string;
     onClick?: () => void;
     shouldUseAnchorTag?: boolean;
-    isSameTarget?: boolean
+    isSameTarget?: boolean;
 }
 
 export interface DefinitionProps {
@@ -30,7 +30,13 @@ export interface DefinitionProps {
 
 export const Definition: React.FC<DefinitionProps> = ({ className, ...props }: DefinitionProps) => (
     <Wrap {...props} className={className}>
-        {!!props.icon && <Icon name={props.icon} size={props.iconSize || 'medium'} margin={[0, 0, props.isInlineIcon ? 0 : 'default', 0]} />}
+        {!!props.icon && (
+            <Icon
+                name={props.icon}
+                size={props.iconSize || 'medium'}
+                margin={[0, 0, props.isInlineIcon ? 0 : 'default', 0]}
+            />
+        )}
 
         <TextWrap {...props}>
             <Heading

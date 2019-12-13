@@ -528,7 +528,14 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                     onClose={() => {
                         /*noop*/
                     }}
-                    onSecondaryClick={() => stake.depositAndStake(selectedStakingPools)}
+                    onSecondaryClick={() =>
+                        stake.depositAndStake(
+                            selectedStakingPools.map(recommendation => ({
+                                poolId: recommendation.pool.poolId,
+                                zrxAmount: recommendation.zrxAmount,
+                            })),
+                        )
+                    }
                 />
             );
         }
@@ -575,7 +582,13 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                     isOpen={isStakingConfirmationModalOpen}
                     onDismiss={() => setIsStakingConfirmationModalOpen(false)}
                     onButtonClick={() => {
-                        stake.depositAndStake(selectedStakingPools);
+                        stake.depositAndStake(
+                            selectedStakingPools.map(recommendation => ({
+                                poolId: recommendation.pool.poolId,
+                                zrxAmount: recommendation.zrxAmount,
+                            })),
+                        );
+
                         setIsStakingConfirmationModalOpen(false);
                     }}
                 />

@@ -8,7 +8,6 @@ import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { PanelHeader } from 'ts/components/ui/panel_header';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { colors } from 'ts/style/colors';
-import { WebsitePaths } from 'ts/types';
 
 interface UserData {
     zrxStakedFormatted: string;

@@ -713,7 +713,9 @@ export class Blockchain {
     private async _convertDecodedLogToFillAsync(decodedLog: LogWithDecodedArgs<ExchangeFillEventArgs>): Promise<Fill> {
         const args = decodedLog.args;
         const blockTimestamp = await this._web3Wrapper.getBlockTimestampAsync(decodedLog.blockHash);
+        // tslint:disable-next-line:no-unnecessary-type-assertion
         const makerToken = (assetDataUtils.decodeAssetDataOrThrow(args.makerAssetData) as ERC20AssetData).tokenAddress;
+        // tslint:disable-next-line:no-unnecessary-type-assertion
         const takerToken = (assetDataUtils.decodeAssetDataOrThrow(args.takerAssetData) as ERC20AssetData).tokenAddress;
         const fill = {
             filledTakerTokenAmount: args.takerAssetFilledAmount,

@@ -109,6 +109,9 @@ interface PoolWithStatsMap {
 const ADDRESS_OVERRIDE = '0xe36ea790bc9d7ab70c55260c66d52b1eca985f84';
 
 export const Account: React.FC<AccountProps> = () => {
+    const providerState = useSelector((state: State) => state.providerState);
+    const networkId = useSelector((state: State) => state.networkId);
+    const account = providerState.account as AccountReady;
     // NOTE: not yet implemented but left in for future reference
     const voteHistory: VoteHistory[] = [];
 
@@ -119,9 +122,8 @@ export const Account: React.FC<AccountProps> = () => {
     const [availableRewardsMap, setAvailableRewardsMap] = React.useState<PoolToRewardsMap | undefined>(undefined);
     const [totalAvailableRewards, setTotalAvailableRewards] = React.useState<BigNumber>(new BigNumber(0));
 
-    const apiClient = useAPIClient();
-    const { stakingContract } = useStake();
-    const account = useSelector((state: State) => state.providerState.account as AccountReady);
+    const apiClient = useAPIClient(networkId);
+    const { stakingContract } = useStake(networkId, providerState);
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
 
@@ -336,7 +338,7 @@ export const Account: React.FC<AccountProps> = () => {
                             actions={[
                                 {
                                     label: 'Start staking',
-                                    url: '/zrx/staking/wizard',
+                                    url: WebsitePaths.StakingWizard,
                                     isSameTarget: true,
                                 },
                             ]}
