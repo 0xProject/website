@@ -30,7 +30,7 @@ import { Status } from 'ts/components/staking/wizard/status';
 import { Spinner } from 'ts/components/ui/spinner';
 
 import { UseAllowanceHookResult } from 'ts/hooks/use_allowance';
-import { useTimeRemaining } from 'ts/hooks/use_seconds_remaining';
+import { useSecondsRemaining } from 'ts/hooks/use_seconds_remaining';
 import { UseStakeHookResult } from 'ts/hooks/use_stake';
 
 import { stakingUtils } from 'ts/utils/staking_utils';
@@ -40,6 +40,14 @@ import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
 import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
+
+const getFormattedTimeLeft = (secondsLeft: number) => {
+    if (secondsLeft === 0) {
+        return 'Almost done...';
+    }
+    const formattedSecondsLeft = formatDistanceStrict(0, secondsLeft * 1000, { unit: 'second' });
+    return `${formattedSecondsLeft} left`;
+}
 
 export interface WizardFlowProps {
     providerState: ProviderState;
@@ -452,8 +460,8 @@ const StartStaking: React.FC<StartStakingProps> = props => {
     const [isApproveTokenModalOpen, setIsApproveTokenModalOpen] = React.useState(false);
     const [isStakingConfirmationModalOpen, setIsStakingConfirmationModalOpen] = React.useState(false);
 
-    const timeRemainingForAllowanceApproval = useTimeRemaining(allowance.estimatedTransactionFinishTime);
-    const timeRemainingForStakingTransaction = useTimeRemaining(stake.estimatedTransactionFinishTime);
+    const timeRemainingForAllowanceApproval = useSecondsRemaining(allowance.estimatedTransactionFinishTime);
+    const timeRemainingForStakingTransaction = useSecondsRemaining(stake.estimatedTransactionFinishTime);
 
     if (selectedStakingPools && stake.result) {
         // TODO needs the info header (start staking + begins in n days)
@@ -480,7 +488,8 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                     <span>
                         {allowance.loadingState === TransactionLoadingState.WaitingForSignature
                             ? 'Waiting for signature'
-                            : `${timeRemainingForAllowanceApproval} left`}
+                            : getFormattedTimeLeft(timeRemainingForAllowanceApproval)
+                        }
                     </span>
                 </ButtonWithIcon>
             );
@@ -515,7 +524,8 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                     <span>
                         {stake.loadingState === TransactionLoadingState.WaitingForSignature
                             ? 'Waiting for signature'
-                            : `${timeRemainingForStakingTransaction} left`}
+                            : getFormattedTimeLeft(timeRemainingForStakingTransaction)
+                        }
                     </span>
                 </ButtonWithIcon>
             );
