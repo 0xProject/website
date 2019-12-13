@@ -357,7 +357,6 @@ const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
     const { stakingPools, setSelectedStakingPools, zrxBalanceBaseUnitAmount, unitAmount } = props;
 
     const formattedAmount = utils.getFormattedAmount(props.zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
-    const statusNode = getStatus(stakeAmount, props.stakingPools);
 
     if (!stakingPools) {
         return null;
@@ -442,13 +441,13 @@ export interface StartStakingProps {
     stake: UseStakeHookResult;
     allowance: UseAllowanceHookResult;
     selectedStakingPools: UserStakingChoice[] | undefined;
-    currentEpochStats?: Epoch;
+    nextEpochStats?: Epoch;
     address?: string;
 }
 
 // Core
 const StartStaking: React.FC<StartStakingProps> = props => {
-    const { selectedStakingPools, stake, allowance, address, currentEpochStats } = props;
+    const { selectedStakingPools, stake, allowance, address, nextEpochStats } = props;
 
     const [isApproveTokenModalOpen, setIsApproveTokenModalOpen] = React.useState(false);
     const [isStakingConfirmationModalOpen, setIsStakingConfirmationModalOpen] = React.useState(false);
@@ -562,7 +561,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
         }, new BigNumber(0));
         const stakingStartsFormattedTime = formatDistanceStrict(
             new Date(),
-            new Date(currentEpochStats.epochStart.timestamp),
+            new Date(nextEpochStats.epochStart.timestamp),
         );
         return (
             <>
@@ -631,7 +630,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     allowance,
     providerState,
     onOpenConnectWalletDialog,
-    currentEpochStats,
+    nextEpochStats,
 }) => {
     if (providerState.account.state !== AccountState.Ready) {
         return <ConnectWalletPane onOpenConnectWalletDialog={onOpenConnectWalletDialog} />;
@@ -686,7 +685,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
             address={providerState.account.address}
             allowance={allowance}
             stake={stake}
-            currentEpochStats={currentEpochStats}
+            nextEpochStats={nextEpochStats}
             providerState={providerState}
             selectedStakingPools={selectedStakingPools}
         />
