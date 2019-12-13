@@ -6,7 +6,14 @@ import { addMilliseconds } from 'date-fns';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import { useEffect, useState } from 'react';
 
-import { AccountReady, ProviderState, StakeStatus, StakingPoolRecomendation, TransactionLoadingState, UserStakingChoice } from 'ts/types';
+import {
+    AccountReady,
+    ProviderState,
+    StakeStatus,
+    StakingPoolRecomendation,
+    TransactionLoadingState,
+    UserStakingChoice,
+} from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
