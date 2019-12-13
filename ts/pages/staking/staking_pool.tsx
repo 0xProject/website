@@ -1,5 +1,6 @@
-import { stringify } from 'query-string';
-import * as React from 'react';
+import * as _ from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Redirect, RouteChildrenProps, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -9,8 +10,13 @@ import { HistoryChart } from 'ts/components/staking/history_chart';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { TradingPair } from 'ts/components/staking/trading_pair';
 
+import { useAPIClient } from 'ts/hooks/use_api_client';
+
 import { colors } from 'ts/style/colors';
-import { WebsitePaths } from 'ts/types';
+
+import { State } from 'ts/redux/reducer';
+import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
+import { utils } from 'ts/utils/utils';
 
 export interface ActionProps {
     children: React.ReactNode;
@@ -240,6 +246,17 @@ const tradingPairs = [
 export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = props => {
     const { poolId } = useParams();
 
+    const networkId = useSelector((state: State) => state.networkId);
+    const apiClient = useAPIClient(networkId);
+    const [stakingPool, setStakingPool] = useState<PoolWithHistoricalStats | undefined>(undefined);
+
+    useEffect(() => {
+        apiClient.getStakingPoolByIdAsync(poolId)
+            .then(res => setStakingPool(res.stakingPool))
+            .catch(e => console.error(e));
+    }, []);
+
+
     // Ensure poolId exists else redirect back to home page
     if (!poolId) {
         return (
@@ -247,36 +264,40 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
         );
     }
 
+    if (!stakingPool) {
+        return null;
+    }
+    const currentEpoch = _.last(stakingPool.epochRewards);
+
     return (
         <StakingPageLayout isHome={true} title="Staking pool">
             <DashboardHero
-                onButtonClick={() => props.history.push(`${WebsitePaths.StakingWizard}?${stringify({ poolId })}`)}
-                title="Binance Staking Pool"
-                websiteUrl="mywebsite.com"
-                poolId="0x1234...1234"
-                isVerified={true}
-                estimatedStake={75}
-                rewardsShared={74}
-                iconUrl=""
+                title={stakingPool.metaData.name}
+                websiteUrl={stakingPool.metaData.websiteUrl}
+                poolId={utils.getAddressBeginAndEnd(stakingPool.operatorAddress)}
+                isVerified={stakingPool.metaData.isVerified}
+                estimatedStake={75} // what's this
+                rewardsShared={74} // what's this
+                iconUrl={stakingPool.metaData.logoUrl || ''}
                 tabs={[
                     {
                         title: 'Current Epoch',
                         metrics: [
                             {
                                 title: 'Total Volume',
-                                number: '1.23M USD',
+                                number: '1.23M USD', // volume missing
                             },
                             {
                                 title: 'ZRX Staked',
-                                number: '1,288,229',
+                                number: '1,288,229', // zrx staked missing
                             },
                             {
                                 title: 'Fees Generated',
-                                number: '.000023 ETH',
+                                number: `${currentEpoch.totalRewardsPaidInEth} ETH`, // protocolFeesGeneratedInEth is missing, is that the same thing as total rewards?
                             },
                             {
                                 title: 'Rewards Shared',
-                                number: '.000023 ETH',
+                                number: `${currentEpoch.membersRewardsPaidInEth} ETH`,
                             },
                         ],
                     },
@@ -293,17 +314,18 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                             },
                             {
                                 title: 'Fees Generated',
-                                number: '.000023 ETH',
+                                number: `${stakingPool.allTimeStats.protocolFeesGeneratedInEth} ETH`,
                             },
                             {
                                 title: 'Rewards Shared',
-                                number: '.000023 ETH',
+                                number: `${stakingPool.allTimeStats.membersRewardsPaidInEth} ETH`,
                             },
                         ],
                     },
                 ]}
             />
-            <ActionsWrapper>
+            {/* TODO(johnrjj) Copy from account page when finished */}
+            {/* <ActionsWrapper>
                 <ActionsInner>
                     <ActionHeading>Your Stake</ActionHeading>
                     <Actions>
@@ -337,16 +359,18 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                         </Action>
                     </Actions>
                 </ActionsInner>
-            </ActionsWrapper>
+            </ActionsWrapper> */}
             <Container>
                 <GraphHeading>Historical Details</GraphHeading>
                 <HistoryChart
-                    fees={[40, 41, 40, 41, 40, 41, 40, 41, 40, 41, 40, 41]}
-                    rewards={[30, 31, 30, 31, 30, 31, 30, 31, 30, 31, 30, 31]}
-                    epochs={[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]}
+                    fees={stakingPool.epochRewards.map(e => e.totalRewardsPaidInEth)}
+                    rewards={stakingPool.epochRewards.map(e => e.totalRewardsPaidInEth)}
+                    epochs={stakingPool.epochRewards.map(() => 3)} // magic number
+                    // timestamps are missing (stakingPool.epochRewards.timestamp or something)
                     labels={['1 July', '5 July', '10 July', '15 July', '20 July', '25 July', '30 July']}
                 />
-                <Heading>Trading Pairs</Heading>
+                {/* Not right now */}
+                {/* <Heading>Trading Pairs</Heading>
                 <div>
                     {tradingPairs.map(({ price, currency, firstCurrency, secondCurrency, id, url }) => {
                         return (
@@ -363,7 +387,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                             </TradingPairContainer>
                         );
                     })}
-                </div>
+                </div> */}
             </Container>
         </StakingPageLayout>
     );

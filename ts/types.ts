@@ -1098,6 +1098,30 @@ export interface PoolWithStats extends Pool {
     sevenDayProtocolFeesGeneratedInEth: number;
 }
 
+export interface RewardsStats {
+    operatorRewardsPaidInEth: number;
+    membersRewardsPaidInEth: number;
+    totalRewardsPaidInEth: number;
+}
+
+export interface PoolEpochRewards extends RewardsStats {
+    epochId: number;
+}
+
+export interface AllTimePoolStats extends RewardsStats {
+    protocolFeesGeneratedInEth: number;
+}
+
+export interface PoolWithHistoricalStats extends Pool {
+    allTimeStats: AllTimePoolStats;
+    epochRewards: PoolEpochRewards[];
+}
+
+export interface StakingAPIPoolByIdResponse {
+    poolId: string;
+    stakingPool: PoolWithHistoricalStats;
+}
+
 export interface EpochPoolStats {
     poolId: string;
     zrxStaked: number;

@@ -1,4 +1,6 @@
+import { stringify } from 'query-string';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -8,6 +10,8 @@ import CheckmarkThin from 'ts/icons/illustrations/checkmark-thin.svg';
 import Checkmark from 'ts/icons/illustrations/checkmark.svg';
 
 import { colors } from 'ts/style/colors';
+
+import { WebsitePaths } from 'ts/types';
 
 interface Metrics {
     title: string;
@@ -28,7 +32,6 @@ interface DashboardHeroProps {
     rewardsShared: number;
     iconUrl: string;
     tabs: DashBoardHeroTabs[];
-    onButtonClick: (poolId: string) => any;
 }
 
 interface WrapperProps {}
@@ -222,7 +225,6 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
     estimatedStake,
     rewardsShared,
     iconUrl,
-    onButtonClick,
 }) => {
     const [selectedTabIndex, setSelectedTabIndex] = React.useState<number>(0);
 
@@ -258,10 +260,9 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                             )}
                         </HorizontalList>
                         <ButtonContainer>
-                            {/* todo(johnrjj), convert to use react-router <Link> instead of history.push */}
                             <StakingButton
-                                onClick={(_e: string) => onButtonClick(poolId)}
-                                href="#"
+                                as={Link}
+                                to={`${WebsitePaths.StakingWizard}?${stringify({ poolId })}`}
                                 color={colors.white}
                                 isFullWidth={true}
                                 isLarge={true}
