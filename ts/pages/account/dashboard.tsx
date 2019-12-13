@@ -19,13 +19,7 @@ import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import {
-    AccountReady,
-    PoolWithStats,
-    StakingAPIDelegatorResponse,
-    StakingAPIPoolsResponse,
-    WebsitePaths,
-} from 'ts/types';
+import { AccountReady, PoolWithStats, StakingAPIDelegatorResponse, VoteHistory, WebsitePaths } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
@@ -57,29 +51,6 @@ const MOCK_DATA = {
             },
             isVerified: true,
             approximateTimestamp: 778435, // Maybe this would be in another format and need a convert method in the component
-        },
-    ],
-    voteHistory: [
-        {
-            title: 'StaticCallAssetProxy',
-            zeip: 39,
-            vote: 'yes',
-            summary:
-                'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
-        },
-        {
-            title: 'AssetProxy',
-            zeip: 40,
-            vote: 'no',
-            summary:
-                'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
-        },
-        {
-            title: 'TestVoteTitle',
-            zeip: 41,
-            vote: 'yes',
-            summary:
-                'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
         },
     ],
 };
@@ -138,6 +109,9 @@ interface PoolWithStatsMap {
 const ADDRESS_OVERRIDE = '0xe36ea790bc9d7ab70c55260c66d52b1eca985f84';
 
 export const Account: React.FC<AccountProps> = () => {
+    // NOTE: not yet implemented but left in for future reference
+    const voteHistory: VoteHistory[] = [];
+
     const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
     const [isFetchingDelegatorData, setIsFetchingDelegatorData] = React.useState<boolean>(false);
     const [delegatorData, setDelegatorData] = React.useState<StakingAPIDelegatorResponse | undefined>(undefined);
@@ -335,25 +309,25 @@ export const Account: React.FC<AccountProps> = () => {
                 </AccountActivitySummary>
             </SectionWrapper>
 
-            <SectionWrapper>
-                <SectionHeader>
-                    <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
-                        Your staking pools
-                    </Heading>
+            {/* TODO add loadin animations or display partially loaded data */}
+            {hasDataLoaded() && (
+                <SectionWrapper>
+                    <SectionHeader>
+                        <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                            Your staking pools
+                        </Heading>
 
-                    <Button
-                        color={colors.brandDark}
-                        isWithArrow={true}
-                        isTransparent={true}
-                        onClick={() => toggleApplyModal(true)}
-                    >
-                        Apply to create a staking pool
-                    </Button>
-                </SectionHeader>
+                        <Button
+                            color={colors.brandDark}
+                            isWithArrow={true}
+                            isTransparent={true}
+                            onClick={() => toggleApplyModal(true)}
+                        >
+                            Apply to create a staking pool
+                        </Button>
+                    </SectionHeader>
 
-                {/* If we have data and user does not have any pools now or in next epoch show CTA */}
-                {hasDataLoaded() &&
-                    (delegatorData.forCurrentEpoch.poolData.length === 0 ? (
+                    {delegatorData.forCurrentEpoch.poolData.length === 0 ? (
                         <CallToAction
                             icon="revenue"
                             title="You haven't staked ZRX"
@@ -400,29 +374,33 @@ export const Account: React.FC<AccountProps> = () => {
                                 />
                             );
                         })
-                    ))}
-            </SectionWrapper>
+                    )}
+                </SectionWrapper>
+            )}
 
-            <SectionWrapper>
-                <SectionHeader>
-                    <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
-                        Your voting history
-                    </Heading>
-                </SectionHeader>
+            {voteHistory.length > 0 && (
+                <SectionWrapper>
+                    <SectionHeader>
+                        <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                            Your voting history
+                        </Heading>
+                    </SectionHeader>
 
-                <Grid>
-                    {_.map(MOCK_DATA.voteHistory, item => {
-                        return (
-                            <AccountVote
-                                title={item.title}
-                                zeipId={item.zeip}
-                                summary={item.summary}
-                                vote={item.vote}
-                            />
-                        );
-                    })}
-                </Grid>
-            </SectionWrapper>
+                    <Grid>
+                        {_.map(voteHistory, (item, index) => {
+                            return (
+                                <AccountVote
+                                    key={`vote-history-${index}`}
+                                    title={item.title}
+                                    zeipId={item.zeip}
+                                    summary={item.summary}
+                                    vote={item.vote}
+                                />
+                            );
+                        })}
+                    </Grid>
+                </SectionWrapper>
+            )}
 
             <AccountApplyModal isOpen={isApplyModalOpen} onDismiss={() => toggleApplyModal(false)} />
         </StakingPageLayout>

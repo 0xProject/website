@@ -4,6 +4,22 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
 
+/*
+ * Staking dashboard vote history example
+ * Example Vote History
+ * {
+ *     title: 'StaticCallAssetProxy',
+ *     zeip: 39,
+ *     vote: 'yes',
+ *     summary: 'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
+ * }
+ */
+export interface VoteHistory {
+    title: string;
+    zeip: number;
+    vote: 'yes' | 'no';
+    summary: string;
+}
 export interface StakePoolData {
     poolId: string;
     zrxAmount: number;
