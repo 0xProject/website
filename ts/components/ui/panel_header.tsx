@@ -98,7 +98,7 @@ export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
                 </Avatar>
             )}
 
-            <div>
+            <div style={{ flex: 1 }}>
                 <Flex>
                     <Heading size="small" fontWeight="500" isNoMargin={true} style={{ marginRight: '8px' }}>
                         {title || children}

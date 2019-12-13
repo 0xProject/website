@@ -1,3 +1,4 @@
+import { formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -22,7 +23,7 @@ interface StakeOverviewProps {
     rewardsSharedRatio: number;
     stakeRatio: number;
     userData: UserData;
-    approximateTimestamp: number;
+    nextEpochApproximateStart: Date;
     isVerified: boolean;
 }
 
@@ -34,9 +35,10 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
     rewardsSharedRatio = 0,
     stakeRatio = 0,
     userData,
-    approximateTimestamp,
+    nextEpochApproximateStart,
     isVerified,
 }) => {
+    const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(nextEpochApproximateStart));
     return (
         <Wrap>
             <Flex>
@@ -90,8 +92,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                                 Next epoch
                             </Heading>
 
-                            {/* Needs to be formatted */}
-                            {approximateTimestamp || '2 days'}
+                            {stakingStartsFormattedTime}
                         </div>
                     </InlineStats>
 

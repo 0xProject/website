@@ -19,7 +19,7 @@ import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { AccountReady, PoolWithStats, StakingAPIDelegatorResponse, VoteHistory, WebsitePaths } from 'ts/types';
+import { AccountReady, Epoch, PoolWithStats, StakingAPIDelegatorResponse, VoteHistory, WebsitePaths } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
@@ -121,6 +121,7 @@ export const Account: React.FC<AccountProps> = () => {
     const [poolWithStatsMap, setPoolWithStatsMap] = React.useState<PoolWithStatsMap | undefined>(undefined);
     const [availableRewardsMap, setAvailableRewardsMap] = React.useState<PoolToRewardsMap | undefined>(undefined);
     const [totalAvailableRewards, setTotalAvailableRewards] = React.useState<BigNumber>(new BigNumber(0));
+    const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
 
     const apiClient = useAPIClient(networkId);
     const { stakingContract } = useStake(networkId, providerState);
@@ -129,9 +130,10 @@ export const Account: React.FC<AccountProps> = () => {
 
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
-            const [delegatorResponse, poolsResponse] = await Promise.all([
+            const [delegatorResponse, poolsResponse, epochsResponse] = await Promise.all([
                 apiClient.getDelegatorAsync(ADDRESS_OVERRIDE),
                 apiClient.getStakingPoolsAsync(),
+                apiClient.getStakingEpochsAsync(),
             ]);
 
             const _poolWithStatsMap = poolsResponse.stakingPools.reduce<PoolWithStatsMap>((memo, pool) => {
@@ -141,6 +143,7 @@ export const Account: React.FC<AccountProps> = () => {
 
             setDelegatorData(delegatorResponse);
             setPoolWithStatsMap(_poolWithStatsMap);
+            setNextEpochStats(epochsResponse.nextEpoch);
         };
 
         if (!account.address || isFetchingDelegatorData) {
@@ -372,7 +375,7 @@ export const Account: React.FC<AccountProps> = () => {
                                     rewardsSharedRatio={1 - pool.nextEpochStats.operatorShare}
                                     feesGenerated={getFormattedAmount(pool.sevenDayProtocolFeesGeneratedInEth, 'ETH')}
                                     userData={userData}
-                                    approximateTimestamp={new Date().getTime()} // TODO: implement
+                                    nextEpochApproximateStart={new Date(nextEpochStats.epochStart.timestamp)}
                                     isVerified={pool.metaData.isVerified}
                                 />
                             );
