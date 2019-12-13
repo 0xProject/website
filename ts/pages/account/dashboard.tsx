@@ -366,8 +366,8 @@ export const Account: React.FC<AccountProps> = () => {
                                     name={pool.metaData.name || pool.operatorAddress}
                                     websiteUrl={pool.metaData.websiteUrl}
                                     logoUrl={pool.metaData.logoUrl}
-                                    rewardsShared={'101%'} // TODO: FIX
-                                    totalStaked={'101%'} // TODO: FIX
+                                    stakeRatio={pool.nextEpochStats.approximateStakeRatio}
+                                    rewardsSharedRatio={1 - pool.nextEpochStats.operatorShare}
                                     feesGenerated={getFormattedAmount(pool.sevenDayProtocolFeesGeneratedInEth, 'ETH')}
                                     userData={userData}
                                     approximateTimestamp={new Date().getTime()} // TODO: implement

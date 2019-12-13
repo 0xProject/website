@@ -44,6 +44,7 @@ const Avatar = styled.figure<AvatarProps>`
     border: 1px solid ${colors.border};
     margin-right: 20px;
     position: relative;
+    display: flex;
 
     img {
         object-fit: cover;
@@ -87,32 +88,24 @@ export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
         <Wrap>
             {avatarSrc && (
                 <Avatar isResponsive={isResponsiveAvatar}>
-                    <img src={avatarSrc} />
+                    <img style={{ margin: 'auto' }} src={avatarSrc} />
 
-                    {icon &&
+                    {icon && (
                         <IconWrap>
                             <Icon name={icon} size={24} />
                         </IconWrap>
-                    }
+                    )}
                 </Avatar>
             )}
 
             <div>
                 <Flex>
-                    <Heading
-                        size="small"
-                        fontWeight="500"
-                        isNoMargin={true}
-                        style={{ marginRight: '8px' }}
-                    >
+                    <Heading size="small" fontWeight="500" isNoMargin={true} style={{ marginRight: '8px' }}>
                         {title || children}
                     </Heading>
                 </Flex>
 
-                <Paragraph
-                    fontSize="17px"
-                    isNoMargin={true}
-                >
+                <Paragraph fontSize="17px" isNoMargin={true}>
                     {subtitle}
                 </Paragraph>
             </div>

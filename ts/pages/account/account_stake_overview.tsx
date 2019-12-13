@@ -19,9 +19,9 @@ interface StakeOverviewProps {
     name: string;
     websiteUrl?: string;
     logoUrl?: string;
-    rewardsShared: string;
     feesGenerated: string;
-    totalStaked: string;
+    rewardsSharedRatio: number;
+    stakeRatio: number;
     userData: UserData;
     approximateTimestamp: number;
     isVerified: boolean;
@@ -31,9 +31,9 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
     name,
     websiteUrl,
     logoUrl,
-    rewardsShared = '0 ETH',
     feesGenerated = '0 ETH',
-    totalStaked = '0%',
+    rewardsSharedRatio = 0,
+    stakeRatio = 0,
     userData,
     approximateTimestamp,
     isVerified,
@@ -47,8 +47,8 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
 
                 <Stats>
                     <StatFigure label="Fees Generated" value={feesGenerated} />
-                    <StatFigure label="Rewards Shared" value={rewardsShared} />
-                    <StatFigure label="Staked" value={totalStaked} />
+                    <StatFigure label="Rewards Shared" value={`${Math.floor(rewardsSharedRatio * 100)}%`} />
+                    <StatFigure label="Staked" value={`${Math.floor(stakeRatio * 100)}%`} />
                 </Stats>
             </Flex>
 
