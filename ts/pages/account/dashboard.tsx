@@ -92,9 +92,6 @@ interface PoolWithStatsMap {
     [key: string]: PoolWithStats;
 }
 
-// NOTE: TESTING ONLY! REMOVE THIS BEFORE MERGING
-const ADDRESS_OVERRIDE = '0xe36ea790bc9d7ab70c55260c66d52b1eca985f84';
-
 export const Account: React.FC<AccountProps> = () => {
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
@@ -112,14 +109,14 @@ export const Account: React.FC<AccountProps> = () => {
     const [pendingUnstakePools, setPendingUnstakePools] = React.useState<PendingUnstakePool[]>([]);
 
     const apiClient = useAPIClient(networkId);
-    const { stakingContract } = useStake(networkId, providerState);
+    const { stakingContract, unstake } = useStake(networkId, providerState);
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
 
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
             const [delegatorResponse, poolsResponse, epochsResponse] = await Promise.all([
-                apiClient.getDelegatorAsync(ADDRESS_OVERRIDE),
+                apiClient.getDelegatorAsync(account.address),
                 apiClient.getStakingPoolsAsync(),
                 apiClient.getStakingEpochsAsync(),
             ]);
@@ -160,7 +157,7 @@ export const Account: React.FC<AccountProps> = () => {
                     const paddedHexPoolId = hexUtils.leftPad(hexUtils.toHex(poolData.poolId));
 
                     const availableRewardInEth = await stakingContract
-                        .computeRewardBalanceOfDelegator(paddedHexPoolId, ADDRESS_OVERRIDE)
+                        .computeRewardBalanceOfDelegator(paddedHexPoolId, account.address)
                         .callAsync();
 
                     // TODO(kimpers): There is some typing issue here, circle back later to remove the BigNumber conversion
@@ -357,6 +354,7 @@ export const Account: React.FC<AccountProps> = () => {
                         _.map(delegatorData.forCurrentEpoch.poolData, (delegatorPoolStats, index) => {
                             const poolId = delegatorPoolStats.poolId;
                             const pool = poolWithStatsMap[poolId];
+                            // TODO: refresh data from api or hide in client?
 
                             if (!pool) {
                                 return null;
@@ -368,7 +366,7 @@ export const Account: React.FC<AccountProps> = () => {
                             const userData = {
                                 rewardsReceivedFormatted: utils.getFormattedUnitAmount(availablePoolRewards),
                                 zrxStakedFormatted: utils.getFormattedUnitAmount(
-                                    new BigNumber(delegatorData.forCurrentEpoch.zrxStaked),
+                                    new BigNumber(delegatorPoolStats.zrxStaked),
                                 ),
                             };
 
@@ -384,6 +382,9 @@ export const Account: React.FC<AccountProps> = () => {
                                     userData={userData}
                                     nextEpochApproximateStart={new Date(nextEpochStats.epochStart.timestamp)}
                                     isVerified={pool.metaData.isVerified}
+                                    onRemoveStake={() => {
+                                        unstake([{ poolId, zrxAmount: delegatorPoolStats.zrxStaked }]);
+                                    }}
                                 />
                             );
                         })
