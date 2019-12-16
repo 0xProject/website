@@ -1,3 +1,4 @@
+import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 
 import { PoolWithStats, StakingPoolRecomendation } from '../types';
@@ -54,4 +55,42 @@ export const stakingUtils = {
         }), []);
         return recs;
     },
+    // getRecommendedStakingPoolsBigNumber: (amountZrxToStake: number, pools: PoolWithStats[], opts?: Partial<GetRecommendedStakingPoolsOptions>): StakingPoolRecomendation[] => {
+    //     if (!pools || !amountZrxToStake) {
+    //         return [];
+    //     }
+    //     const { alpha, numIterations } = {
+    //         alpha: constants.COBBS_DOUGLAS_ALPHA,
+    //         numIterations: new BigNumber(3),
+    //         ...opts,
+    //     };
+    //     const poolsSummary: PoolStatSummary[] = pools.map(pool => ({
+    //         poolId: pool.poolId,
+    //         operatorShare: pool.nextEpochStats.operatorShare,
+    //         sevenDayProtocolFeesGeneratedInEth: pool.sevenDayProtocolFeesGeneratedInEth,
+    //         zrxStaked: pool.nextEpochStats.zrxStaked,
+    //     }));
+    //     const stakingDecisions: { [poolId: string]: BigNumber } = {};
+    //     for (let i = 0; i < numIterations; i++) {
+    //         // const totalStake: BigNumber = BigNumber.sum(poolsSummary.map(p => new BigNumber(p.zrxStaked)))
+    //         const totalStake: BigNumber = _.sumBy(poolsSummary, p => p.zrxStaked);
+    //         const totalProtocolFees: BigNumber = _.sumBy(poolsSummary, p => p.sevenDayProtocolFeesGeneratedInEth);
+    //         const adjustedStakeRatios: BigNumber[] = [];
+    //         for (const pool of poolsSummary) {
+    //             const stakeRatio = (pool.zrxStaked / totalStake) / (totalProtocolFees > 0 ? pool.sevenDayProtocolFeesGeneratedInEth / totalProtocolFees : 1);
+    //             const adjStakeRatio = Math.pow(((1 - alpha) / (1 - pool.operatorShare)), (1 / alpha)) * stakeRatio;
+    //             adjustedStakeRatios.push(adjStakeRatio);
+    //         }
+    //         const bestPoolIndex = adjustedStakeRatios.indexOf(_.min(adjustedStakeRatios));
+    //         const bestPool = poolsSummary[bestPoolIndex];
+    //         stakingDecisions[bestPool.poolId] = stakingDecisions[bestPool.poolId] || new BigNumber(0);
+    //         stakingDecisions[bestPool.poolId] += amountZrxToStake / numIterations;
+    //         bestPool.zrxStaked += (amountZrxToStake / numIterations);
+    //     }
+    //     const recs = Object.keys(stakingDecisions).map(poolId => ({
+    //         pool: pools.find(pool => pool.poolId === poolId),
+    //         zrxAmount: stakingDecisions[poolId],
+    //     }), []);
+    //     return recs;
+    // },
 };
