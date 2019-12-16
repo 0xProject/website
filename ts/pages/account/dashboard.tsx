@@ -243,6 +243,8 @@ export const Account: React.FC<AccountProps> = () => {
         });
     }, [delegatorData, account.address]);
 
+    const pendingUnstakePoolIds = new Set(pendingUnstakePools.map(p => p.poolId));
+
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
@@ -366,43 +368,48 @@ export const Account: React.FC<AccountProps> = () => {
                             ]}
                         />
                     ) : (
-                        _.map(delegatorData.forCurrentEpoch.poolData, (delegatorPoolStats, index) => {
-                            const poolId = delegatorPoolStats.poolId;
-                            const pool = poolWithStatsMap[poolId];
-                            // TODO: refresh data from api or hide in client?
+                        delegatorData.forCurrentEpoch.poolData
+                            // Don't show pools with pending withdrawals, they are shown in pending section instead
+                            .filter(p => !pendingUnstakePoolIds.has(p.poolId))
+                            .map(delegatorPoolStats => {
+                                const poolId = delegatorPoolStats.poolId;
+                                const pool = poolWithStatsMap[poolId];
 
-                            if (!pool) {
-                                return null;
-                            }
+                                if (!pool) {
+                                    return null;
+                                }
 
-                            const availablePoolRewards =
-                                (availableRewardsMap[poolId] && availableRewardsMap[poolId]) || new BigNumber(0);
+                                const availablePoolRewards =
+                                    (availableRewardsMap[poolId] && availableRewardsMap[poolId]) || new BigNumber(0);
 
-                            const userData = {
-                                rewardsReceivedFormatted: utils.getFormattedUnitAmount(availablePoolRewards),
-                                zrxStakedFormatted: utils.getFormattedUnitAmount(
-                                    new BigNumber(delegatorPoolStats.zrxStaked),
-                                ),
-                            };
+                                const userData = {
+                                    rewardsReceivedFormatted: utils.getFormattedUnitAmount(availablePoolRewards),
+                                    zrxStakedFormatted: utils.getFormattedUnitAmount(
+                                        new BigNumber(delegatorPoolStats.zrxStaked),
+                                    ),
+                                };
 
-                            return (
-                                <AccountStakeOverview
-                                    key={`stake-${pool.poolId}`}
-                                    name={pool.metaData.name || pool.operatorAddress}
-                                    websiteUrl={pool.metaData.websiteUrl}
-                                    logoUrl={pool.metaData.logoUrl}
-                                    stakeRatio={pool.nextEpochStats.approximateStakeRatio}
-                                    rewardsSharedRatio={1 - pool.nextEpochStats.operatorShare}
-                                    feesGenerated={getFormattedAmount(pool.sevenDayProtocolFeesGeneratedInEth, 'ETH')}
-                                    userData={userData}
-                                    nextEpochApproximateStart={new Date(nextEpochStats.epochStart.timestamp)}
-                                    isVerified={pool.metaData.isVerified}
-                                    onRemoveStake={() => {
-                                        unstake([{ poolId, zrxAmount: delegatorPoolStats.zrxStaked }]);
-                                    }}
-                                />
-                            );
-                        })
+                                return (
+                                    <AccountStakeOverview
+                                        key={`stake-${pool.poolId}`}
+                                        name={pool.metaData.name || `Pool ${pool.poolId}`}
+                                        websiteUrl={pool.metaData.websiteUrl}
+                                        logoUrl={pool.metaData.logoUrl}
+                                        stakeRatio={pool.nextEpochStats.approximateStakeRatio}
+                                        rewardsSharedRatio={1 - pool.nextEpochStats.operatorShare}
+                                        feesGenerated={getFormattedAmount(
+                                            pool.sevenDayProtocolFeesGeneratedInEth,
+                                            'ETH',
+                                        )}
+                                        userData={userData}
+                                        nextEpochApproximateStart={new Date(nextEpochStats.epochStart.timestamp)}
+                                        isVerified={pool.metaData.isVerified}
+                                        onRemoveStake={() => {
+                                            unstake([{ poolId, zrxAmount: delegatorPoolStats.zrxStaked }]);
+                                        }}
+                                    />
+                                );
+                            })
                     )}
                 </SectionWrapper>
             )}
