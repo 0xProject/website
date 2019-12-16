@@ -43,6 +43,7 @@
         "change-case": "^3.0.2",
         "chart.js": "^2.8.0",
         "date-fns": "^2.8.1",
+        "decimal.js": "^10.2.0",
         "deep-equal": "^1.0.1",
         "ethereum-types": "^2.1.5",
         "ethereumjs-util": "^5.1.1",
