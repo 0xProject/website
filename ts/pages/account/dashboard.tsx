@@ -1,5 +1,6 @@
 import { BigNumber, hexUtils, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import { format } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
@@ -25,7 +26,6 @@ import {
     PoolWithHistoricalStats,
     PoolWithStats,
     StakingAPIDelegatorResponse,
-    StakingPoolResponse,
     VoteHistory,
     WebsitePaths,
 } from 'ts/types';
@@ -37,9 +37,12 @@ import { useStake } from 'ts/hooks/use_stake';
 
 export interface AccountProps {}
 
-interface PendingUnstakePool extends PoolWithHistoricalStats {
-    poolId: string;
-    zrxToBeUnstaked: number;
+interface PoolWithUserStake extends PoolWithHistoricalStats {
+    userStake: {
+        poolId: string;
+        currentEpochZrxStaked: number;
+        nextEpochZrxStaked: number;
+    };
 }
 
 interface AvailableZrxBalanceProps {
@@ -106,7 +109,7 @@ export const Account: React.FC<AccountProps> = () => {
     const [availableRewardsMap, setAvailableRewardsMap] = React.useState<PoolToRewardsMap | undefined>(undefined);
     const [totalAvailableRewards, setTotalAvailableRewards] = React.useState<BigNumber>(new BigNumber(0));
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
-    const [pendingUnstakePools, setPendingUnstakePools] = React.useState<PendingUnstakePool[]>([]);
+    const [pendingUnstakePools, setPendingUnstakePools] = React.useState<PoolWithUserStake[]>([]);
 
     const apiClient = useAPIClient(networkId);
     const { stakingContract, unstake } = useStake(networkId, providerState);
@@ -192,17 +195,7 @@ export const Account: React.FC<AccountProps> = () => {
         const fetchPendingActivityData = async () => {
             // pools being staked with now but not next epoch are pending unstake
             // TODO(kimpers): handle partial unstake
-            const pendingUnstakePoolData = _.differenceBy(
-                delegatorData.forCurrentEpoch.poolData,
-                delegatorData.forNextEpoch.poolData,
-                'poolId',
-            );
-
-            const pools = await Promise.all<StakingPoolResponse>(
-                pendingUnstakePoolData.map(async poolData => apiClient.getStakingPoolAsync(poolData.poolId)),
-            );
-
-            const zrxToBeUnstakedPoolMap = pendingUnstakePoolData.reduce<{ [key: string]: number }>(
+            const poolDataNextEpochMap = delegatorData.forNextEpoch.poolData.reduce<{ [key: string]: number }>(
                 (memo, poolData) => {
                     memo[poolData.poolId] = poolData.zrxStaked;
                     return memo;
@@ -210,10 +203,27 @@ export const Account: React.FC<AccountProps> = () => {
                 {},
             );
 
-            const _pendingUnstakePools: PendingUnstakePool[] = pools.map(pool => ({
-                ...pool.stakingPool,
-                zrxToBeUnstaked: zrxToBeUnstakedPoolMap[pool.poolId],
+            const poolDataStaked = delegatorData.forCurrentEpoch.poolData.map(pool => ({
+                poolId: pool.poolId,
+                currentEpochZrxStaked: pool.zrxStaked,
+                nextEpochZrxStaked: poolDataNextEpochMap[pool.poolId] || 0,
             }));
+
+            // TODO(kimpers): handle pending stake as well
+            const poolsWithPendingUnstake = poolDataStaked.filter(
+                pool => pool.currentEpochZrxStaked > pool.nextEpochZrxStaked,
+            );
+
+            const _pendingUnstakePools = await Promise.all<PoolWithUserStake>(
+                poolsWithPendingUnstake.map(async poolData => {
+                    const poolResponse = await apiClient.getStakingPoolAsync(poolData.poolId);
+
+                    return {
+                        ...poolResponse.stakingPool,
+                        userStake: poolData,
+                    };
+                }),
+            );
 
             setPendingUnstakePools(_pendingUnstakePools);
         };
@@ -307,13 +317,18 @@ export const Account: React.FC<AccountProps> = () => {
                     {pendingUnstakePools.map((pool, index) => (
                         <AccountActivitySummary
                             key={`account-acctivity-summary-${index}`}
-                            title={`${getFormattedAmount(pool.zrxToBeUnstaked, 'ZRX')} will be removed from ${pool
-                                .metaData.name || `Pool ${pool.poolId}`}`}
+                            title={`${getFormattedAmount(
+                                pool.userStake.currentEpochZrxStaked - pool.userStake.nextEpochZrxStaked,
+                                'ZRX',
+                            )} will be removed from ${pool.metaData.name || `Pool ${pool.poolId}`}`}
                             subtitle="Your tokens will need to be manually withdrawn once they are removed"
                             avatarSrc={pool.metaData.logoUrl || undefined}
                             icon="clock"
                         >
-                            <StatFigure label="Withdraw date" value="9/19/29" />
+                            <StatFigure
+                                label="Withdraw date"
+                                value={format(new Date(nextEpochStats.epochStart.timestamp), 'd/M/yy')}
+                            />
                         </AccountActivitySummary>
                     ))}
                 </SectionWrapper>
@@ -489,3 +504,4 @@ const Grid = styled.div`
     flex-wrap: wrap;
     justify-content: space-between;
 `;
+// tslint:disable:max-file-line-count

@@ -11,7 +11,6 @@ import { fetchUtils } from 'ts/utils/fetch_utils';
 import { utils } from 'ts/utils/utils';
 
 const STAKING_POOLS_ENDPOINT = '/staking/pools';
-const STAKING_POOL_ENDPOINT = '/staking/pool';
 const DELEGATOR_ENDPOINT = '/staking/delegator';
 const STAKING_EPOCHS_ENDPOINT = '/staking/epochs';
 
@@ -29,7 +28,7 @@ export class APIClient {
     public async getStakingPoolAsync(poolId: string): Promise<StakingPoolResponse> {
         const result = await fetchUtils.requestAsync(
             utils.getAPIBaseUrl(this.networkId),
-            `${STAKING_POOL_ENDPOINT}/${poolId}`,
+            `${STAKING_POOLS_ENDPOINT}/${poolId}`,
         );
 
         return result;
