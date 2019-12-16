@@ -25,6 +25,7 @@ import {
     Epoch,
     PoolWithHistoricalStats,
     PoolWithStats,
+    StakeStatus,
     StakingAPIDelegatorResponse,
     VoteHistory,
     WebsitePaths,
@@ -44,27 +45,6 @@ interface PoolWithUserStake extends PoolWithHistoricalStats {
         nextEpochZrxStaked: number;
     };
 }
-
-interface AvailableZrxBalanceProps {
-    account?: AccountReady;
-    delegatorData?: StakingAPIDelegatorResponse;
-}
-
-const AvailableZrxBalance = ({ account, delegatorData }: AvailableZrxBalanceProps) => {
-    let availableBalance: BigNumber = new BigNumber(0);
-    if (account && account.zrxBalanceBaseUnitAmount) {
-        availableBalance = account.zrxBalanceBaseUnitAmount;
-    }
-
-    if (delegatorData) {
-        const depositedBalance = new BigNumber(delegatorData.forCurrentEpoch.zrxDeposited).shiftedBy(
-            constants.DECIMAL_PLACES_ZRX,
-        );
-        availableBalance = availableBalance.plus(depositedBalance);
-    }
-
-    return <span>{`${utils.getFormattedAmount(availableBalance, constants.DECIMAL_PLACES_ZRX)} ZRX`}</span>;
-};
 
 const getFormattedAmount = (amount: number, currency: string) =>
     `${utils.getFormattedUnitAmount(new BigNumber(amount))} ${currency}`;
@@ -110,9 +90,10 @@ export const Account: React.FC<AccountProps> = () => {
     const [totalAvailableRewards, setTotalAvailableRewards] = React.useState<BigNumber>(new BigNumber(0));
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
     const [pendingUnstakePools, setPendingUnstakePools] = React.useState<PoolWithUserStake[]>([]);
+    const [undelegatedBalanceBaseUnits, setUndelegatedBalanceBaseUnits] = React.useState<BigNumber>(new BigNumber(0));
 
     const apiClient = useAPIClient(networkId);
-    const { stakingContract, unstake } = useStake(networkId, providerState);
+    const { stakingContract, unstake, withdrawStake } = useStake(networkId, providerState);
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
 
@@ -155,6 +136,19 @@ export const Account: React.FC<AccountProps> = () => {
             const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter(
                 poolData => poolData.rewardsInEth > 0,
             );
+
+            const undelegatedBalancesBaseUnits = await stakingContract
+                .getOwnerStakeByStatus(account.address, StakeStatus.Undelegated)
+                .callAsync();
+
+            const undelegatedInBothEpochsBaseUnits = undelegatedBalancesBaseUnits.currentEpochBalance.gt(
+                undelegatedBalancesBaseUnits.nextEpochBalance,
+            )
+                ? undelegatedBalancesBaseUnits.nextEpochBalance
+                : undelegatedBalancesBaseUnits.currentEpochBalance;
+
+            setUndelegatedBalanceBaseUnits(undelegatedInBothEpochsBaseUnits);
+
             const poolRewards: PoolReward[] = await Promise.all(
                 poolsWithAllTimeRewards.map(async poolData => {
                     const paddedHexPoolId = hexUtils.leftPad(hexUtils.toHex(poolData.poolId));
@@ -253,14 +247,29 @@ export const Account: React.FC<AccountProps> = () => {
 
                     <Figures>
                         <AccountFigure
-                            label="Available balance"
+                            label="Available"
                             headerComponent={() => (
-                                <InfoTooltip id="available-balance">
-                                    This is the amount available for delegation starting in the next Epoch
-                                </InfoTooltip>
+                                <>
+                                    <InfoTooltip id="available-balance">
+                                        This is the amount available for withdrawal
+                                    </InfoTooltip>
+                                    {undelegatedBalanceBaseUnits.gt(0) && (
+                                        <Button
+                                            isWithArrow={true}
+                                            isTransparent={true}
+                                            fontSize="17px"
+                                            color={colors.brandLight}
+                                            onClick={() => {
+                                                withdrawStake(undelegatedBalanceBaseUnits);
+                                            }}
+                                        >
+                                            Withdraw
+                                        </Button>
+                                    )}
+                                </>
                             )}
                         >
-                            <AvailableZrxBalance account={account} delegatorData={delegatorData} />
+                            {utils.getFormattedAmount(undelegatedBalanceBaseUnits, constants.DECIMAL_PLACES_ZRX)}
                         </AccountFigure>
 
                         <AccountFigure

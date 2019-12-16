@@ -27,7 +27,7 @@ const normalizeStakePoolData = (stakePoolData: StakePoolData[]) =>
 export interface UseStakeHookResult {
     depositAndStake: (stakingPools: StakePoolData[]) => void;
     unstake: (stakePoolData: StakePoolData[]) => void;
-    withdrawStake: (zrxAmount: number) => void;
+    withdrawStake: (zrxAmountBaseUnits: BigNumber) => void;
     withdrawRewards: (poolIds: string[]) => void;
     stakingContract?: StakingContract;
     loadingState?: TransactionLoadingState;
@@ -135,8 +135,8 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         await executeWithData(data);
     };
 
-    const withdrawStakeAsync = async (zrxAmount: number) => {
-        if (!zrxAmount || isTxInProgress(loadingState)) {
+    const withdrawStakeAsync = async (zrxAmountBaseUnits: BigNumber) => {
+        if (zrxAmountBaseUnits.isLessThanOrEqualTo(0) || isTxInProgress(loadingState)) {
             return;
         }
 
@@ -144,7 +144,6 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
 
         const gasInfo = await backendClient.getGasInfoAsync();
 
-        const zrxAmountBaseUnits = toZrxBaseUnits(zrxAmount);
         const txPromise = stakingContract
             .unstake(zrxAmountBaseUnits)
             .awaitTransactionSuccessAsync({ from: ownerAddress, gasPrice: gasInfo.gasPriceInWei });
@@ -197,8 +196,8 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         unstake: (stakePoolData: StakePoolData[]) => {
             unstakeFromPoolsAsync(stakePoolData).catch(handleError);
         },
-        withdrawStake: (zrxAmount: number) => {
-            withdrawStakeAsync(zrxAmount).catch(handleError);
+        withdrawStake: (zrxAmountBaseUnits: BigNumber) => {
+            withdrawStakeAsync(zrxAmountBaseUnits).catch(handleError);
         },
         withdrawRewards: (poolIds: string[]) => {
             withdrawRewardsAsync(poolIds).catch(handleError);
