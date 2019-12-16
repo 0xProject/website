@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useCallback } from 'react';
 import Headroom from 'react-headroom';
 import MediaQuery from 'react-responsive';
 import styled, { css } from 'styled-components';
@@ -55,28 +55,28 @@ const navItems: NavItems[] = [
     },
 ];
 
-export const Header: React.FC<HeaderProps> = ({
+export const Header: React.FC<HeaderProps> = React.memo(({
     isNavToggled,
     providerState,
     toggleMobileNav,
     onOpenConnectWalletDialog,
     onLogoutWallet,
 }) => {
-    const onUnpin = () => {
+    const onUnpin = useCallback(() => {
         if (isNavToggled) {
             toggleMobileNav();
         }
-    };
+    }, [isNavToggled, toggleMobileNav]);
 
-    const unpinAndOpenWalletDialog = () => {
+    const unpinAndOpenWalletDialog = useCallback(() => {
         onUnpin();
         onOpenConnectWalletDialog();
-    };
+    }, [onUnpin, onOpenConnectWalletDialog]);
 
-    const logoutWallet = () => {
+    const logoutWallet = useCallback(() => {
         onUnpin();
         onLogoutWallet();
-    };
+    }, [onUnpin, onLogoutWallet]);
 
     const subMenu = (
         <SubMenu
@@ -134,16 +134,16 @@ export const Header: React.FC<HeaderProps> = ({
             </StyledHeader>
         </Headroom>
     );
-};
+});
 
-const NavItem: React.FC<NavLinkProps> = ({ link }) => {
+const NavItem: React.FC<NavLinkProps> = React.memo(({ link }) => {
     const linkElement = link.url ? (
         <StyledNavLink to={link.url}>{link.text}</StyledNavLink>
     ) : (
         <StyledAnchor href="#">{link.text}</StyledAnchor>
     );
     return <LinkWrap>{linkElement}</LinkWrap>;
-};
+});
 
 interface StyledHeaderProps {
     isNavToggled?: boolean;
