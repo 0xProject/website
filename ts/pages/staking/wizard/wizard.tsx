@@ -9,6 +9,7 @@ import {
     ConnectWalletPane,
     MarketMakerStakeInputPane,
     RecommendedPoolsStakeInputPane,
+    StartStaking,
 } from 'ts/components/staking/wizard/wizard_flow';
 import { ConfirmationWizardInfo, IntroWizardInfo } from 'ts/components/staking/wizard/wizard_info';
 
@@ -215,11 +216,6 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
                                                 nextEpochStats={nextEpochStats}
                                             />
                                         )}
-                                        {/* <WizardInfo
-                                            currentEpochStats={currentEpochStats}
-                                            nextEpochStats={nextEpochStats}
-                                            selectedStakingPools={userSelectedStakingPools}
-                                        /> */}
                                     </WizardInfoFlexInnerContainer>
                                 </AnimatedWizardInfoAbsoluteContaine>
                             );
@@ -260,6 +256,16 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
                                             stakingPools={stakingPools}
                                             unitAmount={unitAmount}
                                             zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
+                                        />
+                                    )}
+                                    {item === WizardSteps.CoreWizard && (
+                                        <StartStaking
+                                            address={(providerState.account as AccountReady).address}
+                                            allowance={allowance}
+                                            stake={stake}
+                                            nextEpochStats={nextEpochStats}
+                                            providerState={providerState}
+                                            selectedStakingPools={userSelectedStakingPools}
                                         />
                                     )}
                                 </WizardFlowFlexInnerContainer>
