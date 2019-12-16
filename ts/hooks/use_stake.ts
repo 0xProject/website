@@ -45,7 +45,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
     const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = useState<Date | undefined>(undefined);
 
     const [ownerAddress, setOwnerAddress] = useState<string | undefined>(undefined);
-    const [stakingContract, setStakingContract] = useState<StakingContract | undefined>(undefined);
+    const [stakingContract, setStakingContract] = useState<StakingContract>(undefined);
     const [stakingProxyContract, setStakingProxyContract] = useState<StakingProxyContract | undefined>(undefined);
     const [contractAddresses, setContractAddresses] = useState<ContractAddresses | undefined>(undefined);
 

@@ -228,7 +228,7 @@ export const Account: React.FC<AccountProps> = () => {
             setPendingUnstakePools(_pendingUnstakePools);
         };
 
-        if (!stakingContract || !delegatorData || !account.address) {
+        if (!delegatorData || !account.address) {
             return;
         }
 
@@ -241,7 +241,7 @@ export const Account: React.FC<AccountProps> = () => {
             // TODO: unset values
             logUtils.warn(err);
         });
-    }, [stakingContract, delegatorData, account.address]);
+    }, [delegatorData, account.address]);
 
     return (
         <StakingPageLayout title="0x Staking | Account">
