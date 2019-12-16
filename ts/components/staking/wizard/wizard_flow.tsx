@@ -461,7 +461,7 @@ const AbsoluteContainer = styled.div`
 `;
 
 // Core
-const StartStaking: React.FC<StartStakingProps> = props => {
+export const StartStaking: React.FC<StartStakingProps> = props => {
     const { selectedStakingPools, stake, allowance, address, nextEpochStats } = props;
 
     const [isApproveTokenModalOpen, setIsApproveTokenModalOpen] = React.useState(false);
@@ -721,8 +721,3 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     );
     // tslint:disable-next-line: max-file-line-count
 };
-
-
-const StartStakingContainer = styled.div`
-    height: 100%;
-`;
