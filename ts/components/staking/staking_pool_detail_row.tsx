@@ -8,6 +8,15 @@ import { configs } from 'ts/utils/configs';
 import { utils } from 'ts/utils/utils';
 
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
+import { Jazzicon } from 'ts/components/ui/jazzicon';
+
+const generateUniqueId = (poolId: string, address: string): number => {
+    const addr = address.slice(2, 10);
+    const id = parseInt(poolId, 10);
+    const seed = parseInt(addr, 16);
+    return parseInt(`${id}${seed}`, 10);
+};
+
 const RoundedPercentage = ({ percentage }: { percentage: number }) => <span>{Math.round(percentage)}%</span>;
 
 const ShortenedEthAddress = ({ address }: { address: string }) => (
@@ -27,6 +36,7 @@ interface IStakingPoolDetailRowProps {
     stakeRatio: number;
     rewardsSharedRatio: number;
     isVerified: boolean;
+    poolId: string;
     websiteUrl?: string;
     thumbnailUrl?: string;
     to?: string;
@@ -34,6 +44,7 @@ interface IStakingPoolDetailRowProps {
 
 export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
     name,
+    poolId,
     thumbnailUrl,
     address,
     websiteUrl,
@@ -43,23 +54,24 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
     stakeRatio,
     to,
 }) => (
-    <StakingPoolDetailRowWrapper
-        as={to && Link}
-        to={to}
-    >
-        {thumbnailUrl && (
+    <StakingPoolDetailRowWrapper as={to && Link} to={to}>
+        {thumbnailUrl ? (
             <Logo>
                 <img src={thumbnailUrl} />
             </Logo>
+        ) : (
+            <JazziconContainer>
+                <Jazzicon diameter={80} seed={generateUniqueId(poolId, address)} paperStyles={{ borderRadius: 0 }} />
+            </JazziconContainer>
         )}
         <PoolOverviewSection>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Heading hasHoverEffect={!!to}>{name}</Heading>
-                {isVerified &&
+                {isVerified && (
                     <DesktopOnlyWrapper style={{ margin: '7px' }}>
                         <CircleCheckMark width="22px" height="22px" />
                     </DesktopOnlyWrapper>
-                }
+                )}
             </div>
             <DesktopOnlyWrapper style={{ height: '23px', alignItems: 'center' }}>
                 <ShortenedEthAddress address={address} />
@@ -117,22 +129,27 @@ const StakingPoolDetailRowWrapper = styled.div<{ to?: string }>`
         align-items: center;
         padding: 20px;
     }
-    :hover,:active {
-        border: ${props => props.to ? '1px solid #B4B4B4' : 'inherit'};
+    :hover,
+    :active {
+        border: ${props => (props.to ? '1px solid #B4B4B4' : 'inherit')};
     }
 `;
 
-const Logo = styled.div`
+const BaseLogoContainer = styled.div`
     border: 1px solid #d9d9d9;
     height: 80px;
     width: 80px;
-    padding: 15px;
 
+    ${desktopOnlyStyle}
+`;
+
+const JazziconContainer = styled(BaseLogoContainer)``;
+
+const Logo = styled(BaseLogoContainer)`
+    padding: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    ${desktopOnlyStyle}
 `;
 
 const PoolOverviewSection = styled.div`
@@ -154,10 +171,10 @@ const Heading = styled.span<{ hasHoverEffect?: boolean }>`
         line-height: 27px;
     }
     ${StakingPoolDetailRowWrapper}:hover & {
-        color: ${props => props.hasHoverEffect ? '#00AE99' : 'inherit'};
+        color: ${props => (props.hasHoverEffect ? '#00AE99' : 'inherit')};
     }
     ${StakingPoolDetailRowWrapper}:active & {
-        color: ${props => props.hasHoverEffect ? '#00AE99' : 'inherit'};
+        color: ${props => (props.hasHoverEffect ? '#00AE99' : 'inherit')};
     }
 `;
 
