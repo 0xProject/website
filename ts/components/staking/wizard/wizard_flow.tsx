@@ -3,6 +3,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
+import { animated, useTransition } from 'react-spring';
 import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
@@ -238,7 +239,7 @@ const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.R
     return null;
 };
 
-const ConnectWalletPane = ({ onOpenConnectWalletDialog }: { onOpenConnectWalletDialog: () => any }) => {
+export const ConnectWalletPane = React.memo(({ onOpenConnectWalletDialog }: { onOpenConnectWalletDialog: () => any }) => {
     return (
         <>
             <ConnectWalletButton color={colors.white} onClick={onOpenConnectWalletDialog}>
@@ -251,7 +252,7 @@ const ConnectWalletPane = ({ onOpenConnectWalletDialog }: { onOpenConnectWalletD
             />
         </>
     );
-};
+});
 
 export interface StakingInputPaneProps {
     setSelectedStakingPools: any;
@@ -261,7 +262,7 @@ export interface StakingInputPaneProps {
     onOpenConnectWalletDialog: () => any;
 }
 
-const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => {
+export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => {
     const { stakingPools, setSelectedStakingPools, zrxBalanceBaseUnitAmount, unitAmount } = props;
 
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
@@ -358,13 +359,13 @@ export interface MarketMakerStakeInputPaneProps {
     poolId: string;
 }
 
-const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
+export const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
 
     const { stakingPools, setSelectedStakingPools, zrxBalanceBaseUnitAmount, unitAmount } = props;
 
-    const formattedAmount = utils.getFormattedAmount(props.zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
+    const formattedAmount = utils.getFormattedAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
 
     if (!stakingPools) {
         return null;
@@ -453,6 +454,10 @@ export interface StartStakingProps {
     nextEpochStats?: Epoch;
     address?: string;
 }
+
+const AbsoluteContainer = styled.div`
+    position: relative;
+`;
 
 // Core
 const StartStaking: React.FC<StartStakingProps> = props => {
@@ -582,6 +587,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
             new Date(nextEpochStats.epochStart.timestamp),
         );
         return (
+            <AbsoluteContainer>
             <>
                 <ApproveTokensInfoDialog
                     isOpen={isApproveTokenModalOpen}
@@ -640,6 +646,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                     {ActiveButon}
                 </Inner>
             </>
+            </AbsoluteContainer>
         );
     }
     return null;
@@ -716,3 +723,8 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     );
     // tslint:disable-next-line: max-file-line-count
 };
+
+
+const StartStakingContainer = styled.div`
+    height: 100%;
+`;

@@ -47,12 +47,14 @@ const Right = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow: hidden;
     padding: 15px;
+    height: calc(100vh - 160px);
 
     @media (min-width: 768px) {
         padding: 30px;
         background-color: ${colors.backgroundLightGrey};
-        max-height: 850px;
+        /* max-height: 850px; */
     }
     @media (min-width: 1140px) {
         padding: 60px;
