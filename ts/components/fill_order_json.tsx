@@ -1,3 +1,4 @@
+/*
 import { generatePseudoRandomSalt } from '@0x/order-utils';
 import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
@@ -71,3 +72,4 @@ export class FillOrderJSON extends React.Component<FillOrderJSONProps, FillOrder
         );
     }
 }
+*/

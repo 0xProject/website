@@ -10,7 +10,7 @@ import {
     IndexedFilterValues,
     WETH9Contract,
 } from '@0x/contract-wrappers';
-import { assetDataUtils, orderHashUtils, signatureUtils } from '@0x/order-utils';
+import { assetDataUtils, signatureUtils } from '@0x/order-utils';
 import {
     ledgerEthereumBrowserClientFactoryAsync,
     LedgerSubprovider,
@@ -61,6 +61,7 @@ import { configs } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { fakeTokenRegistry } from 'ts/utils/fake_token_registry';
+import { orderHashUtils } from 'ts/utils/order_utils';
 import { tokenAddressOverrides } from 'ts/utils/token_address_overrides';
 import { utils } from 'ts/utils/utils';
 
@@ -240,14 +241,12 @@ export class Blockchain {
 
         this._showFlashMessageIfLedger();
         const erc20Token = new ERC20TokenContract(token.address, this._contractWrappers.getProvider());
-        const txHash = await erc20Token.approve.sendTransactionAsync(
-            this._contractWrappers.contractAddresses.erc20Proxy,
-            amountInBaseUnits,
-            {
+        const txHash = await erc20Token
+            .approve(this._contractWrappers.contractAddresses.erc20Proxy, amountInBaseUnits)
+            .sendTransactionAsync({
                 from: this._userAddressIfExists,
                 gasPrice: this._defaultGasPrice,
-            },
-        );
+            });
         await this._showEtherScanLinkAndAwaitTransactionMinedAsync(txHash);
     }
     public async sendAsync(toAddress: string, amountInBaseUnits: BigNumber): Promise<void> {
@@ -278,7 +277,7 @@ export class Blockchain {
 
         this._showFlashMessageIfLedger();
         const erc20Token = new ERC20TokenContract(token.address, this._contractWrappers.getProvider());
-        const txHash = await erc20Token.transfer.validateAndSendTransactionAsync(toAddress, amountInBaseUnits, {
+        const txHash = await erc20Token.transfer(toAddress, amountInBaseUnits).sendTransactionAsync({
             from: this._userAddressIfExists,
             gasPrice: this._defaultGasPrice,
         });
@@ -298,15 +297,12 @@ export class Blockchain {
         utils.assert(this._contractWrappers !== undefined, 'ContractWrappers must be instantiated.');
         utils.assert(this._doesUserAddressExist(), BlockchainCallErrs.UserHasNoAssociatedAddresses);
         this._showFlashMessageIfLedger();
-        const txHash = await this._contractWrappers.exchange.fillOrder.validateAndSendTransactionAsync(
-            signedOrder,
-            fillTakerTokenAmount,
-            signedOrder.signature,
-            {
+        const txHash = await this._contractWrappers.exchange
+            .fillOrder(signedOrder, fillTakerTokenAmount, signedOrder.signature)
+            .sendTransactionAsync({
                 from: this._userAddressIfExists,
                 gasPrice: this._defaultGasPrice,
-            },
-        );
+            });
         const receipt = await this._showEtherScanLinkAndAwaitTransactionMinedAsync(txHash);
         const logs: Array<LogWithDecodedArgs<ExchangeEventArgs>> = receipt.logs as any;
         const logFill = _.find(logs, { event: ExchangeEvents.Fill });
@@ -316,7 +312,7 @@ export class Blockchain {
     }
     public async cancelOrderAsync(signedOrder: SignedOrder): Promise<string> {
         this._showFlashMessageIfLedger();
-        const txHash = await this._contractWrappers.exchange.cancelOrder.validateAndSendTransactionAsync(signedOrder, {
+        const txHash = await this._contractWrappers.exchange.cancelOrder(signedOrder).sendTransactionAsync({
             from: signedOrder.makerAddress,
             gasPrice: this._defaultGasPrice,
         });
@@ -330,7 +326,7 @@ export class Blockchain {
     public async getUnavailableTakerAmountAsync(orderHash: string): Promise<BigNumber> {
         utils.assert(orderHashUtils.isValidOrderHash(orderHash), 'Must be valid orderHash');
         utils.assert(this._contractWrappers !== undefined, 'ContractWrappers must be instantiated.');
-        const unavailableTakerAmount = await this._contractWrappers.exchange.filled.callAsync(orderHash);
+        const unavailableTakerAmount = await this._contractWrappers.exchange.filled(orderHash).callAsync();
         return unavailableTakerAmount;
     }
     public getExchangeContractAddressIfExists(): string | undefined {
@@ -341,28 +337,26 @@ export class Blockchain {
         fillTakerTokenAmount: BigNumber,
         takerAddress: string,
     ): Promise<void> {
-        await this._contractWrappers.exchange.fillOrder.callAsync(
-            signedOrder,
-            fillTakerTokenAmount,
-            signedOrder.signature,
-            {
+        await this._contractWrappers.exchange
+            .fillOrder(signedOrder, fillTakerTokenAmount, signedOrder.signature)
+            .callAsync({
                 from: takerAddress,
-            },
-        );
+            });
     }
     public isValidAddress(address: string): boolean {
         const lowercaseAddress = address.toLowerCase();
         return Web3Wrapper.isAddress(lowercaseAddress);
     }
-    public async isValidSignatureAsync(data: string, signature: string, signerAddress: string): Promise<boolean> {
-        const result = await signatureUtils.isValidSignatureAsync(
-            this._contractWrappers.getProvider(),
-            data,
-            signature,
-            signerAddress,
-        );
-        return result;
-    }
+    // TODO(kimpers): how to do this in v3?
+    // public async isValidSignatureAsync(data: string, signature: string, signerAddress: string): Promise<boolean> {
+    // const result = await signatureUtils.isValidSignatureAsync(
+    // this._contractWrappers.getProvider(),
+    // data,
+    // signature,
+    // signerAddress,
+    // );
+    // return result;
+    // }
     public async pollTokenBalanceAsync(token: Token): Promise<BigNumber> {
         utils.assert(this._doesUserAddressExist(), BlockchainCallErrs.UserHasNoAssociatedAddresses);
 
@@ -425,7 +419,7 @@ export class Blockchain {
 
         this._showFlashMessageIfLedger();
         const etherToken = new WETH9Contract(etherTokenAddress, this._contractWrappers.getProvider());
-        const txHash = await etherToken.deposit.validateAndSendTransactionAsync({
+        const txHash = await etherToken.deposit().sendTransactionAsync({
             value: amount,
             from: this._userAddressIfExists,
             gasPrice: this._defaultGasPrice,
@@ -438,7 +432,7 @@ export class Blockchain {
 
         this._showFlashMessageIfLedger();
         const etherToken = new WETH9Contract(etherTokenAddress, this._contractWrappers.getProvider());
-        const txHash = await etherToken.withdraw.validateAndSendTransactionAsync(amount, {
+        const txHash = await etherToken.withdraw(amount).sendTransactionAsync({
             from: this._userAddressIfExists,
             gasPrice: this._defaultGasPrice,
         });
@@ -472,11 +466,10 @@ export class Blockchain {
         if (this._doesUserAddressExist()) {
             const erc20Token = new ERC20TokenContract(tokenAddress, this._contractWrappers.getProvider());
             [balance, allowance] = await Promise.all([
-                erc20Token.balanceOf.callAsync(ownerAddressIfExists),
-                erc20Token.allowance.callAsync(
-                    ownerAddressIfExists,
-                    this._contractWrappers.contractAddresses.erc20Proxy,
-                ),
+                erc20Token.balanceOf(ownerAddressIfExists).callAsync(),
+                erc20Token
+                    .allowance(ownerAddressIfExists, this._contractWrappers.contractAddresses.erc20Proxy)
+                    .callAsync(),
             ]);
         }
         return [balance, allowance];
@@ -862,7 +855,7 @@ export class Blockchain {
             this._contractWrappers.unsubscribeAll();
         }
         const contractWrappersConfig = {
-            networkId,
+            chainId: networkId,
         };
         this._contractWrappers = new ContractWrappers(provider, contractWrappersConfig);
         if (this._blockchainWatcher !== undefined) {
@@ -937,9 +930,7 @@ export class Blockchain {
     }
     private async _updateDefaultGasPriceAsync(): Promise<void> {
         try {
-            const gasInfo = await backendClient.getGasInfoAsync();
-            const gasPriceInGwei = new BigNumber(gasInfo.fast / 10);
-            const gasPriceInWei = gasPriceInGwei.multipliedBy(1000000000);
+            const { gasPriceInWei } = await backendClient.getGasInfoAsync();
             this._defaultGasPrice = gasPriceInWei;
         } catch (err) {
             return;

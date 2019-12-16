@@ -1,3 +1,4 @@
+/*
 import { BigNumber, fetchAsync, logUtils } from '@0x/utils';
 import * as _ from 'lodash';
 import Paper from 'material-ui/Paper';
@@ -177,3 +178,4 @@ You can see and fill it here: ${this.state.shareLink}`);
         return orderUrl;
     }
 }
+*/

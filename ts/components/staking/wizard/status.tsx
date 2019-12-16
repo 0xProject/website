@@ -7,10 +7,11 @@ import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
 
 interface StatusProps {
-    icon?: React.ReactNode;
+    iconName?: string;
     title: string;
     linkText?: string;
     linkUrl?: string;
+    to?: string;
 }
 
 const StatusContainer = styled.div`
@@ -24,6 +25,7 @@ const StatusContainer = styled.div`
     border: 1px solid #dddddd;
 
     @media (min-width: 768px) {
+        min-height: 500px;
         padding: 60px;
     }
 `;
@@ -52,13 +54,14 @@ const StatusIcon = styled(Icon)`
 `;
 
 export const Status: React.FC<StatusProps> = props => {
-    const { title, linkText, linkUrl } = props;
+    const { title, linkText, linkUrl, to, iconName } = props;
+    const target = linkUrl && !to ? '_blank' : undefined;
     return (
         <StatusContainer>
-            <StatusIcon color={colors.brandLight} name="getStartedThin" size={145} />
+            {iconName && <StatusIcon color={colors.brandLight} name={iconName} size={145} />}
             <Title>{title}</Title>
-            {linkText != null && linkUrl != null &&
-                <Link href={linkUrl} isWithArrow={true} color={colors.brandLight}>
+            {linkText && (linkUrl || to) &&
+                <Link href={linkUrl} to={to} isWithArrow={true} color={colors.brandLight} target={target}>
                     {linkText}
                 </Link>
             }

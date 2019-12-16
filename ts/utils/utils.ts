@@ -1,5 +1,8 @@
 import { ContractError } from '@0x/contract-wrappers';
-import { assetDataUtils, TypedDataError } from '@0x/order-utils';
+import {
+    // assetDataUtils,
+    TypedDataError,
+} from '@0x/order-utils';
 import { ExchangeContractErrs } from '@0x/types';
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -21,12 +24,12 @@ import {
     Network,
     Networks,
     OperatingSystemType,
-    PortalOrder,
+    // PortalOrder,
     Providers,
     ProviderType,
     ScreenWidths,
-    Side,
-    SideToAssetToken,
+    // Side,
+    // SideToAssetToken,
     Token,
     TokenByAddress,
     TokenState,
@@ -69,6 +72,7 @@ export const utils = {
         const formattedDate: string = m.format('h:MMa MMMM D YYYY');
         return formattedDate;
     },
+    /*
     generateOrder(
         exchangeAddress: string,
         sideToAssetToken: SideToAssetToken,
@@ -116,6 +120,7 @@ export const utils = {
         };
         return order;
     },
+    */
     async sleepAsync(ms: number): Promise<NodeJS.Timer> {
         return new Promise<NodeJS.Timer>(resolve => setTimeout(resolve, ms));
     },
@@ -238,7 +243,7 @@ export const utils = {
         const ContractErrorToHumanReadableError: { [error: string]: string } = {
             [BlockchainCallErrs.UserHasNoAssociatedAddresses]: 'User has no addresses available',
             [TypedDataError.InvalidSignature]: 'Order signature is not valid',
-            [ContractError.ContractNotDeployedOnNetwork]: 'Contract is not deployed on the detected network',
+            [ContractError.ContractNotDeployedOnChain]: 'Contract is not deployed on the detected chain',
             [ContractError.InvalidJump]: 'Invalid jump occured while executing the transaction',
             [ContractError.OutOfGas]: 'Transaction ran out of gas',
         };
@@ -536,5 +541,15 @@ export const utils = {
         }
         const etherScanPrefix = networkName === Networks.Mainnet ? '' : `${networkName.toLowerCase()}.`;
         return `https://${etherScanPrefix}etherscan.io/${suffix}/${addressOrTxHash}`;
+    },
+    // TODO(kimpers): Consolidate with https://github.com/0xProject/0x-monorepo/pull/2373
+    toPaddedHex(n: number | string | BigNumber): string {
+        if (typeof n === 'string' && /^0x[0-9a-f]+$/i.test(n) && n.length === 66) {
+            // Already a padded hex.
+            return n;
+        }
+        const _n = new BigNumber(n);
+
+        return `0x${_n.toString(16).padStart(64, '0')}`;
     },
 }; // tslint:disable:max-file-line-count

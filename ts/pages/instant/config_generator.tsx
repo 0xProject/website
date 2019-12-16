@@ -1,5 +1,5 @@
 import { StandardRelayerAPIOrderProvider } from '@0x/asset-buyer';
-import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses';
+import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { assetDataUtils } from '@0x/order-utils';
 import { ObjectMap } from '@0x/types';
 import * as _ from 'lodash';
@@ -201,8 +201,9 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
         if (value.orderSource !== undefined && _.isString(value.orderSource)) {
             this.setState({ isLoadingAvailableTokens: true });
             const networkId = constants.NETWORK_ID_MAINNET;
-            const sraOrderProvider = new StandardRelayerAPIOrderProvider(value.orderSource, networkId);
-            const etherTokenAddress = getContractAddressesForNetworkOrThrow(networkId).etherToken;
+            // TODO(kimpers): is this correct??
+            const sraOrderProvider = new StandardRelayerAPIOrderProvider(value.orderSource);
+            const etherTokenAddress = getContractAddressesForChainOrThrow(networkId).etherToken;
             const etherTokenAssetData = assetDataUtils.encodeERC20AssetData(etherTokenAddress);
             const assetDatas = await sraOrderProvider.getAvailableMakerAssetDatasAsync(etherTokenAssetData);
             const availableTokens = _.reduce(

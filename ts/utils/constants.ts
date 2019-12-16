@@ -12,7 +12,10 @@ export const constants = {
     ETHER_TOKEN_SYMBOL: 'WETH',
     ZRX_TOKEN_SYMBOL: 'ZRX',
     ETHER_SYMBOL: 'ETH',
+    ZRX_ASSET_DATA: '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
     TOKEN_AMOUNT_DISPLAY_PRECISION: 4,
+    UNLIMITED_ALLOWANCE_IN_BASE_UNITS: new BigNumber(2).pow(256).minus(1),
+    GWEI_IN_WEI: new BigNumber(1000000000),
     GENESIS_ORDER_BLOCK_BY_NETWORK_ID: {
         1: 4145578,
         42: 3117574,
@@ -20,6 +23,9 @@ export const constants = {
         3: 1719261,
         4: 1570919,
     } as { [networkId: number]: number },
+    STAKING: {
+        NIL_POOL_ID: '0x0000000000000000000000000000000000000000000000000000000000000000',
+    },
     GUIDE_OLDER_VERSIONS: 'browsing-docs-on-github',
     HOME_SCROLL_DURATION_MS: 500,
     HTTP_NO_CONTENT_STATUS_CODE: 204,
@@ -144,6 +150,7 @@ export const constants = {
     URL_VOTE_FAQ: 'https://blog.0xproject.com/0x-protocol-governance-voting-walkthrough-and-faq-3becfd57a370',
     URL_ZEIP_REPO: 'https://github.com/0xProject/ZEIPs/',
     TYPES_SECTION_NAME: 'types',
+    COBBS_DOUGLAS_ALPHA: 2 / 3,
     EXTERNAL_EXPORTS_SECTION_NAME: 'external exports',
     TYPE_TO_SYNTAX: {
         [SupportedDocJson.SolDoc]: 'solidity',

@@ -1,3 +1,4 @@
+import { logUtils } from '@0x/utils';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { State } from 'ts/redux/reducer';
@@ -46,15 +47,18 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
                     dispatcher.updateNetworkId(networkId);
                 }
 
-                await asyncDispatcher.fetchAccountInfoAndDispatchToStore(providerState, dispatcher, true);
+                await asyncDispatcher.fetchAccountInfoAndDispatchToStoreAsync(
+                    providerState,
+                    dispatcher,
+                    networkId,
+                    true,
+                );
             } catch (err) {
+                logUtils.log(`Failed to connect wallet ${err}`);
                 // TODO(kimpers): handle errors
             }
         },
     };
 };
 
-export const ConnectWalletDialog = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(ConnectWalletDialogComponent);
+export const ConnectWalletDialog = connect(mapStateToProps, mapDispatchToProps)(ConnectWalletDialogComponent);

@@ -1,8 +1,11 @@
 import * as _ from 'lodash';
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { colors } from 'ts/style/colors';
+
+import { State } from 'ts/redux/reducer';
 
 import { Button } from 'ts/components/button';
 import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
@@ -14,13 +17,14 @@ import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_
 import { StakingHero } from 'ts/components/staking/hero';
 import { Heading } from 'ts/components/text';
 import { useAPIClient } from 'ts/hooks/use_api_client';
-import { PoolWithStats, ScreenWidths } from 'ts/types';
+import { PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
 
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
-    const [isStakingConfirmationOpen, toggleStakingConfirmation] = React.useState(false);
+    const [isStakingConfirmationOpen, setStakingConfirmationOpen] = React.useState(false);
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
-    const apiClient = useAPIClient();
+    const networkId = useSelector((state: State) => state.networkId);
+    const apiClient = useAPIClient(networkId);
     React.useEffect(() => {
         const fetchAndSetPoolsAsync = async () => {
             const resp = await apiClient.getStakingPoolsAsync();
@@ -28,12 +32,12 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
         };
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPoolsAsync();
-    }, [apiClient]);
+    }, [apiClient.networkId]);
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
             <StakingConfirmationDialog
                 isOpen={isStakingConfirmationOpen}
-                onDismiss={() => toggleStakingConfirmation(false)}
+                onDismiss={() => setStakingConfirmationOpen(false)}
             />
             <StakingHero
                 title="Start staking your ZRX tokens"
@@ -44,7 +48,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                 videoId="c04eIt3FQ5I"
                 actions={
                     <>
-                        <Button href="/" isInline={true} color={colors.white}>
+                        <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
                             Get Started
                         </Button>
                         <Button
@@ -63,22 +67,22 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                 <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
                     Staking Pools
                 </Heading>
-                {stakingPools && stakingPools.map(
-                    pool => {
+                {stakingPools &&
+                    stakingPools.map(pool => {
                         return (
                             <StakingPoolDetailRow
+                                to={_.replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}
                                 key={pool.poolId}
                                 name={pool.metaData.name}
                                 thumbnailUrl={pool.metaData.logoUrl}
                                 isVerified={pool.metaData.isVerified}
-                                address={_.head(pool.nextEpochStats.makerAddresses)}
-                                totalFeesGeneratedInEth={pool.currentEpochStats.protocolFeesGeneratedInEth}
-                                stakeRatio={pool.nextEpochStats.stakeRatio}
+                                address={pool.operatorAddress}
+                                totalFeesGeneratedInEth={pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
+                                stakeRatio={pool.nextEpochStats.approximateStakeRatio}
                                 rewardsSharedRatio={1 - pool.nextEpochStats.operatorShare}
                             />
                         );
-                    },
-                )}
+                    })}
             </SectionWrapper>
         </StakingPageLayout>
     );

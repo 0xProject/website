@@ -5,7 +5,8 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { MetaTags } from 'ts/components/meta_tags';
 import { NotFound } from 'ts/containers/not_found';
-import { createLazyComponent } from 'ts/lazy_component';
+import { StakingWizard } from 'ts/containers/staking/wizard/wizard';
+// import { createLazyComponent } from 'ts/lazy_component';
 import { trackedTokenStorage } from 'ts/local_storage/tracked_token_storage';
 import { tradeHistoryStorage } from 'ts/local_storage/trade_history_storage';
 import { DocsGuides } from 'ts/pages/docs/guides';
@@ -42,7 +43,6 @@ import { StakingIndex } from 'ts/pages/staking/home';
 import { StakingPool } from 'ts/pages/staking/staking_pool';
 
 import { RemoveStake } from 'ts/pages/staking/wizard/remove';
-import { StakingWizard } from 'ts/pages/staking/wizard/wizard';
 
 import { TermsOfService } from 'ts/pages/terms';
 import { NextWhy } from 'ts/pages/why';
@@ -60,9 +60,9 @@ import { constants } from 'ts/utils/constants';
 // At the same time webpack statically parses for import() to determine bundle chunk split points
 // so each lazy import needs it's own `import()` declaration.
 
-const LazyPortal = createLazyComponent('Portal', async () =>
-    import(/* webpackChunkName: "portal" */ 'ts/containers/portal'),
-);
+// const LazyPortal = createLazyComponent('Portal', async () =>
+// import(/* webpackChunkName: "portal" */ 'ts/containers/portal'),
+// );
 const DOCUMENT_TITLE = '0x: The Protocol for Trading Tokens';
 const DOCUMENT_DESCRIPTION = 'An Open Protocol For Decentralized Exchange On The Ethereum Blockchain';
 
@@ -89,7 +89,11 @@ render(
                         <Route exact={true} path={WebsitePaths.StakingWizard} component={StakingWizard as any} />
                         <Route exact={true} path={WebsitePaths.StakingWizardRemove} component={RemoveStake as any} />
                         <Route exact={true} path={WebsitePaths.StakingPool} component={StakingPool as any} />
-                        <Route exact={true} path={WebsitePaths.StakingPoolActivity} component={StakingPoolActivity as any} />
+                        <Route
+                            exact={true}
+                            path={WebsitePaths.StakingPoolActivity}
+                            component={StakingPoolActivity as any}
+                        />
                         <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex as any} />
                         <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance as any} />
 
@@ -104,8 +108,10 @@ render(
                         {/*
                                   Note(ez): We remove/replace all old routes with next routes
                                   once we're ready to put a ring on it. for now let's keep em there for reference
+
+                            Portal does currently does not support V3 architecture
+                            //<Route path={WebsitePaths.Portal} component={LazyPortal} />
                                 */}
-                        <Route path={WebsitePaths.Portal} component={LazyPortal} />
                         <Redirect from={`${WebsiteLegacyPaths.ZeroExJs}/:version?`} to={constants.URL_NPMJS_ZEROEXJS} />
                         <Redirect
                             from={`${WebsiteLegacyPaths.ContractWrappers}/:version?`}

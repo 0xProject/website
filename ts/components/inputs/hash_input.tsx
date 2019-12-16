@@ -1,3 +1,4 @@
+/*
 import { assetDataUtils, orderHashUtils } from '@0x/order-utils';
 import { Order } from '@0x/types';
 import * as _ from 'lodash';
@@ -65,3 +66,4 @@ export class HashInput extends React.Component<HashInputProps, HashInputState> {
         return orderHash;
     }
 }
+*/

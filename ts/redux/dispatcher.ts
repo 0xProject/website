@@ -229,6 +229,20 @@ export class Dispatcher {
         });
     }
 
+    public updateAccountZrxBalance(zrxBalance: BigNumber): void {
+        this._dispatch({
+            type: ActionTypes.UpdateAccountZrxBalance,
+            data: zrxBalance,
+        });
+    }
+
+    public updateAccountZrxAllowance(zrxAllowance: BigNumber): void {
+        this._dispatch({
+            type: ActionTypes.UpdateAccountZrxAllowance,
+            data: zrxAllowance,
+        });
+    }
+
     // Shared
     public showFlashMessage(msg: string | React.ReactNode): void {
         this._dispatch({

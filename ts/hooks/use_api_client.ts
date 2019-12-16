@@ -1,9 +1,13 @@
-import { useSelector } from 'react-redux';
+import { useEffect, useRef } from 'react';
 
-import { State } from 'ts/redux/reducer';
 import { APIClient } from 'ts/utils/api_client';
 
-export const useAPIClient = (): APIClient => {
-    const networkId = useSelector((state: State) => state.networkId);
-    return new APIClient(networkId);
+export const useAPIClient = (networkId: number): APIClient => {
+    const apiClientRef = useRef<APIClient>(new APIClient(networkId));
+
+    useEffect(() => {
+        apiClientRef.current = new APIClient(networkId);
+    }, [networkId]);
+
+    return apiClientRef.current;
 };

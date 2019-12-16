@@ -4,6 +4,18 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
 
+export enum TransactionLoadingState {
+    WaitingForSignature = 'WAITING_FOR_SIGNATURE',
+    WaitingForTransaction = 'WAITING_FOR_TRANSACTION',
+    Failed = 'FAILED',
+    Success = 'SUCCESS',
+}
+
+export enum StakeStatus {
+    Undelegated,
+    Delegated,
+}
+
 // Types copied from instant
 // TODO(kimpers): cleanup when consolidating providers into a package
 export type Maybe<T> = T | undefined;
@@ -17,6 +29,8 @@ export interface AccountReady {
     state: AccountState.Ready;
     address: string;
     ethBalanceInWei?: BigNumber;
+    zrxBalanceBaseUnitAmount?: BigNumber;
+    zrxAllowanceBaseUnitAmount?: BigNumber;
 }
 export interface AccountNotReady {
     state: AccountState.None | AccountState.Loading | AccountState.Locked;
@@ -156,6 +170,8 @@ export enum ActionTypes {
     SetAccountStateLocked = 'SET_ACCOUNT_STATE_LOCKED',
     SetAccountStateReady = 'SET_ACCOUNT_STATE_READY',
     UpdateAccountEthBalance = 'UPDATE_ACCOUNT_ETH_BALANCE',
+    UpdateAccountZrxBalance = 'UPDATE_ACCOUNT_ZRX_BALANCE',
+    UpdateAccountZrxAllowance = 'UPDATE_ACCOUNT_ZRX_ALLOWANCE',
 
     // Shared
     ShowFlashMessage = 'SHOW_FLASH_MESSAGE',
@@ -740,11 +756,23 @@ export interface WebsiteBackendTokenInfo {
     symbol: string;
 }
 
+export interface GasInfo {
+    gasPriceInWei: BigNumber;
+    estimatedTimeMs: number;
+}
+
 export interface WebsiteBackendGasInfo {
-    safeSlow: number;
     average: number;
+    fastestWait: number;
+    fastWait: number;
     fast: number;
+    safeLowWait: number;
+    blockNum: number;
+    avgWait: number;
+    block_time: number;
+    speed: number;
     fastest: number;
+    safeLow: number;
 }
 
 export interface WebsiteBackendJobInfo {
@@ -1042,6 +1070,10 @@ export interface TransactionDate {
 export interface Epoch {
     epochId: number;
     epochStart: TransactionDate;
+    epochEnd?: TransactionDate;
+    zrxStaked: number;
+    zrxDeposited: number;
+    protocolFeesGeneratedInEth: number;
 }
 
 export interface PoolMetadata {
@@ -1063,6 +1095,7 @@ export interface Pool {
 export interface PoolWithStats extends Pool {
     currentEpochStats: EpochPoolStats;
     nextEpochStats: EpochPoolStats;
+    sevenDayProtocolFeesGeneratedInEth: number;
 }
 
 export interface EpochPoolStats {
@@ -1070,12 +1103,22 @@ export interface EpochPoolStats {
     zrxStaked: number;
     operatorShare: number;
     makerAddresses: string[];
-    protocolFeesGeneratedInEth: number;
-    stakeRatio: number;
+    totalProtocolFeesGeneratedInEth: number;
+    approximateStakeRatio: number;
 }
 
 export interface StakingAPIPoolsResponse {
-    currentEpoch: Epoch;
-    nextEpoch: Epoch;
     stakingPools: PoolWithStats[];
 }
+
+export interface StakingAPIEpochsResponse {
+    currentEpoch: Epoch;
+    nextEpoch: Epoch;
+}
+
+export interface StakingPoolRecomendation {
+    pool: PoolWithStats;
+    zrxAmount: number;
+}
+
+export type UserStakingChoice = StakingPoolRecomendation;

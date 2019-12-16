@@ -9,20 +9,25 @@ import { colors } from 'ts/style/colors';
 interface InfoTooltipProps {
     children: React.ReactNode;
     className?: string;
+    id?: string;
 }
 
-export const InfoTooltip = (props: InfoTooltipProps) => {
+export const InfoTooltip: React.FC<InfoTooltipProps> = props => {
     return (
         <Wrap className={props.className}>
-            <div data-tip={true} data-for="walletBalance" data-type="light" data-border="true">
+            <div data-tip={true} data-for={props.id} data-type="light" data-border="true">
                 <StyledIcon name="info" size={13} />
 
-                <StyledTooltip id="walletBalance" className="tooltip-light">
+                <StyledTooltip id={props.id} className="tooltip-light">
                     {props.children}
                 </StyledTooltip>
             </div>
         </Wrap>
     );
+};
+
+InfoTooltip.defaultProps = {
+    id: 'walletBalance',
 };
 
 const Wrap = styled.div`

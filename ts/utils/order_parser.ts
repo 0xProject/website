@@ -1,6 +1,6 @@
-import { orderParsingUtils } from '@0x/order-utils';
 import { logUtils } from '@0x/utils';
 import * as _ from 'lodash';
+import { orderParsingUtils } from 'ts/utils/order_utils';
 
 import { portalOrderSchema } from 'ts/schemas/portal_order_schema';
 import { validator } from 'ts/schemas/validator';
