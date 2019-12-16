@@ -1,6 +1,7 @@
 import { addDays, format, formatDistanceStrict } from 'date-fns';
 import * as React from 'react';
 import styled from 'styled-components';
+import { useTrail, animated } from 'react-spring';
 
 import { colors } from 'ts/style/colors';
 import { Epoch, UserStakingChoice } from 'ts/types';
@@ -109,12 +110,10 @@ export interface WizardInfoHeaderProps {
     description: string;
 }
 
-const WizardInfoHeader: React.FC<WizardInfoHeaderProps> = ({title, description}) => (
+const WizardInfoHeader: React.FC<WizardInfoHeaderProps> = ({ title, description }) => (
     <>
         <IntroHeader>{title}</IntroHeader>
-        <IntroDescription>
-            {description}
-        </IntroDescription>
+        <IntroDescription>{description}</IntroDescription>
     </>
 );
 
@@ -138,10 +137,41 @@ export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, cu
             </>
         );
     }
+};
 
+// const AnimatedWizardInfoHeaderContainer = animated();
+const AnimatedIntroMetrics = animated(IntroMetrics);
+const AnimatedIntroHeader = animated(IntroHeader);
+const AnimatedIntroDescription = animated(IntroDescription);
+
+export const IntroWizardInfo: React.FC<{ trail: any[] }> = ({ trail }) => {
+    return (
+        <>
+            <AnimatedIntroHeader style={trail[0]}>{'Start staking your tokens'}</AnimatedIntroHeader>
+            <AnimatedIntroDescription style={trail[1]}>
+                {'Use one pool of capital across multiple relayers to trade against a large group.'}
+            </AnimatedIntroDescription>
+            <AnimatedIntroMetrics style={trail[2]}>
+                <IntroMetric>
+                    <h2>873,435 ETH</h2>
+                    <p>Total rewards collected</p>
+                </IntroMetric>
+                <IntroMetric>
+                    <h2>203,000 ZRX</h2>
+                    <p>Total ZRX Staked</p>
+                </IntroMetric>
+            </AnimatedIntroMetrics>
+        </>
+    );
+};
+
+export const ConfirmationWizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, nextEpochStats }) => {
     const stakingStartsEpochDate = new Date(nextEpochStats.epochStart.timestamp);
     const ESTIMATED_EPOCH_LENGTH_IN_DAYS = 10;
-    const firstRewardsEpochDate = addDays(new Date(nextEpochStats.epochStart.timestamp), ESTIMATED_EPOCH_LENGTH_IN_DAYS);
+    const firstRewardsEpochDate = addDays(
+        new Date(nextEpochStats.epochStart.timestamp),
+        ESTIMATED_EPOCH_LENGTH_IN_DAYS,
+    );
 
     const now = new Date();
     const DATE_FORMAT = 'MM.dd';
@@ -153,38 +183,39 @@ export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, cu
 
     const firstRewardsFormattedTime = formatDistanceStrict(now, firstRewardsEpochDate);
     const firstRewardsFormattedDate = format(firstRewardsEpochDate, DATE_FORMAT);
-
     return (
         <>
-        <WizardInfoHeader title="Confirmation" description="Use one pool of capital across multiple relayers to trade against a large group."/>
-        <Timeline
-            activeItemIndex={0}
-            items={[
-                {
-                    date: nowFormattedDate,
-                    fromNow: nowFormattedTime,
-                    title: 'Locking your ZRX',
-                    description: 'Your declared staking pool is going to be locked in smart contract.',
-                    isActive: true,
-                },
-                {
-                    date: stakingStartsFormattedDate,
-                    fromNow: stakingStartsFormattedTime,
-                    title: 'Staking starts',
-                    description:
-                        'Your staking pool is included in the Market Maker score along with voting power.',
-                    isActive: false,
-                },
-                {
-                    date: firstRewardsFormattedDate,
-                    fromNow: firstRewardsFormattedTime,
-                    title: 'First rewards',
-                    description:
-                        'You are going to receive first rewards, at this point you can opt out without consequences.',
-                    isActive: false,
-                },
-            ]}
-        />
+            <WizardInfoHeader
+                title="Confirmation"
+                description="Use one pool of capital across multiple relayers to trade against a large group."
+            />
+            <Timeline
+                activeItemIndex={0}
+                items={[
+                    {
+                        date: nowFormattedDate,
+                        fromNow: nowFormattedTime,
+                        title: 'Locking your ZRX',
+                        description: 'Your declared staking pool is going to be locked in smart contract.',
+                        isActive: true,
+                    },
+                    {
+                        date: stakingStartsFormattedDate,
+                        fromNow: stakingStartsFormattedTime,
+                        title: 'Staking starts',
+                        description: 'Your staking pool is included in the Market Maker score along with voting power.',
+                        isActive: false,
+                    },
+                    {
+                        date: firstRewardsFormattedDate,
+                        fromNow: firstRewardsFormattedTime,
+                        title: 'First rewards',
+                        description:
+                            'You are going to receive first rewards, at this point you can opt out without consequences.',
+                        isActive: false,
+                    },
+                ]}
+            />
         </>
     );
 };
