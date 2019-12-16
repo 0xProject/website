@@ -29,6 +29,8 @@ const Left = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow: hidden;
+    height: calc(100vh - 160px);
 
     @media (min-width: 480px) {
         padding: 100px 15px;
@@ -54,7 +56,7 @@ const Right = styled.div`
     @media (min-width: 768px) {
         padding: 30px;
         background-color: ${colors.backgroundLightGrey};
-        /* max-height: 850px; */
+        max-height: calc(100vh - 160px);
     }
     @media (min-width: 1140px) {
         padding: 60px;

@@ -7,11 +7,10 @@ import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_lay
 import { Splitview } from 'ts/components/staking/wizard/splitview';
 import {
     ConnectWalletPane,
-    WizardFlow,
     MarketMakerStakeInputPane,
     RecommendedPoolsStakeInputPane,
 } from 'ts/components/staking/wizard/wizard_flow';
-import { WizardInfo } from 'ts/components/staking/wizard/wizard_info';
+import { ConfirmationWizardInfo, IntroWizardInfo } from 'ts/components/staking/wizard/wizard_info';
 
 import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
@@ -19,7 +18,7 @@ import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
 
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { animated, useTransition } from 'react-spring';
+import { animated, useTrail, useTransition } from 'react-spring';
 import { Status } from 'ts/components/staking/wizard/status';
 import { State } from 'ts/redux/reducer';
 import { AccountReady, AccountState, Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice } from 'ts/types';
@@ -64,6 +63,11 @@ export enum WizardSteps {
     CoreWizard = 'CORE_WIZARD',
 }
 
+export enum WizardInfoSteps {
+    IntroductionStats = 'INTRODUCTION',
+    Confirmation = 'CONFIRMATION',
+}
+
 export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
     // If coming from the market maker page, poolId will be provided
     const { poolId } = useQuery<{ poolId: string | undefined }>();
@@ -79,7 +83,7 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
     const [currentEpochStats, setCurrentEpochStats] = useState<Epoch | undefined>(undefined);
     const [nextEpochStats, setNextEpochStats] = useState<Epoch | undefined>(undefined);
 
-    const getStatus = (): WizardSteps => {
+    const getWizardFlowStatus = (): WizardSteps => {
         if (props.providerState.account.state !== AccountState.Ready) {
             return WizardSteps.ConnectWallet;
         }
@@ -102,7 +106,15 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
         return WizardSteps.CoreWizard;
     };
 
-    const status = getStatus();
+    const getWizardInfoStatus = (): WizardInfoSteps => {
+        if (!userSelectedStakingPools) {
+            return WizardInfoSteps.IntroductionStats;
+        }
+        return WizardInfoSteps.Confirmation;
+    };
+
+    const flowStatus = getWizardFlowStatus();
+    const infoStatus = getWizardInfoStatus();
 
     const stake = useStake(networkId, providerState);
     const allowance = useAllowance();
@@ -143,25 +155,40 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
 
     const wizard = useWizard();
 
-    const step = { stepId: status };
+    // const step = { stepId: flowStatus };
 
-    const transitions = useTransition(step, s => s.stepId, {
+    const infoPaneTransitions = useTransition(infoStatus, s => s, {
         from: (s: any) => {
-            return ({ opacity: 0, transform: 'translate3d(100%, 0px, 0)' });
+            return { position: 'absolute', opacity: 0, transform: 'translate3d(0px, 30px, 0)' };
         },
         enter: () => {
-            return { opacity: 1, transform: 'translate3d(0, 0px, 0)' }
+            return { position: 'absolute', opacity: 1, transform: 'translate3d(0px, 0px, 0)', delay: 450 };
         },
         leave: (s: any) => {
-            // if (s.stepId === WizardSteps.ConnectWallet) {
-                // return ({
-                    // position: 'absolute',
-                    // opacity: 0, transform: 'translate3d(0%, -40vh, 0)' })
-            // }
-            return ({ opacity: 0, transform: 'translate3d(-100%, 0px, 0)' })
+            return { opacity: 0, transform: 'translate3d(0px, 30px, 0)' };
+        },
+        initial: null,
+        unique: true,
+    });
+
+    const transitions = useTransition(flowStatus, s => s, {
+        from: (s: any) => {
+            return { opacity: 0, transform: 'translate3d(100%, 0px, 0)' };
+        },
+        enter: () => {
+            return { opacity: 1, transform: 'translate3d(0%, 0px, 0)', delay: 180 };
+        },
+        leave: (s: any) => {
+            return { opacity: 0, transform: 'translate3d(-100%, 0px, 0)' };
         },
         initial: null,
     });
+
+    const [trail, set, stop] = useTrail(3, () => ({
+        delay: 250,
+        to: { opacity: 1, y: 0 },
+        from: { opacity: 0, y: 10 },
+    }));
 
     const { zrxBalanceBaseUnitAmount } = providerState.account as AccountReady;
     let unitAmount: number;
@@ -170,56 +197,75 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
     }
 
     return (
-            <Container>
-                <Splitview
-                    leftComponent={
-                        <WizardInfo
-                            currentEpochStats={currentEpochStats}
-                            nextEpochStats={nextEpochStats}
-                            selectedStakingPools={userSelectedStakingPools}
-                        />
-                    }
-                    rightComponent={
-                        <WizardFlowRelativeContainer>
-                            {/* <WizardFlowAbsoluteContaine> */}
-                                {transitions.map(({ item, props: styleProps, key }) => (
-                                    <AnimatedWizardFlowAbsoluteContaine key={key} style={styleProps}>
-                                        <WizardFlowFlexInnerContainer>
-                                        {item.stepId === WizardSteps.ConnectWallet && (
-                                            <ConnectWalletPane
-                                                onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
+        <Container>
+            <Splitview
+                leftComponent={
+                    <WizardInfoRelativeContainer>
+                        {infoPaneTransitions.map(({ item, props: styleProps, key }) => {
+                            return (
+                                <AnimatedWizardInfoAbsoluteContaine style={styleProps} key={key}>
+                                    <WizardInfoFlexInnerContainer>
+                                        {item === WizardInfoSteps.IntroductionStats && (
+                                            <IntroWizardInfo trail={trail} />
+                                        )}
+                                        {item === WizardInfoSteps.Confirmation && (
+                                            <ConfirmationWizardInfo
+                                                selectedStakingPools={userSelectedStakingPools}
+                                                currentEpochStats={currentEpochStats}
+                                                nextEpochStats={nextEpochStats}
                                             />
                                         )}
-                                        {item.stepId === WizardSteps.NoZrxInWallet && (
-                                            <Status
-                                                title="You have no ZRX balance. You will need some to stake."
-                                                linkText="Go buy some ZRX"
-                                                linkUrl={`https://www.rexrelay.com/instant/?defaultSelectedAssetData=${constants.ZRX_ASSET_DATA}`}
-                                            />
-                                        )}
-                                        {item.stepId === WizardSteps.MarketMakerEntry && (
-                                            <MarketMakerStakeInputPane
-                                                poolId={poolId}
-                                                unitAmount={unitAmount}
-                                                stakingPools={stakingPools}
-                                                onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
-                                                setSelectedStakingPools={setUserSelectedStakingPools}
-                                                zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
-                                            />
-                                        )}
-                                        {item.stepId === WizardSteps.RecomendedEntry && (
-                                            <RecommendedPoolsStakeInputPane
-                                                onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
-                                                setSelectedStakingPools={setUserSelectedStakingPools}
-                                                stakingPools={stakingPools}
-                                                unitAmount={unitAmount}
-                                                zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
-                                            />
-                                        )}
-                                        </WizardFlowFlexInnerContainer>
-                                    </AnimatedWizardFlowAbsoluteContaine>
-                                ))}
-                                {/* <WizardFlowFlexInnerContainer>
+                                        {/* <WizardInfo
+                                            currentEpochStats={currentEpochStats}
+                                            nextEpochStats={nextEpochStats}
+                                            selectedStakingPools={userSelectedStakingPools}
+                                        /> */}
+                                    </WizardInfoFlexInnerContainer>
+                                </AnimatedWizardInfoAbsoluteContaine>
+                            );
+                        })}
+                    </WizardInfoRelativeContainer>
+                }
+                rightComponent={
+                    <WizardFlowRelativeContainer>
+                        {transitions.map(({ item, props: styleProps, key }) => (
+                            <AnimatedWizardFlowAbsoluteContaine key={key} style={styleProps}>
+                                <WizardFlowFlexInnerContainer>
+                                    {item === WizardSteps.ConnectWallet && (
+                                        <ConnectWalletPane
+                                            onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
+                                        />
+                                    )}
+                                    {item === WizardSteps.NoZrxInWallet && (
+                                        <Status
+                                            title="You have no ZRX balance. You will need some to stake."
+                                            linkText="Go buy some ZRX"
+                                            linkUrl={`https://www.rexrelay.com/instant/?defaultSelectedAssetData=${constants.ZRX_ASSET_DATA}`}
+                                        />
+                                    )}
+                                    {item === WizardSteps.MarketMakerEntry && (
+                                        <MarketMakerStakeInputPane
+                                            poolId={poolId}
+                                            unitAmount={unitAmount}
+                                            stakingPools={stakingPools}
+                                            onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
+                                            setSelectedStakingPools={setUserSelectedStakingPools}
+                                            zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
+                                        />
+                                    )}
+                                    {item === WizardSteps.RecomendedEntry && (
+                                        <RecommendedPoolsStakeInputPane
+                                            onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
+                                            setSelectedStakingPools={setUserSelectedStakingPools}
+                                            stakingPools={stakingPools}
+                                            unitAmount={unitAmount}
+                                            zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
+                                        />
+                                    )}
+                                </WizardFlowFlexInnerContainer>
+                            </AnimatedWizardFlowAbsoluteContaine>
+                        ))}
+                        {/* <WizardFlowFlexInnerContainer>
                                     <WizardFlow
                                         currentEpochStats={currentEpochStats}
                                         nextEpochStats={nextEpochStats}
@@ -234,21 +280,44 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
                                         poolId={poolId}
                                     />
                                 </WizardFlowFlexInnerContainer> */}
-                            {/* </WizardFlowAbsoluteContaine> */}
-                        </WizardFlowRelativeContainer>
-                    }
-                />
-            </Container>
+                        {/* </WizardFlowAbsoluteContaine> */}
+                    </WizardFlowRelativeContainer>
+                }
+            />
+        </Container>
     );
 };
 
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
-            <StakingWizardBody {...props}/>
+            <StakingWizardBody {...props} />
         </StakingPageLayout>
     );
-}
+};
+
+const WizardInfoRelativeContainer = styled.div`
+    position: relative;
+    height: 100%;
+    width: 100%;
+`;
+
+const WizardInfoAbsoluteContaine = styled.div`
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+`;
+
+const AnimatedWizardInfoAbsoluteContaine = animated(WizardInfoAbsoluteContaine);
+
+// const AnimatedWizardInfoAbsoluteContaine = animated(WizardInfoAbsoluteContaine);
+
+const WizardInfoFlexInnerContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
 
 const WizardFlowRelativeContainer = styled.div`
     position: relative;
@@ -277,4 +346,4 @@ const AnimatedWizardFlowAbsoluteContaine = styled(animated.div)`
     bottom: 0;
     right: 0;
     left: 0;
-`
+`;
