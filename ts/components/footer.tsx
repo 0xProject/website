@@ -75,7 +75,7 @@ interface IFooterProps {
     isDocs?: boolean;
 }
 
-export const Footer: React.FC<IFooterProps> = ({ isDocs }) => (
+export const Footer: React.FC<IFooterProps> = React.memo(({ isDocs }) => (
     <FooterWrap isDocs={isDocs}>
         <FlexWrap>
             <FooterColumn width="35%">
@@ -99,9 +99,9 @@ export const Footer: React.FC<IFooterProps> = ({ isDocs }) => (
             </FooterColumn>
         </FlexWrap>
     </FooterWrap>
-);
+));
 
-const LinkList = (props: LinkListProps) => (
+const LinkList = React.memo((props: LinkListProps) => (
     <List>
         {props.links.map((link, index) => (
             <li key={`fl-${index}`}>
@@ -111,7 +111,7 @@ const LinkList = (props: LinkListProps) => (
             </li>
         ))}
     </List>
-);
+));
 
 const FooterWrap = styled.footer<IFooterProps>`
     padding: 40px 30px 30px 30px;
