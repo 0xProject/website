@@ -82,4 +82,4 @@ const getMinIdx = (numArr: BigNumber[]): number | undefined => {
         }
     });
     return bestMinIdx;
-}
+};
