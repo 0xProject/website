@@ -1106,13 +1106,15 @@ export interface RewardsStats {
 
 export interface PoolEpochRewards extends RewardsStats {
     epochId: number;
+    epochStartTimestamp: string;
+    epochEndTimestamp: string;
 }
 
 export interface AllTimePoolStats extends RewardsStats {
     protocolFeesGeneratedInEth: number;
 }
 
-export interface PoolWithHistoricalStats extends Pool {
+export interface PoolWithHistoricalStats extends PoolWithStats {
     allTimeStats: AllTimePoolStats;
     epochRewards: PoolEpochRewards[];
 }

@@ -1,4 +1,5 @@
 import { logUtils } from '@0x/utils';
+import { format } from 'date-fns';
 import * as _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -267,18 +268,21 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
         return null;
     }
 
-    const currentEpoch = _.last(stakingPool.epochRewards);
+    const currentEpoch = stakingPool.currentEpochStats;
+
+    // Only allow epochs that have finished into historical data
+    const historicalEpochs = stakingPool.epochRewards.filter(x => !!x.epochEndTimestamp);
 
     return (
         <StakingPageLayout isHome={true} title="Staking pool">
             <DashboardHero
                 title={stakingPool.metaData.name}
                 websiteUrl={stakingPool.metaData.websiteUrl}
-                poolId={utils.getAddressBeginAndEnd(stakingPool.operatorAddress)}
+                poolId={stakingPool.poolId}
                 isVerified={stakingPool.metaData.isVerified}
-                estimatedStake={75} // what's this
-                rewardsShared={74} // what's this
-                iconUrl={stakingPool.metaData.logoUrl || ''}
+                estimatedStake={currentEpoch.approximateStakeRatio * 100}
+                rewardsShared={(1 - currentEpoch.operatorShare) * 100}
+                iconUrl={stakingPool.metaData.logoUrl}
                 tabs={[
                     {
                         title: 'Current Epoch',
@@ -290,29 +294,24 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                             // },
                             {
                                 title: 'ZRX Staked',
-                                number: '1,288,229', // zrx staked missing
+                                number: `${currentEpoch.zrxStaked.toPrecision(2)}`, // zrx staked missing
                             },
                             {
                                 title: 'Fees Generated',
-                                number: `${currentEpoch.totalRewardsPaidInEth} ETH`, // protocolFeesGeneratedInEth is missing, is that the same thing as total rewards?
+                                number: `${currentEpoch.totalProtocolFeesGeneratedInEth} ETH`, // protocolFeesGeneratedInEth is missing, is that the same thing as total rewards?
                             },
                             {
                                 title: 'Rewards Shared',
-                                number: `${currentEpoch.membersRewardsPaidInEth} ETH`,
+                                number: `${currentEpoch.totalProtocolFeesGeneratedInEth * (1 - currentEpoch.operatorShare)} ETH`,
                             },
                         ],
                     },
                     {
                         title: 'All Time',
                         metrics: [
-                            // todo(johnrjj) Cutting volume for MVP
-                            // {
-                            //     title: 'All Volume',
-                            //     number: '1.23M USD',
-                            // },
                             {
                                 title: 'ZRX Staked',
-                                number: '1,288,229',
+                                number: `${currentEpoch.zrxStaked.toPrecision(2)}`,
                             },
                             {
                                 title: 'Fees Generated',
@@ -365,13 +364,12 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
             <Container>
                 <GraphHeading>Historical Details</GraphHeading>
                 <HistoryChart
-                    fees={stakingPool.epochRewards.map(e => e.totalRewardsPaidInEth)}
-                    rewards={stakingPool.epochRewards.map(e => e.membersRewardsPaidInEth)}
-                    epochs={stakingPool.epochRewards.map(() => 3)} // magic number
-                    // timestamps are missing (stakingPool.epochRewards.timestamp or something)
-                    labels={['1 July', '5 July', '10 July', '15 July', '20 July', '25 July', '30 July']}
+                    fees={historicalEpochs.map(e => e.totalRewardsPaidInEth)}
+                    rewards={historicalEpochs.map(e => e.membersRewardsPaidInEth)}
+                    epochs={historicalEpochs.map(() => 3)} // magic number
+                    labels={historicalEpochs.map(e => format(new Date(e.epochEndTimestamp), 'd MMM'))}
                 />
-                {/* Not right now */}
+                {/* TODO(johnrjj) Trading pairs after launch */}
                 {/* <Heading>Trading Pairs</Heading>
                 <div>
                     {tradingPairs.map(({ price, currency, firstCurrency, secondCurrency, id, url }) => {

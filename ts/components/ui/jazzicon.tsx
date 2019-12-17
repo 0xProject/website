@@ -62,7 +62,8 @@ export interface JazziconProps {
     svgStyles?: object;
 }
 
-export const Jazzicon: React.FC<JazziconProps> = props => {
+// NOTE: this component will never update after initial render due to forced memo identity
+export const Jazzicon: React.FC<JazziconProps> = React.memo(props => {
     const { diameter, paperStyles, seed, svgStyles } = props;
 
     const generator = React.useRef(new MersenneTwister(seed));
@@ -111,7 +112,7 @@ export const Jazzicon: React.FC<JazziconProps> = props => {
                 height={diameter}
                 width={diameter}
                 transform={transform}
-                fill={fill} // todo: make prop
+                fill={fill}
             />
         );
     };
@@ -126,4 +127,4 @@ export const Jazzicon: React.FC<JazziconProps> = props => {
             </svg>
         </Paper>
     );
-};
+}, () => true);

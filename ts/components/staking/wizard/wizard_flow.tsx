@@ -373,6 +373,7 @@ const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
     const marketMakerPool = _.find(stakingPools, p => p.poolId === props.poolId);
 
     if (!marketMakerPool) {
+        // TODO(johnrjj) error state
         return null;
     }
 

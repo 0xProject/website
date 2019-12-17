@@ -1,11 +1,11 @@
 import { stringify } from 'query-string';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Progressbar } from 'ts/components/progressbar';
 import { Tab, Tabs } from 'ts/components/tabs';
+import { Jazzicon } from 'ts/components/ui/jazzicon';
 import CheckmarkThin from 'ts/icons/illustrations/checkmark-thin.svg';
 import Checkmark from 'ts/icons/illustrations/checkmark.svg';
 
@@ -236,7 +236,15 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
             <Inner>
                 <Row>
                     <Column>
-                        <PoolIcon src={iconUrl} />
+                    {
+                        iconUrl
+                            ? <PoolIcon src={iconUrl} />
+                            : <Jazzicon
+                                seed={1}
+                                diameter={60}
+                                paperStyles={{borderRadius: 0 }}
+                            />
+                    }
                         <Title>
                             {title}{' '}
                             {isVerified && (
@@ -261,7 +269,6 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                         </HorizontalList>
                         <ButtonContainer>
                             <StakingButton
-                                as={Link}
                                 to={`${WebsitePaths.StakingWizard}?${stringify({ poolId })}`}
                                 color={colors.white}
                                 isFullWidth={true}
@@ -269,7 +276,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                             >
                                 Start Staking
                             </StakingButton>
-                            <Progressbar progress={75} />
+                            <Progressbar progress={estimatedStake} />
                             <ProgressbarText>{estimatedStake}% estimated stake for next epoch</ProgressbarText>
                         </ButtonContainer>
                     </Column>
