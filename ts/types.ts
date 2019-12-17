@@ -1116,14 +1116,10 @@ export interface StakingAPIEpochsResponse {
     nextEpoch: Epoch;
 }
 
-export interface StakingStats {
-    totalRewardsPaidInEth: number;
-    totalZrxStaked: number;
-}
-
 export interface StakingAPIStatsResponse {
-    allTime: StakingStats;
-    currentEpoch: StakingStats;
+    allTime: {
+        totalRewardsPaidInEth: number;
+    };
 }
 
 export interface StakingPoolRecomendation {

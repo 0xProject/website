@@ -117,18 +117,21 @@ const WizardInfoHeader: React.FC<WizardInfoHeaderProps> = ({title, description})
     </>
 );
 
-export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, nextEpochStats }) => {
+const PLACEHOLDER = '—';
+
+export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, currentEpochStats, nextEpochStats }) => {
     if (!selectedStakingPools) {
         return (
             <>
                 <WizardInfoHeader title="Start staking your tokens" description="Use one pool of capital across multiple relayers to trade against a large group."/>
                 <IntroMetrics>
                     <IntroMetric>
-                        <h2>873,435 ETH</h2>
+                        {/* TODO(johnrjj may need to format these numbers) */}
+                        <h2>{currentEpochStats ? currentEpochStats.protocolFeesGeneratedInEth : PLACEHOLDER} ETH</h2>
                         <p>Total rewards collected</p>
                     </IntroMetric>
                     <IntroMetric>
-                        <h2>203,000 ZRX</h2>
+                        <h2>{currentEpochStats ? currentEpochStats.zrxStaked : PLACEHOLDER} ZRX</h2>
                         <p>Total ZRX Staked</p>
                     </IntroMetric>
                 </IntroMetrics>
