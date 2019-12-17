@@ -11,7 +11,7 @@ export const configs = {
     API_BASE_PROD_URL: 'https://api.0x.org',
     API_BASE_STAGING_URL: 'https://staging.api.0x.org',
     API_BASE_KOVAN_URL: 'https://kovan.api.0x.org',
-    API_BASE_DEV_URL: 'http://localhost:3002',
+    API_BASE_DEV_URL: 'http://localhost:3000',
     GOOGLE_SHEETS_LEAD_FORMS: {
         CREDITS: 'https://script.google.com/macros/s/AKfycbyN1lJaSGWg2OIzqT8bou4GiqwCmOVjV2v_fiPO/exec',
     } as GoogleSheetLeadUrls,
