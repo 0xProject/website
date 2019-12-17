@@ -47,7 +47,7 @@ const getFormattedTimeLeft = (secondsLeft: number) => {
     }
     const formattedSecondsLeft = formatDistanceStrict(0, secondsLeft * 1000, { unit: 'second' });
     return `${formattedSecondsLeft} left`;
-}
+};
 
 export interface WizardFlowProps {
     providerState: ProviderState;
