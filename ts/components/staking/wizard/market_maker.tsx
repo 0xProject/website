@@ -156,6 +156,7 @@ const TitleContainer = styled.div`
 
 export const MarketMaker: React.FC<MarketMakerProps> = props => {
     const { name, collectedFees, rewards, staked, difference, iconUrl, website } = props;
+
     return (
         <Container>
             <Heading>
@@ -183,7 +184,7 @@ export const MarketMaker: React.FC<MarketMakerProps> = props => {
                 </Metric>
                 <Metric>
                     <MetricTitle>Staked</MetricTitle>
-                    <MetricAmount>{Math.round(staked * 100)}</MetricAmount>
+                    <MetricAmount>{Math.round(staked * 100)}%</MetricAmount>
                     <StyledInfoTooltip id="staked">
                         An approximation for how fully staked the pool is for the upcoming epoch
                     </StyledInfoTooltip>

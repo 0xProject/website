@@ -30,7 +30,7 @@ import { Status } from 'ts/components/staking/wizard/status';
 import { Spinner } from 'ts/components/ui/spinner';
 
 import { UseAllowanceHookResult } from 'ts/hooks/use_allowance';
-import { useTimeRemaining } from 'ts/hooks/use_seconds_remaining';
+import { useSecondsRemaining } from 'ts/hooks/use_seconds_remaining';
 import { UseStakeHookResult } from 'ts/hooks/use_stake';
 
 import { stakingUtils } from 'ts/utils/staking_utils';
@@ -40,6 +40,14 @@ import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
 import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
+
+const getFormattedTimeLeft = (secondsLeft: number) => {
+    if (secondsLeft === 0) {
+        return 'Almost done...';
+    }
+    const formattedSecondsLeft = formatDistanceStrict(0, secondsLeft * 1000, { unit: 'second' });
+    return `${formattedSecondsLeft} left`;
+};
 
 export interface WizardFlowProps {
     providerState: ProviderState;
@@ -357,7 +365,6 @@ const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
     const { stakingPools, setSelectedStakingPools, zrxBalanceBaseUnitAmount, unitAmount } = props;
 
     const formattedAmount = utils.getFormattedAmount(props.zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
-    const statusNode = getStatus(stakeAmount, props.stakingPools);
 
     if (!stakingPools) {
         return null;
@@ -366,6 +373,7 @@ const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
     const marketMakerPool = _.find(stakingPools, p => p.poolId === props.poolId);
 
     if (!marketMakerPool) {
+        // TODO(johnrjj) error state
         return null;
     }
 
@@ -442,19 +450,19 @@ export interface StartStakingProps {
     stake: UseStakeHookResult;
     allowance: UseAllowanceHookResult;
     selectedStakingPools: UserStakingChoice[] | undefined;
-    currentEpochStats?: Epoch;
+    nextEpochStats?: Epoch;
     address?: string;
 }
 
 // Core
 const StartStaking: React.FC<StartStakingProps> = props => {
-    const { selectedStakingPools, stake, allowance, address, currentEpochStats } = props;
+    const { selectedStakingPools, stake, allowance, address, nextEpochStats } = props;
 
     const [isApproveTokenModalOpen, setIsApproveTokenModalOpen] = React.useState(false);
     const [isStakingConfirmationModalOpen, setIsStakingConfirmationModalOpen] = React.useState(false);
 
-    const timeRemainingForAllowanceApproval = useTimeRemaining(allowance.estimatedTransactionFinishTime);
-    const timeRemainingForStakingTransaction = useTimeRemaining(stake.estimatedTransactionFinishTime);
+    const timeRemainingForAllowanceApproval = useSecondsRemaining(allowance.estimatedTransactionFinishTime);
+    const timeRemainingForStakingTransaction = useSecondsRemaining(stake.estimatedTransactionFinishTime);
 
     if (selectedStakingPools && stake.result) {
         // TODO needs the info header (start staking + begins in n days)
@@ -481,7 +489,8 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                     <span>
                         {allowance.loadingState === TransactionLoadingState.WaitingForSignature
                             ? 'Waiting for signature'
-                            : `${timeRemainingForAllowanceApproval} left`}
+                            : getFormattedTimeLeft(timeRemainingForAllowanceApproval)
+                        }
                     </span>
                 </ButtonWithIcon>
             );
@@ -516,7 +525,8 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                     <span>
                         {stake.loadingState === TransactionLoadingState.WaitingForSignature
                             ? 'Waiting for signature'
-                            : `${timeRemainingForStakingTransaction} left`}
+                            : getFormattedTimeLeft(timeRemainingForStakingTransaction)
+                        }
                     </span>
                 </ButtonWithIcon>
             );
@@ -569,7 +579,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
         }, new BigNumber(0));
         const stakingStartsFormattedTime = formatDistanceStrict(
             new Date(),
-            new Date(currentEpochStats.epochStart.timestamp),
+            new Date(nextEpochStats.epochStart.timestamp),
         );
         return (
             <>
@@ -644,7 +654,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
     allowance,
     providerState,
     onOpenConnectWalletDialog,
-    currentEpochStats,
+    nextEpochStats,
 }) => {
     if (providerState.account.state !== AccountState.Ready) {
         return <ConnectWalletPane onOpenConnectWalletDialog={onOpenConnectWalletDialog} />;
@@ -699,7 +709,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
             address={providerState.account.address}
             allowance={allowance}
             stake={stake}
-            currentEpochStats={currentEpochStats}
+            nextEpochStats={nextEpochStats}
             providerState={providerState}
             selectedStakingPools={selectedStakingPools}
         />

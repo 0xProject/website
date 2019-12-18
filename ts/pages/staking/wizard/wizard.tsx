@@ -84,8 +84,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                 <Splitview
                     leftComponent={
                         <WizardInfo
-                            nextEpochStats={nextEpochStats}
                             currentEpochStats={currentEpochStats}
+                            nextEpochStats={nextEpochStats}
                             selectedStakingPools={userSelectedStakingPools}
                         />
                     }

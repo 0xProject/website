@@ -1119,6 +1119,32 @@ export interface PoolWithStats extends Pool {
     sevenDayProtocolFeesGeneratedInEth: number;
 }
 
+export interface RewardsStats {
+    operatorRewardsPaidInEth: number;
+    membersRewardsPaidInEth: number;
+    totalRewardsPaidInEth: number;
+}
+
+export interface PoolEpochRewards extends RewardsStats {
+    epochId: number;
+    epochStartTimestamp: string;
+    epochEndTimestamp: string;
+}
+
+export interface AllTimePoolStats extends RewardsStats {
+    protocolFeesGeneratedInEth: number;
+}
+
+export interface PoolWithHistoricalStats extends PoolWithStats {
+    allTimeStats: AllTimePoolStats;
+    epochRewards: PoolEpochRewards[];
+}
+
+export interface StakingAPIPoolByIdResponse {
+    poolId: string;
+    stakingPool: PoolWithHistoricalStats;
+}
+
 export interface EpochPoolStats {
     poolId: string;
     zrxStaked: number;
@@ -1159,6 +1185,12 @@ export interface PoolEpochRewards extends RewardsStats {
 export interface StakingAPIEpochsResponse {
     currentEpoch: Epoch;
     nextEpoch: Epoch;
+}
+
+export interface StakingAPIStatsResponse {
+    allTime: {
+        totalRewardsPaidInEth: number;
+    };
 }
 
 export interface StakingPoolRecomendation {

@@ -1,13 +1,14 @@
 import { formatDistanceStrict, max } from 'date-fns';
 import { useEffect, useState } from 'react';
 
-const getTimeLeftDisplayValue = (dateInFuture: Date): string => {
-  const timeLeftDisplayValue = formatDistanceStrict(dateInFuture, new Date(), { unit: 'second' });
-  return timeLeftDisplayValue;
+const getTimeLeftInSeconds = (dateInFuture: Date): number => {
+  const timeLeftInSecondsAsString = formatDistanceStrict(dateInFuture, new Date(), { unit: 'second' });
+  const leftLeftInSeconds: number = parseInt(timeLeftInSecondsAsString, 10);
+  return leftLeftInSeconds;
 };
 
 // Counts down to a provided target date
-const useTimeRemaining  = (targetTime: Date | undefined): string | undefined => {
+const useSecondsRemaining  = (targetTime: Date | undefined): number | undefined => {
   const intervalTime = 1000;
   const [_counter, setCounter] = useState<number>(0);
 
@@ -34,10 +35,9 @@ const useTimeRemaining  = (targetTime: Date | undefined): string | undefined => 
   if (!targetTime) {
       return undefined;
   }
-  return getTimeLeftDisplayValue(max([targetTime, new Date()]));
+  return getTimeLeftInSeconds(max([targetTime, new Date()]));
 };
 
 export {
-  useTimeRemaining,
-  getTimeLeftDisplayValue,
+  useSecondsRemaining,
 };

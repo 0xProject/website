@@ -19,12 +19,17 @@ import { Heading } from 'ts/components/text';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
 
+const sortByProtocolFees = (a: PoolWithStats, b: PoolWithStats) => {
+    return a.currentEpochStats.totalProtocolFeesGeneratedInEth - b.currentEpochStats.totalProtocolFeesGeneratedInEth;
+};
+
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = props => {
     const [isStakingConfirmationOpen, setStakingConfirmationOpen] = React.useState(false);
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
     const networkId = useSelector((state: State) => state.networkId);
     const apiClient = useAPIClient(networkId);
+
     React.useEffect(() => {
         const fetchAndSetPoolsAsync = async () => {
             const resp = await apiClient.getStakingPoolsAsync();
@@ -32,7 +37,15 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
         };
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPoolsAsync();
-    }, [apiClient.networkId]);
+    }, [apiClient]);
+
+    const sortedStakingPools: PoolWithStats[] | undefined = React.useMemo(() => {
+        if (!stakingPools) {
+            return undefined;
+        }
+        return [...stakingPools.sort(sortByProtocolFees)];
+    }, [stakingPools]);
+
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
             <StakingConfirmationDialog
@@ -67,12 +80,14 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                 <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
                     Staking Pools
                 </Heading>
-                {stakingPools &&
-                    stakingPools.map(pool => {
+                {sortedStakingPools &&
+                    sortedStakingPools.map(pool => {
                         return (
                             <StakingPoolDetailRow
+                                to={_.replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}
                                 key={pool.poolId}
-                                name={pool.metaData.name}
+                                poolId={pool.poolId}
+                                name={pool.metaData.name || `Staking Pool #${pool.poolId}`}
                                 thumbnailUrl={pool.metaData.logoUrl}
                                 isVerified={pool.metaData.isVerified}
                                 address={pool.operatorAddress}

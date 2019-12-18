@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { colors } from 'ts/style/colors';
@@ -7,6 +8,8 @@ import { configs } from 'ts/utils/configs';
 import { utils } from 'ts/utils/utils';
 
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
+import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
+
 const RoundedPercentage = ({ percentage }: { percentage: number }) => <span>{Math.round(percentage)}%</span>;
 
 const ShortenedEthAddress = ({ address }: { address: string }) => (
@@ -26,12 +29,15 @@ interface IStakingPoolDetailRowProps {
     stakeRatio: number;
     rewardsSharedRatio: number;
     isVerified: boolean;
+    poolId: string;
     websiteUrl?: string;
     thumbnailUrl?: string;
+    to?: string;
 }
 
 export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
     name,
+    poolId,
     thumbnailUrl,
     address,
     websiteUrl,
@@ -39,21 +45,26 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
     totalFeesGeneratedInEth,
     rewardsSharedRatio,
     stakeRatio,
+    to,
 }) => (
-    <StakingPoolDetailRowWrapper>
-        {thumbnailUrl && (
+    <StakingPoolDetailRowWrapper as={to && Link} to={to}>
+        {thumbnailUrl ? (
             <Logo>
                 <img src={thumbnailUrl} />
             </Logo>
+        ) : (
+            <JazziconContainer>
+                <Jazzicon diameter={80} seed={generateUniqueId(address, poolId)} isSquare={true} />
+            </JazziconContainer>
         )}
         <PoolOverviewSection>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Heading>{name}</Heading>
-                {isVerified &&
+                <Heading hasHoverEffect={!!to}>{name}</Heading>
+                {isVerified && (
                     <DesktopOnlyWrapper style={{ margin: '7px' }}>
                         <CircleCheckMark width="22px" height="22px" />
                     </DesktopOnlyWrapper>
-                }
+                )}
             </div>
             <DesktopOnlyWrapper style={{ height: '23px', alignItems: 'center' }}>
                 <ShortenedEthAddress address={address} />
@@ -94,7 +105,7 @@ const DesktopOnlyWrapper = styled.div`
     ${desktopOnlyStyle};
 `;
 
-const StakingPoolDetailRowWrapper = styled.div`
+const StakingPoolDetailRowWrapper = styled.div<{ to?: string }>`
     min-height: 120px;
     border: 1px solid #d9d9d9;
     display: flex;
@@ -111,15 +122,27 @@ const StakingPoolDetailRowWrapper = styled.div`
         align-items: center;
         padding: 20px;
     }
+    :hover,
+    :active {
+        border: ${props => (props.to ? '1px solid #B4B4B4' : 'inherit')};
+    }
 `;
 
-const Logo = styled.div`
+const BaseLogoContainer = styled.div`
     border: 1px solid #d9d9d9;
     height: 80px;
     width: 80px;
-    padding: 15px;
 
     ${desktopOnlyStyle}
+`;
+
+const JazziconContainer = styled(BaseLogoContainer)``;
+
+const Logo = styled(BaseLogoContainer)`
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const PoolOverviewSection = styled.div`
@@ -132,14 +155,19 @@ const PoolOverviewSection = styled.div`
     }
 `;
 
-const Heading = styled.span`
+const Heading = styled.span<{ hasHoverEffect?: boolean }>`
     font-size: 24px;
     line-height: 32px;
     font-feature-settings: 'tnum' on, 'lnum' on;
-
     @media (max-width: ${ScreenWidths.Lg}rem) {
         font-size: 20px;
         line-height: 27px;
+    }
+    ${StakingPoolDetailRowWrapper}:hover & {
+        color: ${props => (props.hasHoverEffect ? '#00AE99' : 'inherit')};
+    }
+    ${StakingPoolDetailRowWrapper}:active & {
+        color: ${props => (props.hasHoverEffect ? '#00AE99' : 'inherit')};
     }
 `;
 

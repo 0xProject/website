@@ -117,6 +117,8 @@ const WizardInfoHeader: React.FC<WizardInfoHeaderProps> = ({title, description})
     </>
 );
 
+const PLACEHOLDER = '—';
+
 export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, currentEpochStats, nextEpochStats }) => {
     if (!selectedStakingPools) {
         return (
@@ -124,11 +126,12 @@ export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, cu
                 <WizardInfoHeader title="Start staking your tokens" description="Use one pool of capital across multiple relayers to trade against a large group."/>
                 <IntroMetrics>
                     <IntroMetric>
-                        <h2>873,435 ETH</h2>
+                        {/* TODO(johnrjj may need to format these numbers) */}
+                        <h2>{currentEpochStats ? currentEpochStats.protocolFeesGeneratedInEth : PLACEHOLDER} ETH</h2>
                         <p>Total rewards collected</p>
                     </IntroMetric>
                     <IntroMetric>
-                        <h2>203,000 ZRX</h2>
+                        <h2>{currentEpochStats ? currentEpochStats.zrxStaked : PLACEHOLDER} ZRX</h2>
                         <p>Total ZRX Staked</p>
                     </IntroMetric>
                 </IntroMetrics>
@@ -136,8 +139,9 @@ export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, cu
         );
     }
 
-    const stakingStartsEpochDate = new Date(currentEpochStats.epochStart.timestamp);
-    const firstRewardsEpochDate = new Date(nextEpochStats.epochStart.timestamp);
+    const stakingStartsEpochDate = new Date(nextEpochStats.epochStart.timestamp);
+    const ESTIMATED_EPOCH_LENGTH_IN_DAYS = 10;
+    const firstRewardsEpochDate = addDays(new Date(nextEpochStats.epochStart.timestamp), ESTIMATED_EPOCH_LENGTH_IN_DAYS);
 
     const now = new Date();
     const DATE_FORMAT = 'MM.dd';
