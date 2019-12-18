@@ -8,7 +8,7 @@ import { configs } from 'ts/utils/configs';
 import { utils } from 'ts/utils/utils';
 
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
-import { Jazzicon, generateUniqueId } from 'ts/components/ui/jazzicon';
+import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
 
 const RoundedPercentage = ({ percentage }: { percentage: number }) => <span>{Math.round(percentage)}%</span>;
 

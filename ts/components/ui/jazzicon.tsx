@@ -46,7 +46,7 @@ const Paper: React.FC<PaperProps> = ({ children, color, diameter,  style: styleO
         className="paper"
         style={{
             ...DEFAULT_PAPER_STYLES,
-            borderRadius: isSquare ? '0' : '50px',
+            borderRadius: isSquare ? '0' : DEFAULT_PAPER_STYLES.borderRadius,
             backgroundColor: color,
             height: diameter,
             width: diameter,
@@ -71,7 +71,7 @@ export interface JazziconProps {
 
 // NOTE: this component will never update after initial render due to forced memo identity
 export const Jazzicon: React.FC<JazziconProps> = React.memo(props => {
-    const { diameter, paperStyles, seed, svgStyles } = props;
+    const { diameter, paperStyles, seed, svgStyles, isSquare } = props;
 
     const generator = React.useRef(new MersenneTwister(seed));
 
@@ -128,7 +128,7 @@ export const Jazzicon: React.FC<JazziconProps> = React.memo(props => {
     const shapesArr = Array(SHAPE_COUNT).fill(null);
 
     return (
-        <Paper color={genColor(remainingColors)} diameter={diameter} style={paperStyles}>
+        <Paper color={genColor(remainingColors)} diameter={diameter} isSquare={isSquare} style={paperStyles}>
             <svg xmlns={SVGNS} x="0" y="0" height={diameter} width={diameter} style={svgStyles}>
                 {shapesArr.map((_s, i) => genShape(remainingColors, diameter, i, SHAPE_COUNT - 1))}
             </svg>
