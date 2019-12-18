@@ -392,7 +392,9 @@ export const Account: React.FC<AccountProps> = () => {
                     </SectionHeader>
                     {/* WORKAROUND BECAUSE API WILL RETURN 1 'null' pool if you haven't staked to any pools */}
                     {/* TODO(johnrjj) - Need to fix api response to not return a null pool  */}
-                    {delegatorData.forCurrentEpoch.poolData.length === 1 && delegatorData.forCurrentEpoch.poolData[0].poolId === null ? (
+                    {delegatorData.forCurrentEpoch.poolData.length === 0 ||
+                    (delegatorData.forCurrentEpoch.poolData.length === 1 &&
+                        delegatorData.forCurrentEpoch.poolData[0].poolId === null) ? (
                         <CallToAction
                             icon="revenue"
                             title="You haven't staked ZRX"
