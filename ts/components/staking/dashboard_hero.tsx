@@ -243,7 +243,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                         iconUrl
                             ? <PoolIcon src={iconUrl} />
                             : <Jazzicon
-                                seed={generateUniqueId(poolId, operatorAddress)}
+                                seed={generateUniqueId(operatorAddress, poolId)}
                                 diameter={60}
                             />
                     }

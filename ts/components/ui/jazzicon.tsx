@@ -2,11 +2,14 @@ import Color from 'color';
 import MersenneTwister from 'mersenne-twister';
 import React from 'react';
 
-export const generateUniqueId = (poolId: string, address: string): number => {
+export const generateUniqueId = (address: string, poolId?: string): number => {
     const addr = address.slice(2, 10);
+    const addressHexInt = parseInt(addr, 16);
+    if (!poolId) {
+        return addressHexInt;
+    }
     const id = parseInt(poolId, 10);
-    const seed = parseInt(addr, 16);
-    return parseInt(`${id}${seed}`, 10);
+    return parseInt(`${id}${addressHexInt}`, 10);
 };
 
 // TODO(johnrjj) - We can tune these to fit the 0x brand colors

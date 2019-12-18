@@ -54,7 +54,7 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
             </Logo>
         ) : (
             <JazziconContainer>
-                <Jazzicon diameter={80} seed={generateUniqueId(poolId, address)} isSquare={true} />
+                <Jazzicon diameter={80} seed={generateUniqueId(address, poolId)} isSquare={true} />
             </JazziconContainer>
         )}
         <PoolOverviewSection>
