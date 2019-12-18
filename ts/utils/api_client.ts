@@ -54,10 +54,12 @@ export class APIClient {
         const result = await fetchUtils.requestAsync<StakingAPIEpochsResponse>(utils.getAPIBaseUrl(this.networkId), STAKING_EPOCHS_ENDPOINT);
         return result;
     }
+
     public async getStakingStatsAsync(): Promise<StakingAPIStatsResponse> {
         const result = await fetchUtils.requestAsync<StakingAPIStatsResponse>(utils.getAPIBaseUrl(this.networkId), STAKING_STATS_ENDPOINT);
         return result;
     }
+
     public async getStakingPoolByIdAsync(poolId: string): Promise<StakingAPIPoolByIdResponse> {
         const result = await fetchUtils.requestAsync(
             utils.getAPIBaseUrl(this.networkId),

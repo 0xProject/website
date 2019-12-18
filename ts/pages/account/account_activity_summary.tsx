@@ -11,6 +11,8 @@ interface AccountActivitySummaryProps {
     avatarSrc?: string;
     children?: React.ReactNode;
     icon?: string;
+    poolId: string;
+    address: string;
 }
 
 const Wrap = styled.div`
@@ -48,10 +50,19 @@ export const AccountActivitySummary: React.StatelessComponent<AccountActivitySum
     avatarSrc,
     icon,
     children,
+    poolId,
+    address,
 }) => {
     return (
         <Wrap>
-            <PanelHeader title={title} subtitle={subtitle} avatarSrc={avatarSrc} icon={icon} />
+            <PanelHeader
+                title={title}
+                subtitle={subtitle}
+                avatarSrc={avatarSrc}
+                icon={icon}
+                poolId={poolId}
+                address={address}
+            />
 
             <ChildWrap>{children}</ChildWrap>
         </Wrap>

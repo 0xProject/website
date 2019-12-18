@@ -17,6 +17,8 @@ interface UserData {
 
 interface StakeOverviewProps {
     name: string;
+    operatorAddress: string;
+    poolId: string;
     websiteUrl?: string;
     logoUrl?: string;
     feesGenerated: string;
@@ -32,6 +34,8 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
     name,
     websiteUrl,
     logoUrl,
+    operatorAddress,
+    poolId,
     feesGenerated = '0 ETH',
     rewardsSharedRatio = 0,
     stakeRatio = 0,
@@ -44,8 +48,17 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
     return (
         <Wrap>
             <Flex>
-                <PanelHeader subtitle={websiteUrl} avatarSrc={logoUrl} isResponsiveAvatar={true}>
-                    {renderTitle(name, isVerified)}
+                <PanelHeader
+                    subtitle={websiteUrl}
+                    avatarSrc={logoUrl}
+                    isResponsiveAvatar={true}
+                    address={operatorAddress}
+                    poolId={poolId}
+                >
+                    <Title>
+                        {name}
+                        {isVerified && <CircleCheckMark />}
+                    </Title>
                 </PanelHeader>
 
                 <Stats>
@@ -142,15 +155,6 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                 </Button>
             </MobileActions>
         </Wrap>
-    );
-};
-
-const renderTitle = (name: string, isVerified: boolean): React.ReactNode => {
-    return (
-        <Title>
-            {name}
-            {isVerified && <CircleCheckMark />}
-        </Title>
     );
 };
 

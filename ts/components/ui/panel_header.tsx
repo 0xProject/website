@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
 import { Heading, Paragraph } from 'ts/components/text';
+import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
+
 import { colors } from 'ts/style/colors';
 
 interface PanelHeaderProps {
@@ -12,6 +14,8 @@ interface PanelHeaderProps {
     subtitle: string;
     isResponsiveAvatar?: boolean;
     icon?: string;
+    address: string;
+    poolId: string;
     children?: React.ReactNode;
 }
 
@@ -45,6 +49,7 @@ const Avatar = styled.figure<AvatarProps>`
     margin-right: 20px;
     position: relative;
     display: flex;
+    overflow: hidden;
 
     img {
         object-fit: cover;
@@ -78,6 +83,8 @@ const IconWrap = styled.div`
 
 export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
     avatarSrc,
+    address,
+    poolId,
     title,
     subtitle,
     isResponsiveAvatar,
@@ -86,18 +93,18 @@ export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
 }) => {
     return (
         <Wrap>
-            {avatarSrc && (
-                <Avatar isResponsive={isResponsiveAvatar}>
+            <Avatar isResponsive={isResponsiveAvatar}>
+                {avatarSrc ? (
                     <img style={{ margin: 'auto' }} src={avatarSrc} />
-
-                    {icon && (
-                        <IconWrap>
-                            <Icon name={icon} size={24} />
-                        </IconWrap>
-                    )}
-                </Avatar>
-            )}
-
+                ) : (
+                    <Jazzicon seed={generateUniqueId(address, poolId)} diameter={80} isSquare={true} />
+                )}
+                {icon && (
+                    <IconWrap>
+                        <Icon name={icon} size={24} />
+                    </IconWrap>
+                )}
+            </Avatar>
             <div style={{ flex: 1 }}>
                 <Flex>
                     <Heading size="small" fontWeight="500" isNoMargin={true} style={{ marginRight: '8px' }}>

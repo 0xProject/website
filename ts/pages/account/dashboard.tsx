@@ -75,6 +75,9 @@ interface PendingAction {
     amount: number;
 }
 
+// TODO(johnrjj) - After going to a pool that has been staked in, hitting the 'Remove' button,
+// and running the transaction, the balances do not update, even after a good amount of time (30min+ etc)
+// Is there a way we can query web3 directly?? (tl;dr 'Pending' removes are flaky/not sure if they are working)
 export const Account: React.FC<AccountProps> = () => {
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
@@ -150,7 +153,7 @@ export const Account: React.FC<AccountProps> = () => {
                 setIsFetchingDelegatorData(false);
                 logUtils.warn(err);
             });
-    }, [account.address, apiClient.networkId]);
+    }, [account.address, apiClient]); // add isFetchingDelegatorData to dependency arr to turn on polling
 
     React.useEffect(() => {
         const fetchAvailableRewards = async () => {
@@ -215,7 +218,7 @@ export const Account: React.FC<AccountProps> = () => {
             setTotalAvailableRewards(new BigNumber(0));
             logUtils.warn(err);
         });
-    }, [delegatorData, account.address]);
+    }, [delegatorData, account.address, stakingContract]);
 
     React.useEffect(() => {
         const _pendingUnstake: PendingAction[] = Object.keys(currentEpochStakeMap).reduce((memo, poolId) => {
@@ -236,12 +239,23 @@ export const Account: React.FC<AccountProps> = () => {
         setPendingUnstakePoolSet(new Set(_pendingUnstake.map(p => p.poolId)));
     }, [currentEpochStakeMap, nextEpochStakeMap, delegatorData]);
 
+    const accountLoaded = account && account.address;
+
+    if (!accountLoaded) {
+        return (
+            <StakingPageLayout title="0x Staking | Account">
+                <Inner>
+                    <div>Connect to your wallet to see your account</div>
+                </Inner>
+            </StakingPageLayout>
+        );
+    }
+
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
                 <Inner>
                     {account && account.address && <AccountDetail userEthAddress={account.address} />}
-
                     <Figures>
                         <AccountFigure
                             label="Available"
@@ -270,7 +284,7 @@ export const Account: React.FC<AccountProps> = () => {
                                 </>
                             )}
                         >
-                            {utils.getFormattedAmount(undelegatedBalanceBaseUnits, constants.DECIMAL_PLACES_ZRX)}
+                            {utils.getFormattedAmount(undelegatedBalanceBaseUnits, constants.DECIMAL_PLACES_ZRX)} ZRX
                         </AccountFigure>
 
                         <AccountFigure
@@ -338,7 +352,6 @@ export const Account: React.FC<AccountProps> = () => {
                     </SectionHeader>
                     {pendingUnstake.map(({ poolId, amount }, index) => {
                         const pool = poolWithStatsMap[poolId];
-
                         return (
                             <AccountActivitySummary
                                 key={`account-acctivity-summary-${index}`}
@@ -348,6 +361,8 @@ export const Account: React.FC<AccountProps> = () => {
                                 subtitle="Your tokens will need to be manually withdrawn once they are removed"
                                 avatarSrc={pool.metaData.logoUrl}
                                 icon="clock"
+                                poolId={poolId}
+                                address={pool.operatorAddress}
                             >
                                 <StatFigure
                                     label="Withdraw date"
@@ -359,7 +374,7 @@ export const Account: React.FC<AccountProps> = () => {
                 </SectionWrapper>
             )}
 
-            {/* TODO add loadin animations or display partially loaded data */}
+            {/* TODO add loading animations or display partially loaded data */}
             {hasDataLoaded() && (
                 <SectionWrapper>
                     <SectionHeader>
@@ -367,14 +382,14 @@ export const Account: React.FC<AccountProps> = () => {
                             Your staking pools
                         </Heading>
 
-                        <Button
+                        {/* <Button
                             color={colors.brandDark}
                             isWithArrow={true}
                             isTransparent={true}
                             onClick={() => toggleApplyModal(true)}
                         >
                             Apply to create a staking pool
-                        </Button>
+                        </Button> */}
                     </SectionHeader>
 
                     {delegatorData.forCurrentEpoch.poolData.length === 0 ? (
@@ -415,11 +430,13 @@ export const Account: React.FC<AccountProps> = () => {
                                 return (
                                     <AccountStakeOverview
                                         key={`stake-${pool.poolId}`}
+                                        poolId={pool.poolId}
                                         name={pool.metaData.name || `Pool ${pool.poolId}`}
                                         websiteUrl={pool.metaData.websiteUrl}
+                                        operatorAddress={pool.operatorAddress}
                                         logoUrl={pool.metaData.logoUrl}
                                         stakeRatio={pool.nextEpochStats.approximateStakeRatio}
-                                        rewardsSharedRatio={1 - pool.nextEpochStats.operatorShare}
+                                        rewardsSharedRatio={1 - pool.currentEpochStats.operatorShare}
                                         feesGenerated={getFormattedAmount(
                                             pool.sevenDayProtocolFeesGeneratedInEth,
                                             'ETH',
