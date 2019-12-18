@@ -397,7 +397,7 @@ export const utils = {
     },
     format(value: BigNumber, format: string): string {
         const formattedAmount = numeral(value).format(format);
-        if (_.isNaN(formattedAmount)) {
+        if (_.isNaN(formattedAmount) || formattedAmount === 'NaN') {
             // https://github.com/adamwdraper/Numeral-js/issues/596
             return numeral(new BigNumber(0)).format(format);
         }

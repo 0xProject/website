@@ -97,7 +97,7 @@ export const Account: React.FC<AccountProps> = () => {
     const [pendingUnstakePoolSet, setPendingUnstakePoolSet] = React.useState<Set<string>>(new Set());
 
     const apiClient = useAPIClient(networkId);
-    const { stakingContract, unstake, withdrawStake } = useStake(networkId, providerState);
+    const { stakingContract, unstake, withdrawStake, withdrawRewards } = useStake(networkId, providerState);
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
 
@@ -294,6 +294,16 @@ export const Account: React.FC<AccountProps> = () => {
                                             isTransparent={true}
                                             fontSize="17px"
                                             color={colors.brandLight}
+                                            onClick={() => {
+                                                const poolsWithRewards = Object.keys(availableRewardsMap).map(poolId =>
+                                                    utils.toPaddedHex(poolId),
+                                                );
+
+                                                withdrawRewards(poolsWithRewards, () => {
+                                                    setAvailableRewardsMap({});
+                                                    setTotalAvailableRewards(new BigNumber(0));
+                                                });
+                                            }}
                                         >
                                             Withdraw
                                         </Button>
