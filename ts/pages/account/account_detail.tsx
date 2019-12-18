@@ -1,6 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
+
 import { colors } from 'ts/style/colors';
 import { utils } from 'ts/utils/utils';
 
@@ -18,7 +20,11 @@ export const AccountDetail: React.StatelessComponent<AccountDetailProps> = ({
     return (
         <Wrap>
             <Avatar>
-                <img src={userImageSrc} />
+                {
+                    userImageSrc
+                    ? <img src={userImageSrc} />
+                    : <Jazzicon seed={generateUniqueId(userEthAddress)} diameter={60} isSquare={true} />
+                }
             </Avatar>
             {truncatedAddress}
         </Wrap>

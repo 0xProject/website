@@ -1,3 +1,4 @@
+import { formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -8,36 +9,42 @@ import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { PanelHeader } from 'ts/components/ui/panel_header';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { colors } from 'ts/style/colors';
-import { WebsitePaths } from 'ts/types';
 
 interface UserData {
-    amountInEth: string | number;
-    rewardsReceived: string | number;
+    zrxStakedFormatted: string;
+    rewardsReceivedFormatted: string;
 }
 
 interface StakeOverviewProps {
     name: string;
-    websiteUrl: string;
+    operatorAddress: string;
+    poolId: string;
+    websiteUrl?: string;
     logoUrl?: string;
-    rewardsShared: string;
     feesGenerated: string;
-    totalStaked: string;
+    rewardsSharedRatio: number;
+    stakeRatio: number;
     userData: UserData;
-    approximateTimestamp: number;
+    nextEpochApproximateStart: Date;
     isVerified: boolean;
+    onRemoveStake: () => void;
 }
 
 export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> = ({
     name,
     websiteUrl,
     logoUrl,
-    rewardsShared = '0 ETH',
+    operatorAddress,
+    poolId,
     feesGenerated = '0 ETH',
-    totalStaked = '0%',
+    rewardsSharedRatio = 0,
+    stakeRatio = 0,
     userData,
-    approximateTimestamp,
+    nextEpochApproximateStart,
     isVerified,
+    onRemoveStake,
 }) => {
+    const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(nextEpochApproximateStart));
     return (
         <Wrap>
             <Flex>
@@ -45,23 +52,19 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                     subtitle={websiteUrl}
                     avatarSrc={logoUrl}
                     isResponsiveAvatar={true}
+                    address={operatorAddress}
+                    poolId={poolId}
                 >
-                    {renderTitle(name, isVerified)}
+                    <Title>
+                        {name}
+                        {isVerified && <CircleCheckMark />}
+                    </Title>
                 </PanelHeader>
 
                 <Stats>
-                    <StatFigure
-                        label="Fees Generated"
-                        value={feesGenerated}
-                    />
-                    <StatFigure
-                        label="Rewards Shared"
-                        value={rewardsShared}
-                    />
-                    <StatFigure
-                        label="Staked"
-                        value={totalStaked}
-                    />
+                    <StatFigure label="Fees Generated" value={feesGenerated} />
+                    <StatFigure label="Rewards Shared" value={`${Math.floor(rewardsSharedRatio * 100)}%`} />
+                    <StatFigure label="Staked" value={`${Math.floor(stakeRatio * 100)}%`} />
                 </Stats>
             </Flex>
 
@@ -69,19 +72,14 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                 <Action>
                     <InlineStats>
                         <div>
-                            <Heading
-                                size={14}
-                                marginBottom="12px"
-                            >
+                            <Heading size={14} marginBottom="12px">
                                 Your stake
                             </Heading>
-
-                            {userData.amountInEth} ZRX
+                            {userData.zrxStakedFormatted} ZRX
                         </div>
                     </InlineStats>
 
                     <Button
-                        to="/"
                         color={colors.red}
                         borderColor={colors.border}
                         bgColor={colors.white}
@@ -89,6 +87,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                         fontWeight="300"
                         isNoBorder={true}
                         padding="15px 35px"
+                        onClick={onRemoveStake}
                     >
                         Remove
                     </Button>
@@ -97,52 +96,48 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                 <Action>
                     <InlineStats>
                         <div>
-                            <Heading
-                                size={14}
-                                marginBottom="12px"
-                            >
+                            <Heading size={14} marginBottom="12px">
                                 Your rewards
                             </Heading>
-
-                            {userData.rewardsReceived} ETH
+                            {userData.rewardsReceivedFormatted} ETH
                         </div>
 
                         <div>
-                            <Heading
-                                size={14}
-                                marginBottom="12px"
-                            >
+                            <Heading size={14} marginBottom="12px">
                                 Next epoch
                             </Heading>
 
-                            {/* Needs to be formatted */}
-                            {approximateTimestamp || '2 days'}
+                            {stakingStartsFormattedTime}
                         </div>
                     </InlineStats>
 
+                    {/* TODO(kimpers): Add this back when we have implemented the activity page
+                        <Button
+                            to={WebsitePaths.AccountActivity}
+                            color={colors.white}
+                            fontSize="17px"
+                            fontWeight="300"
+                            padding="15px 35px"
+                        >
+                            View History
+                        </Button>
+                    */}
+                </Action>
+            </Flex>
+
+            <MobileActions>
+                {/* TODO(kimpers): Add this back when we have implemented the activity page
                     <Button
                         to={WebsitePaths.AccountActivity}
                         color={colors.white}
                         fontSize="17px"
                         fontWeight="300"
                         padding="15px 35px"
+                        isFullWidth={true}
                     >
                         View History
                     </Button>
-                </Action>
-            </Flex>
-
-            <MobileActions>
-                <Button
-                    to={WebsitePaths.AccountActivity}
-                    color={colors.white}
-                    fontSize="17px"
-                    fontWeight="300"
-                    padding="15px 35px"
-                    isFullWidth={true}
-                >
-                    View History
-                </Button>
+                */}
 
                 <Button
                     to="/"
@@ -160,17 +155,6 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                 </Button>
             </MobileActions>
         </Wrap>
-    );
-};
-
-const renderTitle = (name: string, isVerified: boolean): React.ReactNode => {
-    return (
-        <Title>
-            {name}
-            {isVerified &&
-                <CircleCheckMark />
-            }
-        </Title>
     );
 };
 
@@ -247,7 +231,8 @@ const Action = styled(FlexBase)`
             padding-left: 30px;
         }
 
-        button, a {
+        button,
+        a {
             display: none;
         }
     }

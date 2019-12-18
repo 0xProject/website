@@ -11,7 +11,7 @@ interface IconProps extends PaddingInterface {
     size?: 'small' | 'medium' | 'large' | 'hero' | 'natural' | number;
 }
 
-export const Icon: React.FC<IconProps> = props => {
+export const Icon: React.FC<IconProps> = React.memo(props => {
     if (props.name && !props.component) {
         const IconSVG = React.lazy(async () =>
             import(/* webpackChunkName: "icon" */ `ts/icons/illustrations/${props.name}.svg`),
@@ -31,7 +31,7 @@ export const Icon: React.FC<IconProps> = props => {
     }
 
     return null;
-};
+});
 
 Icon.defaultProps = {
     color: colors.brandLight,

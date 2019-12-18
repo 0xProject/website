@@ -20,7 +20,7 @@ import {
     SignerSubprovider,
     Web3ProviderEngine,
 } from '@0x/subproviders';
-import { SignedOrder, Token as ZeroExToken } from '@0x/types';
+import { ERC20AssetData, SignedOrder, Token as ZeroExToken } from '@0x/types';
 import { BigNumber, intervalUtils, logUtils, providerUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import {
@@ -713,8 +713,10 @@ export class Blockchain {
     private async _convertDecodedLogToFillAsync(decodedLog: LogWithDecodedArgs<ExchangeFillEventArgs>): Promise<Fill> {
         const args = decodedLog.args;
         const blockTimestamp = await this._web3Wrapper.getBlockTimestampAsync(decodedLog.blockHash);
-        const makerToken = assetDataUtils.decodeERC20AssetData(args.makerAssetData).tokenAddress;
-        const takerToken = assetDataUtils.decodeERC20AssetData(args.takerAssetData).tokenAddress;
+        // tslint:disable-next-line:no-unnecessary-type-assertion
+        const makerToken = (assetDataUtils.decodeAssetDataOrThrow(args.makerAssetData) as ERC20AssetData).tokenAddress;
+        // tslint:disable-next-line:no-unnecessary-type-assertion
+        const takerToken = (assetDataUtils.decodeAssetDataOrThrow(args.takerAssetData) as ERC20AssetData).tokenAddress;
         const fill = {
             filledTakerTokenAmount: args.takerAssetFilledAmount,
             filledMakerTokenAmount: args.makerAssetFilledAmount,

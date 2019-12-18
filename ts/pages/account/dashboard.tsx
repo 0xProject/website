@@ -1,5 +1,9 @@
+import { BigNumber, hexUtils, logUtils } from '@0x/utils';
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import { format } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -14,236 +18,480 @@ import { AccountDetail } from 'ts/pages/account/account_detail';
 import { AccountFigure } from 'ts/pages/account/account_figure';
 import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
+import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { WebsitePaths } from 'ts/types';
+import {
+    AccountReady,
+    Epoch,
+    PoolWithStats,
+    StakeStatus,
+    StakingAPIDelegatorResponse,
+    VoteHistory,
+    WebsitePaths,
+} from 'ts/types';
+import { constants } from 'ts/utils/constants';
+import { utils } from 'ts/utils/utils';
+
+import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useStake } from 'ts/hooks/use_stake';
 
 export interface AccountProps {}
 
-// Mock data: not sure how this would be designed from a backend perspective,
-// but I think this gives an overview of what the components take in as props
-const MOCK_DATA = {
-    activitySummary: {
-        title: '500 ZRX will be removed from Binance Pool in 10 days',
-        subtitle: 'Your tokens will need to be manually withdrawn once they are removed ',
-        avatarSrc: 'https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png',
-        icon: 'clock',
-    },
-    stakes: [
-        {
-            name: 'Binance Staking Pool',
-            websiteUrl: 'https://binance.com',
-            logoUrl: 'https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png',
-            rewardsShared: '95%',
-            feesGenerated: '0.03212 ETH',
-            totalStaked: '52%',
-            userData: {
-                amountInEth: 213425,
-                rewardsReceived: 0.0342,
-            },
-            isVerified: true,
-            approximateTimestamp: 778435, // Maybe this would be in another format and need a convert method in the component
-        },
-    ],
-    voteHistory: [
-        {
-            title: 'StaticCallAssetProxy',
-            zeip: 39,
-            vote: 'yes',
-            summary: 'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
-        },
-        {
-            title: 'AssetProxy',
-            zeip: 40,
-            vote: 'no',
-            summary: 'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
-        },
-        {
-            title: 'TestVoteTitle',
-            zeip: 41,
-            vote: 'yes',
-            summary: 'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
-        },
-    ],
+const getFormattedAmount = (amount: number, currency: string) =>
+    `${utils.getFormattedUnitAmount(new BigNumber(amount))} ${currency}`;
+
+interface DelegatorDataProps {
+    delegatorData?: StakingAPIDelegatorResponse;
+}
+
+const StakedZrxBalance = ({ delegatorData }: DelegatorDataProps) => {
+    let balance = new BigNumber(0);
+
+    if (delegatorData) {
+        balance = new BigNumber(delegatorData.forCurrentEpoch.zrxStaked);
+    }
+
+    return <span>{`${utils.getFormattedUnitAmount(balance)} ZRX`}</span>;
 };
 
+interface PoolToRewardsMap {
+    [key: string]: BigNumber;
+}
+interface PoolReward {
+    poolId: string;
+    rewardsInEth: BigNumber;
+}
+
+interface PoolWithStatsMap {
+    [key: string]: PoolWithStats;
+}
+
+interface PoolToDelegatorStakeMap {
+    [key: string]: number;
+}
+
+interface PendingAction {
+    poolId: string;
+    amount: number;
+}
+
+// TODO(johnrjj) - After going to a pool that has been staked in, hitting the 'Remove' button,
+// and running the transaction, the balances do not update, even after a good amount of time (30min+ etc)
+// Is there a way we can query web3 directly?? (tl;dr 'Pending' removes are flaky/not sure if they are working)
 export const Account: React.FC<AccountProps> = () => {
+    const providerState = useSelector((state: State) => state.providerState);
+    const networkId = useSelector((state: State) => state.networkId);
+    const account = providerState.account as AccountReady;
+    // NOTE: not yet implemented but left in for future reference
+    const voteHistory: VoteHistory[] = [];
+
     const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
+    const [isFetchingDelegatorData, setIsFetchingDelegatorData] = React.useState<boolean>(false);
+    const [delegatorData, setDelegatorData] = React.useState<StakingAPIDelegatorResponse | undefined>(undefined);
+    const [poolWithStatsMap, setPoolWithStatsMap] = React.useState<PoolWithStatsMap | undefined>(undefined);
+    const [availableRewardsMap, setAvailableRewardsMap] = React.useState<PoolToRewardsMap | undefined>(undefined);
+    const [totalAvailableRewards, setTotalAvailableRewards] = React.useState<BigNumber>(new BigNumber(0));
+    const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
+    const [undelegatedBalanceBaseUnits, setUndelegatedBalanceBaseUnits] = React.useState<BigNumber>(new BigNumber(0));
+    const [currentEpochStakeMap, setCurrentEpochStakeMap] = React.useState<PoolToDelegatorStakeMap>({});
+    const [nextEpochStakeMap, setNextEpochStakeMap] = React.useState<PoolToDelegatorStakeMap>({});
+
+    const [pendingUnstake, setPendingUnstake] = React.useState<PendingAction[]>([]);
+    const [pendingUnstakePoolSet, setPendingUnstakePoolSet] = React.useState<Set<string>>(new Set());
+
+    const apiClient = useAPIClient(networkId);
+    const { stakingContract, unstake, withdrawStake, withdrawRewards } = useStake(networkId, providerState);
+
+    const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
+
+    React.useEffect(() => {
+        const fetchDelegatorData = async () => {
+            const [delegatorResponse, poolsResponse, epochsResponse] = await Promise.all([
+                apiClient.getDelegatorAsync(account.address),
+                apiClient.getStakingPoolsAsync(),
+                apiClient.getStakingEpochsAsync(),
+            ]);
+
+            const _poolWithStatsMap = poolsResponse.stakingPools.reduce<PoolWithStatsMap>((memo, pool) => {
+                memo[pool.poolId] = pool;
+                return memo;
+            }, {});
+
+            const _currentEpochStakeMap = delegatorResponse.forCurrentEpoch.poolData.reduce<{ [key: string]: number }>(
+                (memo, poolData) => {
+                    memo[poolData.poolId] = poolData.zrxStaked || 0;
+                    return memo;
+                },
+                {},
+            );
+            const _nextEpochStakeMap = delegatorResponse.forNextEpoch.poolData.reduce<{ [key: string]: number }>(
+                (memo, poolData) => {
+                    memo[poolData.poolId] = poolData.zrxStaked || 0;
+                    return memo;
+                },
+                {},
+            );
+
+            setDelegatorData(delegatorResponse);
+            setPoolWithStatsMap(_poolWithStatsMap);
+            setNextEpochStats(epochsResponse.nextEpoch);
+            setCurrentEpochStakeMap(_currentEpochStakeMap);
+            setNextEpochStakeMap(_nextEpochStakeMap);
+        };
+
+        if (!account.address || isFetchingDelegatorData) {
+            return;
+        }
+
+        setIsFetchingDelegatorData(true);
+        fetchDelegatorData()
+            .then(() => {
+                setIsFetchingDelegatorData(false);
+            })
+            .catch((err: Error) => {
+                setDelegatorData(undefined);
+                setIsFetchingDelegatorData(false);
+                logUtils.warn(err);
+            });
+    }, [account.address, apiClient]); // add isFetchingDelegatorData to dependency arr to turn on polling
+
+    React.useEffect(() => {
+        const fetchAvailableRewards = async () => {
+            const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter(
+                poolData => poolData.rewardsInEth > 0,
+            );
+
+            const undelegatedBalancesBaseUnits = await stakingContract
+                .getOwnerStakeByStatus(account.address, StakeStatus.Undelegated)
+                .callAsync();
+
+            const undelegatedInBothEpochsBaseUnits = undelegatedBalancesBaseUnits.currentEpochBalance.gt(
+                undelegatedBalancesBaseUnits.nextEpochBalance,
+            )
+                ? undelegatedBalancesBaseUnits.nextEpochBalance
+                : undelegatedBalancesBaseUnits.currentEpochBalance;
+
+            setUndelegatedBalanceBaseUnits(undelegatedInBothEpochsBaseUnits);
+
+            const poolRewards: PoolReward[] = await Promise.all(
+                poolsWithAllTimeRewards.map(async poolData => {
+                    const paddedHexPoolId = hexUtils.leftPad(hexUtils.toHex(poolData.poolId));
+
+                    const availableRewardInEth = await stakingContract
+                        .computeRewardBalanceOfDelegator(paddedHexPoolId, account.address)
+                        .callAsync();
+
+                    // TODO(kimpers): There is some typing issue here, circle back later to remove the BigNumber conversion
+                    return {
+                        poolId: poolData.poolId,
+                        rewardsInEth: Web3Wrapper.toUnitAmount(
+                            new BigNumber(availableRewardInEth.toString()),
+                            constants.DECIMAL_PLACES_ETH,
+                        ),
+                    };
+                }),
+            );
+
+            const _availableRewardsMap: PoolToRewardsMap = poolRewards.reduce<PoolToRewardsMap>(
+                (memo: PoolToRewardsMap, poolReward: PoolReward) => {
+                    memo[poolReward.poolId] = poolReward.rewardsInEth;
+
+                    return memo;
+                },
+                {},
+            );
+
+            const _totalAvailableRewards = poolRewards.reduce(
+                (memo: BigNumber, poolReward: PoolReward) => memo.plus(poolReward.rewardsInEth),
+                new BigNumber(0),
+            );
+
+            setAvailableRewardsMap(_availableRewardsMap);
+            setTotalAvailableRewards(_totalAvailableRewards);
+        };
+
+        if (!delegatorData || !account.address) {
+            return;
+        }
+
+        fetchAvailableRewards().catch((err: Error) => {
+            setTotalAvailableRewards(new BigNumber(0));
+            logUtils.warn(err);
+        });
+    }, [delegatorData, account.address, stakingContract]);
+
+    React.useEffect(() => {
+        const _pendingUnstake: PendingAction[] = Object.keys(currentEpochStakeMap).reduce((memo, poolId) => {
+            const currentEpochStake = currentEpochStakeMap[poolId] || 0;
+            const nextEpochStake = nextEpochStakeMap[poolId] || 0;
+
+            if (currentEpochStake > nextEpochStake) {
+                memo.push({
+                    poolId,
+                    amount: currentEpochStake - nextEpochStake,
+                });
+            }
+
+            return memo;
+        }, []);
+
+        setPendingUnstake(_pendingUnstake);
+        setPendingUnstakePoolSet(new Set(_pendingUnstake.map(p => p.poolId)));
+    }, [currentEpochStakeMap, nextEpochStakeMap, delegatorData]);
+
+    const accountLoaded = account && account.address;
+
+    if (!accountLoaded) {
+        return (
+            <StakingPageLayout title="0x Staking | Account">
+                <Inner>
+                    <div>Connect to your wallet to see your account</div>
+                </Inner>
+            </StakingPageLayout>
+        );
+    }
 
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
                 <Inner>
-                    <AccountDetail
-                        userEthAddress="0x123451234512345"
-                        userImageSrc="https://static.cryptotips.eu/wp-content/uploads/2019/05/binance-bnb-logo.png"
-                    />
-
+                    {account && account.address && <AccountDetail userEthAddress={account.address} />}
                     <Figures>
                         <AccountFigure
-                            label="Wallet balance"
+                            label="Available"
                             headerComponent={() => (
-                                <InfoTooltip>
-                                    This is the amount available for delegation starting in the next Epoch
-                                </InfoTooltip>
+                                <>
+                                    <InfoTooltip id="available-balance">
+                                        This is the amount available for withdrawal
+                                    </InfoTooltip>
+                                    {undelegatedBalanceBaseUnits.gt(0) && (
+                                        <Button
+                                            isWithArrow={true}
+                                            isTransparent={true}
+                                            fontSize="17px"
+                                            color={colors.brandLight}
+                                            onClick={() => {
+                                                withdrawStake(undelegatedBalanceBaseUnits, () => {
+                                                    // On successful TX optimistically update UI
+                                                    // to avoid having to make slow RPC calls to recompute
+                                                    setUndelegatedBalanceBaseUnits(new BigNumber(0));
+                                                });
+                                            }}
+                                        >
+                                            Withdraw
+                                        </Button>
+                                    )}
+                                </>
                             )}
                         >
-                            21,000,000 ZRX
+                            {utils.getFormattedAmount(undelegatedBalanceBaseUnits, constants.DECIMAL_PLACES_ZRX)} ZRX
                         </AccountFigure>
 
                         <AccountFigure
                             label="Staked balance"
                             headerComponent={() => (
-                                <InfoTooltip>
-                                    This is the amount available for delegation starting in the next Epoch
+                                <InfoTooltip id="staked-balance">
+                                    This is the amount currently delegated to a pool
                                 </InfoTooltip>
                             )}
                         >
-                            1,322,000 ZRX
+                            <StakedZrxBalance delegatorData={delegatorData} />
                         </AccountFigure>
 
                         <AccountFigure
                             label="Rewards"
-                            headerComponent={() => (
-                                <Button
-                                    isWithArrow={true}
-                                    isTransparent={true}
-                                    fontSize="17px"
-                                    color={colors.brandLight}
-                                >
-                                    Withdraw
-                                </Button>
-                            )}
+                            headerComponent={() => {
+                                if (totalAvailableRewards.gt(0)) {
+                                    return (
+                                        <Button
+                                            isWithArrow={true}
+                                            isTransparent={true}
+                                            fontSize="17px"
+                                            color={colors.brandLight}
+                                            onClick={() => {
+                                                const poolsWithRewards = Object.keys(availableRewardsMap).map(poolId =>
+                                                    utils.toPaddedHex(poolId),
+                                                );
+
+                                                withdrawRewards(poolsWithRewards, () => {
+                                                    setAvailableRewardsMap({});
+                                                    setTotalAvailableRewards(new BigNumber(0));
+                                                });
+                                            }}
+                                        >
+                                            Withdraw
+                                        </Button>
+                                    );
+                                }
+                                return null;
+                            }}
                         >
-                            .000213 ETH
+                            <span>{`${utils.getFormattedUnitAmount(totalAvailableRewards)} ETH`}</span>
                         </AccountFigure>
                     </Figures>
                 </Inner>
             </HeaderWrapper>
 
-            <SectionWrapper>
-                <SectionHeader>
-                    <Heading
-                        asElement="h3"
-                        fontWeight="400"
-                        isNoMargin={true}
-                    >
-                        Activity
-                    </Heading>
-
-                    <Button
-                        color={colors.brandDark}
-                        isWithArrow={true}
-                        isTransparent={true}
-                        to={WebsitePaths.AccountActivity}
-                    >
-                        Show all activity
-                    </Button>
-                </SectionHeader>
-
-                <AccountActivitySummary
-                    title={MOCK_DATA.activitySummary.title}
-                    subtitle={MOCK_DATA.activitySummary.subtitle}
-                    avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
-                    icon={MOCK_DATA.activitySummary.icon}
-                >
-                    <StatFigure
-                        label="Withdraw date"
-                        value="9/19/29"
-                    />
-                </AccountActivitySummary>
-
-                <AccountActivitySummary
-                    title="Your ZRX is unlocked and ready for withdrawal"
-                    subtitle="6,000 ZRX  →  0x12345...12345"
-                    avatarSrc={MOCK_DATA.activitySummary.avatarSrc}
-                    icon="checkmark"
-                >
-                    <Button
-                        to="/"
-                        color={colors.brandLight}
-                        bgColor={colors.white}
-                        borderColor={colors.border}
-                        fontSize="17px"
-                        fontWeight="300"
-                        padding="15px 35px"
-                        isFullWidth={true}
-                    >
-                        Withdraw ZRX
-                    </Button>
-                </AccountActivitySummary>
-            </SectionWrapper>
-
-            <SectionWrapper>
-                <SectionHeader>
-                    <Heading
-                        asElement="h3"
-                        fontWeight="400"
-                        isNoMargin={true}
-                    >
-                        Your staking pools
-                    </Heading>
-
-                    <Button
-                        color={colors.brandDark}
-                        isWithArrow={true}
-                        isTransparent={true}
-                        onClick={() => toggleApplyModal(true)}
-                    >
-                        Apply to create a staking pool
-                    </Button>
-                </SectionHeader>
-
-                <CallToAction
-                    icon="revenue"
-                    title="You haven't staked ZRX"
-                    description="Start staking your ZRX and getting interest."
-                    actions={[
-                        {
-                            label: 'Start staking',
-                            onClick: () => null,
-                        },
-                    ]}
-                />
-
-                {_.map(MOCK_DATA.stakes, (item, index) => {
-                    return (
-                        <AccountStakeOverview
-                            key={`stake-${index}`}
-                            {...item}
-                        />
-                    );
-                })}
-            </SectionWrapper>
-
-            <SectionWrapper>
-                <SectionHeader>
-                    <Heading
-                        asElement="h3"
-                        fontWeight="400"
-                        isNoMargin={true}
-                    >
-                        Your voting history
-                    </Heading>
-                </SectionHeader>
-
-                <Grid>
-                    {_.map(MOCK_DATA.voteHistory, item => {
+            {pendingUnstake.length > 0 && (
+                <SectionWrapper>
+                    <SectionHeader>
+                        <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                            Pending
+                        </Heading>
+                        {/* TODO(kimpers): Add this back when we have implemented the activity page
+                                <Button
+                                    color={colors.brandDark}
+                                    isWithArrow={true}
+                                    isTransparent={true}
+                                    to={WebsitePaths.AccountActivity}
+                                >
+                                    Show all activity
+                                </Button>
+                            */}
+                    </SectionHeader>
+                    {pendingUnstake.map(({ poolId, amount }, index) => {
+                        const pool = poolWithStatsMap[poolId];
                         return (
-                            <AccountVote
-                                title={item.title}
-                                zeipId={item.zeip}
-                                summary={item.summary}
-                                vote={item.vote}
-                            />
+                            <AccountActivitySummary
+                                key={`account-acctivity-summary-${index}`}
+                                title={`${getFormattedAmount(amount, 'ZRX')} will be removed from ${(pool &&
+                                    pool.metaData.name) ||
+                                    `Pool ${poolId}`}`}
+                                subtitle="Your tokens will need to be manually withdrawn once they are removed"
+                                avatarSrc={pool.metaData.logoUrl}
+                                icon="clock"
+                                poolId={poolId}
+                                address={pool.operatorAddress}
+                            >
+                                <StatFigure
+                                    label="Withdraw date"
+                                    value={format(new Date(nextEpochStats.epochStart.timestamp), 'd/M/yy')}
+                                />
+                            </AccountActivitySummary>
                         );
                     })}
-                </Grid>
-            </SectionWrapper>
+                </SectionWrapper>
+            )}
 
-            <AccountApplyModal
-                isOpen={isApplyModalOpen}
-                onDismiss={() => toggleApplyModal(false)}
-            />
+            {/* TODO add loading animations or display partially loaded data */}
+            {hasDataLoaded() && (
+                <SectionWrapper>
+                    <SectionHeader>
+                        <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                            Your staking pools
+                        </Heading>
+
+                        {/* <Button
+                            color={colors.brandDark}
+                            isWithArrow={true}
+                            isTransparent={true}
+                            onClick={() => toggleApplyModal(true)}
+                        >
+                            Apply to create a staking pool
+                        </Button> */}
+                    </SectionHeader>
+                    {/* WORKAROUND BECAUSE API WILL RETURN 1 'null' pool if you haven't staked to any pools */}
+                    {/* TODO(johnrjj) - Need to fix api response to not return a null pool  */}
+                    {delegatorData.forCurrentEpoch.poolData.length === 0 ||
+                    (delegatorData.forCurrentEpoch.poolData.length === 1 &&
+                        delegatorData.forCurrentEpoch.poolData[0].poolId === null) ? (
+                        <CallToAction
+                            icon="revenue"
+                            title="You haven't staked ZRX"
+                            description="Start staking your ZRX and getting interest."
+                            actions={[
+                                {
+                                    label: 'Start staking',
+                                    to: WebsitePaths.StakingWizard,
+                                },
+                            ]}
+                        />
+                    ) : (
+                        delegatorData.forCurrentEpoch.poolData
+                            // Don't show pools with pending withdrawals, they are shown in pending section instead
+                            .filter(p => !pendingUnstakePoolSet.has(p.poolId))
+                            .map(delegatorPoolStats => {
+                                const poolId = delegatorPoolStats.poolId;
+                                const pool = poolWithStatsMap[poolId];
+
+                                if (!pool) {
+                                    return null;
+                                }
+
+                                const availablePoolRewards =
+                                    (availableRewardsMap[poolId] && availableRewardsMap[poolId]) || new BigNumber(0);
+
+                                const userData = {
+                                    rewardsReceivedFormatted: utils.getFormattedUnitAmount(availablePoolRewards),
+                                    zrxStakedFormatted: utils.getFormattedUnitAmount(
+                                        new BigNumber(delegatorPoolStats.zrxStaked),
+                                    ),
+                                };
+
+                                return (
+                                    <AccountStakeOverview
+                                        key={`stake-${pool.poolId}`}
+                                        poolId={pool.poolId}
+                                        name={pool.metaData.name || `Pool ${pool.poolId}`}
+                                        websiteUrl={pool.metaData.websiteUrl}
+                                        operatorAddress={pool.operatorAddress}
+                                        logoUrl={pool.metaData.logoUrl}
+                                        stakeRatio={pool.nextEpochStats.approximateStakeRatio}
+                                        rewardsSharedRatio={1 - pool.currentEpochStats.operatorShare}
+                                        feesGenerated={getFormattedAmount(
+                                            pool.sevenDayProtocolFeesGeneratedInEth,
+                                            'ETH',
+                                        )}
+                                        userData={userData}
+                                        nextEpochApproximateStart={new Date(nextEpochStats.epochStart.timestamp)}
+                                        isVerified={pool.metaData.isVerified}
+                                        onRemoveStake={() => {
+                                            const zrxAmount = delegatorPoolStats.zrxStaked;
+                                            unstake([{ poolId, zrxAmount }], () => {
+                                                // If TX is successful optimistically update UI before
+                                                // API has received the new state
+                                                const nextEpochStake = Math.max(
+                                                    (nextEpochStakeMap[poolId] || 0) - zrxAmount,
+                                                    0,
+                                                );
+                                                setNextEpochStakeMap(stakeMap => ({
+                                                    ...stakeMap,
+                                                    [poolId]: nextEpochStake,
+                                                }));
+                                            });
+                                        }}
+                                    />
+                                );
+                            })
+                    )}
+                </SectionWrapper>
+            )}
+
+            {voteHistory.length > 0 && (
+                <SectionWrapper>
+                    <SectionHeader>
+                        <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                            Your voting history
+                        </Heading>
+                    </SectionHeader>
+
+                    <Grid>
+                        {_.map(voteHistory, (item, index) => {
+                            return (
+                                <AccountVote
+                                    key={`vote-history-${index}`}
+                                    title={item.title}
+                                    zeipId={item.zeip}
+                                    summary={item.summary}
+                                    vote={item.vote}
+                                />
+                            );
+                        })}
+                    </Grid>
+                </SectionWrapper>
+            )}
+
+            <AccountApplyModal isOpen={isApplyModalOpen} onDismiss={() => toggleApplyModal(false)} />
         </StakingPageLayout>
     );
 };
@@ -304,7 +552,8 @@ const SectionHeader = styled.header`
             font-size: 28px;
         }
 
-        a, button {
+        a,
+        button {
             display: none;
         }
     }
@@ -315,3 +564,4 @@ const Grid = styled.div`
     flex-wrap: wrap;
     justify-content: space-between;
 `;
+// tslint:disable:max-file-line-count

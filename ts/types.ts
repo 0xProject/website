@@ -4,6 +4,27 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
 
+/*
+ * Staking dashboard vote history example
+ * Example Vote History
+ * {
+ *     title: 'StaticCallAssetProxy',
+ *     zeip: 39,
+ *     vote: 'yes',
+ *     summary: 'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
+ * }
+ */
+export interface VoteHistory {
+    title: string;
+    zeip: number;
+    vote: 'yes' | 'no';
+    summary: string;
+}
+export interface StakePoolData {
+    poolId: string;
+    zrxAmount: number;
+}
+
 export enum TransactionLoadingState {
     WaitingForSignature = 'WAITING_FOR_SIGNATURE',
     WaitingForTransaction = 'WAITING_FOR_TRANSACTION',
@@ -1137,6 +1158,30 @@ export interface StakingAPIPoolsResponse {
     stakingPools: PoolWithStats[];
 }
 
+export interface StakingPoolResponse {
+    poolId: string;
+    stakingPool: PoolWithHistoricalStats;
+}
+
+export interface PoolWithHistoricalStats extends Pool {
+    allTimeStats: AllTimePoolStats;
+    epochRewards: PoolEpochRewards[];
+}
+
+export interface AllTimePoolStats extends RewardsStats {
+    protocolFeesGeneratedInEth: number;
+}
+
+export interface RewardsStats {
+    operatorRewardsPaidInEth: number;
+    membersRewardsPaidInEth: number;
+    totalRewardsPaidInEth: number;
+}
+
+export interface PoolEpochRewards extends RewardsStats {
+    epochId: number;
+}
+
 export interface StakingAPIEpochsResponse {
     currentEpoch: Epoch;
     nextEpoch: Epoch;
@@ -1154,3 +1199,35 @@ export interface StakingPoolRecomendation {
 }
 
 export type UserStakingChoice = StakingPoolRecomendation;
+
+export interface StakingAPIDelegatorResponse {
+    delegatorAddress: string;
+    forCurrentEpoch: EpochDelegatorStats;
+    forNextEpoch: EpochDelegatorStats;
+    allTime: AllTimeDelegatorStats;
+}
+
+export interface RawAllTimeDelegatorPoolsStats {
+    pool_id: string;
+    reward: string;
+}
+
+export interface PoolEpochDelegatorStats {
+    poolId: string;
+    zrxStaked: number;
+}
+
+export interface EpochDelegatorStats {
+    zrxDeposited: number;
+    zrxStaked: number;
+    poolData: PoolEpochDelegatorStats[];
+}
+
+export interface AllTimeDelegatorPoolStats {
+    poolId: string;
+    rewardsInEth: number;
+}
+
+export interface AllTimeDelegatorStats {
+    poolData: AllTimeDelegatorPoolStats[];
+}
