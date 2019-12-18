@@ -167,7 +167,7 @@ const renderSuggestion = (hit: IHit): React.ReactNode => {
 };
 
 const renderSectionTitle = (section: any): React.ReactNode => {
-    // TODO(fabio): Add `api-explorer` below once the API Explore page is ready (ditto in search_input.tsx)
+    // TODO(fabio): Add `api` below once the API Explore page is ready (ditto in search_input.tsx)
     const nameToSearchIndex = getNameToSearchIndex(environments.getEnvironment());
     const { tools, guides } = nameToSearchIndex;
     const coreConcepts = nameToSearchIndex['core-concepts'];

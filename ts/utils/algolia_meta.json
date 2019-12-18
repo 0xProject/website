@@ -1,8 +1,8 @@
 {
-    "api-explorer": {
-        "api-explorer": {
-            "title": "On-chain API Explorer",
-            "path": "api-explorer/index.mdx"
+    "api": {
+        "api": {
+            "title": "API Specification",
+            "path": "api/index.mdx"
         }
     },
     "core-concepts": {

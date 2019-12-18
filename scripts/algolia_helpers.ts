@@ -40,7 +40,7 @@ const sharedSettings = {
 };
 
 const settings: ObjectMap<IAlgoliaSettings> = {
-    'api-explorer': sharedSettings,
+    'api': sharedSettings,
     'core-concepts': sharedSettings,
     guides: {
         ...sharedSettings,
@@ -114,7 +114,7 @@ function getNameToFile(dirName: string): ObjectMap<File> {
             nameToFile[name] = { name, path: p, url };
         }
 
-        if (dirName === 'core-concepts' || dirName === 'api-explorer') {
+        if (dirName === 'core-concepts' || dirName === 'api') {
             const url = `/docs/${dirName}`;
             nameToFile[dirName] = { name: dirName, path: p, url };
         }

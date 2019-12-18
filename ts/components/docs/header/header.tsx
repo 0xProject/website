@@ -42,9 +42,9 @@ const navItems: INavItems[] = [
         url: WebsitePaths.DocsCoreConcepts,
     },
     {
-        id: 'api-explorer',
+        id: 'api',
         text: 'API Explorer',
-        url: WebsitePaths.DocsApiExplorer,
+        url: WebsitePaths.DocsApi,
     },
     {
         id: 'guides',

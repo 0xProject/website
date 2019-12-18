@@ -34,10 +34,10 @@ const shortcutLinks = [
         url: WebsitePaths.DocsCoreConcepts,
     },
     {
-        heading: 'On-chain API Explorer',
-        description: 'Explore the 0x smart contract methods and how to call them in every language',
+        heading: 'API Specification',
+        description: 'Access liquidity, staking data and quotes through the 0x HTTP API',
         icon: 'apiExplorer',
-        url: WebsitePaths.DocsApiExplorer,
+        url: WebsitePaths.DocsApi,
     },
     {
         heading: 'Guides',

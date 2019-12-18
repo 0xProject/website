@@ -18,7 +18,7 @@ export const hitsPerPage = {
 export function getNameToSearchIndex(environment: string): ObjectMap<string> {
     const lowercaseEnv = environment.toLowerCase();
     const nameToSearchIndex: ObjectMap<string> = {
-        'api-explorer': `${lowercaseEnv}_api_explorer`,
+        'api': `${lowercaseEnv}_api`,
         'core-concepts': `${lowercaseEnv}_core_concepts`,
         guides: `${lowercaseEnv}_guides`,
         tools: `${lowercaseEnv}_tools`,
