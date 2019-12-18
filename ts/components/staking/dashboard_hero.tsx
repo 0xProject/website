@@ -5,13 +5,14 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { Progressbar } from 'ts/components/progressbar';
 import { Tab, Tabs } from 'ts/components/tabs';
-import { Jazzicon } from 'ts/components/ui/jazzicon';
+import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
 import CheckmarkThin from 'ts/icons/illustrations/checkmark-thin.svg';
 import Checkmark from 'ts/icons/illustrations/checkmark.svg';
 
 import { colors } from 'ts/style/colors';
 
 import { WebsitePaths } from 'ts/types';
+import { utils } from 'ts/utils/utils';
 
 interface Metrics {
     title: string;
@@ -27,6 +28,7 @@ interface DashboardHeroProps {
     title: string;
     websiteUrl: string;
     poolId: string;
+    operatorAddress: string;
     isVerified: boolean;
     estimatedStake: number;
     rewardsShared: number;
@@ -220,6 +222,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
     title,
     tabs,
     poolId,
+    operatorAddress,
     websiteUrl,
     isVerified,
     estimatedStake,
@@ -240,13 +243,12 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                         iconUrl
                             ? <PoolIcon src={iconUrl} />
                             : <Jazzicon
-                                seed={1}
+                                seed={generateUniqueId(poolId, operatorAddress)}
                                 diameter={60}
-                                paperStyles={{borderRadius: 0 }}
                             />
                     }
                         <Title>
-                            {title}{' '}
+                            {title ? title : `Pool #${poolId}`}{' '}
                             {isVerified && (
                                 <span title="Identitity verified">
                                     <CheckmarkThinDesktop />
@@ -254,8 +256,8 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                             )}
                         </Title>
                         <HorizontalList>
-                            <li>{poolId}</li>
-                            <li>{websiteUrl}</li>
+                            <li>{utils.getAddressBeginAndEnd(operatorAddress)}</li>
+                            {websiteUrl && <li>{websiteUrl}</li>}
                             <li>
                                 <a href="">{rewardsShared}% Rewards Shared</a>
                             </li>

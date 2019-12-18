@@ -279,6 +279,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 title={stakingPool.metaData.name}
                 websiteUrl={stakingPool.metaData.websiteUrl}
                 poolId={stakingPool.poolId}
+                operatorAddress={stakingPool.operatorAddress}
                 isVerified={stakingPool.metaData.isVerified}
                 estimatedStake={currentEpoch.approximateStakeRatio * 100}
                 rewardsShared={(1 - currentEpoch.operatorShare) * 100}

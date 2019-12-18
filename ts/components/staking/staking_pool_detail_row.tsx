@@ -8,14 +8,7 @@ import { configs } from 'ts/utils/configs';
 import { utils } from 'ts/utils/utils';
 
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
-import { Jazzicon } from 'ts/components/ui/jazzicon';
-
-const generateUniqueId = (poolId: string, address: string): number => {
-    const addr = address.slice(2, 10);
-    const id = parseInt(poolId, 10);
-    const seed = parseInt(addr, 16);
-    return parseInt(`${id}${seed}`, 10);
-};
+import { Jazzicon, generateUniqueId } from 'ts/components/ui/jazzicon';
 
 const RoundedPercentage = ({ percentage }: { percentage: number }) => <span>{Math.round(percentage)}%</span>;
 
@@ -61,7 +54,7 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
             </Logo>
         ) : (
             <JazziconContainer>
-                <Jazzicon diameter={80} seed={generateUniqueId(poolId, address)} paperStyles={{ borderRadius: 0 }} />
+                <Jazzicon diameter={80} seed={generateUniqueId(poolId, address)} isSquare={true} />
             </JazziconContainer>
         )}
         <PoolOverviewSection>

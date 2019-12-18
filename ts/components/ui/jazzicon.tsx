@@ -2,11 +2,12 @@ import Color from 'color';
 import MersenneTwister from 'mersenne-twister';
 import React from 'react';
 
-export function jsNumberForAddress(address: string): number {
+export const generateUniqueId = (poolId: string, address: string): number => {
     const addr = address.slice(2, 10);
+    const id = parseInt(poolId, 10);
     const seed = parseInt(addr, 16);
-    return seed;
-}
+    return parseInt(`${id}${seed}`, 10);
+};
 
 // TODO(johnrjj) - We can tune these to fit the 0x brand colors
 const COLORS = [
@@ -34,13 +35,15 @@ export interface PaperProps {
     color: string;
     diameter: number;
     style: any;
+    isSquare?: boolean;
 }
 
-const Paper: React.FC<PaperProps> = ({ children, color, diameter, style: styleOverrides }) => (
+const Paper: React.FC<PaperProps> = ({ children, color, diameter,  style: styleOverrides, isSquare }) => (
     <div
         className="paper"
         style={{
             ...DEFAULT_PAPER_STYLES,
+            borderRadius: isSquare ? '0' : '50px',
             backgroundColor: color,
             height: diameter,
             width: diameter,
@@ -56,6 +59,7 @@ const SVGNS = 'http://www.w3.org/2000/svg';
 const WOBBLE = 30;
 
 export interface JazziconProps {
+    isSquare?: boolean;
     diameter: number;
     paperStyles?: object;
     seed: number;
