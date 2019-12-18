@@ -23,7 +23,6 @@ import { colors } from 'ts/style/colors';
 import {
     AccountReady,
     Epoch,
-    PoolWithHistoricalStats,
     PoolWithStats,
     StakeStatus,
     StakingAPIDelegatorResponse,
@@ -37,14 +36,6 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useStake } from 'ts/hooks/use_stake';
 
 export interface AccountProps {}
-
-interface PoolWithUserStake extends PoolWithHistoricalStats {
-    userStake: {
-        poolId: string;
-        currentEpochZrxStaked: number;
-        nextEpochZrxStaked: number;
-    };
-}
 
 const getFormattedAmount = (amount: number, currency: string) =>
     `${utils.getFormattedUnitAmount(new BigNumber(amount))} ${currency}`;
@@ -75,6 +66,15 @@ interface PoolWithStatsMap {
     [key: string]: PoolWithStats;
 }
 
+interface PoolToDelegatorStakeMap {
+    [key: string]: number;
+}
+
+interface PendingAction {
+    poolId: string;
+    amount: number;
+}
+
 export const Account: React.FC<AccountProps> = () => {
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
@@ -89,8 +89,12 @@ export const Account: React.FC<AccountProps> = () => {
     const [availableRewardsMap, setAvailableRewardsMap] = React.useState<PoolToRewardsMap | undefined>(undefined);
     const [totalAvailableRewards, setTotalAvailableRewards] = React.useState<BigNumber>(new BigNumber(0));
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
-    const [pendingUnstakePools, setPendingUnstakePools] = React.useState<PoolWithUserStake[]>([]);
     const [undelegatedBalanceBaseUnits, setUndelegatedBalanceBaseUnits] = React.useState<BigNumber>(new BigNumber(0));
+    const [currentEpochStakeMap, setCurrentEpochStakeMap] = React.useState<PoolToDelegatorStakeMap>({});
+    const [nextEpochStakeMap, setNextEpochStakeMap] = React.useState<PoolToDelegatorStakeMap>({});
+
+    const [pendingUnstake, setPendingUnstake] = React.useState<PendingAction[]>([]);
+    const [pendingUnstakePoolSet, setPendingUnstakePoolSet] = React.useState<Set<string>>(new Set());
 
     const apiClient = useAPIClient(networkId);
     const { stakingContract, unstake, withdrawStake } = useStake(networkId, providerState);
@@ -110,9 +114,26 @@ export const Account: React.FC<AccountProps> = () => {
                 return memo;
             }, {});
 
+            const _currentEpochStakeMap = delegatorResponse.forCurrentEpoch.poolData.reduce<{ [key: string]: number }>(
+                (memo, poolData) => {
+                    memo[poolData.poolId] = poolData.zrxStaked || 0;
+                    return memo;
+                },
+                {},
+            );
+            const _nextEpochStakeMap = delegatorResponse.forNextEpoch.poolData.reduce<{ [key: string]: number }>(
+                (memo, poolData) => {
+                    memo[poolData.poolId] = poolData.zrxStaked || 0;
+                    return memo;
+                },
+                {},
+            );
+
             setDelegatorData(delegatorResponse);
             setPoolWithStatsMap(_poolWithStatsMap);
             setNextEpochStats(epochsResponse.nextEpoch);
+            setCurrentEpochStakeMap(_currentEpochStakeMap);
+            setNextEpochStakeMap(_nextEpochStakeMap);
         };
 
         if (!account.address || isFetchingDelegatorData) {
@@ -186,42 +207,6 @@ export const Account: React.FC<AccountProps> = () => {
             setTotalAvailableRewards(_totalAvailableRewards);
         };
 
-        const fetchPendingActivityData = async () => {
-            // pools being staked with now but not next epoch are pending unstake
-            // TODO(kimpers): handle partial unstake
-            const poolDataNextEpochMap = delegatorData.forNextEpoch.poolData.reduce<{ [key: string]: number }>(
-                (memo, poolData) => {
-                    memo[poolData.poolId] = poolData.zrxStaked;
-                    return memo;
-                },
-                {},
-            );
-
-            const poolDataStaked = delegatorData.forCurrentEpoch.poolData.map(pool => ({
-                poolId: pool.poolId,
-                currentEpochZrxStaked: pool.zrxStaked,
-                nextEpochZrxStaked: poolDataNextEpochMap[pool.poolId] || 0,
-            }));
-
-            // TODO(kimpers): handle pending stake as well
-            const poolsWithPendingUnstake = poolDataStaked.filter(
-                pool => pool.currentEpochZrxStaked > pool.nextEpochZrxStaked,
-            );
-
-            const _pendingUnstakePools = await Promise.all<PoolWithUserStake>(
-                poolsWithPendingUnstake.map(async poolData => {
-                    const poolResponse = await apiClient.getStakingPoolAsync(poolData.poolId);
-
-                    return {
-                        ...poolResponse.stakingPool,
-                        userStake: poolData,
-                    };
-                }),
-            );
-
-            setPendingUnstakePools(_pendingUnstakePools);
-        };
-
         if (!delegatorData || !account.address) {
             return;
         }
@@ -230,14 +215,26 @@ export const Account: React.FC<AccountProps> = () => {
             setTotalAvailableRewards(new BigNumber(0));
             logUtils.warn(err);
         });
-
-        fetchPendingActivityData().catch((err: Error) => {
-            // TODO: unset values
-            logUtils.warn(err);
-        });
     }, [delegatorData, account.address]);
 
-    const pendingUnstakePoolIds = new Set(pendingUnstakePools.map(p => p.poolId));
+    React.useEffect(() => {
+        const _pendingUnstake: PendingAction[] = Object.keys(currentEpochStakeMap).reduce((memo, poolId) => {
+            const currentEpochStake = currentEpochStakeMap[poolId] || 0;
+            const nextEpochStake = nextEpochStakeMap[poolId] || 0;
+
+            if (currentEpochStake > nextEpochStake) {
+                memo.push({
+                    poolId,
+                    amount: currentEpochStake - nextEpochStake,
+                });
+            }
+
+            return memo;
+        }, []);
+
+        setPendingUnstake(_pendingUnstake);
+        setPendingUnstakePoolSet(new Set(_pendingUnstake.map(p => p.poolId)));
+    }, [currentEpochStakeMap, nextEpochStakeMap, delegatorData]);
 
     return (
         <StakingPageLayout title="0x Staking | Account">
@@ -260,7 +257,11 @@ export const Account: React.FC<AccountProps> = () => {
                                             fontSize="17px"
                                             color={colors.brandLight}
                                             onClick={() => {
-                                                withdrawStake(undelegatedBalanceBaseUnits);
+                                                withdrawStake(undelegatedBalanceBaseUnits, () => {
+                                                    // On successful TX optimistically update UI
+                                                    // to avoid having to make slow RPC calls to recompute
+                                                    setUndelegatedBalanceBaseUnits(new BigNumber(0));
+                                                });
                                             }}
                                         >
                                             Withdraw
@@ -308,7 +309,7 @@ export const Account: React.FC<AccountProps> = () => {
                 </Inner>
             </HeaderWrapper>
 
-            {pendingUnstakePools.length > 0 && (
+            {pendingUnstake.length > 0 && (
                 <SectionWrapper>
                     <SectionHeader>
                         <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
@@ -325,23 +326,26 @@ export const Account: React.FC<AccountProps> = () => {
                                 </Button>
                             */}
                     </SectionHeader>
-                    {pendingUnstakePools.map((pool, index) => (
-                        <AccountActivitySummary
-                            key={`account-acctivity-summary-${index}`}
-                            title={`${getFormattedAmount(
-                                pool.userStake.currentEpochZrxStaked - pool.userStake.nextEpochZrxStaked,
-                                'ZRX',
-                            )} will be removed from ${pool.metaData.name || `Pool ${pool.poolId}`}`}
-                            subtitle="Your tokens will need to be manually withdrawn once they are removed"
-                            avatarSrc={pool.metaData.logoUrl || undefined}
-                            icon="clock"
-                        >
-                            <StatFigure
-                                label="Withdraw date"
-                                value={format(new Date(nextEpochStats.epochStart.timestamp), 'd/M/yy')}
-                            />
-                        </AccountActivitySummary>
-                    ))}
+                    {pendingUnstake.map(({ poolId, amount }, index) => {
+                        const pool = poolWithStatsMap[poolId];
+
+                        return (
+                            <AccountActivitySummary
+                                key={`account-acctivity-summary-${index}`}
+                                title={`${getFormattedAmount(amount, 'ZRX')} will be removed from ${(pool &&
+                                    pool.metaData.name) ||
+                                    `Pool ${poolId}`}`}
+                                subtitle="Your tokens will need to be manually withdrawn once they are removed"
+                                avatarSrc={pool.metaData.logoUrl}
+                                icon="clock"
+                            >
+                                <StatFigure
+                                    label="Withdraw date"
+                                    value={format(new Date(nextEpochStats.epochStart.timestamp), 'd/M/yy')}
+                                />
+                            </AccountActivitySummary>
+                        );
+                    })}
                 </SectionWrapper>
             )}
 
@@ -379,7 +383,7 @@ export const Account: React.FC<AccountProps> = () => {
                     ) : (
                         delegatorData.forCurrentEpoch.poolData
                             // Don't show pools with pending withdrawals, they are shown in pending section instead
-                            .filter(p => !pendingUnstakePoolIds.has(p.poolId))
+                            .filter(p => !pendingUnstakePoolSet.has(p.poolId))
                             .map(delegatorPoolStats => {
                                 const poolId = delegatorPoolStats.poolId;
                                 const pool = poolWithStatsMap[poolId];
@@ -414,7 +418,19 @@ export const Account: React.FC<AccountProps> = () => {
                                         nextEpochApproximateStart={new Date(nextEpochStats.epochStart.timestamp)}
                                         isVerified={pool.metaData.isVerified}
                                         onRemoveStake={() => {
-                                            unstake([{ poolId, zrxAmount: delegatorPoolStats.zrxStaked }]);
+                                            const zrxAmount = delegatorPoolStats.zrxStaked;
+                                            unstake([{ poolId, zrxAmount }], () => {
+                                                // If TX is successful optimistically update UI before
+                                                // API has received the new state
+                                                const nextEpochStake = Math.max(
+                                                    (nextEpochStakeMap[poolId] || 0) - zrxAmount,
+                                                    0,
+                                                );
+                                                setNextEpochStakeMap(stakeMap => ({
+                                                    ...stakeMap,
+                                                    [poolId]: nextEpochStake,
+                                                }));
+                                            });
                                         }}
                                     />
                                 );

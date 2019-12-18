@@ -25,10 +25,10 @@ const normalizeStakePoolData = (stakePoolData: StakePoolData[]) =>
     }));
 
 export interface UseStakeHookResult {
-    depositAndStake: (stakingPools: StakePoolData[]) => void;
-    unstake: (stakePoolData: StakePoolData[]) => void;
-    withdrawStake: (zrxAmountBaseUnits: BigNumber) => void;
-    withdrawRewards: (poolIds: string[]) => void;
+    depositAndStake: (stakingPools: StakePoolData[], callback?: () => void) => void;
+    unstake: (stakePoolData: StakePoolData[], callback?: () => void) => void;
+    withdrawStake: (zrxAmountBaseUnits: BigNumber, callback?: () => void) => void;
+    withdrawRewards: (poolIds: string[], callback?: () => void) => void;
     stakingContract?: StakingContract;
     loadingState?: TransactionLoadingState;
     error?: Error;
@@ -190,17 +190,25 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         error,
         estimatedTimeMs,
         stakingContract,
-        depositAndStake: (stakePoolData: StakePoolData[]) => {
-            depositAndStakeAsync(stakePoolData).catch(handleError);
+        depositAndStake: (stakePoolData: StakePoolData[], callback?: () => void) => {
+            depositAndStakeAsync(stakePoolData)
+                .then(callback)
+                .catch(handleError);
         },
-        unstake: (stakePoolData: StakePoolData[]) => {
-            unstakeFromPoolsAsync(stakePoolData).catch(handleError);
+        unstake: (stakePoolData: StakePoolData[], callback?: () => void) => {
+            unstakeFromPoolsAsync(stakePoolData)
+                .then(callback)
+                .catch(handleError);
         },
-        withdrawStake: (zrxAmountBaseUnits: BigNumber) => {
-            withdrawStakeAsync(zrxAmountBaseUnits).catch(handleError);
+        withdrawStake: (zrxAmountBaseUnits: BigNumber, callback?: () => void) => {
+            withdrawStakeAsync(zrxAmountBaseUnits)
+                .then(callback)
+                .catch(handleError);
         },
-        withdrawRewards: (poolIds: string[]) => {
-            withdrawRewardsAsync(poolIds).catch(handleError);
+        withdrawRewards: (poolIds: string[], callback?: () => void) => {
+            withdrawRewardsAsync(poolIds)
+                .then(callback)
+                .catch(handleError);
         },
         estimatedTransactionFinishTime,
     };
