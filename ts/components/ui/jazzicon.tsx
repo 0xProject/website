@@ -2,11 +2,15 @@ import Color from 'color';
 import MersenneTwister from 'mersenne-twister';
 import React from 'react';
 
-export function jsNumberForAddress(address: string): number {
+export const generateUniqueId = (address: string, poolId?: string): number => {
     const addr = address.slice(2, 10);
-    const seed = parseInt(addr, 16);
-    return seed;
-}
+    const addressHexInt = parseInt(addr, 16);
+    if (!poolId) {
+        return addressHexInt;
+    }
+    const id = parseInt(poolId, 10);
+    return parseInt(`${id}${addressHexInt}`, 10);
+};
 
 // TODO(johnrjj) - We can tune these to fit the 0x brand colors
 const COLORS = [
@@ -34,13 +38,15 @@ export interface PaperProps {
     color: string;
     diameter: number;
     style: any;
+    isSquare?: boolean;
 }
 
-const Paper: React.FC<PaperProps> = ({ children, color, diameter, style: styleOverrides }) => (
+const Paper: React.FC<PaperProps> = ({ children, color, diameter,  style: styleOverrides, isSquare }) => (
     <div
         className="paper"
         style={{
             ...DEFAULT_PAPER_STYLES,
+            borderRadius: isSquare ? '0' : DEFAULT_PAPER_STYLES.borderRadius,
             backgroundColor: color,
             height: diameter,
             width: diameter,
@@ -56,14 +62,16 @@ const SVGNS = 'http://www.w3.org/2000/svg';
 const WOBBLE = 30;
 
 export interface JazziconProps {
+    isSquare?: boolean;
     diameter: number;
     paperStyles?: object;
     seed: number;
     svgStyles?: object;
 }
 
-export const Jazzicon: React.FC<JazziconProps> = props => {
-    const { diameter, paperStyles, seed, svgStyles } = props;
+// NOTE: this component will never update after initial render due to forced memo identity
+export const Jazzicon: React.FC<JazziconProps> = React.memo(props => {
+    const { diameter, paperStyles, seed, svgStyles, isSquare } = props;
 
     const generator = React.useRef(new MersenneTwister(seed));
 
@@ -111,7 +119,7 @@ export const Jazzicon: React.FC<JazziconProps> = props => {
                 height={diameter}
                 width={diameter}
                 transform={transform}
-                fill={fill} // todo: make prop
+                fill={fill}
             />
         );
     };
@@ -120,10 +128,10 @@ export const Jazzicon: React.FC<JazziconProps> = props => {
     const shapesArr = Array(SHAPE_COUNT).fill(null);
 
     return (
-        <Paper color={genColor(remainingColors)} diameter={diameter} style={paperStyles}>
+        <Paper color={genColor(remainingColors)} diameter={diameter} isSquare={isSquare} style={paperStyles}>
             <svg xmlns={SVGNS} x="0" y="0" height={diameter} width={diameter} style={svgStyles}>
                 {shapesArr.map((_s, i) => genShape(remainingColors, diameter, i, SHAPE_COUNT - 1))}
             </svg>
         </Paper>
     );
-};
+}, () => true);

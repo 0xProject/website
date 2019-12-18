@@ -1,13 +1,18 @@
+import { stringify } from 'query-string';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Progressbar } from 'ts/components/progressbar';
 import { Tab, Tabs } from 'ts/components/tabs';
+import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
 import CheckmarkThin from 'ts/icons/illustrations/checkmark-thin.svg';
 import Checkmark from 'ts/icons/illustrations/checkmark.svg';
 
 import { colors } from 'ts/style/colors';
+
+import { WebsitePaths } from 'ts/types';
+import { utils } from 'ts/utils/utils';
 
 interface Metrics {
     title: string;
@@ -23,12 +28,12 @@ interface DashboardHeroProps {
     title: string;
     websiteUrl: string;
     poolId: string;
+    operatorAddress: string;
     isVerified: boolean;
     estimatedStake: number;
     rewardsShared: number;
     iconUrl: string;
     tabs: DashBoardHeroTabs[];
-    onButtonClick: (poolId: string) => any;
 }
 
 interface WrapperProps {}
@@ -217,12 +222,12 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
     title,
     tabs,
     poolId,
+    operatorAddress,
     websiteUrl,
     isVerified,
     estimatedStake,
     rewardsShared,
     iconUrl,
-    onButtonClick,
 }) => {
     const [selectedTabIndex, setSelectedTabIndex] = React.useState<number>(0);
 
@@ -234,9 +239,16 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
             <Inner>
                 <Row>
                     <Column>
-                        <PoolIcon src={iconUrl} />
+                    {
+                        iconUrl
+                            ? <PoolIcon src={iconUrl} />
+                            : <Jazzicon
+                                seed={generateUniqueId(operatorAddress, poolId)}
+                                diameter={60}
+                            />
+                    }
                         <Title>
-                            {title}{' '}
+                            {title ? title : `Pool #${poolId}`}{' '}
                             {isVerified && (
                                 <span title="Identitity verified">
                                     <CheckmarkThinDesktop />
@@ -244,8 +256,8 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                             )}
                         </Title>
                         <HorizontalList>
-                            <li>{poolId}</li>
-                            <li>{websiteUrl}</li>
+                            <li>{utils.getAddressBeginAndEnd(operatorAddress)}</li>
+                            {websiteUrl && <li>{websiteUrl}</li>}
                             <li>
                                 <a href="">{rewardsShared}% Rewards Shared</a>
                             </li>
@@ -258,17 +270,15 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                             )}
                         </HorizontalList>
                         <ButtonContainer>
-                            {/* todo(johnrjj), convert to use react-router <Link> instead of history.push */}
                             <StakingButton
-                                onClick={(_e: string) => onButtonClick(poolId)}
-                                href="#"
+                                to={`${WebsitePaths.StakingWizard}?${stringify({ poolId })}`}
                                 color={colors.white}
                                 isFullWidth={true}
                                 isLarge={true}
                             >
                                 Start Staking
                             </StakingButton>
-                            <Progressbar progress={75} />
+                            <Progressbar progress={estimatedStake} />
                             <ProgressbarText>{estimatedStake}% estimated stake for next epoch</ProgressbarText>
                         </ButtonContainer>
                     </Column>
