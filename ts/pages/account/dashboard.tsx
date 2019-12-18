@@ -323,7 +323,6 @@ export const Account: React.FC<AccountProps> = () => {
                                         </Button>
                                     );
                                 }
-
                                 return null;
                             }}
                         >
@@ -391,8 +390,9 @@ export const Account: React.FC<AccountProps> = () => {
                             Apply to create a staking pool
                         </Button> */}
                     </SectionHeader>
-
-                    {delegatorData.forCurrentEpoch.poolData.length === 0 ? (
+                    {/* WORKAROUND BECAUSE API WILL RETURN 1 'null' pool if you haven't staked to any pools */}
+                    {/* TODO(johnrjj) - Need to fix api response to not return a null pool  */}
+                    {delegatorData.forCurrentEpoch.poolData.length === 1 && delegatorData.forCurrentEpoch.poolData[0].poolId === null ? (
                         <CallToAction
                             icon="revenue"
                             title="You haven't staked ZRX"
@@ -400,8 +400,7 @@ export const Account: React.FC<AccountProps> = () => {
                             actions={[
                                 {
                                     label: 'Start staking',
-                                    url: WebsitePaths.StakingWizard,
-                                    isSameTarget: true,
+                                    to: WebsitePaths.StakingWizard,
                                 },
                             ]}
                         />

@@ -7,10 +7,10 @@ import { Heading, Paragraph } from 'ts/components/text';
 
 export interface Action {
     label: string;
-    url?: string;
+    url?: string; // external links
+    to?: string; // internal links
     onClick?: () => void;
     shouldUseAnchorTag?: boolean;
-    isSameTarget?: boolean;
 }
 
 export interface DefinitionProps {
@@ -65,8 +65,9 @@ export const Definition: React.FC<DefinitionProps> = ({ className, ...props }: D
                             onClick={item.onClick}
                             isWithArrow={true}
                             isAccentColor={true}
+                            to={item.to}
                             shouldUseAnchorTag={item.shouldUseAnchorTag}
-                            target={item.isSameTarget ? undefined : '_blank'}
+                            target={item.to ? undefined : '_blank'}
                         >
                             {item.label}
                         </Button>
