@@ -11,6 +11,7 @@ import { Emphasis } from 'ts/components/docs/mdx/emphasis';
 import { H1, H2, H3, H4, H5, H6 } from 'ts/components/docs/mdx/headings';
 import { HelpCallout } from 'ts/components/docs/mdx/help_callout';
 import { HelpfulCta } from 'ts/components/docs/mdx/helpful_cta';
+import { HttpCall } from 'ts/components/docs/mdx/http_call';
 import { Image } from 'ts/components/docs/mdx/image';
 import { InlineCode } from 'ts/components/docs/mdx/inline_code';
 import { InlineLink } from 'ts/components/docs/mdx/inline_link';
@@ -147,6 +148,7 @@ const mdxComponents = {
     Note,
     Notification,
     StepLinks,
+    HttpCall,
 };
 
 const waitForImages = async () => {
