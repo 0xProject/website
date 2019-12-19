@@ -13,18 +13,20 @@ export type HttpVerb = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 export interface HttpCallProps {
     verb?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
     path?: string;
+    fontSize?: string;
 }
 
 export const HttpCall: React.FC<HttpCallProps> = props => (
     <HttpCallWrapper>
         <HttpVerb {...props}>{props.verb}</HttpVerb>
-        <PathText>{props.path}</PathText>
+        <PathText {...props}>{props.path}</PathText>
     </HttpCallWrapper>
 );
 
 HttpCall.defaultProps = {
     verb: 'GET',
     path: '/',
+    fontSize: '18px',
 };
 
 const verbTextToColor = {
@@ -35,17 +37,17 @@ const verbTextToColor = {
     'DELETE': `#AE0000`,
 };
 
-const PathText = styled.p`
-    font-size: 18px;
+const PathText = styled.p<HttpCallProps>`
+    font-size: ${props => props.fontSize};
     font-family: 'Formular Mono', monospace;
     color: black;
 `;
 
 const HttpVerb = styled.div<HttpCallProps>`
     background-color: ${props => verbTextToColor[props.verb]};
+    font-size: 18px;
     padding: 10px 20px 8px;
     color: white;
-    font-size: 18px;
     margin-right: 20px;
     text-transform: uppercase;
     display: flex;
