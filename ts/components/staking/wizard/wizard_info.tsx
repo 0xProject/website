@@ -9,10 +9,15 @@ import { Epoch, UserStakingChoice } from 'ts/types';
 import { Timeline } from 'ts/components/staking/wizard/timeline';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 
-export interface WizardInfoProps {
+export interface ConfirmationWizardInfo {
     selectedStakingPools: UserStakingChoice[] | undefined;
     currentEpochStats: Epoch | undefined;
     nextEpochStats: Epoch | undefined;
+}
+
+export interface WizardInfoProps {
+    currentEpochStats: Epoch | undefined;
+    trail: any[];
 }
 
 const IntroHeader = styled.h1`
@@ -164,7 +169,7 @@ const AnimatedIntroMetrics = animated(IntroMetrics);
 const AnimatedIntroHeader = animated(IntroHeader);
 const AnimatedIntroDescription = animated(IntroDescription);
 
-export const IntroWizardInfo: React.FC<{ trail: any[] }> = ({ trail }) => {
+export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats, trail }) => {
     return (
         <>
             <AnimatedIntroHeader style={trail[0]}>{'Start staking your tokens'}</AnimatedIntroHeader>
@@ -173,11 +178,11 @@ export const IntroWizardInfo: React.FC<{ trail: any[] }> = ({ trail }) => {
             </AnimatedIntroDescription>
             <AnimatedIntroMetrics style={trail[2]}>
                 <IntroMetric>
-                    <h2>873,435 ETH</h2>
+                    <h2>{currentEpochStats ? currentEpochStats.protocolFeesGeneratedInEth : PLACEHOLDER} ETH</h2>
                     <p>Total rewards collected</p>
                 </IntroMetric>
                 <IntroMetric>
-                    <h2>203,000 ZRX</h2>
+                    <h2>{currentEpochStats ? currentEpochStats.zrxStaked : PLACEHOLDER} ZRX</h2>
                     <p>Total ZRX Staked</p>
                 </IntroMetric>
             </AnimatedIntroMetrics>
@@ -196,7 +201,7 @@ export const TokenApprovalInfo: React.FC<{}> = () => {
     );
 };
 
-export const ConfirmationWizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, nextEpochStats }) => {
+export const ConfirmationWizardInfo: React.FC<ConfirmationWizardInfo> = ({ selectedStakingPools, nextEpochStats }) => {
     const stakingStartsEpochDate = new Date(nextEpochStats.epochStart.timestamp);
     const ESTIMATED_EPOCH_LENGTH_IN_DAYS = 10;
     const firstRewardsEpochDate = addDays(
