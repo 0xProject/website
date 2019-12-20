@@ -24,7 +24,7 @@ Any endpoint that follows this convention will display the following:
 
 ### Response
 
-| Query Param | Description                                                                                     |
+| Field | Description                                                                                           |
 | ------------| ----------------------------------------------------------------------------------------------- |
 | page        | The page index (1-indexed) of returned in the response (same as request if provided).           |
 | perPage     | The amount of records requested in the pagination, but not necessarily returned.                |
@@ -481,5 +481,116 @@ Retrieves a specific order by orderHash.
     "remainingFillableTakerAssetAmount": "43835664000000000000"
     }
 }
+```
+</CodeTabs>
+
+## GET /sra/orderbook
+
+Retrieves the orderbook for a given asset pair. 
+
+<Notification type="alert">This endpoint is paginated.</Notification>
+
+### Request 
+
+| Query Params    | Description                                                                                                                                                                                                                                                                                                                                     
+| ----------------| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| baseAssetData   | [Asset data](/docs/guides/v3-specification#assetdata) (`makerAssetData` or `takerAssetData`) designated as the base currency in the currency pair calculation of price.   |
+| quoteAssetData  | [Asset data](/docs/guides/v3-specification#assetdata) (`makerAssetData` or `takerAssetData`) designated as the quote currency in the currency pair calculation of price.  |
+
+
+### Response
+
+Bids will be sorted in descending order by price, and asks will be sorted in ascending order by price. 
+Within the price sorted orders, the orders are further sorted by taker fee price which is defined as the takerFee divided by takerTokenAmount. 
+After taker fee price, orders are sorted by expiration in ascending order.
+
+| Field   | Description                                                                                                      |
+| ------- | ---------------------------------------------------------------------------------------------------------------- |
+| bids    | [Paginated](#pagination) collection of signed orders (below) where `takerAssetData` is equal to `baseAssetData`. |
+| asks    | [Paginated](#pagination) collection of signed orders (below) where `makerAssetData` is equal to `baseAssetData`. |  
+
+#### Record
+
+| Field       | Description                                                                                                        |
+| ----------- | -------------------------------------------------------------------------------------------------------------------|
+| order       | Raw signed [0x orders](/docs/core-concepts#the-0x-order-message-format).                                           |
+| metaData    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |                                                                                                                     
+
+### Examples 
+
+#### Get the WETH/DAI Orderbook
+
+<HttpCall fontSize="14px" path="/sra/orderbook?baseAssetData=0xf472...6cc2&quoteAssetData=0xf472...71d0f" />
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+{
+  "bids": {
+    "total": 11,
+    "page": 1,
+    "perPage": 20,
+    "records": [
+      {
+        "order": {
+          "signature": "0x1bf822f726ddb49209f94696314e2e65fa55f42de0b46ffbd714b44cd7602211415ee930b68b33d4c5d8ac3fcc7bcd0872d456bc7b686e79f3b1f616629a7f81f403",
+          "senderAddress": "0x0000000000000000000000000000000000000000",
+          "makerAddress": "0xb0dd0dcada73b715e3b5567ab17bd7f37216a637",
+          "takerAddress": "0x0000000000000000000000000000000000000000",
+          "makerFee": "0",
+          "takerFee": "0",
+          "makerAssetAmount": "1199999999999999999987",
+          "takerAssetAmount": "9339066482479522151",
+          "makerAssetData": "0xf47261b00000000000000000000000006b175474e89094c44da98b954eedeac495271d0f",
+          "takerAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "salt": "1576878022002",
+          "exchangeAddress": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
+          "feeRecipientAddress": "0x0000000000000000000000000000000000000000",
+          "expirationTimeSeconds": "1576878262",
+          "makerFeeAssetData": "0x",
+          "chainId": 1,
+          "takerFeeAssetData": "0x"
+        },
+        "metaData": {
+          "orderHash": "0xb507799d6457f3f451f0a6d52ab6df33b5be27a11e58ee11cd7cdfb890f4f986",
+          "remainingFillableTakerAssetAmount": "9339066482479522151"
+        }
+      },
+    ]
+  },
+  "asks": {
+    "total": 10,
+    "page": 1,
+    "perPage": 20,
+    "records": [
+      {
+        "order": {
+          "signature": "0x1b6bd23a7551081bcaa33a3b51e39d501ffd3eded1b0690790b1302c46acc5d17b746c660445d1f8d4cb95fe92f30ab0fa2f1a8eb949abd6d882aa8d72a853656902",
+          "senderAddress": "0x0000000000000000000000000000000000000000",
+          "makerAddress": "0x998497ffc64240d6a70c38e544521d09dcd23293",
+          "takerAddress": "0x0000000000000000000000000000000000000000",
+          "makerFee": "0",
+          "takerFee": "0",
+          "makerAssetAmount": "40000000000000000000",
+          "takerAssetAmount": "5165103816000000000000",
+          "makerAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "takerAssetData": "0xf47261b00000000000000000000000006b175474e89094c44da98b954eedeac495271d0f",
+          "salt": "1576877968657",
+          "exchangeAddress": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
+          "feeRecipientAddress": "0x0000000000000000000000000000000000000000",
+          "expirationTimeSeconds": "1576878093",
+          "makerFeeAssetData": "0x",
+          "chainId": 1,
+          "takerFeeAssetData": "0x"
+        },
+        "metaData": {
+          "orderHash": "0xa9ba945219bc831409bc7edf30fd11f267cc1992aa24320c2307825d2138ab98",
+          "remainingFillableTakerAssetAmount": "5165103816000000000000"
+        }
+      },
+    ]
+  }
+}
+
 ```
 </CodeTabs>
