@@ -280,79 +280,69 @@ The documentation of the Standard Relayer API.
 
 ## GET /sra/asset_pairs
 
-Get a quote.
+Retrieves a list of available asset pairs and the information required to trade them.
+
+<Notification type="alert">This endpoint is paginated.</Notification>
 
 ### Request 
 
-| Query Param        | Description                                                                                                                                                                                                         |
-| ------------       | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| sellToken          | The ERC20 token address or symbol of the token you want to send. "ETH" can be provided as a valid `sellToken`.                                                                                                      |
-| buyToken           | The ERC20 token address or symbol of the token you want to receive.                                                                                                                                                 |
-| sellAmount         | (Optional) The amount of `sellToken` (in wei) you want to send. If `sellAmount` is provided, `buyAmount` will be ignored.                                                                                           |
-| buyAmount          | (Optional) The amount of `buyToken` (in wei) you want. When both are provided, `sellAmount` takes precedence over this argument.                                                                                    |
-| slippagePercentage | (Optional, defaults to ".2") The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. |
-| gasPrice           | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                       |
-| takerAddress       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
+If either `assetDataA` or `assetDataB` are specified, the response will only return pairs that include that asset.
+If both `assetDataA` and `assetDataB` are specified, the response will only return that pair.
+
+| Query Param  | Description                                                                                                                                                 |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| assetDataA   | (Optional) A filter on the type of asset your may want information about in the form of [asset data](/docs/guides/v3-specification#assetdata).              |
+| assetDataB   | (Optional) A filter on the type of asset your may want information about in the form of [asset data](/docs/guides/v3-specification#assetdata).              |
 
 
 ### Response
 
-| Field       | Description                                                                                                                                                              |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| price       | The price of 1 `buyToken` denoted in the `sellToken`. This price does not include the `slippage` provided in the request above.                                          |
-| to          | The address of the contract to send call `data` to.                                                                                                                      |
-| data        | The calldata required to be sent to the to contract address.                                                                                                             |
-| gasPrice    | The gas price (in wei) that should be used to send the transaction. The transaction needs to be sent with this `gasPrice` or lower for the transaction to be successful. |
-| gas         | The estimated gas limit that should be used to send the transaction. This is only returned if `takerAddress` is provided in the request.                                 |
-| protocolFee | The amount of ether paid towards the protocol fee (in wei).                                                                                                              |
-| orders      | Raw 0x orders that data is comprised of.                                                                                                                                 |
+#### Record
+
+| Field       | Description                    |
+| ----------- | -------------------------------|
+| assetDataA  | AssetData info object (below). |
+| assetDataB  | AssetData info object (below). |                                                                                                                     
+
+#### AssetData Info
+
+| Field       | Description                                                                            |
+| ----------- | ---------------------------------------------------------------------------------------|
+| minAmount   | The minimum trade amount the relayer will accept.                                      |
+| maxAmount   | The maximum trade amount the relayer will accept.                                      |
+| precision   | The desired price precision for this orderbook.                                        |
+| assetData   | The [asset data](/docs/guides/v3-specification#assetdata) representation of the asset. |
+
 
 ### Examples 
 
-#### Simple DAI Buy with WETH
+#### Simple Request
 
-Omit the `takerAddress` to skip `gas` estimation.
+<HttpCall path="/sra/asset_pairs?assetDataA=0xf47261b...1f4699f498" />
 
-<HttpCall path="/swap/quote?buyToken=DAI&sellToken=WETH&buyAmount=10000000" />
-
-
-<CodeTabs tabs={['200 - No Taker Address']}>
+<CodeTabs tabs={['200 - OK']}>
 
 ```json
 {
-  "price": "144.200265328488204418",
-  "to": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
-  "data": "0x8bc8efb300000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000989680000000000000000000000000000000000000000000000000000000000000034000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000b0dd0dcada73b715e3b5567ab17bd7f37216a6370000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000410d586a20a4bfffc5000000000000000000000000000000000000000000000000737cad04f84008c100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005deff8df0000000000000000000000000000000000000000000000000000016ef1607d9a00000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000002800000000000000000000000000000000000000000000000000000000000000024f47261b00000000000000000000000006b175474e89094c44da98b954eedeac495271d0f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000421c3046cceaabdc8efe55f92bff5d96aacfa46c144bfc9e1c13beb5074651ef658661f5e9af72e3c708aba61c00f535f7ff0364d3fdf8985b14b367d1bc8b139b4c03000000000000000000000000000000000000000000000000000000000000",
-  "value": "1200000",
-  "gasPrice": "8",
-  "protocolFee": "1200000",
-  "gas": "0",
-  "makerAssetAmount": "10000000",
-  "takerAssetAmount": "69348",
-  "orders": [
-    {
-      "chainId": 1,
-      "exchangeAddress": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
-      "makerAddress": "0xb0dd0dcada73b715e3b5567ab17bd7f37216a637",
-      "makerAssetData": "0xf47261b00000000000000000000000006b175474e89094c44da98b954eedeac495271d0f",
-      "makerFeeAssetData": "0x",
-      "makerAssetAmount": "1199999999999999999941",
-      "makerFee": "0",
-      "takerAddress": "0x0000000000000000000000000000000000000000",
-      "takerAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-      "takerFeeAssetData": "0x",
-      "takerAssetAmount": "8321716448330254529",
-      "takerFee": "0",
-      "senderAddress": "0x0000000000000000000000000000000000000000",
-      "feeRecipientAddress": "0x0000000000000000000000000000000000000000",
-      "expirationTimeSeconds": "1576007903",
-      "salt": "1576007663002",
-      "signature": "0x1c3046cceaabdc8efe55f92bff5d96aacfa46c144bfc9e1c13beb5074651ef658661f5e9af72e3c708aba61c00f535f7ff0364d3fdf8985b14b367d1bc8b139b4c03",
-      "fillableTakerAssetAmount": "8321716448330254529",
-      "fillableMakerAssetAmount": "1199999999999999999941",
-      "fillableTakerFeeAmount": "0"
-    }
-  ]
+    "total": 43,
+    "page": 1,
+    "perPage": 100,
+    "records": [
+        {
+            "assetDataA": {
+                "minAmount": "0",
+                "maxAmount": "10000000000000000000",
+                "precision": 5,
+                "assetData": "0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498"
+            },
+            "assetDataB": {
+                "minAmount": "0",
+                "maxAmount": "50000000000000000000",
+                "precision": 5,
+                "assetData": "0x02571792000000000000000000000000371b13d97f4bf77d724e78c16b7dc74099f40e840000000000000000000000000000000000000000000000000000000000000063"
+            }
+        },
+    ]
 }
 ```
 </CodeTabs>
