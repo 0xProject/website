@@ -4,6 +4,99 @@ The on-chain API explorer will allow developers to explore the many smart contra
 
 Please check out the [Tools section](/docs/tools) for reference documentation.
 
+## Pagination
+
+Requests that return potentially large collections should be paginated and respond to the `page` and `perPage` parameters. For example:
+
+<HttpCall path="/sra/orders?page=3&perPage=20" />
+
+Any endpoint that follows this convention will display the following:
+
+<Notification type="alert">This endpoint is paginated.</Notification>
+
+### Request 
+
+| Query Param | Description                                                                                     |
+| ------------| ----------------------------------------------------------------------------------------------- |
+| page        | (Optional, defaults to "1") The page index (1-indexed) requested in the collection.             |
+| perPage     | (Optional, defaults to "20") The amount of records to return per page. The maximum is "1000".   |
+
+
+### Response
+
+| Query Param | Description                                                                                     |
+| ------------| ----------------------------------------------------------------------------------------------- |
+| page        | The page index (1-indexed) of returned in the response (same as request if provided).           |
+| perPage     | The amount of records requested in the pagination, but not necessarily returned.                |
+| total       | The total amount of records in the collection (accross all pages).                              |
+| records     | The actual records returned for this page of the collection.                                    |
+
+If a query provides an unreasonable (ie. too high) `perPage` value, the response can return a validation error as specified in the [errors section](#errors). 
+If the query specifies a `page` that does not exist (ie. there are not enough `records`), the response will return an empty `records` array.
+
+## Errors
+
+Unless the spec defines otherwise, errors to bad requests should respond with HTTP 4xx or status codes.
+
+### Common error codes
+
+| Code | Reason                                  |
+| ---- | --------------------------------------- |
+| 400  | Bad Request – Invalid request format    |
+| 404  | Not found                               |
+| 429  | Too many requests - Rate limit exceeded |
+| 500  | Internal Server Error                   |
+| 501  | Not Implemented                         |
+
+### Error reporting format
+For all 400 responses, see the [error response schema](https://github.com/0xProject/0x-monorepo/blob/development/packages/json-schemas/schemas/relayer_api_error_response_schema.json#L1).
+
+```json
+{
+    "code": 101,
+    "reason": "Validation failed",
+    "validationErrors": [
+        {
+            "field": "maker",
+            "code": 1002,
+            "reason": "Invalid address"
+        }
+    ]
+}
+```
+
+General error codes:
+
+| Code | Reason                    |
+| ---- | ------------------------- |
+| 100  | Validation Failed         |
+| 101  | Malformed JSON            |
+| 102  | Order submission disabled |
+| 103  | Throttled                 |
+| 104  | Not Implemented           |
+| 105  | Transaction Invalid       |
+
+Validation error codes:
+
+| Code | Reason                     |
+| ---- | -------------------------- |
+| 1000  | Required field            |
+| 1001  | Incorrect format          |
+| 1002  | Invalid address           |
+| 1003  | Address not supported     |
+| 1004  | Value out of range        |
+| 1005  | Invalid signature or hash |
+| 1006  | Unsupported option        |
+| 1007  | Invalid 0x order          |
+
+
+## Misc.
+
+*   All requests and responses should be of "application/json" content type
+*   All token amounts are sent in amounts of the smallest level of precision (base units). (e.g if a token has 18 decimal places, selling 1 token would show up as selling "1000000000000000000" units by this API).
+*   All addresses are sent as lower-case (non-checksummed) Ethereum addresses with the `0x` prefix.
+*   All parameters should use **lowerCamelCase**.
+
 # Swap
 
 Description of /swap endpoint.
@@ -141,6 +234,89 @@ Use "ETH" as the `sellToken` to receive a [Forwarder](/docs/guides/v3-forwarder-
 <HttpCall path="/swap/quote?buyToken=DAI&sellToken=ETH&buyAmount=10000000" />
 
 <CodeTabs tabs={['200 - Forwarder Transaction']}>
+
+```json
+{
+  "price": "144.200265328488204418",
+  "to": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
+  "data": "0x8bc8efb300000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000989680000000000000000000000000000000000000000000000000000000000000034000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000b0dd0dcada73b715e3b5567ab17bd7f37216a6370000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000410d586a20a4bfffc5000000000000000000000000000000000000000000000000737cad04f84008c100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005deff8df0000000000000000000000000000000000000000000000000000016ef1607d9a00000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000002800000000000000000000000000000000000000000000000000000000000000024f47261b00000000000000000000000006b175474e89094c44da98b954eedeac495271d0f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000421c3046cceaabdc8efe55f92bff5d96aacfa46c144bfc9e1c13beb5074651ef658661f5e9af72e3c708aba61c00f535f7ff0364d3fdf8985b14b367d1bc8b139b4c03000000000000000000000000000000000000000000000000000000000000",
+  "value": "1200000",
+  "gasPrice": "8",
+  "protocolFee": "1200000",
+  "gas": "0",
+  "makerAssetAmount": "10000000",
+  "takerAssetAmount": "69348",
+  "orders": [
+    {
+      "chainId": 1,
+      "exchangeAddress": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
+      "makerAddress": "0xb0dd0dcada73b715e3b5567ab17bd7f37216a637",
+      "makerAssetData": "0xf47261b00000000000000000000000006b175474e89094c44da98b954eedeac495271d0f",
+      "makerFeeAssetData": "0x",
+      "makerAssetAmount": "1199999999999999999941",
+      "makerFee": "0",
+      "takerAddress": "0x0000000000000000000000000000000000000000",
+      "takerAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "takerFeeAssetData": "0x",
+      "takerAssetAmount": "8321716448330254529",
+      "takerFee": "0",
+      "senderAddress": "0x0000000000000000000000000000000000000000",
+      "feeRecipientAddress": "0x0000000000000000000000000000000000000000",
+      "expirationTimeSeconds": "1576007903",
+      "salt": "1576007663002",
+      "signature": "0x1c3046cceaabdc8efe55f92bff5d96aacfa46c144bfc9e1c13beb5074651ef658661f5e9af72e3c708aba61c00f535f7ff0364d3fdf8985b14b367d1bc8b139b4c03",
+      "fillableTakerAssetAmount": "8321716448330254529",
+      "fillableMakerAssetAmount": "1199999999999999999941",
+      "fillableTakerFeeAmount": "0"
+    }
+  ]
+}
+```
+</CodeTabs>
+
+# SRA
+
+The documentation of the Standard Relayer API.
+
+## GET /sra/asset_pairs
+
+Get a quote.
+
+### Request 
+
+| Query Param        | Description                                                                                                                                                                                                         |
+| ------------       | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| sellToken          | The ERC20 token address or symbol of the token you want to send. "ETH" can be provided as a valid `sellToken`.                                                                                                      |
+| buyToken           | The ERC20 token address or symbol of the token you want to receive.                                                                                                                                                 |
+| sellAmount         | (Optional) The amount of `sellToken` (in wei) you want to send. If `sellAmount` is provided, `buyAmount` will be ignored.                                                                                           |
+| buyAmount          | (Optional) The amount of `buyToken` (in wei) you want. When both are provided, `sellAmount` takes precedence over this argument.                                                                                    |
+| slippagePercentage | (Optional, defaults to ".2") The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. |
+| gasPrice           | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                       |
+| takerAddress       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
+
+
+### Response
+
+| Field       | Description                                                                                                                                                              |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| price       | The price of 1 `buyToken` denoted in the `sellToken`. This price does not include the `slippage` provided in the request above.                                          |
+| to          | The address of the contract to send call `data` to.                                                                                                                      |
+| data        | The calldata required to be sent to the to contract address.                                                                                                             |
+| gasPrice    | The gas price (in wei) that should be used to send the transaction. The transaction needs to be sent with this `gasPrice` or lower for the transaction to be successful. |
+| gas         | The estimated gas limit that should be used to send the transaction. This is only returned if `takerAddress` is provided in the request.                                 |
+| protocolFee | The amount of ether paid towards the protocol fee (in wei).                                                                                                              |
+| orders      | Raw 0x orders that data is comprised of.                                                                                                                                 |
+
+### Examples 
+
+#### Simple DAI Buy with WETH
+
+Omit the `takerAddress` to skip `gas` estimation.
+
+<HttpCall path="/swap/quote?buyToken=DAI&sellToken=WETH&buyAmount=10000000" />
+
+
+<CodeTabs tabs={['200 - No Taker Address']}>
 
 ```json
 {
