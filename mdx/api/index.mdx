@@ -428,3 +428,58 @@ All the fields below are filter fields on the [0x orders](/docs/core-concepts#th
 
 ```
 </CodeTabs>
+
+## GET /sra/order/:orderHash:
+
+Retrieves a specific order by orderHash. 
+
+### Request 
+
+| Path Params | Description                                                                                                                                                                                                                                                                                                                                     
+| ----------- | -------------------------------------------------------------------------------------|
+| orderHash   | The hash of the desired [0x order](/docs/core-concepts#the-0x-order-message-format). |
+
+
+### Response
+
+| Field       | Description                                                                                                        |
+| ----------- | -------------------------------------------------------------------------------------------------------------------|
+| order       | Raw [0x orders](/docs/core-concepts#the-0x-order-message-format).                                                  |
+| metaData    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |                                                                                                                     
+
+### Examples 
+
+#### Get an Order
+
+<HttpCall path="/sra/order/0xa1e06a9...eaa29e1a6" />
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+{
+    "order": {
+    "signature": "0x1b619623be7d177f19c2e987fa974ded5c000dd5c6dfdcb7cd17da31fe2cd94aef19ab0ffb2b29f66142a754ddb165c0d2ddc98fcb45ca7a348e4c05c77216c60103",
+    "senderAddress": "0x0000000000000000000000000000000000000000",
+    "makerAddress": "0x320c38912b1611a0706c0a74427f64fa5dc3598e",
+    "takerAddress": "0x0000000000000000000000000000000000000000",
+    "makerFee": "0",
+    "takerFee": "0",
+    "makerAssetAmount": "47479678912656000",
+    "takerAssetAmount": "43835664000000000000",
+    "makerAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "takerAssetData": "0xf47261b00000000000000000000000004fbb350052bca5417566f188eb2ebce5b19bc964",
+    "salt": "1576832996",
+    "exchangeAddress": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
+    "feeRecipientAddress": "0xc898fbee1cc94c0ff077faa5449915a506eff384",
+    "expirationTimeSeconds": "1576876106",
+    "makerFeeAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "chainId": 1,
+    "takerFeeAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+    },
+    "metaData": {
+    "orderHash": "0xa1e06a98da1e56bd61e81c3d9de8cbe443618ad3d77a9ba6cf0562aeaa29e1a6",
+    "remainingFillableTakerAssetAmount": "43835664000000000000"
+    }
+}
+```
+</CodeTabs>
