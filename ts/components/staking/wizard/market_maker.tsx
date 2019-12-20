@@ -2,13 +2,17 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
+import { Progressbar } from 'ts/components/progressbar';
 import { InfoTooltip } from 'ts/components/ui/info_tooltip';
+import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
 
 import { colors } from 'ts/style/colors';
 
 interface MarketMakerProps {
     name: string;
     iconUrl: string;
+    poolId: string;
+    operatorAddress: string;
     collectedFees: number;
     rewards: number;
     staked: number;
@@ -17,7 +21,7 @@ interface MarketMakerProps {
 }
 
 const Container = styled.div`
-    margin: 20px 0;
+    margin-bottom: 20px;
     border: 1px solid #DDDDDD;
     background-color: ${colors.white};
 `;
@@ -25,8 +29,10 @@ const Container = styled.div`
 const Heading = styled.div`
     display: flex;
     align-items: center;
-    padding: 15px;
+    justify-content: space-between;
+    padding: 20px;
     position: relative;
+    flex: 1;
 
     @media (min-width: 768px) {
         border-bottom: 1px solid #DDDDDD;
@@ -34,12 +40,18 @@ const Heading = styled.div`
     }
 `;
 
-const MarketMakerIcon = styled.img`
+const MarketMakerIconContainer = styled.div`
+    border: 1px solid #DDDDDD;
     display: block;
     margin-right: 20px;
-    height: 40px;
-    width: 40px;
-    border: 1px solid #DDDDDD;
+    height: 60px;
+    width: 60px;
+`;
+
+const MarketMakerIcon = styled.img`
+    display: block;
+    height: 60px;
+    width: 60px;
 `;
 
 const Title = styled.h3`
@@ -154,20 +166,64 @@ const Website = styled.a`
 const TitleContainer = styled.div`
 `;
 
+const LeftSideContainer = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    flex-basis: 280px;
+`;
+
+const RightSideContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex-basis: 194px;
+    min-width: 138px;
+`;
+
+const DeclaredStakeText = styled.div`
+    font-size: 14px;
+    line-height: 17px;
+    margin-bottom: 8px;
+    font-weight: 300;
+    color: ${colors.textDarkSecondary};
+`;
+
+const StakeAmountText = styled.div`
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 6px;
+    /* disables zero strikethroughs */
+    font-feature-settings: normal;
+    color: ${colors.black};
+`;
+
 export const MarketMaker: React.FC<MarketMakerProps> = props => {
-    const { name, collectedFees, rewards, staked, difference, iconUrl, website } = props;
+    const { name, operatorAddress, poolId, collectedFees, rewards, staked, difference, iconUrl, website } = props;
 
     return (
         <Container>
             <Heading>
-                {iconUrl && <MarketMakerIcon src={iconUrl} alt={name} />}
-                <TitleContainer>
-                    <Title>{name} <CheckIcon name="checkmark" size={15} /></Title>
-                    <Website href={website} target="_blank">{website}</Website>
-                </TitleContainer>
-                <Difference>+{difference} ZRX</Difference>
+                <LeftSideContainer>
+                    <MarketMakerIconContainer>
+                        {iconUrl
+                            ?  <MarketMakerIcon src={iconUrl} alt={name} />
+                            : <Jazzicon seed={generateUniqueId(operatorAddress, poolId)} diameter={60} isSquare={true} />
+                        }
+                    </MarketMakerIconContainer>
+                    <TitleContainer>
+                        <Title>{name} <CheckIcon name="checkmark" size={15} /></Title>
+                        <Website href={website} target="_blank">{website}</Website>
+                    </TitleContainer>
+                </LeftSideContainer>
+                <RightSideContainer>
+                    <DeclaredStakeText>Declared stake (50%)</DeclaredStakeText>
+                    <StakeAmountText>+500,000 ZRX</StakeAmountText>
+                    <Progressbar progress={0.7} />
+                </RightSideContainer>
+                {/* <Difference>+{difference} ZRX</Difference> */}
             </Heading>
-            <Metrics>
+            {/* <Metrics>
                 <Metric>
                     <MetricTitle>Collected fees</MetricTitle>
                     <MetricAmount>{collectedFees} ETH</MetricAmount>
@@ -189,7 +245,7 @@ export const MarketMaker: React.FC<MarketMakerProps> = props => {
                         An approximation for how fully staked the pool is for the upcoming epoch
                     </StyledInfoTooltip>
                 </Metric>
-            </Metrics>
+            </Metrics> */}
         </Container>
     );
 };
