@@ -1,7 +1,7 @@
 import { addDays, format, formatDistanceStrict } from 'date-fns';
 import * as React from 'react';
+import { animated, useTrail } from 'react-spring';
 import styled from 'styled-components';
-import { useTrail, animated } from 'react-spring';
 
 import { colors } from 'ts/style/colors';
 import { Epoch, UserStakingChoice } from 'ts/types';
@@ -119,25 +119,45 @@ const WizardInfoHeader: React.FC<WizardInfoHeaderProps> = ({ title, description 
 
 const PLACEHOLDER = '—';
 
-export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, currentEpochStats, nextEpochStats }) => {
-    if (!selectedStakingPools) {
-        return (
-            <>
-                <WizardInfoHeader title="Start staking your tokens" description="Use one pool of capital across multiple relayers to trade against a large group."/>
-                <IntroMetrics>
-                    <IntroMetric>
-                        <h2>{currentEpochStats ? formatEther(currentEpochStats.protocolFeesGeneratedInEth).minimized : PLACEHOLDER} ETH</h2>
-                        <p>Total rewards collected</p>
-                    </IntroMetric>
-                    <IntroMetric>
-                        <h2>{currentEpochStats ? formatZrx(currentEpochStats.zrxStaked).formatted : PLACEHOLDER} ZRX</h2>
-                        <p>Total ZRX Staked</p>
-                    </IntroMetric>
-                </IntroMetrics>
-            </>
-        );
-    }
-};
+// export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, currentEpochStats, nextEpochStats }) => {
+//     if (!selectedStakingPools) {
+//         return (
+//             <>
+//                 <WizardInfoHeader title="Start staking your tokens" description="Use one pool of capital across multiple relayers to trade against a large group."/>
+//                 <IntroMetrics>
+//                     <IntroMetric>
+//                         <h2>{currentEpochStats ? formatEther(currentEpochStats.protocolFeesGeneratedInEth).minimized : PLACEHOLDER} ETH</h2>
+//                         <p>Total rewards collected</p>
+//                     </IntroMetric>
+//                     <IntroMetric>
+//                         <h2>{currentEpochStats ? formatZrx(currentEpochStats.zrxStaked).formatted : PLACEHOLDER} ZRX</h2>
+//                         <p>Total ZRX Staked</p>
+//                     </IntroMetric>
+//                 </IntroMetrics>
+//             </>
+//         );
+//     }
+// };
+// export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, currentEpochStats, nextEpochStats }) => {
+//     if (!selectedStakingPools) {
+//         return (
+//             <>
+//                 <WizardInfoHeader title="Start staking your tokens" description="Use one pool of capital across multiple relayers to trade against a large group."/>
+//                 <IntroMetrics>
+//                     <IntroMetric>
+//                         {/* TODO(johnrjj may need to format these numbers) */}
+//                         <h2>{currentEpochStats ? currentEpochStats.protocolFeesGeneratedInEth : PLACEHOLDER} ETH</h2>
+//                         <p>Total rewards collected</p>
+//                     </IntroMetric>
+//                     <IntroMetric>
+//                         <h2>{currentEpochStats ? currentEpochStats.zrxStaked : PLACEHOLDER} ZRX</h2>
+//                         <p>Total ZRX Staked</p>
+//                     </IntroMetric>
+//                 </IntroMetrics>
+//             </>
+//         );
+//     }
+// };
 
 // const AnimatedWizardInfoHeaderContainer = animated();
 const AnimatedIntroMetrics = animated(IntroMetrics);
@@ -161,6 +181,17 @@ export const IntroWizardInfo: React.FC<{ trail: any[] }> = ({ trail }) => {
                     <p>Total ZRX Staked</p>
                 </IntroMetric>
             </AnimatedIntroMetrics>
+        </>
+    );
+};
+
+export const TokenApprovalInfo: React.FC<{}> = () => {
+    return (
+        <>
+            <WizardInfoHeader
+                title="You need to let us use your tokens"
+                description="In order to stake you ZRX tokens you must first grant permissions to the 0x Staking Proxy contract. This will allow the contract to transfer the ZRX tokens you decide to stake, and start earning rewards."
+            />
         </>
     );
 };

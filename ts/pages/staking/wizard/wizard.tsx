@@ -1,17 +1,18 @@
-import { logUtils } from '@0x/utils';
+import { BigNumber, logUtils } from '@0x/utils';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
-import { Splitview } from 'ts/components/staking/wizard/splitview';
+import { RightInner, Splitview } from 'ts/components/staking/wizard/splitview';
 import {
     ConnectWalletPane,
     MarketMakerStakeInputPane,
     RecommendedPoolsStakeInputPane,
     StartStaking,
+    TokenApprovalPane,
 } from 'ts/components/staking/wizard/wizard_flow';
-import { ConfirmationWizardInfo, IntroWizardInfo } from 'ts/components/staking/wizard/wizard_info';
+import { ConfirmationWizardInfo, IntroWizardInfo, TokenApprovalInfo } from 'ts/components/staking/wizard/wizard_info';
 
 import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
@@ -24,6 +25,8 @@ import { Status } from 'ts/components/staking/wizard/status';
 import { State } from 'ts/redux/reducer';
 import { AccountReady, AccountState, Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice } from 'ts/types';
 import { constants } from 'ts/utils/constants';
+
+import { Animation } from 'ts/components/staking/wizard/animation';
 
 export interface StakingWizardProps {
     providerState: ProviderState;
@@ -61,13 +64,17 @@ export enum WizardSteps {
     NoZrxInWallet = 'NO_ZRX_IN_WALLET',
     MarketMakerEntry = 'MARKET_MAKER_ENTRY',
     RecomendedEntry = 'RECOMENDED_ENTRY',
+    TokenApproval = 'TOKEN_APPROVAL',
     CoreWizard = 'CORE_WIZARD',
 }
 
 export enum WizardInfoSteps {
     IntroductionStats = 'INTRODUCTION',
     Confirmation = 'CONFIRMATION',
+    TokenApproval = 'TOKEN_APPROVAL',
 }
+
+const AnimatedRightInner = animated(RightInner);
 
 export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
     // If coming from the market maker page, poolId will be provided
@@ -77,6 +84,7 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
     const providerState = useSelector((state: State) => state.providerState);
     const apiClient = useAPIClient(networkId);
 
+    // const [stakeInputAmount, setStakeInputAmount] = useState<string | undefined>(undefined);
     const [stakingPools, setStakingPools] = useState<PoolWithStats[] | undefined>(undefined);
     const [userSelectedStakingPools, setUserSelectedStakingPools] = React.useState<UserStakingChoice[] | undefined>(
         undefined,
@@ -90,6 +98,8 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
         }
         const { zrxBalanceBaseUnitAmount } = providerState.account as AccountReady;
         if (!zrxBalanceBaseUnitAmount) {
+            // TODO(johnrjj) This should also add a spinner to the ConnectWallet panel
+            // e.g. at this point, the wallet is connected but loading stuff via redux/etc
             return WizardSteps.ConnectWallet;
         }
         const unitAmount = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX).toNumber();
@@ -104,18 +114,26 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
         if (!userSelectedStakingPools || providerState.account.state !== AccountState.Ready) {
             return WizardSteps.RecomendedEntry;
         }
+        const allowanceBaseUnits = (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
+        const tokensNeedApproval = allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);
+        if (tokensNeedApproval) {
+            return WizardSteps.TokenApproval;
+        }
         return WizardSteps.CoreWizard;
     };
 
-    const getWizardInfoStatus = (): WizardInfoSteps => {
-        if (!userSelectedStakingPools) {
-            return WizardInfoSteps.IntroductionStats;
+    const getWizardInfoStatus = (currentWizardFlowStep: WizardSteps): WizardInfoSteps => {
+        if (currentWizardFlowStep === WizardSteps.CoreWizard) {
+            return WizardInfoSteps.Confirmation;
         }
-        return WizardInfoSteps.Confirmation;
+        if (currentWizardFlowStep === WizardSteps.TokenApproval) {
+            return WizardInfoSteps.TokenApproval;
+        }
+        return WizardInfoSteps.IntroductionStats;
     };
 
     const flowStatus = getWizardFlowStatus();
-    const infoStatus = getWizardInfoStatus();
+    const infoStatus = getWizardInfoStatus(flowStatus);
 
     const stake = useStake(networkId, providerState);
     const allowance = useAllowance();
@@ -154,6 +172,15 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
         fetchAndSetEpochs();
     }, [networkId, apiClient]);
 
+    const allowanceBaseUnits =
+    (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
+
+    const tokensNeedApproval = allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);
+
+    // if (tokensNeedApproval) {
+    //     allowance.setAllowance();
+    // }
+
     const wizard = useWizard();
 
     // const step = { stepId: flowStatus };
@@ -177,7 +204,7 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
             return { opacity: 0, transform: 'translate3d(100%, 0px, 0)' };
         },
         enter: () => {
-            return { opacity: 1, transform: 'translate3d(0%, 0px, 0)', delay: 180 };
+            return { opacity: 1, transform: 'translate3d(0%, 0px, 0)' };
         },
         leave: (s: any) => {
             return { opacity: 0, transform: 'translate3d(-100%, 0px, 0)' };
@@ -185,8 +212,8 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
         initial: null,
     });
 
-    const [trail, set, stop] = useTrail(3, () => ({
-        delay: 250,
+    const [trail, set, stop] = useTrail(4, () => ({
+        delay: 100,
         to: { opacity: 1, y: 0 },
         from: { opacity: 0, y: 10 },
     }));
@@ -196,6 +223,13 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
     if (zrxBalanceBaseUnitAmount) {
         unitAmount = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX).toNumber();
     }
+
+    // return (
+    //     <div style={{}}>
+    //         <Animation padding={'1px'} height={'50px'} width={'120px'} name={'switchUnlock'} />
+    //         <Animation padding={'1px'} height={'50px'} width={'120px'} name={'switchSpinner'} />
+    //     </div>
+    // );
 
     return (
         <Container>
@@ -208,6 +242,9 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
                                     <WizardInfoFlexInnerContainer>
                                         {item === WizardInfoSteps.IntroductionStats && (
                                             <IntroWizardInfo trail={trail} />
+                                        )}
+                                        {item === WizardInfoSteps.TokenApproval && (
+                                            <TokenApprovalInfo />
                                         )}
                                         {item === WizardInfoSteps.Confirmation && (
                                             <ConfirmationWizardInfo
@@ -223,6 +260,7 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
                     </WizardInfoRelativeContainer>
                 }
                 rightComponent={
+                    <AnimatedRightInner>
                     <WizardFlowRelativeContainer>
                         {transitions.map(({ item, props: styleProps, key }) => (
                             <AnimatedWizardFlowAbsoluteContaine key={key} style={styleProps}>
@@ -258,6 +296,17 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
                                             zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
                                         />
                                     )}
+                                    {item === WizardSteps.TokenApproval && (
+                                        <TokenApprovalPane
+                                            address={(providerState.account as AccountReady).address}
+                                            allowance={allowance}
+                                            stake={stake}
+                                            nextEpochStats={nextEpochStats}
+                                            providerState={providerState}
+                                            selectedStakingPools={userSelectedStakingPools}
+                                        />
+                                    )
+                                    }
                                     {item === WizardSteps.CoreWizard && (
                                         <StartStaking
                                             address={(providerState.account as AccountReady).address}
@@ -288,6 +337,7 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
                                 </WizardFlowFlexInnerContainer> */}
                         {/* </WizardFlowAbsoluteContaine> */}
                     </WizardFlowRelativeContainer>
+                    </AnimatedRightInner>
                 }
             />
         </Container>
