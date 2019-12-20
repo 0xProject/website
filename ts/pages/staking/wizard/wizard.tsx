@@ -241,7 +241,10 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
                                 <AnimatedWizardInfoAbsoluteContaine style={styleProps} key={key}>
                                     <WizardInfoFlexInnerContainer>
                                         {item === WizardInfoSteps.IntroductionStats && (
-                                            <IntroWizardInfo trail={trail} />
+                                            <IntroWizardInfo
+                                                currentEpochStats={currentEpochStats}
+                                                trail={trail}
+                                            />
                                         )}
                                         {item === WizardInfoSteps.TokenApproval && (
                                             <TokenApprovalInfo />
