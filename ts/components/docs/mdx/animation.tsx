@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { docs } from 'ts/style/docs';
 
 const AnimationLoaderLazy = React.lazy(async () =>
-    import('ts/components/docs/animations/animation_loader').then(({ AnimationLoader }) => ({
+    import('ts/components/animations/animation_loader').then(({ AnimationLoader }) => ({
         default: AnimationLoader,
     })),
 );
