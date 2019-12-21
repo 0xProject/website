@@ -658,3 +658,39 @@ This response is currently static.
 }
 ```
 </CodeTabs>
+
+## GET /sra/fee_recipients
+
+Retrieves a list of valid feeRecipient addresses.
+
+<Notification type="alert">This endpoint is paginated.</Notification>
+
+### Request 
+
+No request params.
+
+### Response
+
+#### Record
+
+A valid Ethereum address(s).                                                                                                                     
+
+### Examples 
+
+#### Get Fee Recipients
+
+<HttpCall path="/sra/fee_recipients" />
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+{
+  "total": 1,
+  "page": 1,
+  "perPage": 20,
+  "records": [
+    "0x0000000000000000000000000000000000000000"
+  ]
+}
+```
+</CodeTabs>
