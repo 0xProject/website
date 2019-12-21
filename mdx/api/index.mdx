@@ -594,3 +594,67 @@ After taker fee price, orders are sorted by expiration in ascending order.
 
 ```
 </CodeTabs>
+
+## POST /sra/order_config
+
+Send a partial [0x order](/docs/core-concepts#the-0x-order-message-format) to this endpoint to receive the rest of configuration-oriented fields.
+This response is currently static.
+
+### Request 
+
+| Body Field            | Description                                                                                                                                                                                                                                                                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| makerAddress          | The party that creates the order. The maker is also one of the two parties that will be involved in the trade if the order gets filled.                                                                                                                                                                                                |
+| takerAddress          | The party that is allowed to fill the order. If set to a specific party, the order cannot be filled by anyone else. If left unspecified, anyone can fill the order.                                                                                                                                                                    |
+| makerAssetData        | Contains all the identifying information about the asset(s) the order maker is trying to sell.                                                                                                                                                                                                                                         |
+| takerAssetData        | Identifying information of the asset(s) the taker must trade in exchange for the maker's asset(s).                                                                                                                                                                                                                                     |
+| makerAssetAmount      | Amount of the maker's asset(s) being offered by the maker.                                                                                                                                                                                                                                                                             |
+| takerAssetAmount      | Amount of the taker's asset(s) the maker will accept in exchange for their maker asset(s). In order to calculate the price the maker is offering, one can divide the `makerAssetAmount` by the `takerAssetAmount` (the calculation is [a bit more complex](/docs/guides/v3-specification#assetproxy) if multiple assets are involved). |
+| expirationTimeSeconds | Timestamp in seconds of when the order expires. Expired orders cannot be filled.                                                                                                                                                                                                                                                       |
+| exchangeAddress       | The address of the 0x exchange smart contract that will settle the order.                                                                                                                                                                                                                                                              |
+
+### Response
+
+| Field                   | Description                                                                                                                                                                                                                                                                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| feeRecipientAddress     | The entity that will receive any fees stipulated by the order. This is typically used to incentivize off-chain order relay.                                                                                                                                                                                                            |
+| makerFeeAssetData       | Identifying token information of the asset(s) the maker must pay to the `feeRecipientAddress`.                                                                                                                                                                                                                                           |
+| takerFeeAssetData       | Identifying token information of the asset(s) the taker must pay to the `feeRecipientAddress`.                                                                                                                                                                                                                                           |
+| senderAddress           | An advanced field that doesn't need to be set. It allows the maker to enforce that the order flow through some additional logic before it can be filled (e.g., a KYC whitelist) -- more on the ability to extend 0x later.                                                                                                             |
+| makerFee                | The fee to be paid by the order maker to the `feeRecipientAddress` in the event of an order fill. Partial fills result in partial fees.                                                                                                                                                                                                |
+| takerFee                | The fee to be paid by the taker to the `feeRecipientAddress` in the event of an order fill.                                                                                                                                                                                                                                            |                                                                                                                    
+
+### Examples 
+
+#### Get an Order Configuration
+
+<HttpCall verb="POST" path="/sra/order_config">
+
+```json
+{
+    "exchangeAddress": "0x12459c951127e0c374ff9105dda097662a027093",
+    "makerAddress": "0x9e56625509c2f60af937f23b7b532600390e8c8b",
+    "takerAddress": "0xa2b31dacf30a9c50ca473337c01d8a201ae33e32",
+    "makerAssetAmount": "10000000000000000",
+    "takerAssetAmount": "20000000000000000",
+    "makerAssetData": "0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498",
+    "takerAssetData": "0x02571792000000000000000000000000371b13d97f4bf77d724e78c16b7dc74099f40e840000000000000000000000000000000000000000000000000000000000000063",
+    "expirationTimeSeconds": "1532560590"
+}
+```
+
+</HttpCall>
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+{
+    "senderAddress": "0xa2b31dacf30a9c50ca473337c01d8a201ae33e32",
+    "feeRecipientAddress": "0xb046140686d052fff581f63f8136cce132e857da",
+    "makerFee": "100000000000000",
+    "takerFee": "200000000000000",
+    "makerFeeAssetData": "0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498",
+    "takerFeeAssetData": "0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498"
+}
+```
+</CodeTabs>

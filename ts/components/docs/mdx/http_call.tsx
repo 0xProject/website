@@ -18,8 +18,13 @@ export interface HttpCallProps {
 
 export const HttpCall: React.FC<HttpCallProps> = props => (
     <HttpCallWrapper>
-        <HttpVerb {...props}>{props.verb}</HttpVerb>
-        <PathText {...props}>{props.path}</PathText>
+        <VerbPathWrapper>
+            <HttpVerb {...props}>{props.verb}</HttpVerb>
+            <PathText {...props}>{props.path}</PathText>
+        </VerbPathWrapper>
+        <ChildContainer>
+            {props.children}
+        </ChildContainer>
     </HttpCallWrapper>
 );
 
@@ -54,9 +59,19 @@ const HttpVerb = styled.div<HttpCallProps>`
 `;
 
 const HttpCallWrapper = styled.div`
-    display: flex;
-    align-items: center;
     padding: 10px 10px;
     margin-bottom: ${docs.marginBottom};
     background-color: ${colors.backgroundLight};
+`;
+
+const VerbPathWrapper = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const ChildContainer = styled.div`
+    pre > div {
+        margin-bottom: 0;
+        padding: 0;
+    }
 `;
