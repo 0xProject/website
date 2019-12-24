@@ -123,28 +123,6 @@ const WizardInfoHeader: React.FC<WizardInfoHeaderProps> = ({ title, description 
 
 const PLACEHOLDER = '—';
 
-// export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, currentEpochStats, nextEpochStats }) => {
-//     if (!selectedStakingPools) {
-//         return (
-//             <>
-//                 <WizardInfoHeader title="Start staking your tokens" description="Use one pool of capital across multiple relayers to trade against a large group."/>
-//                 <IntroMetrics>
-//                     <IntroMetric>
-//                         {/* TODO(johnrjj may need to format these numbers) */}
-//                         <h2>{currentEpochStats ? currentEpochStats.protocolFeesGeneratedInEth : PLACEHOLDER} ETH</h2>
-//                         <p>Total rewards collected</p>
-//                     </IntroMetric>
-//                     <IntroMetric>
-//                         <h2>{currentEpochStats ? currentEpochStats.zrxStaked : PLACEHOLDER} ZRX</h2>
-//                         <p>Total ZRX Staked</p>
-//                     </IntroMetric>
-//                 </IntroMetrics>
-//             </>
-//         );
-//     }
-// };
-
-// const AnimatedWizardInfoHeaderContainer = animated();
 const AnimatedIntroMetrics = animated(IntroMetrics);
 const AnimatedIntroHeader = animated(IntroHeader);
 const AnimatedIntroDescription = animated(IntroDescription);
