@@ -19,8 +19,8 @@ import { Heading } from 'ts/components/text';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
 
-const sortByProtocolFees = (a: PoolWithStats, b: PoolWithStats) => {
-    return a.currentEpochStats.totalProtocolFeesGeneratedInEth - b.currentEpochStats.totalProtocolFeesGeneratedInEth;
+const sortByProtocolFeesDesc = (a: PoolWithStats, b: PoolWithStats) => {
+    return b.currentEpochStats.totalProtocolFeesGeneratedInEth - a.currentEpochStats.totalProtocolFeesGeneratedInEth;
 };
 
 export interface StakingIndexProps {}
@@ -43,7 +43,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
         if (!stakingPools) {
             return undefined;
         }
-        return [...stakingPools.sort(sortByProtocolFees)];
+        return [...stakingPools.sort(sortByProtocolFeesDesc)];
     }, [stakingPools]);
 
     return (
