@@ -5,7 +5,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { addMilliseconds } from 'date-fns';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as _ from 'lodash';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { AccountReady, ProviderState, StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
@@ -67,7 +67,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         );
     }, [providerState, contractAddresses, networkId]);
 
-    const executeWithData = async (data: string[]) => {
+    const executeWithData = useCallback(async (data: string[]) => {
         setLoadingState(TransactionLoadingState.WaitingForSignature);
 
         const gasInfo = await backendClient.getGasInfoAsync();
@@ -83,9 +83,9 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         const txResult = await txPromise;
         setResult(txResult);
         setLoadingState(TransactionLoadingState.Success);
-    };
+    }, [ownerAddress, stakingProxyContract]);
 
-    const depositAndStakeAsync = async (stakePoolData: StakePoolData[]) => {
+    const depositAndStakeAsync = useCallback(async (stakePoolData: StakePoolData[]) => {
         if (!stakePoolData || stakePoolData.length === 0 || isTxInProgress(loadingState)) {
             return;
         }
@@ -113,9 +113,9 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         ];
 
         await executeWithData(data);
-    };
+    }, [executeWithData, loadingState, stakingContract]);
 
-    const unstakeFromPoolsAsync = async (stakePoolData: StakePoolData[]) => {
+    const unstakeFromPoolsAsync = useCallback(async (stakePoolData: StakePoolData[]) => {
         if (!stakePoolData || stakePoolData.length === 0 || isTxInProgress(loadingState)) {
             return;
         }
@@ -133,9 +133,9 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         );
 
         await executeWithData(data);
-    };
+    }, [executeWithData, loadingState, stakingContract]);
 
-    const withdrawStakeAsync = async (zrxAmountBaseUnits: BigNumber) => {
+    const withdrawStakeAsync = useCallback(async (zrxAmountBaseUnits: BigNumber) => {
         if (zrxAmountBaseUnits.isLessThanOrEqualTo(0) || isTxInProgress(loadingState)) {
             return;
         }
@@ -155,9 +155,9 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         const txResult = await txPromise;
         setResult(txResult);
         setLoadingState(TransactionLoadingState.Success);
-    };
+    }, [loadingState, ownerAddress, stakingContract]);
 
-    const withdrawRewardsAsync = async (poolIds: string[]) => {
+    const withdrawRewardsAsync = useCallback(async (poolIds: string[]) => {
         if (!poolIds.length || isTxInProgress(loadingState)) {
             return;
         }
@@ -168,13 +168,13 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         ]);
 
         await executeWithData(data);
-    };
+    }, [executeWithData, loadingState, stakingContract]);
 
-    const handleError = (err: Error) => {
+    const handleError = useCallback((err: Error) => {
         setLoadingState(TransactionLoadingState.Failed);
         setError(err);
         logUtils.log(err);
-    };
+    }, []);
 
     useEffect(() => {
         if (!estimatedTimeMs) {
