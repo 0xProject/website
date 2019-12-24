@@ -273,7 +273,7 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
         () => {
           setDebouncedStakeAmount(stakeAmount);
         },
-        2000,
+        1600,
         [stakeAmount],
     );
 
@@ -481,9 +481,6 @@ const AbsoluteContainer = styled.div`
 export const StartStaking: React.FC<StartStakingProps> = props => {
     const { selectedStakingPools, stake, allowance, address, nextEpochStats } = props;
 
-    const [isApproveTokenModalOpen, setIsApproveTokenModalOpen] = React.useState(false);
-    const [isStakingConfirmationModalOpen, setIsStakingConfirmationModalOpen] = React.useState(false);
-
     const timeRemainingForAllowanceApproval = useSecondsRemaining(allowance.estimatedTransactionFinishTime);
     const timeRemainingForStakingTransaction = useSecondsRemaining(stake.estimatedTransactionFinishTime);
 
@@ -579,13 +576,12 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
                 onClick={async () => {
                     const allowanceBaseUnits =
                         (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
-
-                    if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
-                        setIsApproveTokenModalOpen(true);
-                        allowance.setAllowance();
-                    } else {
-                        setIsStakingConfirmationModalOpen(true);
-                    }
+                    stake.depositAndStake(
+                        selectedStakingPools.map(recommendation => ({
+                            poolId: recommendation.pool.poolId,
+                            zrxAmount: recommendation.zrxAmount,
+                        })),
+                    );
                 }}
                 color={colors.white}
             >
@@ -606,25 +602,6 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
         return (
             <AbsoluteContainer>
             <>
-                <ApproveTokensInfoDialog
-                    isOpen={isApproveTokenModalOpen}
-                    onDismiss={() => setIsApproveTokenModalOpen(false)}
-                    onButtonClick={() => setIsApproveTokenModalOpen(false)}
-                />
-                <StakingConfirmationDialog
-                    isOpen={isStakingConfirmationModalOpen}
-                    onDismiss={() => setIsStakingConfirmationModalOpen(false)}
-                    onButtonClick={() => {
-                        stake.depositAndStake(
-                            selectedStakingPools.map(recommendation => ({
-                                poolId: recommendation.pool.poolId,
-                                zrxAmount: recommendation.zrxAmount,
-                            })),
-                        );
-
-                        setIsStakingConfirmationModalOpen(false);
-                    }}
-                />
                 <InfoHeader>
                     <InfoHeaderItem>Start staking</InfoHeaderItem>
                     <InfoHeaderItem style={{ color: colors.textDarkSecondary }}>
@@ -761,75 +738,3 @@ export const TokenApprovalPane = (props: StartStakingProps) => {
     }
     return null;
 };
-
-// export const WizardFlow: React.FC<WizardFlowProps> = ({
-//     setSelectedStakingPools,
-//     selectedStakingPools,
-//     stakingPools,
-//     poolId,
-//     stake,
-//     allowance,
-//     providerState,
-//     onOpenConnectWalletDialog,
-//     nextEpochStats,
-// }) => {
-//     if (providerState.account.state !== AccountState.Ready) {
-//         return <ConnectWalletPane onOpenConnectWalletDialog={onOpenConnectWalletDialog} />;
-//     }
-
-//     const { zrxBalanceBaseUnitAmount } = providerState.account;
-
-//     if (!zrxBalanceBaseUnitAmount) {
-//         return <Status title="" />;
-//     }
-
-//     const unitAmount = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX).toNumber();
-
-//     if (unitAmount < 1) {
-//         return (
-//             <Status
-//                 title="You have no ZRX balance. You will need some to stake."
-//                 linkText="Go buy some ZRX"
-//                 linkUrl={`https://www.rexrelay.com/instant/?defaultSelectedAssetData=${constants.ZRX_ASSET_DATA}`}
-//             />
-//         );
-//     }
-
-//     // Coming from market maker entry
-//     if (!selectedStakingPools && poolId) {
-//         return (
-//             <MarketMakerStakeInputPane
-//                 poolId={poolId}
-//                 unitAmount={unitAmount}
-//                 stakingPools={stakingPools}
-//                 onOpenConnectWalletDialog={onOpenConnectWalletDialog}
-//                 setSelectedStakingPools={setSelectedStakingPools}
-//                 zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
-//             />
-//         );
-//     }
-
-//     // Coming from wizard/recommendation entry
-//     if (!selectedStakingPools || providerState.account.state !== AccountState.Ready) {
-//         return (
-//             <RecommendedPoolsStakeInputPane
-//                 onOpenConnectWalletDialog={onOpenConnectWalletDialog}
-//                 setSelectedStakingPools={setSelectedStakingPools}
-//                 stakingPools={stakingPools}
-//                 unitAmount={unitAmount}
-//                 zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
-//             />
-//         );
-//     }
-//     return (
-//         <StartStaking
-//             address={providerState.account.address}
-//             allowance={allowance}
-//             stake={stake}
-//             nextEpochStats={nextEpochStats}
-//             providerState={providerState}
-//             selectedStakingPools={selectedStakingPools}
-//         />
-//     );
-//     // tslint:disable-next-line: max-file-line-count
-// };

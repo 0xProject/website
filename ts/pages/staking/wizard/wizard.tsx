@@ -1,6 +1,10 @@
 import { BigNumber, logUtils } from '@0x/utils';
-import React, { useEffect, useState } from 'react';
+import { History } from 'history';
+import qs from 'query-string';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { usePrevious, usePreviousDistinct } from 'react-use';
 import styled from 'styled-components';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
@@ -23,7 +27,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { animated, useTrail, useTransition } from 'react-spring';
 import { Status } from 'ts/components/staking/wizard/status';
 import { State } from 'ts/redux/reducer';
-import { AccountReady, AccountState, Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice } from 'ts/types';
+import { AccountReady, AccountState, Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice, WebsitePaths } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 
 import { Animation } from 'ts/components/staking/wizard/animation';
@@ -40,31 +44,68 @@ const Container = styled.div`
     position: relative;
 `;
 
-export interface WizardHookResult {
-    step: Step;
-    // next: Function;
-    // back: Function;
+export interface IUSeWizardResult {
+    currentStep: RouterWizardSteps;
+    next: (nextStep: RouterWizardSteps) => void;
+    back: () => void;
 }
 
-enum Step {
-    Initial,
-}
+const useWizard = (): IUSeWizardResult => {
+    const DEFAULT_STEP = RouterWizardSteps.Start;
+    const { step } = useQuery<{ poolId: string | undefined; step: RouterWizardSteps | undefined }>();
+    const history: History = useHistory();
+    const queryParams = useQuery();
 
-const useWizard = (): WizardHookResult => {
-    const [step, setStep] = useState<Step>(Step.Initial);
+    const prevStep = usePreviousDistinct<RouterWizardSteps | undefined>(step);
+    const goToNextStep = useCallback((nextStep: RouterWizardSteps) => {
+        //  Do some validation here...
+        history.push(`${WebsitePaths.StakingWizard}?${qs.stringify({
+            ...queryParams,
+            step: nextStep , // or compute here...
+        })}`);
+    }, [history, queryParams]);
 
-    return {
-        step,
-    };
+    const goToPreviousStep = useCallback(() => {
+        // Do some validation here...
+        history.goBack();
+    }, [history]);
+
+    useEffect(() => {
+        if (prevStep === step) {
+            console.log('Same step... why would this trigger?');
+            return;
+        }
+    }, [prevStep, step]);
+
+    if (!step) {
+        history.replace(`${WebsitePaths.StakingWizard}?${qs.stringify({
+            ...queryParams,
+            step: DEFAULT_STEP,
+        })}`);
+    }
+
+    return  ({
+        currentStep: step || DEFAULT_STEP,
+        next: goToNextStep,
+        back: goToPreviousStep,
+    });
 };
 
+export enum RouterWizardSteps {
+    Start = 'start',
+    Confirmation = 'confirmation',
+    Success = 'success',
+}
+
 export enum WizardSteps {
+    // Start...
     ConnectWallet = 'CONNECT_WALLET',
     Empty = 'EMPTY',
     NoZrxInWallet = 'NO_ZRX_IN_WALLET',
     MarketMakerEntry = 'MARKET_MAKER_ENTRY',
     RecomendedEntry = 'RECOMENDED_ENTRY',
     TokenApproval = 'TOKEN_APPROVAL',
+    // Confirmation & Success
     CoreWizard = 'CORE_WIZARD',
 }
 
@@ -76,9 +117,12 @@ export enum WizardInfoSteps {
 
 const AnimatedRightInner = animated(RightInner);
 
-export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
+export const StakingWizardBody = (props: StakingWizardProps) => {
+
     // If coming from the market maker page, poolId will be provided
-    const { poolId } = useQuery<{ poolId: string | undefined }>();
+    const { poolId, step } = useQuery<{ poolId: string | undefined, step: RouterWizardSteps }>();
+
+    const { currentStep, back, next } = useWizard();
 
     const networkId = useSelector((state: State) => state.networkId);
     const providerState = useSelector((state: State) => state.providerState);
@@ -114,7 +158,7 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
         if (!userSelectedStakingPools || providerState.account.state !== AccountState.Ready) {
             return WizardSteps.RecomendedEntry;
         }
-        const allowanceBaseUnits = (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
+        const allowanceBaseUnits = (props.providerState.account).zrxAllowanceBaseUnitAmount || new BigNumber(0);
         const tokensNeedApproval = allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);
         if (tokensNeedApproval) {
             return WizardSteps.TokenApproval;
@@ -180,8 +224,6 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
     // if (tokensNeedApproval) {
     //     allowance.setAllowance();
     // }
-
-    const wizard = useWizard();
 
     // const step = { stepId: flowStatus };
 
@@ -347,7 +389,7 @@ export const StakingWizardBody: React.FC<StakingWizardProps> = props => {
     );
 };
 
-export const StakingWizard: React.FC<StakingWizardProps> = props => {
+export const StakingWizard: React.FC<StakingWizardProps> = ({ ...props }) => {
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
             <StakingWizardBody {...props} />
