@@ -143,17 +143,17 @@ function optionsBlank(): FormattedNumberOptions {
 // tslint:disable-next-line: typedef
 function addBigUnitPostfix(value: BigNumber, formattedValue: string | number, removeComma: boolean = false) {
   let postfixed;
-  if (value.gt(createBigNumber('1000000000000', 10))) {
+  if (value.gt(createBigNumber('1e12', 10))) {
     postfixed = '> 1T';
-  } else if (value.gt(createBigNumber('10000000000', 10))) {
+  } else if (value.gt(createBigNumber('1e10', 10))) {
     postfixed =
-      value.dividedBy(createBigNumber('1000000000', 10)).toFixed(0) + 'B';
-  } else if (value.gt(createBigNumber('10000000', 10))) {
+      value.dividedBy(createBigNumber('1e9', 10)).toFixed(0) + 'B';
+  } else if (value.gt(createBigNumber('1e7', 10))) {
     postfixed =
       // tslint:disable-next-line: prefer-template
-      value.dividedBy(createBigNumber('1000000', 10)).toFixed(0) + 'M';
-  } else if (value.gt(createBigNumber('10000', 10))) {
-    postfixed = value.dividedBy(createBigNumber('1000', 10)).toFixed(0) + 'K';
+      value.dividedBy(createBigNumber('1e6', 10)).toFixed(0) + 'M';
+  } else if (value.gt(createBigNumber('1e4', 10))) {
+    postfixed = value.dividedBy(createBigNumber('1e3', 10)).toFixed(0) + 'K';
   } else {
     postfixed = addCommas(formattedValue, removeComma);
   }
