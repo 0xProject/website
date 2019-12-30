@@ -10,6 +10,8 @@ import { Inner } from 'ts/components/staking/wizard/inner';
 
 import { colors } from 'ts/style/colors';
 
+import { WebsitePaths } from 'ts/types';
+
 const StyledHeading = styled(Heading)`
     text-align: center;
 
@@ -66,8 +68,11 @@ const ButtonWrap = styled.div`
     }
 `;
 
+// TODO(johnrjj) - There's a problem with Button & links re: styles. It reverses generated classnames
+// e.g. without the !important, StyledButton as a Link won't have display:flex,
+// but will inherit the original display:inline-block
 const StyledButton = styled(Button)`
-    display: flex;
+    display: flex !important;
     justify-content: center;
     align-items: center;
 
@@ -121,8 +126,8 @@ export const Newsletter = () => {
                     <Icon name="google" size={24} />
                     Add dates to Gmail
                 </StyledButton>
-
                 <StyledButton
+                    to={WebsitePaths.Staking}
                     bgColor={colors.white}
                     borderColor={colors.brandLight}
                     isFullWidth={true}
