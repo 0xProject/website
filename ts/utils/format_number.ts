@@ -275,9 +275,6 @@ export function formatNumber(
     o.roundedFormatted = bigUnitPostfix
       ? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded), removeComma)
       : addCommas(o.roundedValue.toFixed(decimalsRounded), removeComma);
-    // o.minimized = addCommas(encodeNumberAsBase10String(o.formattedValue), removeComma);
-    // o.rounded = encodeNumberAsBase10String(o.roundedValue);
-    // o.formattedValue = encodeNumberAsJSNumber(o.formattedValue, false);
     o.minimized = addCommas(new BigNumber(o.formattedValue, 10).toFixed(), removeComma);
     o.rounded = o.roundedValue.toFixed();
     o.formattedValue = new BigNumber(o.formattedValue, 10).toNumber();
