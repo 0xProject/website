@@ -341,6 +341,7 @@ export function formatEther(
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
+    roundDown: true, // round down to be safe and avoid ui mismatches
     bigUnitPostfix: false,
     ...opts,
   });

@@ -77,12 +77,12 @@ describe('formatPercent', () => {
 });
 
 describe('formatEther', () => {
-    test('should format a basic amount (rounds up - even)', () => {
+    test('should format a basic amount (rounds down - even)', () => {
         const endsInEven = formatEther(12.123456789);
-        expect(endsInEven.formatted).toBe('12.12346');
-        expect(endsInEven.formattedValue).toBe(12.12346);
+        expect(endsInEven.formatted).toBe('12.12345');
+        expect(endsInEven.formattedValue).toBe(12.12345);
         expect(endsInEven.denomination).toBe(' ETH');
-        expect(endsInEven.full).toBe('12.12346 ETH');
+        expect(endsInEven.full).toBe('12.12345 ETH');
     });
 
     test('should format a basic amount (rounds down - odd)', () => {
@@ -94,9 +94,9 @@ describe('formatEther', () => {
 
     test('should format a basic amount (rounds up - boundary)', () => {
         const endsInFive = formatEther(12.123455);
-        expect(endsInFive.formatted).toBe('12.12346');
-        expect(endsInFive.formattedValue).toBe(12.12346);
-        expect(endsInFive.full).toBe('12.12346 ETH');
+        expect(endsInFive.formatted).toBe('12.12345');
+        expect(endsInFive.formattedValue).toBe(12.12345);
+        expect(endsInFive.full).toBe('12.12345 ETH');
     });
 
     test('should format a dust amount of ether to zero (rounds down)', () => {
