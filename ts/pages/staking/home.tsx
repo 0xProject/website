@@ -60,21 +60,9 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                 // TODO(kimpers): Add correct video for staking portal
                 videoId="c04eIt3FQ5I"
                 actions={
-                    <>
-                        <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
-                            Get Started
-                        </Button>
-                        <Button
-                            href="/"
-                            isInline={true}
-                            color={colors.brandLight}
-                            isTransparent={true}
-                            borderColor={colors.brandLight}
-                        >
-                            Learn more
-                        </Button>
-                    </>
-                }
+                    <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
+                        Get Started
+                    </Button>}
             />
             <SectionWrapper>
                 <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
