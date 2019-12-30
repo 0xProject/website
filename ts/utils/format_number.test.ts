@@ -10,6 +10,7 @@ describe('formatNumber', () => {
         });
         expect(lotsOfZeroes.minimized).toBe('1.12');
     });
+
     test('can optionally postfix big numbers', () => {
         const hundredMillion = formatNumber('100000000', {
             decimals: 6,
@@ -18,6 +19,7 @@ describe('formatNumber', () => {
         });
         expect(hundredMillion.formatted).toBe('100M');
     });
+
     test('should work with string type', () => {
         const hundredMillion = formatNumber('1.2345', {
             decimals: 2,
@@ -25,6 +27,7 @@ describe('formatNumber', () => {
         });
         expect(hundredMillion.formatted).toBe('1.23');
     });
+
     test('should work with number type', () => {
         const hundredMillion = formatNumber(1.2345, {
             decimals: 2,
@@ -32,6 +35,7 @@ describe('formatNumber', () => {
         });
         expect(hundredMillion.formatted).toBe('1.23');
     });
+
     test('should work with BigNumber type', () => {
         const hundredMillion = formatNumber(new BigNumber(1.2345), {
             decimals: 2,

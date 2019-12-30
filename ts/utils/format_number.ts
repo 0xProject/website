@@ -3,6 +3,7 @@ import { BigNumber } from '@0x/utils';
 // tslint:disable: boolean-naming
 // tslint:disable: prefer-template
 // tslint:disable: prefer-const
+// tslint:disable: restrict-plus-operands
 
 // Code logic borrowed from our friends at Augur :) (v2 codebase)
 
@@ -45,6 +46,7 @@ export const createBigNumber = (value: NumStrBigNumber, base?: number): BigNumbe
     try {
       let useValue = value;
       if (typeof value === 'object' && Object.keys(value).indexOf('_hex') > -1) {
+        // tslint:disable-next-line: no-unnecessary-type-assertion
         useValue = (value as any)._hex;
       }
       newBigNumber = new BigNumber(`${useValue}`, base);
