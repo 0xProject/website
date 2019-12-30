@@ -185,8 +185,6 @@ export function formatNumber(
   positiveSign = !!positiveSign;
   roundUp = !!roundUp;
   roundDown = !!roundDown;
-  zeroStyled = zeroStyled;
-  blankZero = blankZero;
 
   if (value.eq(ZERO)) {
     if (zeroStyled) { return formatNone(); }
