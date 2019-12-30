@@ -60,8 +60,6 @@ export const createBigNumber = (value: NumStrBigNumber, base?: number): BigNumbe
   };
 
 export const ZERO = createBigNumber(0);
-export const ONE = createBigNumber(1, 10);
-export const TWO = createBigNumber(2, 10);
 export const TEN = createBigNumber(10, 10);
 
 export const ETHER_NUMBER_OF_DECIMALS = 5;
