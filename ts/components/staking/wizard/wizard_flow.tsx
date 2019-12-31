@@ -40,6 +40,7 @@ import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
 import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
+import { formatZrx, formatEther } from 'ts/utils/format_number';
 
 const getFormattedTimeLeft = (secondsLeft: number) => {
     if (secondsLeft === 0) {
@@ -364,7 +365,7 @@ const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
 
     const { stakingPools, setSelectedStakingPools, zrxBalanceBaseUnitAmount, unitAmount } = props;
 
-    const formattedAmount = utils.getFormattedAmount(props.zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
+    const formattedAmount = formatZrx(props.zrxBalanceBaseUnitAmount).formatted;
 
     if (!stakingPools) {
         return null;
@@ -418,7 +419,7 @@ const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
                 <MarketMaker
                     key={marketMakerPool.poolId}
                     name={marketMakerPool.metaData.name || utils.getAddressBeginAndEnd(marketMakerPool.operatorAddress)}
-                    collectedFees={marketMakerPool.currentEpochStats.totalProtocolFeesGeneratedInEth}
+                    collectedFees={formatEther(marketMakerPool.currentEpochStats.totalProtocolFeesGeneratedInEth).formatted}
                     rewards={1 - marketMakerPool.nextEpochStats.approximateStakeRatio}
                     staked={marketMakerPool.nextEpochStats.approximateStakeRatio}
                     iconUrl={marketMakerPool.metaData.logoUrl}
@@ -573,10 +574,10 @@ const StartStaking: React.FC<StartStakingProps> = props => {
 
     if (selectedStakingPools) {
         // Does this suffer from rounding problems ?
-        const stakingAmountTotalComputed = selectedStakingPools.reduce((total, cur) => {
+        const stakingAmountTotalComputed = formatZrx(selectedStakingPools.reduce((total, cur) => {
             const newTotal = total.plus(new BigNumber(cur.zrxAmount));
             return newTotal;
-        }, new BigNumber(0));
+        }, new BigNumber(0)));
         const stakingStartsFormattedTime = formatDistanceStrict(
             new Date(),
             new Date(nextEpochStats.epochStart.timestamp),

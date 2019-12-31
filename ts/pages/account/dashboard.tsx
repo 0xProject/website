@@ -34,6 +34,7 @@ import { utils } from 'ts/utils/utils';
 
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useStake } from 'ts/hooks/use_stake';
+import { formatZrx, formatEther } from 'ts/utils/format_number';
 
 export interface AccountProps {}
 
@@ -51,7 +52,7 @@ const StakedZrxBalance = ({ delegatorData }: DelegatorDataProps) => {
         balance = new BigNumber(delegatorData.forCurrentEpoch.zrxStaked);
     }
 
-    return <span>{`${utils.getFormattedUnitAmount(balance)} ZRX`}</span>;
+    return <span>{`${formatZrx(balance).minimized} ZRX`}</span>;
 };
 
 interface PoolToRewardsMap {
@@ -245,7 +246,9 @@ export const Account: React.FC<AccountProps> = () => {
         return (
             <StakingPageLayout title="0x Staking | Account">
                 <Inner>
-                    <div>Connect to your wallet to see your account</div>
+                    <HeaderWrapper>
+                        <div>Connect to your wallet to see your account</div>
+                    </HeaderWrapper>
                 </Inner>
             </StakingPageLayout>
         );
@@ -284,7 +287,7 @@ export const Account: React.FC<AccountProps> = () => {
                                 </>
                             )}
                         >
-                            {utils.getFormattedAmount(undelegatedBalanceBaseUnits, constants.DECIMAL_PLACES_ZRX)} ZRX
+                            {formatZrx(utils.getFormattedAmount(undelegatedBalanceBaseUnits, constants.DECIMAL_PLACES_ZRX)).minimized} ZRX
                         </AccountFigure>
 
                         <AccountFigure
@@ -326,7 +329,7 @@ export const Account: React.FC<AccountProps> = () => {
                                 return null;
                             }}
                         >
-                            <span>{`${utils.getFormattedUnitAmount(totalAvailableRewards)} ETH`}</span>
+                            <span>{`${formatEther(totalAvailableRewards).minimized} ETH`}</span>
                         </AccountFigure>
                     </Figures>
                 </Inner>
@@ -422,10 +425,8 @@ export const Account: React.FC<AccountProps> = () => {
                                     (availableRewardsMap[poolId] && availableRewardsMap[poolId]) || new BigNumber(0);
 
                                 const userData = {
-                                    rewardsReceivedFormatted: utils.getFormattedUnitAmount(availablePoolRewards),
-                                    zrxStakedFormatted: utils.getFormattedUnitAmount(
-                                        new BigNumber(delegatorPoolStats.zrxStaked),
-                                    ),
+                                    rewardsReceivedFormatted: formatEther(availablePoolRewards).formatted,
+                                    zrxStakedFormatted: formatZrx(delegatorPoolStats.zrxStaked).formatted,
                                 };
 
                                 return (
@@ -438,10 +439,9 @@ export const Account: React.FC<AccountProps> = () => {
                                         logoUrl={pool.metaData.logoUrl}
                                         stakeRatio={pool.nextEpochStats.approximateStakeRatio}
                                         rewardsSharedRatio={1 - pool.currentEpochStats.operatorShare}
-                                        feesGenerated={getFormattedAmount(
-                                            pool.sevenDayProtocolFeesGeneratedInEth,
-                                            'ETH',
-                                        )}
+                                        feesGenerated={
+                                            formatEther(pool.sevenDayProtocolFeesGeneratedInEth).full as string
+                                        }
                                         userData={userData}
                                         nextEpochApproximateStart={new Date(nextEpochStats.epochStart.timestamp)}
                                         isVerified={pool.metaData.isVerified}

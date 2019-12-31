@@ -9,6 +9,7 @@ import { utils } from 'ts/utils/utils';
 
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
+import { formatEther } from 'ts/utils/format_number';
 
 const RoundedPercentage = ({ percentage }: { percentage: number }) => <span>{Math.round(percentage)}%</span>;
 
@@ -79,7 +80,7 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
         <PoolPerformanceSection>
             <PoolPerformanceItem>
                 <span>Collected Fees</span>
-                <span>{totalFeesGeneratedInEth.toFixed(configs.AMOUNT_DISPLAY_PRECSION)} ETH</span>
+                <span>{formatEther(totalFeesGeneratedInEth || 0).formatted} ETH</span>
             </PoolPerformanceItem>
             <PoolPerformanceItem>
                 <span>Rewards Shared</span>

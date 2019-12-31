@@ -19,6 +19,7 @@ import { utils } from 'ts/utils/utils';
 
 import { State } from 'ts/redux/reducer';
 import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
+import { formatZrx, formatEther } from 'ts/utils/format_number';
 
 export interface ActionProps {
     children: React.ReactNode;
@@ -295,15 +296,16 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                             // },
                             {
                                 title: 'ZRX Staked',
-                                number: `${currentEpoch.zrxStaked.toPrecision(2)}`, // zrx staked missing
+                                number: `${formatZrx(currentEpoch.zrxStaked).minimized}`, // zrx staked missing
                             },
                             {
                                 title: 'Fees Generated',
-                                number: `${currentEpoch.totalProtocolFeesGeneratedInEth} ETH`, // protocolFeesGeneratedInEth is missing, is that the same thing as total rewards?
+                                // 4 decimals looks better here to keep it from wrapping
+                                number: `${formatEther(currentEpoch.totalProtocolFeesGeneratedInEth, { decimals: 4, decimalsRounded: 4 }).minimized} ETH`, // protocolFeesGeneratedInEth is missing, is that the same thing as total rewards?
                             },
                             {
                                 title: 'Rewards Shared',
-                                number: `${currentEpoch.totalProtocolFeesGeneratedInEth * (1 - currentEpoch.operatorShare)} ETH`,
+                                number: `${formatEther(currentEpoch.totalProtocolFeesGeneratedInEth * (1 - currentEpoch.operatorShare)).minimized} ETH`,
                             },
                         ],
                     },
@@ -312,15 +314,15 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                         metrics: [
                             {
                                 title: 'ZRX Staked',
-                                number: `${currentEpoch.zrxStaked.toPrecision(2)}`,
+                                number: `${formatZrx(currentEpoch.zrxStaked).minimized}`,
                             },
                             {
                                 title: 'Fees Generated',
-                                number: `${stakingPool.allTimeStats.protocolFeesGeneratedInEth} ETH`,
+                                number: `${formatEther(stakingPool.allTimeStats.protocolFeesGeneratedInEth, { decimalsRounded: 4, decimals: 4 }).minimized} ETH`,
                             },
                             {
                                 title: 'Rewards Shared',
-                                number: `${stakingPool.allTimeStats.membersRewardsPaidInEth} ETH`,
+                                number: `${formatEther(stakingPool.allTimeStats.membersRewardsPaidInEth).minimized} ETH`,
                             },
                         ],
                     },
