@@ -5,6 +5,7 @@ import { Icon } from 'ts/components/icon';
 import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 
 import { colors } from 'ts/style/colors';
+import { formatEther, formatPercent, formatZrx } from 'ts/utils/format_number';
 
 interface MarketMakerProps {
     name: string;
@@ -165,26 +166,26 @@ export const MarketMaker: React.FC<MarketMakerProps> = props => {
                     <Title>{name} <CheckIcon name="checkmark" size={15} /></Title>
                     <Website href={website} target="_blank">{website}</Website>
                 </TitleContainer>
-                <Difference>+{difference} ZRX</Difference>
+                <Difference>+{formatZrx(difference).formatted} ZRX</Difference>
             </Heading>
             <Metrics>
                 <Metric>
                     <MetricTitle>Collected fees</MetricTitle>
-                    <MetricAmount>{collectedFees} ETH</MetricAmount>
+                    <MetricAmount>{formatEther(collectedFees).formatted} ETH</MetricAmount>
                     <StyledInfoTooltip id="fees">
                         The fees the pool has collected in the current epoch
                     </StyledInfoTooltip>
                 </Metric>
                 <Metric>
                     <MetricTitle>Rewards</MetricTitle>
-                    <MetricAmount>{Math.round(rewards * 100)}%</MetricAmount>
+                    <MetricAmount>{formatPercent(rewards * 100).formatted}%</MetricAmount>
                     <StyledInfoTooltip id="rewards">
                         The percent of rewards the pool is sharing with stakers
                     </StyledInfoTooltip>
                 </Metric>
                 <Metric>
                     <MetricTitle>Staked</MetricTitle>
-                    <MetricAmount>{Math.round(staked * 100)}%</MetricAmount>
+                    <MetricAmount>{formatPercent(staked * 100).formatted}%</MetricAmount>
                     <StyledInfoTooltip id="staked">
                         An approximation for how fully staked the pool is for the upcoming epoch
                     </StyledInfoTooltip>

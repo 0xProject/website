@@ -19,8 +19,6 @@ import {
     UserStakingChoice,
     WebsitePaths,
 } from 'ts/types';
-import { constants } from 'ts/utils/constants';
-import { utils } from 'ts/utils/utils';
 
 import { Button } from 'ts/components/button';
 import { Inner } from 'ts/components/staking/wizard/inner';
@@ -33,14 +31,16 @@ import { UseAllowanceHookResult } from 'ts/hooks/use_allowance';
 import { useSecondsRemaining } from 'ts/hooks/use_seconds_remaining';
 import { UseStakeHookResult } from 'ts/hooks/use_stake';
 
-import { stakingUtils } from 'ts/utils/staking_utils';
-
 import { ApproveTokensInfoDialog } from 'ts/components/dialogs/approve_tokens_info_dialog';
+import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
 import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
-import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
-import { formatZrx, formatEther } from 'ts/utils/format_number';
+import { constants } from 'ts/utils/constants';
+import { formatZrx } from 'ts/utils/format_number';
+import { stakingUtils } from 'ts/utils/staking_utils';
+
+import { utils } from 'ts/utils/utils';
 
 const getFormattedTimeLeft = (secondsLeft: number) => {
     if (secondsLeft === 0) {
@@ -257,40 +257,40 @@ const ConnectWalletPane = ({ onOpenConnectWalletDialog }: { onOpenConnectWalletD
 export interface StakingInputPaneProps {
     setSelectedStakingPools: any;
     stakingPools: any;
-    zrxBalanceBaseUnitAmount: BigNumber;
-    unitAmount: number;
+    zrxBalance: BigNumber;
     onOpenConnectWalletDialog: () => any;
 }
 
 const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => {
-    const { stakingPools, setSelectedStakingPools, zrxBalanceBaseUnitAmount, unitAmount } = props;
+    const { stakingPools, setSelectedStakingPools, zrxBalance } = props;
 
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
 
-    const formattedAmount = utils.getFormattedAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
+    const roundedZrxBalance = formatZrx(zrxBalance).roundedValue;
     const statusNode = getStatus(stakeAmount, stakingPools);
-    const recommendedPools = stakingUtils.getRecommendedStakingPools(Number(stakeAmount), stakingPools);
+    const roundedStakeAmount = formatZrx(stakeAmount, { removeComma: true }).roundedValue;
+    const recommendedPools = stakingUtils.getRecommendedStakingPools(roundedStakeAmount, stakingPools);
 
     return (
         <>
             <NumberInput
                 placeholder="Enter your stake"
-                topLabels={[`Available: ${formattedAmount} ZRX`]}
+                topLabels={[`Available: ${roundedZrxBalance} ZRX`]}
                 labels={[StakingPercentageValue.Fourth, StakingPercentageValue.Half, StakingPercentageValue.All]}
                 value={stakeAmount}
                 selectedLabel={selectedLabel}
                 onLabelChange={(label: string) => {
                     if (label === StakingPercentageValue.Fourth) {
-                        setStakeAmount(`${(unitAmount / 4).toFixed(2)}`);
+                        setStakeAmount(formatZrx(roundedZrxBalance / 4, { removeComma: true }).formatted);
                         setSelectedLabel(StakingPercentageValue.Fourth);
                     }
                     if (label === StakingPercentageValue.Half) {
-                        setStakeAmount(`${(unitAmount / 2).toFixed(2)}`);
+                        setStakeAmount(formatZrx(roundedZrxBalance / 2, { removeComma: true }).formatted);
                         setSelectedLabel(StakingPercentageValue.Half);
                     }
                     if (label === StakingPercentageValue.All) {
-                        setStakeAmount(`${unitAmount.toFixed(2)}`);
+                        setStakeAmount(formatZrx(roundedZrxBalance, { removeComma: true }).formatted);
                         setSelectedLabel(StakingPercentageValue.All);
                     }
                 }}
@@ -353,8 +353,7 @@ const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => {
 export interface MarketMakerStakeInputPaneProps {
     setSelectedStakingPools: React.Dispatch<React.SetStateAction<StakingPoolRecomendation[]>>;
     stakingPools: PoolWithStats[];
-    zrxBalanceBaseUnitAmount: BigNumber;
-    unitAmount: number;
+    zrxBalance: BigNumber;
     onOpenConnectWalletDialog: () => any;
     poolId: string;
 }
@@ -363,9 +362,10 @@ const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
 
-    const { stakingPools, setSelectedStakingPools, zrxBalanceBaseUnitAmount, unitAmount } = props;
+    const { stakingPools, setSelectedStakingPools, zrxBalance } = props;
 
-    const formattedAmount = formatZrx(props.zrxBalanceBaseUnitAmount).formatted;
+    const roundedZrxBalance = formatZrx(zrxBalance).roundedValue;
+    const roundedStakeAmount = formatZrx(stakeAmount).roundedValue;
 
     if (!stakingPools) {
         return null;
@@ -382,21 +382,21 @@ const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
         <>
             <NumberInput
                 placeholder="Enter your stake"
-                topLabels={[`Available: ${formattedAmount} ZRX`]}
+                topLabels={[`Available: ${roundedZrxBalance} ZRX`]}
                 labels={[StakingPercentageValue.Fourth, StakingPercentageValue.Half, StakingPercentageValue.All]}
                 value={stakeAmount}
                 selectedLabel={selectedLabel}
                 onLabelChange={(label: string) => {
                     if (label === StakingPercentageValue.Fourth) {
-                        setStakeAmount(`${(unitAmount / 4).toFixed(2)}`);
+                        setStakeAmount(formatZrx(roundedZrxBalance / 4, { removeComma: true }).formatted);
                         setSelectedLabel(StakingPercentageValue.Fourth);
                     }
                     if (label === StakingPercentageValue.Half) {
-                        setStakeAmount(`${(unitAmount / 2).toFixed(2)}`);
+                        setStakeAmount(formatZrx(roundedZrxBalance / 2, { removeComma: true }).formatted);
                         setSelectedLabel(StakingPercentageValue.Half);
                     }
                     if (label === StakingPercentageValue.All) {
-                        setStakeAmount(`${unitAmount.toFixed(2)}`);
+                        setStakeAmount(formatZrx(roundedZrxBalance, { removeComma: true }).formatted);
                         setSelectedLabel(StakingPercentageValue.All);
                     }
                 }}
@@ -419,12 +419,12 @@ const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
                 <MarketMaker
                     key={marketMakerPool.poolId}
                     name={marketMakerPool.metaData.name || utils.getAddressBeginAndEnd(marketMakerPool.operatorAddress)}
-                    collectedFees={formatEther(marketMakerPool.currentEpochStats.totalProtocolFeesGeneratedInEth).formatted}
+                    collectedFees={marketMakerPool.currentEpochStats.totalProtocolFeesGeneratedInEth}
                     rewards={1 - marketMakerPool.nextEpochStats.approximateStakeRatio}
                     staked={marketMakerPool.nextEpochStats.approximateStakeRatio}
                     iconUrl={marketMakerPool.metaData.logoUrl}
                     website={marketMakerPool.metaData.websiteUrl}
-                    difference={''}
+                    difference={roundedStakeAmount}
                 />
             </PoolsContainer>
             {marketMakerPool && (
@@ -577,7 +577,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
         const stakingAmountTotalComputed = formatZrx(selectedStakingPools.reduce((total, cur) => {
             const newTotal = total.plus(new BigNumber(cur.zrxAmount));
             return newTotal;
-        }, new BigNumber(0)));
+        }, new BigNumber(0))).formatted;
         const stakingStartsFormattedTime = formatDistanceStrict(
             new Date(),
             new Date(nextEpochStats.epochStart.timestamp),
@@ -667,9 +667,9 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
         return <Status title="" />;
     }
 
-    const unitAmount = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX).toNumber();
+    const zrxBalance: BigNumber = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
 
-    if (unitAmount < 1) {
+    if (zrxBalance.lt(1)) {
         return (
             <Status
                 title="You have no ZRX balance. You will need some to stake."
@@ -684,11 +684,10 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
         return (
             <MarketMakerStakeInputPane
                 poolId={poolId}
-                unitAmount={unitAmount}
+                zrxBalance={zrxBalance}
                 stakingPools={stakingPools}
                 onOpenConnectWalletDialog={onOpenConnectWalletDialog}
                 setSelectedStakingPools={setSelectedStakingPools}
-                zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
             />
         );
     }
@@ -700,8 +699,7 @@ export const WizardFlow: React.FC<WizardFlowProps> = ({
                 onOpenConnectWalletDialog={onOpenConnectWalletDialog}
                 setSelectedStakingPools={setSelectedStakingPools}
                 stakingPools={stakingPools}
-                unitAmount={unitAmount}
-                zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
+                zrxBalance={zrxBalance}
             />
         );
     }

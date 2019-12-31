@@ -1,8 +1,9 @@
 import * as _ from 'lodash';
 
-import { PoolWithStats, StakingPoolRecomendation } from '../types';
+import { constants } from 'ts/utils/constants';
+import { formatZrx } from 'ts/utils/format_number';
 
-import { constants } from './constants';
+import { PoolWithStats, StakingPoolRecomendation } from 'ts/types';
 
 interface PoolStatSummary {
     poolId: string;
@@ -50,7 +51,7 @@ export const stakingUtils = {
         }
         const recs = Object.keys(stakingDecisions).map(poolId => ({
             pool: pools.find(pool => pool.poolId === poolId),
-            zrxAmount: stakingDecisions[poolId],
+            zrxAmount: formatZrx(stakingDecisions[poolId], { removeComma: true }).roundedValue,
         }), []);
         return recs;
     },
