@@ -43,6 +43,25 @@ describe('formatNumber', () => {
         });
         expect(hundredMillion.formatted).toBe('1.23');
     });
+
+    test('rounded value produces a number type', () => {
+        const hundredMillion = formatNumber(new BigNumber(1234.56789), {
+            decimals: 2,
+            decimalsRounded: 2,
+            roundDown: true,
+        });
+        expect(hundredMillion.roundedValue).toBe(1234.56);
+    });
+
+    test('rounded value produces a number type for large numbers', () => {
+        // tslint:disable-next-line: number-literal-format
+        const hundredMillion = formatNumber(new BigNumber(1234567890.1234567890), {
+            decimals: 2,
+            decimalsRounded: 2,
+            roundDown: true,
+        });
+        expect(hundredMillion.roundedValue).toBe(1234567890.12);
+    });
 });
 
 describe('formatPercent', () => {

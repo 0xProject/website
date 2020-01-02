@@ -6,6 +6,7 @@ import { colors } from 'ts/style/colors';
 import { Epoch, UserStakingChoice } from 'ts/types';
 
 import { Timeline } from 'ts/components/staking/wizard/timeline';
+import { formatEther, formatZrx } from 'ts/utils/format_number';
 
 export interface WizardInfoProps {
     selectedStakingPools: UserStakingChoice[] | undefined;
@@ -126,12 +127,11 @@ export const WizardInfo: React.FC<WizardInfoProps> = ({ selectedStakingPools, cu
                 <WizardInfoHeader title="Start staking your tokens" description="Use one pool of capital across multiple relayers to trade against a large group."/>
                 <IntroMetrics>
                     <IntroMetric>
-                        {/* TODO(johnrjj may need to format these numbers) */}
-                        <h2>{currentEpochStats ? currentEpochStats.protocolFeesGeneratedInEth : PLACEHOLDER} ETH</h2>
+                        <h2>{currentEpochStats ? formatEther(currentEpochStats.protocolFeesGeneratedInEth).minimized : PLACEHOLDER} ETH</h2>
                         <p>Total rewards collected</p>
                     </IntroMetric>
                     <IntroMetric>
-                        <h2>{currentEpochStats ? currentEpochStats.zrxStaked : PLACEHOLDER} ZRX</h2>
+                        <h2>{currentEpochStats ? formatZrx(currentEpochStats.zrxStaked).formatted : PLACEHOLDER} ZRX</h2>
                         <p>Total ZRX Staked</p>
                     </IntroMetric>
                 </IntroMetrics>

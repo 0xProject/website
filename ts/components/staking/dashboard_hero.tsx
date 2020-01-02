@@ -13,6 +13,7 @@ import { colors } from 'ts/style/colors';
 
 import { WebsitePaths } from 'ts/types';
 import { utils } from 'ts/utils/utils';
+import { formatPercent } from 'ts/utils/format_number';
 
 interface Metrics {
     title: string;
@@ -259,7 +260,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                             <li>{utils.getAddressBeginAndEnd(operatorAddress)}</li>
                             {websiteUrl && <li>{websiteUrl}</li>}
                             <li>
-                                <a href="">{rewardsShared}% Rewards Shared</a>
+                                <a href="">{formatPercent(rewardsShared).minimized}% Rewards Shared</a>
                             </li>
                             {isVerified && (
                                 <VerificationIndicator>
@@ -279,7 +280,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                                 Start Staking
                             </StakingButton>
                             <Progressbar progress={estimatedStake} />
-                            <ProgressbarText>{estimatedStake}% estimated stake for next epoch</ProgressbarText>
+                            <ProgressbarText>{formatPercent(estimatedStake).minimized}% estimated stake for next epoch</ProgressbarText>
                         </ButtonContainer>
                     </Column>
                     <Metrics>

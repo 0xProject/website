@@ -70,7 +70,7 @@ export const USUAL_NUMBER_DECIMAL_PLACES = 4;
 
 export interface FormattedNumber {
   fullPrecision: number | string;
-  roundedValue: number | BigNumber;
+  roundedValue: number;
   roundedFormatted: string;
   formatted: string;
   formattedValue: number | string;
@@ -269,7 +269,8 @@ export function formatNumber(
     o.roundedValue = value
       .times(decimalsRoundedValue)
       .integerValue(roundingMode)
-      .dividedBy(decimalsRoundedValue);
+      .dividedBy(decimalsRoundedValue)
+      .toNumber(); // TODO(johnrjj) - verify that this conversion is ok
     o.roundedFormatted = bigUnitPostfix
       ? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded), removeComma)
       : addCommas(o.roundedValue.toFixed(decimalsRounded), removeComma);
