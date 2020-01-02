@@ -103,7 +103,10 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
 
             const data: string[] = [
                 stakingContract.stake(totalStakeBaseUnits).getABIEncodedTransactionData(),
-                ...normalizedPoolData.map(({ poolId, amountBaseUnits }) =>
+                ..._.flatMap(normalizedPoolData, ({ poolId, amountBaseUnits }) => [
+                    // TODO(kimpers): only call finalizePool if poolStatsByEpoch returns feesCollected > 0
+                    // https://github.com/0xProject/0x-monorepo/blob/51ca3109eb29e1b03199e98587403fc61f8f2716/contracts/staking/contracts/src/sys/MixinFinalizer.sol#L93-L107
+                    stakingContract.finalizePool(poolId).getABIEncodedTransactionData(),
                     stakingContract
                         .moveStake(
                             { status: StakeStatus.Undelegated, poolId: constants.STAKING.NIL_POOL_ID }, // From undelegated
@@ -111,7 +114,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
                             amountBaseUnits,
                         )
                         .getABIEncodedTransactionData(),
-                ),
+                ]),
             ];
 
             await executeWithData(data);
