@@ -19,10 +19,8 @@ interface IAnimationWrapperProps {
     padding?: string;
     margin?: string;
     marginBottom?: string;
+    containerStyles?: any;
 }
-
-// Note (piotr): I am lazy loading the animation loader to not include lottie animation library in the bundle.
-// In the animation loader I lazy load the json file for the animation itself - not sure if that is needed if I already lazy load here
 
 export const Animation: React.FC<IAnimationProps> = ({ name, ...props }) => {
     return (

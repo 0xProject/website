@@ -66,11 +66,11 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }
     };
 
     return (
-        <Headroom
-            onUnpin={onUnpin}
-            downTolerance={4}
-            upTolerance={10}
-            wrapperStyle={{ position: 'relative', zIndex: 2 }}
+        <div
+            // onUnpin={onUnpin}
+            // downTolerance={4}
+            // upTolerance={10}
+            // wrapperStyle={{ position: 'relative', zIndex: 2 }}
         >
             <StyledHeader isNavToggled={isNavToggled}>
                 <HeaderWrap>
@@ -99,7 +99,7 @@ export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }
                     </MediaQuery>
                 </HeaderWrap>
             </StyledHeader>
-        </Headroom>
+        </div>
     );
 };
 

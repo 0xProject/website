@@ -118,12 +118,15 @@ const MobileMenuWrapper = styled.div`
     }
 `;
 
-const ConnectedWallet = ({ providerState, openConnectWalletDialogCB, logoutWalletCB }: ISubMenuProps) => {
+const ConnectedWallet = React.memo(({ providerState, openConnectWalletDialogCB, logoutWalletCB }: ISubMenuProps) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
-    const toggleExpanded = () => setIsExpanded(!isExpanded);
+    const toggleExpanded = React.useCallback(() => setIsExpanded(!isExpanded), [isExpanded, setIsExpanded]);
 
     const account = providerState.account as AccountReady;
-    const iconName = utils.getProviderTypeIcon(providerState.providerType);
+
+    const iconName = React.useMemo(() => {
+        return utils.getProviderTypeIcon(providerState.providerType);
+    }, [providerState.providerType]);
 
     // TODO(kimpers): add svgs for all providers
     return (
@@ -157,7 +160,7 @@ const ConnectedWallet = ({ providerState, openConnectWalletDialogCB, logoutWalle
             </MediaQuery>
         </SubMenuWrapper>
     );
-};
+});
 
 interface ISubMenuProps {
     openConnectWalletDialogCB: () => void;

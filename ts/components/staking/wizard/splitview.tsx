@@ -29,6 +29,9 @@ const Left = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow: hidden;
+    height: calc(100vh - 160px);
+    max-height: 800px;
 
     @media (min-width: 480px) {
         padding: 100px 15px;
@@ -47,12 +50,27 @@ const Right = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow: hidden;
+    position: relative;
+    height: calc(100vh - 160px);
+    max-height: 800px;
+
+    @media (min-width: 768px) {
+        max-height: calc(100vh - 160px);
+        max-height: 800px;
+    }
+`;
+
+export const RightInner = styled.div`
+    position: absolute;
     padding: 15px;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
 
     @media (min-width: 768px) {
         padding: 30px;
         background-color: ${colors.backgroundLightGrey};
-        max-height: 850px;
     }
     @media (min-width: 1140px) {
         padding: 60px;

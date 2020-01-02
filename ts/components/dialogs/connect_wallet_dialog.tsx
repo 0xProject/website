@@ -132,7 +132,7 @@ interface WalletCategoryProps {
     providers: ProviderInfo[];
 }
 
-const IconIfExists = ({ provider }: { provider: ProviderInfo }) => {
+const IconIfExists = React.memo(({ provider }: { provider: ProviderInfo }) => {
     if (provider.icon) {
         return (
             <>
@@ -154,9 +154,9 @@ const IconIfExists = ({ provider }: { provider: ProviderInfo }) => {
     }
 
     return null;
-};
+});
 
-const WalletCategory = ({ title, providers }: WalletCategoryProps) => {
+const WalletCategory = React.memo(({ title, providers }: WalletCategoryProps) => {
     return (
         <WalletCategoryStyling>
             <Heading asElement="h5" color={colors.textDarkSecondary} size={20} marginBottom="15px">
@@ -181,7 +181,7 @@ const WalletCategory = ({ title, providers }: WalletCategoryProps) => {
             </div>
         </WalletCategoryStyling>
     );
-};
+});
 
 const IconPlus = styled.div`
     position: relative;
@@ -284,7 +284,7 @@ interface WalletProviderCategory {
     providers: ProviderInfo[];
 }
 
-export const ConnectWalletDialog = ({
+export const ConnectWalletDialog = React.memo(({
     isOpen,
     onDismiss,
     networkId,
@@ -356,4 +356,4 @@ export const ConnectWalletDialog = ({
             </StyledDialogContent>
         </StyledDialogOverlay>
     );
-};
+});
