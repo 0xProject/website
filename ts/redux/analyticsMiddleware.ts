@@ -1,11 +1,11 @@
 import { Middleware } from 'redux';
 import { State } from 'ts/redux/reducer';
-import { ActionTypes } from 'ts/types';
+import { AccountReady, ActionTypes } from 'ts/types';
 import { analytics } from 'ts/utils/analytics';
 
 export const analyticsMiddleware: Middleware = store => next => action => {
     const nextAction = next(action);
-    const nextState = (store.getState()) as State;
+    const nextState = store.getState() as State;
     switch (action.type) {
         case ActionTypes.UpdateInjectedProviderName:
             analytics.addEventProperties({
@@ -20,6 +20,12 @@ export const analyticsMiddleware: Middleware = store => next => action => {
         case ActionTypes.UpdateUserAddress:
             analytics.addUserProperties({
                 ethAddress: nextState.userAddress,
+            });
+            break;
+        case ActionTypes.SetAccountStateReady:
+            const account = nextState.providerState.account as AccountReady;
+            analytics.addUserProperties({
+                ethAddress: account.address,
             });
             break;
         case ActionTypes.UpdateUserEtherBalance:

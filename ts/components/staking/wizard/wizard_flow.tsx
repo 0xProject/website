@@ -40,6 +40,7 @@ import { constants } from 'ts/utils/constants';
 import { formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
+import { analytics } from 'ts/utils/analytics';
 import { utils } from 'ts/utils/utils';
 
 const getFormattedTimeLeft = (secondsLeft: number) => {
@@ -261,6 +262,15 @@ export interface StakingInputPaneProps {
     onOpenConnectWalletDialog: () => any;
 }
 
+type AmountTrackingValue = '25%' | '50%' | '100%' | 'custom';
+const amountTrackingDebounced = _.debounce(
+    (value: AmountTrackingValue): void => {
+        analytics.track(constants.STAKING.TRACKING.STAKING_AMOUNT_EVENT, { value });
+    },
+    1000,
+    { trailing: true },
+);
+
 const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => {
     const { stakingPools, setSelectedStakingPools, zrxBalance } = props;
 
@@ -284,20 +294,24 @@ const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => {
                     if (label === StakingPercentageValue.Fourth) {
                         setStakeAmount(formatZrx(roundedZrxBalance / 4, { removeComma: true }).formatted);
                         setSelectedLabel(StakingPercentageValue.Fourth);
+                        amountTrackingDebounced(StakingPercentageValue.Fourth);
                     }
                     if (label === StakingPercentageValue.Half) {
                         setStakeAmount(formatZrx(roundedZrxBalance / 2, { removeComma: true }).formatted);
                         setSelectedLabel(StakingPercentageValue.Half);
+                        amountTrackingDebounced(StakingPercentageValue.Half);
                     }
                     if (label === StakingPercentageValue.All) {
                         setStakeAmount(formatZrx(roundedZrxBalance, { removeComma: true }).formatted);
                         setSelectedLabel(StakingPercentageValue.All);
+                        amountTrackingDebounced(StakingPercentageValue.All);
                     }
                 }}
                 onChange={(newValue: React.ChangeEvent<HTMLInputElement>) => {
                     const newAmount = newValue.target.value;
                     setStakeAmount(newAmount);
                     setSelectedLabel(undefined);
+                    amountTrackingDebounced('custom');
                 }}
                 bottomLabels={[
                     {
@@ -490,8 +504,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                     <span>
                         {allowance.loadingState === TransactionLoadingState.WaitingForSignature
                             ? 'Waiting for signature'
-                            : getFormattedTimeLeft(timeRemainingForAllowanceApproval)
-                        }
+                            : getFormattedTimeLeft(timeRemainingForAllowanceApproval)}
                     </span>
                 </ButtonWithIcon>
             );
@@ -526,8 +539,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                     <span>
                         {stake.loadingState === TransactionLoadingState.WaitingForSignature
                             ? 'Waiting for signature'
-                            : getFormattedTimeLeft(timeRemainingForStakingTransaction)
-                        }
+                            : getFormattedTimeLeft(timeRemainingForStakingTransaction)}
                     </span>
                 </ButtonWithIcon>
             );
@@ -573,10 +585,12 @@ const StartStaking: React.FC<StartStakingProps> = props => {
     }
 
     if (selectedStakingPools) {
-        const stakingAmountTotalComputed = formatZrx(selectedStakingPools.reduce((total, cur) => {
-            const newTotal = total.plus(new BigNumber(cur.zrxAmount));
-            return newTotal;
-        }, new BigNumber(0))).formatted;
+        const stakingAmountTotalComputed = formatZrx(
+            selectedStakingPools.reduce((total, cur) => {
+                const newTotal = total.plus(new BigNumber(cur.zrxAmount));
+                return newTotal;
+            }, new BigNumber(0)),
+        ).formatted;
         const stakingStartsFormattedTime = formatDistanceStrict(
             new Date(),
             new Date(nextEpochStats.epochStart.timestamp),
