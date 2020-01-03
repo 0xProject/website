@@ -64,7 +64,7 @@ const codeData: CodeTab[] = [
     {
         code: `import { SwapQuoter } from '@0x/asset-swapper';
 
-const apiUrl = 'https://api.relayer.com/v2';
+const apiUrl = 'https://api.0x.org/sra/';
 const daiTokenAddress = '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359';
 const wethTokenAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
 
@@ -90,11 +90,11 @@ const swapQuoteConsumer = new SwapQuoteConsumer(web3.provider);
 
 const calldataInfo = await swapQuoteConsumer.getCalldataOrThrowAsync(quote);
 
-const { calldataHexString } = calldataInfo;
+const { calldataHexString, ethAmount } = calldataInfo;
 
 const txHash = await yourSmartContract.methods
   .liquidityRequiringMethod(calldataHexString)
-  .call();
+  .sendTransactionAsync({ value: ethAmount });
 `,
         label: 'consumeQuote.js',
         language: 'javascript',
@@ -104,8 +104,8 @@ const txHash = await yourSmartContract.methods
 
   public address zeroExExchangeAddress;
 
-  function liquidityRequiringMethod(bytes calldata calldataHexString) {
-    zeroExExchangeAddress.call(calldataHexString);
+  function liquidityRequiringMethod(bytes calldata calldataHexString) payable {
+    zeroExExchangeAddress.call.value(msg.value)(calldataHexString);
   }
 }
 
