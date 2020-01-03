@@ -41,13 +41,11 @@ const Flex = styled.div`
     align-items: center;
 `;
 
-const Avatar = styled.figure<AvatarProps>`
+const Avatar = styled.figure`
     width: 80px;
     height: 80px;
     background-color: #fff;
     border: 1px solid ${colors.border};
-    margin-right: 20px;
-    position: relative;
     display: flex;
     overflow: hidden;
 
@@ -58,7 +56,6 @@ const Avatar = styled.figure<AvatarProps>`
     @media (max-width: 768px) {
         width: 32px;
         height: 32px;
-        display: ${props => !props.isResponsive && 'none'};
     }
 `;
 
@@ -68,8 +65,8 @@ const IconWrap = styled.div`
     border-radius: 50%;
     border: 1px solid ${colors.border};
     position: absolute;
-    right: 0;
-    bottom: 0;
+    right: 9px;
+    bottom: 9px;
     transform: translateX(50%) translateY(50%);
     background-color: ${colors.white};
 
@@ -78,6 +75,14 @@ const IconWrap = styled.div`
         left: 50%;
         top: 50%;
         transform: translate3d(-50%, -50%, 0);
+    }
+`;
+
+const AvatarWrapper = styled.div<AvatarProps>`
+    position: relative;
+    margin-right: 20px;
+    @media (max-width: 768px) {
+        display: ${props => !props.isResponsive && 'none'};
     }
 `;
 
@@ -93,18 +98,20 @@ export const PanelHeader: React.StatelessComponent<PanelHeaderProps> = ({
 }) => {
     return (
         <Wrap>
-            <Avatar isResponsive={isResponsiveAvatar}>
-                {avatarSrc ? (
-                    <img style={{ margin: 'auto' }} src={avatarSrc} />
-                ) : (
-                    <Jazzicon seed={generateUniqueId(address, poolId)} diameter={80} isSquare={true} />
-                )}
+            <AvatarWrapper isResponsive={isResponsiveAvatar}>
+                <Avatar>
+                    {avatarSrc ? (
+                        <img style={{ margin: 'auto' }} src={avatarSrc} />
+                    ) : (
+                        <Jazzicon seed={generateUniqueId(address, poolId)} diameter={80} isSquare={true} />
+                    )}
+                </Avatar>
                 {icon && (
                     <IconWrap>
                         <Icon name={icon} size={24} />
                     </IconWrap>
                 )}
-            </Avatar>
+            </AvatarWrapper>
             <div style={{ flex: 1 }}>
                 <Flex>
                     <Heading size="small" fontWeight="500" isNoMargin={true} style={{ marginRight: '8px' }}>

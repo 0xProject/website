@@ -382,7 +382,7 @@ export const Account: React.FC<AccountProps> = () => {
                         if (type === PendingActionType.Unstake) {
                             return (
                                 <AccountActivitySummary
-                                    key={`account-acctivity-summary-${index}`}
+                                    key={`account-activity-summary-${index}`}
                                     title={`${getFormattedAmount(amount, 'ZRX')} will be removed from ${(pool &&
                                         pool.metaData.name) ||
                                         `Pool ${poolId}`}`}
@@ -401,7 +401,7 @@ export const Account: React.FC<AccountProps> = () => {
                         } else if (type === PendingActionType.Stake) {
                             return (
                                 <AccountActivitySummary
-                                    key={`account-acctivity-summary-${index}`}
+                                    key={`account-activity-summary-${index}`}
                                     title={`${getFormattedAmount(amount, 'ZRX')} will be staked with ${(pool &&
                                         pool.metaData.name) ||
                                         `Pool ${poolId}`} in ${differenceInCalendarDays(
@@ -421,6 +421,8 @@ export const Account: React.FC<AccountProps> = () => {
                                 </AccountActivitySummary>
                             );
                         }
+
+                        return null;
                     })}
                 </SectionWrapper>
             )}
