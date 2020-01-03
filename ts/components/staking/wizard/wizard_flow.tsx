@@ -573,7 +573,6 @@ const StartStaking: React.FC<StartStakingProps> = props => {
     }
 
     if (selectedStakingPools) {
-        // Does this suffer from rounding problems ?
         const stakingAmountTotalComputed = formatZrx(selectedStakingPools.reduce((total, cur) => {
             const newTotal = total.plus(new BigNumber(cur.zrxAmount));
             return newTotal;
