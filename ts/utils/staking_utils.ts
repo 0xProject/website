@@ -57,7 +57,7 @@ export const stakingUtils = {
         }), []);
 
         // Sort desc
-        const orderedRecs = [...recs.sort((recA, recB) => recB.zrxAmount - recA.zrxAmount)];
+        const orderedRecs = _.orderBy(recs, (p => p.zrxAmount), ['desc']);
         // Need to use BigNumbers here when validating reconciliation
         // example: JS normal addition of 1400.09 + 1400.09 + 1400.09 = 4200.2699999999995 , need to use bignumber!
         const currentTotalSoFar = BigNumber.sum(...orderedRecs.map(x => new BigNumber(x.zrxAmount)));
