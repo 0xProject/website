@@ -379,50 +379,45 @@ export const Account: React.FC<AccountProps> = () => {
                     </SectionHeader>
                     {pendingActions.map(({ poolId, amount, type }, index) => {
                         const pool = poolWithStatsMap[poolId];
+
+                        let title: string;
+                        let subtitle: string;
+                        let statLabel: string;
                         if (type === PendingActionType.Unstake) {
-                            return (
-                                <AccountActivitySummary
-                                    key={`account-activity-summary-${index}`}
-                                    title={`${getFormattedAmount(amount, 'ZRX')} will be removed from ${(pool &&
-                                        pool.metaData.name) ||
-                                        `Pool ${poolId}`}`}
-                                    subtitle="Your tokens will need to be manually withdrawn once they are removed"
-                                    avatarSrc={pool.metaData.logoUrl}
-                                    icon="clock"
-                                    poolId={poolId}
-                                    address={pool.operatorAddress}
-                                >
-                                    <StatFigure
-                                        label="Withdraw date"
-                                        value={format(new Date(nextEpochStats.epochStart.timestamp), 'd/M/yy')}
-                                    />
-                                </AccountActivitySummary>
-                            );
-                        } else if (type === PendingActionType.Stake) {
-                            return (
-                                <AccountActivitySummary
-                                    key={`account-activity-summary-${index}`}
-                                    title={`${getFormattedAmount(amount, 'ZRX')} will be staked with ${(pool &&
-                                        pool.metaData.name) ||
-                                        `Pool ${poolId}`} in ${differenceInCalendarDays(
-                                        new Date(nextEpochStats.epochStart.timestamp),
-                                        now,
-                                    )} days`}
-                                    subtitle="Your tokens will be automatically staked when the new epoch starts"
-                                    avatarSrc={pool.metaData.logoUrl}
-                                    icon="clock"
-                                    poolId={poolId}
-                                    address={pool.operatorAddress}
-                                >
-                                    <StatFigure
-                                        label="Staking starts"
-                                        value={format(new Date(nextEpochStats.epochStart.timestamp), 'd/M/yy')}
-                                    />
-                                </AccountActivitySummary>
-                            );
+                            title = `${getFormattedAmount(amount, 'ZRX')} will be removed from ${(pool &&
+                                pool.metaData.name) ||
+                                `Pool ${poolId}`}`;
+
+                            subtitle = 'Your tokens will need to be manually withdrawn once they are removed';
+                            statLabel = 'Withdraw date';
+                        } else {
+                            title = `${getFormattedAmount(amount, 'ZRX')} will be staked with ${(pool &&
+                                pool.metaData.name) ||
+                                `Pool ${poolId}`} in ${differenceInCalendarDays(
+                                new Date(nextEpochStats.epochStart.timestamp),
+                                now,
+                            )} days`;
+
+                            subtitle = 'Your tokens will be automatically staked when the new epoch starts';
+                            statLabel = 'Staking starts';
                         }
 
-                        return null;
+                        return (
+                            <AccountActivitySummary
+                                key={`account-activity-summary-${index}`}
+                                title={title}
+                                subtitle={subtitle}
+                                avatarSrc={pool.metaData.logoUrl}
+                                icon="clock"
+                                poolId={poolId}
+                                address={pool.operatorAddress}
+                            >
+                                <StatFigure
+                                    label={statLabel}
+                                    value={format(new Date(nextEpochStats.epochStart.timestamp), 'd/M/yy')}
+                                />
+                            </AccountActivitySummary>
+                        );
                     })}
                 </SectionWrapper>
             )}
