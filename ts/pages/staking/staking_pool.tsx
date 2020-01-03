@@ -6,20 +6,17 @@ import { useSelector } from 'react-redux';
 import { Redirect, RouteChildrenProps, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Button } from 'ts/components/button';
 import { DashboardHero } from 'ts/components/staking/dashboard_hero';
 import { HistoryChart } from 'ts/components/staking/history_chart';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
-import { TradingPair } from 'ts/components/staking/trading_pair';
 
 import { useAPIClient } from 'ts/hooks/use_api_client';
 
-import { colors } from 'ts/style/colors';
-import { utils } from 'ts/utils/utils';
+// import { colors } from 'ts/style/colors';
 
 import { State } from 'ts/redux/reducer';
 import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
-import { formatZrx, formatEther } from 'ts/utils/format_number';
+import { formatEther, formatZrx } from 'ts/utils/format_number';
 
 export interface ActionProps {
     children: React.ReactNode;
@@ -51,7 +48,7 @@ const GraphHeading = styled(Heading)`
         display: block;
     }
 `;
-
+/*
 const TradingPairContainer = styled.div`
     display: inline-block;
     width: 330px;
@@ -121,12 +118,12 @@ const ActionText = styled.div`
         @media (min-width: 991px) {
             font-size: 28px;
         }
-        /* @media (min-width: 768px) {
-            font-size: 24px;
-        }
-        @media (min-width: 991px) {
-            font-size: 28px;
-        } */
+        //@media (min-width: 768px) {
+            //font-size: 24px;
+        //}
+        //@media (min-width: 991px) {
+            //font-size: 28px;
+        //}
     }
     span {
         color: #999999;
@@ -245,7 +242,7 @@ const tradingPairs = [
         },
     },
 ];
-
+*/
 export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = props => {
     const { poolId } = useParams();
 
@@ -301,11 +298,20 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                             {
                                 title: 'Fees Generated',
                                 // 4 decimals looks better here to keep it from wrapping
-                                number: `${formatEther(currentEpoch.totalProtocolFeesGeneratedInEth, { decimals: 4, decimalsRounded: 4 }).minimized} ETH`, // protocolFeesGeneratedInEth is missing, is that the same thing as total rewards?
+                                number: `${
+                                    formatEther(currentEpoch.totalProtocolFeesGeneratedInEth, {
+                                        decimals: 4,
+                                        decimalsRounded: 4,
+                                    }).minimized
+                                } ETH`, // protocolFeesGeneratedInEth is missing, is that the same thing as total rewards?
                             },
                             {
                                 title: 'Rewards Shared',
-                                number: `${formatEther(currentEpoch.totalProtocolFeesGeneratedInEth * (1 - currentEpoch.operatorShare)).minimized} ETH`,
+                                number: `${
+                                    formatEther(
+                                        currentEpoch.totalProtocolFeesGeneratedInEth * (1 - currentEpoch.operatorShare),
+                                    ).minimized
+                                } ETH`,
                             },
                         ],
                     },
@@ -318,11 +324,18 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                             },
                             {
                                 title: 'Fees Generated',
-                                number: `${formatEther(stakingPool.allTimeStats.protocolFeesGeneratedInEth, { decimalsRounded: 4, decimals: 4 }).minimized} ETH`,
+                                number: `${
+                                    formatEther(stakingPool.allTimeStats.protocolFeesGeneratedInEth, {
+                                        decimalsRounded: 4,
+                                        decimals: 4,
+                                    }).minimized
+                                } ETH`,
                             },
                             {
                                 title: 'Rewards Shared',
-                                number: `${formatEther(stakingPool.allTimeStats.membersRewardsPaidInEth).minimized} ETH`,
+                                number: `${
+                                    formatEther(stakingPool.allTimeStats.membersRewardsPaidInEth).minimized
+                                } ETH`,
                             },
                         ],
                     },

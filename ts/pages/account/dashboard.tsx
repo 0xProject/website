@@ -34,7 +34,7 @@ import { utils } from 'ts/utils/utils';
 
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useStake } from 'ts/hooks/use_stake';
-import { formatZrx, formatEther } from 'ts/utils/format_number';
+import { formatEther, formatZrx } from 'ts/utils/format_number';
 
 export interface AccountProps {}
 

@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 
 import { colors } from 'ts/style/colors';
 import { ScreenWidths } from 'ts/types';
-import { configs } from 'ts/utils/configs';
 import { utils } from 'ts/utils/utils';
 
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
