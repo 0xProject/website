@@ -63,7 +63,7 @@ export const stakingUtils = {
         const currentTotalSoFar = BigNumber.sum(...orderedRecs.map(x => new BigNumber(x.zrxAmount)));
         // Need to round again as we can end up with 0.010000000000019327 as the reconcile amount
         const reconciliationAmount = formatZrx((new BigNumber(amountZrxToStake).minus(currentTotalSoFar))).roundedValue;
-        // Sometimes the algoritm will be short by 0.01 to 0.02 ZRX (due to combination of floating point + rounding)
+        // Sometimes the algorithm will be short by 0.01 to 0.02 ZRX (due to combination of floating point + rounding)
         // We'll just deposit the difference into the most preferred pool.
         if (reconciliationAmount && orderedRecs.length > 0) {
             orderedRecs[0].zrxAmount += reconciliationAmount;
