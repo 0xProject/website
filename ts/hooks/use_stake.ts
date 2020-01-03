@@ -53,8 +53,9 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         const _contractAddresses = getContractAddressesForChainOrThrow(networkId);
 
         setOwnerAddress(_ownerAddress);
+        // NOTE: staking proxy has state and is a delegate proxy to staking contract, it can be used to initialize both contracts
         setStakingContract(
-            new StakingContract(_contractAddresses.staking, providerState.provider, {
+            new StakingContract(_contractAddresses.stakingProxy, providerState.provider, {
                 from: _ownerAddress,
             }),
         );
