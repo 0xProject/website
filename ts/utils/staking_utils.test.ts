@@ -1,4 +1,5 @@
 import { BigNumber } from '@0x/utils';
+import { sum } from 'lodash';
 
 import { stakingUtils } from 'ts/utils/staking_utils';
 
@@ -31,6 +32,13 @@ describe('getRecommendedStakingPools', () => {
         const totalRequestedToStake = 4200.27;
         const recommendedPools = getRecommendedStakingPools(totalRequestedToStake, SAMPLE_POOLS);
         const actualTotalSum = BigNumber.sum(...recommendedPools.map(x => new BigNumber(x.zrxAmount))).toNumber();
+        expect(actualTotalSum).toBe(totalRequestedToStake);
+    });
+
+    test('should add correctly with basic Number type', () => {
+        const totalRequestedToStake = 422.77;
+        const recommendedPools = getRecommendedStakingPools(totalRequestedToStake, SAMPLE_POOLS);
+        const actualTotalSum = sum(recommendedPools.map(p => p.zrxAmount));
         expect(actualTotalSum).toBe(totalRequestedToStake);
     });
 

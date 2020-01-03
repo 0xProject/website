@@ -66,7 +66,7 @@ export const stakingUtils = {
         // Sometimes the algorithm will be short by 0.01 to 0.02 ZRX (due to combination of floating point + rounding)
         // We'll just deposit the difference into the most preferred pool.
         if (reconciliationAmount && orderedRecs.length > 0) {
-            orderedRecs[0].zrxAmount += reconciliationAmount;
+            orderedRecs[0].zrxAmount = formatZrx(new BigNumber(orderedRecs[0].zrxAmount).plus(reconciliationAmount)).roundedValue;
         }
         return orderedRecs;
     },
