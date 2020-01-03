@@ -44,7 +44,7 @@ const linkRows: LinkRows[] = [
         links: [
             { url: WebsitePaths.Docs, text: 'Documentation' },
             { url: constants.URL_GITHUB_ORG, text: 'GitHub', shouldOpenInNewTab: true },
-            { url: `${WebsitePaths.DocsGuides}/v2-specification`, text: 'Protocol Spec', shouldOpenInNewTab: true },
+            { url: `${WebsitePaths.DocsGuides}/v3-specification`, text: 'Protocol Spec', shouldOpenInNewTab: true },
         ],
     },
     {

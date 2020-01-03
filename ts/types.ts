@@ -510,7 +510,6 @@ export enum WebsiteLegacyPaths {
     Subproviders = '/docs/subproviders',
     OrderUtils = '/docs/order-utils',
     EthereumTypes = '/docs/ethereum-types',
-    AssetBuyer = '/docs/asset-buyer',
     AssetSwapperDocs = '/docs/asset-swapper',
     Migrations = '/docs/migrations',
 }

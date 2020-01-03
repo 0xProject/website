@@ -1,20 +1,20 @@
 # Introduction
 
-In this tutorial, we will show you how you can use the [@0x/connect](https://0x.org/docs/tools/connect) package in conjunction with [0x.js](https://0x.org/docs/tools/0x.js) in order to:
+In this tutorial, we will show you how you can use the [@0x/connect](https://0x.org/docs/tools/connect) package in conjunction with other 0x packages to:
 
-- ask a relayer for fee information
-- submit signed orders to a relayer with appropriate fees
-- ask a relayer for a ZRX/WETH orderbook
-- find the best orders in the orderbook
-- fill orders from the orderbook using `0x.js`
+-   ask a relayer for fee information
+-   submit signed orders to a relayer with appropriate fees
+-   ask a relayer for a ZRX/WETH orderbook
+-   find the best orders in the orderbook
+-   fill orders from the orderbook using `@0x/contract-wrappers`
 
 You can find all the `@0x/connect` documentation [here](https://0x.org/docs/tools/connect).
 
-You can find a list of relayers that comply with the Standard Relayer API [here](https://github.com/0xProject/0x-relayer-registry/blob/master/relayers.json)
+0x has deployed a HTTP endpoint which implements the Standard Relayer API called the [0x API](https://api.0x.org/sra/orders). The orders available on this endpoint are sourced through a decentralized p2p network using [0x Mesh](https://github.com/0xProject/0x-mesh). This implementation is just one of many Standard Relayer API's that exist out in the ecosystem. You can find a list of relayers that comply with the Standard Relayer API in the [0x Relayer Registry](https://github.com/0xProject/0x-relayer-registry/blob/master/relayers.json).
 
 # Setup
 
-Since 0x.js helps you build apps that interface with Ethereum, you will need to use it in conjunction with an Ethereum node. For development, we recommend using [Ganache CLI](https://github.com/trufflesuite/ganache-cli). Since there is some setup required to getting started with Ganache and the 0x smart contracts, we are going to use a [0x starter project](https://github.com/0xProject/0x-starter-project) which handles a lot of this for us.
+Since the 0x tools helps you build apps that interface with Ethereum, you will need to use it in conjunction with an Ethereum node. For development, we recommend using [Ganache CLI](https://github.com/trufflesuite/ganache-cli). Since there is some setup required to getting started with Ganache and the 0x smart contracts, we are going to use a [0x starter project](https://github.com/0xProject/0x-starter-project) which handles a lot of this for us.
 
 Clone the repo:
 
@@ -57,39 +57,34 @@ yarn scenario:fill_order_sra
 The first step to interacting with `@0x/connect` is to import the following relevant packages:
 
 ```javascript
-import {
-  assetDataUtils,
-  BigNumber,
-  ContractWrappers,
-  generatePseudoRandomSalt,
-  Order,
-  orderHashUtils,
-  signatureUtils
-} from '0x.js';
-import { HttpClient, OrderbookRequest, OrderConfigRequest } from '@0x/connect';
+import { HttpClient, OrderbookRequest } from '@0x/connect';
+import { ContractWrappers, ERC20TokenContract, OrderStatus } from '@0x/contract-wrappers';
+import { generatePseudoRandomSalt, Order, signatureUtils } from '@0x/order-utils';
+import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses';
 ```
 
-**0x.js** is a package that pulls in a number of underlying 0x packages and exposes their respective functionality. You can choose to pull these packages directly without using 0x.js. These packages allow you to interact with the 0x smart contracts (contract wrappers) and create, sign and validate orders (order utils).
-**BigNumber** is a JavaScript library for arbitrary-precision decimal and non-decimal arithmetic.
-**HttpClient** is a Standard Relayer API client implementation that allows you to easily query any Standard Relayer API endpoint.
-**Web3Wrapper** is a package for interacting with an Ethereum node, retrieving account information. This is an optional package and you can choose to use alternatives like Web3.js or Ethers.js.
-**contract-addresses** is a package where we have our deployed contract addresses for the various networks. This also includes an address for a deployed Wrapped Ether contract.
+| Package                 | Description                                                                                                      |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `@0x/connect`           | Standard Relayer API client implementation that allows you to easily query any Standard Relayer API endpoint     |
+| `@0x/contract-wrappers` | Contains wrappers around interacting directly with on-chain contracts                                            |
+| `@0x/order-utils`       | Assist in creating and signing 0x orders                                                                         |
+| `@0x/utils`             | Contains helpers like BigNumber, a JavaScript library for arbitrary-precision decimal and non-decimal arithmetic |
+| `@0x/web3-wrapper`      | For interacting with an Ethereum node, retrieving account information. Alternatives are Web3.js or Ethers.js     |
 
 # Instantiating a Provider and ContractWrappers
 
-First, we need to instantiate an instance of ContractWrappers and a Provider. In our case, since we are using our local node (ganache), we will use **http://localhost:8545**. You can read about what providers are [here](https://0x.org/docs/guides/web3-provider-explained).
+First, we need to instantiate an instance of ContractWrappers and a Provider. In our case, since we are using our local node (ganache), we will use **http://localhost:8545**. You can read about what providers are [here](/docs/guides/web3-provider-explained).
 
 ```typescript
-import { RPCSubprovider, Web3ProviderEngine } from '0x.js';
+import { RPCSubprovider, Web3ProviderEngine } from '@0x/subproviders';
 
 export const providerEngine = new Web3ProviderEngine();
 providerEngine.addProvider(new RPCSubprovider('http://localhost:8545'));
 providerEngine.start();
 // Instantiate ContractWrappers with the provider
 const contractWrappers = new ContractWrappers(providerEngine, {
-  networkId: NETWORK_CONFIGS.networkId
+    chainId: 1337, // Ganache snapshot chain id
 });
 ```
 
@@ -104,32 +99,24 @@ const [maker, taker] = await web3Wrapper.getAvailableAddressesAsync();
 
 # Declaring decimals and addresses
 
-Since we are dealing with a few contracts, we will specify them now to reduce the syntax load. Fortunately for us, `0x.js` library comes with a couple of contract addresses that can be useful to have at hand. One thing that is important to remember is that there are no decimals in the Ethereum virtual machine (EVM), which means you always need to keep track of how many "decimals" each token possesses. Since we will sell some ZRX for some ETH and since they both have 18 decimals, we can use a shared constant.
+Since we are dealing with a few contracts, we will specify them now to reduce the syntax load. Fortunately for us, `@0x/contract-wrappers` library comes with a couple of contract addresses that can be useful to have at hand. One thing that is important to remember is that there are no decimals in the Ethereum virtual machine (EVM), which means you always need to keep track of how many "decimals" each token possesses. Since we will sell some ZRX for some ETH and since they both have 18 decimals, we can use a shared constant.
 
 ```javascript
 // Token Addresses
-const contractAddresses = getContractAddressesForNetworkOrThrow(
-  NETWORK_CONFIGS.networkId
-);
-const zrxTokenAddress = contractAddresses.zrxToken;
-const etherTokenAddress = contractAddresses.etherToken;
+const zrxTokenAddress = contractWrappers.contractAddresses.zrxToken;
+const etherTokenAddress = contractWrappers.contractAddresses.etherToken;
 ```
 
 0x Protocol uses the ABI encoding scheme for asset data. For example, the ERC20 Token address which is being traded on 0x needs to be encoded. Encoding the address informs the 0x smart contracts on which type of asset is being traded (e.g ERC20 or ERC721) and has optional parameters for different token types (e.g ERC721 token id). In this tutorial we are trading 5 ZRX (ERC20) for 0.1 WETH (ERC20).
 
 ```typescript
-const makerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
-const takerAssetData = assetDataUtils.encodeERC20AssetData(etherTokenAddress);
+const makerAssetData = await contractWrappers.devUtils.encodeERC20AssetData(zrxTokenAddress).callAsync();
+const takerAssetData = await contractWrappers.devUtils.encodeERC20AssetData(etherTokenAddress).callAsync();
 // the amount the maker is selling of maker asset
-const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(
-  new BigNumber(5),
-  DECIMALS
-);
+// amounts are represented in BaseUnits. Similar to how ETH is converted to WEI.
+const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(5), DECIMALS);
 // the amount the maker wants of taker asset
-const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(
-  new BigNumber(0.1),
-  DECIMALS
-);
+const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.1), DECIMALS);
 ```
 
 # Approvals and WETH Balance
@@ -138,29 +125,29 @@ To trade on 0x, the participants (maker and taker) require a small amount of ini
 
 ```typescript
 // Allow the 0x ERC20 Proxy to move ZRX on behalf of makerAccount
-const makerZRXApprovalTxHash = await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
-  zrxTokenAddress,
-  maker
-);
+const zrxToken = new ERC20TokenContract(zrxTokenAddress, providerEngine);
+const makerZRXApprovalTxHash = await zrxToken
+    .approve(contractWrappers.contractAddresses.erc20Proxy, UNLIMITED_ALLOWANCE_IN_BASE_UNITS)
+    .sendTransactionAsync({ from: maker });
 await web3Wrapper.awaitTransactionSuccessAsync(makerZRXApprovalTxHash);
 
 // Allow the 0x ERC20 Proxy to move WETH on behalf of takerAccount
-const takerWETHApprovalTxHash = await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
-  etherTokenAddress,
-  taker
-);
+const takerWETHApprovalTxHash = await contractWrappers.weth9
+    .approve(contractWrappers.contractAddresses.erc20Proxy, UNLIMITED_ALLOWANCE_IN_BASE_UNITS)
+    .sendTransactionAsync({ from: taker });
 await web3Wrapper.awaitTransactionSuccessAsync(takerWETHApprovalTxHash);
 
 // Convert ETH into WETH for taker by depositing ETH into the WETH contract
-const takerWETHDepositTxHash = await contractWrappers.etherToken.depositAsync(
-  etherTokenAddress,
-  takerAssetAmount,
-  taker
-);
+const takerWETHDepositTxHash = await contractWrappers.weth9.deposit().sendTransactionAsync({
+    value: takerAssetAmount,
+    from: taker,
+});
 await web3Wrapper.awaitTransactionSuccessAsync(takerWETHDepositTxHash);
 ```
 
-At this point, it is worth mentioning why we need to await all those transactions. Calling an 0x.js function returns immediately after submitting a transaction with a transaction hash, so the user interface (UI) might show some useful information to the user before the transaction is mined (it sometimes takes long time). In our use-case we just want it to be confirmed, which happens immediately on ganache. It is nevertheless a good habit to interact with the blockchain with these async/await calls.
+At this point, it is worth mentioning why we need to await all those transactions. Using `sendTransactionAsync` returns immediately after submitting a transaction with a transaction hash, so the user interface (UI) might show some useful information to the user before the transaction is mined (it sometimes takes long time). In our use-case we want it to be confirmed, which happens immediately on ganache.
+
+It is nevertheless a good habit to interact with the blockchain with these async/await calls. If you wish for the call to block until the transaction has been successfully mined, you may use `awaitTransactionSuccessAsync`.
 
 # Creating an HttpClient
 
@@ -168,7 +155,7 @@ Next, we create an `HttpClient` instance with a url pointing to a local standard
 
 ```javascript
 // Instantiate relayer client pointing to a local server on port 3000
-const relayerApiUrl = 'http://localhost:3000/v2';
+const relayerApiUrl = 'http://localhost:3000/v3';
 const relayerClient = new HttpClient(relayerApiUrl);
 ```
 
@@ -181,39 +168,45 @@ Create a partial order (or `OrderConfigRequest`) and query the API using `getOrd
 ```javascript
 // Generate and expiration time and find the exchange smart contract address
 const randomExpiration = getRandomFutureDateInSeconds();
-const exchangeAddress = contractAddresses.exchange;
+const exchangeAddress = contractWrappers.contractAddresses.exchange;
 
 // Ask the relayer about the parameters they require for the order
 const orderConfigRequest: OrderConfigRequest = {
-  exchangeAddress,
-  makerAddress: maker,
-  takerAddress: NULL_ADDRESS,
-  expirationTimeSeconds: randomExpiration,
-  makerAssetAmount,
-  takerAssetAmount,
-  makerAssetData,
-  takerAssetData
+    exchangeAddress,
+    makerAddress: maker,
+    takerAddress: NULL_ADDRESS, // Allows anyone to fill this order
+    expirationTimeSeconds: randomExpiration,
+    makerAssetAmount,
+    takerAssetAmount,
+    makerAssetData,
+    takerAssetData,
 };
 const orderConfig = await httpClient.getOrderConfigAsync(orderConfigRequest);
 ```
 
 Here are the fields in an order config request:
 
-- **makerAddress** : Ethereum address of our **Maker**.
-- **takerAddress** : Ethereum address of our **Taker**.
-- **makerAssetData**: The token address the **Maker** is offering.
-- **takerAssetData**: The token address the **Maker** is requesting from the **Taker**.
-- **exchangeAddress** : The Exchange address.
-- **makerAssetAmount**: The amount of token the **Maker** is offering.
-- **takerAssetAmount**: The amount of token the **Maker** is requesting from the **Taker**.
-- **expirationTimeSeconds**: When will the order expire (in unix time).
+| Field                 | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| makerAddress          | Ethereum address of our **Maker**                                                       |
+| takerAddress          | Ethereum address of a **Taker**. `NULL_ADDRESS` means the order can be filled by anyone |
+| makerAssetData        | The encoded token address the **Maker** is offering. Encoding is `ERC20Token(address)`  |
+| takerAssetData        | The encoded token address the **Maker** is requesting from the **Taker**                |
+| exchangeAddress       | The Exchange contract address                                                           |
+| makerAssetAmount      | The amount of token the **Maker** is offering                                           |
+| takerAssetAmount      | The amount of token the **Maker** is requesting from the **Taker**                      |
+| expirationTimeSeconds | When the order expires (unix time) in seconds                                           |
 
 Here are the fields that are provided in the order config response:
 
-- **senderAddress** : Ethereum address of a required **Sender** (none for now).
-- **feeRecipientAddress** : Ethereum address of our **Relayer** (none for now).
-- **makerFee**: How many ZRX the **Maker** will pay as a fee to the **Relayer**.
-- **takerFee** : How many ZRX the **Taker** will pay as a fee to the **Relayer**.
+| Field               | Description                                                                                        |
+| ------------------- | -------------------------------------------------------------------------------------------------- |
+| senderAddress       | Ethereum address of a required **Sender** (none for now)                                           |
+| feeRecipientAddress | Ethereum address of our **Relayer** (none for now)                                                 |
+| makerFeeAmount      | The amount the **Maker** will pay in **makerFeeAssetData** as a fee to the **feeRecipientAddress** |
+| takerFeeAmount      | The amount the **Taker** will pay in **takerFeeAssetData** as a fee to the **feeRecipientAddress** |
+| makerFeeAssetData   | The encoded address of the token the maker pays as a fee. No fee is represented as `0x`            |
+| takerFeeAssetData   | The encoded address of the token the taker pays as a fee. No fee is represented as `0x`            |
 
 You can see that together they form a full Order object, except for the salt.
 
@@ -224,25 +217,20 @@ Now that we have the configuration information, we can create a full order.
 ```javascript
 // Create the order
 const order: Order = {
-  salt: generatePseudoRandomSalt(),
-  ...orderConfigRequest,
-  ...orderConfig
+    salt: generatePseudoRandomSalt(),
+    chainId: 1337,
+    ...orderConfigRequest,
+    ...orderConfig,
 };
 ```
 
 # Signing the order
 
-Now that we created an order as a **Maker**, we need to prove that we actually own the address specified as `makerAddress`. After all, we could always try pretending to be someone else just to annoy an exchange and other traders! To do so, we will sign the orders with the corresponding private key and append the signature to our order.
+Now that we created an order as a **Maker**, there needs to be proof that we actually own the address specified as `makerAddress`. If not, we could always try pretending to be someone else to annoy an exchange and other traders! To do so, we will sign the orders with the corresponding private key and append the signature to our order.
 
 ```javascript
 // Generate the order hash and sign it
-const orderHashHex = orderHashUtils.getOrderHashHex(order);
-const signature = await signatureUtils.ecSignHashAsync(
-  providerEngine,
-  orderHashHex,
-  maker
-);
-const signedOrder = { ...order, signature };
+const signedOrder = await signatureUtils.ecSignOrderAsync(providerEngine, order, maker);
 ```
 
 With this, anyone can verify that the signature is authentic and this will prevent any change to the order by a third party. If the order is changed by even a single bit, then the hash of the order will be different and therefore invalid when compared to the signed hash.
@@ -250,18 +238,27 @@ With this, anyone can verify that the signature is authentic and this will preve
 Now let's actually verify whether the order we created is valid
 
 ```javascript
-await contractWrappers.exchange.validateOrderFillableOrThrowAsync(signedOrder);
+// Validate this order
+const [
+    { orderStatus, orderHash },
+    remainingFillableAmount,
+    isValidSignature,
+] = await contractWrappers.devUtils.getOrderRelevantState(signedOrder, signedOrder.signature).callAsync();
+
+if (orderStatus === OrderStatus.Fillable && remainingFillableAmount.isGreaterThan(0) && isValidSignature) {
+    // Order is fillable
+}
 ```
 
 If something was wrong with our order, this function would throw an informative error. If it passes, then the order is currently fillable. A relayer should constantly be [pruning their orderbook](https://0x-org.gitbook.io/mesh/advanced-topics/db_syncing) of invalid orders using this method.
 
 # Submitting the order to the relayer
 
-We can finally submit our signed order to the relayer for them to host on their orderbook.
+We can now submit our signed order to the relayer for them to host on their orderbook.
 
 ```javascript
 // Submit the order to the SRA Endpoint
-await httpClient.submitOrderAsync(signedOrder, { networkId: NETWORK_CONFIGS.networkId };
+await httpClient.submitOrderAsync(signedOrder);
 ```
 
 # Requesting an orderbook
@@ -271,15 +268,11 @@ If in an application we need exchange functionality between two assets, we can f
 ```javascript
 // Taker queries the Orderbook from the Relayer
 const orderbookRequest: OrderbookRequest = {
-  baseAssetData: makerAssetData,
-  quoteAssetData: takerAssetData
+    baseAssetData: makerAssetData,
+    quoteAssetData: takerAssetData,
 };
-const response = await httpClient.getOrderbookAsync(orderbookRequest, {
-  networkId: NETWORK_CONFIGS.networkId
-});
-if (response.asks.total === 0) {
-  throw new Error('No orders found on the SRA Endpoint');
-}
+const response = await httpClient.getOrderbookAsync(orderbookRequest);
+const { bids, asks } = response;
 ```
 
 # Filling an order
@@ -288,33 +281,23 @@ if (response.asks.total === 0) {
 
 The Standard Relayer API guarantees that the orders are sorted by price, and then by _taker fee price_ which is defined as the `takerFee` divided by `takerAmount`. After _taker fee price_, orders are to be sorted by expiration in ascending order.
 
-Given the above, we can just pick an order from the top of the asks paginated collection and fill it:
+Given the above, we can pick an order from the top of the asks paginated collection and fill it:
 
 ```javascript
-const sraOrder = response.asks.records[0].order;
+const sraOrder = asks.records[0].order;
 ```
 
 Now we validate the order is fillable given the maker and taker. This checks the balances and allowances of both the Maker and Taker, this way if there are any issues we do not waste gas on a failed transaction.
 
-```javascript
-await contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(
-  sraOrder,
-  takerAssetAmount,
-  taker
-);
-```
-
-Now that the order is validated we submit it to the blockchain by calling fillOrder.
+By default, the ContractWrappers will perform an `eth_call` to ensure that the operation will be successful. If an error is encountered it will return a decoded helpful error explaining what went wrong in the operation.
 
 ```javascript
-txHash = await contractWrappers.exchange.fillOrderAsync(
-  sraOrder,
-  takerAssetAmount,
-  taker,
-  {
-    gasLimit: TX_DEFAULTS.gas
-  }
-);
+const txHash = await contractWrappers.exchange
+    .fillOrder(sraOrder, takerAssetAmount, sraOrder.signature)
+    .sendTransactionAsync({
+        from: taker,
+        gas: TX_DEFAULTS.gas,
+    });
 await web3Wrapper.awaitTransactionSuccessAsync(txHash);
 ```
 
@@ -322,10 +305,10 @@ await web3Wrapper.awaitTransactionSuccessAsync(txHash);
 
 Through this tutorial we learned how to:
 
-- ask a relayer for fee information
-- submit signed orders to a relayer with appropriate fees
-- ask a relayer for a ZRX/WETH orderbook
-- find the best orders in the orderbook
-- fill orders from the orderbook using `0x.js`
+-   ask a relayer for fee information
+-   submit signed orders to a relayer with appropriate fees
+-   ask a relayer for a `ZRX/WETH` orderbook
+-   find the best orders in the orderbook
+-   fill orders from the orderbook using `@0x/contract-wrappers`
 
-While all of these tasks were performed using Ganache and a local standard relayer api compliant HTTP server, you can start using [@0x/connect](https://www.npmjs.com/package/@0x/connect) in conjunction with Radar Relay's standard relayer api HTTP url: https://api.radarrelay.com/0x/v2/ for executing trades on the main Ethereum network. For more information on how to use our libraries, go [here](https://0x.org/docs/tools).
+While all of these tasks were performed using Ganache and a local standard relayer api compliant HTTP server, you can start using [@0x/connect](https://www.npmjs.com/package/@0x/connect) in conjunction with 0x API: https://api.0x.org/sra/ for executing trades on the main Ethereum network. For more information on how to use our libraries, see [here](https://0x.org/docs/tools).
