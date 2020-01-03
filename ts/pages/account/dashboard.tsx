@@ -1,6 +1,6 @@
 import { BigNumber, hexUtils, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { format } from 'date-fns';
+import { differenceInCalendarDays, format } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
@@ -71,7 +71,13 @@ interface PoolToDelegatorStakeMap {
     [key: string]: number;
 }
 
+enum PendingActionType {
+    Stake = 'STAKE',
+    Unstake = 'UNSTAKE',
+}
+
 interface PendingAction {
+    type: PendingActionType;
     poolId: string;
     amount: number;
 }
@@ -97,13 +103,15 @@ export const Account: React.FC<AccountProps> = () => {
     const [currentEpochStakeMap, setCurrentEpochStakeMap] = React.useState<PoolToDelegatorStakeMap>({});
     const [nextEpochStakeMap, setNextEpochStakeMap] = React.useState<PoolToDelegatorStakeMap>({});
 
-    const [pendingUnstake, setPendingUnstake] = React.useState<PendingAction[]>([]);
+    const [pendingActions, setPendingActions] = React.useState<PendingAction[]>([]);
     const [pendingUnstakePoolSet, setPendingUnstakePoolSet] = React.useState<Set<string>>(new Set());
 
     const apiClient = useAPIClient(networkId);
     const { stakingContract, unstake, withdrawStake, withdrawRewards } = useStake(networkId, providerState);
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
+
+    const now = new Date();
 
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
@@ -154,6 +162,7 @@ export const Account: React.FC<AccountProps> = () => {
                 setIsFetchingDelegatorData(false);
                 logUtils.warn(err);
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [account.address, apiClient]); // add isFetchingDelegatorData to dependency arr to turn on polling
 
     React.useEffect(() => {
@@ -222,22 +231,33 @@ export const Account: React.FC<AccountProps> = () => {
     }, [delegatorData, account.address, stakingContract]);
 
     React.useEffect(() => {
-        const _pendingUnstake: PendingAction[] = Object.keys(currentEpochStakeMap).reduce((memo, poolId) => {
+        const poolsWithActivity = _.uniq([...Object.keys(currentEpochStakeMap), ...Object.keys(nextEpochStakeMap)]);
+        const _pendingActions: PendingAction[] = poolsWithActivity.reduce((memo, poolId) => {
             const currentEpochStake = currentEpochStakeMap[poolId] || 0;
             const nextEpochStake = nextEpochStakeMap[poolId] || 0;
+            const amount = Math.abs(currentEpochStake - nextEpochStake);
 
-            if (currentEpochStake > nextEpochStake) {
+            if (currentEpochStake < nextEpochStake) {
                 memo.push({
+                    type: PendingActionType.Stake,
                     poolId,
-                    amount: currentEpochStake - nextEpochStake,
+                    amount,
+                });
+            } else if (currentEpochStake > nextEpochStake) {
+                memo.push({
+                    type: PendingActionType.Unstake,
+                    poolId,
+                    amount,
                 });
             }
 
             return memo;
         }, []);
 
-        setPendingUnstake(_pendingUnstake);
-        setPendingUnstakePoolSet(new Set(_pendingUnstake.map(p => p.poolId)));
+        setPendingActions(_pendingActions);
+        setPendingUnstakePoolSet(
+            new Set(_pendingActions.filter(action => action.type === PendingActionType.Unstake).map(p => p.poolId)),
+        );
     }, [currentEpochStakeMap, nextEpochStakeMap, delegatorData]);
 
     const accountLoaded = account && account.address;
@@ -287,7 +307,12 @@ export const Account: React.FC<AccountProps> = () => {
                                 </>
                             )}
                         >
-                            {formatZrx(utils.getFormattedAmount(undelegatedBalanceBaseUnits, constants.DECIMAL_PLACES_ZRX)).minimized} ZRX
+                            {
+                                formatZrx(
+                                    utils.getFormattedAmount(undelegatedBalanceBaseUnits, constants.DECIMAL_PLACES_ZRX),
+                                ).minimized
+                            }{' '}
+                            ZRX
                         </AccountFigure>
 
                         <AccountFigure
@@ -335,7 +360,7 @@ export const Account: React.FC<AccountProps> = () => {
                 </Inner>
             </HeaderWrapper>
 
-            {pendingUnstake.length > 0 && (
+            {pendingActions.length > 0 && (
                 <SectionWrapper>
                     <SectionHeader>
                         <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
@@ -352,26 +377,50 @@ export const Account: React.FC<AccountProps> = () => {
                                 </Button>
                             */}
                     </SectionHeader>
-                    {pendingUnstake.map(({ poolId, amount }, index) => {
+                    {pendingActions.map(({ poolId, amount, type }, index) => {
                         const pool = poolWithStatsMap[poolId];
-                        return (
-                            <AccountActivitySummary
-                                key={`account-acctivity-summary-${index}`}
-                                title={`${getFormattedAmount(amount, 'ZRX')} will be removed from ${(pool &&
-                                    pool.metaData.name) ||
-                                    `Pool ${poolId}`}`}
-                                subtitle="Your tokens will need to be manually withdrawn once they are removed"
-                                avatarSrc={pool.metaData.logoUrl}
-                                icon="clock"
-                                poolId={poolId}
-                                address={pool.operatorAddress}
-                            >
-                                <StatFigure
-                                    label="Withdraw date"
-                                    value={format(new Date(nextEpochStats.epochStart.timestamp), 'd/M/yy')}
-                                />
-                            </AccountActivitySummary>
-                        );
+                        if (type === PendingActionType.Unstake) {
+                            return (
+                                <AccountActivitySummary
+                                    key={`account-acctivity-summary-${index}`}
+                                    title={`${getFormattedAmount(amount, 'ZRX')} will be removed from ${(pool &&
+                                        pool.metaData.name) ||
+                                        `Pool ${poolId}`}`}
+                                    subtitle="Your tokens will need to be manually withdrawn once they are removed"
+                                    avatarSrc={pool.metaData.logoUrl}
+                                    icon="clock"
+                                    poolId={poolId}
+                                    address={pool.operatorAddress}
+                                >
+                                    <StatFigure
+                                        label="Withdraw date"
+                                        value={format(new Date(nextEpochStats.epochStart.timestamp), 'd/M/yy')}
+                                    />
+                                </AccountActivitySummary>
+                            );
+                        } else if (type === PendingActionType.Stake) {
+                            return (
+                                <AccountActivitySummary
+                                    key={`account-acctivity-summary-${index}`}
+                                    title={`${getFormattedAmount(amount, 'ZRX')} will be staked with ${(pool &&
+                                        pool.metaData.name) ||
+                                        `Pool ${poolId}`} in ${differenceInCalendarDays(
+                                        new Date(nextEpochStats.epochStart.timestamp),
+                                        now,
+                                    )} days`}
+                                    subtitle="Your tokens will be automatically staked when the new epoch starts"
+                                    avatarSrc={pool.metaData.logoUrl}
+                                    icon="clock"
+                                    poolId={poolId}
+                                    address={pool.operatorAddress}
+                                >
+                                    <StatFigure
+                                        label="Staking starts"
+                                        value={format(new Date(nextEpochStats.epochStart.timestamp), 'd/M/yy')}
+                                    />
+                                </AccountActivitySummary>
+                            );
+                        }
                     })}
                 </SectionWrapper>
             )}
