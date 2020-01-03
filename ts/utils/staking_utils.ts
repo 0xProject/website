@@ -1,3 +1,4 @@
+import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 
 import { constants } from 'ts/utils/constants';
@@ -33,6 +34,7 @@ export const stakingUtils = {
             sevenDayProtocolFeesGeneratedInEth: pool.sevenDayProtocolFeesGeneratedInEth,
             zrxStaked: pool.nextEpochStats.zrxStaked,
         }));
+        // TODO(johnrjj) - Refactor to use BigNumber exclusively
         const stakingDecisions: { [poolId: string]: number } = {};
         for (let i = 0; i < numIterations; i++) {
             const totalStake = _.sumBy(poolsSummary, p => p.zrxStaked);
@@ -53,6 +55,19 @@ export const stakingUtils = {
             pool: pools.find(pool => pool.poolId === poolId),
             zrxAmount: formatZrx(stakingDecisions[poolId], { removeComma: true }).roundedValue,
         }), []);
-        return recs;
+
+        // Sort desc
+        const orderedRecs = [...recs.sort((recA, recB) => recB.zrxAmount - recA.zrxAmount)];
+        // Need to use BigNumbers here when validating reconciliation
+        // example: JS normal addition of 1400.09 + 1400.09 + 1400.09 = 4200.2699999999995 , need to use bignumber!
+        const currentTotalSoFar = BigNumber.sum(...orderedRecs.map(x => new BigNumber(x.zrxAmount)));
+        // Need to round again as we can end up with 0.010000000000019327 as the reconcile amount
+        const reconciliationAmount = formatZrx((new BigNumber(amountZrxToStake).minus(currentTotalSoFar))).roundedValue;
+        // Sometimes the algoritm will be short by 0.01 to 0.02 ZRX (due to combination of floating point + rounding)
+        // We'll just deposit the difference into the most preferred pool.
+        if (reconciliationAmount && orderedRecs.length > 0) {
+            orderedRecs[0].zrxAmount += reconciliationAmount;
+        }
+        return orderedRecs;
     },
 };
