@@ -41,7 +41,7 @@ export interface PaperProps {
     isSquare?: boolean;
 }
 
-const Paper: React.FC<PaperProps> = ({ children, color, diameter,  style: styleOverrides, isSquare }) => (
+const Paper: React.FC<PaperProps> = ({ children, color, diameter, style: styleOverrides, isSquare }) => (
     <div
         className="paper"
         style={{
@@ -70,68 +70,70 @@ export interface JazziconProps {
 }
 
 // NOTE: this component will never update after initial render due to forced memo identity
-export const Jazzicon: React.FC<JazziconProps> = React.memo(props => {
-    const { diameter, paperStyles, seed, svgStyles, isSquare } = props;
+export const Jazzicon: React.FC<JazziconProps> = React.memo(
+    props => {
+        const { diameter, paperStyles, seed, svgStyles, isSquare } = props;
 
-    const generator = React.useRef(new MersenneTwister(seed));
+        const generator = React.useRef(new MersenneTwister(seed));
 
-    const genColor = (colors: string[]) => {
-        const rand = generator.current.random();
-        const idx = Math.floor(colors.length * generator.current.random());
-        const color = colors.splice(idx, 1)[0];
-        return color;
-    };
+        const genColor = (colors: string[]) => {
+            const idx = Math.floor(colors.length * generator.current.random());
+            const color = colors.splice(idx, 1)[0];
+            return color;
+        };
 
-    // tslint:disable-next-line: no-shadowed-variable
-    const hueShift = (colors: string[]) => {
-        const amount = generator.current.random() * 30 - WOBBLE / 2;
-        return colors.map(hex => {
-            const color = Color(hex);
-            color.rotate(amount);
-            return color.hex();
-        });
-    };
+        // tslint:disable-next-line: no-shadowed-variable
+        const hueShift = (colors: string[]) => {
+            const amount = generator.current.random() * 30 - WOBBLE / 2;
+            return colors.map(hex => {
+                const color = Color(hex);
+                color.rotate(amount);
+                return color.hex();
+            });
+        };
 
-    // tslint:disable-next-line: no-shadowed-variable
-    const genShape = (remainingColors: string[], diameter: number, i: number, total: number) => {
-        const center = diameter / 2;
-        const firstRot = generator.current.random();
-        const angle = Math.PI * 2 * firstRot;
-        const velocity = (diameter / total) * generator.current.random() + (i * diameter) / total;
-        const tx = Math.cos(angle) * velocity;
-        const ty = Math.sin(angle) * velocity;
-        const translate = `translate(${tx} ${ty})`;
+        // tslint:disable-next-line: no-shadowed-variable
+        const genShape = (remainingColors: string[], diameter: number, i: number, total: number) => {
+            const center = diameter / 2;
+            const firstRot = generator.current.random();
+            const angle = Math.PI * 2 * firstRot;
+            const velocity = (diameter / total) * generator.current.random() + (i * diameter) / total;
+            const tx = Math.cos(angle) * velocity;
+            const ty = Math.sin(angle) * velocity;
+            const translate = `translate(${tx} ${ty})`;
 
-        // Third random is a shape rotation on top of all of that.
-        const secondRot = generator.current.random();
-        const rot = firstRot * 360 + secondRot * 180;
-        const rotate = `rotate(${rot.toFixed(1)} ${center} ${center})`;
-        const transform = `${translate} ${rotate}`;
-        const fill = genColor(remainingColors);
+            // Third random is a shape rotation on top of all of that.
+            const secondRot = generator.current.random();
+            const rot = firstRot * 360 + secondRot * 180;
+            const rotate = `rotate(${rot.toFixed(1)} ${center} ${center})`;
+            const transform = `${translate} ${rotate}`;
+            const fill = genColor(remainingColors);
+
+            return (
+                <rect
+                    key={i}
+                    x="0"
+                    y="0"
+                    rx="0"
+                    ry="0"
+                    height={diameter}
+                    width={diameter}
+                    transform={transform}
+                    fill={fill}
+                />
+            );
+        };
+
+        const remainingColors = hueShift(COLORS.slice());
+        const shapesArr = Array(SHAPE_COUNT).fill(null);
 
         return (
-            <rect
-                key={i}
-                x="0"
-                y="0"
-                rx="0"
-                ry="0"
-                height={diameter}
-                width={diameter}
-                transform={transform}
-                fill={fill}
-            />
+            <Paper color={genColor(remainingColors)} diameter={diameter} isSquare={isSquare} style={paperStyles}>
+                <svg xmlns={SVGNS} x="0" y="0" height={diameter} width={diameter} style={svgStyles}>
+                    {shapesArr.map((_s, i) => genShape(remainingColors, diameter, i, SHAPE_COUNT - 1))}
+                </svg>
+            </Paper>
         );
-    };
-
-    const remainingColors = hueShift(COLORS.slice());
-    const shapesArr = Array(SHAPE_COUNT).fill(null);
-
-    return (
-        <Paper color={genColor(remainingColors)} diameter={diameter} isSquare={isSquare} style={paperStyles}>
-            <svg xmlns={SVGNS} x="0" y="0" height={diameter} width={diameter} style={svgStyles}>
-                {shapesArr.map((_s, i) => genShape(remainingColors, diameter, i, SHAPE_COUNT - 1))}
-            </svg>
-        </Paper>
-    );
-}, () => true);
+    },
+    () => true,
+);

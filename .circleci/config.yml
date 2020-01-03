@@ -15,6 +15,9 @@ jobs:
                   name: yarn
                   command: yarn --frozen-lockfile --ignore-engines install || yarn --frozen-lockfile --ignore-engines install
               - run:
+                  name: lint
+                  command: yarn lint
+              - run:
                   name: run unit tests
                   command: yarn test
               - run: yarn build:prod
@@ -22,7 +25,7 @@ jobs:
                     key: repo-{{ .Environment.CIRCLE_SHA1 }}
                     paths:
                         - ~/repo
-    
+
 workflows:
     version: 2
     main:

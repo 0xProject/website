@@ -1,4 +1,4 @@
-import { ChainId, ContractAddresses, getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
+import { ChainId, getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { StakingContract, StakingProxyContract } from '@0x/contract-wrappers';
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';

@@ -12,8 +12,8 @@ import Checkmark from 'ts/icons/illustrations/checkmark.svg';
 import { colors } from 'ts/style/colors';
 
 import { WebsitePaths } from 'ts/types';
-import { utils } from 'ts/utils/utils';
 import { formatPercent } from 'ts/utils/format_number';
+import { utils } from 'ts/utils/utils';
 
 interface Metrics {
     title: string;
