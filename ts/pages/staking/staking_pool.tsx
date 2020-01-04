@@ -293,7 +293,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                             // },
                             {
                                 title: 'ZRX Staked',
-                                number: `${formatZrx(currentEpoch.zrxStaked).minimized}`, // zrx staked missing
+                                number: `${formatZrx(currentEpoch.zrxStaked).minimized}`,
                             },
                             {
                                 title: 'Fees Generated',
@@ -302,9 +302,8 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                                     formatEther(currentEpoch.totalProtocolFeesGeneratedInEth, {
                                         decimals: 4,
                                         decimalsRounded: 4,
-
                                     }).minimized
-                                } ETH`, // protocolFeesGeneratedInEth is missing, is that the same thing as total rewards?
+                                } ETH`,
                             },
                             {
                                 title: 'Rewards Shared',
