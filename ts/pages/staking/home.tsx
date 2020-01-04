@@ -57,8 +57,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                 titleMobile="Start staking your tokens"
                 description="Use one pool of capital across multiple relayers to trade against a large group"
                 figure={<CFLMetrics />}
-                // TODO(kimpers): Add correct video for staking portal
-                videoId="c04eIt3FQ5I"
+                videoId="-UMhhM5z7cc"
                 actions={
                     <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
                         Get Started
