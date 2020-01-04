@@ -57,6 +57,8 @@ const InputContainer = styled.div<InputContainerProps>`
 
 const Input = styled.input`
     padding-left: 70px;
+    /* HACK(johnrjj) - Input clashes with border of container for some reason, this fixes that */
+    margin-left: 1px;
     flex: 1;
     border: 0;
     font-size: 20px;
