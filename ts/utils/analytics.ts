@@ -8,7 +8,7 @@ import { utils } from 'ts/utils/utils';
 export interface HeapAnalytics {
     loaded: boolean;
     identify(id: string, idType: string): void;
-    track(eventName: string, eventProperties?: ObjectMap<string | number>): void;
+    track(eventName: string, eventProperties?: ObjectMap<string | number | boolean>): void;
     resetIdentity(): void;
     addUserProperties(properties: ObjectMap<string | number>): void;
     addEventProperties(properties: ObjectMap<string | number>): void;
@@ -36,7 +36,7 @@ export class Analytics {
     public identify(id: string, idType: string): void {
         this._heapLoadedGuardAsync(() => this._heap.identify(id, idType));
     }
-    public track(eventName: string, eventProperties?: ObjectMap<string | number>): void {
+    public track(eventName: string, eventProperties?: ObjectMap<string | number | boolean>): void {
         this._heapLoadedGuardAsync(() => this._heap.track(eventName, eventProperties));
     }
     public resetIdentity(): void {

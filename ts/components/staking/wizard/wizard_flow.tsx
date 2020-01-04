@@ -263,7 +263,7 @@ export interface StakingInputPaneProps {
 }
 
 type AmountTrackingValue = '25%' | '50%' | '100%' | 'custom';
-const amountTrackingDebounced = _.debounce(
+const trackStakingAmountSelected = _.debounce(
     (value: AmountTrackingValue): void => {
         analytics.track(constants.STAKING.TRACKING.STAKING_AMOUNT_EVENT, { value });
     },
@@ -294,24 +294,24 @@ const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => {
                     if (label === StakingPercentageValue.Fourth) {
                         setStakeAmount(formatZrx(roundedZrxBalance / 4, { removeComma: true }).formatted);
                         setSelectedLabel(StakingPercentageValue.Fourth);
-                        amountTrackingDebounced(StakingPercentageValue.Fourth);
+                        trackStakingAmountSelected(StakingPercentageValue.Fourth);
                     }
                     if (label === StakingPercentageValue.Half) {
                         setStakeAmount(formatZrx(roundedZrxBalance / 2, { removeComma: true }).formatted);
                         setSelectedLabel(StakingPercentageValue.Half);
-                        amountTrackingDebounced(StakingPercentageValue.Half);
+                        trackStakingAmountSelected(StakingPercentageValue.Half);
                     }
                     if (label === StakingPercentageValue.All) {
                         setStakeAmount(formatZrx(roundedZrxBalance, { removeComma: true }).formatted);
                         setSelectedLabel(StakingPercentageValue.All);
-                        amountTrackingDebounced(StakingPercentageValue.All);
+                        trackStakingAmountSelected(StakingPercentageValue.All);
                     }
                 }}
                 onChange={(newValue: React.ChangeEvent<HTMLInputElement>) => {
                     const newAmount = newValue.target.value;
                     setStakeAmount(newAmount);
                     setSelectedLabel(undefined);
-                    amountTrackingDebounced('custom');
+                    trackStakingAmountSelected('custom');
                 }}
                 bottomLabels={[
                     {
@@ -460,6 +460,10 @@ const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
     );
 };
 
+const trackStartStakingScreenViewed = _.once(() => {
+    analytics.track(constants.STAKING.TRACKING.START_STAKING_SCREEN_VIEWED);
+});
+
 export interface StartStakingProps {
     providerState: ProviderState;
     stake: UseStakeHookResult;
@@ -478,6 +482,8 @@ const StartStaking: React.FC<StartStakingProps> = props => {
 
     const timeRemainingForAllowanceApproval = useSecondsRemaining(allowance.estimatedTransactionFinishTime);
     const timeRemainingForStakingTransaction = useSecondsRemaining(stake.estimatedTransactionFinishTime);
+
+    trackStartStakingScreenViewed();
 
     if (selectedStakingPools && stake.result) {
         // TODO needs the info header (start staking + begins in n days)

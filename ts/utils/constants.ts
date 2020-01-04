@@ -26,7 +26,14 @@ export const constants = {
     STAKING: {
         NIL_POOL_ID: '0x0000000000000000000000000000000000000000000000000000000000000000',
         TRACKING: {
-            STAKING_AMOUNT_EVENT: 'stakingAmount',
+            STAKING_AMOUNT_EVENT: 'StakingAmount',
+            CONNECT_WALLET: 'ConnectWallet',
+            STAKE: 'Stake',
+            UNSTAKE: 'Unstake',
+            WITHDRAW_STAKE: 'WithdrawStake',
+            WITHDRAW_REWARDS: 'WithdrawRewards',
+            ACTION_SUCCESS: 'Success',
+            START_STAKING_SCREEN_VIEWED: 'StartStakingScreenViewed',
         },
     },
     GUIDE_OLDER_VERSIONS: 'browsing-docs-on-github',

@@ -8,6 +8,8 @@ import { Dispatcher } from 'ts/redux/dispatcher';
 import { Action, Network, ProviderState } from 'ts/types';
 
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
+import { analytics } from 'ts/utils/analytics';
+import { constants } from 'ts/utils/constants';
 import { providerStateFactory } from 'ts/utils/providers/provider_state_factory';
 
 interface ConnectWalletDialogProps {}
@@ -53,6 +55,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
                     networkId,
                     true,
                 );
+
+                analytics.track(constants.STAKING.TRACKING.CONNECT_WALLET, {
+                    provider: providerState.displayName || 'UnknownWallet',
+                });
             } catch (err) {
                 logUtils.log(`Failed to connect wallet ${err}`);
                 // TODO(kimpers): handle errors
