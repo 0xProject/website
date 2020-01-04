@@ -14,6 +14,7 @@ interface StakingHeroProps {
     videoId?: string;
     videoChannel?: string;
     videoRatio?: string;
+    youtubeOptions?: any;
 }
 
 interface WrapperProps {}
@@ -108,7 +109,7 @@ const Actions = styled.div`
 `;
 
 export const StakingHero: React.FC<StakingHeroProps> = props => {
-    const { title, titleMobile, description, actions, videoChannel, videoId, videoRatio } = props;
+    const { title, titleMobile, description, actions, videoChannel, videoId, videoRatio, youtubeOptions } = props;
     const [isVideoOpen, setIsVideoOpen] = React.useState(false);
     const onOpenVideo = () => setIsVideoOpen(true);
     const onCloseVideo = () => setIsVideoOpen(false);
@@ -141,6 +142,7 @@ export const StakingHero: React.FC<StakingHeroProps> = props => {
                         controls: 0,
                         showinfo: 0,
                         modestbranding: 1,
+                        ...youtubeOptions,
                     }}
                     ratio={videoRatio}
                 />

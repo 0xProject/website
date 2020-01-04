@@ -58,6 +58,9 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                 description="Use one pool of capital across multiple relayers to trade against a large group"
                 figure={<CFLMetrics />}
                 videoId="-UMhhM5z7cc"
+                youtubeOptions={{
+                    start: 62,
+                }}
                 actions={
                     <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
                         Get Started
