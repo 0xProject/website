@@ -183,9 +183,11 @@ export const HistoryChart: React.FC<HistoryChartProps> = props => {
         ],
     }), [fees, labels, rewards]);
 
+    const options = useMemo(() => getOptions(epochs, fees, rewards), [epochs, fees, rewards]);
+
     return (
         <Container ref={container}>
-            <Line data={data} options={getOptions(epochs, fees, rewards)} height={290} />
+            <Line data={data} options={options} height={290} />
         </Container>
     );
 };
