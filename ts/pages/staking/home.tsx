@@ -59,6 +59,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                 figure={<CFLMetrics />}
                 videoId="-UMhhM5z7cc"
                 youtubeOptions={{
+                    // Skip to the staking part of the ZRX explainer video
                     start: 62,
                 }}
                 actions={
