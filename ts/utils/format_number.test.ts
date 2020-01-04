@@ -62,6 +62,16 @@ describe('formatNumber', () => {
         });
         expect(hundredMillion.roundedValue).toBe(1234567890.12);
     });
+
+    test('mimimized numbers are also rounded', () => {
+        // tslint:disable-next-line: number-literal-format
+        const roundedAndMinimized = formatNumber(new BigNumber(0.0003989999999999999), {
+            decimals: 3,
+            decimalsRounded: 3,
+            roundDown: true,
+        });
+        expect(roundedAndMinimized.minimized).toBe('0.000398');
+    });
 });
 
 describe('formatPercent', () => {

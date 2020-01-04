@@ -80,8 +80,8 @@ export const StakingIndex: React.FC<StakingIndexProps> = props => {
                                 isVerified={pool.metaData.isVerified}
                                 address={pool.operatorAddress}
                                 totalFeesGeneratedInEth={pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
-                                stakeRatio={pool.nextEpochStats.approximateStakeRatio}
-                                rewardsSharedRatio={1 - pool.nextEpochStats.operatorShare}
+                                stakeRatio={pool.currentEpochStats.approximateStakeRatio}
+                                rewardsSharedRatio={1 - pool.currentEpochStats.operatorShare}
                             />
                         );
                     })}
