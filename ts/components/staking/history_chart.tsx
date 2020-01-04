@@ -1,10 +1,12 @@
-import * as React from 'react';
+import { extent } from 'd3-array';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { merge } from 'lodash';
 import { defaults, Line } from 'react-chartjs-2';
 
 import { colors } from 'ts/style/colors';
+import { formatEther } from 'ts/utils/format_number';
 
 interface HistoryChartProps {
     fees: number[];
@@ -33,7 +35,8 @@ const getDefaultDataset = (color: string) => {
     };
 };
 
-const getOptions = (epochs: number[]) => {
+const getOptions = (epochs: number[], fees: number[], rewards: number[]) => {
+    const [min, max] = extent([...fees, ...rewards]);
     return {
         maintainAspectRatio: false,
         scales: {
@@ -50,12 +53,16 @@ const getOptions = (epochs: number[]) => {
                     },
                     ticks: {
                         padding: 30,
-                        suggestedMin: 20,
-                        suggestedMax: 50,
-                        stepSize: 10,
-                        precision: 4,
+                        suggestedMin: min,
+                        suggestedMax: max,
+                        maxTicksLimit: 8,
+                        precision: 5,
+                        beginAtZero: true,
                         userCallback: (value: string, _index: number, _values: string[]) => {
-                            return `${value}.00`;
+                            return `${formatEther(value, {
+                                decimals: 2,
+                                decimalsRounded: 2,
+                            }).formatted}`;
                         },
                     },
                 },
@@ -107,7 +114,7 @@ const getOptions = (epochs: number[]) => {
             callbacks: {
                 label: (item: any, graphData: any) => {
                     const datasetLabel = graphData.datasets[item.datasetIndex].label;
-                    return `${datasetLabel} — ${item.yLabel} ETH`;
+                    return `${datasetLabel} — ${formatEther(item.yLabel).formatted} ETH`;
                 },
                 labelColor: (tooltipItem: any, chart: any) => {
                     const datasetIndex = tooltipItem.datasetIndex;
@@ -151,6 +158,7 @@ export const HistoryChart: React.FC<HistoryChartProps> = props => {
     const { fees, rewards, labels, epochs } = props;
 
     const container = React.useRef(null);
+
     // const [_width, setWidth] = React.useState(0);
 
     // React.useLayoutEffect(() => {
@@ -159,25 +167,27 @@ export const HistoryChart: React.FC<HistoryChartProps> = props => {
     //     setWidth(c.offsetWidth);
     // }, []);
 
-    const data = {
+    const data = useMemo(() =>  ({
         labels,
         datasets: [
             {
                 ...getDefaultDataset(colors.brandLight),
-                data: rewards,
-                label: 'Fees collected   ', // Put spaces so the labels don't get cut off
+                data: fees,
+                label: 'Fees collected ',
             },
             {
                 ...getDefaultDataset('#A2F5EB'),
-                data: fees,
-                label: 'Rewards shared    ', // Put spaces so the labels don't get cut off
+                data: rewards,
+                label: 'Rewards shared ',
             },
         ],
-    };
+    }), [fees, labels, rewards]);
+
+    const options = useMemo(() => getOptions(epochs, fees, rewards), [epochs, fees, rewards]);
 
     return (
         <Container ref={container}>
-            <Line data={data} options={getOptions(epochs)} height={290} />
+            <Line data={data} options={options} height={290} />
         </Container>
     );
 };

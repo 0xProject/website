@@ -293,7 +293,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                             // },
                             {
                                 title: 'ZRX Staked',
-                                number: `${formatZrx(currentEpoch.zrxStaked).minimized}`, // zrx staked missing
+                                number: `${formatZrx(currentEpoch.zrxStaked).minimized}`,
                             },
                             {
                                 title: 'Fees Generated',
@@ -303,14 +303,19 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                                         decimals: 4,
                                         decimalsRounded: 4,
                                     }).minimized
-                                } ETH`, // protocolFeesGeneratedInEth is missing, is that the same thing as total rewards?
+                                } ETH`,
                             },
                             {
                                 title: 'Rewards Shared',
+                                // No good way to show rewards shared of an epoch in progress (currentEpoch) right now.
+                                // Defaulting to dash ('-') for now
                                 number: `${
                                     formatEther(
-                                        currentEpoch.totalProtocolFeesGeneratedInEth * (1 - currentEpoch.operatorShare),
-                                    ).minimized
+                                        '0',
+                                        {
+                                            zeroStyled: true,
+                                        },
+                                    ).formatted
                                 } ETH`,
                             },
                         ],
@@ -325,16 +330,21 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                             {
                                 title: 'Fees Generated',
                                 number: `${
-                                    formatEther(stakingPool.allTimeStats.protocolFeesGeneratedInEth, {
+                                    // Use totalRewardsPaidInEth instead of protocolFeesGeneratedInEth because
+                                    // totalRewardsPaidInEth is protocolFeesGeneratedInEth (and subsidies)
+                                    formatEther(stakingPool.allTimeStats.totalRewardsPaidInEth, {
                                         decimalsRounded: 4,
                                         decimals: 4,
-                                    }).minimized
+                                    }).formatted
                                 } ETH`,
                             },
                             {
                                 title: 'Rewards Shared',
                                 number: `${
-                                    formatEther(stakingPool.allTimeStats.membersRewardsPaidInEth).minimized
+                                    formatEther(stakingPool.allTimeStats.membersRewardsPaidInEth, {
+                                        decimals: 4,
+                                        decimalsRounded: 4,
+                                    }).formatted
                                 } ETH`,
                             },
                         ],
