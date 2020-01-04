@@ -173,12 +173,12 @@ export const HistoryChart: React.FC<HistoryChartProps> = props => {
             {
                 ...getDefaultDataset(colors.brandLight),
                 data: fees,
-                label: 'Fees collected ', // Put spaces so the labels don't get cut off
+                label: 'Fees collected ',
             },
             {
                 ...getDefaultDataset('#A2F5EB'),
                 data: rewards,
-                label: 'Rewards shared ', // Put spaces so the labels don't get cut off
+                label: 'Rewards shared ',
             },
         ],
     }), [fees, labels, rewards]);
