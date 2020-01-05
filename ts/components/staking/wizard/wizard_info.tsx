@@ -9,6 +9,8 @@ import { formatEther, formatZrx } from 'ts/utils/format_number';
 
 import { Epoch } from 'ts/types';
 
+const PLACEHOLDER = '—';
+
 export interface ConfirmationWizardInfo {
     nextEpochStats: Epoch | undefined;
 }
@@ -119,15 +121,49 @@ const WizardInfoHeader: React.FC<WizardInfoHeaderProps> = ({ title, description 
     </>
 );
 
-const PLACEHOLDER = '—';
+const TokenApprovalHeader = styled.h1`
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 30px;
+    text-align: center;
+
+    @media (min-width: 480px) {
+        text-align: left;
+        max-width: 435px;
+    }
+
+    @media (min-width: 768px) {
+        font-size: 50px;
+    }
+`;
+
+const TokenApprovalDescription = styled.h2`
+    font-size: 18px;
+    font-weight: 300;
+    color: ${colors.textDarkSecondary};
+    line-height: 1.44;
+    margin-bottom: 30px;
+    text-align: center;
+
+    @media (min-width: 480px) {
+        max-width: 435px;
+        text-align: left;
+    }
+
+    @media (min-width: 768px) {
+        margin-bottom: 60px;
+    }
+`;
 
 export const TokenApprovalInfo: React.FC<{}> = () => {
     return (
         <>
-            <WizardInfoHeader
-                title="You need to let us use your tokens"
-                description="In order to stake you ZRX tokens you must first grant permissions to the 0x Staking Proxy contract. This will allow the contract to transfer the ZRX tokens you decide to stake, and start earning rewards."
-            />
+            <TokenApprovalHeader>You need to let us use your tokens</TokenApprovalHeader>
+            <TokenApprovalDescription>
+                In order to stake you ZRX tokens you must first grant permissions to the 0x Staking Proxy contract. This
+                will allow the contract to transfer the ZRX tokens you decide to stake, and start earning rewards.
+            </TokenApprovalDescription>
         </>
     );
 };

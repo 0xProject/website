@@ -1,11 +1,7 @@
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { History } from 'history';
-import qs from 'query-string';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { usePreviousDistinct } from 'react-use';
 import styled from 'styled-components';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
@@ -24,18 +20,10 @@ import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
+import { useStakingWizard, WizardRouterSteps } from 'ts/hooks/use_wizard';
 
 import { State } from 'ts/redux/reducer';
-import {
-    AccountReady,
-    AccountState,
-    Epoch,
-    Network,
-    PoolWithStats,
-    ProviderState,
-    UserStakingChoice,
-    WebsitePaths,
-} from 'ts/types';
+import { AccountReady, AccountState, Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 
 export interface StakingWizardProps {
@@ -50,14 +38,7 @@ const Container = styled.div`
     position: relative;
 `;
 
-// These are the primary states (controlled by routing).
-// Within these, there are substates.
-// We do this to control routing/back/forward in the wizard
-export enum WizardRouterSteps {
-    Start = 'start',
-    Stake = 'stake',
-}
-
+// Right pane states
 export enum WizardFlowSteps {
     // 'Start' steps.
     ConnectWallet = 'CONNECT_WALLET',
@@ -70,64 +51,12 @@ export enum WizardFlowSteps {
     CoreWizard = 'CORE_WIZARD',
 }
 
+// Left pane states
 export enum WizardInfoSteps {
     IntroductionStats = 'INTRODUCTION',
     Confirmation = 'CONFIRMATION',
     TokenApproval = 'TOKEN_APPROVAL',
 }
-
-export interface IUSeWizardResult {
-    currentStep: WizardRouterSteps;
-    next: (nextStep: WizardRouterSteps) => void;
-    back: () => void;
-}
-
-const DEFAULT_STEP = WizardRouterSteps.Start;
-
-const useStakingWizard = (selectedStakingPools?: UserStakingChoice[]): IUSeWizardResult => {
-    const { step } = useQuery<{ poolId: string | undefined; step: WizardRouterSteps | undefined }>();
-    const history: History = useHistory();
-    const queryParams = useQuery();
-
-    // Default to initial step if none/invalid one provided
-    // OR if a user loads a url directly to mid-progress wizard without requied data, redirect back to start page
-    useEffect(() => {
-        if (!step || (step !== WizardRouterSteps.Start && !selectedStakingPools)) {
-            return history.replace(
-                `${WebsitePaths.StakingWizard}?${qs.stringify({
-                    ...queryParams,
-                    step: DEFAULT_STEP,
-                })}`,
-            );
-        }
-    }, [step, history, queryParams, selectedStakingPools]);
-
-    // Right now, user-space will determine what the next step is.
-    const goToNextStep = useCallback(
-        nextStep => {
-            if (!nextStep) {
-                return;
-            }
-            history.push(
-                `${WebsitePaths.StakingWizard}?${qs.stringify({
-                    ...queryParams,
-                    step: nextStep,
-                })}`,
-            );
-        },
-        [history, queryParams],
-    );
-
-    const goToPreviousStep = useCallback(() => {
-        history.goBack();
-    }, [history]);
-
-    return {
-        currentStep: step || DEFAULT_STEP,
-        next: goToNextStep,
-        back: goToPreviousStep,
-    };
-};
 
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
     // If coming from the market maker page, poolId will be provided
@@ -219,12 +148,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         }
     } else if (currentStep === WizardRouterSteps.Stake) {
         // Core wizard
-        // tslint:disable-next-line: prefer-conditional-expression
-        if (doesNeedTokenApproval) {
-            wizardFlowStep = WizardFlowSteps.TokenApproval;
-        } else {
-            wizardFlowStep = WizardFlowSteps.CoreWizard;
-        }
+        wizardFlowStep = doesNeedTokenApproval ? WizardFlowSteps.TokenApproval : WizardFlowSteps.CoreWizard;
     }
     // Derive left pane (wizard info) step from the right pane.
     let wizardInfoStep: WizardInfoSteps;
@@ -283,12 +207,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                 />
                             )}
                             {wizardFlowStep === WizardFlowSteps.TokenApproval && (
-                                <TokenApprovalPane
-                                    allowance={allowance}
-                                    nextEpochStats={nextEpochStats}
-                                    providerState={providerState}
-                                    selectedStakingPools={selectedStakingPools}
-                                />
+                                <TokenApprovalPane allowance={allowance} providerState={providerState} />
                             )}
                             {wizardFlowStep === WizardFlowSteps.CoreWizard && (
                                 <StartStaking
