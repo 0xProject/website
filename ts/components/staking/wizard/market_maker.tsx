@@ -13,21 +13,25 @@ interface MarketMakerProps {
     collectedFees: number;
     rewards: number;
     staked: number;
+    poolId: string;
+    operatorAddress: string;
     website: string;
     difference: string | number;
 }
 
 const Container = styled.div`
-    margin: 20px 0;
+    margin-bottom: 20px;
     border: 1px solid #DDDDDD;
     background-color: ${colors.white};
 `;
 
 const Heading = styled.div`
     display: flex;
+    flex: 1;
+    justify-content: space-between;
     align-items: center;
-    padding: 15px;
     position: relative;
+    padding: 20px;
 
     @media (min-width: 768px) {
         border-bottom: 1px solid #DDDDDD;
@@ -35,12 +39,18 @@ const Heading = styled.div`
     }
 `;
 
-const MarketMakerIcon = styled.img`
+const MarketMakerIconContainer = styled.div`
+    border: 1px solid #DDDDDD;
     display: block;
     margin-right: 20px;
-    height: 40px;
-    width: 40px;
-    border: 1px solid #DDDDDD;
+    height: 60px;
+    width: 60px;
+`;
+
+const MarketMakerIcon = styled.img`
+    display: block;
+    height: 60px;
+    width: 60px;
 `;
 
 const Title = styled.h3`
@@ -153,6 +163,38 @@ const Website = styled.a`
 `;
 
 const TitleContainer = styled.div`
+`;
+
+const LeftSideContainer = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    flex-basis: 280px;
+`;
+
+const RightSideContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex-basis: 194px;
+    min-width: 138px;
+`;
+
+const DeclaredStakeText = styled.div`
+    font-size: 14px;
+    line-height: 17px;
+    margin-bottom: 8px;
+    font-weight: 300;
+    color: ${colors.textDarkSecondary};
+`;
+
+const StakeAmountText = styled.div`
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 6px;
+    /* disables zero strikethroughs */
+    font-feature-settings: normal;
+    color: ${colors.black};
 `;
 
 export const MarketMaker: React.FC<MarketMakerProps> = props => {

@@ -217,6 +217,7 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
         if (shouldFocusOnInit) {
             input.current.focus();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

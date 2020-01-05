@@ -1,12 +1,24 @@
-import { logUtils } from '@0x/utils';
-import React, { useEffect, useState } from 'react';
+import { BigNumber, logUtils } from '@0x/utils';
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import { History } from 'history';
+import qs from 'query-string';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { usePreviousDistinct } from 'react-use';
 import styled from 'styled-components';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
-import { WizardFlow } from 'ts/components/staking/wizard/wizard_flow';
-import { WizardInfo } from 'ts/components/staking/wizard/wizard_info';
+import { Status } from 'ts/components/staking/wizard/status';
+import {
+    ConnectWalletPane,
+    MarketMakerStakeInputPane,
+    RecommendedPoolsStakeInputPane,
+    StartStaking,
+    TokenApprovalPane,
+} from 'ts/components/staking/wizard/wizard_flow';
+import { ConfirmationWizardInfo, IntroWizardInfo, TokenApprovalInfo } from 'ts/components/staking/wizard/wizard_info';
 
 import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
@@ -14,7 +26,17 @@ import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
 
 import { State } from 'ts/redux/reducer';
-import { Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice } from 'ts/types';
+import {
+    AccountReady,
+    AccountState,
+    Epoch,
+    Network,
+    PoolWithStats,
+    ProviderState,
+    UserStakingChoice,
+    WebsitePaths,
+} from 'ts/types';
+import { constants } from 'ts/utils/constants';
 
 export interface StakingWizardProps {
     providerState: ProviderState;
@@ -28,21 +50,113 @@ const Container = styled.div`
     position: relative;
 `;
 
+// These are the primary states (controlled by routing).
+// Within these, there are substates.
+// We do this to control routing/back/forward in the wizard
+export enum RouterWizardSteps {
+    Start = 'start',
+    Stake = 'stake',
+}
+
+export enum WizardSteps {
+    // 'Start' steps.
+    ConnectWallet = 'CONNECT_WALLET',
+    Empty = 'EMPTY',
+    NoZrxInWallet = 'NO_ZRX_IN_WALLET',
+    MarketMakerEntry = 'MARKET_MAKER_ENTRY',
+    RecomendedEntry = 'RECOMENDED_ENTRY',
+    // 'Stake' steps.
+    TokenApproval = 'TOKEN_APPROVAL',
+    CoreWizard = 'CORE_WIZARD',
+}
+
+export enum WizardInfoSteps {
+    IntroductionStats = 'INTRODUCTION',
+    Confirmation = 'CONFIRMATION',
+    TokenApproval = 'TOKEN_APPROVAL',
+}
+
+export interface IUSeWizardResult {
+    currentStep: RouterWizardSteps;
+    next: (nextStep: RouterWizardSteps) => void;
+    back: () => void;
+}
+
+const DEFAULT_STEP = RouterWizardSteps.Start;
+
+const useStakingWizard = (selectedStakingPools?: UserStakingChoice[]): IUSeWizardResult => {
+    const { step } = useQuery<{ poolId: string | undefined; step: RouterWizardSteps | undefined }>();
+    const history: History = useHistory();
+    const queryParams = useQuery();
+
+    // Default to initial step if none/invalid one provided
+    // OR if a user loads a url directly to mid-progress wizard without requied data, redirect back to start page
+    useEffect(() => {
+        if (!step || (step !== RouterWizardSteps.Start && !selectedStakingPools)) {
+            return history.replace(
+                `${WebsitePaths.StakingWizard}?${qs.stringify({
+                    ...queryParams,
+                    step: DEFAULT_STEP,
+                })}`,
+            );
+        }
+    }, [step, history, queryParams, selectedStakingPools]);
+
+    // Right now, user-space will determine what the next step is.
+    const goToNextStep = useCallback(
+        nextStep => {
+            if (!nextStep) {
+                return;
+            }
+            history.push(
+                `${WebsitePaths.StakingWizard}?${qs.stringify({
+                    ...queryParams,
+                    step: nextStep,
+                })}`,
+            );
+        },
+        [history, queryParams],
+    );
+
+    const goToPreviousStep = useCallback(() => {
+        history.goBack();
+    }, [history]);
+
+    return {
+        currentStep: step || DEFAULT_STEP,
+        next: goToNextStep,
+        back: goToPreviousStep,
+    };
+};
+
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
     // If coming from the market maker page, poolId will be provided
-    const { poolId } = useQuery<{ poolId: string | undefined }>();
+    const { poolId } = useQuery<{ poolId: string | undefined; step: RouterWizardSteps }>();
 
     const networkId = useSelector((state: State) => state.networkId);
     const providerState = useSelector((state: State) => state.providerState);
     const apiClient = useAPIClient(networkId);
 
     const [stakingPools, setStakingPools] = useState<PoolWithStats[] | undefined>(undefined);
-    const [userSelectedStakingPools, setUserSelectedStakingPools] = React.useState<UserStakingChoice[] | undefined>(undefined);
+    const [selectedStakingPools, setSelectedStakingPools] = React.useState<UserStakingChoice[] | undefined>(undefined);
     const [currentEpochStats, setCurrentEpochStats] = useState<Epoch | undefined>(undefined);
     const [nextEpochStats, setNextEpochStats] = useState<Epoch | undefined>(undefined);
 
     const stake = useStake(networkId, providerState);
     const allowance = useAllowance();
+
+    const allowanceBaseUnits =
+        (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
+
+    const doesNeedTokenApproval = allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);
+
+    const { zrxBalanceBaseUnitAmount } = providerState.account as AccountReady;
+    let zrxBalance: BigNumber | undefined;
+    if (zrxBalanceBaseUnitAmount) {
+        zrxBalance = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
+    }
+
+    const { currentStep, next, back } = useStakingWizard(selectedStakingPools);
 
     // Load stakingPools
     useEffect(() => {
@@ -78,31 +192,114 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         fetchAndSetEpochs();
     }, [networkId, apiClient]);
 
+    // TODO(johnrjj) - I'll clean this up in the next pass.
+    // The important part is the wizard logic is centralized here now.
+    // Determine right pane (wizard flow) state.
+    let wizardFlowStep: WizardSteps = WizardSteps.Empty;
+    // First half of wizard
+    if (currentStep === RouterWizardSteps.Start) {
+        // We're currently in the first part
+        if (providerState.account.state !== AccountState.Ready) {
+            wizardFlowStep = WizardSteps.ConnectWallet;
+        } else if (!zrxBalanceBaseUnitAmount) {
+            // TODO(johnrjj) - This should also add a spinner to the ConnectWallet panel
+            // e.g. at this point, the wallet is connected but loading stuff via redux/etc
+            wizardFlowStep = WizardSteps.ConnectWallet;
+        } else if (!zrxBalance || zrxBalance.isLessThan(1)) {
+            // No balance...
+            wizardFlowStep = WizardSteps.NoZrxInWallet;
+        } else {
+            if (!selectedStakingPools && poolId) {
+                // Coming from market maker entry
+                wizardFlowStep = WizardSteps.MarketMakerEntry;
+            } else {
+                // Coming from wizard/recommendation entry
+                wizardFlowStep = WizardSteps.RecomendedEntry;
+            }
+        }
+    } else if (currentStep === RouterWizardSteps.Stake) {
+        // Core wizard
+        // tslint:disable-next-line: prefer-conditional-expression
+        if (doesNeedTokenApproval) {
+            wizardFlowStep = WizardSteps.TokenApproval;
+        } else {
+            wizardFlowStep = WizardSteps.CoreWizard;
+        }
+    }
+    // Derive left pane (wizard info) step from the right pane.
+    let wizardInfoStep: WizardInfoSteps;
+    if (wizardFlowStep === WizardSteps.CoreWizard) {
+        wizardInfoStep = WizardInfoSteps.Confirmation;
+    } else if (wizardFlowStep === WizardSteps.TokenApproval) {
+        wizardInfoStep = WizardInfoSteps.TokenApproval;
+    } else {
+        wizardInfoStep = WizardInfoSteps.IntroductionStats;
+    }
+
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
             <Container>
                 <Splitview
                     leftComponent={
-                        <WizardInfo
-                            currentEpochStats={currentEpochStats}
-                            nextEpochStats={nextEpochStats}
-                            selectedStakingPools={userSelectedStakingPools}
-                        />
+                        <>
+                            {wizardInfoStep === WizardInfoSteps.IntroductionStats && (
+                                <IntroWizardInfo currentEpochStats={currentEpochStats} />
+                            )}
+                            {wizardInfoStep === WizardInfoSteps.TokenApproval && <TokenApprovalInfo />}
+                            {wizardInfoStep === WizardInfoSteps.Confirmation && (
+                                <ConfirmationWizardInfo nextEpochStats={nextEpochStats} />
+                            )}
+                        </>
                     }
                     rightComponent={
-                        <WizardFlow
-                            currentEpochStats={currentEpochStats}
-                            nextEpochStats={nextEpochStats}
-                            selectedStakingPools={userSelectedStakingPools}
-                            setSelectedStakingPools={setUserSelectedStakingPools}
-                            stakingPools={stakingPools}
-                            stake={stake}
-                            allowance={allowance}
-                            networkId={networkId}
-                            providerState={providerState}
-                            onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
-                            poolId={poolId}
-                        />
+                        <>
+                            {wizardFlowStep === WizardSteps.ConnectWallet && (
+                                <ConnectWalletPane onOpenConnectWalletDialog={props.onOpenConnectWalletDialog} />
+                            )}
+                            {wizardFlowStep === WizardSteps.NoZrxInWallet && (
+                                <Status
+                                    title="You have no ZRX balance. You will need some to stake."
+                                    linkText="Go buy some ZRX"
+                                    linkUrl={`https://www.rexrelay.com/instant/?defaultSelectedAssetData=${constants.ZRX_ASSET_DATA}`}
+                                />
+                            )}
+                            {wizardFlowStep === WizardSteps.MarketMakerEntry && (
+                                <MarketMakerStakeInputPane
+                                    poolId={poolId}
+                                    zrxBalance={zrxBalance}
+                                    stakingPools={stakingPools}
+                                    onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
+                                    setSelectedStakingPools={setSelectedStakingPools}
+                                    onClickNextStepButton={() => next(RouterWizardSteps.Stake)}
+                                />
+                            )}
+                            {wizardFlowStep === WizardSteps.RecomendedEntry && (
+                                <RecommendedPoolsStakeInputPane
+                                    onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
+                                    setSelectedStakingPools={setSelectedStakingPools}
+                                    stakingPools={stakingPools}
+                                    zrxBalance={zrxBalance}
+                                    onClickNextStepButton={() => next(RouterWizardSteps.Stake)}
+                                />
+                            )}
+                            {wizardFlowStep === WizardSteps.TokenApproval && (
+                                <TokenApprovalPane
+                                    allowance={allowance}
+                                    nextEpochStats={nextEpochStats}
+                                    providerState={providerState}
+                                    selectedStakingPools={selectedStakingPools}
+                                />
+                            )}
+                            {wizardFlowStep === WizardSteps.CoreWizard && (
+                                <StartStaking
+                                    address={(providerState.account as AccountReady).address}
+                                    stake={stake}
+                                    nextEpochStats={nextEpochStats}
+                                    providerState={providerState}
+                                    selectedStakingPools={selectedStakingPools}
+                                />
+                            )}
+                        </>
                     }
                 />
             </Container>
