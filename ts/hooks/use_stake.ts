@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 
 import { AccountReady, ProviderState, StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
+import { analytics } from 'ts/utils/analytics';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
@@ -209,23 +210,47 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         stakingContract,
         depositAndStake: (stakePoolData: StakePoolData[], callback?: () => void) => {
             depositAndStakeAsync(stakePoolData)
+                .then(() => {
+                    analytics.track(constants.STAKING.TRACKING.STAKE, { success: true });
+                })
                 .then(callback)
-                .catch(handleError);
+                .catch((err: Error) => {
+                    analytics.track(constants.STAKING.TRACKING.STAKE, { success: false });
+                    handleError(err);
+                });
         },
         unstake: (stakePoolData: StakePoolData[], callback?: () => void) => {
             unstakeFromPoolsAsync(stakePoolData)
+                .then(() => {
+                    analytics.track(constants.STAKING.TRACKING.UNSTAKE, { success: true });
+                })
                 .then(callback)
-                .catch(handleError);
+                .catch((err: Error) => {
+                    analytics.track(constants.STAKING.TRACKING.UNSTAKE, { success: false });
+                    handleError(err);
+                });
         },
         withdrawStake: (zrxAmountBaseUnits: BigNumber, callback?: () => void) => {
             withdrawStakeAsync(zrxAmountBaseUnits)
+                .then(() => {
+                    analytics.track(constants.STAKING.TRACKING.WITHDRAW_STAKE, { success: true });
+                })
                 .then(callback)
-                .catch(handleError);
+                .catch((err: Error) => {
+                    analytics.track(constants.STAKING.TRACKING.WITHDRAW_STAKE, { success: false });
+                    handleError(err);
+                });
         },
         withdrawRewards: (poolIds: string[], callback?: () => void) => {
             withdrawRewardsAsync(poolIds)
+                .then(() => {
+                    analytics.track(constants.STAKING.TRACKING.WITHDRAW_REWARDS, { success: true });
+                })
                 .then(callback)
-                .catch(handleError);
+                .catch((err: Error) => {
+                    analytics.track(constants.STAKING.TRACKING.WITHDRAW_REWARDS, { success: false });
+                    handleError(err);
+                });
         },
         estimatedTransactionFinishTime,
     };

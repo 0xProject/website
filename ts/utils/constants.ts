@@ -25,6 +25,15 @@ export const constants = {
     } as { [networkId: number]: number },
     STAKING: {
         NIL_POOL_ID: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        TRACKING: {
+            STAKING_AMOUNT_EVENT: 'Staking Amount',
+            CONNECT_WALLET: 'Connect Wallet',
+            STAKE: 'Stake',
+            UNSTAKE: 'Unstake',
+            WITHDRAW_STAKE: 'Withdraw Stake',
+            WITHDRAW_REWARDS: 'Withdraw Rewards',
+            START_STAKING_SCREEN_VIEWED: 'Start Staking Screen Viewed',
+        },
     },
     GUIDE_OLDER_VERSIONS: 'browsing-docs-on-github',
     HOME_SCROLL_DURATION_MS: 500,

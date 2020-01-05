@@ -458,7 +458,7 @@ export const Account: React.FC<AccountProps> = () => {
                     ) : (
                         delegatorData.forCurrentEpoch.poolData
                             // Don't show pools with pending withdrawals, they are shown in pending section instead
-                            .filter(p => !pendingUnstakePoolSet.has(p.poolId))
+                            .filter(p => !pendingUnstakePoolSet.has(p.poolId) && p.zrxStaked > 0)
                             .map(delegatorPoolStats => {
                                 const poolId = delegatorPoolStats.poolId;
                                 const pool = poolWithStatsMap[poolId];
