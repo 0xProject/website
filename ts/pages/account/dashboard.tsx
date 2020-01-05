@@ -384,16 +384,18 @@ export const Account: React.FC<AccountProps> = () => {
                         let subtitle: string;
                         let statLabel: string;
                         if (type === PendingActionType.Unstake) {
-                            title = `${getFormattedAmount(amount, 'ZRX')} will be removed from ${(pool &&
-                                pool.metaData.name) ||
-                                `Pool ${poolId}`}`;
+                            title = `${getFormattedAmount(
+                                amount,
+                                'ZRX',
+                            )} will be removed from ${utils.getPoolDisplayName(pool)}`;
 
                             subtitle = 'Your tokens will need to be manually withdrawn once they are removed';
                             statLabel = 'Withdraw date';
                         } else {
-                            title = `${getFormattedAmount(amount, 'ZRX')} will be staked with ${(pool &&
-                                pool.metaData.name) ||
-                                `Pool ${poolId}`} in ${differenceInCalendarDays(
+                            title = `${getFormattedAmount(
+                                amount,
+                                'ZRX',
+                            )} will be staked with ${utils.getPoolDisplayName(pool)} in ${differenceInCalendarDays(
                                 new Date(nextEpochStats.epochStart.timestamp),
                                 now,
                             )} days`;
@@ -479,7 +481,7 @@ export const Account: React.FC<AccountProps> = () => {
                                     <AccountStakeOverview
                                         key={`stake-${pool.poolId}`}
                                         poolId={pool.poolId}
-                                        name={pool.metaData.name || `Pool ${pool.poolId}`}
+                                        name={utils.getPoolDisplayName(pool)}
                                         websiteUrl={pool.metaData.websiteUrl}
                                         operatorAddress={pool.operatorAddress}
                                         logoUrl={pool.metaData.logoUrl}

@@ -17,6 +17,7 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 import { State } from 'ts/redux/reducer';
 import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
+import { utils } from 'ts/utils/utils';
 
 export interface ActionProps {
     children: React.ReactNode;
@@ -274,7 +275,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
     return (
         <StakingPageLayout isHome={true} title="Staking pool">
             <DashboardHero
-                title={stakingPool.metaData.name}
+                title={utils.getPoolDisplayName(stakingPool)}
                 websiteUrl={stakingPool.metaData.websiteUrl}
                 poolId={stakingPool.poolId}
                 operatorAddress={stakingPool.operatorAddress}
@@ -310,12 +311,9 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                                 // No good way to show rewards shared of an epoch in progress (currentEpoch) right now.
                                 // Defaulting to dash ('-') for now
                                 number: `${
-                                    formatEther(
-                                        '0',
-                                        {
-                                            zeroStyled: true,
-                                        },
-                                    ).formatted
+                                    formatEther('0', {
+                                        zeroStyled: true,
+                                    }).formatted
                                 } ETH`,
                             },
                         ],

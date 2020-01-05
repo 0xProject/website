@@ -556,4 +556,17 @@ export const utils = {
 
         return `0x${_n.toString(16).padStart(64, '0')}`;
     },
+    getPoolDisplayName({ poolId, metaData }: { poolId: string; metaData?: { name?: string } }): string {
+        const name = metaData && metaData.name;
+
+        if (!name) {
+            return `Pool ${poolId}`;
+        }
+
+        if (name.length <= 40) {
+            return name;
+        }
+
+        return `${name.slice(0, 37).trim()}...`;
+    },
 }; // tslint:disable:max-file-line-count
