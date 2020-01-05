@@ -30,6 +30,7 @@ import {
     WebsitePaths,
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
+import { stakingUtils } from 'ts/utils/staking_utils';
 import { utils } from 'ts/utils/utils';
 
 import { useAPIClient } from 'ts/hooks/use_api_client';
@@ -384,19 +385,20 @@ export const Account: React.FC<AccountProps> = () => {
                         let subtitle: string;
                         let statLabel: string;
                         if (type === PendingActionType.Unstake) {
-                            title = `${getFormattedAmount(amount, 'ZRX')} will be removed from ${(pool &&
-                                pool.metaData.name) ||
-                                `Pool ${poolId}`}`;
+                            title = `${getFormattedAmount(
+                                amount,
+                                'ZRX',
+                            )} will be removed from ${stakingUtils.getPoolDisplayName(pool)}`;
 
                             subtitle = 'Your tokens will need to be manually withdrawn once they are removed';
                             statLabel = 'Withdraw date';
                         } else {
-                            title = `${getFormattedAmount(amount, 'ZRX')} will be staked with ${(pool &&
-                                pool.metaData.name) ||
-                                `Pool ${poolId}`} in ${differenceInCalendarDays(
-                                new Date(nextEpochStats.epochStart.timestamp),
-                                now,
-                            )} days`;
+                            title = `${getFormattedAmount(
+                                amount,
+                                'ZRX',
+                            )} will be staked with ${stakingUtils.getPoolDisplayName(
+                                pool,
+                            )} in ${differenceInCalendarDays(new Date(nextEpochStats.epochStart.timestamp), now)} days`;
 
                             subtitle = 'Your tokens will be automatically staked when the new epoch starts';
                             statLabel = 'Staking starts';
@@ -479,7 +481,7 @@ export const Account: React.FC<AccountProps> = () => {
                                     <AccountStakeOverview
                                         key={`stake-${pool.poolId}`}
                                         poolId={pool.poolId}
-                                        name={pool.metaData.name || `Pool ${pool.poolId}`}
+                                        name={stakingUtils.getPoolDisplayName(pool)}
                                         websiteUrl={pool.metaData.websiteUrl}
                                         operatorAddress={pool.operatorAddress}
                                         logoUrl={pool.metaData.logoUrl}

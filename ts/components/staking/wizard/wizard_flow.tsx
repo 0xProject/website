@@ -342,7 +342,7 @@ const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => {
                         return (
                             <MarketMaker
                                 key={rec.pool.poolId}
-                                name={rec.pool.metaData.name || utils.getAddressBeginAndEnd(rec.pool.operatorAddress)}
+                                name={stakingUtils.getPoolDisplayName(rec.pool)}
                                 collectedFees={rec.pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
                                 rewards={1 - rec.pool.nextEpochStats.approximateStakeRatio}
                                 staked={rec.pool.nextEpochStats.approximateStakeRatio}
@@ -432,7 +432,7 @@ const MarketMakerStakeInputPane = (props: MarketMakerStakeInputPaneProps) => {
             <PoolsContainer>
                 <MarketMaker
                     key={marketMakerPool.poolId}
-                    name={marketMakerPool.metaData.name || utils.getAddressBeginAndEnd(marketMakerPool.operatorAddress)}
+                    name={stakingUtils.getPoolDisplayName(marketMakerPool)}
                     collectedFees={marketMakerPool.currentEpochStats.totalProtocolFeesGeneratedInEth}
                     rewards={1 - marketMakerPool.nextEpochStats.approximateStakeRatio}
                     staked={marketMakerPool.nextEpochStats.approximateStakeRatio}
@@ -638,7 +638,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                               `You're delegating ${stakingAmountTotalComputed} ZRX to ${
                                   selectedStakingPools.length > 1
                                       ? `${selectedStakingPools.length} pools`
-                                      : `${selectedStakingPools[0].pool.metaData.name || '1 pool'}`
+                                      : `${stakingUtils.getPoolDisplayName(selectedStakingPools[0].pool)}`
                               }`}
                     </CenteredHeader>
                     {selectedStakingPools &&
@@ -651,7 +651,7 @@ const StartStaking: React.FC<StartStakingProps> = props => {
                                     sendAmount={`${stakingPool.zrxAmount} ZRX`}
                                     selfIconUrl={'/images/toshi_logo.jpg'}
                                     receiveAmount="Staking rewards"
-                                    marketMakerName={stakingPool.pool.metaData.name}
+                                    marketMakerName={stakingUtils.getPoolDisplayName(stakingPool.pool)}
                                     marketMakerIconUrl={stakingPool.pool.metaData.logoUrl || '/images/toshi_logo.jpg'}
                                     isActive={true}
                                 />
