@@ -30,6 +30,7 @@ import {
     WebsitePaths,
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
+import { stakingUtils } from 'ts/utils/staking_utils';
 import { utils } from 'ts/utils/utils';
 
 import { useAPIClient } from 'ts/hooks/use_api_client';
@@ -387,7 +388,7 @@ export const Account: React.FC<AccountProps> = () => {
                             title = `${getFormattedAmount(
                                 amount,
                                 'ZRX',
-                            )} will be removed from ${utils.getPoolDisplayName(pool)}`;
+                            )} will be removed from ${stakingUtils.getPoolDisplayName(pool)}`;
 
                             subtitle = 'Your tokens will need to be manually withdrawn once they are removed';
                             statLabel = 'Withdraw date';
@@ -395,10 +396,9 @@ export const Account: React.FC<AccountProps> = () => {
                             title = `${getFormattedAmount(
                                 amount,
                                 'ZRX',
-                            )} will be staked with ${utils.getPoolDisplayName(pool)} in ${differenceInCalendarDays(
-                                new Date(nextEpochStats.epochStart.timestamp),
-                                now,
-                            )} days`;
+                            )} will be staked with ${stakingUtils.getPoolDisplayName(
+                                pool,
+                            )} in ${differenceInCalendarDays(new Date(nextEpochStats.epochStart.timestamp), now)} days`;
 
                             subtitle = 'Your tokens will be automatically staked when the new epoch starts';
                             statLabel = 'Staking starts';
@@ -481,7 +481,7 @@ export const Account: React.FC<AccountProps> = () => {
                                     <AccountStakeOverview
                                         key={`stake-${pool.poolId}`}
                                         poolId={pool.poolId}
-                                        name={utils.getPoolDisplayName(pool)}
+                                        name={stakingUtils.getPoolDisplayName(pool)}
                                         websiteUrl={pool.metaData.websiteUrl}
                                         operatorAddress={pool.operatorAddress}
                                         logoUrl={pool.metaData.logoUrl}

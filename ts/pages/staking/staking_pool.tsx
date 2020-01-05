@@ -17,7 +17,7 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 import { State } from 'ts/redux/reducer';
 import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
-import { utils } from 'ts/utils/utils';
+import { stakingUtils } from 'ts/utils/staking_utils';
 
 export interface ActionProps {
     children: React.ReactNode;
@@ -275,7 +275,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
     return (
         <StakingPageLayout isHome={true} title="Staking pool">
             <DashboardHero
-                title={utils.getPoolDisplayName(stakingPool)}
+                title={stakingUtils.getPoolDisplayName(stakingPool)}
                 websiteUrl={stakingPool.metaData.websiteUrl}
                 poolId={stakingPool.poolId}
                 operatorAddress={stakingPool.operatorAddress}

@@ -18,7 +18,7 @@ import { StakingHero } from 'ts/components/staking/hero';
 import { Heading } from 'ts/components/text';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
-import { utils } from 'ts/utils/utils';
+import { stakingUtils } from 'ts/utils/staking_utils';
 
 const sortByProtocolFeesDesc = (a: PoolWithStats, b: PoolWithStats) => {
     return b.currentEpochStats.totalProtocolFeesGeneratedInEth - a.currentEpochStats.totalProtocolFeesGeneratedInEth;
@@ -79,7 +79,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                                 to={_.replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}
                                 key={pool.poolId}
                                 poolId={pool.poolId}
-                                name={utils.getPoolDisplayName(pool)}
+                                name={stakingUtils.getPoolDisplayName(pool)}
                                 thumbnailUrl={pool.metaData.logoUrl}
                                 isVerified={pool.metaData.isVerified}
                                 address={pool.operatorAddress}
