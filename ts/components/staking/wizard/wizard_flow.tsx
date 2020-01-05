@@ -29,9 +29,6 @@ import { UseAllowanceHookResult } from 'ts/hooks/use_allowance';
 import { useSecondsRemaining } from 'ts/hooks/use_seconds_remaining';
 import { UseStakeHookResult } from 'ts/hooks/use_stake';
 
-// import { ApproveTokensInfoDialog } from 'ts/components/dialogs/approve_tokens_info_dialog';
-// import { StakingConfirmationDialog } from 'ts/components/dialogs/staking_confirmation_dialog';
-import { TransactionItem } from 'ts/components/staking/wizard/transaction_item';
 import { Newsletter } from 'ts/pages/staking/wizard/newsletter';
 
 import { constants } from 'ts/utils/constants';
@@ -39,7 +36,6 @@ import { formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { analytics } from 'ts/utils/analytics';
-import { utils } from 'ts/utils/utils';
 
 const getFormattedTimeLeft = (secondsLeft: number) => {
     if (secondsLeft === 0) {
@@ -390,7 +386,14 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
 
-    const { stakingPools, setSelectedStakingPools, zrxBalance, onClickNextStepButton } = props;
+    const {
+        stakingPools,
+        setSelectedStakingPools,
+        zrxBalance,
+        poolId,
+        onClickNextStepButton,
+        onOpenConnectWalletDialog,
+    } = props;
 
     const roundedZrxBalance = formatZrx(zrxBalance).roundedValue;
     const roundedStakeAmount = formatZrx(stakeAmount).roundedValue;
@@ -399,7 +402,7 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
         return null;
     }
 
-    const marketMakerPool = _.find(stakingPools, p => p.poolId === props.poolId);
+    const marketMakerPool = _.find(stakingPools, p => p.poolId === poolId);
 
     if (!marketMakerPool) {
         // TODO(johnrjj) error state
@@ -439,7 +442,7 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
                     },
                     {
                         label: 'Change wallet',
-                        onClick: props.onOpenConnectWalletDialog,
+                        onClick: onOpenConnectWalletDialog,
                     },
                 ]}
             />
@@ -488,12 +491,11 @@ export interface StartStakingProps {
     stake: UseStakeHookResult;
     selectedStakingPools: UserStakingChoice[] | undefined;
     nextEpochStats?: Epoch;
-    address?: string;
 }
 
 // Core
 export const StartStaking: React.FC<StartStakingProps> = props => {
-    const { selectedStakingPools, stake, address, nextEpochStats } = props;
+    const { selectedStakingPools, stake, nextEpochStats, providerState } = props;
 
     const timeRemainingForStakingTransaction = useSecondsRemaining(stake.estimatedTransactionFinishTime);
 
@@ -501,132 +503,100 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
 
     // Implies success! Show success confirmation/newsletter
     if (selectedStakingPools && stake.result) {
-        // TODO needs the info header (start staking + begins in n days)
+        // TODO(johnrjj) Needs info header (start staking + begins in n days)
         return <Newsletter />;
     }
 
-    // Determine button to show based on state
-    let ActiveButon = null;
-    if (stake.loadingState) {
-        if (
-            stake.loadingState === TransactionLoadingState.WaitingForSignature ||
-            stake.loadingState === TransactionLoadingState.WaitingForTransaction
-        ) {
-            ActiveButon = (
-                <ButtonWithIcon
-                    isTransparent={true}
-                    borderColor="#DFE7E1"
-                    color={colors.textDarkSecondary}
-                    isDisabled={true}
-                >
-                    <SpinnerContainer>
-                        <Spinner height={22} color="#BEBEBE" />
-                    </SpinnerContainer>
-                    <span>
-                        {stake.loadingState === TransactionLoadingState.WaitingForSignature
-                            ? 'Waiting for signature'
-                            : getFormattedTimeLeft(timeRemainingForStakingTransaction)}
-                    </span>
-                </ButtonWithIcon>
-            );
-        } else if (stake.loadingState === TransactionLoadingState.Failed) {
-            ActiveButon = (
-                <ErrorButton
-                    message={'Transaction aborted'}
-                    secondaryButtonText={'Retry'}
-                    onClose={() => {
-                        /*noop*/
-                    }}
-                    onSecondaryClick={() =>
-                        stake.depositAndStake(
-                            selectedStakingPools.map(recommendation => ({
-                                poolId: recommendation.pool.poolId,
-                                zrxAmount: recommendation.zrxAmount,
-                            })),
-                        )
-                    }
-                />
-            );
-        }
-    }
-    if (!ActiveButon) {
-        ActiveButon = (
-            <ButtonWithIcon
-                onClick={async () => {
-                    const allowanceBaseUnits =
-                        (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
-                    stake.depositAndStake(
-                        selectedStakingPools.map(recommendation => ({
-                            poolId: recommendation.pool.poolId,
-                            zrxAmount: recommendation.zrxAmount,
-                        })),
-                    );
-                }}
-                color={colors.white}
-            >
-                Start staking
-            </ButtonWithIcon>
-        );
+    if (!selectedStakingPools) {
+        // TODO(johnrjj) - Error state
+        return null;
     }
 
-    if (selectedStakingPools) {
-        const stakingAmountTotalComputed = formatZrx(
-            selectedStakingPools.reduce((total, cur) => {
-                const newTotal = total.plus(new BigNumber(cur.zrxAmount));
-                return newTotal;
-            }, new BigNumber(0)),
-        ).formatted;
-        const stakingStartsFormattedTime = formatDistanceStrict(
-            new Date(),
-            new Date(nextEpochStats.epochStart.timestamp),
-        );
-        return (
-            <RelativeContainer>
-                <>
-                    <InfoHeader>
-                        <InfoHeaderItem>Start staking</InfoHeaderItem>
-                        <InfoHeaderItem style={{ color: colors.textDarkSecondary }}>
-                            Begins in {stakingStartsFormattedTime}
-                        </InfoHeaderItem>
-                    </InfoHeader>
-                    <Inner>
-                        <CenteredHeader>
-                            {stake.loadingState === TransactionLoadingState.WaitingForSignature
-                                ? `Please confirm in ${props.providerState.displayName || 'wallet'}`
-                                : stake.loadingState === TransactionLoadingState.WaitingForTransaction
-                                ? `Locking your tokens into staking pool`
-                                : // Default case
-                                  `You're delegating ${stakingAmountTotalComputed} ZRX to ${
-                                      selectedStakingPools.length > 1
-                                          ? `${selectedStakingPools.length} pools`
-                                          : `${stakingUtils.getPoolDisplayName(selectedStakingPools[0].pool)}`
-                                  }`}
-                        </CenteredHeader>
-                        {selectedStakingPools &&
-                            selectedStakingPools.map(stakingPool => {
-                                return (
-                                    <TransactionItem
-                                        key={stakingPool.pool.poolId}
-                                        marketMakerId={utils.getAddressBeginAndEnd(stakingPool.pool.operatorAddress)}
-                                        selfId={utils.getAddressBeginAndEnd(address)}
-                                        sendAmount={`${stakingPool.zrxAmount} ZRX`}
-                                        selfIconUrl={'/images/toshi_logo.jpg'}
-                                        receiveAmount="Staking rewards"
-                                        marketMakerName={stakingUtils.getPoolDisplayName(stakingPool.pool)}
-                                        marketMakerIconUrl={
-                                            stakingPool.pool.metaData.logoUrl || '/images/toshi_logo.jpg'
-                                        }
-                                        isActive={true}
-                                    />
+    const stakingAmountTotalComputed = formatZrx(
+        selectedStakingPools.reduce((total, cur) => {
+            const newTotal = total.plus(new BigNumber(cur.zrxAmount));
+            return newTotal;
+        }, new BigNumber(0)),
+    ).formatted;
+    const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(nextEpochStats.epochStart.timestamp));
+    return (
+        <RelativeContainer>
+            <>
+                <InfoHeader>
+                    <InfoHeaderItem>Start staking</InfoHeaderItem>
+                    <InfoHeaderItem style={{ color: colors.textDarkSecondary }}>
+                        Begins in {stakingStartsFormattedTime}
+                    </InfoHeaderItem>
+                </InfoHeader>
+                <Inner>
+                    <CenteredHeader>
+                        {stake.loadingState === TransactionLoadingState.WaitingForSignature ? (
+                            `Please confirm in ${providerState.displayName || 'wallet'}`
+                        ) : stake.loadingState === TransactionLoadingState.WaitingForTransaction ? (
+                            `Locking your tokens into staking pool`
+                        ) : (
+                            // Default case
+                            <>
+                                (`You're delegating ${stakingAmountTotalComputed} ZRX to $
+                                {selectedStakingPools.length > 1
+                                    ? `${selectedStakingPools.length} pools`
+                                    : `${stakingUtils.getPoolDisplayName(selectedStakingPools[0].pool)}`}
+                                `)
+                            </>
+                        )}
+                    </CenteredHeader>
+                    {!stake.loadingState ? (
+                        <ButtonWithIcon
+                            onClick={async () => {
+                                stake.depositAndStake(
+                                    selectedStakingPools.map(recommendation => ({
+                                        poolId: recommendation.pool.poolId,
+                                        zrxAmount: recommendation.zrxAmount,
+                                    })),
                                 );
-                            })}
-                        {ActiveButon}
-                    </Inner>
-                </>
-            </RelativeContainer>
-        );
-    }
-    return null;
+                            }}
+                            color={colors.white}
+                        >
+                            I understand, Stake my ZRX
+                        </ButtonWithIcon>
+                    ) : stake.loadingState === TransactionLoadingState.WaitingForSignature ||
+                      stake.loadingState === TransactionLoadingState.WaitingForTransaction ? (
+                        <ButtonWithIcon
+                            isTransparent={true}
+                            borderColor="#DFE7E1"
+                            color={colors.textDarkSecondary}
+                            isDisabled={true}
+                        >
+                            <SpinnerContainer>
+                                <Spinner height={22} color="#BEBEBE" />
+                            </SpinnerContainer>
+                            <span>
+                                {stake.loadingState === TransactionLoadingState.WaitingForSignature
+                                    ? 'Waiting for signature'
+                                    : getFormattedTimeLeft(timeRemainingForStakingTransaction)}
+                            </span>
+                        </ButtonWithIcon>
+                    ) : stake.loadingState === TransactionLoadingState.Failed ? (
+                        <ErrorButton
+                            message={'Transaction aborted'}
+                            secondaryButtonText={'Retry'}
+                            onClose={() => {
+                                /*noop*/
+                            }}
+                            onSecondaryClick={() =>
+                                stake.depositAndStake(
+                                    selectedStakingPools.map(recommendation => ({
+                                        poolId: recommendation.pool.poolId,
+                                        zrxAmount: recommendation.zrxAmount,
+                                    })),
+                                )
+                            }
+                        />
+                    ) : null}
+                </Inner>
+            </>
+        </RelativeContainer>
+    );
 };
 
 const RelativeContainer = styled.div`
