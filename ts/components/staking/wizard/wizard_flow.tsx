@@ -537,11 +537,10 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
                         ) : (
                             // Default case
                             <>
-                                (`You're delegating ${stakingAmountTotalComputed} ZRX to $
+                                You're delegating ${stakingAmountTotalComputed} ZRX to
                                 {selectedStakingPools.length > 1
                                     ? `${selectedStakingPools.length} pools`
                                     : `${stakingUtils.getPoolDisplayName(selectedStakingPools[0].pool)}`}
-                                `)
                             </>
                         )}
                     </CenteredHeader>

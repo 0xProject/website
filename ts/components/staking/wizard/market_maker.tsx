@@ -165,38 +165,6 @@ const Website = styled.a`
 const TitleContainer = styled.div`
 `;
 
-const LeftSideContainer = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    align-items: center;
-    flex-basis: 280px;
-`;
-
-const RightSideContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex-basis: 194px;
-    min-width: 138px;
-`;
-
-const DeclaredStakeText = styled.div`
-    font-size: 14px;
-    line-height: 17px;
-    margin-bottom: 8px;
-    font-weight: 300;
-    color: ${colors.textDarkSecondary};
-`;
-
-const StakeAmountText = styled.div`
-    font-size: 18px;
-    line-height: 22px;
-    margin-bottom: 6px;
-    /* disables zero strikethroughs */
-    font-feature-settings: normal;
-    color: ${colors.black};
-`;
-
 export const MarketMaker: React.FC<MarketMakerProps> = props => {
     const { name, collectedFees, rewards, staked, difference, iconUrl, website } = props;
 
