@@ -499,6 +499,7 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
 
     trackStartStakingScreenViewed();
 
+    // Implies success! Show success confirmation/newsletter
     if (selectedStakingPools && stake.result) {
         // TODO needs the info header (start staking + begins in n days)
         return <Newsletter />;
