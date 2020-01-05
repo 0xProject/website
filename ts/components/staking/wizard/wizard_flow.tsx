@@ -23,7 +23,9 @@ import { Inner } from 'ts/components/staking/wizard/inner';
 import { MarketMaker } from 'ts/components/staking/wizard/market_maker';
 import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
+import { Paragraph } from 'ts/components/text';
 import { Spinner } from 'ts/components/ui/spinner';
+import { UnlockIcon } from 'ts/components/ui/unlock_icon';
 
 import { UseAllowanceHookResult } from 'ts/hooks/use_allowance';
 import { useSecondsRemaining } from 'ts/hooks/use_seconds_remaining';
@@ -537,10 +539,10 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
                         ) : (
                             // Default case
                             <>
-                                You're delegating ${stakingAmountTotalComputed} ZRX to
+                                You're delegating {stakingAmountTotalComputed} ZRX to
                                 {selectedStakingPools.length > 1
-                                    ? `${selectedStakingPools.length} pools`
-                                    : `${stakingUtils.getPoolDisplayName(selectedStakingPools[0].pool)}`}
+                                    ? ` ${selectedStakingPools.length} pools`
+                                    : ` ${stakingUtils.getPoolDisplayName(selectedStakingPools[0].pool)}`}
                             </>
                         )}
                     </CenteredHeader>
@@ -602,15 +604,32 @@ const RelativeContainer = styled.div`
     position: relative;
 `;
 
+const DescriptionText = styled(Paragraph)`
+    text-align: center;
+    width: 80%;
+    margin: 0 auto 30px auto;
+`;
+
+const UnlockIconContainer = styled.div`
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 60px;
+`;
+
+const UnlockHeader = styled(CenteredHeader)`
+    height: inherit;
+    margin-bottom: 30px;
+`;
+
 export interface TokenApprovalPaneProps {
     providerState: ProviderState;
     allowance: UseAllowanceHookResult;
-    selectedStakingPools: UserStakingChoice[] | undefined;
-    nextEpochStats?: Epoch;
 }
 
 export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
-    const { providerState, selectedStakingPools, allowance, nextEpochStats } = props;
+    const { providerState, allowance } = props;
 
     const timeRemainingForAllowanceApproval = useSecondsRemaining(allowance.estimatedTransactionFinishTime);
 
@@ -664,33 +683,26 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
                 }}
                 color={colors.white}
             >
-                Approve dem tokens
+                Approve tokens
             </ButtonWithIcon>
         );
     }
 
-    if (selectedStakingPools) {
-        const stakingStartsFormattedTime = formatDistanceStrict(
-            new Date(),
-            new Date(nextEpochStats.epochStart.timestamp),
-        );
-        return (
-            <RelativeContainer>
-                <>
-                    <InfoHeader>
-                        <InfoHeaderItem>Start staking</InfoHeaderItem>
-                        <InfoHeaderItem style={{ color: colors.textDarkSecondary }}>
-                            Begins in {stakingStartsFormattedTime}
-                        </InfoHeaderItem>
-                    </InfoHeader>
-                    <Inner>
-                        <CenteredHeader>approve dem tokens</CenteredHeader>
-                        {ActiveButon}
-                    </Inner>
-                </>
-            </RelativeContainer>
-        );
-    }
-    return null;
+    return (
+        <RelativeContainer>
+            <Inner>
+                <UnlockIconContainer>
+                    <UnlockIcon />
+                </UnlockIconContainer>
+                <UnlockHeader>Unlock your ZRX</UnlockHeader>
+                <DescriptionText isMuted={false} color={colors.textDarkSecondary}>
+                    In order to stake you ZRX tokens you must first grant permissions to the 0x Staking Proxy contract.
+                    This will allow the contract to transfer the ZRX tokens you decide to stake, and start earning
+                    rewards.
+                </DescriptionText>
+                {ActiveButon}
+            </Inner>
+        </RelativeContainer>
+    );
     // tslint:disable-next-line: max-file-line-count
 };
