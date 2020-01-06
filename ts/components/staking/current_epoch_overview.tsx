@@ -19,7 +19,7 @@ const WrapperRow = styled.div`
     border-bottom: 1px solid ${colors.border};
 
     @media (max-width: 768px) {
-        display: none;
+        flex-direction: column;
     }
 `;
 
@@ -28,13 +28,23 @@ const OverviewItem = styled.div`
     flex-direction: column;
     align-items: center;
     padding-bottom: 60px;
+
+    @media (max-width: 768px) {
+        padding-bottom: 20px;
+        flex-direction: column-reverse;
+    }
 `;
 
 const Metric = styled(Text).attrs({
-    fontSize: '50px',
     fontWeight: '300',
     fontFamily: 'Formular, monospace',
-})``;
+})`
+    font-size: 50px;
+
+    @media (max-width: 768px) {
+        font-size: 34px;
+    }
+`;
 
 const Explanation = styled(Text).attrs({
     fontSize: '18px',
@@ -59,7 +69,7 @@ export const CurrentEpochOverview: React.FC<CurrentEpochOverviewProps> = ({
                 <Explanation>Epoch ends</Explanation>
             </OverviewItem>
             <OverviewItem>
-                <Metric>{currentEpochRewards ? formatEther(currentEpochRewards).full : '-'}</Metric>
+                <Metric>{currentEpochRewards ? formatEther(currentEpochRewards, { decimals: 2 }).full : '-'}</Metric>
                 <Explanation>Current epoch rewards</Explanation>
             </OverviewItem>
             <OverviewItem>
