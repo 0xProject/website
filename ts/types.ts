@@ -532,6 +532,7 @@ export enum WebsitePaths {
     Instant = '/instant',
     Ecosystem = '/eap',
     MarketMaker = '/market-maker',
+    StakingShortLink = '/zrx',
     Staking = '/zrx/staking',
     StakingWizard = '/zrx/staking/wizard',
     StakingWizardRemove = '/zrx/staking/wizard/remove',
