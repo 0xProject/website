@@ -55,7 +55,7 @@
         "is-mobile": "^0.2.2",
         "less": "^2.7.2",
         "lodash": "^4.17.11",
-        "lottie-web": "^5.5.7",
+        "lottie-web": "^5.5.10",
         "material-ui": "^0.20.0",
         "mersenne-twister": "^1.1.0",
         "moment": "2.21.0",
