@@ -85,7 +85,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         zrxBalance = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
     }
 
-    const { currentStep, next, back } = useStakingWizard(selectedStakingPools);
+    const { currentStep, next } = useStakingWizard(selectedStakingPools);
 
     // Load stakingPools
     useEffect(() => {
