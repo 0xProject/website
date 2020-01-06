@@ -13,21 +13,26 @@ interface MarketMakerProps {
     collectedFees: number;
     rewards: number;
     staked: number;
+    poolId: string;
+    operatorAddress: string;
     website: string;
     difference: string | number;
 }
 
 const Container = styled.div`
-    margin: 20px 0;
+    margin-bottom: 20px;
+    padding: 1px;
     border: 1px solid #DDDDDD;
     background-color: ${colors.white};
 `;
 
 const Heading = styled.div`
     display: flex;
+    flex: 1;
+    justify-content: space-between;
     align-items: center;
-    padding: 15px;
     position: relative;
+    padding: 20px;
 
     @media (min-width: 768px) {
         border-bottom: 1px solid #DDDDDD;
