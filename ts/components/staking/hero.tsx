@@ -126,7 +126,7 @@ export const StakingHero: React.FC<StakingHeroProps> = props => {
                     </Column>
                     {videoId && (
                         <Video>
-                            <VideoPlaceholder title="Play explainer video" onClick={onOpenVideo} />
+                            <VideoPlaceholder title="Play Video" onClick={onOpenVideo} />
                         </Video>
                     )}
                 </Row>

@@ -19,26 +19,46 @@ const Wrapper = styled.button`
 `;
 
 const Inner = styled.div`
-    background-color: ${colors.white};
+    background-color: ${colors.black};
     position: absolute;
     top: 0;
     left: 0;
+    bottom: 0;
+    right: 0;
     width: 100%;
     height: 100%;
+`;
+
+const CoverImage = styled.img`
+    height: 100%;
+    display: block;
+    max-width: 100%;
+    object-fit: cover;
+`;
+
+const TitleContainer = styled.div`
     display: flex;
+    position: absolute;
     align-items: center;
+    bottom: 0px;
+    left: 0px;
+    margin: 0 0 25px 25px;
 `;
 
 const Title = styled.h3`
-    color: ${colors.brandLight};
-    font-size: 20px;
-    width: 100%;
-    text-align: center;
+    color: ${colors.white};
+    font-size: 16px;
+    text-align: left;
     svg {
         path {
-            fill: ${colors.brandLight};
+            fill: ${colors.white};
         }
     }
+`;
+
+const StyledPlayIcon = styled(PlayIcon)`
+    height: 12px;
+    margin-right: 6px;
 `;
 
 export const VideoPlaceholder: React.FC<VideoPlaceholderProps> = props => {
@@ -47,9 +67,13 @@ export const VideoPlaceholder: React.FC<VideoPlaceholderProps> = props => {
     return (
         <Wrapper onClick={onClick}>
             <Inner>
-                <Title>
-                    <PlayIcon /> {title}
-                </Title>
+                <CoverImage src={'/images/zrx_staking_video_preview.png'} />
+                <TitleContainer>
+                    <Title>
+                        <StyledPlayIcon />
+                        {title}
+                    </Title>
+                </TitleContainer>
             </Inner>
         </Wrapper>
     );
