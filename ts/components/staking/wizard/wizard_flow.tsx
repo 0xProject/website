@@ -477,7 +477,7 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
                     }}
                     color={colors.white}
                 >
-                    Proceed to staking
+                    Next
                 </ButtonWithIcon>
             )}
         </>
@@ -546,6 +546,14 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
                             </>
                         )}
                     </CenteredHeader>
+                    <>
+                        {/* Your tokens will be locked. */}
+                        {/* Unlocking will take between 2-4 weeks (1-2 Epochs)  */}
+
+                        {/* You give 50% of your voting powers. */}
+                        {/* ...??? */}
+                    </>
+                    {/* Determine button to show */}
                     {!stake.loadingState ? (
                         <ButtonWithIcon
                             onClick={async () => {
@@ -558,7 +566,7 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
                             }}
                             color={colors.white}
                         >
-                            I understand, Stake my ZRX
+                            I understand, stake my ZRX
                         </ButtonWithIcon>
                     ) : stake.loadingState === TransactionLoadingState.WaitingForSignature ||
                       stake.loadingState === TransactionLoadingState.WaitingForTransaction ? (

@@ -39,18 +39,12 @@ const Heading = styled.div`
     }
 `;
 
-const MarketMakerIconContainer = styled.div`
-    border: 1px solid #DDDDDD;
-    display: block;
-    margin-right: 20px;
-    height: 60px;
-    width: 60px;
-`;
-
 const MarketMakerIcon = styled.img`
     display: block;
-    height: 60px;
-    width: 60px;
+    margin-right: 20px;
+    height: 40px;
+    width: 40px;
+    border: 1px solid #DDDDDD;
 `;
 
 const Title = styled.h3`

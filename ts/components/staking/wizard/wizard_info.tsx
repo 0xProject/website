@@ -109,18 +109,6 @@ const IntroMetric = styled.li`
     }
 `;
 
-export interface WizardInfoHeaderProps {
-    title: string;
-    description: string;
-}
-
-const WizardInfoHeader: React.FC<WizardInfoHeaderProps> = ({ title, description }) => (
-    <>
-        <IntroHeader>{title}</IntroHeader>
-        <IntroDescription>{description}</IntroDescription>
-    </>
-);
-
 const TokenApprovalHeader = styled.h1`
     font-size: 36px;
     font-weight: 300;
@@ -171,10 +159,12 @@ export const TokenApprovalInfo: React.FC<{}> = () => {
 export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats }) => {
     return (
         <>
-            <WizardInfoHeader
-                title="Start staking your tokens"
-                description="Use one pool of capital across multiple relayers to trade against a large group."
-            />
+            <>
+                <IntroHeader>Start staking your tokens</IntroHeader>
+                <IntroDescription>
+                    Use one pool of capital across multiple relayers to trade against a large group.
+                </IntroDescription>
+            </>
             <IntroMetrics>
                 <IntroMetric>
                     <h2>
@@ -215,10 +205,12 @@ export const ConfirmationWizardInfo: React.FC<ConfirmationWizardInfo> = ({ nextE
 
     return (
         <>
-            <WizardInfoHeader
-                title="Confirmation"
-                description="Use one pool of capital across multiple relayers to trade against a large group."
-            />
+            <>
+                <IntroHeader>Confirmation</IntroHeader>
+                <IntroDescription>
+                    Use one pool of capital across multiple relayers to trade against a large group.
+                </IntroDescription>
+            </>
             <Timeline
                 activeItemIndex={0}
                 items={[
