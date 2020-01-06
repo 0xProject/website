@@ -16,6 +16,7 @@ import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_
 import { StakingHero } from 'ts/components/staking/hero';
 import { Heading } from 'ts/components/text';
 import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useStake } from 'ts/hooks/use_stake';
 import { PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
@@ -27,7 +28,10 @@ export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
     const networkId = useSelector((state: State) => state.networkId);
+    const providerState = useSelector((state: State) => state.providerState);
+
     const apiClient = useAPIClient(networkId);
+    const { currentEpochRewards } = useStake(networkId, providerState);
 
     React.useEffect(() => {
         const fetchAndSetPoolsAsync = async () => {
@@ -44,6 +48,8 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         }
         return [...stakingPools.sort(sortByProtocolFeesDesc)];
     }, [stakingPools]);
+
+    console.log(currentEpochRewards && currentEpochRewards.toString());
 
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
