@@ -52,11 +52,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                 titleMobile="Start staking your tokens"
                 description="Use one pool of capital across multiple relayers to trade against a large group"
                 figure={<CFLMetrics />}
-                videoId="-UMhhM5z7cc"
-                youtubeOptions={{
-                    // Skip to the staking part of the ZRX explainer video
-                    start: 62,
-                }}
+                videoId="qP_oZAjRkTs"
                 actions={
                     <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
                         Get Started
