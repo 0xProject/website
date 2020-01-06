@@ -112,6 +112,7 @@ render(
                             Portal does currently does not support V3 architecture
                             //<Route path={WebsitePaths.Portal} component={LazyPortal} />
                                 */}
+                        <Redirect from={WebsitePaths.StakingShortLink} to={WebsitePaths.Staking} />
                         <Redirect from={`${WebsiteLegacyPaths.ZeroExJs}/:version?`} to={constants.URL_NPMJS_ZEROEXJS} />
                         <Redirect
                             from={`${WebsiteLegacyPaths.ContractWrappers}/:version?`}
