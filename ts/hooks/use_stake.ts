@@ -1,5 +1,5 @@
-import { ChainId, getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
-import { StakingContract, StakingProxyContract } from '@0x/contract-wrappers';
+import { ChainId, ContractAddresses, getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
+import { StakingContract, StakingProxyContract, WETH9Contract } from '@0x/contract-wrappers';
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { addMilliseconds } from 'date-fns';
@@ -25,6 +25,18 @@ const normalizeStakePoolData = (stakePoolData: StakePoolData[]) =>
         amountBaseUnits: toZrxBaseUnits(pool.zrxAmount),
     }));
 
+const toAggregatedStats = (stats: BigNumber[]) => {
+    const [rewardsAvailable, numPoolsToFinalize, totalFeesCollected, totalWeightedStake, totalRewardsFinalized] = stats;
+
+    return {
+        rewardsAvailable,
+        numPoolsToFinalize,
+        totalFeesCollected,
+        totalWeightedStake,
+        totalRewardsFinalized,
+    };
+};
+
 export interface UseStakeHookResult {
     depositAndStake: (stakingPools: StakePoolData[], callback?: () => void) => void;
     unstake: (stakePoolData: StakePoolData[], callback?: () => void) => void;
@@ -36,6 +48,7 @@ export interface UseStakeHookResult {
     result?: TransactionReceiptWithDecodedLogs;
     estimatedTimeMs?: number;
     estimatedTransactionFinishTime?: Date;
+    currentEpochRewards?: BigNumber;
 }
 
 export const useStake = (networkId: ChainId, providerState: ProviderState): UseStakeHookResult => {
@@ -44,10 +57,12 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
     const [result, setResult] = useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
     const [estimatedTimeMs, setEstimatedTimeMs] = useState<number | undefined>(undefined);
     const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = useState<Date | undefined>(undefined);
+    const [currentEpochRewards, setCurrentEpochRewards] = useState<BigNumber | undefined>(undefined);
 
     const [ownerAddress, setOwnerAddress] = useState<string | undefined>(undefined);
     const [stakingContract, setStakingContract] = useState<StakingContract>(undefined);
     const [stakingProxyContract, setStakingProxyContract] = useState<StakingProxyContract | undefined>(undefined);
+    const [contractAddresses, setContractAddresses] = useState<ContractAddresses | undefined>(undefined);
 
     useEffect(() => {
         const _ownerAddress = (providerState.account as AccountReady).address;
@@ -65,6 +80,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
                 from: _ownerAddress,
             }),
         );
+        setContractAddresses(_contractAddresses);
     }, [providerState, networkId]);
 
     const executeWithData = useCallback(
@@ -202,12 +218,55 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         setEstimatedTransactionFinishTime(estimate);
     }, [estimatedTimeMs]);
 
+    useEffect(() => {
+        // If we already have computed rewards or are missing some dependencies we should bail out
+        if (currentEpochRewards || !contractAddresses || !providerState || !stakingContract) {
+            return;
+        }
+
+        const getCurrentEpochRewards = async () => {
+            const { web3Wrapper } = providerState;
+
+            const stakingProxyAddress = contractAddresses.stakingProxy;
+            const wethContractAddress = await stakingContract.getWethContract().callAsync();
+            const wethContract = new WETH9Contract(wethContractAddress, providerState.provider);
+
+            const [ethBalanceInWei, wethBalanceInWei, currentEpoch, wethReservedForPoolRewards] = await Promise.all([
+                web3Wrapper.getBalanceInWeiAsync(stakingProxyAddress),
+                wethContract.balanceOf(stakingProxyAddress).callAsync(),
+                stakingContract.currentEpoch().callAsync(),
+                stakingContract.wethReservedForPoolRewards().callAsync(),
+            ]);
+
+            const prevEpoch = currentEpoch.minus(1);
+            const { rewardsAvailable, totalRewardsFinalized } = await stakingProxyContract
+                .aggregatedStatsByEpoch(prevEpoch)
+                .callAsync()
+                .then(toAggregatedStats);
+
+            const totalBalanceInWei = ethBalanceInWei.plus(wethBalanceInWei);
+            const prevEpochRollover = rewardsAvailable.minus(totalRewardsFinalized).plus(wethReservedForPoolRewards);
+            const _currentEpochRewards = Web3Wrapper.toUnitAmount(
+                totalBalanceInWei.minus(prevEpochRollover),
+                constants.DECIMAL_PLACES_ETH,
+            );
+
+            setCurrentEpochRewards(_currentEpochRewards);
+        };
+
+        getCurrentEpochRewards().catch((err: Error) => {
+            setCurrentEpochRewards(undefined);
+            logUtils.warn(err);
+        });
+    }, [contractAddresses, currentEpochRewards, providerState, stakingContract, stakingProxyContract]);
+
     return {
         loadingState,
         result,
         error,
         estimatedTimeMs,
         stakingContract,
+        currentEpochRewards,
         depositAndStake: (stakePoolData: StakePoolData[], callback?: () => void) => {
             depositAndStakeAsync(stakePoolData)
                 .then(() => {
