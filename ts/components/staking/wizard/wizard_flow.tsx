@@ -258,7 +258,6 @@ export interface StakingInputPaneProps {
     stakingPools: any;
     zrxBalance: BigNumber;
     onOpenConnectWalletDialog: () => any;
-    onClickNextStepButton?: () => any;
 }
 
 type AmountTrackingValue = '25%' | '50%' | '100%' | 'custom';
@@ -271,7 +270,7 @@ const trackStakingAmountSelected = _.debounce(
 );
 
 export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => {
-    const { stakingPools, setSelectedStakingPools, zrxBalance, onClickNextStepButton } = props;
+    const { stakingPools, setSelectedStakingPools, zrxBalance } = props;
 
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
@@ -352,9 +351,6 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
                 <ButtonWithIcon
                     onClick={() => {
                         setSelectedStakingPools(recommendedPools);
-                        if (onClickNextStepButton) {
-                            onClickNextStepButton();
-                        }
                     }}
                     color={colors.white}
                 >
@@ -371,7 +367,6 @@ export interface MarketMakerStakeInputPaneProps {
     zrxBalance: BigNumber;
     onOpenConnectWalletDialog: () => any;
     poolId: string;
-    onClickNextStepButton?: () => any;
 }
 
 export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps> = props => {
@@ -383,7 +378,6 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
         setSelectedStakingPools,
         zrxBalance,
         poolId,
-        onClickNextStepButton,
         onOpenConnectWalletDialog,
     } = props;
 
@@ -461,9 +455,6 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
                                 pool: marketMakerPool,
                             },
                         ]);
-                        if (onClickNextStepButton) {
-                            onClickNextStepButton();
-                        }
                     }}
                     color={colors.white}
                 >
