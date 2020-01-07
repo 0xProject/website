@@ -173,7 +173,7 @@ export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats }
                             : PLACEHOLDER}{' '}
                         ETH
                     </h2>
-                    <p>Total rewards collected</p>
+                    <p>Total rewards distributed</p>
                 </IntroMetric>
                 <IntroMetric>
                     <h2>{currentEpochStats ? formatZrx(currentEpochStats.zrxStaked).formatted : PLACEHOLDER} ZRX</h2>
@@ -207,9 +207,7 @@ export const ConfirmationWizardInfo: React.FC<ConfirmationWizardInfo> = ({ nextE
         <>
             <>
                 <IntroHeader>Confirmation</IntroHeader>
-                <IntroDescription>
-                    Use one pool of capital across multiple relayers to trade against a large group.
-                </IntroDescription>
+                <IntroDescription>Here's a recap of what is going to happen once you stake.</IntroDescription>
             </>
             <Timeline
                 activeItemIndex={0}
@@ -218,22 +216,23 @@ export const ConfirmationWizardInfo: React.FC<ConfirmationWizardInfo> = ({ nextE
                         date: nowFormattedDate,
                         fromNow: nowFormattedTime,
                         title: 'Locking your ZRX',
-                        description: 'Your declared staking pool is going to be locked in smart contract.',
+                        description: 'Your ZRX are safely transferred to the staking contracts.',
                         isActive: true,
                     },
                     {
                         date: stakingStartsFormattedDate,
                         fromNow: stakingStartsFormattedTime,
                         title: 'Staking starts',
-                        description: 'Your staking pool is included in the Market Maker score along with voting power.',
+                        description:
+                            'You start collecting rewards with the staking pool, based with their trading activity and total stake.',
                         isActive: false,
                     },
                     {
                         date: firstRewardsFormattedDate,
                         fromNow: firstRewardsFormattedTime,
-                        title: 'First rewards',
+                        title: 'First rewards available',
                         description:
-                            'You are going to receive first rewards, at this point you can opt out without consequences.',
+                            'You are able to collect your first rewards, available in the account section. Keep your stake to continue getting rewards.',
                         isActive: false,
                     },
                 ]}
