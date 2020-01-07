@@ -64,7 +64,9 @@ export const CurrentEpochOverview: React.FC<CurrentEpochOverviewProps> = ({
         <WrapperRow>
             <OverviewItem>
                 <Metric>
-                    {currentEpochEndDate ? `${differenceInCalendarDays(currentEpochEndDate, now)} days` : '-'}
+                    {currentEpochEndDate
+                        ? `${Math.max(differenceInCalendarDays(currentEpochEndDate, now), 0)} days`
+                        : '-'}
                 </Metric>
                 <Explanation>Epoch ends</Explanation>
             </OverviewItem>

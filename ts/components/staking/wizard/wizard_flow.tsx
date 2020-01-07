@@ -336,8 +336,8 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
                                 key={rec.pool.poolId}
                                 name={stakingUtils.getPoolDisplayName(rec.pool)}
                                 collectedFees={rec.pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
-                                rewards={1 - rec.pool.nextEpochStats.approximateStakeRatio}
-                                staked={rec.pool.nextEpochStats.approximateStakeRatio}
+                                rewardsShared={1 - rec.pool.currentEpochStats.operatorShare}
+                                staked={rec.pool.currentEpochStats.approximateStakeRatio}
                                 iconUrl={rec.pool.metaData.logoUrl}
                                 website={rec.pool.metaData.websiteUrl}
                                 difference={rec.zrxAmount}
@@ -373,13 +373,7 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
 
-    const {
-        stakingPools,
-        setSelectedStakingPools,
-        zrxBalance,
-        poolId,
-        onOpenConnectWalletDialog,
-    } = props;
+    const { stakingPools, setSelectedStakingPools, zrxBalance, poolId, onOpenConnectWalletDialog } = props;
 
     const roundedZrxBalance = formatZrx(zrxBalance).roundedValue;
     const roundedStakeAmount = formatZrx(stakeAmount).roundedValue;
@@ -439,8 +433,8 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
                     key={marketMakerPool.poolId}
                     name={stakingUtils.getPoolDisplayName(marketMakerPool)}
                     collectedFees={marketMakerPool.currentEpochStats.totalProtocolFeesGeneratedInEth}
-                    rewards={1 - marketMakerPool.nextEpochStats.approximateStakeRatio}
-                    staked={marketMakerPool.nextEpochStats.approximateStakeRatio}
+                    rewardsShared={1 - marketMakerPool.currentEpochStats.operatorShare}
+                    staked={marketMakerPool.currentEpochStats.approximateStakeRatio}
                     iconUrl={marketMakerPool.metaData.logoUrl}
                     website={marketMakerPool.metaData.websiteUrl}
                     difference={roundedStakeAmount}
