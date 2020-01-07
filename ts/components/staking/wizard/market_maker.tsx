@@ -11,7 +11,7 @@ interface MarketMakerProps {
     name: string;
     iconUrl: string;
     collectedFees: number;
-    rewards: number;
+    rewardsShared: number;
     staked: number;
     poolId: string;
     operatorAddress: string;
@@ -22,7 +22,7 @@ interface MarketMakerProps {
 const Container = styled.div`
     margin-bottom: 20px;
     padding: 1px;
-    border: 1px solid #DDDDDD;
+    border: 1px solid #dddddd;
     background-color: ${colors.white};
 `;
 
@@ -35,7 +35,7 @@ const Heading = styled.div`
     padding: 20px;
 
     @media (min-width: 768px) {
-        border-bottom: 1px solid #DDDDDD;
+        border-bottom: 1px solid #dddddd;
         padding: 30px;
     }
 `;
@@ -45,7 +45,7 @@ const MarketMakerIcon = styled.img`
     margin-right: 20px;
     height: 40px;
     width: 40px;
-    border: 1px solid #DDDDDD;
+    border: 1px solid #dddddd;
 `;
 
 const Title = styled.h3`
@@ -72,7 +72,7 @@ const Metrics = styled.ul`
 const Metric = styled.li`
     flex: 1;
     position: relative;
-    border-left: 1px solid #DDDDDD;
+    border-left: 1px solid #dddddd;
     text-align: center;
 
     &:first-child {
@@ -81,7 +81,7 @@ const Metric = styled.li`
     }
 
     @media (min-width: 768px) {
-        text-align: left    ;
+        text-align: left;
         padding: 8px 0 8px 30px;
     }
 `;
@@ -157,19 +157,22 @@ const Website = styled.a`
     }
 `;
 
-const TitleContainer = styled.div`
-`;
+const TitleContainer = styled.div``;
 
 export const MarketMaker: React.FC<MarketMakerProps> = props => {
-    const { name, collectedFees, rewards, staked, difference, iconUrl, website } = props;
+    const { name, collectedFees, rewardsShared, staked, difference, iconUrl, website } = props;
 
     return (
         <Container>
             <Heading>
                 {iconUrl && <MarketMakerIcon src={iconUrl} alt={name} />}
                 <TitleContainer>
-                    <Title>{name} <CheckIcon name="checkmark" size={15} /></Title>
-                    <Website href={website} target="_blank">{website}</Website>
+                    <Title>
+                        {name} <CheckIcon name="checkmark" size={15} />
+                    </Title>
+                    <Website href={website} target="_blank">
+                        {website}
+                    </Website>
                 </TitleContainer>
                 <Difference>+{formatZrx(difference).formatted} ZRX</Difference>
             </Heading>
@@ -182,8 +185,8 @@ export const MarketMaker: React.FC<MarketMakerProps> = props => {
                     </StyledInfoTooltip>
                 </Metric>
                 <Metric>
-                    <MetricTitle>Rewards</MetricTitle>
-                    <MetricAmount>{formatPercent(rewards * 100).formatted}%</MetricAmount>
+                    <MetricTitle>Rewards Shared</MetricTitle>
+                    <MetricAmount>{formatPercent(rewardsShared * 100).formatted}%</MetricAmount>
                     <StyledInfoTooltip id="rewards">
                         The percent of rewards the pool is sharing with stakers
                     </StyledInfoTooltip>
