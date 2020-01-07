@@ -1,36 +1,71 @@
 import * as React from 'react';
 
 // Importing a light build (only supporting svg renderer) for lottie (NB: still 40,9K gzipped :O )
-// React-lottie did not work with our animations for some reason (guessing some features were not yet supported)
-import lottie from 'lottie-web/build/player/lottie_light';
+import lottie, { AnimationItem } from 'lottie-web/build/player/lottie_light';
 
 interface IAnimationLoaderProps {
     name: string;
+    play?: boolean;
+    autoplay?: boolean;
+    loop?: boolean;
+    onComplete?: () => any;
+    onLoaded?: () => any;
 }
 
-export const AnimationLoader: React.FC<IAnimationLoaderProps> = ({ name }) => {
+// tslint:disable-next-line: boolean-naming
+export const AnimationLoader: React.FC<IAnimationLoaderProps> = ({ name, play, autoplay, loop, onComplete, onLoaded }) => {
     const container = React.useRef(null);
+    const lottieItem = React.useRef<AnimationItem | null>(null);
+    const [isLoaded, setIsLoaded] = React.useState<boolean>(false);
 
     React.useEffect(() => {
-        void loadAnimationAsync(name);
-    }, [name]);
+        const onCompleteCb = () => onComplete && onComplete();
+        const onLoadedCb = () => onLoaded && onLoaded();
 
-    const loadAnimationAsync = async (_name: string) => {
-        try {
-            const animationData = await import(/* webpackChunkName: "animation/[request]" */ `../../../public/animations/${_name}.json`);
+        const loadAnimationAsync = async (_name: string) => {
+            try {
+                const animationData = await import(/* webpackChunkName: "animation/[request]" */ `../../../public/animations/${_name}.json`);
 
-            lottie.loadAnimation({
-                container: container.current, // the dom element that will contain the animation
-                renderer: 'svg',
-                loop: true,
-                autoplay: true,
-                animationData,
-            });
-        } catch (error) {
-            // tslint:disable-next-line:no-console
-            console.error('Error loading animation');
+                const item = lottie.loadAnimation({
+                    name,
+                    container: container.current, // the dom element that will contain the animation
+                    renderer: 'svg',
+                    loop,
+                    autoplay: autoplay || play, // can we coallsce this?
+                    animationData,
+                });
+                item.addEventListener('complete', onCompleteCb);
+
+                lottieItem.current = item;
+                // lottieItem.current.resize();
+            } catch (error) {
+                // tslint:disable-next-line:no-console
+                console.error('Error loading animation');
+            }
+        };
+
+        void loadAnimationAsync(name)
+            .then(_ => setIsLoaded(true))
+            .then(_ => onLoadedCb());
+
+        return () => {
+            if (lottieItem.current) {
+                lottieItem.current.removeEventListener('complete', onCompleteCb);
+                lottieItem.current.destroy();
+            }
+        };
+    // Ignore play
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [name, autoplay, loop, onComplete, onLoaded]);
+
+    React.useEffect(() => {
+        if (!play) {
+            lottieItem.current.stop();
         }
-    };
+        if (play && isLoaded) {
+            lottieItem.current.play();
+        }
+    }, [play, isLoaded]);
 
     return <div ref={container} />;
 };

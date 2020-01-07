@@ -19,13 +19,13 @@ import {
 } from 'ts/types';
 
 import { Button } from 'ts/components/button';
+import { UnlockAnimation } from 'ts/components/staking/animation/unlock_animation';
 import { Inner } from 'ts/components/staking/wizard/inner';
 import { MarketMaker } from 'ts/components/staking/wizard/market_maker';
 import { NumberInput } from 'ts/components/staking/wizard/number_input';
 import { Status } from 'ts/components/staking/wizard/status';
 import { Paragraph } from 'ts/components/text';
 import { Spinner } from 'ts/components/ui/spinner';
-import { UnlockIcon } from 'ts/components/ui/unlock_icon';
 
 import { UseAllowanceHookResult } from 'ts/hooks/use_allowance';
 import { useSecondsRemaining } from 'ts/hooks/use_seconds_remaining';
@@ -636,13 +636,15 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
 
     const timeRemainingForAllowanceApproval = useSecondsRemaining(allowance.estimatedTransactionFinishTime);
 
+    const isPendingTransaction = (allowance.loadingState === TransactionLoadingState.WaitingForSignature ||
+    allowance.loadingState === TransactionLoadingState.WaitingForTransaction);
+    const isFailedTransaction = allowance.loadingState === TransactionLoadingState.Failed;
+    const isSuccessTransaction = allowance.loadingState === TransactionLoadingState.Success;
+
     // Determine button to show based on state
     let ActiveButon = null;
     if (allowance.loadingState) {
-        if (
-            allowance.loadingState === TransactionLoadingState.WaitingForSignature ||
-            allowance.loadingState === TransactionLoadingState.WaitingForTransaction
-        ) {
+        if (isPendingTransaction) {
             ActiveButon = (
                 <ButtonWithIcon
                     isTransparent={true}
@@ -660,7 +662,7 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
                     </span>
                 </ButtonWithIcon>
             );
-        } else if (allowance.loadingState === TransactionLoadingState.Failed) {
+        } else if (isFailedTransaction) {
             ActiveButon = (
                 <ErrorButton
                     message={'Allowance transaction aborted'}
@@ -695,7 +697,10 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
         <RelativeContainer>
             <Inner>
                 <UnlockIconContainer>
-                    <UnlockIcon />
+                    <UnlockAnimation
+                        isWaiting={isPendingTransaction}
+                        isUnlocked={isSuccessTransaction}
+                    />
                 </UnlockIconContainer>
                 <UnlockHeader>Unlock your ZRX</UnlockHeader>
                 <DescriptionText isMuted={false} color={colors.textDarkSecondary}>
