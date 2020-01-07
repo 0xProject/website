@@ -240,14 +240,11 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
             <Inner>
                 <Row>
                     <Column>
-                    {
-                        iconUrl
-                            ? <PoolIcon src={iconUrl} />
-                            : <Jazzicon
-                                seed={generateUniqueId(operatorAddress, poolId)}
-                                diameter={60}
-                            />
-                    }
+                        {iconUrl ? (
+                            <PoolIcon src={iconUrl} />
+                        ) : (
+                            <Jazzicon seed={generateUniqueId(operatorAddress, poolId)} diameter={60} />
+                        )}
                         <Title>
                             {title ? title : `Staking Pool #${poolId}`}{' '}
                             {isVerified && (
@@ -280,7 +277,9 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                                 Start Staking
                             </StakingButton>
                             <Progressbar progress={estimatedStake} />
-                            <ProgressbarText>{formatPercent(estimatedStake).minimized}% estimated stake for next epoch</ProgressbarText>
+                            <ProgressbarText>
+                                {formatPercent(estimatedStake).minimized}% estimated stake
+                            </ProgressbarText>
                         </ButtonContainer>
                     </Column>
                     <Metrics>
