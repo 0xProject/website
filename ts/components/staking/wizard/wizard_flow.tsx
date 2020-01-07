@@ -524,10 +524,7 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
         <RelativeContainer>
             <>
                 <InfoHeader>
-                    <InfoHeaderItem>Start staking</InfoHeaderItem>
-                    <InfoHeaderItem style={{ color: colors.textDarkSecondary }}>
-                        Begins in {stakingStartsFormattedTime}
-                    </InfoHeaderItem>
+                    <InfoHeaderItem>Next epoch starts in {stakingStartsFormattedTime}</InfoHeaderItem>
                 </InfoHeader>
                 <Inner>
                     <CenteredHeader>
