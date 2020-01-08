@@ -93,7 +93,7 @@ export const Newsletter = () => {
                 return;
             }
             try {
-                await backendClient.subscribeToNewsletterAsync(email);
+                await backendClient.subscribeToNewsletterAsync(email.trim());
             } catch (e) {
                 logUtils.warn(`Unable to register email to newsletter`, email);
             }
