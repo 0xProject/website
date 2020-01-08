@@ -17,18 +17,22 @@ const SplitviewContainer = styled.div`
         flex-direction: row;
     }
 
-    & > div {
+    /* & > div {
         @media (min-width: 900px) {
             width: 50%;
         }
-    }
+    } */
 `;
 
 const Left = styled.div`
     padding: 60px 15px 30px 15px;
     display: flex;
+    flex: 1;
     flex-direction: column;
     justify-content: center;
+    height: calc(100vh - 160px);
+    max-height: 750px;
+    overflow: hidden;
 
     @media (min-width: 480px) {
         padding: 100px 15px;
@@ -45,14 +49,25 @@ const Left = styled.div`
 
 const Right = styled.div`
     display: flex;
+    flex: 1;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
+    overflow: hidden;
+    position: relative;
+    height: calc(100vh - 160px);
+    max-height: 750px;
+`;
+
+export const RightInner = styled.div`
+    position: relative;
     padding: 15px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 
     @media (min-width: 768px) {
         padding: 30px;
         background-color: ${colors.backgroundLightGrey};
-        max-height: 850px;
     }
     @media (min-width: 1140px) {
         padding: 60px;

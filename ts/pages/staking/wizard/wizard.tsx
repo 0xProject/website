@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import * as zeroExInstant from 'zeroExInstant';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
-import { Splitview } from 'ts/components/staking/wizard/splitview';
+import { RightInner, Splitview } from 'ts/components/staking/wizard/splitview';
 import { Status } from 'ts/components/staking/wizard/status';
 import {
     ConnectWalletPane,
@@ -49,6 +49,31 @@ const Container = styled.div`
     max-width: 1390px;
     margin: 0 auto;
     position: relative;
+`;
+
+const WizardFlowRelativeContainer = styled.div`
+    position: relative;
+    height: 100%;
+    width: 100%;
+`;
+
+const WizardFlowAbsoluteContainer = styled.div`
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    /* todo(johnrjj) - may need to break this out into another container */
+    overflow-y: auto;
+`;
+
+const WizardFlowFlexInnerContainer = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    max-height: 100%;
+    height: 100%;
+    width: 100%;
 `;
 
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
@@ -168,35 +193,41 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                         </>
                     }
                     rightComponent={
-                        <>
-                            {currentStep === WizardRouterSteps.SetupWizard && (
-                                <SetupStaking
-                                    onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
-                                    poolId={poolId}
-                                    setSelectedStakingPools={setSelectedStakingPools}
-                                    stakingPools={stakingPools}
-                                    zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
-                                    zrxBalance={zrxBalance}
-                                    providerState={providerState}
-                                    onGoToNextStep={handleClickNextStep}
-                                />
-                            )}
-                            {currentStep === WizardRouterSteps.ApproveTokens && (
-                                <TokenApprovalPane
-                                    allowance={allowance}
-                                    providerState={providerState}
-                                    onGoToNextStep={handleClickNextStep}
-                                />
-                            )}
-                            {currentStep === WizardRouterSteps.ReadyToStake && (
-                                <StartStaking
-                                    stake={stake}
-                                    nextEpochStats={nextEpochStats}
-                                    providerState={providerState}
-                                    selectedStakingPools={selectedStakingPools}
-                                />
-                            )}
-                        </>
+                        <RightInner>
+                            <WizardFlowRelativeContainer>
+                                <WizardFlowAbsoluteContainer>
+                                    <WizardFlowFlexInnerContainer>
+                                        {currentStep === WizardRouterSteps.SetupWizard && (
+                                            <SetupStaking
+                                                onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
+                                                poolId={poolId}
+                                                setSelectedStakingPools={setSelectedStakingPools}
+                                                stakingPools={stakingPools}
+                                                zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
+                                                zrxBalance={zrxBalance}
+                                                providerState={providerState}
+                                                onGoToNextStep={handleClickNextStep}
+                                            />
+                                        )}
+                                        {currentStep === WizardRouterSteps.ApproveTokens && (
+                                            <TokenApprovalPane
+                                                allowance={allowance}
+                                                providerState={providerState}
+                                                onGoToNextStep={handleClickNextStep}
+                                            />
+                                        )}
+                                        {currentStep === WizardRouterSteps.ReadyToStake && (
+                                            <StartStaking
+                                                stake={stake}
+                                                nextEpochStats={nextEpochStats}
+                                                providerState={providerState}
+                                                selectedStakingPools={selectedStakingPools}
+                                            />
+                                        )}
+                                    </WizardFlowFlexInnerContainer>
+                                </WizardFlowAbsoluteContainer>
+                            </WizardFlowRelativeContainer>
+                        </RightInner>
                     }
                 />
             </Container>

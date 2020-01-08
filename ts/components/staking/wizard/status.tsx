@@ -26,7 +26,7 @@ const StatusContainer = styled.div`
     border: 1px solid #dddddd;
 
     @media (min-width: 768px) {
-        min-height: 500px;
+        min-height: 450px;
         padding: 60px;
     }
 `;
