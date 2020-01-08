@@ -185,10 +185,11 @@ export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats }
 };
 
 export const ConfirmationWizardInfo: React.FC<ConfirmationWizardInfo> = ({ nextEpochStats }) => {
-    const stakingStartsEpochDate = new Date(nextEpochStats.epochStart.timestamp);
+
+    const stakingStartsEpochDate = new Date(nextEpochStats ? nextEpochStats.epochStart.timestamp : null);
     const ESTIMATED_EPOCH_LENGTH_IN_DAYS = 10;
     const firstRewardsEpochDate = addDays(
-        new Date(nextEpochStats.epochStart.timestamp),
+        stakingStartsEpochDate,
         ESTIMATED_EPOCH_LENGTH_IN_DAYS,
     );
 

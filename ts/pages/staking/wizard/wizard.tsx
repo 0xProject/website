@@ -1,6 +1,6 @@
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
@@ -20,9 +20,19 @@ import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
+import { useStakingWizard, WizardRouterSteps } from 'ts/hooks/use_wizard';
 
 import { State } from 'ts/redux/reducer';
-import { AccountReady, AccountState, Epoch, Network, PoolWithStats, ProviderState, UserStakingChoice } from 'ts/types';
+import {
+    AccountReady,
+    AccountState,
+    Epoch,
+    Network,
+    PoolWithStats,
+    ProviderState,
+    StakingPoolRecomendation,
+    UserStakingChoice,
+} from 'ts/types';
 import { constants } from 'ts/utils/constants';
 
 export interface StakingWizardProps {
@@ -36,26 +46,6 @@ const Container = styled.div`
     margin: 0 auto;
     position: relative;
 `;
-
-// Right pane states
-export enum WizardFlowSteps {
-    // 'Start' steps.
-    ConnectWallet = 'CONNECT_WALLET',
-    Empty = 'EMPTY',
-    NoZrxInWallet = 'NO_ZRX_IN_WALLET',
-    MarketMakerEntry = 'MARKET_MAKER_ENTRY',
-    RecomendedEntry = 'RECOMENDED_ENTRY',
-    // 'Stake' steps.
-    TokenApproval = 'TOKEN_APPROVAL',
-    CoreWizard = 'CORE_WIZARD',
-}
-
-// Left pane states
-export enum WizardInfoSteps {
-    IntroductionStats = 'INTRODUCTION',
-    Confirmation = 'CONFIRMATION',
-    TokenApproval = 'TOKEN_APPROVAL',
-}
 
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
     // If coming from the market maker page, poolId will be provided
@@ -118,45 +108,23 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         fetchAndSetEpochs();
     }, [networkId, apiClient]);
 
-    // TODO(johnrjj) - I'll clean this up in the next pass.
-    // The important part is the wizard logic is centralized here now.
-    // Determine right pane (wizard flow) state.
-    let wizardFlowStep: WizardFlowSteps = WizardFlowSteps.Empty;
-    // First half of wizard
-    // if (currentStep === WizardRouterSteps.Start) {
-    // We're currently in the first part
-    if (providerState.account.state !== AccountState.Ready) {
-        wizardFlowStep = WizardFlowSteps.ConnectWallet;
-    } else if (!zrxBalanceBaseUnitAmount) {
-        // TODO(johnrjj) - This should also add a spinner to the ConnectWallet panel
-        // e.g. at this point, the wallet is connected but loading stuff via redux/etc
-        wizardFlowStep = WizardFlowSteps.ConnectWallet;
-    } else if (!zrxBalance || zrxBalance.isLessThan(1)) {
-        // No balance...
-        wizardFlowStep = WizardFlowSteps.NoZrxInWallet;
-    } else if (!selectedStakingPools) {
-        // tslint:disable-next-line: prefer-conditional-expression
-        if (poolId) {
-            // Coming from market maker entry
-            wizardFlowStep = WizardFlowSteps.MarketMakerEntry;
-        } else {
-            // Coming from wizard/recommendation entry
-            wizardFlowStep = WizardFlowSteps.RecomendedEntry;
+    const { currentStep, next } = useStakingWizard();
+
+    const handleClickNextStep = useCallback(() => {
+        if (currentStep === WizardRouterSteps.SetupWizard) {
+            if (doesNeedTokenApproval) {
+                return next(WizardRouterSteps.ApproveTokens);
+            } else {
+                return next(WizardRouterSteps.ReadyToStake);
+            }
         }
-    } else if (doesNeedTokenApproval) {
-        wizardFlowStep = WizardFlowSteps.TokenApproval;
-    } else {
-        wizardFlowStep = WizardFlowSteps.CoreWizard;
-    }
-    // Derive left pane (wizard info) step from the right pane.
-    let wizardInfoStep: WizardInfoSteps;
-    if (wizardFlowStep === WizardFlowSteps.CoreWizard) {
-        wizardInfoStep = WizardInfoSteps.Confirmation;
-    } else if (wizardFlowStep === WizardFlowSteps.TokenApproval) {
-        wizardInfoStep = WizardInfoSteps.TokenApproval;
-    } else {
-        wizardInfoStep = WizardInfoSteps.IntroductionStats;
-    }
+        if (currentStep === WizardRouterSteps.ApproveTokens) {
+            // We block users to go back to ApproveToken panel once they've already approved.
+            // If they hit back, they'll go back to the setup panel (thanks to replace: true)
+            return next(WizardRouterSteps.ReadyToStake, { replace: true });
+        }
+        return next(WizardRouterSteps.ReadyToStake);
+    }, [currentStep, doesNeedTokenApproval, next]);
 
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
@@ -164,48 +132,37 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                 <Splitview
                     leftComponent={
                         <>
-                            {wizardInfoStep === WizardInfoSteps.IntroductionStats && (
+                            {currentStep === WizardRouterSteps.SetupWizard && (
                                 <IntroWizardInfo currentEpochStats={currentEpochStats} />
                             )}
-                            {wizardInfoStep === WizardInfoSteps.TokenApproval && <TokenApprovalInfo />}
-                            {wizardInfoStep === WizardInfoSteps.Confirmation && (
+                            {currentStep === WizardRouterSteps.ApproveTokens && <TokenApprovalInfo />}
+                            {currentStep === WizardRouterSteps.ReadyToStake && (
                                 <ConfirmationWizardInfo nextEpochStats={nextEpochStats} />
                             )}
                         </>
                     }
                     rightComponent={
                         <>
-                            {wizardFlowStep === WizardFlowSteps.ConnectWallet && (
-                                <ConnectWalletPane onOpenConnectWalletDialog={props.onOpenConnectWalletDialog} />
-                            )}
-                            {wizardFlowStep === WizardFlowSteps.NoZrxInWallet && (
-                                <Status
-                                    title="You have no ZRX balance. You will need some to stake."
-                                    linkText="Go buy some ZRX"
-                                    linkUrl={`https://www.rexrelay.com/instant/?defaultSelectedAssetData=${constants.ZRX_ASSET_DATA}`}
-                                />
-                            )}
-                            {wizardFlowStep === WizardFlowSteps.MarketMakerEntry && (
-                                <MarketMakerStakeInputPane
+                            {currentStep === WizardRouterSteps.SetupWizard && (
+                                <SetupStaking
+                                    onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
                                     poolId={poolId}
-                                    zrxBalance={zrxBalance}
-                                    stakingPools={stakingPools}
-                                    onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
-                                    setSelectedStakingPools={setSelectedStakingPools}
-                                />
-                            )}
-                            {wizardFlowStep === WizardFlowSteps.RecomendedEntry && (
-                                <RecommendedPoolsStakeInputPane
-                                    onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
                                     setSelectedStakingPools={setSelectedStakingPools}
                                     stakingPools={stakingPools}
+                                    zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
                                     zrxBalance={zrxBalance}
+                                    providerState={providerState}
+                                    onGoToNextStep={handleClickNextStep}
                                 />
                             )}
-                            {wizardFlowStep === WizardFlowSteps.TokenApproval && (
-                                <TokenApprovalPane allowance={allowance} providerState={providerState} />
+                            {currentStep === WizardRouterSteps.ApproveTokens && (
+                                <TokenApprovalPane
+                                    allowance={allowance}
+                                    providerState={providerState}
+                                    onGoToNextStep={handleClickNextStep}
+                                />
                             )}
-                            {wizardFlowStep === WizardFlowSteps.CoreWizard && (
+                            {currentStep === WizardRouterSteps.ReadyToStake && (
                                 <StartStaking
                                     stake={stake}
                                     nextEpochStats={nextEpochStats}
@@ -218,5 +175,94 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                 />
             </Container>
         </StakingPageLayout>
+    );
+};
+
+// TODO(johnrjj) - Deserves its own file...
+export interface SetupStakingProps {
+    providerState: ProviderState;
+    setSelectedStakingPools: React.Dispatch<React.SetStateAction<StakingPoolRecomendation[]>>;
+    onOpenConnectWalletDialog: () => void;
+    onGoToNextStep: () => void;
+    stakingPools?: PoolWithStats[];
+    zrxBalanceBaseUnitAmount?: BigNumber;
+    zrxBalance?: BigNumber;
+    poolId?: string;
+}
+
+// Substeps of the start step
+export enum WizardSetupSteps {
+    // 'Start' steps.
+    ConnectWallet = 'CONNECT_WALLET',
+    Empty = 'EMPTY',
+    NoZrxInWallet = 'NO_ZRX_IN_WALLET',
+    MarketMakerEntry = 'MARKET_MAKER_ENTRY',
+    RecomendedEntry = 'RECOMENDED_ENTRY',
+}
+
+const SetupStaking: React.FC<SetupStakingProps> = ({
+    providerState,
+    setSelectedStakingPools,
+    stakingPools,
+    onOpenConnectWalletDialog,
+    zrxBalanceBaseUnitAmount,
+    zrxBalance,
+    poolId,
+    onGoToNextStep,
+}) => {
+    let wizardFlowStep: WizardSetupSteps = WizardSetupSteps.Empty;
+    if (providerState.account.state !== AccountState.Ready) {
+        wizardFlowStep = WizardSetupSteps.ConnectWallet;
+    } else if (!zrxBalanceBaseUnitAmount) {
+        // TODO(johnrjj) - This should also add a spinner to the ConnectWallet panel
+        // e.g. at this point, the wallet is connected but loading stuff via redux/etc
+        wizardFlowStep = WizardSetupSteps.ConnectWallet;
+    } else if (!zrxBalance || zrxBalance.isLessThan(1)) {
+        // No balance...
+        wizardFlowStep = WizardSetupSteps.NoZrxInWallet;
+    } else {
+        // Otherwise, we're good to show either the MM or Recommendation pane
+        if (poolId) {
+            // Coming from market maker entry
+            wizardFlowStep = WizardSetupSteps.MarketMakerEntry;
+        } else {
+            // Coming from wizard/recommendation entry
+            wizardFlowStep = WizardSetupSteps.RecomendedEntry;
+        }
+    }
+
+    return (
+        <>
+            {wizardFlowStep === WizardSetupSteps.ConnectWallet && (
+                <ConnectWalletPane onOpenConnectWalletDialog={onOpenConnectWalletDialog} />
+            )}
+            {wizardFlowStep === WizardSetupSteps.NoZrxInWallet && (
+                <Status
+                    title="You have no ZRX balance. You will need some to stake."
+                    linkText="Go buy some ZRX"
+                    linkUrl={`https://www.rexrelay.com/instant/?defaultSelectedAssetData=${constants.ZRX_ASSET_DATA}`}
+                />
+            )}
+            {/* TODO(johnrjj) - Conslidate MM and Recommended panels */}
+            {wizardFlowStep === WizardSetupSteps.MarketMakerEntry && (
+                <MarketMakerStakeInputPane
+                    poolId={poolId}
+                    zrxBalance={zrxBalance}
+                    stakingPools={stakingPools}
+                    onOpenConnectWalletDialog={onOpenConnectWalletDialog}
+                    setSelectedStakingPools={setSelectedStakingPools}
+                    onGoToNextStep={onGoToNextStep}
+                />
+            )}
+            {wizardFlowStep === WizardSetupSteps.RecomendedEntry && (
+                <RecommendedPoolsStakeInputPane
+                    onOpenConnectWalletDialog={onOpenConnectWalletDialog}
+                    setSelectedStakingPools={setSelectedStakingPools}
+                    stakingPools={stakingPools}
+                    zrxBalance={zrxBalance}
+                    onGoToNextStep={onGoToNextStep}
+                />
+            )}
+        </>
     );
 };

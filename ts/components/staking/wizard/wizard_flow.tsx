@@ -258,6 +258,7 @@ export interface StakingInputPaneProps {
     stakingPools: any;
     zrxBalance: BigNumber;
     onOpenConnectWalletDialog: () => any;
+    onGoToNextStep: () => void;
 }
 
 type AmountTrackingValue = '25%' | '50%' | '100%' | 'custom';
@@ -351,6 +352,7 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
                 <ButtonWithIcon
                     onClick={() => {
                         setSelectedStakingPools(recommendedPools);
+                        props.onGoToNextStep();
                     }}
                     color={colors.white}
                 >
@@ -366,6 +368,7 @@ export interface MarketMakerStakeInputPaneProps {
     stakingPools: PoolWithStats[];
     zrxBalance: BigNumber;
     onOpenConnectWalletDialog: () => any;
+    onGoToNextStep: () => any;
     poolId: string;
 }
 
@@ -449,6 +452,7 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
                                 pool: marketMakerPool,
                             },
                         ]);
+                        props.onGoToNextStep();
                     }}
                     color={colors.white}
                 >
@@ -629,12 +633,21 @@ const UnlockHeader = styled(CenteredHeader)`
 export interface TokenApprovalPaneProps {
     providerState: ProviderState;
     allowance: UseAllowanceHookResult;
+    onGoToNextStep: () => void;
 }
 
 export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
-    const { providerState, allowance } = props;
+    const { providerState, allowance, onGoToNextStep } = props;
 
     const timeRemainingForAllowanceApproval = useSecondsRemaining(allowance.estimatedTransactionFinishTime);
+
+    // Simple effect that handles going to the next step when approval is done
+    // TODO(johnrjj) -- Hook up lottie animation complete to trigger next step
+    React.useLayoutEffect(() => {
+        if (allowance.loadingState && allowance.loadingState === TransactionLoadingState.Success) {
+            onGoToNextStep();
+        }
+    }, [allowance.loadingState, onGoToNextStep]);
 
     // Determine button to show based on state
     let ActiveButon = null;
