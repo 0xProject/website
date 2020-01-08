@@ -55,7 +55,7 @@ describe('formatNumber', () => {
 
     test('rounded value produces a number type for large numbers', () => {
         // tslint:disable-next-line: number-literal-format
-        const hundredMillion = formatNumber(new BigNumber(1234567890.1234567890), {
+        const hundredMillion = formatNumber(new BigNumber(1234567890.123456789), {
             decimals: 2,
             decimalsRounded: 2,
             roundDown: true,
@@ -151,6 +151,13 @@ describe('formatEther', () => {
         expect(millionEther.formatted).toBe('1,000,000.00000');
         expect(millionEther.full).toBe('1,000,000.00000 ETH');
     });
+
+    test('should handle base units with fromBaseUnits set', () => {
+        const wholeNumberBaseUnits = new BigNumber(12e18);
+        const wholeNumberFormatted = formatEther(wholeNumberBaseUnits, { fromBaseUnits: true });
+        expect(wholeNumberFormatted.formatted).toBe('12.00000');
+        expect(wholeNumberFormatted.full).toBe('12.00000 ETH');
+    });
 });
 
 describe('formatZrx', () => {
@@ -175,5 +182,12 @@ describe('formatZrx', () => {
         const millionZrx = formatZrx(1000000);
         expect(millionZrx.formatted).toBe('1,000,000.00');
         expect(millionZrx.full).toBe('1,000,000.00 ZRX');
+    });
+
+    test('should handle base units with fromBaseUnits set', () => {
+        const millionZrxBaseUnits = new BigNumber(1000000e18);
+        const millionZrxFormatted = formatZrx(millionZrxBaseUnits, { fromBaseUnits: true });
+        expect(millionZrxFormatted.formatted).toBe('1,000,000.00');
+        expect(millionZrxFormatted.full).toBe('1,000,000.00 ZRX');
     });
 });
