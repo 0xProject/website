@@ -1,3 +1,4 @@
+import { logUtils } from '@0x/utils';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -11,6 +12,8 @@ import { Inner } from 'ts/components/staking/wizard/inner';
 import { colors } from 'ts/style/colors';
 
 import { WebsitePaths } from 'ts/types';
+
+import { backendClient } from 'ts/utils/backend_client';
 
 const StyledHeading = styled(Heading)`
     text-align: center;
@@ -82,19 +85,26 @@ const StyledButton = styled(Button)`
 `;
 
 export const Newsletter = () => {
-    const onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
-        event.preventDefault();
-        alert('submit!');
-    };
+    const [email, setEmail] = React.useState<string>('');
+    const onSubmit = React.useCallback(
+        async (event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+            if (!email) {
+                return;
+            }
+            try {
+                await backendClient.subscribeToNewsletterAsync(email.trim());
+            } catch (e) {
+                logUtils.warn(`Unable to register email to newsletter`, email);
+            }
+        },
+        [email],
+    );
 
     return (
         <>
             <Inner>
-                <StyledHeading
-                    size={34}
-                    marginBottom="15px"
-                    fontWeight="400"
-                >
+                <StyledHeading size={34} marginBottom="15px" fontWeight="400">
                     Congratulations!
                 </StyledHeading>
 
@@ -107,7 +117,9 @@ export const Newsletter = () => {
                         name="email"
                         label="Subscribe for updates"
                         type="email"
+                        value={email}
                         width="full"
+                        onChange={e => setEmail(e.target.value)}
                         placeholder="Enter your e-mail"
                     />
 
@@ -118,11 +130,7 @@ export const Newsletter = () => {
             </Inner>
 
             <ButtonWrap>
-                <StyledButton
-                    borderColor="#D94F3D"
-                    bgColor={colors.white}
-                    isFullWidth={true}
-                >
+                <StyledButton borderColor="#D94F3D" bgColor={colors.white} isFullWidth={true}>
                     <Icon name="google" size={24} />
                     Add dates to Gmail
                 </StyledButton>

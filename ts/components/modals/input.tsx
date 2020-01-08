@@ -16,12 +16,13 @@ interface InputProps {
     width?: InputWidth | string;
     label?: string;
     type?: string;
+    value?: string;
     defaultValue?: string;
     errors?: ErrorProps;
     isErrors?: boolean;
     required?: boolean;
     placeholder?: string;
-    onChange?: (e: React.ChangeEvent) => void;
+    onChange?: (e: any) => void;
 }
 
 interface OptionSelectorProps {
@@ -68,12 +69,12 @@ export const CheckBoxInput = (props: CheckBoxProps) => {
 };
 
 export const Input = React.forwardRef((props: InputProps, ref?: React.Ref<HTMLInputElement>) => {
-    const { name, label, type, errors, defaultValue, onChange, width, className, placeholder } = props;
+    const { name, label, type, errors, defaultValue, onChange, width, className, placeholder, value } = props;
     const id = `input-${name}`;
     const componentType = type === 'textarea' ? 'textarea' : 'input';
     const isErrors = errors.hasOwnProperty(name) && errors[name] !== null;
     const errorMessage = isErrors ? errors[name] : null;
-    const inputProps = { name, type };
+    const inputProps = { name, type, value };
 
     return (
         <InputWrapper className={className} width={width}>
@@ -113,7 +114,7 @@ const StyledInput = styled.input`
     border-color: ${(props: InputProps) => props.isErrors && `#FD0000`};
 
     &::placeholder {
-        font-color: #C3C3C3;
+        color: #C3C3C3;
         font-family: 'Formular';
     }
 `;
