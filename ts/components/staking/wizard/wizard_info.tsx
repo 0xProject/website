@@ -211,7 +211,7 @@ export const ConfirmationWizardInfo: React.FC<ConfirmationWizardInfo> = ({ nextE
                         date: nowFormattedDate,
                         fromNow: nowFormattedTime,
                         title: 'Locking your ZRX',
-                        description: 'Your ZRX are safely transferred to the staking contracts.',
+                        description: 'Your ZRX is safely transferred to the staking contracts.',
                         isActive: true,
                     },
                     {
