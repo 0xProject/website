@@ -238,6 +238,11 @@ const HeaderWrap = styled(FlexWrap)`
         display: flex;
         padding-bottom: 0;
     }
+    /* HACK(johnrjj) 48px to make same height as the homepage
+    Need to find a better way to make header height static across subsites */
+    @media (min-width: 1200px) {
+        height: 48px;
+    }
 `;
 
 const NavLinks = styled.ul`
