@@ -34,6 +34,7 @@ import {
     UserStakingChoice,
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
+import { stakingUtils } from 'ts/utils/staking_utils';
 
 export interface StakingWizardProps {
     providerState: ProviderState;
@@ -79,7 +80,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         const fetchAndSetPools = async () => {
             try {
                 const poolsResponse = await apiClient.getStakingPoolsAsync();
-                setStakingPools(poolsResponse.stakingPools);
+                const activePools = (poolsResponse.stakingPools || []).filter(stakingUtils.isPoolActive);
+                setStakingPools(activePools);
             } catch (err) {
                 logUtils.warn(err);
                 setStakingPools([]);

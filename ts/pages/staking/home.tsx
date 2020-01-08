@@ -40,8 +40,9 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
 
     React.useEffect(() => {
         const fetchAndSetPoolsAsync = async () => {
-            const resp = await apiClient.getStakingPoolsAsync();
-            setStakingPools(resp.stakingPools);
+            const poolsResponse = await apiClient.getStakingPoolsAsync();
+            const activePools = (poolsResponse.stakingPools || []).filter(stakingUtils.isPoolActive);
+            setStakingPools(activePools);
         };
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPoolsAsync();
