@@ -224,7 +224,7 @@ export const ConfirmationWizardInfo: React.FC<ConfirmationWizardInfo> = ({ nextE
                         fromNow: stakingStartsFormattedTime,
                         title: 'Staking starts',
                         description:
-                            'You start collecting rewards with the staking pool, based with their trading activity and total stake.',
+                            'You start collecting rewards with the staking pool, based on their trading activity and total stake.',
                         isActive: false,
                     },
                     {
