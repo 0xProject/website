@@ -17,6 +17,7 @@ import { zIndex } from 'ts/style/z_index';
 import { AccountState, WebsitePaths } from 'ts/types';
 
 import { useWallet } from 'ts/hooks/use_wallet';
+import { colors } from 'ts/style/colors';
 
 interface HeaderProps {
     location?: Location;
@@ -105,6 +106,9 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
                         <DocsLogoWrap>
                             / <DocsLogoLink to={WebsitePaths.Staking}>ZRX</DocsLogoLink>
                         </DocsLogoWrap>
+                        <BetaTagContainer>
+                            <BetaTag>Beta</BetaTag>
+                        </BetaTagContainer>
                     </LogoWrap>
 
                     <MediaQuery minWidth={1200}>
@@ -137,6 +141,22 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
         </Headroom>
     );
 };
+
+const BetaTagContainer = styled.div`
+    padding: 6px 8px;
+    background-color: ${colors.backgroundLightGrey};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    margin-bottom: 4px;
+`;
+
+const BetaTag = styled.div`
+    font-size: 11px;
+    line-height: 13px;
+    color: ${colors.backgroundDark};
+`;
 
 const NavItem: React.FC<NavLinkProps> = ({ link }) => {
     const linkElement = link.url ? (
