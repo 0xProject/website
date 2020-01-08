@@ -83,6 +83,10 @@ const ButtonWithIcon = styled(Button)`
     width: 100%;
     justify-content: center;
     align-items: center;
+
+    &:hover {
+        cursor: ${props => props.isDisabled && 'not-allowed'};
+    }
 `;
 
 const SpinnerContainer = styled.span`
@@ -354,6 +358,7 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
             {statusNode}
             {recommendedPools && recommendedPools.length > 0 && (
                 <ButtonWithIcon
+                    isDisabled={isZeroAmountStakeInput || !stakeAmount}
                     onClick={() => {
                         setSelectedStakingPools(recommendedPools);
                         props.onGoToNextStep();
@@ -453,6 +458,7 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
             </PoolsContainer>
             {marketMakerPool && (
                 <ButtonWithIcon
+                    isDisabled={isZeroAmountStakeInput || !stakeAmount}
                     onClick={() => {
                         setSelectedStakingPools([
                             {
