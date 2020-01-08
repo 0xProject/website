@@ -49,14 +49,14 @@ const navItems: NavItemProps[] = [
         dropdownWidth: 300,
     },
     {
-        id: 'zrx',
-        text: 'ZRX',
-        url: WebsitePaths.Staking,
-    },
-    {
         id: 'docs',
         text: 'Docs',
         url: WebsitePaths.Docs,
+    },
+    {
+        id: 'zrx',
+        text: 'ZRX',
+        url: WebsitePaths.Staking,
     },
     {
         id: 'resources',
