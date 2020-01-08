@@ -262,7 +262,7 @@ const OtherWalletScreen = ({ onDismiss, onGoBack }: OtherWalletScreenProps) => (
         </Paragraph>
         <DashboardUrlWrapper>
             <Paragraph size={20} color={colors.textDarkPrimary} marginBottom="0">
-                https://0x.org/dashboard
+                https://0x.org/zrx
             </Paragraph>
         </DashboardUrlWrapper>
     </>
