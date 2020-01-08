@@ -7,7 +7,7 @@ import { Timeline } from 'ts/components/staking/wizard/timeline';
 import { colors } from 'ts/style/colors';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 
-import { Epoch } from 'ts/types';
+import { AllTimeStats, Epoch } from 'ts/types';
 
 const PLACEHOLDER = '—';
 
@@ -17,6 +17,7 @@ export interface ConfirmationWizardInfo {
 
 export interface WizardInfoProps {
     currentEpochStats: Epoch | undefined;
+    allTimeStats: AllTimeStats | undefined;
 }
 
 const IntroHeader = styled.h1`
@@ -156,7 +157,7 @@ export const TokenApprovalInfo: React.FC<{}> = () => {
     );
 };
 
-export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats }) => {
+export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats, allTimeStats }) => {
     return (
         <>
             <>
@@ -168,10 +169,7 @@ export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats }
             <IntroMetrics>
                 <IntroMetric>
                     <h2>
-                        {currentEpochStats
-                            ? formatEther(currentEpochStats.protocolFeesGeneratedInEth).minimized
-                            : PLACEHOLDER}{' '}
-                        ETH
+                        {allTimeStats ? formatEther(allTimeStats.totalRewardsPaidInEth).minimized : PLACEHOLDER} ETH
                     </h2>
                     <p>Total rewards distributed</p>
                 </IntroMetric>
@@ -185,13 +183,9 @@ export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats }
 };
 
 export const ConfirmationWizardInfo: React.FC<ConfirmationWizardInfo> = ({ nextEpochStats }) => {
-
     const stakingStartsEpochDate = new Date(nextEpochStats ? nextEpochStats.epochStart.timestamp : null);
     const ESTIMATED_EPOCH_LENGTH_IN_DAYS = 10;
-    const firstRewardsEpochDate = addDays(
-        stakingStartsEpochDate,
-        ESTIMATED_EPOCH_LENGTH_IN_DAYS,
-    );
+    const firstRewardsEpochDate = addDays(stakingStartsEpochDate, ESTIMATED_EPOCH_LENGTH_IN_DAYS);
 
     const now = new Date();
     const DATE_FORMAT = 'MM.dd';
