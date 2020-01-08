@@ -39,9 +39,6 @@ import { formatEther, formatZrx } from 'ts/utils/format_number';
 
 export interface AccountProps {}
 
-const getFormattedAmount = (amount: number, currency: string) =>
-    `${utils.getFormattedUnitAmount(new BigNumber(amount))} ${currency}`;
-
 interface DelegatorDataProps {
     delegatorData?: StakingAPIDelegatorResponse;
 }
@@ -308,12 +305,7 @@ export const Account: React.FC<AccountProps> = () => {
                                 </>
                             )}
                         >
-                            {
-                                formatZrx(
-                                    utils.getFormattedAmount(undelegatedBalanceBaseUnits, constants.DECIMAL_PLACES_ZRX),
-                                ).minimized
-                            }{' '}
-                            ZRX
+                            {formatZrx(undelegatedBalanceBaseUnits, { fromBaseUnits: true }).minimized} ZRX
                         </AccountFigure>
 
                         <AccountFigure
@@ -385,18 +377,16 @@ export const Account: React.FC<AccountProps> = () => {
                         let subtitle: string;
                         let statLabel: string;
                         if (type === PendingActionType.Unstake) {
-                            title = `${getFormattedAmount(
-                                amount,
-                                'ZRX',
-                            )} will be removed from ${stakingUtils.getPoolDisplayName(pool)}`;
+                            title = `${
+                                formatZrx(amount).minimized
+                            } ZRX will be removed from ${stakingUtils.getPoolDisplayName(pool)}`;
 
                             subtitle = 'Your tokens will need to be manually withdrawn once they are removed';
                             statLabel = 'Withdraw date';
                         } else {
-                            title = `${getFormattedAmount(
-                                amount,
-                                'ZRX',
-                            )} will be staked with ${stakingUtils.getPoolDisplayName(
+                            title = `${
+                                formatZrx(amount).minimized
+                            } ZRX will be staked with ${stakingUtils.getPoolDisplayName(
                                 pool,
                             )} in ${differenceInCalendarDays(new Date(nextEpochStats.epochStart.timestamp), now)} days`;
 
