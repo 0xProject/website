@@ -1,13 +1,13 @@
 import * as React from 'react';
 
 import { SiteWrap } from 'ts/components/siteWrap';
-import { Header as StakingHeader } from 'ts/containers/staking/header/header';
+import { Header as StakingHeader } from 'ts/components/staking/header/header';
 
 import { DocumentTitle } from 'ts/components/document_title';
 
 import { documentConstants } from 'ts/utils/document_meta_constants';
 
-import { ConnectWalletDialog } from 'ts/containers/connect_wallet_dialog';
+import { ConnectWalletDialog } from 'ts/components/dialogs/connect_wallet_dialog';
 
 interface IStakingPageLayoutProps {
     children: React.ReactNode;

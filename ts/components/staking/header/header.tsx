@@ -1,29 +1,27 @@
-import * as React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Headroom from 'react-headroom';
+import { useDispatch, useSelector } from 'react-redux';
 import MediaQuery from 'react-responsive';
 import styled, { css } from 'styled-components';
 
-import { Link } from 'ts/components/documentation/shared/link';
-
 import { MobileNav } from 'ts/components/docs/header/mobile_nav';
-import { SubMenu } from 'ts/components/staking/header/sub_menu';
-
+import { Link } from 'ts/components/documentation/shared/link';
 import { Hamburger } from 'ts/components/hamburger';
 import { Logo } from 'ts/components/logo';
 import { FlexWrap } from 'ts/components/newLayout';
-
+import { SubMenu } from 'ts/components/staking/header/sub_menu';
+import { Dispatcher } from 'ts/redux/dispatcher';
+import { State } from 'ts/redux/reducer';
 import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
+import { AccountState, WebsitePaths } from 'ts/types';
 
-import { AccountState, ProviderState, WebsitePaths } from 'ts/types';
+import { useWallet } from 'ts/hooks/use_wallet';
 
 interface HeaderProps {
     location?: Location;
     isNavToggled?: boolean;
     toggleMobileNav?: () => void;
-    onOpenConnectWalletDialog: () => void;
-    onLogoutWallet: () => void;
-    providerState: ProviderState;
 }
 
 interface NavLinkProps {
@@ -55,33 +53,37 @@ const navItems: NavItems[] = [
     },
 ];
 
-export const Header: React.FC<HeaderProps> = ({
-    isNavToggled,
-    providerState,
-    toggleMobileNav,
-    onOpenConnectWalletDialog,
-    onLogoutWallet,
-}) => {
-    const onUnpin = () => {
+export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav }) => {
+    const providerState = useSelector((state: State) => state.providerState);
+
+    const dispatch = useDispatch();
+    const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
+
+    useEffect(() => {
+        setDispatcher(new Dispatcher(dispatch));
+    }, [dispatch]);
+
+    const { logoutWallet } = useWallet();
+    const onUnpin = useCallback(() => {
         if (isNavToggled) {
             toggleMobileNav();
         }
-    };
+    }, [isNavToggled, toggleMobileNav]);
 
-    const unpinAndOpenWalletDialog = () => {
+    const unpinAndOpenWalletDialog = useCallback(() => {
         onUnpin();
-        onOpenConnectWalletDialog();
-    };
+        dispatcher.updateIsConnectWalletDialogOpen(true);
+    }, [dispatcher, onUnpin]);
 
-    const logoutWallet = () => {
+    const onLogoutWallet = useCallback(() => {
         onUnpin();
-        onLogoutWallet();
-    };
+        logoutWallet();
+    }, [logoutWallet, onUnpin]);
 
     const subMenu = (
         <SubMenu
             openConnectWalletDialogCB={unpinAndOpenWalletDialog}
-            logoutWalletCB={logoutWallet}
+            logoutWalletCB={onLogoutWallet}
             providerState={providerState}
         />
     );

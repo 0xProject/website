@@ -1,15 +1,20 @@
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
-import * as React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { Heading, Paragraph } from 'ts/components/text';
+import { Dispatcher } from 'ts/redux/dispatcher';
+import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
-import { AccountState, Network, Providers, ProviderState } from 'ts/types';
+import { AccountState, Providers } from 'ts/types';
 import { utils } from 'ts/utils/utils';
+
+import { useWallet } from 'ts/hooks/use_wallet';
 
 const StyledDialogOverlay = styled(DialogOverlay)`
     &[data-reach-dialog-overlay] {
@@ -263,14 +268,6 @@ const OtherWalletScreen = ({ onDismiss, onGoBack }: OtherWalletScreenProps) => (
     </>
 );
 
-interface ConnectWalletDialogProps {
-    isOpen: boolean;
-    networkId: Network;
-    providerState: ProviderState;
-    onDismiss: () => void;
-    onConnectWallet: (fallbackNetworkId: Network) => void;
-}
-
 interface ProviderInfo {
     name: string;
     providerType?: Providers;
@@ -284,61 +281,84 @@ interface WalletProviderCategory {
     providers: ProviderInfo[];
 }
 
-export const ConnectWalletDialog = ({
-    isOpen,
-    onDismiss,
-    networkId,
-    providerState,
-    onConnectWallet,
-}: ConnectWalletDialogProps) => {
-    const [shouldShowOtherWallets, setShouldShowOtherWallets] = React.useState(false);
+export const ConnectWalletDialog = () => {
+    const isOpen = useSelector((state: State) => state.isConnectWalletDialogOpen);
+    const providerState = useSelector((state: State) => state.providerState);
+
+    const dispatch = useDispatch();
+    const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
+    useEffect(() => {
+        setDispatcher(new Dispatcher(dispatch));
+    }, [dispatch]);
+
+    const [shouldShowOtherWallets, setShouldShowOtherWallets] = useState<boolean>(false);
+    const [walletProviders, setWalletProviders] = useState<WalletProviderCategory[]>([]);
+
     const isMobile = utils.isMobileOperatingSystem();
-    const onGoBack = () => setShouldShowOtherWallets(false);
 
-    const walletProviders: WalletProviderCategory[] = [];
+    const onGoBack = useCallback(() => setShouldShowOtherWallets(false), []);
+    const onCloseDialog = useCallback(() => dispatcher.updateIsConnectWalletDialogOpen(false), [dispatcher]);
 
-    if (providerState.account.state !== AccountState.None) {
-        walletProviders.push({
-            title: 'Detected wallet',
-            providers: [
-                {
-                    name: providerState.displayName,
-                    providerType: providerState.providerType,
-                    onClick: () => onConnectWallet(networkId),
-                },
-            ],
-        });
-    }
+    const { connectToWallet } = useWallet();
 
-    if (isMobile) {
-        walletProviders.push({
-            title: 'Mobile wallet',
-            providers: [
-                {
-                    name: 'Other mobile wallets',
-                    icon: (
-                        <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
-                            <IconPlus />
-                        </div>
-                    ),
-                    onClick: () => setShouldShowOtherWallets(true),
-                },
-            ],
-        });
-    }
+    useEffect(() => {
+        const _walletProviders: WalletProviderCategory[] = [];
+
+        if (providerState.account.state !== AccountState.None) {
+            _walletProviders.push({
+                title: 'Detected wallet',
+                providers: [
+                    {
+                        name: providerState.displayName,
+                        providerType: providerState.providerType,
+                        onClick: () => {
+                            connectToWallet();
+                            onCloseDialog();
+                        },
+                    },
+                ],
+            });
+        }
+
+        if (isMobile) {
+            _walletProviders.push({
+                title: 'Mobile wallet',
+                providers: [
+                    {
+                        name: 'Other mobile wallets',
+                        icon: (
+                            <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
+                                <IconPlus />
+                            </div>
+                        ),
+                        onClick: () => setShouldShowOtherWallets(true),
+                    },
+                ],
+            });
+        }
+
+        setWalletProviders(_walletProviders);
+    }, [
+        connectToWallet,
+        isMobile,
+        onCloseDialog,
+        providerState.account.state,
+        providerState.displayName,
+        providerState.providerType,
+    ]);
 
     return (
         <StyledDialogOverlay isOpen={isOpen}>
             <StyledDialogContent>
                 {shouldShowOtherWallets ? (
-                    <OtherWalletScreen onDismiss={onDismiss} onGoBack={onGoBack} />
+                    <OtherWalletScreen onDismiss={onCloseDialog} onGoBack={onGoBack} />
                 ) : (
                     <>
                         <HeadingRow>
                             <Heading asElement="h3" marginBottom="0">
                                 Connect a wallet
                             </Heading>
-                            <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onDismiss}>
+                            <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onCloseDialog}>
                                 <Icon name="close-modal" />
                             </ButtonClose>
                         </HeadingRow>
