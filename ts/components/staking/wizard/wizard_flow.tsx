@@ -203,8 +203,8 @@ const ErrorButton: React.FC<ErrorButtonProps> = props => {
     );
 };
 
-const getStatus = (stakeAmount: string, stakingPools?: PoolWithStats[]): React.ReactNode => {
-    if (stakeAmount === '') {
+const getStatus = (stakeAmount: number, stakingPools?: PoolWithStats[]): React.ReactNode => {
+    if (!stakeAmount) {
         return (
             <Status
                 title="Please select an amount of staked ZRX above to see matching Staking Pool."
@@ -277,13 +277,16 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
 
     const roundedZrxBalance = formatZrx(zrxBalance).roundedValue;
-    const statusNode = getStatus(stakeAmount, stakingPools);
     const roundedStakeAmount = formatZrx(stakeAmount, { removeComma: true }).roundedValue;
+    const statusNode = getStatus(roundedStakeAmount, stakingPools);
     const recommendedPools = stakingUtils.getRecommendedStakingPools(roundedStakeAmount, stakingPools);
+
+    const isStakeAmountAboveBalance = zrxBalance.isLessThan(roundedStakeAmount);
 
     return (
         <>
             <NumberInput
+                isError={isStakeAmountAboveBalance}
                 placeholder="Enter your stake"
                 topLabels={[`Available: ${roundedZrxBalance} ZRX`]}
                 labels={[StakingPercentageValue.Fourth, StakingPercentageValue.Half, StakingPercentageValue.All]}
@@ -392,9 +395,13 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
         return null;
     }
 
+    const isStakeAmountAboveBalance = zrxBalance.isLessThan(roundedStakeAmount);
+    const isZeroAmountStakeInput = stakeAmount && !roundedStakeAmount;
+
     return (
         <>
             <NumberInput
+                isError={isStakeAmountAboveBalance || isZeroAmountStakeInput}
                 placeholder="Enter your stake"
                 topLabels={[`Available: ${roundedZrxBalance} ZRX`]}
                 labels={[StakingPercentageValue.Fourth, StakingPercentageValue.Half, StakingPercentageValue.All]}
