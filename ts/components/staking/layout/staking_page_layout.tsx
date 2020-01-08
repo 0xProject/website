@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { SiteWrap } from 'ts/components/siteWrap';
-import { Header as StakingHeader } from 'ts/containers/staking/header/header';
+import { Header as StakingHeader } from 'ts/components/staking/header/header';
 
 import { DocumentTitle } from 'ts/components/document_title';
 

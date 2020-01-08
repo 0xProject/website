@@ -31,7 +31,7 @@ export const SiteWrap: React.FC<ISiteWrapProps> = props => {
 
     const Header = headerComponent || MainHeader;
 
-    const toggleMobileNav = () => setIsMobileNavOpen(!isMobileNavOpen);
+    const toggleMobileNav = React.useCallback(() => setIsMobileNavOpen(!isMobileNavOpen), [isMobileNavOpen]);
 
     return (
         <ThemeProvider theme={GLOBAL_THEMES[theme]}>
