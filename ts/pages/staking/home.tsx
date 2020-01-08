@@ -45,7 +45,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         };
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPoolsAsync();
-    }, [apiClient]);
+    }, [networkId, apiClient]);
 
     const sortedStakingPools: PoolWithStats[] | undefined = React.useMemo(() => {
         if (!stakingPools) {
