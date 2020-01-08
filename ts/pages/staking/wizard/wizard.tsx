@@ -26,6 +26,7 @@ import { State } from 'ts/redux/reducer';
 import {
     AccountReady,
     AccountState,
+    AllTimeStats,
     Epoch,
     Network,
     PoolWithStats,
@@ -59,6 +60,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const [selectedStakingPools, setSelectedStakingPools] = React.useState<UserStakingChoice[] | undefined>(undefined);
     const [currentEpochStats, setCurrentEpochStats] = useState<Epoch | undefined>(undefined);
     const [nextEpochStats, setNextEpochStats] = useState<Epoch | undefined>(undefined);
+    const [allTimeStats, setAllTimeStats] = useState<AllTimeStats | undefined>(undefined);
 
     const stake = useStake(networkId, providerState);
     const allowance = useAllowance();
@@ -99,13 +101,27 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                 setNextEpochStats(epochsResponse.nextEpoch);
             } catch (err) {
                 logUtils.warn(err);
-                setStakingPools([]);
+                setCurrentEpochStats(undefined);
+                setNextEpochStats(undefined);
             }
         };
-        setCurrentEpochStats(undefined);
-        setNextEpochStats(undefined);
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetEpochs();
+    }, [networkId, apiClient]);
+
+    useEffect(() => {
+        const fetchAndSetStakingStats = async () => {
+            try {
+                const stats = await apiClient.getStakingStatsAsync();
+                setAllTimeStats(stats.allTime);
+            } catch (err) {
+                logUtils.warn(err);
+                setAllTimeStats(undefined);
+            }
+        };
+
+        // tslint:disable-next-line:no-floating-promises
+        fetchAndSetStakingStats();
     }, [networkId, apiClient]);
 
     const { currentStep, next } = useStakingWizard();
@@ -133,7 +149,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                     leftComponent={
                         <>
                             {currentStep === WizardRouterSteps.SetupWizard && (
-                                <IntroWizardInfo currentEpochStats={currentEpochStats} />
+                                <IntroWizardInfo currentEpochStats={currentEpochStats} allTimeStats={allTimeStats} />
                             )}
                             {currentStep === WizardRouterSteps.ApproveTokens && <TokenApprovalInfo />}
                             {currentStep === WizardRouterSteps.ReadyToStake && (

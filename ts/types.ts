@@ -1187,10 +1187,12 @@ export interface StakingAPIEpochsResponse {
     nextEpoch: Epoch;
 }
 
+export interface AllTimeStats {
+    totalRewardsPaidInEth: number;
+}
+
 export interface StakingAPIStatsResponse {
-    allTime: {
-        totalRewardsPaidInEth: number;
-    };
+    allTime: AllTimeStats;
 }
 
 export interface StakingPoolRecomendation {
