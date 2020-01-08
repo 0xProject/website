@@ -45,7 +45,7 @@ const IntroDescription = styled.h2`
     text-align: center;
 
     @media (min-width: 480px) {
-        max-width: 340px;
+        max-width: 350px;
         text-align: left;
     }
 
@@ -161,9 +161,14 @@ export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats, 
     return (
         <>
             <>
-                <IntroHeader>Start staking your tokens</IntroHeader>
+                <IntroHeader>
+                    Start staking
+                    <br />
+                    your tokens
+                </IntroHeader>
                 <IntroDescription>
-                    Use one pool of capital across multiple relayers to trade against a large group.
+                    Maximize your rewards by delegating your tokens to market makers generating the greatest rewards for
+                    their pools.
                 </IntroDescription>
             </>
             <IntroMetrics>
