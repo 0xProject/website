@@ -95,7 +95,6 @@ export const stakingUtils = {
 
         return `${name.slice(0, 37).trim()}...`;
     },
-    // Internally we define an active pool with _some_ zrx staked for the next epoch.
     isPoolActive: (pool: PoolWithStats) => {
         return pool.currentEpochStats.totalProtocolFeesGeneratedInEth > 0 && pool.nextEpochStats.zrxStaked > 0;
     },
