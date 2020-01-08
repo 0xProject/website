@@ -284,7 +284,6 @@ interface WalletProviderCategory {
 export const ConnectWalletDialog = () => {
     const isOpen = useSelector((state: State) => state.isConnectWalletDialogOpen);
     const providerState = useSelector((state: State) => state.providerState);
-    const networkId = useSelector((state: State) => state.networkId);
 
     const dispatch = useDispatch();
     const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
@@ -297,7 +296,7 @@ export const ConnectWalletDialog = () => {
     const onGoBack = () => setShouldShowOtherWallets(false);
     const onCloseDialog = () => dispatcher.updateIsConnectWalletDialogOpen(false);
 
-    const { connectToWallet } = useWallet(networkId, providerState);
+    const { connectToWallet } = useWallet();
 
     const walletProviders: WalletProviderCategory[] = [];
 

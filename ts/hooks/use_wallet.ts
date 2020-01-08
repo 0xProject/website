@@ -1,6 +1,6 @@
 import { logUtils } from '@0x/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { Network, ProviderState } from 'ts/types';
@@ -10,16 +10,21 @@ import { analytics } from 'ts/utils/analytics';
 import { constants } from 'ts/utils/constants';
 import { providerStateFactory } from 'ts/utils/providers/provider_state_factory';
 
+import { State } from 'ts/redux/reducer';
+
 const PROVIDER_CHAIN_CHANGE_EVENT = 'chainChanged';
 const PROVIDER_ACCOUNTS_CHANGED_EVENT = 'accountsChanged';
 const PROVIDER_NETWORK_CHANGED_EVENT = 'networkChanged';
 
-export const useWallet = (currentNetworkId: Network, currentProviderState: ProviderState) => {
+export const useWallet = () => {
     const dispatch = useDispatch();
     const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
 
     const accountsChangedRef = useRef<() => void | undefined>(undefined);
     const networkChangedRef = useRef<(networkId: string) => void | undefined>(undefined);
+
+    const currentNetworkId = useSelector((state: State) => state.networkId);
+    const currentProviderState = useSelector((state: State) => state.providerState);
 
     useEffect(() => {
         setDispatcher(new Dispatcher(dispatch));
@@ -89,11 +94,17 @@ export const useWallet = (currentNetworkId: Network, currentProviderState: Provi
         });
     }, [cleanupCurrentProvider, currentNetworkId, dispatcher, handleAccountsChange, handleNetworksChange]);
 
+    const logoutWallet = useCallback(() => {
+        cleanupCurrentProvider();
+        dispatcher.setAccountStateLoading();
+    }, [cleanupCurrentProvider, dispatcher]);
+
     return {
         connectToWallet: () => {
             connectToWallet().catch((err: Error) => {
                 logUtils.warn(`Failed to connect wallet ${err}`);
             });
         },
+        logoutWallet,
     };
 };
