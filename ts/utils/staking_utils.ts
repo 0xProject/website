@@ -96,6 +96,6 @@ export const stakingUtils = {
         return `${name.slice(0, 37).trim()}...`;
     },
     isPoolActive: (pool: PoolWithStats) => {
-        return pool.currentEpochStats.totalProtocolFeesGeneratedInEth > 0 && pool.nextEpochStats.zrxStaked > 0;
+        return pool.currentEpochStats.totalProtocolFeesGeneratedInEth > 0 || pool.nextEpochStats.zrxStaked > 0;
     },
 };
