@@ -6,8 +6,8 @@ import { VideoPlaceholder } from 'ts/components/video_placeholder';
 import { colors } from 'ts/style/colors';
 
 interface StakingHeroProps {
-    title: string;
-    titleMobile: string;
+    title: string | React.ReactNode;
+    titleMobile: string | React.ReactNode;
     description: string;
     figure: React.ReactNode;
     actions: React.ReactNode;

@@ -75,7 +75,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
             <StakingHero
-                title="Earn liquidity rewards with ZRX"
+                title={<div>Earn liquidity<br/>rewards with ZRX</div>}
                 titleMobile="Earn liquidity rewards with ZRX"
                 description="Put your ZRX to work by staking with 0x market makers to earn rewards as the ecosystem grows."
                 figure={<CFLMetrics />}

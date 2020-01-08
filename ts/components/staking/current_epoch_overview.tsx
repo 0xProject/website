@@ -25,6 +25,7 @@ const WrapperRow = styled.div`
 
 const OverviewItem = styled.div`
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: center;
     padding-bottom: 60px;
@@ -51,6 +52,8 @@ const Explanation = styled(Text).attrs({
     fontWeight: '300',
     fontFamily: 'Formular, monospace',
     fontColor: '#999999',
+    textAlign: 'center',
+    width: '100%',
 })``;
 
 export const CurrentEpochOverview: React.FC<CurrentEpochOverviewProps> = ({
