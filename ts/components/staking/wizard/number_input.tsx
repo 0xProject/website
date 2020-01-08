@@ -33,7 +33,7 @@ interface BottomLabelComponentProps {
     item: BottomLabelProps;
 }
 
-interface InputContainerProps {
+interface InputProps {
     isError: boolean;
 }
 
@@ -41,7 +41,7 @@ const Container = styled.div`
     margin-bottom: 30px;
 `;
 
-const InputContainer = styled.div<InputContainerProps>`
+const InputContainer = styled.div<InputProps>`
     transition: border 0.3s ease;
     position: relative;
     height: 70px;
@@ -55,7 +55,7 @@ const InputContainer = styled.div<InputContainerProps>`
     }
 `;
 
-const Input = styled.input`
+const Input = styled.input<InputProps>`
     padding-left: 70px;
     /* HACK(johnrjj) - Input clashes with border of container for some reason, this fixes that */
     margin-left: 1px;
@@ -63,6 +63,7 @@ const Input = styled.input`
     border: 0;
     font-size: 20px;
     font-family: 'Formular', monospace;
+    color: ${props => (props.isError ? colors.orange : colors.black)}
     outline: none;
     width: 60%;
     &::placeholder {
@@ -217,7 +218,7 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
         if (shouldFocusOnInit) {
             input.current.focus();
         }
-    }, []);
+    }, [shouldFocusOnInit]);
 
     return (
         <Container>
@@ -232,6 +233,7 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
                     <Icon name="logo-mark" size={40} />
                 </ZrxIcon>
                 <Input
+                    isError={isError}
                     type="number"
                     name="stake"
                     placeholder={placeholder}
