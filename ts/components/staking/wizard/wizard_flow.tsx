@@ -211,8 +211,8 @@ const getStatus = (stakeAmount: number, stakingPools?: PoolWithStats[]): React.R
     if (stakeAmount <= 0) {
         return (
             <Status
-                title="Please select an amount of staked ZRX above to see matching Staking Pool."
-                linkText="or explore market maker list"
+                title="Please select an amount of ZRX above and find Staking Pools."
+                linkText="or explore the full list"
                 to={WebsitePaths.Staking}
             />
         );
