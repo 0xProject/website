@@ -2,6 +2,7 @@ import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { animated, useTransition } from 'react-spring';
 import styled from 'styled-components';
 import * as zeroExInstant from 'zeroExInstant';
 
@@ -75,6 +76,8 @@ const WizardFlowFlexInnerContainer = styled.div`
     height: 100%;
     width: 100%;
 `;
+
+const AnimatedWizardFlowAbsoluteContainer = animated(WizardFlowAbsoluteContainer);
 
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
     // If coming from the market maker page, poolId will be provided
@@ -173,6 +176,26 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         return next(WizardRouterSteps.ReadyToStake);
     }, [currentStep, doesNeedTokenApproval, next]);
 
+    // const handleClickBackStep = useCallback(() => {
+    //     if (currentStep === WizardRouterSteps.SetupWizard) {
+
+    //     }
+    // }, []);
+
+    const transitions = useTransition(currentStep, (s: string) => s, {
+        from: (s: any) => {
+            return { opacity: 0, transform: 'translate3d(100%, 0px, 0)' };
+        },
+        enter: () => {
+            return { opacity: 1, transform: 'translate3d(0%, 0px, 0)' };
+        },
+        leave: (s: any) => {
+            return { opacity: 0, transform: 'translate3d(-100%, 0px, 0)' };
+        },
+        // Don't animate first pane
+        initial: null,
+    });
+
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
             <Container>
@@ -195,9 +218,10 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                     rightComponent={
                         <RightInner>
                             <WizardFlowRelativeContainer>
-                                <WizardFlowAbsoluteContainer>
+                            {transitions.map(({ item: wizardStep, props: styleProps, key }) => (
+                                <AnimatedWizardFlowAbsoluteContainer key={key} style={styleProps}>
                                     <WizardFlowFlexInnerContainer>
-                                        {currentStep === WizardRouterSteps.SetupWizard && (
+                                        {wizardStep === WizardRouterSteps.SetupWizard && (
                                             <SetupStaking
                                                 onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
                                                 poolId={poolId}
@@ -209,14 +233,14 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                                 onGoToNextStep={handleClickNextStep}
                                             />
                                         )}
-                                        {currentStep === WizardRouterSteps.ApproveTokens && (
+                                        {wizardStep === WizardRouterSteps.ApproveTokens && (
                                             <TokenApprovalPane
                                                 allowance={allowance}
                                                 providerState={providerState}
                                                 onGoToNextStep={handleClickNextStep}
                                             />
                                         )}
-                                        {currentStep === WizardRouterSteps.ReadyToStake && (
+                                        {wizardStep === WizardRouterSteps.ReadyToStake && (
                                             <StartStaking
                                                 stake={stake}
                                                 nextEpochStats={nextEpochStats}
@@ -225,7 +249,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                             />
                                         )}
                                     </WizardFlowFlexInnerContainer>
-                                </WizardFlowAbsoluteContainer>
+                                </AnimatedWizardFlowAbsoluteContainer>
+                            ))}
                             </WizardFlowRelativeContainer>
                         </RightInner>
                     }
