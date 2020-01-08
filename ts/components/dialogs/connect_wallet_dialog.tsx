@@ -1,6 +1,6 @@
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
@@ -11,7 +11,7 @@ import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
-import { AccountState, Providers, ProviderState } from 'ts/types';
+import { AccountState, Providers } from 'ts/types';
 import { utils } from 'ts/utils/utils';
 
 import { useWallet } from 'ts/hooks/use_wallet';
@@ -291,47 +291,61 @@ export const ConnectWalletDialog = () => {
         setDispatcher(new Dispatcher(dispatch));
     }, [dispatch]);
 
-    const [shouldShowOtherWallets, setShouldShowOtherWallets] = React.useState(false);
+    const [shouldShowOtherWallets, setShouldShowOtherWallets] = useState<boolean>(false);
+    const [walletProviders, setWalletProviders] = useState<WalletProviderCategory[]>([]);
+
     const isMobile = utils.isMobileOperatingSystem();
-    const onGoBack = () => setShouldShowOtherWallets(false);
-    const onCloseDialog = () => dispatcher.updateIsConnectWalletDialogOpen(false);
+
+    const onGoBack = useCallback(() => setShouldShowOtherWallets(false), []);
+    const onCloseDialog = useCallback(() => dispatcher.updateIsConnectWalletDialogOpen(false), [dispatcher]);
 
     const { connectToWallet } = useWallet();
 
-    const walletProviders: WalletProviderCategory[] = [];
+    useEffect(() => {
+        const _walletProviders: WalletProviderCategory[] = [];
 
-    if (providerState.account.state !== AccountState.None) {
-        walletProviders.push({
-            title: 'Detected wallet',
-            providers: [
-                {
-                    name: providerState.displayName,
-                    providerType: providerState.providerType,
-                    onClick: () => {
-                        connectToWallet();
-                        onCloseDialog();
+        if (providerState.account.state !== AccountState.None) {
+            _walletProviders.push({
+                title: 'Detected wallet',
+                providers: [
+                    {
+                        name: providerState.displayName,
+                        providerType: providerState.providerType,
+                        onClick: () => {
+                            connectToWallet();
+                            onCloseDialog();
+                        },
                     },
-                },
-            ],
-        });
-    }
+                ],
+            });
+        }
 
-    if (isMobile) {
-        walletProviders.push({
-            title: 'Mobile wallet',
-            providers: [
-                {
-                    name: 'Other mobile wallets',
-                    icon: (
-                        <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
-                            <IconPlus />
-                        </div>
-                    ),
-                    onClick: () => setShouldShowOtherWallets(true),
-                },
-            ],
-        });
-    }
+        if (isMobile) {
+            _walletProviders.push({
+                title: 'Mobile wallet',
+                providers: [
+                    {
+                        name: 'Other mobile wallets',
+                        icon: (
+                            <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
+                                <IconPlus />
+                            </div>
+                        ),
+                        onClick: () => setShouldShowOtherWallets(true),
+                    },
+                ],
+            });
+        }
+
+        setWalletProviders(_walletProviders);
+    }, [
+        connectToWallet,
+        isMobile,
+        onCloseDialog,
+        providerState.account.state,
+        providerState.displayName,
+        providerState.providerType,
+    ]);
 
     return (
         <StyledDialogOverlay isOpen={isOpen}>

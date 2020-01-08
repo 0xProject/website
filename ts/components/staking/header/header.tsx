@@ -4,22 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import MediaQuery from 'react-responsive';
 import styled, { css } from 'styled-components';
 
-import { Link } from 'ts/components/documentation/shared/link';
-
 import { MobileNav } from 'ts/components/docs/header/mobile_nav';
-import { SubMenu } from 'ts/components/staking/header/sub_menu';
-
+import { Link } from 'ts/components/documentation/shared/link';
 import { Hamburger } from 'ts/components/hamburger';
 import { Logo } from 'ts/components/logo';
 import { FlexWrap } from 'ts/components/newLayout';
-
-import { ThemeValuesInterface } from 'ts/style/theme';
-import { zIndex } from 'ts/style/z_index';
-
-import { AccountState, WebsitePaths } from 'ts/types';
-
+import { SubMenu } from 'ts/components/staking/header/sub_menu';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
+import { ThemeValuesInterface } from 'ts/style/theme';
+import { zIndex } from 'ts/style/z_index';
+import { AccountState, WebsitePaths } from 'ts/types';
 
 import { useWallet } from 'ts/hooks/use_wallet';
 

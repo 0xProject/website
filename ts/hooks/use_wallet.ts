@@ -2,17 +2,14 @@ import { logUtils } from '@0x/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Dispatcher } from 'ts/redux/dispatcher';
-import { Network, ProviderState } from 'ts/types';
-
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
+import { Dispatcher } from 'ts/redux/dispatcher';
+import { State } from 'ts/redux/reducer';
 import { analytics } from 'ts/utils/analytics';
 import { constants } from 'ts/utils/constants';
 import { providerStateFactory } from 'ts/utils/providers/provider_state_factory';
 
-import { State } from 'ts/redux/reducer';
-
-const PROVIDER_CHAIN_CHANGE_EVENT = 'chainChanged';
+const PROVIDER_CHAIN_CHANGED_EVENT = 'chainChanged';
 const PROVIDER_ACCOUNTS_CHANGED_EVENT = 'accountsChanged';
 const PROVIDER_NETWORK_CHANGED_EVENT = 'networkChanged';
 
@@ -31,7 +28,6 @@ export const useWallet = () => {
     }, [dispatch]);
 
     const handleAccountsChange = useCallback(async () => {
-        console.log('account change');
         await asyncDispatcher.fetchAccountInfoAndDispatchToStoreAsync(
             currentProviderState,
             dispatcher,
@@ -61,9 +57,8 @@ export const useWallet = () => {
 
             if (networkChangedRef.current) {
                 provider.off(PROVIDER_NETWORK_CHANGED_EVENT, networkChangedRef.current);
-                provider.off(PROVIDER_CHAIN_CHANGE_EVENT, networkChangedRef.current);
+                provider.off(PROVIDER_CHAIN_CHANGED_EVENT, networkChangedRef.current);
             }
-            console.log('cleanup');
         }
     }, [currentProviderState.provider]);
 
@@ -84,7 +79,7 @@ export const useWallet = () => {
             newProvider.on(PROVIDER_ACCOUNTS_CHANGED_EVENT, accountsChangedRef.current);
 
             networkChangedRef.current = handleNetworksChange;
-            for (const networkEvent of [PROVIDER_NETWORK_CHANGED_EVENT, PROVIDER_CHAIN_CHANGE_EVENT]) {
+            for (const networkEvent of [PROVIDER_NETWORK_CHANGED_EVENT, PROVIDER_CHAIN_CHANGED_EVENT]) {
                 newProvider.on(networkEvent, networkChangedRef.current);
             }
         }
@@ -100,11 +95,11 @@ export const useWallet = () => {
     }, [cleanupCurrentProvider, dispatcher]);
 
     return {
-        connectToWallet: () => {
+        connectToWallet: useCallback(() => {
             connectToWallet().catch((err: Error) => {
                 logUtils.warn(`Failed to connect wallet ${err}`);
             });
-        },
+        }, [connectToWallet]),
         logoutWallet,
     };
 };
