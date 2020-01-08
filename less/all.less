@@ -1,4 +1,3 @@
-// Safari can slightly overflow the page width without this
 html, body {
     max-width: 100%;
 }
@@ -40,16 +39,17 @@ a {
  * Adds always visible scrollbars on OSX so that user knows the content is scrollable
  * Source: https://davidwalsh.name/osx-overflow
  */
-::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 4px;
-    height: 2px;
-}
-::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba(0, 0, 0, 0.5);
-    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
-}
+//  TODO(johnrjj) - Disabling this for now. Messes with the page width and is causing horizontal scroll problems on Safari
+// ::-webkit-scrollbar {
+//     -webkit-appearance: none;
+//     width: 4px;
+//     height: 2px;
+// }
+// ::-webkit-scrollbar-thumb {
+//     border-radius: 4px;
+//     background-color: rgba(0, 0, 0, 0.5);
+//     -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+// }
 
 // Hack: For some reason the animation applied to the material-ui textfield causes the overflow
 // applied to other elements to fail while the animation is underway. Adding this class to the
