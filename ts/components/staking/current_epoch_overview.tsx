@@ -76,7 +76,7 @@ export const CurrentEpochOverview: React.FC<CurrentEpochOverviewProps> = ({
             </OverviewItem>
             <OverviewItem>
                 <Metric>{numMarketMakers ? numMarketMakers : '-'}</Metric>
-                <Explanation>Market makers</Explanation>
+                <Explanation>Staking Pools</Explanation>
             </OverviewItem>
         </WrapperRow>
     );
