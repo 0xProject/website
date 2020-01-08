@@ -204,7 +204,7 @@ const ErrorButton: React.FC<ErrorButtonProps> = props => {
 };
 
 const getStatus = (stakeAmount: number, stakingPools?: PoolWithStats[]): React.ReactNode => {
-    if (!stakeAmount) {
+    if (stakeAmount <= 0) {
         return (
             <Status
                 title="Please select an amount of staked ZRX above to see matching Staking Pool."
@@ -282,11 +282,12 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
     const recommendedPools = stakingUtils.getRecommendedStakingPools(roundedStakeAmount, stakingPools);
 
     const isStakeAmountAboveBalance = zrxBalance.isLessThan(roundedStakeAmount);
+    const isZeroAmountStakeInput = stakeAmount && roundedStakeAmount <= 0;
 
     return (
         <>
             <NumberInput
-                isError={isStakeAmountAboveBalance}
+                isError={isStakeAmountAboveBalance || isZeroAmountStakeInput}
                 placeholder="Enter your stake"
                 topLabels={[`Available: ${roundedZrxBalance} ZRX`]}
                 labels={[StakingPercentageValue.Fourth, StakingPercentageValue.Half, StakingPercentageValue.All]}
@@ -396,7 +397,7 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
     }
 
     const isStakeAmountAboveBalance = zrxBalance.isLessThan(roundedStakeAmount);
-    const isZeroAmountStakeInput = stakeAmount && !roundedStakeAmount;
+    const isZeroAmountStakeInput = stakeAmount && roundedStakeAmount <= 0;
 
     return (
         <>
