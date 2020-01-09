@@ -3,17 +3,19 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
-import { Icon } from 'ts/components/icon';
+// import { Icon } from 'ts/components/icon';
 import { Input } from 'ts/components/modals/input';
 import { Heading, Paragraph } from 'ts/components/text';
 
 import { Inner } from 'ts/components/staking/wizard/inner';
+import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 
 import { colors } from 'ts/style/colors';
 
 import { WebsitePaths } from 'ts/types';
 
 import { backendClient } from 'ts/utils/backend_client';
+import { errorReporter } from 'ts/utils/error_reporter';
 
 const StyledHeading = styled(Heading)`
     text-align: center;
@@ -25,8 +27,7 @@ const StyledHeading = styled(Heading)`
 
 const StyledParagraph = styled(Paragraph)`
     @media (min-width: 768px) {
-        margin: 0 auto 60px auto;
-        max-width: 340px;
+        margin: ${props => !props.isNoMargin && '0 auto 60px auto'};
     }
 
     @media (max-width: 768px) {
@@ -52,10 +53,6 @@ const ButtonWrap = styled.div`
 
     @media (min-width: 768px) {
         margin-top: 15px;
-
-        > *:last-child {
-            margin-left: 15px;
-        }
     }
 
     @media (max-width: 768px) {
@@ -82,10 +79,26 @@ const StyledButton = styled(Button)`
     figure {
         margin-right: 10px;
     }
+
+    @media (min-width: 768px) {
+        & + & {
+            margin-left: 15px;
+        }
+    }
+`;
+
+const CheckMarkWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+    @media (max-width: 768px) {
+        display: none;
+    }
 `;
 
 export const Newsletter = () => {
     const [email, setEmail] = React.useState<string>('');
+    const [hasSubmitted, setHasSubmitted] = React.useState<boolean>(false);
     const onSubmit = React.useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
@@ -94,8 +107,10 @@ export const Newsletter = () => {
             }
             try {
                 await backendClient.subscribeToNewsletterAsync(email.trim());
-            } catch (e) {
-                logUtils.warn(`Unable to register email to newsletter`, email);
+                setHasSubmitted(true);
+            } catch (err) {
+                logUtils.warn(`Unable to register email to newsletter`, email, err);
+                errorReporter.report(err);
             }
         },
         [email],
@@ -105,35 +120,51 @@ export const Newsletter = () => {
         <>
             <Inner>
                 <StyledHeading size={34} marginBottom="15px" fontWeight="400">
-                    Congratulations!
+                    {hasSubmitted ? 'Thank you!' : 'Congratulations!'}
                 </StyledHeading>
 
-                <StyledParagraph isCentered={true}>
-                    Stay in the loop and know exactly what’s happening with your assets.
-                </StyledParagraph>
+                {hasSubmitted ? (
+                    <>
+                        <CheckMarkWrapper>
+                            <CircleCheckMark width="72px" height="72px" />
+                        </CheckMarkWrapper>
+                        <StyledParagraph isCentered={true} isNoMargin={true}>
+                            You have subscribed to our newsletter.
+                        </StyledParagraph>
+                    </>
+                ) : (
+                    <>
+                        <StyledParagraph isCentered={true}>
+                            Stay in the loop and know exactly what’s
+                            <br />
+                            happening with your assets.
+                        </StyledParagraph>
+                        <FormWrap onSubmit={onSubmit}>
+                            <Input
+                                name="email"
+                                label="Subscribe for updates"
+                                type="email"
+                                value={email}
+                                width="full"
+                                onChange={e => setEmail(e.target.value)}
+                                placeholder="Enter your e-mail"
+                            />
 
-                <FormWrap onSubmit={onSubmit}>
-                    <Input
-                        name="email"
-                        label="Subscribe for updates"
-                        type="email"
-                        value={email}
-                        width="full"
-                        onChange={e => setEmail(e.target.value)}
-                        placeholder="Enter your e-mail"
-                    />
-
-                    <Button isFullWidth={true} type="submit" color="#fff">
-                        Subscribe
-                    </Button>
-                </FormWrap>
+                            <Button isFullWidth={true} type="submit" color="#fff">
+                                Subscribe
+                            </Button>
+                        </FormWrap>
+                    </>
+                )}
             </Inner>
 
             <ButtonWrap>
+                {/* TODO(kimpers): Add this back when we have some time }
                 <StyledButton borderColor="#D94F3D" bgColor={colors.white} isFullWidth={true}>
                     <Icon name="google" size={24} />
                     Add dates to Gmail
                 </StyledButton>
+                */}
                 <StyledButton
                     to={WebsitePaths.Staking}
                     bgColor={colors.white}
