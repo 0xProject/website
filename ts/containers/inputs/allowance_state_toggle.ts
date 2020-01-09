@@ -1,10 +1,9 @@
-import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Blockchain } from 'ts/blockchain';
 import { PointerDirection } from 'ts/components/ui/pointer';
 import { State } from 'ts/redux/reducer';
-import { BalanceErrs, Token, TokenState } from 'ts/types';
+import { Action, BalanceErrs, Token, TokenState } from 'ts/types';
 
 import { AllowanceStateToggle as AllowanceStateToggleComponent } from 'ts/components/inputs/allowance_state_toggle';
 import { Dispatcher } from 'ts/redux/dispatcher';
@@ -32,11 +31,11 @@ const mapStateToProps = (state: State, _ownProps: AllowanceStateToggleProps): Co
     userAddress: state.userAddress,
 });
 
-const mapDispatchTopProps = (dispatch: Dispatch<State>): ConnectedDispatch => ({
+const mapDispatchTopProps = (dispatch: Dispatch<Action>): ConnectedDispatch => ({
     dispatcher: new Dispatcher(dispatch),
 });
 
-export const AllowanceStateToggle: React.ComponentClass<AllowanceStateToggleProps> = connect(
+export const AllowanceStateToggle = connect(
     mapStateToProps,
     mapDispatchTopProps,
 )(AllowanceStateToggleComponent);

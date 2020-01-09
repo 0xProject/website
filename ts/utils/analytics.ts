@@ -1,5 +1,6 @@
 import { assetDataUtils } from '@0x/order-utils';
-import { ObjectMap } from '@0x/types';
+import { ERC20AssetData, ObjectMap } from '@0x/types';
+import { logUtils } from '@0x/utils';
 import * as _ from 'lodash';
 import { PortalOrder } from 'ts/types';
 import { utils } from 'ts/utils/utils';
@@ -7,7 +8,7 @@ import { utils } from 'ts/utils/utils';
 export interface HeapAnalytics {
     loaded: boolean;
     identify(id: string, idType: string): void;
-    track(eventName: string, eventProperties?: ObjectMap<string | number>): void;
+    track(eventName: string, eventProperties?: ObjectMap<string | number | boolean>): void;
     resetIdentity(): void;
     addUserProperties(properties: ObjectMap<string | number>): void;
     addEventProperties(properties: ObjectMap<string | number>): void;
@@ -35,7 +36,7 @@ export class Analytics {
     public identify(id: string, idType: string): void {
         this._heapLoadedGuardAsync(() => this._heap.identify(id, idType));
     }
-    public track(eventName: string, eventProperties?: ObjectMap<string | number>): void {
+    public track(eventName: string, eventProperties?: ObjectMap<string | number | boolean>): void {
         this._heapLoadedGuardAsync(() => this._heap.track(eventName, eventProperties));
     }
     public resetIdentity(): void {
@@ -56,17 +57,27 @@ export class Analytics {
     // tslint:enable:no-floating-promises
     // Custom methods
     public trackOrderEvent(eventName: string, order: PortalOrder): void {
-        const takerTokenAmount = order.signedOrder.takerAssetAmount.toString();
-        const makerTokenAmount = order.signedOrder.makerAssetAmount.toString();
-        const takerToken = assetDataUtils.decodeERC20AssetData(order.signedOrder.takerAssetData).tokenAddress;
-        const makerToken = assetDataUtils.decodeERC20AssetData(order.signedOrder.makerAssetData).tokenAddress;
-        const orderLoggingData = {
-            takerTokenAmount,
-            makerTokenAmount,
-            takerToken,
-            makerToken,
-        };
-        this.track(eventName, orderLoggingData);
+        try {
+            const takerTokenAmount = order.signedOrder.takerAssetAmount.toString();
+            const makerTokenAmount = order.signedOrder.makerAssetAmount.toString();
+            // tslint:disable-next-line:no-unnecessary-type-assertion
+            const takerToken = (assetDataUtils.decodeAssetDataOrThrow(
+                order.signedOrder.takerAssetData,
+            ) as ERC20AssetData).tokenAddress;
+            // tslint:disable-next-line:no-unnecessary-type-assertion
+            const makerToken = (assetDataUtils.decodeAssetDataOrThrow(
+                order.signedOrder.makerAssetData,
+            ) as ERC20AssetData).tokenAddress;
+            const orderLoggingData = {
+                takerTokenAmount,
+                makerTokenAmount,
+                takerToken,
+                makerToken,
+            };
+            this.track(eventName, orderLoggingData);
+        } catch (err) {
+            logUtils.warn(err);
+        }
     }
     /**
      * Heap is not available as a UMD module, and additionally has the strange property of replacing itself with

@@ -1,5 +1,8 @@
 import { ContractError } from '@0x/contract-wrappers';
-import { assetDataUtils, TypedDataError } from '@0x/order-utils';
+import {
+    // assetDataUtils,
+    TypedDataError,
+} from '@0x/order-utils';
 import { ExchangeContractErrs } from '@0x/types';
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -18,14 +21,15 @@ import {
     BlockchainCallErrs,
     BrowserType,
     EtherscanLinkSuffixes,
+    Network,
     Networks,
     OperatingSystemType,
-    PortalOrder,
+    // PortalOrder,
     Providers,
     ProviderType,
     ScreenWidths,
-    Side,
-    SideToAssetToken,
+    // Side,
+    // SideToAssetToken,
     Token,
     TokenByAddress,
     TokenState,
@@ -68,6 +72,7 @@ export const utils = {
         const formattedDate: string = m.format('h:MMa MMMM D YYYY');
         return formattedDate;
     },
+    /*
     generateOrder(
         exchangeAddress: string,
         sideToAssetToken: SideToAssetToken,
@@ -115,6 +120,7 @@ export const utils = {
         };
         return order;
     },
+    */
     async sleepAsync(ms: number): Promise<NodeJS.Timer> {
         return new Promise<NodeJS.Timer>(resolve => setTimeout(resolve, ms));
     },
@@ -181,8 +187,8 @@ export const utils = {
             _.includes(errMsg, ledgerDenialErrMsg);
         return isUserDeniedErrMsg;
     },
-    getAddressBeginAndEnd(address: string): string {
-        const truncatedAddress = `${address.substring(0, 6)}...${address.substr(-4)}`; // 0x3d5a...b287
+    getAddressBeginAndEnd(address: string, beginCharCount: number = 6, endCharCount: number = 4): string {
+        const truncatedAddress = `${address.substring(0, beginCharCount)}...${address.substr(-endCharCount)}`; // 0x3d5a...b287
         return truncatedAddress;
     },
     getReadableAccountState(accountState: AccountState, userAddress: string): string {
@@ -237,7 +243,7 @@ export const utils = {
         const ContractErrorToHumanReadableError: { [error: string]: string } = {
             [BlockchainCallErrs.UserHasNoAssociatedAddresses]: 'User has no addresses available',
             [TypedDataError.InvalidSignature]: 'Order signature is not valid',
-            [ContractError.ContractNotDeployedOnNetwork]: 'Contract is not deployed on the detected network',
+            [ContractError.ContractNotDeployedOnChain]: 'Contract is not deployed on the detected chain',
             [ContractError.InvalidJump]: 'Invalid jump occured while executing the transaction',
             [ContractError.OutOfGas]: 'Transaction ran out of gas',
         };
@@ -305,29 +311,49 @@ export const utils = {
         }
         window.onload = () => resolve();
     }),
-    getProviderType(provider: ZeroExProvider): Providers | string {
-        const constructorName = provider.constructor.name;
-        let parsedProviderName = constructorName;
-        // https://ethereum.stackexchange.com/questions/24266/elegant-way-to-detect-current-provider-int-web3-js
-        switch (constructorName) {
-            case 'EthereumProvider':
-                parsedProviderName = Providers.Mist;
-                break;
-
-            default:
-                parsedProviderName = constructorName;
-                break;
-        }
-        if ((provider as any).isParity) {
-            parsedProviderName = Providers.Parity;
-        } else if ((provider as any).isMetaMask) {
-            parsedProviderName = Providers.Metamask;
+    // Copied from Instant
+    getProviderType(provider: ZeroExProvider): Providers | undefined {
+        const anyProvider = provider as any;
+        if (provider.constructor.name === 'EthereumProvider') {
+            return Providers.Mist;
+        } else if (anyProvider.isTrust) {
+            return Providers.TrustWallet;
+        } else if (anyProvider.isParity) {
+            return Providers.Parity;
+        } else if (anyProvider.isMetaMask) {
+            return Providers.Metamask;
         } else if (_.get(window, 'SOFA') !== undefined) {
-            parsedProviderName = Providers.CoinbaseWallet;
+            return Providers.CoinbaseWallet;
         } else if (_.get(window, '__CIPHER__') !== undefined) {
-            parsedProviderName = Providers.Cipher;
+            return Providers.Cipher;
+        } else if (utils.getBrowserType() === BrowserType.Opera && !anyProvider.isMetaMask) {
+            return Providers.Opera;
         }
-        return parsedProviderName;
+
+        return undefined;
+    },
+    getProviderName(provider: ZeroExProvider): string {
+        const providerTypeIfExists = utils.getProviderType(provider);
+        if (providerTypeIfExists === undefined) {
+            return provider.constructor.name;
+        }
+        return constants.PROVIDER_TYPE_TO_NAME[providerTypeIfExists];
+    },
+
+    getProviderDisplayName(provider: ZeroExProvider): string {
+        const providerTypeIfExists = utils.getProviderType(provider);
+        if (providerTypeIfExists === undefined) {
+            return 'Wallet';
+        }
+        return constants.PROVIDER_TYPE_TO_NAME[providerTypeIfExists];
+    },
+    // End of copy from Instant
+    getProviderTypeIcon(providerType?: Providers): string | undefined {
+        if (providerType === undefined) {
+            return undefined;
+        }
+
+        return constants.PROVIDER_TYPE_TO_ICON[providerType];
     },
     getBackendBaseUrl(): string {
         if (environments.isDogfood()) {
@@ -336,6 +362,16 @@ export const utils = {
             return configs.BACKEND_BASE_DEV_URL;
         }
         return configs.BACKEND_BASE_PROD_URL;
+    },
+    getAPIBaseUrl(networkId: Network): string {
+        if (environments.isDevelopment()) {
+            return configs.API_BASE_DEV_URL;
+        } else if (networkId === Network.Kovan) {
+            return configs.API_BASE_KOVAN_URL;
+        } else if (environments.isDogfood()) {
+            return configs.API_BASE_STAGING_URL;
+        }
+        return configs.API_BASE_PROD_URL;
     },
     isExternallyInjected(providerType: ProviderType, injectedProviderName: string): boolean {
         return providerType === ProviderType.Injected && injectedProviderName !== constants.PROVIDER_NAME_PUBLIC;
@@ -361,7 +397,7 @@ export const utils = {
     },
     format(value: BigNumber, format: string): string {
         const formattedAmount = numeral(value).format(format);
-        if (_.isNaN(formattedAmount)) {
+        if (_.isNaN(formattedAmount) || formattedAmount === 'NaN') {
             // https://github.com/adamwdraper/Numeral-js/issues/596
             return numeral(new BigNumber(0)).format(format);
         }
@@ -369,6 +405,10 @@ export const utils = {
     },
     getFormattedAmount(amount: BigNumber, decimals: number): string {
         const unitAmount = Web3Wrapper.toUnitAmount(amount, decimals);
+
+        return utils.getFormattedUnitAmount(unitAmount);
+    },
+    getFormattedUnitAmount(unitAmount: BigNumber): string {
         // if the unit amount is less than 1, show the natural number of decimal places with a max of 4
         // if the unit amount is greater than or equal to 1, show only 2 decimal places
         const lessThanOnePrecision = Math.min(constants.TOKEN_AMOUNT_DISPLAY_PRECISION, unitAmount.decimalPlaces());
@@ -505,5 +545,15 @@ export const utils = {
         }
         const etherScanPrefix = networkName === Networks.Mainnet ? '' : `${networkName.toLowerCase()}.`;
         return `https://${etherScanPrefix}etherscan.io/${suffix}/${addressOrTxHash}`;
+    },
+    // TODO(kimpers): Consolidate with https://github.com/0xProject/0x-monorepo/pull/2373
+    toPaddedHex(n: number | string | BigNumber): string {
+        if (typeof n === 'string' && /^0x[0-9a-f]+$/i.test(n) && n.length === 66) {
+            // Already a padded hex.
+            return n;
+        }
+        const _n = new BigNumber(n);
+
+        return `0x${_n.toString(16).padStart(64, '0')}`;
     },
 }; // tslint:disable:max-file-line-count

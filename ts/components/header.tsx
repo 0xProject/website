@@ -12,7 +12,7 @@ import { Logo } from 'ts/components/logo';
 import { MobileNav } from 'ts/components/mobile_nav';
 import { FlexWrap } from 'ts/components/newLayout';
 
-import { IThemeValuesInterface } from 'ts/style/theme';
+import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 
 import { WebsitePaths } from 'ts/types';
@@ -21,7 +21,7 @@ interface HeaderProps {
     location?: Location;
     isNavToggled?: boolean;
     toggleMobileNav?: () => void;
-    theme: IThemeValuesInterface;
+    theme: ThemeValuesInterface;
 }
 
 interface NavItemProps {
@@ -52,6 +52,11 @@ const navItems: NavItemProps[] = [
         id: 'docs',
         text: 'Docs',
         url: WebsitePaths.Docs,
+    },
+    {
+        id: 'zrx',
+        text: 'ZRX',
+        url: WebsitePaths.Staking,
     },
     {
         id: 'resources',

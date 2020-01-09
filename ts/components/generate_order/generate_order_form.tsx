@@ -1,3 +1,4 @@
+/*
 import { assetDataUtils, generatePseudoRandomSalt, orderHashUtils } from '@0x/order-utils';
 import { Order as ZeroExOrder } from '@0x/types';
 import { BigNumber, logUtils } from '@0x/utils';
@@ -383,3 +384,4 @@ export class GenerateOrderForm extends React.Component<GenerateOrderFormProps, G
         }
     }
 }
+*/

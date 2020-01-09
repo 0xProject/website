@@ -1,6 +1,7 @@
+import { darken } from 'polished';
 import * as React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { IThemeInterface } from 'ts/style/theme';
 
@@ -32,6 +33,9 @@ export interface ButtonInterface {
     onClick?: (e: any) => any;
     theme?: IThemeInterface;
     shouldUseAnchorTag?: boolean;
+    isFullWidth?: boolean;
+    isLarge?: boolean;
+    fontWeight?: string;
 }
 
 export const Button: React.StatelessComponent<ButtonInterface> = (props: ButtonInterface) => {
@@ -55,7 +59,7 @@ export const Button: React.StatelessComponent<ButtonInterface> = (props: ButtonI
             {children}
 
             {isWithArrow && (
-                <svg width="16" height="15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 16 15" width="16" height="15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4.484.246l.024 1.411 8.146.053L.817 13.547l.996.996L13.65 2.706l.052 8.146 1.412.024L15.045.315 4.484.246z" />
                 </svg>
             )}
@@ -64,7 +68,7 @@ export const Button: React.StatelessComponent<ButtonInterface> = (props: ButtonI
 };
 
 Button.defaultProps = {
-    borderColor: 'rgba(255, 255, 255, .4)',
+    // borderColor: 'rgba(255, 255, 255, .4)',
     textAlign: 'center',
 };
 
@@ -75,17 +79,19 @@ const ButtonBase = styled.button<ButtonInterface>`
     background-color: ${props => props.bgColor || colors.brandLight};
     background-color: ${props =>
         (props.isTransparent || props.isWithArrow) && (props.transparentBgColor || 'transparent')};
-    border-color: ${props => props.isTransparent && !props.isWithArrow && props.borderColor};
+    border-color: ${props => props.borderColor || (props.isTransparent && !props.isWithArrow && 'rgba(255, 255, 255, 0.4)')};
     color: ${props => (props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor)};
     padding: ${props =>
-        !props.isNoPadding && !props.isWithArrow && ((!!props.padding && props.padding) || '18px 30px')};
+        !props.isNoPadding && !props.isWithArrow && ((!!props.padding && props.padding) || (props.isLarge ? '22px 30px' : '18px 30px'))};
     white-space: ${props => props.isWithArrow && 'nowrap'};
     text-align: ${props => props.textAlign};
     font-size: ${props => (props.fontSize ? props.fontSize : props.isWithArrow ? '20px' : '18px')};
+    font-weight: ${props => props.fontWeight ? props.fontWeight : 'normal'};
     text-decoration: none;
     cursor: pointer;
     outline: none;
     transition: background-color 0.35s, border-color 0.35s;
+    width: ${props => props.isFullWidth ? '100%' : 'auto'};
 
     // @todo Refactor to use theme props
     ${props =>
@@ -95,22 +101,40 @@ const ButtonBase = styled.button<ButtonInterface>`
         color: ${colors.white};
     `}
 
-    svg {
+
+    > svg {
         margin-left: 9px;
         transition: transform 0.5s;
         transform: translate3d(-2px, 2px, 0);
+
+        path {
+            fill: ${props => (props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor)};
+        }
     }
 
-    path {
-        fill: ${props => (props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor)};
-    }
+    /* Only apply SVG styling if it's an arrow button */
+    ${props =>
+        props.isWithArrow &&
+        css`
+            svg {
+                margin-left: 9px;
+                transition: transform 0.5s;
+                transform: translate3d(-2px, 2px, 0);
+            }
+
+            &:hover {
+                svg {
+                    transform: translate3d(2px, -2px, 0);
+                }
+            }
+
+            path {
+                fill: ${props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor};
+            }
+        `}
 
     &:hover {
-        background-color: ${props => !props.isTransparent && !props.isWithArrow && '#04BEA8'};
+        background-color: ${props => !props.isTransparent && !props.isWithArrow && (darken(0.05, props.bgColor || colors.brandLight))};
         border-color: ${props => props.isTransparent && !props.isNoBorder && !props.isWithArrow && '#00AE99'};
-
-        svg {
-            transform: ${props => (props.isWithArrow ? 'translate3d(2px, -2px, 0)' : '')};
-        }
     }
 `;

@@ -1,8 +1,9 @@
 import { BigNumber } from '@0x/utils';
 import { Dispatch } from 'redux';
-import { State } from 'ts/redux/reducer';
 import {
+    Action,
     ActionTypes,
+    AddressAndEthBalanceInWei,
     AssetToken,
     BlockchainErrs,
     Language,
@@ -16,8 +17,8 @@ import {
 } from 'ts/types';
 
 export class Dispatcher {
-    private readonly _dispatch: Dispatch<State>;
-    constructor(dispatch: Dispatch<State>) {
+    private readonly _dispatch: Dispatch<Action>;
+    constructor(dispatch: Dispatch<Action>) {
         this._dispatch = dispatch;
     }
     // Portal
@@ -191,6 +192,54 @@ export class Dispatcher {
         this._dispatch({
             data: versions,
             type: ActionTypes.UpdateAvailableLibraryVersions,
+        });
+    }
+
+    // Staking
+    public updateIsConnectWalletDialogOpen(isOpen: boolean): void {
+        this._dispatch({
+            type: ActionTypes.UpdateIsConnectWalletDialogOpen,
+            data: isOpen,
+        });
+    }
+
+    public setAccountStateLoading(): void {
+        this._dispatch({
+            type: ActionTypes.SetAccountStateLoading,
+        });
+    }
+
+    public setAccountStateLocked(): void {
+        this._dispatch({
+            type: ActionTypes.SetAccountStateLocked,
+        });
+    }
+
+    public setAccountStateReady(address: string): void {
+        this._dispatch({
+            type: ActionTypes.SetAccountStateReady,
+            data: address,
+        });
+    }
+
+    public updateAccountEthBalance(addressAndBalance: AddressAndEthBalanceInWei): void {
+        this._dispatch({
+            type: ActionTypes.UpdateAccountEthBalance,
+            data: addressAndBalance,
+        });
+    }
+
+    public updateAccountZrxBalance(zrxBalance: BigNumber): void {
+        this._dispatch({
+            type: ActionTypes.UpdateAccountZrxBalance,
+            data: zrxBalance,
+        });
+    }
+
+    public updateAccountZrxAllowance(zrxAllowance: BigNumber): void {
+        this._dispatch({
+            type: ActionTypes.UpdateAccountZrxAllowance,
+            data: zrxAllowance,
         });
     }
 

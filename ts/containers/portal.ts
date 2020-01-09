@@ -1,3 +1,4 @@
+/*
 import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 import * as React from 'react';
@@ -6,7 +7,7 @@ import { Dispatch } from 'redux';
 import { Portal as PortalComponent, PortalProps as PortalComponentProps } from 'ts/components/portal/portal';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
-import { BlockchainErrs, HashData, PortalOrder, ProviderType, ScreenWidths, Side, TokenByAddress } from 'ts/types';
+import { Action, BlockchainErrs, HashData, PortalOrder, ProviderType, ScreenWidths, Side, TokenByAddress } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { Translate } from 'ts/utils/translate';
 
@@ -79,11 +80,12 @@ const mapStateToProps = (state: State, _ownProps: PortalComponentProps): Connect
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<State>): ConnectedDispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => ({
     dispatcher: new Dispatcher(dispatch),
 });
 
-export const Portal: React.ComponentClass<PortalComponentProps> = connect(
+export const Portal = connect(
     mapStateToProps,
     mapDispatchToProps,
 )(PortalComponent);
+*/

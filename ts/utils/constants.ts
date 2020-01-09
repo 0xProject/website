@@ -1,5 +1,5 @@
 import { BigNumber } from '@0x/utils';
-import { Networks, WebsitePaths } from 'ts/types';
+import { AccountNotReady, AccountState, Networks, Providers, WebsitePaths } from 'ts/types';
 
 import { SupportedDocJson } from '../types';
 
@@ -12,7 +12,10 @@ export const constants = {
     ETHER_TOKEN_SYMBOL: 'WETH',
     ZRX_TOKEN_SYMBOL: 'ZRX',
     ETHER_SYMBOL: 'ETH',
+    ZRX_ASSET_DATA: '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
     TOKEN_AMOUNT_DISPLAY_PRECISION: 4,
+    UNLIMITED_ALLOWANCE_IN_BASE_UNITS: new BigNumber(2).pow(256).minus(1),
+    GWEI_IN_WEI: new BigNumber(1000000000),
     GENESIS_ORDER_BLOCK_BY_NETWORK_ID: {
         1: 4145578,
         42: 3117574,
@@ -20,6 +23,18 @@ export const constants = {
         3: 1719261,
         4: 1570919,
     } as { [networkId: number]: number },
+    STAKING: {
+        NIL_POOL_ID: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        TRACKING: {
+            STAKING_AMOUNT_EVENT: 'Staking Amount',
+            CONNECT_WALLET: 'Connect Wallet',
+            STAKE: 'Stake',
+            UNSTAKE: 'Unstake',
+            WITHDRAW_STAKE: 'Withdraw Stake',
+            WITHDRAW_REWARDS: 'Withdraw Rewards',
+            START_STAKING_SCREEN_VIEWED: 'Start Staking Screen Viewed',
+        },
+    },
     GUIDE_OLDER_VERSIONS: 'browsing-docs-on-github',
     HOME_SCROLL_DURATION_MS: 500,
     HTTP_NO_CONTENT_STATUS_CODE: 204,
@@ -41,6 +56,31 @@ export const constants = {
     PROVIDER_NAME_COINBASE_WALLET: 'Coinbase Wallet',
     PROVIDER_NAME_GENERIC: 'Injected Web3',
     PROVIDER_NAME_PUBLIC: '0x Public',
+    PROVIDER_TYPE_TO_NAME: {
+        [Providers.Cipher]: 'Cipher',
+        [Providers.Metamask]: 'MetaMask',
+        [Providers.Mist]: 'Mist',
+        [Providers.CoinbaseWallet]: 'Coinbase Wallet',
+        [Providers.Parity]: 'Parity',
+        [Providers.TrustWallet]: 'Trust Wallet',
+        [Providers.Opera]: 'Opera Wallet',
+        [Providers.Fallback]: 'Fallback',
+        [Providers.WalletConnect]: 'Wallet Connect',
+    } as { [key in Providers]: string },
+    PROVIDER_TYPE_TO_ICON: {
+        [Providers.Metamask]: 'metamask_icon',
+        [Providers.CoinbaseWallet]: 'coinbase_wallet_icon',
+        [Providers.TrustWallet]: 'trust_wallet_icon',
+    } as { [key: string]: string | undefined },
+    NO_ACCOUNT: {
+        state: AccountState.None,
+    } as AccountNotReady,
+    LOADING_ACCOUNT: {
+        state: AccountState.Loading,
+    } as AccountNotReady,
+    LOCKED_ACCOUNT: {
+        state: AccountState.Locked,
+    } as AccountNotReady,
     ROLLBAR_ACCESS_TOKEN: '32c39bfa4bb6440faedc1612a9c13d28',
     S3_DOC_BUCKET_ROOT: 'https://s3.amazonaws.com/doc-jsons',
     S3_STAGING_DOC_BUCKET_ROOT: 'https://s3.amazonaws.com/staging-doc-jsons',
@@ -121,6 +161,7 @@ export const constants = {
     URL_VOTE_FAQ: 'https://blog.0xproject.com/0x-protocol-governance-voting-walkthrough-and-faq-3becfd57a370',
     URL_ZEIP_REPO: 'https://github.com/0xProject/ZEIPs/',
     TYPES_SECTION_NAME: 'types',
+    COBBS_DOUGLAS_ALPHA: 2 / 3,
     EXTERNAL_EXPORTS_SECTION_NAME: 'external exports',
     TYPE_TO_SYNTAX: {
         [SupportedDocJson.SolDoc]: 'solidity',

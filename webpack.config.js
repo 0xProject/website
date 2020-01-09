@@ -29,6 +29,9 @@ module.exports = (_env, argv) => {
         externals: {
             zeroExInstant: 'zeroExInstant',
         },
+        node: {
+            fs: 'empty',
+        },
         resolve: {
             modules: [path.join(__dirname, '/ts'), 'node_modules'],
             extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.md', '.mdx'],

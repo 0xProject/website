@@ -7,7 +7,8 @@ import { Heading, Paragraph } from 'ts/components/text';
 
 export interface Action {
     label: string;
-    url?: string;
+    url?: string; // external links
+    to?: string; // internal links
     onClick?: () => void;
     shouldUseAnchorTag?: boolean;
 }
@@ -27,9 +28,15 @@ export interface DefinitionProps {
     className?: string;
 }
 
-export const Definition = ({ className, ...props }: DefinitionProps) => (
+export const Definition: React.FC<DefinitionProps> = ({ className, ...props }: DefinitionProps) => (
     <Wrap {...props} className={className}>
-        {!!props.icon && <Icon name={props.icon} size={props.iconSize || 'medium'} margin={[0, 0, 'default', 0]} />}
+        {!!props.icon && (
+            <Icon
+                name={props.icon}
+                size={props.iconSize || 'medium'}
+                margin={[0, 0, props.isInlineIcon ? 0 : 'default', 0]}
+            />
+        )}
 
         <TextWrap {...props}>
             <Heading
@@ -58,8 +65,9 @@ export const Definition = ({ className, ...props }: DefinitionProps) => (
                             onClick={item.onClick}
                             isWithArrow={true}
                             isAccentColor={true}
+                            to={item.to}
                             shouldUseAnchorTag={item.shouldUseAnchorTag}
-                            target="_blank"
+                            target={item.to ? undefined : '_blank'}
                         >
                             {item.label}
                         </Button>
