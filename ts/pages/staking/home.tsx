@@ -38,7 +38,6 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const { currentEpochRewards } = useStake(networkId, providerState);
 
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
-    const [currentEpochStats, setCurrentEpochStats] = React.useState<Epoch | undefined>(undefined);
 
     React.useEffect(() => {
         const fetchAndSetPoolsAsync = async () => {
@@ -63,11 +62,9 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
             try {
                 const epochsResponse = await apiClient.getStakingEpochsAsync();
                 setNextEpochStats(epochsResponse.nextEpoch);
-                setCurrentEpochStats(epochsResponse.currentEpoch);
             } catch (err) {
                 logUtils.warn(err);
                 setNextEpochStats(undefined);
-                setCurrentEpochStats(undefined);
                 errorReporter.report(err);
             }
         };
