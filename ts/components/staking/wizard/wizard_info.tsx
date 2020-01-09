@@ -127,23 +127,23 @@ const TokenApprovalHeader = styled.h1`
     }
 `;
 
-const TokenApprovalDescription = styled.h2`
-    font-size: 18px;
-    font-weight: 300;
-    color: ${colors.textDarkSecondary};
-    line-height: 1.44;
-    margin-bottom: 30px;
-    text-align: center;
+// const TokenApprovalDescription = styled.h2`
+//     font-size: 18px;
+//     font-weight: 300;
+//     color: ${colors.textDarkSecondary};
+//     line-height: 1.44;
+//     margin-bottom: 30px;
+//     text-align: center;
 
-    @media (min-width: 480px) {
-        max-width: 435px;
-        text-align: left;
-    }
+//     @media (min-width: 480px) {
+//         max-width: 435px;
+//         text-align: left;
+//     }
 
-    @media (min-width: 768px) {
-        margin-bottom: 60px;
-    }
-`;
+//     @media (min-width: 768px) {
+//         margin-bottom: 60px;
+//     }
+// `;
 
 export const TokenApprovalInfo: React.FC<{}> = () => {
     return (

@@ -8,7 +8,7 @@ import { colors } from 'ts/style/colors';
 interface StakingHeroProps {
     title: string | React.ReactNode;
     titleMobile: string | React.ReactNode;
-    description: string;
+    description: string | React.ReactNode;
     figure: React.ReactNode;
     actions: React.ReactNode;
     videoId?: string;
