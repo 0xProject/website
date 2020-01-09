@@ -148,11 +148,7 @@ const TokenApprovalDescription = styled.h2`
 export const TokenApprovalInfo: React.FC<{}> = () => {
     return (
         <>
-            <TokenApprovalHeader>You need to let us use your tokens</TokenApprovalHeader>
-            <TokenApprovalDescription>
-                In order to stake you ZRX tokens you must first grant permissions to the 0x Staking Proxy contract. This
-                will allow the contract to transfer the ZRX tokens you decide to stake, and start earning rewards.
-            </TokenApprovalDescription>
+            <TokenApprovalHeader>Unlock your ZRX</TokenApprovalHeader>
         </>
     );
 };
