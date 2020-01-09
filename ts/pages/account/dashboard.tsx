@@ -478,7 +478,7 @@ export const Account: React.FC<AccountProps> = () => {
                                         websiteUrl={pool.metaData.websiteUrl}
                                         operatorAddress={pool.operatorAddress}
                                         logoUrl={pool.metaData.logoUrl}
-                                        stakeRatio={pool.currentEpochStats.approximateStakeRatio}
+                                        stakeRatio={pool.nextEpochStats.approximateStakeRatio}
                                         rewardsSharedRatio={1 - pool.currentEpochStats.operatorShare}
                                         feesGenerated={
                                             formatEther(pool.sevenDayProtocolFeesGeneratedInEth).full as string

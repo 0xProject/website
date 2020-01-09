@@ -346,7 +346,7 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
                                 name={stakingUtils.getPoolDisplayName(rec.pool)}
                                 collectedFees={rec.pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
                                 rewardsShared={1 - rec.pool.currentEpochStats.operatorShare}
-                                staked={rec.pool.currentEpochStats.approximateStakeRatio}
+                                staked={rec.pool.nextEpochStats.approximateStakeRatio}
                                 iconUrl={rec.pool.metaData.logoUrl}
                                 website={rec.pool.metaData.websiteUrl}
                                 difference={rec.zrxAmount}
