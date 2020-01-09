@@ -5,12 +5,13 @@ import styled from 'styled-components';
 
 import { Text } from 'ts/components/ui/text';
 import { colors } from 'ts/style/colors';
-import { formatEther } from 'ts/utils/format_number';
+import { formatEther, formatZrx } from 'ts/utils/format_number';
 
 interface CurrentEpochOverviewProps {
     currentEpochEndDate?: Date;
     currentEpochRewards?: BigNumber;
     numMarketMakers?: number;
+    zrxStaked?: number;
 }
 
 const WrapperRow = styled.div`
@@ -40,7 +41,7 @@ const Metric = styled(Text).attrs({
     fontWeight: '300',
     fontFamily: 'Formular, monospace',
 })`
-    font-size: 50px;
+    font-size: 42px;
 
     @media (max-width: 768px) {
         font-size: 34px;
@@ -60,11 +61,15 @@ export const CurrentEpochOverview: React.FC<CurrentEpochOverviewProps> = ({
     currentEpochEndDate,
     currentEpochRewards,
     numMarketMakers,
+    zrxStaked,
 }) => {
     const now = new Date();
-
     return (
         <WrapperRow>
+            <OverviewItem>
+                <Metric>{zrxStaked ? formatZrx(zrxStaked, { bigUnitPostfix: true }).formatted : '-'}</Metric>
+                <Explanation>ZRX Staked</Explanation>
+            </OverviewItem>
             <OverviewItem>
                 <Metric>
                     {currentEpochEndDate
