@@ -128,7 +128,7 @@ export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats, 
             <IntroMetrics>
                 <IntroMetric>
                     <h2>
-                        {allTimeStats ? formatEther(allTimeStats.totalRewardsPaidInEth).minimized : PLACEHOLDER} ETH
+                        {allTimeStats ? formatEther(allTimeStats.totalRewardsPaidInEth, { decimals: 2 }).formatted : PLACEHOLDER} ETH
                     </h2>
                     <p>Total rewards distributed</p>
                 </IntroMetric>
