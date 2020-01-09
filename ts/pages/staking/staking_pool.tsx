@@ -272,6 +272,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
     }
 
     const currentEpoch = stakingPool.currentEpochStats;
+    const nextEpoch = stakingPool.nextEpochStats;
 
     // Only allow epochs that have finished into historical data
     const historicalEpochs = stakingPool.epochRewards.filter(x => !!x.epochEndTimestamp);
@@ -284,7 +285,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 poolId={stakingPool.poolId}
                 operatorAddress={stakingPool.operatorAddress}
                 isVerified={stakingPool.metaData.isVerified}
-                estimatedStake={currentEpoch.approximateStakeRatio * 100}
+                estimatedStake={nextEpoch.approximateStakeRatio * 100}
                 rewardsShared={(1 - currentEpoch.operatorShare) * 100}
                 iconUrl={stakingPool.metaData.logoUrl}
                 tabs={[
