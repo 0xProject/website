@@ -43,12 +43,12 @@ export class VoteIndex extends React.Component<VoteIndexProps, VoteIndexState> {
 
     public render(): React.ReactNode {
         return (
-              <StakingPageLayout isHome={false} title="0x Governance">
+            <StakingPageLayout isHome={false} title="0x Governance">
                 <DocumentTitle {...documentConstants.VOTE} />
                 <Section isTextCentered={true} isPadded={true} padding="80px 0 80px">
                     <Column>
                         <Heading size="medium" isCentered={true}>
-                            Govern the ecosystem
+                            Govern 0x Protocol
                         </Heading>
                         <SubtitleContentWrap>
                             <Paragraph size="medium" isCentered={true} isMuted={true} marginBottom="0">

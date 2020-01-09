@@ -147,9 +147,9 @@ export const Newsletter = () => {
                             Subscribed!
                         </StyledHeading>
                         <StyledParagraph isCentered={true}>
-                            We're going to send you e-mails when
+                            We will send you emails when
                             <br />
-                            you'll start receiving rewards.
+                            you start receiving rewards
                         </StyledParagraph>
                     </>
                 ) : (
