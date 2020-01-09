@@ -277,7 +277,7 @@ export class Wallet extends React.Component<WalletProps, WalletState> {
             maxHeight: !utils.isMobileWidth(this.props.screenWidth) ? 'calc(90vh - 300px)' : undefined,
         };
     }
-    private _onSidebarHover(_event: React.FormEvent<HTMLInputElement>): void {
+    private _onSidebarHover(_event: React.FormEvent<HTMLDivElement>): void {
         this.setState({
             isHoveringSidebar: true,
         });

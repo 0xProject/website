@@ -25,7 +25,7 @@ export interface WrapEtherItemProps {
     direction: Side;
     etherToken: Token;
     lastForceTokenStateRefetch: number;
-    onConversionSuccessful?: () => void;
+    onConversionSuccessful?: (wrappedEtherDirection?: Side) => void;
     refetchEthTokenStateAsync: () => Promise<void>;
 }
 

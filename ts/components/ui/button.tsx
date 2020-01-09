@@ -13,7 +13,7 @@ export interface ButtonProps {
     borderRadius?: string;
     width?: string;
     padding?: string;
-    type?: string;
+    type?: 'submit' | 'reset' | 'button';
     isDisabled?: boolean;
     onClick?: (event: React.MouseEvent<HTMLElement>) => void;
     textAlign?: string;

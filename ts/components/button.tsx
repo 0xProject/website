@@ -26,7 +26,7 @@ export interface ButtonInterface {
     padding?: string;
     fontSize?: string;
     href?: string;
-    type?: string;
+    type?: 'button' | 'reset' | 'submit';
     target?: string;
     textAlign?: string;
     to?: string;

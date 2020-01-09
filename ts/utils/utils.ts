@@ -167,7 +167,7 @@ export const utils = {
                 const intervalId = setTimeout(() => {
                     resolve(false);
                 }, getApiVersionTimeoutMs);
-                u2f.getApiVersion((_version: number) => {
+                (u2f as any).getApiVersion((_version: number) => {
                     clearTimeout(intervalId);
                     resolve(true);
                 });
