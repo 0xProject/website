@@ -345,7 +345,7 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
                                 key={rec.pool.poolId}
                                 name={stakingUtils.getPoolDisplayName(rec.pool)}
                                 collectedFees={rec.pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
-                                rewardsShared={1 - rec.pool.currentEpochStats.operatorShare}
+                                rewardsShared={1 - rec.pool.nextEpochStats.operatorShare}
                                 staked={rec.pool.nextEpochStats.approximateStakeRatio}
                                 iconUrl={rec.pool.metaData.logoUrl}
                                 website={rec.pool.metaData.websiteUrl}
@@ -449,8 +449,8 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
                     key={marketMakerPool.poolId}
                     name={stakingUtils.getPoolDisplayName(marketMakerPool)}
                     collectedFees={marketMakerPool.currentEpochStats.totalProtocolFeesGeneratedInEth}
-                    rewardsShared={1 - marketMakerPool.currentEpochStats.operatorShare}
-                    staked={marketMakerPool.currentEpochStats.approximateStakeRatio}
+                    rewardsShared={1 - marketMakerPool.nextEpochStats.operatorShare}
+                    staked={marketMakerPool.nextEpochStats.approximateStakeRatio}
                     iconUrl={marketMakerPool.metaData.logoUrl}
                     website={marketMakerPool.metaData.websiteUrl}
                     difference={roundedStakeAmount}
