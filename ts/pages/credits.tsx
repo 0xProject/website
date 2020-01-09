@@ -10,6 +10,7 @@ import { ModalContact, ModalContactType } from 'ts/components/modals/modal_conta
 import { FlexWrap, Section } from 'ts/components/newLayout';
 import { SiteWrap } from 'ts/components/siteWrap';
 import { Heading } from 'ts/components/text';
+import { colors } from 'ts/style/colors';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 
 export interface CreditsProps {
@@ -119,7 +120,7 @@ export class Credits extends React.Component<CreditsProps> {
     };
 
     private readonly _renderHeroActions = () => (
-        <Button onClick={this._onOpenContactModal} bgColor="dark" isInline={true}>
+        <Button onClick={this._onOpenContactModal} bgColor={colors.brandDark} color="#ffffff" isInline={true}>
             Apply Now
         </Button>
     );

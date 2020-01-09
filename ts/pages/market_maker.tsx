@@ -158,7 +158,7 @@ export class NextMarketMaker extends React.Component<NextMarketMakerProps> {
 
     private readonly _renderHeroActions = () => (
         <>
-            <Button href={`${WebsitePaths.DocsGuides}/market-making-on-0x`} bgColor="dark" isInline={true}>
+            <Button href={`${WebsitePaths.DocsGuides}/market-making-on-0x`} bgColor={colors.brandDark} color="#ffffff" isInline={true}>
                 Get Started
             </Button>
             <Button
