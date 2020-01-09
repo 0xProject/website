@@ -15,7 +15,7 @@ import {
     StartStaking,
     TokenApprovalPane,
 } from 'ts/components/staking/wizard/wizard_flow';
-import { ConfirmationWizardInfo, IntroWizardInfo, TokenApprovalInfo } from 'ts/components/staking/wizard/wizard_info';
+import { ConfirmationWizardInfo, IntroWizardInfo } from 'ts/components/staking/wizard/wizard_info';
 
 import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
@@ -154,10 +154,10 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                 <Splitview
                     leftComponent={
                         <>
-                            {currentStep === WizardRouterSteps.SetupWizard && (
+                            {(currentStep === WizardRouterSteps.SetupWizard ||
+                                currentStep === WizardRouterSteps.ApproveTokens) && (
                                 <IntroWizardInfo currentEpochStats={currentEpochStats} allTimeStats={allTimeStats} />
                             )}
-                            {currentStep === WizardRouterSteps.ApproveTokens && <TokenApprovalInfo />}
                             {currentStep === WizardRouterSteps.ReadyToStake && (
                                 <ConfirmationWizardInfo nextEpochStats={nextEpochStats} />
                             )}
