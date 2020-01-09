@@ -28,10 +28,10 @@ const STAKING_POOLS_ENDPOINT = '/staking-pools';
 
 export const backendClient = {
     async getGasInfoAsync(): Promise<GasInfo> {
-        const gasInfo = (await fetchUtils.requestAsync(
+        const gasInfo: WebsiteBackendGasInfo = (await fetchUtils.requestAsync(
             utils.getBackendBaseUrl(),
             ETH_GAS_STATION_ENDPOINT,
-        )) as WebsiteBackendGasInfo;
+        ));
 
         // Eth Gas Station result is gwei * 10
         const gasPriceInGwei = new BigNumber(gasInfo.fast / 10);

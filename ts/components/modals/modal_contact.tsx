@@ -550,6 +550,7 @@ export class ModalContact extends React.Component<Props> {
     }
     private _parseErrors(errors: ErrorResponseProps[]): ErrorProps {
         const initialValue: {} = {};
+        // tslint:disable-next-line: no-inferred-empty-object-type
         return _.reduce(
             errors,
             (hash: ErrorProps, error: ErrorResponseProps) => {
