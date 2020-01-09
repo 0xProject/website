@@ -8,7 +8,6 @@ import { Input } from 'ts/components/modals/input';
 import { Heading, Paragraph } from 'ts/components/text';
 
 import { Inner } from 'ts/components/staking/wizard/inner';
-import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 
 import { colors } from 'ts/style/colors';
 
@@ -27,7 +26,7 @@ const StyledHeading = styled(Heading)`
 
 const StyledParagraph = styled(Paragraph)`
     @media (min-width: 768px) {
-        margin: ${props => !props.isNoMargin && '0 auto 60px auto'};
+        margin: 0 auto 60px auto;
     }
 
     @media (max-width: 768px) {
@@ -87,7 +86,7 @@ const StyledButton = styled(Button)`
     }
 `;
 
-const CheckMarkWrapper = styled.div`
+const IconWrapper = styled.div`
     display: flex;
     justify-content: center;
     margin: 30px 0;
@@ -96,9 +95,27 @@ const CheckMarkWrapper = styled.div`
     }
 `;
 
+const CircleThumbsUp = () => (
+    <svg width="143" height="144" viewBox="0 0 143 144" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+            d="M71.5 141.54C110.16 141.54 141.5 110.2 141.5 71.5399C141.5 32.88 110.16 1.53992 71.5 1.53992C32.8401 1.53992 1.5 32.88 1.5 71.5399C1.5 110.2 32.8401 141.54 71.5 141.54Z"
+            stroke="#00AE99"
+            strokeWidth="3"
+            strokeMiterlimit="10"
+        />
+        <path
+            d="M62.1811 102.79H42.75V54.2092H62.1811M62.1811 102.79V54.2092M62.1811 102.79V98.3286H105.25V87.81M62.1811 54.2092V34.0399H74.4495V58.4334H105.25V67.8624M105.25 78.381H93.9353M105.25 78.381V67.8624M105.25 78.381V87.81M105.25 67.8624H93.9353M105.25 87.81H93.9353"
+            stroke="#00AE99"
+            strokeWidth="3"
+            strokeMiterlimit="10"
+        />
+    </svg>
+);
+
 export const Newsletter = () => {
     const [email, setEmail] = React.useState<string>('');
     const [hasSubmitted, setHasSubmitted] = React.useState<boolean>(false);
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const onSubmit = React.useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
@@ -106,12 +123,14 @@ export const Newsletter = () => {
                 return;
             }
             try {
+                setIsLoading(true);
                 await backendClient.subscribeToNewsletterAsync(email.trim());
                 setHasSubmitted(true);
             } catch (err) {
                 logUtils.warn(`Unable to register email to newsletter`, email, err);
                 errorReporter.report(err);
             }
+            setIsLoading(false);
         },
         [email],
     );
@@ -119,21 +138,25 @@ export const Newsletter = () => {
     return (
         <>
             <Inner>
-                <StyledHeading size={34} marginBottom="15px" fontWeight="400">
-                    {hasSubmitted ? 'Thank you!' : 'Congratulations!'}
-                </StyledHeading>
-
                 {hasSubmitted ? (
                     <>
-                        <CheckMarkWrapper>
-                            <CircleCheckMark width="72px" height="72px" />
-                        </CheckMarkWrapper>
-                        <StyledParagraph isCentered={true} isNoMargin={true}>
-                            You have subscribed to our newsletter.
+                        <IconWrapper>
+                            <CircleThumbsUp />
+                        </IconWrapper>
+                        <StyledHeading size={34} marginBottom="15px" fontWeight="400">
+                            Subscribed!
+                        </StyledHeading>
+                        <StyledParagraph isCentered={true}>
+                            We're going to send you e-mails when
+                            <br />
+                            you'll start receiving rewards.
                         </StyledParagraph>
                     </>
                 ) : (
                     <>
+                        <StyledHeading size={34} marginBottom="15px" fontWeight="400">
+                            Congratulations!
+                        </StyledHeading>
                         <StyledParagraph isCentered={true}>
                             Stay in the loop and know exactly what’s
                             <br />
@@ -150,8 +173,8 @@ export const Newsletter = () => {
                                 placeholder="Enter your e-mail"
                             />
 
-                            <Button isFullWidth={true} type="submit" color="#fff">
-                                Subscribe
+                            <Button isDisabled={isLoading} isFullWidth={true} type="submit" color="#fff">
+                                {isLoading ? 'Loading...' : 'Subscribe'}
                             </Button>
                         </FormWrap>
                     </>
