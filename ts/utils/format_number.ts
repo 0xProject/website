@@ -153,7 +153,7 @@ function addBigUnitPostfix(value: BigNumber, formattedValue: string | number, re
     } else if (value.gt(createBigNumber('1e6', 10))) {
         postfixed =
             // tslint:disable-next-line: prefer-template
-            value.dividedBy(createBigNumber('1e6', 10)).toFixed(0) + 'M';
+            value.dividedBy(createBigNumber('1e6', 10)).toFixed(2) + 'M';
     } else if (value.gt(createBigNumber('1e4', 10))) {
         postfixed = value.dividedBy(createBigNumber('1e3', 10)).toFixed(0) + 'K';
     } else {
