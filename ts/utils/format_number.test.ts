@@ -17,7 +17,7 @@ describe('formatNumber', () => {
             decimalsRounded: 6,
             bigUnitPostfix: true,
         });
-        expect(hundredMillion.formatted).toBe('100M');
+        expect(hundredMillion.formatted).toBe('100.00M');
     });
 
     test('can optionally postfix big numbers', () => {
@@ -26,7 +26,7 @@ describe('formatNumber', () => {
             decimalsRounded: 6,
             bigUnitPostfix: true,
         });
-        expect(hundredMillion.formatted).toBe('1M');
+        expect(hundredMillion.formatted).toBe('1.00M');
     });
 
     test('should work with string type', () => {
