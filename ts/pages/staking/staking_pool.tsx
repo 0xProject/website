@@ -20,6 +20,15 @@ import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
+/**
+ * Converts an array into a cumulative sum array
+ * [1, 2, 3, 4] => [1, 3, 6, 10]
+ */
+const cumulativeSum = (arr: number[]) => {
+    let y = 0;
+    return arr.map(d => y += d);
+};
+
 export interface ActionProps {
     children: React.ReactNode;
     title: string;
@@ -393,8 +402,8 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
             <Container>
                 <GraphHeading>Historical Details</GraphHeading>
                 <HistoryChart
-                    fees={historicalEpochs.map(e => e.totalRewardsPaidInEth)}
-                    rewards={historicalEpochs.map(e => e.membersRewardsPaidInEth)}
+                    fees={cumulativeSum(historicalEpochs.map(e => e.totalRewardsPaidInEth))}
+                    rewards={cumulativeSum(historicalEpochs.map(e => e.membersRewardsPaidInEth))}
                     epochs={historicalEpochs.map(e => e.epochId)}
                     labels={historicalEpochs.map(e => format(new Date(e.epochEndTimestamp), 'd MMM'))}
                 />
