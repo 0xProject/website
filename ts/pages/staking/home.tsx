@@ -19,6 +19,7 @@ import { StakingHero } from 'ts/components/staking/hero';
 import { Heading } from 'ts/components/text';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useStake } from 'ts/hooks/use_stake';
+import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { Epoch, PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
@@ -67,6 +68,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                 logUtils.warn(err);
                 setNextEpochStats(undefined);
                 setCurrentEpochStats(undefined);
+                errorReporter.report(err);
             }
         };
         // tslint:disable-next-line:no-floating-promises
@@ -79,9 +81,21 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
             <StakingHero
-                title={<div>Earn liquidity<br/>rewards with ZRX</div>}
+                title={
+                    <div>
+                        Earn liquidity
+                        <br />
+                        rewards with ZRX
+                    </div>
+                }
                 titleMobile="Earn liquidity rewards with ZRX"
-                description={<div>Put your ZRX to work by staking<br/>with 0x market makers to earn rewards.</div>}
+                description={
+                    <div>
+                        Put your ZRX to work by staking
+                        <br />
+                        with 0x market makers to earn rewards.
+                    </div>
+                }
                 figure={<CFLMetrics />}
                 videoId="qP_oZAjRkTs"
                 actions={

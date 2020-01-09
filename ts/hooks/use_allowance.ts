@@ -10,6 +10,7 @@ import { State } from 'ts/redux/reducer';
 import { AccountReady, ProviderState, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
+import { errorReporter } from 'ts/utils/error_reporter';
 
 export interface UseAllowanceHookResult {
     loadingState?: TransactionLoadingState;
@@ -84,6 +85,7 @@ export const useAllowance = (): UseAllowanceHookResult => {
                 setError(err);
                 logUtils.warn(err);
                 setIsStarted(false);
+                errorReporter.report(err);
             });
         },
         estimatedTimeMs,

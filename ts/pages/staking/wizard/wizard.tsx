@@ -36,6 +36,7 @@ import {
     UserStakingChoice,
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
+import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
 export interface StakingWizardProps {
@@ -88,9 +89,9 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
             } catch (err) {
                 logUtils.warn(err);
                 setStakingPools([]);
+                errorReporter.report(err);
             }
         };
-        setStakingPools(undefined);
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPools();
     }, [networkId, apiClient]);
@@ -106,6 +107,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                 logUtils.warn(err);
                 setCurrentEpochStats(undefined);
                 setNextEpochStats(undefined);
+                errorReporter.report(err);
             }
         };
         // tslint:disable-next-line:no-floating-promises
@@ -120,6 +122,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
             } catch (err) {
                 logUtils.warn(err);
                 setAllTimeStats(undefined);
+                errorReporter.report(err);
             }
         };
 
@@ -257,13 +260,27 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
             )}
             {wizardFlowStep === WizardSetupSteps.NoZrxInWallet && (
                 <Status
-                    title={<div>You have no ZRX balance.<br/>You will need some to stake.</div>}
+                    title={
+                        <div>
+                            You have no ZRX balance.
+                            <br />
+                            You will need some to stake.
+                        </div>
+                    }
                     linkText="Go buy some ZRX"
-                    onClick={() => zeroExInstant.render({
-                        orderSource: 'https://api.0x.org/sra/',
-                        availableAssetDatas: ['0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498'],
-                        defaultSelectedAssetData: '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
-                    }, 'body')}
+                    onClick={() =>
+                        zeroExInstant.render(
+                            {
+                                orderSource: 'https://api.0x.org/sra/',
+                                availableAssetDatas: [
+                                    '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
+                                ],
+                                defaultSelectedAssetData:
+                                    '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
+                            },
+                            'body',
+                        )
+                    }
                     to={`#`}
                 />
             )}
