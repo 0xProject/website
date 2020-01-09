@@ -17,6 +17,7 @@ export interface ConfirmationWizardInfo {
 
 export interface WizardInfoProps {
     currentEpochStats: Epoch | undefined;
+    nextEpochStats: Epoch | undefined;
     allTimeStats: AllTimeStats | undefined;
 }
 
@@ -110,7 +111,7 @@ const IntroMetric = styled.li`
     }
 `;
 
-export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats, allTimeStats }) => {
+export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats, nextEpochStats, allTimeStats }) => {
     return (
         <>
             <>
@@ -132,7 +133,7 @@ export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats, 
                     <p>Total rewards distributed</p>
                 </IntroMetric>
                 <IntroMetric>
-                    <h2>{currentEpochStats ? formatZrx(currentEpochStats.zrxStaked).formatted : PLACEHOLDER} ZRX</h2>
+                    <h2>{nextEpochStats ? formatZrx(nextEpochStats.zrxStaked, { bigUnitPostfix: true }).formatted : PLACEHOLDER} ZRX</h2>
                     <p>Total ZRX Staked</p>
                 </IntroMetric>
             </IntroMetrics>

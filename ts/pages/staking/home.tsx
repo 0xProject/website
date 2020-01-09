@@ -105,7 +105,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
             />
             <SectionWrapper>
                 <CurrentEpochOverview
-                    zrxStaked={currentEpochStats && currentEpochStats.zrxStaked}
+                    zrxStaked={nextEpochStats && nextEpochStats.zrxStaked}
                     currentEpochEndDate={currentEpochEndDate}
                     currentEpochRewards={currentEpochRewards}
                     numMarketMakers={stakingPools && stakingPools.length}
