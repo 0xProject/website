@@ -156,7 +156,11 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                         <>
                             {(currentStep === WizardRouterSteps.SetupWizard ||
                                 currentStep === WizardRouterSteps.ApproveTokens) && (
-                                <IntroWizardInfo currentEpochStats={currentEpochStats} allTimeStats={allTimeStats} />
+                                <IntroWizardInfo
+                                    nextEpochStats={nextEpochStats}
+                                    currentEpochStats={currentEpochStats}
+                                    allTimeStats={allTimeStats}
+                                />
                             )}
                             {currentStep === WizardRouterSteps.ReadyToStake && (
                                 <ConfirmationWizardInfo nextEpochStats={nextEpochStats} />
