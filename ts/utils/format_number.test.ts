@@ -20,6 +20,15 @@ describe('formatNumber', () => {
         expect(hundredMillion.formatted).toBe('100M');
     });
 
+    test('can optionally postfix big numbers', () => {
+        const hundredMillion = formatNumber('1000001', {
+            decimals: 6,
+            decimalsRounded: 6,
+            bigUnitPostfix: true,
+        });
+        expect(hundredMillion.formatted).toBe('1M');
+    });
+
     test('should work with string type', () => {
         const hundredMillion = formatNumber('1.2345', {
             decimals: 2,
