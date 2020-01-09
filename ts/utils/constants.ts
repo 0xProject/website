@@ -69,6 +69,8 @@ export const constants = {
     } as { [key in Providers]: string },
     PROVIDER_TYPE_TO_ICON: {
         [Providers.Metamask]: 'metamask_icon',
+        [Providers.CoinbaseWallet]: 'coinbase_wallet_icon',
+        [Providers.TrustWallet]: 'trust_wallet_icon',
     } as { [key: string]: string | undefined },
     NO_ACCOUNT: {
         state: AccountState.None,
