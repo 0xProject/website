@@ -35,6 +35,7 @@ import { utils } from 'ts/utils/utils';
 
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useStake } from 'ts/hooks/use_stake';
+import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 
 export interface AccountProps {}
@@ -159,6 +160,7 @@ export const Account: React.FC<AccountProps> = () => {
                 setDelegatorData(undefined);
                 setIsFetchingDelegatorData(false);
                 logUtils.warn(err);
+                errorReporter.report(err);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [account.address, apiClient]); // add isFetchingDelegatorData to dependency arr to turn on polling
@@ -225,6 +227,7 @@ export const Account: React.FC<AccountProps> = () => {
         fetchAvailableRewards().catch((err: Error) => {
             setTotalAvailableRewards(new BigNumber(0));
             logUtils.warn(err);
+            errorReporter.report(err);
         });
     }, [delegatorData, account.address, stakingContract]);
 

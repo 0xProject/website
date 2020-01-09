@@ -7,6 +7,7 @@ import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { analytics } from 'ts/utils/analytics';
 import { constants } from 'ts/utils/constants';
+import { errorReporter } from 'ts/utils/error_reporter';
 import { providerStateFactory } from 'ts/utils/providers/provider_state_factory';
 
 const PROVIDER_CHAIN_CHANGED_EVENT = 'chainChanged';
@@ -98,6 +99,7 @@ export const useWallet = () => {
         connectToWallet: useCallback(() => {
             connectToWallet().catch((err: Error) => {
                 logUtils.warn(`Failed to connect wallet ${err}`);
+                errorReporter.report(err);
             });
         }, [connectToWallet]),
         logoutWallet,

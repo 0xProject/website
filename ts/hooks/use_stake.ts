@@ -11,6 +11,7 @@ import { AccountReady, ProviderState, StakePoolData, StakeStatus, TransactionLoa
 import { analytics } from 'ts/utils/analytics';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
+import { errorReporter } from 'ts/utils/error_reporter';
 import { utils } from 'ts/utils/utils';
 
 const isTxInProgress = (loadingState: TransactionLoadingState) =>
@@ -208,6 +209,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         setLoadingState(TransactionLoadingState.Failed);
         setError(err);
         logUtils.log(err);
+        errorReporter.report(err);
     }, []);
 
     useEffect(() => {
@@ -257,6 +259,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         getCurrentEpochRewards().catch((err: Error) => {
             setCurrentEpochRewards(undefined);
             logUtils.warn(err);
+            errorReporter.report(err);
         });
     }, [contractAddresses, currentEpochRewards, providerState, stakingContract, stakingProxyContract]);
 

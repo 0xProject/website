@@ -16,6 +16,7 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { State } from 'ts/redux/reducer';
 import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
+import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
@@ -255,7 +256,10 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
         apiClient
             .getStakingPoolByIdAsync(poolId)
             .then(res => setStakingPool(res.stakingPool))
-            .catch(e => logUtils.warn(e));
+            .catch((err: Error) => {
+                logUtils.warn(err);
+                errorReporter.report(err);
+            });
     }, [poolId, setStakingPool, apiClient]);
 
     // Ensure poolId exists else redirect back to home page
