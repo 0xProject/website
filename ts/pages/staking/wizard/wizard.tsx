@@ -3,6 +3,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import * as zeroExInstant from 'zeroExInstant';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
@@ -256,9 +257,14 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
             )}
             {wizardFlowStep === WizardSetupSteps.NoZrxInWallet && (
                 <Status
-                    title="You have no ZRX balance. You will need some to stake."
+                    title={<div>You have no ZRX balance.<br/>You will need some to stake.</div>}
                     linkText="Go buy some ZRX"
-                    linkUrl={`https://www.rexrelay.com/instant/?defaultSelectedAssetData=${constants.ZRX_ASSET_DATA}`}
+                    onClick={() => zeroExInstant.render({
+                        orderSource: 'https://api.0x.org/sra/',
+                        availableAssetDatas: ['0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498'],
+                        defaultSelectedAssetData: '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
+                    }, 'body')}
+                    to={`#`}
                 />
             )}
             {/* TODO(johnrjj) - Conslidate MM and Recommended panels */}
