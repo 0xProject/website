@@ -18,7 +18,7 @@ import { useWallet } from 'ts/hooks/use_wallet';
 
 const StyledDialogOverlay = styled(DialogOverlay)`
     &[data-reach-dialog-overlay] {
-        background: none;
+        background-color: rgba(0, 0, 0, 0.75);
         z-index: ${zIndex.overlay};
 
         @media (max-width: 768px) {

@@ -221,7 +221,7 @@ const getStatus = (stakeAmount: number, stakingPools?: PoolWithStats[]): React.R
         return (
             <Status
                 title="Looking for most suitable
-                market makers"
+                staking pools"
                 iconName="search_big"
                 to={WebsitePaths.Staking}
             />
@@ -231,7 +231,7 @@ const getStatus = (stakeAmount: number, stakingPools?: PoolWithStats[]): React.R
         return (
             <Status
                 title="We didn’t find a suitable staking pool. Try again later or adjust ZRX amount."
-                linkText="or explore market maker list"
+                linkText="or explore the list"
                 iconName="getStartedThin"
                 to={WebsitePaths.Staking}
             />
@@ -249,8 +249,8 @@ export const ConnectWalletPane: React.FC<{ onOpenConnectWalletDialog: () => any 
                 Connect your wallet to start staking
             </ConnectWalletButton>
             <Status
-                title="Please connect your wallet, so we can find suitable market maker."
-                linkText="or explore market maker list"
+                title="Please connect your wallet, so we can find suitable Staking Pools."
+                linkText="or explore the list"
                 to={WebsitePaths.Staking}
             />
         </>
