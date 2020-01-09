@@ -8,10 +8,11 @@ import { colors } from 'ts/style/colors';
 
 interface StatusProps {
     iconName?: string;
-    title: string;
+    title: string | React.ReactNode;
     linkText?: string;
     linkUrl?: string;
     to?: string;
+    onClick?: () => void;
 }
 
 const StatusContainer = styled.div`
@@ -54,14 +55,14 @@ const StatusIcon = styled(Icon)`
 `;
 
 export const Status: React.FC<StatusProps> = props => {
-    const { title, linkText, linkUrl, to, iconName } = props;
+    const { title, linkText, linkUrl, to, iconName, onClick } = props;
     const target = linkUrl && !to ? '_blank' : undefined;
     return (
         <StatusContainer>
             {iconName && <StatusIcon color={colors.brandLight} name={iconName} size={145} />}
             <Title>{title}</Title>
             {linkText && (linkUrl || to) &&
-                <Link href={linkUrl} to={to} isWithArrow={true} color={colors.brandLight} target={target}>
+                <Link onClick={onClick} href={linkUrl} to={to} isWithArrow={true} color={colors.brandLight} target={target}>
                     {linkText}
                 </Link>
             }
