@@ -110,49 +110,6 @@ const IntroMetric = styled.li`
     }
 `;
 
-const TokenApprovalHeader = styled.h1`
-    font-size: 36px;
-    font-weight: 300;
-    line-height: 1.1;
-    margin-bottom: 30px;
-    text-align: center;
-
-    @media (min-width: 480px) {
-        text-align: left;
-        max-width: 435px;
-    }
-
-    @media (min-width: 768px) {
-        font-size: 50px;
-    }
-`;
-
-// const TokenApprovalDescription = styled.h2`
-//     font-size: 18px;
-//     font-weight: 300;
-//     color: ${colors.textDarkSecondary};
-//     line-height: 1.44;
-//     margin-bottom: 30px;
-//     text-align: center;
-
-//     @media (min-width: 480px) {
-//         max-width: 435px;
-//         text-align: left;
-//     }
-
-//     @media (min-width: 768px) {
-//         margin-bottom: 60px;
-//     }
-// `;
-
-export const TokenApprovalInfo: React.FC<{}> = () => {
-    return (
-        <>
-            <TokenApprovalHeader>Unlock your ZRX</TokenApprovalHeader>
-        </>
-    );
-};
-
 export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats, allTimeStats }) => {
     return (
         <>
