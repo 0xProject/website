@@ -177,7 +177,7 @@ const linkStyles = css`
 const StyledNavLink = styled(Link).attrs({
     activeStyle: { opacity: 1 },
 })`
-    ${linkStyles};
+    ${linkStyles as any};
 `;
 
 const StyledAnchor = styled.a`

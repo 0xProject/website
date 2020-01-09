@@ -131,8 +131,10 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
     private readonly _handleAffiliatePercentageLearnMoreClick = (): void => {
         window.open(`${WebsitePaths.DocsGuides}/integrate-instant#learn-about-affiliate-fees`, '_blank');
     };
-    private readonly _handleSRASelection = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const sraEndpoint = event.target.value;
+    private readonly _handleSRASelection = (event: React.ChangeEvent<HTMLSelectElement> | string) => {
+        const sraEndpoint = (event as React.ChangeEvent<HTMLSelectElement>).target
+            ? (event as React.ChangeEvent<HTMLSelectElement>).target.value
+            : (event as string);
         const newConfig: ZeroExInstantBaseConfig = {
             ...this.props.value,
             orderSource: sraEndpoint,
