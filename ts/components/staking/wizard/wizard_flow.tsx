@@ -108,7 +108,7 @@ const CenteredHeader = styled.h2`
 `;
 
 const PoolsContainer = styled.div`
-    overflow: scroll;
+    overflow-y: auto;
 `;
 
 const InfoHeader = styled.div`
