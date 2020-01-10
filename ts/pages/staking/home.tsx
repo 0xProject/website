@@ -47,7 +47,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         };
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPoolsAsync();
-    }, [networkId, apiClient]);
+    }, [apiClient]);
 
     const sortedStakingPools: PoolWithStats[] | undefined = React.useMemo(() => {
         if (!stakingPools) {
@@ -70,7 +70,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         };
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetEpochs();
-    }, [networkId, apiClient]);
+    }, [apiClient]);
 
     // Current epoch ends right before next one starts
     const currentEpochEndDate = nextEpochStats && new Date(nextEpochStats.epochStart.timestamp);
