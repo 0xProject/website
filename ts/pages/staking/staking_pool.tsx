@@ -286,7 +286,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 operatorAddress={stakingPool.operatorAddress}
                 isVerified={stakingPool.metaData.isVerified}
                 estimatedStake={nextEpoch.approximateStakeRatio * 100}
-                rewardsShared={(1 - currentEpoch.operatorShare) * 100}
+                rewardsShared={(1 - nextEpoch.operatorShare) * 100}
                 iconUrl={stakingPool.metaData.logoUrl}
                 tabs={[
                     {

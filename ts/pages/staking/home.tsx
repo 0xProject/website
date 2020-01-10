@@ -125,7 +125,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                                 address={pool.operatorAddress}
                                 totalFeesGeneratedInEth={pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
                                 stakeRatio={pool.nextEpochStats.approximateStakeRatio}
-                                rewardsSharedRatio={1 - pool.currentEpochStats.operatorShare}
+                                rewardsSharedRatio={1 - pool.nextEpochStats.operatorShare}
                             />
                         );
                     })}
