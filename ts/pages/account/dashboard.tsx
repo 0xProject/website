@@ -3,7 +3,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { differenceInCalendarDays, format } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -18,6 +18,7 @@ import { AccountDetail } from 'ts/pages/account/account_detail';
 import { AccountFigure } from 'ts/pages/account/account_figure';
 import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
+import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import {
@@ -87,6 +88,13 @@ interface PendingAction {
 export const Account: React.FC<AccountProps> = () => {
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
+    const dispatch = useDispatch();
+
+    const onOpenConnectWalletDialog = React.useCallback(() => {
+        const dispatcher = new Dispatcher(dispatch);
+        dispatcher.updateIsConnectWalletDialogOpen(true);
+    }, [dispatch]);
+
     const account = providerState.account as AccountReady;
     // NOTE: not yet implemented but left in for future reference
     const voteHistory: VoteHistory[] = [];
@@ -266,11 +274,20 @@ export const Account: React.FC<AccountProps> = () => {
     if (!accountLoaded) {
         return (
             <StakingPageLayout title="0x Staking | Account">
-                <Inner>
-                    <HeaderWrapper>
-                        <div>Connect to your wallet to see your account</div>
-                    </HeaderWrapper>
-                </Inner>
+                <SectionWrapper>
+                    <Heading />
+                    <CallToAction
+                        icon="wallet"
+                        title="Connect your wallet"
+                        description="Connect your wallet to see your account."
+                        actions={[
+                            {
+                                label: 'Connect your wallet',
+                                onClick: onOpenConnectWalletDialog,
+                            },
+                        ]}
+                    />
+                </SectionWrapper>
             </StakingPageLayout>
         );
     }
