@@ -18,7 +18,6 @@ import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_
 import { StakingHero } from 'ts/components/staking/hero';
 import { Heading } from 'ts/components/text';
 import { useAPIClient } from 'ts/hooks/use_api_client';
-import { useStake } from 'ts/hooks/use_stake';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
@@ -32,12 +31,11 @@ export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
     const networkId = useSelector((state: State) => state.networkId);
-    const providerState = useSelector((state: State) => state.providerState);
 
     const apiClient = useAPIClient(networkId);
-    const { currentEpochRewards } = useStake(networkId, providerState);
 
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
+    const [currentEpochStats, setCurrentEpochStats] = React.useState<Epoch | undefined>(undefined);
 
     React.useEffect(() => {
         const fetchAndSetPoolsAsync = async () => {
@@ -61,9 +59,11 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         const fetchAndSetEpochs = async () => {
             try {
                 const epochsResponse = await apiClient.getStakingEpochsAsync();
+                setCurrentEpochStats(epochsResponse.currentEpoch);
                 setNextEpochStats(epochsResponse.nextEpoch);
             } catch (err) {
                 logUtils.warn(err);
+                setCurrentEpochStats(undefined);
                 setNextEpochStats(undefined);
                 errorReporter.report(err);
             }
@@ -104,7 +104,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                 <CurrentEpochOverview
                     zrxStaked={nextEpochStats && nextEpochStats.zrxStaked}
                     currentEpochEndDate={currentEpochEndDate}
-                    currentEpochRewards={currentEpochRewards}
+                    currentEpochRewards={currentEpochStats && currentEpochStats.protocolFeesGeneratedInEth}
                     numMarketMakers={stakingPools && stakingPools.length}
                 />
             </SectionWrapper>
