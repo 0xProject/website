@@ -112,6 +112,8 @@ const CircleThumbsUp = () => (
     </svg>
 );
 
+const STAKING_NEWSLETTER_TAG = 'staking_updates';
+
 export const Newsletter = () => {
     const [email, setEmail] = React.useState<string>('');
     const [hasSubmitted, setHasSubmitted] = React.useState<boolean>(false);
@@ -124,7 +126,7 @@ export const Newsletter = () => {
             }
             try {
                 setIsLoading(true);
-                await backendClient.subscribeToNewsletterAsync(email.trim());
+                await backendClient.subscribeToNewsletterAsync(email.trim(), STAKING_NEWSLETTER_TAG);
                 setHasSubmitted(true);
             } catch (err) {
                 logUtils.warn(`Unable to register email to newsletter`, email, err);
