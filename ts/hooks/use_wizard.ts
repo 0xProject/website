@@ -13,6 +13,7 @@ import { WebsitePaths } from 'ts/types';
 // ReadyToStake handles the actual staking process as well as the success confirmation
 // Each of these steps can have their own internal state, which allows flexible transitions.
 export enum WizardRouterSteps {
+    ConnectWallet = 'connect_wallet',
     SetupWizard = 'start',
     ApproveTokens = 'approve',
     ReadyToStake = 'stake',
@@ -95,7 +96,6 @@ const useStakingWizard = (): IUSeWizardResult => {
                 `${WebsitePaths.StakingWizard}?${qs.stringify({
                     ...restOfQueryParams,
                     step: nextStep,
-                    // prevStep: step,
                 })}`,
             );
         },

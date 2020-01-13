@@ -1,7 +1,7 @@
 import { BigNumber } from '@0x/utils';
 import { formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
-import * as React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
@@ -504,11 +504,12 @@ export interface StartStakingProps {
     stake: UseStakeHookResult;
     selectedStakingPools: UserStakingChoice[] | undefined;
     nextEpochStats?: Epoch;
+    onGoToPreviousStep: () => void;
 }
 
 // Core
 export const StartStaking: React.FC<StartStakingProps> = props => {
-    const { selectedStakingPools, stake, nextEpochStats, providerState } = props;
+    const { selectedStakingPools, stake, nextEpochStats, providerState, onGoToPreviousStep } = props;
 
     const timeRemainingForStakingTransaction = useSecondsRemaining(stake.estimatedTransactionFinishTime);
 
@@ -536,6 +537,10 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
         <RelativeContainer>
             <>
                 <InfoHeader>
+                    {/* No margin-bottom here, as we're in a larger InfoHeader container. */}
+                    <IconContainer onClick={onGoToPreviousStep}>
+                        <Icon size={24} name={'back_arrow'} />
+                    </IconContainer>
                     <InfoHeaderItem>Next epoch starts in {stakingStartsFormattedTime}</InfoHeaderItem>
                 </InfoHeader>
                 <Inner>
@@ -649,7 +654,7 @@ const IconContainer = styled.div`
     width: 28px;
     padding-right: 4px;
     padding-bottom: 4px;
-    margin-bottom: 24px;
+    cursor: pointer;
 `;
 
 export interface TokenApprovalPaneProps {
@@ -666,9 +671,14 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
 
     // Simple effect that handles going to the next step when approval is done
     // TODO(johnrjj) -- Hook up lottie animation complete to trigger next step
-    React.useLayoutEffect(() => {
+    const hasGoneForwardAlready = useRef<boolean>(false);
+    React.useEffect(() => {
+        if (hasGoneForwardAlready.current) {
+            return;
+        }
         if (allowance.loadingState && allowance.loadingState === TransactionLoadingState.Success) {
             onGoToNextStep();
+            hasGoneForwardAlready.current = true;
         }
     }, [allowance.loadingState, onGoToNextStep]);
 
@@ -729,9 +739,11 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
 
     return (
         <RelativeContainer>
-            <IconContainer onClick={onGoToPreviousStep}>
-                <Icon size={24} name={'back_arrow'} />
-            </IconContainer>
+            <InfoHeader>
+                <IconContainer onClick={onGoToPreviousStep}>
+                    <Icon size={24} name={'back_arrow'} />
+                </IconContainer>
+            </InfoHeader>
             <Inner>
                 <UnlockIconContainer>
                     <UnlockIcon />

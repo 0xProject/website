@@ -174,7 +174,7 @@ export const MarketMaker: React.FC<MarketMakerProps> = props => {
                         {website}
                     </Website>
                 </TitleContainer>
-                <Difference>+{formatZrx(difference).formatted} ZRX</Difference>
+                {difference ? <Difference>+{formatZrx(difference).formatted} ZRX</Difference> : null}
             </Heading>
             <Metrics>
                 <Metric>

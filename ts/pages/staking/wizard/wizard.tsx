@@ -23,7 +23,7 @@ import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
-import { isGoingForward, WizardRouterSteps, useStakingWizard } from 'ts/hooks/use_wizard';
+import { isGoingForward, useStakingWizard, WizardRouterSteps } from 'ts/hooks/use_wizard';
 
 import { State } from 'ts/redux/reducer';
 import {
@@ -161,6 +161,15 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
 
     const { currentStep, previousStep, next, back } = useStakingWizard();
 
+    let actualCurrentStep = currentStep;
+    if (providerState.account.state !== AccountState.Ready) {
+        actualCurrentStep = WizardRouterSteps.ConnectWallet;
+    } else if (!zrxBalanceBaseUnitAmount) {
+        // TODO(johnrjj) - This should also add a spinner to the ConnectWallet panel
+        // e.g. at this point, the wallet is connected but loading stuff via redux/etc
+        actualCurrentStep = WizardRouterSteps.ConnectWallet;
+    }
+
     const handleClickNextStep = useCallback(() => {
         if (currentStep === WizardRouterSteps.SetupWizard) {
             if (doesNeedTokenApproval) {
@@ -178,7 +187,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     }, [currentStep, doesNeedTokenApproval, next]);
 
     // tslint:disable-next-line: no-shadowed-variable
-    const transitions = useTransition({ currentStep, previousStep }, stepInfo => stepInfo.currentStep, {
+    const transitions = useTransition({ currentStep: actualCurrentStep, previousStep }, stepInfo => stepInfo.currentStep, {
         from: (_stepInfo) => {
             // We use the live values here (not the the curried/stored values in stepInfo)
             const isForward = isGoingForward({ currentStep, previousStep });
@@ -225,6 +234,9 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                             {transitions.map(({ item: stepInfo, props: styleProps, key }) => (
                                 <AnimatedWizardFlowAbsoluteContainer key={key} style={styleProps}>
                                     <WizardFlowFlexInnerContainer>
+                                        {stepInfo.currentStep === WizardRouterSteps.ConnectWallet && (
+                                            <ConnectWalletPane onOpenConnectWalletDialog={props.onOpenConnectWalletDialog} />
+                                        )}
                                         {stepInfo.currentStep === WizardRouterSteps.SetupWizard && (
                                             <SetupStaking
                                                 onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
@@ -251,6 +263,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                                 nextEpochStats={nextEpochStats}
                                                 providerState={providerState}
                                                 selectedStakingPools={selectedStakingPools}
+                                                onGoToPreviousStep={back}
                                             />
                                         )}
                                     </WizardFlowFlexInnerContainer>
@@ -320,9 +333,10 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
 
     return (
         <>
-            {wizardFlowStep === WizardSetupSteps.ConnectWallet && (
+            {/* TODO(johnrjj) - remove */}
+            {/* {wizardFlowStep === WizardSetupSteps.ConnectWallet && (
                 <ConnectWalletPane onOpenConnectWalletDialog={onOpenConnectWalletDialog} />
-            )}
+            )} */}
             {wizardFlowStep === WizardSetupSteps.NoZrxInWallet && (
                 <Status
                     title={
