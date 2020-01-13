@@ -1,3 +1,4 @@
+// tslint:disable: arrow-parens
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -22,7 +23,7 @@ import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
-import { useStakingWizard, WizardRouterSteps } from 'ts/hooks/use_wizard';
+import { isGoingForward, WizardRouterSteps, useStakingWizard } from 'ts/hooks/use_wizard';
 
 import { State } from 'ts/redux/reducer';
 import {
@@ -158,7 +159,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         fetchAndSetStakingStats();
     }, [networkId, apiClient]);
 
-    const { currentStep, next } = useStakingWizard();
+    const { currentStep, previousStep, next, back } = useStakingWizard();
 
     const handleClickNextStep = useCallback(() => {
         if (currentStep === WizardRouterSteps.SetupWizard) {
@@ -176,25 +177,28 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         return next(WizardRouterSteps.ReadyToStake);
     }, [currentStep, doesNeedTokenApproval, next]);
 
-    // const handleClickBackStep = useCallback(() => {
-    //     if (currentStep === WizardRouterSteps.SetupWizard) {
-
-    //     }
-    // }, []);
-
-    const transitions = useTransition(currentStep, (s: string) => s, {
-        from: (s: any) => {
-            return { opacity: 0, transform: 'translate3d(100%, 0px, 0)' };
+    // tslint:disable-next-line: no-shadowed-variable
+    const transitions = useTransition({ currentStep, previousStep }, stepInfo => stepInfo.currentStep, {
+        from: (_stepInfo) => {
+            // We use the live values here (not the the curried/stored values in stepInfo)
+            const isForward = isGoingForward({ currentStep, previousStep });
+            return { opacity: 0, transform: `translate3d(${isForward ? '100%' : '-100%'}, 0px, 0)` };
         },
-        enter: () => {
-            return { opacity: 1, transform: 'translate3d(0%, 0px, 0)' };
+        enter: (_stepInfo) => {
+            // We use the live values here (not the the curried/stored values in stepInfo)
+            const isForward = isGoingForward({ currentStep, previousStep });
+            return { opacity: 1, transform: `translate3d(0%, 0px, 0)` };
         },
-        leave: (s: any) => {
-            return { opacity: 0, transform: 'translate3d(-100%, 0px, 0)' };
+        leave: (_stepInfo) => {
+            // We use the live values here (not the the curried/stored values in stepInfo)
+            const isForward = isGoingForward({ currentStep, previousStep });
+            return { opacity: 0, transform: `translate3d(${isForward ? '-100%' : '100%'}, 0px, 0)` };
         },
         // Don't animate first pane
         initial: null,
     });
+
+    // const wizardStep = WizardRouterSteps.ApproveTokens;
 
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
@@ -218,10 +222,10 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                     rightComponent={
                         <RightInner>
                             <WizardFlowRelativeContainer>
-                            {transitions.map(({ item: wizardStep, props: styleProps, key }) => (
+                            {transitions.map(({ item: stepInfo, props: styleProps, key }) => (
                                 <AnimatedWizardFlowAbsoluteContainer key={key} style={styleProps}>
                                     <WizardFlowFlexInnerContainer>
-                                        {wizardStep === WizardRouterSteps.SetupWizard && (
+                                        {stepInfo.currentStep === WizardRouterSteps.SetupWizard && (
                                             <SetupStaking
                                                 onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
                                                 poolId={poolId}
@@ -233,14 +237,15 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                                 onGoToNextStep={handleClickNextStep}
                                             />
                                         )}
-                                        {wizardStep === WizardRouterSteps.ApproveTokens && (
+                                        {stepInfo.currentStep === WizardRouterSteps.ApproveTokens && (
                                             <TokenApprovalPane
                                                 allowance={allowance}
                                                 providerState={providerState}
                                                 onGoToNextStep={handleClickNextStep}
+                                                onGoToPreviousStep={back}
                                             />
                                         )}
-                                        {wizardStep === WizardRouterSteps.ReadyToStake && (
+                                        {stepInfo.currentStep === WizardRouterSteps.ReadyToStake && (
                                             <StartStaking
                                                 stake={stake}
                                                 nextEpochStats={nextEpochStats}

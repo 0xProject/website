@@ -1,6 +1,7 @@
 import qs from 'query-string';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
+import { usePreviousDistinct } from 'react-use';
 
 import { useQuery } from 'ts/hooks/use_query';
 
@@ -23,9 +24,31 @@ export interface NextStepOptions {
 
 export interface IUSeWizardResult {
     currentStep: WizardRouterSteps;
+    previousStep?: WizardRouterSteps;
     next: (nextStep: WizardRouterSteps, options?: NextStepOptions) => void;
     back: () => void;
 }
+
+export const isGoingForward = ({
+    currentStep,
+    previousStep,
+}: {
+    currentStep: WizardRouterSteps;
+    previousStep?: WizardRouterSteps;
+}) => {
+    if (!previousStep) {
+        return true;
+    }
+    const wizardStepsInOrders = Object.keys(WizardRouterSteps)
+        .map(k => (WizardRouterSteps as any)[k as any])
+        .map(v => v as WizardRouterSteps);
+    const currentStepIndex = wizardStepsInOrders.findIndex(possibleStep => possibleStep === currentStep);
+    const previousStepIndex = wizardStepsInOrders.findIndex(possibleStep => possibleStep === previousStep);
+    if (currentStepIndex < previousStepIndex) {
+        return false;
+    }
+    return true;
+};
 
 const DEFAULT_STEP = WizardRouterSteps.SetupWizard;
 
@@ -34,6 +57,13 @@ const useStakingWizard = (): IUSeWizardResult => {
         poolId: string | undefined;
         step: WizardRouterSteps | undefined;
     }>();
+
+    // Store prev step in ref (more performant).
+    const previousStep = useRef<WizardRouterSteps | undefined>(undefined);
+    useLayoutEffect(() => {
+        previousStep.current = step;
+    }, [step]);
+
     const history = useHistory();
 
     const reset = useCallback(() => {
@@ -50,8 +80,8 @@ const useStakingWizard = (): IUSeWizardResult => {
     // Ensure everyone starts on the 'setup' step.
     useEffect(() => {
         reset();
-    // Only do this on mount (empty dep array for effect)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // Only do this on mount (empty dep array for effect)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Right now, user-space will determine what the next step is.
@@ -65,6 +95,7 @@ const useStakingWizard = (): IUSeWizardResult => {
                 `${WebsitePaths.StakingWizard}?${qs.stringify({
                     ...restOfQueryParams,
                     step: nextStep,
+                    // prevStep: step,
                 })}`,
             );
         },
@@ -77,6 +108,7 @@ const useStakingWizard = (): IUSeWizardResult => {
 
     return {
         currentStep: step || DEFAULT_STEP,
+        previousStep: previousStep.current,
         next: goToNextStep,
         back: goToPreviousStep,
     };

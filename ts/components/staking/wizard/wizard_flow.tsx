@@ -644,14 +644,23 @@ const UnlockHeader = styled(CenteredHeader)`
     margin-bottom: 30px;
 `;
 
+const IconContainer = styled.div`
+    height: 28px;
+    width: 28px;
+    padding-right: 4px;
+    padding-bottom: 4px;
+    margin-bottom: 24px;
+`;
+
 export interface TokenApprovalPaneProps {
     providerState: ProviderState;
     allowance: UseAllowanceHookResult;
     onGoToNextStep: () => void;
+    onGoToPreviousStep: () => void;
 }
 
 export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
-    const { providerState, allowance, onGoToNextStep } = props;
+    const { providerState, allowance, onGoToNextStep, onGoToPreviousStep } = props;
 
     const timeRemainingForAllowanceApproval = useSecondsRemaining(allowance.estimatedTransactionFinishTime);
 
@@ -720,6 +729,9 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
 
     return (
         <RelativeContainer>
+            <IconContainer onClick={onGoToPreviousStep}>
+                <Icon size={24} name={'back_arrow'} />
+            </IconContainer>
             <Inner>
                 <UnlockIconContainer>
                     <UnlockIcon />
