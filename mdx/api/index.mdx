@@ -152,7 +152,8 @@ Get a quote.
 | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | price       | The price of 1 `buyToken` denoted in the `sellToken`. This price does not include the `slippage` provided in the request above.                                          |
 | to          | The address of the contract to send call `data` to.                                                                                                                      |
-| data        | The calldata required to be sent to the to contract address.                                                                                                             |
+| data        | The calldata required to be sent to the to contract address.  
+| value       | The amount of ether (in wei) that should be sent with the transaction. (Assuming protocolFee is paid in ether).                                                                                                           |
 | gasPrice    | The gas price (in wei) that should be used to send the transaction. The transaction needs to be sent with this `gasPrice` or lower for the transaction to be successful. |
 | gas         | The estimated gas limit that should be used to send the transaction. This is only returned if `takerAddress` is provided in the request.                                 |
 | protocolFee | The amount of ether paid towards the protocol fee (in wei).                                                                                                              |
