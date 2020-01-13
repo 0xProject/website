@@ -63,16 +63,15 @@ export class Credits extends React.Component<CreditsProps> {
                             titleSize="small"
                             description="$10,000 in cloud credits and $5,000 in support"
                             icon="aws"
-                            iconSize="medium"
+                            iconSize={80}
                             isInline={true}
                         />
-
                         <CenteredDefinition
                             title="Alchemy"
                             titleSize="small"
                             description="6 months of Ethereum node service, subsidized by 0x"
                             icon="alchemy"
-                            iconSize="medium"
+                            iconSize={80}
                             isInline={true}
                         />
                         <CenteredDefinition
@@ -80,7 +79,7 @@ export class Credits extends React.Component<CreditsProps> {
                             titleSize="small"
                             description="$25,000 in cloud credits to get your relayer off the ground"
                             icon="digital_ocean"
-                            iconSize="medium"
+                            iconSize={80}
                             isInline={true}
                         />
                         <CenteredDefinition
@@ -88,7 +87,7 @@ export class Credits extends React.Component<CreditsProps> {
                             titleSize="small"
                             description="500k Ethereum node requests per month + 1M bonus requests"
                             icon="rivet"
-                            iconSize="medium"
+                            iconSize={80}
                             isInline={true}
                         />
                     </FlexWrap>
