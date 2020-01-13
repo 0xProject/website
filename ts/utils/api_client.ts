@@ -12,10 +12,10 @@ import {
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { utils } from 'ts/utils/utils';
 
-const STAKING_POOLS_ENDPOINT = '/staking/pools';
-const DELEGATOR_ENDPOINT = '/staking/delegator';
-const STAKING_EPOCHS_ENDPOINT = '/staking/epochs';
-const STAKING_STATS_ENDPOINT = '/staking/stats';
+const STAKING_POOLS_ENDPOINT = '/staking/v0/pools';
+const DELEGATOR_ENDPOINT = '/staking/v0/delegator';
+const STAKING_EPOCHS_ENDPOINT = '/staking/v0/epochs';
+const STAKING_STATS_ENDPOINT = '/staking/v0/stats';
 
 const getStakingPoolByIdEndpoint = (poolId: string) => {
     return `${STAKING_POOLS_ENDPOINT}/${poolId}`;
