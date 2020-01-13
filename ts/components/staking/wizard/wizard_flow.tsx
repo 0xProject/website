@@ -274,6 +274,15 @@ const trackStakingAmountSelected = _.debounce(
     { trailing: true },
 );
 
+const RelativeFlexContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    flex: 1;
+    height: 100%;
+    width: 100%;
+`;
+
 export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => {
     const { stakingPools, setSelectedStakingPools, zrxBalance } = props;
 
@@ -322,6 +331,8 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
                 }}
                 bottomLabels={[]}
             />
+            <RelativeFlexContainer>
+
             {recommendedPools && recommendedPools.length > 0 && (
                 <InfoHeader>
                     <InfoHeaderItem>
@@ -356,6 +367,7 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
                 </PoolsContainer>
             )}
             {statusNode}
+            </RelativeFlexContainer>
             {recommendedPools && recommendedPools.length > 0 && (
                 <ButtonWithIcon
                     isDisabled={isZeroAmountStakeInput || !stakeAmount}
