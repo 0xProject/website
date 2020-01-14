@@ -35,7 +35,7 @@ const shortcutLinks = [
     },
     {
         heading: 'API Specification',
-        description: 'Access liquidity, staking data and quotes through the 0x HTTP API',
+        description: 'Access and contribute to liquidity and more through the 0x HTTP API',
         icon: 'apiExplorer',
         url: WebsitePaths.DocsApi,
     },
