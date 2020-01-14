@@ -22,16 +22,16 @@ const PRICES_ENDPOINT = '/prices';
 const RELAYERS_ENDPOINT = '/relayers';
 const TOKENS_ENDPOINT = '/tokens';
 const CFL_METRICS_ENDPOINT = '/cfl-metrics';
-const SUBSCRIBE_SUBSTACK_NEWSLETTER_ENDPOINT = '/newsletter_subscriber/substack';
+const SUBSCRIBE_MAILCHIMP_NEWSLETTER_ENDPOINT = '/newsletter_subscriber/mailchimp';
 const TRADING_PAIRS_ENDPOINT = '/trading-pairs';
 const STAKING_POOLS_ENDPOINT = '/staking-pools';
 
 export const backendClient = {
     async getGasInfoAsync(): Promise<GasInfo> {
-        const gasInfo: WebsiteBackendGasInfo = (await fetchUtils.requestAsync(
+        const gasInfo: WebsiteBackendGasInfo = await fetchUtils.requestAsync(
             utils.getBackendBaseUrl(),
             ETH_GAS_STATION_ENDPOINT,
-        ));
+        );
 
         // Eth Gas Station result is gwei * 10
         const gasPriceInGwei = new BigNumber(gasInfo.fast / 10);
@@ -62,10 +62,10 @@ export const backendClient = {
         const result = await fetchUtils.requestAsync(utils.getBackendBaseUrl(), TOKENS_ENDPOINT);
         return result;
     },
-    async subscribeToNewsletterAsync(email: string): Promise<Response> {
-        const result = await fetchUtils.postAsync(utils.getBackendBaseUrl(), SUBSCRIBE_SUBSTACK_NEWSLETTER_ENDPOINT, {
+    async subscribeToNewsletterAsync(email: string, ...tags: string[]): Promise<Response> {
+        const result = await fetchUtils.postAsync(utils.getBackendBaseUrl(), SUBSCRIBE_MAILCHIMP_NEWSLETTER_ENDPOINT, {
             email,
-            referrer: window.location.href,
+            tags,
         });
         return result;
     },
