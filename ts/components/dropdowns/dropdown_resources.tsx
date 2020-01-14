@@ -3,14 +3,14 @@ import * as React from 'react';
 import styled, { withTheme } from 'styled-components';
 import { Column, FlexWrap } from 'ts/components/newLayout';
 import { Heading } from 'ts/components/text';
-import { IThemeValuesInterface } from 'ts/style/theme';
+import { ThemeValuesInterface } from 'ts/style/theme';
 import { WebsitePaths } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 
 import { Link } from '../documentation/shared/link';
 
 interface Props {
-    theme: IThemeValuesInterface;
+    theme: ThemeValuesInterface;
 }
 
 interface LinkConfig {

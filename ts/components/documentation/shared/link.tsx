@@ -9,6 +9,7 @@ import { constants } from 'ts/utils/constants';
 
 export interface BaseLinkProps {
     to: string;
+    children?: any;
     shouldOpenInNewTab?: boolean;
     className?: string;
     onMouseOver?: (event: React.MouseEvent<HTMLElement>) => void;

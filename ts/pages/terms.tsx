@@ -16,7 +16,7 @@ export const TermsOfService = () => (
                     Terms of Service
                 </Heading>
                 <Heading asElement="h4" size="small" marginBottom="50px" isMuted={true} isCentered={true}>
-                    These terms of service are effective as of August 8, 2019
+                    These terms of service are effective as of January 9, 2020
                 </Heading>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     Thank you for your interest in 0x. These terms of service, together with any documents and
@@ -72,15 +72,15 @@ export const TermsOfService = () => (
                     2. SERVICES
                 </Heading>
                 <Paragraph size="default" isMuted={true} textAlign="left">
-                    The 0x smart contracts are publicly available open source software programs deployed on the Ethereum
-                    blockchain that facilitate the peer-to-peer exchange of Ethereum-based tokens.
+                    The "0x smart contracts" are publicly available open source software programs deployed on the
+                    Ethereum blockchain that facilitate the peer-to-peer exchange of Ethereum-based tokens.
                 </Paragraph>
                 <Paragraph size="default" isMuted={true} textAlign="left">
-                    ZeroEx helps develops open source software through which users and developers can interact with the
-                    0x smart contracts. The primary purpose of the Site is to enable users to access this open source
-                    software as well as to provide resources and information designed to allow users to utilize the open
-                    source software, including, without limitation, developer documentation, product examples, and other
-                    related services (all which are covered under the definition of “Services”).
+                    ZeroEx develops software through which users and developers can interact with the 0x smart
+                    contracts. The primary purpose of the Site is to enable users to access and utilize the 0x smart
+                    contracts and ZeroEx software products as well as to provide resources and information, including,
+                    without limitation, developer documentation, product examples, and other related services (all which
+                    are covered under the definition of “Services”).
                 </Paragraph>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     The “0x network” is comprised of all users, companies, applications, and any other device, service
@@ -280,11 +280,12 @@ export const TermsOfService = () => (
                     investment adviser or commodity trading adviser to any person.
                 </Paragraph>
                 <Paragraph size="default" isMuted={true} textAlign="left">
-                    ZeroEx operate or control the underlying software protocols that are used in connection with the ZRX
-                    Tokens or the 0x smart contracts beyond currently maintaining the ability to shut down the 0x smart
-                    contracts. In general, the underlying protocols are open-source and anyone can use, copy, modify,
-                    and distribute them. ZeroEx is not responsible for operation of the underlying protocols such as
-                    Ethereum, and ZeroEx makes no guarantee of their functionality, security, or availability.
+                    ZeroEx does not operate or control the underlying software protocols that are used in connection
+                    with the ZRX Tokens or the 0x smart contracts beyond currently maintaining the ability to turn off
+                    the exchange functionality within the 0x smart contracts. In general, the underlying protocols are
+                    open-source and anyone can use, copy, modify, and distribute them. ZeroEx is not responsible for
+                    operation of the underlying protocols such as Ethereum, and ZeroEx makes no guarantee of their
+                    functionality, security, or availability.
                 </Paragraph>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     To the maximum extent permitted under Applicable Law, the Site and the Services (and any of their
@@ -488,7 +489,12 @@ export const TermsOfService = () => (
                     the other agreement specifically identifies these Terms and declares that the other agreement
                     supersedes these Terms.
                 </Paragraph>
+                <Paragraph>
+                    ZeroEx holds ZRX tokens and from time to time it sells some of those tokens, including on Coinbase,
+                    for internal corporate purposes. ZeroEx does not engage in any activity to support a market for ZRX
+                    tokens on any platform.
+                </Paragraph>
             </Column>
         </Section>
     </SiteWrap>
-);
+); // tslint:disable:max-file-line-count

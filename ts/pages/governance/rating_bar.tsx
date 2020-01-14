@@ -40,7 +40,7 @@ export const RatingBar: React.StatelessComponent<RatingBarProps> = ({ rating, co
                     <RatingBullet color={color} key={`${id}-${currentIndex}`} isFilled={fillCheck(currentIndex)} />
                 ))}
             </div>
-            <Paragraph>{ratingLabel}</Paragraph>
+            <Paragraph color={colors.brandLight}>{ratingLabel}</Paragraph>
         </div>
     );
 };

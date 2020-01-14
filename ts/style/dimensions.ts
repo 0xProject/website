@@ -18,15 +18,15 @@ interface UseDimensionsArgs {
 }
 
 function getDimensionObject(node: HTMLElement): DimensionObject {
-    const rect = node.getBoundingClientRect();
+    const rect: DOMRect = node.getBoundingClientRect();
 
     return {
         width: rect.width,
         height: rect.height,
-        top: 'x' in rect ? rect.x : rect.top,
-        left: 'y' in rect ? rect.y : rect.left,
-        x: 'x' in rect ? rect.x : rect.left,
-        y: 'y' in rect ? rect.y : rect.top,
+        top: 'x' in rect ? rect.x : (rect as DOMRect).top,
+        left: 'y' in rect ? rect.y : (rect as DOMRect).left,
+        x: 'x' in rect ? rect.x : (rect as DOMRect).left,
+        y: 'y' in rect ? rect.y : (rect as DOMRect).top,
         right: rect.right,
         bottom: rect.bottom,
     };

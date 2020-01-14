@@ -1,7 +1,73 @@
 import { AssetProxyId, ObjectMap, SignedOrder } from '@0x/types';
 import { BigNumber } from '@0x/utils';
-import { Provider, SupportedProvider } from 'ethereum-types';
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
+
+/*
+ * Staking dashboard vote history example
+ * Example Vote History
+ * {
+ *     title: 'StaticCallAssetProxy',
+ *     zeip: 39,
+ *     vote: 'yes',
+ *     summary: 'This ZEIP adds support for trading arbitrary bundles of assets to 0x protocol. Historically, only a single asset could be traded per each....',
+ * }
+ */
+export interface VoteHistory {
+    title: string;
+    zeip: number;
+    vote: 'yes' | 'no';
+    summary: string;
+}
+export interface StakePoolData {
+    poolId: string;
+    zrxAmount: number;
+}
+
+export enum TransactionLoadingState {
+    WaitingForSignature = 'WAITING_FOR_SIGNATURE',
+    WaitingForTransaction = 'WAITING_FOR_TRANSACTION',
+    Failed = 'FAILED',
+    Success = 'SUCCESS',
+}
+
+export enum StakeStatus {
+    Undelegated,
+    Delegated,
+}
+
+// Types copied from instant
+// TODO(kimpers): cleanup when consolidating providers into a package
+export type Maybe<T> = T | undefined;
+
+export interface AddressAndEthBalanceInWei {
+    address: string;
+    ethBalanceInWei: BigNumber;
+}
+
+export interface AccountReady {
+    state: AccountState.Ready;
+    address: string;
+    ethBalanceInWei?: BigNumber;
+    zrxBalanceBaseUnitAmount?: BigNumber;
+    zrxAllowanceBaseUnitAmount?: BigNumber;
+}
+export interface AccountNotReady {
+    state: AccountState.None | AccountState.Loading | AccountState.Locked;
+}
+
+export type Account = AccountReady | AccountNotReady;
+
+export interface ProviderState {
+    name: string;
+    displayName: string;
+    providerType?: Providers;
+    provider: ZeroExProvider;
+    web3Wrapper: Web3Wrapper;
+    account: Account;
+}
+// End of copy from instant
 
 export enum Side {
     Receive = 'RECEIVE',
@@ -118,6 +184,15 @@ export enum ActionTypes {
     // Docs
     UpdateLibraryVersion = 'UPDATE_LIBRARY_VERSION',
     UpdateAvailableLibraryVersions = 'UPDATE_AVAILABLE_LIBRARY_VERSIONS',
+
+    // Staking
+    UpdateIsConnectWalletDialogOpen = 'UPDATE_IS_CONNECT_WALLET_DIALOG_OPEN',
+    SetAccountStateLoading = 'SET_ACCOUNT_STATE_LOADING',
+    SetAccountStateLocked = 'SET_ACCOUNT_STATE_LOCKED',
+    SetAccountStateReady = 'SET_ACCOUNT_STATE_READY',
+    UpdateAccountEthBalance = 'UPDATE_ACCOUNT_ETH_BALANCE',
+    UpdateAccountZrxBalance = 'UPDATE_ACCOUNT_ZRX_BALANCE',
+    UpdateAccountZrxAllowance = 'UPDATE_ACCOUNT_ZRX_ALLOWANCE',
 
     // Shared
     ShowFlashMessage = 'SHOW_FLASH_MESSAGE',
@@ -334,6 +409,7 @@ export interface S3FileObject {
     };
 }
 
+// TOOD(kimpers): Remove when all of the site uses providers lib
 export enum ProviderType {
     Injected = 'INJECTED',
     Ledger = 'LEDGER',
@@ -456,14 +532,21 @@ export enum WebsitePaths {
     Instant = '/instant',
     Ecosystem = '/eap',
     MarketMaker = '/market-maker',
-    Governance = '/governance',
+    StakingShortLink = '/zrx',
+    Staking = '/zrx/staking',
+    StakingWizard = '/zrx/staking/wizard',
+    StakingWizardRemove = '/zrx/staking/wizard/remove',
+    StakingPool = '/zrx/staking/pool/:poolId',
+    StakingPoolActivity = '/zrx/staking/pool/:poolId/activity',
+    Account = '/zrx/account',
+    AccountActivity = '/zrx/account/activity',
     Why = '/why',
     PrivacyPolicy = '/privacy',
     TermsOfService = '/terms',
     Whitepaper = '/pdfs/0x_white_paper.pdf',
     Careers = '/careers',
     Credits = '/credits',
-    Vote = '/vote',
+    Vote = '/zrx/vote',
     Extensions = '/extensions',
     Explore = '/explore',
     AssetSwapperPage = '/asset-swapper',
@@ -633,6 +716,10 @@ export enum Providers {
     Mist = 'MIST',
     CoinbaseWallet = 'COINBASE_WALLET',
     Cipher = 'CIPHER',
+    TrustWallet = 'TRUST_WALLET',
+    WalletConnect = 'WALLET_CONNECT',
+    Opera = 'OPERA',
+    Fallback = 'FALLBACK',
 }
 
 export interface InjectedProviderUpdate {
@@ -690,11 +777,23 @@ export interface WebsiteBackendTokenInfo {
     symbol: string;
 }
 
+export interface GasInfo {
+    gasPriceInWei: BigNumber;
+    estimatedTimeMs: number;
+}
+
 export interface WebsiteBackendGasInfo {
-    safeSlow: number;
     average: number;
+    fastestWait: number;
+    fastWait: number;
     fast: number;
+    safeLowWait: number;
+    blockNum: number;
+    avgWait: number;
+    block_time: number;
+    speed: number;
     fastest: number;
+    safeLow: number;
 }
 
 export interface WebsiteBackendJobInfo {
@@ -703,6 +802,56 @@ export interface WebsiteBackendJobInfo {
     department: string;
     office: string;
     url: string;
+}
+
+export interface WebsiteBackendCurrency {
+    name: string;
+    iconUrl: string;
+}
+
+export interface WebsiteBackendTradingPair {
+    id: string;
+    price: string;
+    currency: string;
+    firstCurrency: WebsiteBackendCurrency;
+    secondCurrency: WebsiteBackendCurrency;
+    // Is there a link to a trading pair detail url?
+    url: string;
+}
+
+export interface WebsiteBackendTradingPairs {
+    tradingPairs: WebsiteBackendTradingPair[];
+}
+
+export interface StakingPoolMetrics {
+    totalVolume: string;
+    totalStaked: string;
+    feesGenerated: string;
+    rewardsShared: string;
+}
+
+export interface WebsiteBackendStakingPoolInfo {
+    // 0x1234...1234 <= is this the id?
+    id: string;
+    website: string;
+    rewardsShared: number;
+    iconUrl: string;
+    estimatedStake: number;
+    nextEpoch: string;
+    currentEpochMetrics: StakingPoolMetrics;
+    allTimeMetrics: StakingPoolMetrics;
+}
+
+export interface StakingHistoryDataset {
+    // 'Fees collected' or 'Rewards shared'
+    title: string;
+    data: StakingHistoryTimePoint[];
+}
+
+export interface StakingHistoryTimePoint {
+    date: string;
+    value: number;
+    epoch: string;
 }
 
 export interface ExchangeSlippageData {
@@ -746,6 +895,7 @@ export enum AccountState {
     Ready = 'Ready',
     Loading = 'Loading',
     Locked = 'Locked',
+    None = 'None',
 }
 
 export interface InjectedProvider extends Provider {
@@ -930,3 +1080,156 @@ export interface ZeroExInstantOptionalBaseConfig {
 
 export type ZeroExInstantBaseConfig = ZeroExInstantRequiredBaseConfig & Partial<ZeroExInstantOptionalBaseConfig>;
 // tslint:disable:max-file-line-count
+
+// 0x API Response types
+export interface TransactionDate {
+    blockNumber: number;
+    txHash: string;
+    timestamp?: number;
+}
+
+export interface Epoch {
+    epochId: number;
+    epochStart: TransactionDate;
+    epochEnd?: TransactionDate;
+    zrxStaked: number;
+    zrxDeposited: number;
+    protocolFeesGeneratedInEth: number;
+}
+
+export interface PoolMetadata {
+    isVerified: boolean;
+    logoUrl?: string;
+    location?: string;
+    bio?: string;
+    websiteUrl?: string;
+    name?: string;
+}
+
+export interface Pool {
+    poolId: string;
+    operatorAddress: string;
+    createdAt: TransactionDate;
+    metaData: PoolMetadata;
+}
+
+export interface PoolWithStats extends Pool {
+    currentEpochStats: EpochPoolStats;
+    nextEpochStats: EpochPoolStats;
+    sevenDayProtocolFeesGeneratedInEth: number;
+}
+
+export interface RewardsStats {
+    operatorRewardsPaidInEth: number;
+    membersRewardsPaidInEth: number;
+    totalRewardsPaidInEth: number;
+}
+
+export interface PoolEpochRewards extends RewardsStats {
+    epochId: number;
+    epochStartTimestamp: string;
+    epochEndTimestamp: string;
+}
+
+export interface AllTimePoolStats extends RewardsStats {
+    protocolFeesGeneratedInEth: number;
+}
+
+export interface PoolWithHistoricalStats extends PoolWithStats {
+    allTimeStats: AllTimePoolStats;
+    epochRewards: PoolEpochRewards[];
+}
+
+export interface StakingAPIPoolByIdResponse {
+    poolId: string;
+    stakingPool: PoolWithHistoricalStats;
+}
+
+export interface EpochPoolStats {
+    poolId: string;
+    zrxStaked: number;
+    operatorShare: number;
+    makerAddresses: string[];
+    totalProtocolFeesGeneratedInEth: number;
+    approximateStakeRatio: number;
+}
+
+export interface StakingAPIPoolsResponse {
+    stakingPools: PoolWithStats[];
+}
+
+export interface StakingPoolResponse {
+    poolId: string;
+    stakingPool: PoolWithHistoricalStats;
+}
+
+export interface PoolWithHistoricalStats extends Pool {
+    allTimeStats: AllTimePoolStats;
+    epochRewards: PoolEpochRewards[];
+}
+
+export interface AllTimePoolStats extends RewardsStats {
+    protocolFeesGeneratedInEth: number;
+}
+
+export interface RewardsStats {
+    operatorRewardsPaidInEth: number;
+    membersRewardsPaidInEth: number;
+    totalRewardsPaidInEth: number;
+}
+
+export interface PoolEpochRewards extends RewardsStats {
+    epochId: number;
+}
+
+export interface StakingAPIEpochsResponse {
+    currentEpoch: Epoch;
+    nextEpoch: Epoch;
+}
+
+export interface AllTimeStats {
+    totalRewardsPaidInEth: number;
+}
+
+export interface StakingAPIStatsResponse {
+    allTime: AllTimeStats;
+}
+
+export interface StakingPoolRecomendation {
+    pool: PoolWithStats;
+    zrxAmount: number;
+}
+
+export type UserStakingChoice = StakingPoolRecomendation;
+
+export interface StakingAPIDelegatorResponse {
+    delegatorAddress: string;
+    forCurrentEpoch: EpochDelegatorStats;
+    forNextEpoch: EpochDelegatorStats;
+    allTime: AllTimeDelegatorStats;
+}
+
+export interface RawAllTimeDelegatorPoolsStats {
+    pool_id: string;
+    reward: string;
+}
+
+export interface PoolEpochDelegatorStats {
+    poolId: string;
+    zrxStaked: number;
+}
+
+export interface EpochDelegatorStats {
+    zrxDeposited: number;
+    zrxStaked: number;
+    poolData: PoolEpochDelegatorStats[];
+}
+
+export interface AllTimeDelegatorPoolStats {
+    poolId: string;
+    rewardsInEth: number;
+}
+
+export interface AllTimeDelegatorStats {
+    poolData: AllTimeDelegatorPoolStats[];
+}

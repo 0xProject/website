@@ -13,7 +13,7 @@ import { Logo } from 'ts/components/logo';
 import { FlexWrap } from 'ts/components/newLayout';
 
 import { colors } from 'ts/style/colors';
-import { IThemeValuesInterface } from 'ts/style/theme';
+import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 
 import { WebsitePaths } from 'ts/types';
@@ -149,7 +149,7 @@ const LinkWrap = styled.li`
     }
 `;
 
-const linkStyles = css<{ theme: IThemeValuesInterface }>`
+const linkStyles = css<{ theme: ThemeValuesInterface }>`
     color: ${({ theme }) => theme.textColor};
     opacity: 0.5;
     transition: opacity 0.35s;
@@ -164,7 +164,7 @@ const linkStyles = css<{ theme: IThemeValuesInterface }>`
 const StyledNavLink = styled(Link).attrs({
     activeStyle: { opacity: 1 },
 })`
-    ${linkStyles};
+    ${linkStyles as any};
 `;
 
 const StyledAnchor = styled.a`

@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { fadeIn } from 'ts/style/keyframes';
 
+import { backendClient } from 'ts/utils/backend_client';
 import { errorReporter } from 'ts/utils/error_reporter';
-import { utils } from 'ts/utils/utils';
 
 interface IFormProps {
     color?: string;
@@ -23,6 +23,8 @@ interface IArrowProps {
     isSubmitted: boolean;
 }
 
+const NEWSLETTER_TAG = 'newsletter';
+
 export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
     const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
     const emailInput = React.createRef<HTMLInputElement>();
@@ -31,7 +33,6 @@ export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
         e.preventDefault();
 
         const email = emailInput.current.value;
-        const referrer = 'https://0x.org/';
 
         setIsSubmitted(true);
 
@@ -40,14 +41,7 @@ export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
         }
 
         try {
-            await fetch(`${utils.getBackendBaseUrl()}/newsletter_subscriber/substack`, {
-                method: 'post',
-                mode: 'cors',
-                headers: {
-                    'content-type': 'application/json; charset=utf-8',
-                },
-                body: JSON.stringify({ email, referrer }),
-            });
+            await backendClient.subscribeToNewsletterAsync(email, NEWSLETTER_TAG);
         } catch (e) {
             errorReporter.report(e);
         }

@@ -33,6 +33,9 @@ export const MobileNav: React.FC<IMobileNavProps> = props => {
                     <li>
                         <Link to={WebsitePaths.AssetSwapperPage}>Swap Tokens</Link>
                     </li>
+                    <li>
+                        <Link to={WebsitePaths.Staking}>ZRX</Link>
+                    </li>
                 </ul>
             </Section>
 
@@ -62,7 +65,7 @@ export const MobileNav: React.FC<IMobileNavProps> = props => {
 
 const Wrap = styled.nav<{ isToggled: boolean }>`
     width: 100%;
-    height: 400px;
+    height: 450px;
     background-color: ${props => props.theme.mobileNavBgUpper};
     color: ${props => props.theme.mobileNavColor};
     transition: ${props => (props.isToggled ? 'visibility 0s, transform 0.5s' : 'visibility 0s 0.5s, transform 0.5s')};

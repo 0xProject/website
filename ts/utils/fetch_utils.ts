@@ -15,7 +15,7 @@ const logErrorIfPresent = (response: Response, requestedURL: string) => {
 };
 
 export const fetchUtils = {
-    async requestAsync(baseUrl: string, path: string, queryParams?: object): Promise<any> {
+    async requestAsync<T = any>(baseUrl: string, path: string, queryParams?: object): Promise<T> {
         const query = queryStringFromQueryParams(queryParams);
         const url = `${baseUrl}${path}${query}`;
         const response = await fetchAsync(url);

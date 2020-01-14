@@ -27,7 +27,7 @@ export interface DropDownProps {
 
 interface DropDownState {
     isDropDownOpen: boolean;
-    anchorEl?: HTMLInputElement;
+    anchorEl?: HTMLDivElement;
 }
 
 export class DropDown extends React.Component<DropDownProps, DropDownState> {
@@ -97,7 +97,7 @@ export class DropDown extends React.Component<DropDownProps, DropDownState> {
             </div>
         );
     }
-    private _onActiveNodeClick(event: React.FormEvent<HTMLInputElement>): void {
+    private _onActiveNodeClick(event: React.FormEvent<HTMLDivElement>): void {
         if (this.props.activateEvent === DropdownMouseEvent.Click) {
             this.setState({
                 isDropDownOpen: !this.state.isDropDownOpen,
@@ -105,7 +105,7 @@ export class DropDown extends React.Component<DropDownProps, DropDownState> {
             });
         }
     }
-    private _onHover(event: React.FormEvent<HTMLInputElement>): void {
+    private _onHover(event: React.FormEvent<HTMLDivElement>): void {
         this._isHovering = true;
         if (this.props.activateEvent === DropdownMouseEvent.Hover) {
             this._checkIfShouldOpenPopover(event);
@@ -114,7 +114,7 @@ export class DropDown extends React.Component<DropDownProps, DropDownState> {
     private _onHoverOff(): void {
         this._isHovering = false;
     }
-    private _checkIfShouldOpenPopover(event: React.FormEvent<HTMLInputElement>): void {
+    private _checkIfShouldOpenPopover(event: React.FormEvent<HTMLDivElement>): void {
         if (this.state.isDropDownOpen) {
             return; // noop
         }

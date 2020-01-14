@@ -13,11 +13,11 @@ export const AnimationLoader: React.FC<IAnimationLoaderProps> = ({ name }) => {
 
     React.useEffect(() => {
         void loadAnimationAsync(name);
-    }, [container.current, name]);
+    }, [name]);
 
     const loadAnimationAsync = async (_name: string) => {
         try {
-            const animationData = await import(/* webpackChunkName: "animation/[request]" */ `../../../../public/animations/${_name}.json`);
+            const animationData = await import(/* webpackChunkName: "animation/[request]" */ `../../../public/animations/${_name}.json`);
 
             lottie.loadAnimation({
                 container: container.current, // the dom element that will contain the animation

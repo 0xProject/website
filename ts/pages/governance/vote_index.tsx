@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { DocumentTitle } from 'ts/components/document_title';
 import { Column, Section } from 'ts/components/newLayout';
-import { SiteWrap } from 'ts/components/siteWrap';
+import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading, Paragraph } from 'ts/components/text';
 import { Proposal, proposals } from 'ts/pages/governance/data';
 import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
@@ -43,12 +43,12 @@ export class VoteIndex extends React.Component<VoteIndexProps, VoteIndexState> {
 
     public render(): React.ReactNode {
         return (
-            <SiteWrap>
+            <StakingPageLayout isHome={false} title="0x Governance">
                 <DocumentTitle {...documentConstants.VOTE} />
                 <Section isTextCentered={true} isPadded={true} padding="80px 0 80px">
                     <Column>
                         <Heading size="medium" isCentered={true}>
-                            0x Protocol Governance
+                            Govern 0x Protocol
                         </Heading>
                         <SubtitleContentWrap>
                             <Paragraph size="medium" isCentered={true} isMuted={true} marginBottom="0">
@@ -74,7 +74,7 @@ export class VoteIndex extends React.Component<VoteIndexProps, VoteIndexState> {
                         return <VoteIndexCard key={proposal.zeipId} tally={tally} {...proposal} />;
                     })}
                 </VoteIndexCardWrapper>
-            </SiteWrap>
+            </StakingPageLayout>
         );
     }
     private async _fetchVoteStatusAsync(zeipId: number): Promise<TallyInterface> {
@@ -128,6 +128,8 @@ const VoteIndexCardWrapper = styled.div`
 `;
 
 const SubtitleContentWrap = styled.div`
+    max-width: 450px;
+    margin: auto;
     & > * {
         display: inline;
     }
