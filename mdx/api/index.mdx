@@ -9,6 +9,16 @@ We offer hosted versions for different Ethereum networks. Requests for more netw
 | Mainnet | https://api.0x.org/       |
 | Kovan   | https://kovan.api.0x.org/ |
 
+## Versioning
+
+Each 0x HTTP API `path` is versioned independently using URI versioning. The format is: `https://api.0x.org/<path>/<version>/<endpoint>`. 
+
+For example, you can request `https://api.0x.org/swap/v0/quote` which represents `v0` of the `quote` endpoint in the `swap` path. 
+URLs not adhering to this format are not supported.
+
+A major version bump occurs whenever a backwards incompatible change occurs to an `endpoint`, in which case every `endpoint` in that `path` will be on the next version.
+Old versions of the API will be deprecated and new features will be rolled out to them on a best-effort basis.
+
 ## Pagination
 
 Requests that return potentially large collections should be paginated and respond to the `page` and `perPage` parameters. For example:
