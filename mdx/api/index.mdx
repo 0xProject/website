@@ -13,7 +13,7 @@ We offer hosted versions for different Ethereum networks. Requests for more netw
 
 Requests that return potentially large collections should be paginated and respond to the `page` and `perPage` parameters. For example:
 
-<HttpCall path="/sra/orders?page=3&perPage=20" />
+<HttpCall path="/sra/v3/orders?page=3&perPage=20" />
 
 Any endpoint that follows this convention will display the following:
 
@@ -130,11 +130,11 @@ A [0x order](/docs/core-concepts#the-0x-order-message-format) with additional fi
 *   All addresses are sent as lower-case (non-checksummed) Ethereum addresses with the `0x` prefix.
 *   All parameters should use **lowerCamelCase**.
 
-# Swap
+# Swap v0
 
 This API faciliates consuming the best-priced liquidity from the [Mesh](https://0x-org.gitbook.io/mesh/) network and the greater DEX ecosystem through the [ERC20BridgeProxy](https://github.com/0xProject/ZEIPs/issues/47).   
 
-## GET /swap/quote
+## GET /swap/v0/quote
 
 Get an easy-to-consume quote for buying or selling any asset. 
 The return format is perfect for [contract fillable liquidity](/docs/guides/contract-fillable-liquidity).
@@ -308,11 +308,11 @@ Use "ETH" as the `sellToken` to receive a [Forwarder](/docs/guides/v3-forwarder-
 ```
 </CodeTabs>
 
-# SRA
+# SRA v3
 
 The documentation for the Standard Relayer API.
 
-## GET /sra/asset_pairs
+## GET /sra/v3/asset_pairs
 
 Retrieves a list of available asset pairs and the information required to trade them.
 
@@ -352,7 +352,7 @@ If both `assetDataA` and `assetDataB` are specified, the response will only retu
 
 #### Simple Request
 
-<HttpCall path="/sra/asset_pairs?assetDataA=0xf47261b...1f4699f498" />
+<HttpCall path="/sra/v3/asset_pairs?assetDataA=0xf47261b...1f4699f498" />
 
 <CodeTabs tabs={['200 - OK']}>
 
@@ -381,7 +381,7 @@ If both `assetDataA` and `assetDataB` are specified, the response will only retu
 ```
 </CodeTabs>
 
-## GET /sra/orders
+## GET /sra/v3/orders
 
 Retrieves a list of orders given query parameters. 
 
@@ -422,7 +422,7 @@ All the fields below are filter fields on the [signed orders](/docs/api#signed-o
 
 #### Get All Orders Selling WETH
 
-<HttpCall path="/sra/orders?makerAssetData=0xf47261b...756cc2" />
+<HttpCall path="/sra/v3/orders?makerAssetData=0xf47261b...756cc2" />
 
 <CodeTabs tabs={['200 - OK']}>
 
@@ -463,7 +463,7 @@ All the fields below are filter fields on the [signed orders](/docs/api#signed-o
 ```
 </CodeTabs>
 
-## POST /sra/order
+## POST /sra/v3/order
 
 Submit a signed order to the [Mesh](https://0x-org.gitbook.io/mesh/) network.
 
@@ -479,7 +479,7 @@ No response fields when successful. An [error](/docs/api#errors) when unsuccessf
 
 #### Post an Order
 
-<HttpCall verb="POST" path="/sra/order" >
+<HttpCall verb="POST" path="/sra/v3/order" >
 
 ```json
 
@@ -515,7 +515,7 @@ Empty response body
 
 </CodeTabs>
 
-## GET /sra/order/:orderHash:
+## GET /sra/v3/order/:orderHash:
 
 Retrieves a specific order by orderHash. 
 
@@ -537,7 +537,7 @@ Retrieves a specific order by orderHash.
 
 #### Get an Order
 
-<HttpCall path="/sra/order/0xa1e06a9...eaa29e1a6" />
+<HttpCall path="/sra/v3/order/0xa1e06a9...eaa29e1a6" />
 
 <CodeTabs tabs={['200 - OK']}>
 
@@ -570,7 +570,7 @@ Retrieves a specific order by orderHash.
 ```
 </CodeTabs>
 
-## GET /sra/orderbook
+## GET /sra/v3/orderbook
 
 Retrieves the orderbook for a given asset pair. 
 
@@ -606,7 +606,7 @@ After taker fee price, orders are sorted by expiration in ascending order.
 
 #### Get the WETH/DAI Orderbook
 
-<HttpCall fontSize="14px" path="/sra/orderbook?baseAssetData=0xf472...6cc2&quoteAssetData=0xf472...71d0f" />
+<HttpCall fontSize="14px" path="/sra/v3/orderbook?baseAssetData=0xf472...6cc2&quoteAssetData=0xf472...71d0f" />
 
 <CodeTabs tabs={['200 - OK']}>
 
@@ -681,7 +681,7 @@ After taker fee price, orders are sorted by expiration in ascending order.
 ```
 </CodeTabs>
 
-## POST /sra/order_config
+## POST /sra/v3/order_config
 
 Send a partial [signed order](/docs/api#signed-order) to this endpoint to receive the rest of configuration-oriented fields.
 This response is currently static.
@@ -714,7 +714,7 @@ This response is currently static.
 
 #### Get an Order Configuration
 
-<HttpCall verb="POST" path="/sra/order_config">
+<HttpCall verb="POST" path="/sra/v3/order_config">
 
 ```json
 {
@@ -745,7 +745,7 @@ This response is currently static.
 ```
 </CodeTabs>
 
-## GET /sra/fee_recipients
+## GET /sra/v3/fee_recipients
 
 Retrieves a list of valid feeRecipient addresses.
 
@@ -765,7 +765,7 @@ A valid Ethereum address(s).
 
 #### Get Fee Recipients
 
-<HttpCall path="/sra/fee_recipients" />
+<HttpCall path="/sra/v3/fee_recipients" />
 
 <CodeTabs tabs={['200 - OK']}>
 
