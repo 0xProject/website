@@ -134,7 +134,7 @@ export class CFLMetrics extends React.Component<CFLMetricsProps, CFLMetricsState
             ];
         }
         const zeroExSlippage = data.exchangeAverageSlippagePercentage.find(
-            exchangeSlippage => exchangeSlippage.exchange === 'Radar Relay',
+            exchangeSlippage => exchangeSlippage.exchange === 'Bamboo Relay',
         );
         const kyberSlippage = data.exchangeAverageSlippagePercentage.find(
             exchangeSlippage => exchangeSlippage.exchange === 'Kyber',
