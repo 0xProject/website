@@ -53,4 +53,5 @@ export const configs = {
     } as PublicNodeUrlsByNetworkId,
     SYMBOLS_OF_MINTABLE_KOVAN_TOKENS: ['ZRX', 'MKR', 'MLN', 'GNT', 'DGD', 'REP'],
     SYMBOLS_OF_MINTABLE_ROPSTEN_TOKENS: ['ZRX', 'MKR', 'MLN', 'GNT', 'DGD', 'REP'],
+    STAKING_UPDATES_NEWSLETTER_ID: '00c1a72ae8',
 };

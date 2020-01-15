@@ -14,7 +14,7 @@ import { colors } from 'ts/style/colors';
 import { WebsitePaths } from 'ts/types';
 
 import { backendClient } from 'ts/utils/backend_client';
-import { constants } from 'ts/utils/constants';
+import { configs } from 'ts/utils/configs.ts';
 import { errorReporter } from 'ts/utils/error_reporter';
 
 const StyledHeading = styled(Heading)`
@@ -125,7 +125,7 @@ export const Newsletter = () => {
             }
             try {
                 setIsLoading(true);
-                await backendClient.subscribeToNewsletterAsync(email, constants.STAKING.STAKING_UPDATES_NEWSLETTER_ID);
+                await backendClient.subscribeToNewsletterAsync(email, configs.STAKING_UPDATES_NEWSLETTER_ID);
                 setHasSubmitted(true);
             } catch (err) {
                 logUtils.warn(`Unable to register email to newsletter`, email, err);
