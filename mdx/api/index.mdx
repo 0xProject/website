@@ -21,13 +21,15 @@ Old versions of the API will be deprecated and new features will be rolled out t
 
 ## Pagination
 
-Requests that return potentially large collections should be paginated and respond to the `page` and `perPage` parameters. For example:
+Requests that return potentially large collections are paginated and respond to the `page` and `perPage` parameters. For example:
 
 <HttpCall path="/sra/v3/orders?page=3&perPage=20" />
 
 Any endpoint that follows this convention will display the following:
 
 <Notification type="alert">This endpoint is paginated.</Notification>
+
+And will document only the objects in the `records` field.
 
 ### Request 
 
@@ -156,7 +158,7 @@ The return format is a valid unsigned Ethereum transaction and can be submitted 
 | `sellToken`          | The ERC20 token address or symbol of the token you want to send. "ETH" can be provided as a valid `sellToken`.                                                                                                      |
 | `buyToken`           | The ERC20 token address or symbol of the token you want to receive.                                                                                                                                                 |
 | `sellAmount`         | (Optional) The amount of `sellToken` (in `sellToken` units) you want to send. If `sellAmount` is provided, `buyAmount` will be ignored.                                                                             |
-| `buyAmount`          | (Optional) The amount of `buyToken` (in `buyToken` units) you want. When both are provided, `sellAmount` takes precedence over this argument.                                                                       |
+| `buyAmount`          | (Optional) The amount of `buyToken` (in `buyToken` units) you want. When both are provided, `sellAmount` takes precedence over this argument. Either a `sellAmount` or `buyAmount` is required.                     |
 | `slippagePercentage` | (Optional, defaults to ".2") The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. |
 | `gasPrice`           | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                       |
 | `takerAddress`       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
@@ -168,7 +170,7 @@ The return format is a valid unsigned Ethereum transaction and can be submitted 
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `price`       | The price of 1 `buyToken` denoted in the `sellToken`. This price does not include the `slippage` provided in the request above.                                          |
 | `to`          | The address of the contract to send call `data` to.                                                                                                                      |
-| `data`        | The calldata required to be sent to the `to` contract address.                                                                                                           |
+| `data`        | The call data required to be sent to the `to` contract address.                                                                                                           |
 | `value`       | The amount of ether (in wei) that should be sent with the transaction. (Assuming protocolFee is paid in ether).                                                          |
 | `gasPrice`    | The gas price (in wei) that should be used to send the transaction. The transaction needs to be sent with this `gasPrice` or lower for the transaction to be successful. |
 | `gas`         | The estimated gas limit that should be used to send the transaction. This is only returned if `takerAddress` is provided in the request.                                 |
