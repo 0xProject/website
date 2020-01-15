@@ -43,7 +43,7 @@ const navItems: INavItems[] = [
     },
     {
         id: 'api',
-        text: 'API Explorer',
+        text: 'API Specification',
         url: WebsitePaths.DocsApi,
     },
     {
