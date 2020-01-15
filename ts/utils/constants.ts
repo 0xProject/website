@@ -25,6 +25,7 @@ export const constants = {
     } as { [networkId: number]: number },
     STAKING: {
         NIL_POOL_ID: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        STAKING_UPDATES_NEWSLETTER_ID: '00c1a72ae8',
         TRACKING: {
             STAKING_AMOUNT_EVENT: 'Staking Amount',
             CONNECT_WALLET: 'Connect Wallet',

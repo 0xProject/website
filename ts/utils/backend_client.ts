@@ -62,10 +62,11 @@ export const backendClient = {
         const result = await fetchUtils.requestAsync(utils.getBackendBaseUrl(), TOKENS_ENDPOINT);
         return result;
     },
-    async subscribeToNewsletterAsync(email: string, ...tags: string[]): Promise<Response> {
+    async subscribeToNewsletterAsync(email: string, list?: string): Promise<Response> {
         const result = await fetchUtils.postAsync(utils.getBackendBaseUrl(), SUBSCRIBE_MAILCHIMP_NEWSLETTER_ENDPOINT, {
-            email,
-            tags,
+            email: email.trim(),
+            list,
+            tags: [location.href],
         });
         return result;
     },

@@ -14,6 +14,7 @@ import { colors } from 'ts/style/colors';
 import { WebsitePaths } from 'ts/types';
 
 import { backendClient } from 'ts/utils/backend_client';
+import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 
 const StyledHeading = styled(Heading)`
@@ -112,8 +113,6 @@ const CircleThumbsUp = () => (
     </svg>
 );
 
-const STAKING_NEWSLETTER_TAG = 'staking_updates';
-
 export const Newsletter = () => {
     const [email, setEmail] = React.useState<string>('');
     const [hasSubmitted, setHasSubmitted] = React.useState<boolean>(false);
@@ -126,7 +125,7 @@ export const Newsletter = () => {
             }
             try {
                 setIsLoading(true);
-                await backendClient.subscribeToNewsletterAsync(email.trim(), STAKING_NEWSLETTER_TAG);
+                await backendClient.subscribeToNewsletterAsync(email, constants.STAKING.STAKING_UPDATES_NEWSLETTER_ID);
                 setHasSubmitted(true);
             } catch (err) {
                 logUtils.warn(`Unable to register email to newsletter`, email, err);
