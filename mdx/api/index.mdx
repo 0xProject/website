@@ -180,7 +180,7 @@ The return format is a valid unsigned Ethereum transaction and can be submitted 
 
 Omit the `takerAddress` to skip `gas` estimation.
 
-<HttpCall path="/swap/quote?buyToken=DAI&sellToken=WETH&buyAmount=10000000" />
+<HttpCall fontSize="16px" path="/swap/v0/quote?buyToken=DAI&sellToken=WETH&buyAmount=10000000" />
 
 
 <CodeTabs tabs={['200 - No Taker Address']}>
@@ -228,7 +228,7 @@ Omit the `takerAddress` to skip `gas` estimation.
 
 Supply a `takerAddress` to use an `eth_call` to calculate and receive a `gas` value in the response.
 
-<HttpCall fontSize="13px" path="/swap/quote?buyToken=DAI&sellToken=WETH&buyAmount=10000000&takerAddress=0xb0...a637" />
+<HttpCall fontSize="12px" path="/swap/v0/quote?buyToken=DAI&sellToken=WETH&buyAmount=10000000&takerAddress=0xb0...a637" />
 
 <CodeTabs tabs={['200 - Taker Address']}>
 
@@ -275,7 +275,7 @@ Supply a `takerAddress` to use an `eth_call` to calculate and receive a `gas` va
 
 Use "ETH" as the `sellToken` to receive a [Forwarder](/docs/guides/v3-forwarder-specification) transaction.
 
-<HttpCall path="/swap/quote?buyToken=DAI&sellToken=ETH&buyAmount=10000000" />
+<HttpCall fontSize="16px" path="/swap/v0/quote?buyToken=DAI&sellToken=ETH&buyAmount=10000000" />
 
 <CodeTabs tabs={['200 - Forwarder Transaction']}>
 
@@ -317,6 +317,97 @@ Use "ETH" as the `sellToken` to receive a [Forwarder](/docs/guides/v3-forwarder-
 }
 ```
 </CodeTabs>
+
+## GET /swap/v0/tokens
+
+Get the tokens with known symbols available for trading in the [`/swap/v0/quote`](#get-swapv0quote) endpoint. 
+If a token is not returned, it may still be available but not queryable by token symbol. 
+
+### Request
+
+No request params.
+
+### Response
+
+#### Record 
+
+| Field       | Description                                      |
+| ----------- | -------------------------------------------------|
+| symbol      | The symbol representing the Ethereum asset.      |
+| address     | The smart contract address of the token.         |
+
+### Examples 
+
+#### Get all available tokens
+
+<HttpCall path="/swap/v0/tokens" />
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+{
+  "records": [
+    {
+      "symbol": "DAI",
+      "address": "0x6b175474e89094c44da98b954eedeac495271d0f"
+    },
+    {
+      "symbol": "REP",
+      "address": "0x1985365e9f78359a9B6AD760e32412f4a445E862"
+    },
+    {
+      "symbol": "WETH",
+      "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+    },
+    {
+      "symbol": "ZRX",
+      "address": "0xe41d2489571d322189246dafa5ebde1f4699f498"
+    },
+    {
+      "symbol": "USDC",
+      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+    },
+    {
+      "symbol": "BAT",
+      "address": "0x0d8775f648430679a709e98d2b0cb6250d2887ef"
+    },
+    {
+      "symbol": "MKR",
+      "address": "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2"
+    },
+    {
+      "symbol": "WBTC",
+      "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"
+    },
+    {
+      "symbol": "SNX",
+      "address": "0xc011a72400e58ecd99ee497cf89e3775d4bd732f"
+    },
+    {
+      "symbol": "SUSD",
+      "address": "0x57ab1e02fee23774580c119740129eac7081e9d3"
+    },
+    {
+      "symbol": "KNC",
+      "address": "0xdd974d5c2e2928dea5f71b9825b8b646686bd200"
+    },
+    {
+      "symbol": "BNT",
+      "address": "0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c"
+    },
+    {
+      "symbol": "GNO",
+      "address": "0x6810e776880c02933d47db1b9fc05908e5386b96"
+    },
+    {
+      "symbol": "LINK",
+      "address": "0x514910771af9ca656af840dff83e8264ecf986ca"
+    }
+  ]
+}
+```
+</CodeTabs>
+
 
 # SRA v3
 
