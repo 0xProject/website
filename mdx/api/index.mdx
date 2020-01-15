@@ -2,7 +2,7 @@
 
 The 0x HTTP API is the easiest way to interact with 0x liquidity. All the code is open source and available at the [0x-api GitHub repo](https://github.com/0xProject/0x-api).
 
-We offer hosted versions for different Ethereum networks. Requests for more networks, and questions/feedback in general should be directed at our [Discord](https://discordapp.com/invite/d3FTX3M).
+We offer hosted versions for different Ethereum networks. Requests for more networks, and questions/feedback in general should be directed at our [Discord](https://discord.gg/YDm4wx).
 
 | Network | Endpoint                  |
 | ------- | ------------------------- |
@@ -29,7 +29,7 @@ Any endpoint that follows this convention will display the following:
 
 <Notification type="alert">This endpoint is paginated.</Notification>
 
-And will document only the objects in the `records` field.
+And will only document the objects in the `records` field.
 
 ### Request 
 
@@ -142,7 +142,7 @@ A [0x order](/docs/core-concepts#the-0x-order-message-format) with additional fi
 *   All addresses are sent as lower-case (non-checksummed) Ethereum addresses with the `0x` prefix.
 *   All parameters should use **lowerCamelCase**.
 
-# Swap v0
+# Swap
 
 This API faciliates consuming the best-priced liquidity from the [Mesh](https://0x-org.gitbook.io/mesh/) network and the greater DEX ecosystem through the [ERC20BridgeProxy](https://github.com/0xProject/ZEIPs/issues/47).   
 
@@ -412,9 +412,9 @@ No request params.
 </CodeTabs>
 
 
-# SRA v3
+# SRA
 
-The documentation for the Standard Relayer API.
+The documentation for the Standard Relayer API. An API specification that is implemented by several 0x Relayers, including [Radar Relay](https://developers.radarrelay.com/api/0x-sra) and [Bamboo Relay](https://sra.bamboorelay.com/zrx.html).
 
 ## GET /sra/v3/asset_pairs
 
