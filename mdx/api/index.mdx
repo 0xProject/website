@@ -31,20 +31,20 @@ Any endpoint that follows this convention will display the following:
 
 ### Request 
 
-| Query Param | Description                                                                                     |
-| ------------| ----------------------------------------------------------------------------------------------- |
-| page        | (Optional, defaults to "1") The page index (1-indexed) requested in the collection.             |
-| perPage     | (Optional, defaults to "20") The amount of records to return per page. The maximum is "1000".   |
+| Query Param   | Description                                                                                     |
+| --------------| ----------------------------------------------------------------------------------------------- |
+| `page`        | (Optional, defaults to "1") The page index (1-indexed) requested in the collection.             |
+| `perPage`     | (Optional, defaults to "20") The amount of records to return per page. The maximum is "1000".   |
 
 
 ### Response
 
-| Field | Description                                                                                           |
-| ------------| ----------------------------------------------------------------------------------------------- |
-| page        | The page index (1-indexed) of returned in the response (same as request if provided).           |
-| perPage     | The amount of records requested in the pagination, but not necessarily returned.                |
-| total       | The total amount of records in the collection (accross all pages).                              |
-| records     | The actual records returned for this page of the collection.                                    |
+| Field         | Description                                                                                     |
+| --------------| ----------------------------------------------------------------------------------------------- |
+| `page`        | The page index (1-indexed) of returned in the response (same as request if provided).           |
+| `perPage`     | The amount of `records` requested in the pagination, but not necessarily returned.              |
+| `total`       | The total amount of `records` in the collection (accross all pages).                            |
+| `records`     | The actual `records` returned for this page of the collection.                                  |
 
 If a query provides an unreasonable (ie. too high) `perPage` value, the response can return a validation error as specified in the [errors section](#errors). 
 If the query specifies a `page` that does not exist (ie. there are not enough `records`), the response will return an empty `records` array.
@@ -113,25 +113,25 @@ This section outlines API JSON objects that are common to many endpoints.
 
 A [0x order](/docs/core-concepts#the-0x-order-message-format) with additional fields and ready to be consumed by our tooling and sent to the 0x [exchange contract](/docs/guides/v3-specification#exchange).
 
-| Field                 | Description                                                                                                                                                                                                                                                                                                                            |
-| ----------------------| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| makerAddress          | The party that creates the order. The maker is also one of the two parties that will be involved in the trade if the order gets filled.                                                                                                                                                                                                |
-| takerAddress          | The party that is allowed to fill the order. If set to a specific party, the order cannot be filled by anyone else. If left unspecified, anyone can fill the order.                                                                                                                                                                    |
-| makerAssetData        | Contains all the identifying information about the asset(s) the order maker is trying to sell.                                                                                                                                                                                                                                         |
-| takerAssetData        | Identifying information of the asset(s) the taker must trade in exchange for the maker's asset(s).                                                                                                                                                                                                                                     |
-| makerAssetAmount      | Amount of the maker's asset(s) being offered by the maker.                                                                                                                                                                                                                                                                             |
-| takerAssetAmount      | Amount of the taker's asset(s) the maker will accept in exchange for their maker asset(s). In order to calculate the price the maker is offering, one can divide the `makerAssetAmount` by the `takerAssetAmount` (the calculation is [a bit more complex](/docs/guides/v3-specification#assetproxy) if multiple assets are involved). |
-| expirationTimeSeconds | Timestamp in seconds of when the order expires. Expired orders cannot be filled.                                                                                                                                                                                                                                                       |
-| salt                  | A value that can be used to guarentee order uniqueness. Typically it is set to a random number.                                                                                                                                                                                                                                        |
-| feeRecipientAddress   | The entity that will receive any fees stipulated by the order. This is typically used to incentivize off-chain order relay.                                                                                                                                                                                                            |
-| makerFeeAssetData     | Identifying token information of the asset(s) the maker must pay to the feeRecipientAddress.                                                                                                                                                                                                                                           |
-| takerFeeAssetData     | Identifying token information of the asset(s) the taker must pay to the feeRecipientAddress.                                                                                                                                                                                                                                           |
-| makerFee              | The fee to be paid by the order maker to the `feeRecipientAddress` in the event of an order fill. Partial fills result in partial fees.                                                                                                                                                                                                |
-| takerFee              | The fee to be paid by the taker to the `feeRecipientAddress` in the event of an order fill.                                                                                                                                                                                                                                            |
-| senderAddress         | An advanced field that doesn't need to be set. It allows the maker to enforce that the order flow through some additional logic before it can be filled (e.g., a KYC whitelist) -- more on the ability to extend 0x later.                                                                                                             |
-| exchangeAddress       | The address of the 0x exchange smart contract where the transaction should be sent to and that will settle the order.                                                                                                                                                                                                                                                              |
-| chainId               | The ID of the Ethereum chain where the `exchangeAddress` is located.                                                                                                                                                                                                                                                                   |
-| signature             | The signature of the fields above using the private key of `makerAddress`.                                                                                                                                                                                                                                                             |
+| Field                   | Description                                                                                                                                                                                                                                                                                                                            |
+| ------------------------| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `makerAddress`          | The party that creates the order. The maker is also one of the two parties that will be involved in the trade if the order gets filled.                                                                                                                                                                                                |
+| `takerAddress`          | The party that is allowed to fill the order. If set to a specific party, the order cannot be filled by anyone else. If left unspecified, anyone can fill the order.                                                                                                                                                                    |
+| `makerAssetData`        | Contains all the identifying information about the asset(s) the order maker is trying to sell.                                                                                                                                                                                                                                         |
+| `takerAssetData`        | Identifying information of the asset(s) the taker must trade in exchange for the maker's asset(s).                                                                                                                                                                                                                                     |
+| `makerAssetAmount`      | Amount of the maker's asset(s) being offered by the maker.                                                                                                                                                                                                                                                                             |
+| `takerAssetAmount`      | Amount of the taker's asset(s) the maker will accept in exchange for their maker asset(s). In order to calculate the price the maker is offering, one can divide the `makerAssetAmount` by the `takerAssetAmount` (the calculation is [a bit more complex](/docs/guides/v3-specification#assetproxy) if multiple assets are involved). |
+| `expirationTimeSeconds` | Timestamp in seconds of when the order expires. Expired orders cannot be filled.                                                                                                                                                                                                                                                       |
+| `salt`                  | A value that can be used to guarentee order uniqueness. Typically it is set to a random number.                                                                                                                                                                                                                                        |
+| `feeRecipientAddress`   | The entity that will receive any fees stipulated by the order. This is typically used to incentivize off-chain order relay.                                                                                                                                                                                                            |
+| `makerFeeAssetData`     | Identifying token information of the asset(s) the maker must pay to the feeRecipientAddress.                                                                                                                                                                                                                                           |
+| `takerFeeAssetData`     | Identifying token information of the asset(s) the taker must pay to the feeRecipientAddress.                                                                                                                                                                                                                                           |
+| `makerFee`              | The fee to be paid by the order maker to the `feeRecipientAddress` in the event of an order fill. Partial fills result in partial fees.                                                                                                                                                                                                |
+| `takerFee`              | The fee to be paid by the taker to the `feeRecipientAddress` in the event of an order fill.                                                                                                                                                                                                                                            |
+| `senderAddress`         | An advanced field that doesn't need to be set. It allows the maker to enforce that the order flow through some additional logic before it can be filled (e.g., a KYC whitelist) -- more on the ability to extend 0x later.                                                                                                             |
+| `exchangeAddress`       | The address of the 0x exchange smart contract where the transaction should be sent to and that will settle the order.                                                                                                                                                                                                                  |
+| `chainId`               | The ID of the Ethereum chain where the `exchangeAddress` is located.                                                                                                                                                                                                                                                                   |
+| `signature`             | The signature of the fields above using the private key of `makerAddress`.                                                                                                                                                                                                                                                             |
 
 ## Misc.
 
@@ -151,29 +151,29 @@ The return format is a valid unsigned Ethereum transaction and can be submitted 
 
 ### Request 
 
-| Query Param        | Description                                                                                                                                                                                                         |
-| ------------       | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| sellToken          | The ERC20 token address or symbol of the token you want to send. "ETH" can be provided as a valid `sellToken`.                                                                                                      |
-| buyToken           | The ERC20 token address or symbol of the token you want to receive.                                                                                                                                                 |
-| sellAmount         | (Optional) The amount of `sellToken` (in `sellToken` units) you want to send. If `sellAmount` is provided, `buyAmount` will be ignored.                                                                                           |
-| buyAmount          | (Optional) The amount of `buyToken` (in `buyToken` units) you want. When both are provided, `sellAmount` takes precedence over this argument.                                                                                    |
-| slippagePercentage | (Optional, defaults to ".2") The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. |
-| gasPrice           | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                       |
-| takerAddress       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
+| Query Param          | Description                                                                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sellToken`          | The ERC20 token address or symbol of the token you want to send. "ETH" can be provided as a valid `sellToken`.                                                                                                      |
+| `buyToken`           | The ERC20 token address or symbol of the token you want to receive.                                                                                                                                                 |
+| `sellAmount`         | (Optional) The amount of `sellToken` (in `sellToken` units) you want to send. If `sellAmount` is provided, `buyAmount` will be ignored.                                                                             |
+| `buyAmount`          | (Optional) The amount of `buyToken` (in `buyToken` units) you want. When both are provided, `sellAmount` takes precedence over this argument.                                                                       |
+| `slippagePercentage` | (Optional, defaults to ".2") The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. |
+| `gasPrice`           | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                       |
+| `takerAddress`       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
 
 
 ### Response
 
-| Field       | Description                                                                                                                                                              |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| price       | The price of 1 `buyToken` denoted in the `sellToken`. This price does not include the `slippage` provided in the request above.                                          |
-| to          | The address of the contract to send call `data` to.                                                                                                                      |
-| data        | The calldata required to be sent to the `to` contract address.                                                                                                             |
-| value       | The amount of ether (in wei) that should be sent with the transaction. (Assuming protocolFee is paid in ether).                                                                                                           |
-| gasPrice    | The gas price (in wei) that should be used to send the transaction. The transaction needs to be sent with this `gasPrice` or lower for the transaction to be successful. |
-| gas         | The estimated gas limit that should be used to send the transaction. This is only returned if `takerAddress` is provided in the request.                                 |
-| protocolFee | The amount of ether paid towards the protocol fee (in wei).                                                                                                              |
-| orders      | [Signed orders](/docs/api#signed-order) that data is comprised of.                                                                               |
+| Field         | Description                                                                                                                                                              |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `price`       | The price of 1 `buyToken` denoted in the `sellToken`. This price does not include the `slippage` provided in the request above.                                          |
+| `to`          | The address of the contract to send call `data` to.                                                                                                                      |
+| `data`        | The calldata required to be sent to the `to` contract address.                                                                                                           |
+| `value`       | The amount of ether (in wei) that should be sent with the transaction. (Assuming protocolFee is paid in ether).                                                          |
+| `gasPrice`    | The gas price (in wei) that should be used to send the transaction. The transaction needs to be sent with this `gasPrice` or lower for the transaction to be successful. |
+| `gas`         | The estimated gas limit that should be used to send the transaction. This is only returned if `takerAddress` is provided in the request.                                 |
+| `protocolFee` | The amount of ether paid towards the protocol fee (in wei).                                                                                                              |
+| `orders`      | [Signed orders](/docs/api#signed-order) that data is comprised of.                                                                                                       |
 
 ### Examples 
 
@@ -330,12 +330,12 @@ No request params.
 
 ### Response
 
-#### Record 
+#### Record
 
-| Field       | Description                                      |
-| ----------- | -------------------------------------------------|
-| symbol      | The symbol representing the Ethereum asset.      |
-| address     | The smart contract address of the token.         |
+| Field         | Description                                      |
+| ------------- | -------------------------------------------------|
+| `symbol`      | The symbol representing the Ethereum token.      |
+| `address`     | The smart contract address of the token.         |
 
 ### Examples 
 
@@ -427,27 +427,27 @@ If both `assetDataA` and `assetDataB` are specified, the response will only retu
 
 | Query Param  | Description                                                                                                                                                 |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| assetDataA   | (Optional) A filter on the type of asset your may want information about in the form of [asset data](/docs/guides/v3-specification#assetdata).              |
-| assetDataB   | (Optional) A filter on the type of asset your may want information about in the form of [asset data](/docs/guides/v3-specification#assetdata).              |
+| `assetDataA` | (Optional) A filter on the type of asset your may want information about in the form of [asset data](/docs/guides/v3-specification#assetdata).              |
+| `assetDataB` | (Optional) A filter on the type of asset your may want information about in the form of [asset data](/docs/guides/v3-specification#assetdata).              |
 
 
 ### Response
 
 #### Record
 
-| Field       | Description                    |
-| ----------- | -------------------------------|
-| assetDataA  | AssetData info object (below). |
-| assetDataB  | AssetData info object (below). |                                                                                                                     
+| Field         | Description                    |
+| ------------- | -------------------------------|
+| `assetDataA`  | AssetData info object (below). |
+| `assetDataB`  | AssetData info object (below). |                                                                                                                     
 
 #### AssetData Info
 
-| Field       | Description                                                                            |
-| ----------- | ---------------------------------------------------------------------------------------|
-| minAmount   | The minimum trade amount the relayer will accept.                                      |
-| maxAmount   | The maximum trade amount the relayer will accept.                                      |
-| precision   | The desired price precision for this orderbook.                                        |
-| assetData   | The [asset data](/docs/guides/v3-specification#assetdata) representation of the asset. |
+| Field         | Description                                                                            |
+| ------------- | ---------------------------------------------------------------------------------------|
+| `minAmount`   | The minimum trade amount the relayer will accept.                                      |
+| `maxAmount`   | The maximum trade amount the relayer will accept.                                      |
+| `precision`   | The desired price precision for this orderbook.                                        |
+| `assetData`   | The [asset data](/docs/guides/v3-specification#assetdata) representation of the asset. |
 
 
 ### Examples 
@@ -493,32 +493,32 @@ Retrieves a list of orders given query parameters.
 
 All the fields below are filter fields on the [signed orders](/docs/api#signed-order) that could be returned in the response.
 
-| Field                   | Description                                                                                                                                                                                                                                                                                                                                     |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| makerAssetProxyId     | (Optional) The asset proxy ID part of the maker [asset data](/docs/guides/v3-specification#assetdata). Example: `0xf47261b0` for ERC20, `0x02571792` for ERC721.                                                                                                                                                                                  |
-| takerAssetProxyId     | (Optional) The asset proxy ID ID part of the taker [asset data](/docs/guides/v3-specification#assetdata). Example: `0xf47261b0` for ERC20, `0x02571792` for ERC721.                                                                                                                                                                               |
-| makerAssetAddress     | (Optional) The contract address part of the maker [asset data](/docs/guides/v3-specification#assetdata).                                                                                                                                                                                                                                          |
-| takerAssetAddress     | (Optional) The contract address part of the taker [asset data](/docs/guides/v3-specification#assetdata).                                                                                                                                                                                                                                          |
-| makerAddress          | (Optional) The party that creates the order. The maker is also one of the two parties that will be involved in the trade if the order gets filled.                                                                                                                                                                                                |
-| takerAddress          | (Optional) The party that is allowed to fill the order. If set to a specific party, the order cannot be filled by anyone else. If left unspecified, anyone can fill the order.                                                                                                                                                                    |
-| makerAssetData        | (Optional) Contains all the identifying information about the asset(s) the order maker is trying to sell.                                                                                                                                                                                                                                         |
-| takerAssetData        | (Optional) Identifying information of the asset(s) the taker must trade in exchange for the maker's asset(s).                                                                                                                                                                                                                                     |
-| makerAssetAmount      | (Optional) Amount of the maker's asset(s) being offered by the maker.                                                                                                                                                                                                                                                                             |
-| takerAssetAmount      | (Optional) Amount of the taker's asset(s) the maker will accept in exchange for their maker asset(s). In order to calculate the price the maker is offering, one can divide the `makerAssetAmount` by the `takerAssetAmount` (the calculation is [a bit more complex](/docs/guides/v3-specification#assetproxy) if multiple assets are involved). |
-| feeRecipientAddress   | (Optional) The entity that will receive any fees stipulated by the order. This is typically used to incentivize off-chain order relay.                                                                                                                                                                                                            |
-| makerFeeAssetData     | (Optional) Identifying token information of the asset(s) the maker must pay to the feeRecipientAddress.                                                                                                                                                                                                                                           |
-| takerFeeAssetData     | (Optional) Identifying token information of the asset(s) the taker must pay to the feeRecipientAddress.                                                                                                                                                                                                                                           |
-| senderAddress         | (Optional) An advanced field that doesn't need to be set. It allows the maker to enforce that the order flow through some additional logic before it can be filled (e.g., a KYC whitelist) -- more on the ability to extend 0x later.                                                                                                             |
+| Field                   | Description                                                                                                                                                                                                                                                                                                                                       |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `makerAssetProxyId`     | (Optional) The asset proxy ID part of the maker [asset data](/docs/guides/v3-specification#assetdata). Example: `0xf47261b0` for ERC20, `0x02571792` for ERC721.                                                                                                                                                                                  |
+| `takerAssetProxyId`     | (Optional) The asset proxy ID ID part of the taker [asset data](/docs/guides/v3-specification#assetdata). Example: `0xf47261b0` for ERC20, `0x02571792` for ERC721.                                                                                                                                                                               |
+| `makerAssetAddress`     | (Optional) The contract address part of the maker [asset data](/docs/guides/v3-specification#assetdata).                                                                                                                                                                                                                                          |
+| `takerAssetAddress`     | (Optional) The contract address part of the taker [asset data](/docs/guides/v3-specification#assetdata).                                                                                                                                                                                                                                          |
+| `makerAddress`          | (Optional) The party that creates the order. The maker is also one of the two parties that will be involved in the trade if the order gets filled.                                                                                                                                                                                                |
+| `takerAddress`          | (Optional) The party that is allowed to fill the order. If set to a specific party, the order cannot be filled by anyone else. If left unspecified, anyone can fill the order.                                                                                                                                                                    |
+| `makerAssetData`        | (Optional) Contains all the identifying information about the asset(s) the order maker is trying to sell.                                                                                                                                                                                                                                         |
+| `takerAssetData`        | (Optional) Identifying information of the asset(s) the taker must trade in exchange for the maker's asset(s).                                                                                                                                                                                                                                     |
+| `makerAssetAmount`      | (Optional) Amount of the maker's asset(s) being offered by the maker.                                                                                                                                                                                                                                                                             |
+| `takerAssetAmount`      | (Optional) Amount of the taker's asset(s) the maker will accept in exchange for their maker asset(s). In order to calculate the price the maker is offering, one can divide the `makerAssetAmount` by the `takerAssetAmount` (the calculation is [a bit more complex](/docs/guides/v3-specification#assetproxy) if multiple assets are involved). |
+| `feeRecipientAddress`   | (Optional) The entity that will receive any fees stipulated by the order. This is typically used to incentivize off-chain order relay.                                                                                                                                                                                                            |
+| `makerFeeAssetData`     | (Optional) Identifying token information of the asset(s) the maker must pay to the feeRecipientAddress.                                                                                                                                                                                                                                           |
+| `takerFeeAssetData`     | (Optional) Identifying token information of the asset(s) the taker must pay to the feeRecipientAddress.                                                                                                                                                                                                                                           |
+| `senderAddress`         | (Optional) An advanced field that doesn't need to be set. It allows the maker to enforce that the order flow through some additional logic before it can be filled (e.g., a KYC whitelist) -- more on the ability to extend 0x later.                                                                                                             |
 
 
 ### Response
 
 #### Record
 
-| Field       | Description                                                                                                        |
-| ----------- | -------------------------------------------------------------------------------------------------------------------|
-| order       | Raw [signed order](/docs/api#signed-order).                                                                        |
-| metaData    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |                                                                                                                     
+| Field         | Description                                                                                                        |
+| ------------- | -------------------------------------------------------------------------------------------------------------------|
+| `order`       | Raw [signed order](/docs/api#signed-order).                                                                        |
+| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |                                                                                                                     
 
 ### Examples 
 
@@ -623,17 +623,17 @@ Retrieves a specific order by orderHash.
 
 ### Request 
 
-| Path Params | Description                                                                                                                                                                                                                                                                                                                                     
-| ----------- | -------------------------------------------------------------------------------------|
-| orderHash   | The hash of the desired [signed order](/docs/api#signed-order).                      |
+| Path Params   | Description                                                                          |                                                                                                                                                                                                                                                           
+| ------------- | -------------------------------------------------------------------------------------|
+| `orderHash`   | The hash of the desired [signed order](/docs/api#signed-order).                      |
 
 
 ### Response
 
-| Field       | Description                                                                                                        |
-| ----------- | -------------------------------------------------------------------------------------------------------------------|
-| order       | Raw [signed orders](/docs/api#signed-order).                                                  |
-| metaData    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |                                                                                                                     
+| Field         | Description                                                                                                        |
+| ------------- | -------------------------------------------------------------------------------------------------------------------|
+| `order`       | Raw [signed orders](/docs/api#signed-order).                                                                       |
+| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |                                                                                                                     
 
 ### Examples 
 
@@ -680,10 +680,10 @@ Retrieves the orderbook for a given asset pair.
 
 ### Request 
 
-| Query Params    | Description                                                                                                                                                                                                                                                                                                                                     
-| ----------------| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| baseAssetData   | [Asset data](/docs/guides/v3-specification#assetdata) (`makerAssetData` or `takerAssetData`) designated as the base currency in the currency pair calculation of price.   |
-| quoteAssetData  | [Asset data](/docs/guides/v3-specification#assetdata) (`makerAssetData` or `takerAssetData`) designated as the quote currency in the currency pair calculation of price.  |
+| Query Params      | Description                                                                                                                                                                                                                                                                                                                                     
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `baseAssetData`   | [Asset data](/docs/guides/v3-specification#assetdata) (`makerAssetData` or `takerAssetData`) designated as the base currency in the currency pair calculation of price.   |
+| `quoteAssetData`  | [Asset data](/docs/guides/v3-specification#assetdata) (`makerAssetData` or `takerAssetData`) designated as the quote currency in the currency pair calculation of price.  |
 
 
 ### Response
@@ -692,17 +692,17 @@ Bids will be sorted in descending order by price, and asks will be sorted in asc
 Within the price sorted orders, the orders are further sorted by taker fee price which is defined as the takerFee divided by takerTokenAmount. 
 After taker fee price, orders are sorted by expiration in ascending order.
 
-| Field   | Description                                                                                                      |
-| ------- | ---------------------------------------------------------------------------------------------------------------- |
-| bids    | [Paginated](#pagination) collection of signed orders (below) where `takerAssetData` is equal to `baseAssetData`. |
-| asks    | [Paginated](#pagination) collection of signed orders (below) where `makerAssetData` is equal to `baseAssetData`. |  
+| Field     | Description                                                                                                      |
+| --------- | ---------------------------------------------------------------------------------------------------------------- |
+| `bids`    | [Paginated](#pagination) collection of signed orders (below) where `takerAssetData` is equal to `baseAssetData`. |
+| `asks`    | [Paginated](#pagination) collection of signed orders (below) where `makerAssetData` is equal to `baseAssetData`. |  
 
 #### Record
 
-| Field       | Description                                                                                                        |
-| ----------- | -------------------------------------------------------------------------------------------------------------------|
-| order       | Raw [signed order](/docs/api#signed-order).                                                                        |
-| metaData    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |                                                                                                                     
+| Field         | Description                                                                                                        |
+| ------------- | -------------------------------------------------------------------------------------------------------------------|
+| `order`       | Raw [signed order](/docs/api#signed-order).                                                                        |
+| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |                                                                                                                     
 
 ### Examples 
 
@@ -790,27 +790,27 @@ This response is currently static.
 
 ### Request 
 
-| Body Field            | Description                                                                                                                                                                                                                                                                                                                            |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| makerAddress          | The party that creates the order. The maker is also one of the two parties that will be involved in the trade if the order gets filled.                                                                                                                                                                                                |
-| takerAddress          | The party that is allowed to fill the order. If set to a specific party, the order cannot be filled by anyone else. If left unspecified, anyone can fill the order.                                                                                                                                                                    |
-| makerAssetData        | Contains all the identifying information about the asset(s) the order maker is trying to sell.                                                                                                                                                                                                                                         |
-| takerAssetData        | Identifying information of the asset(s) the taker must trade in exchange for the maker's asset(s).                                                                                                                                                                                                                                     |
-| makerAssetAmount      | Amount of the maker's asset(s) being offered by the maker.                                                                                                                                                                                                                                                                             |
-| takerAssetAmount      | Amount of the taker's asset(s) the maker will accept in exchange for their maker asset(s). In order to calculate the price the maker is offering, one can divide the `makerAssetAmount` by the `takerAssetAmount` (the calculation is [a bit more complex](/docs/guides/v3-specification#assetproxy) if multiple assets are involved). |
-| expirationTimeSeconds | Timestamp in seconds of when the order expires. Expired orders cannot be filled.                                                                                                                                                                                                                                                       |
-| exchangeAddress       | The address of the 0x exchange smart contract that will settle the order.                                                                                                                                                                                                                                                              |
+| Body Field              | Description                                                                                                                                                                                                                                                                                                                            |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `makerAddress`          | The party that creates the order. The maker is also one of the two parties that will be involved in the trade if the order gets filled.                                                                                                                                                                                                |
+| `takerAddress`          | The party that is allowed to fill the order. If set to a specific party, the order cannot be filled by anyone else. If left unspecified, anyone can fill the order.                                                                                                                                                                    |
+| `makerAssetData`        | Contains all the identifying information about the asset(s) the order maker is trying to sell.                                                                                                                                                                                                                                         |
+| `takerAssetData`        | Identifying information of the asset(s) the taker must trade in exchange for the maker's asset(s).                                                                                                                                                                                                                                     |
+| `makerAssetAmount`      | Amount of the maker's asset(s) being offered by the maker.                                                                                                                                                                                                                                                                             |
+| `takerAssetAmount`      | Amount of the taker's asset(s) the maker will accept in exchange for their maker asset(s). In order to calculate the price the maker is offering, one can divide the `makerAssetAmount` by the `takerAssetAmount` (the calculation is [a bit more complex](/docs/guides/v3-specification#assetproxy) if multiple assets are involved). |
+| `expirationTimeSeconds` | Timestamp in seconds of when the order expires. Expired orders cannot be filled.                                                                                                                                                                                                                                                       |
+| `exchangeAddress`       | The address of the 0x exchange smart contract that will settle the order.                                                                                                                                                                                                                                                              |
 
 ### Response
 
-| Field                   | Description                                                                                                                                                                                                                                                                                                                                     |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| feeRecipientAddress     | The entity that will receive any fees stipulated by the order. This is typically used to incentivize off-chain order relay.                                                                                                                                                                                                            |
-| makerFeeAssetData       | Identifying token information of the asset(s) the maker must pay to the `feeRecipientAddress`.                                                                                                                                                                                                                                           |
-| takerFeeAssetData       | Identifying token information of the asset(s) the taker must pay to the `feeRecipientAddress`.                                                                                                                                                                                                                                           |
-| senderAddress           | An advanced field that doesn't need to be set. It allows the maker to enforce that the order flow through some additional logic before it can be filled (e.g., a KYC whitelist) -- more on the ability to extend 0x later.                                                                                                             |
-| makerFee                | The fee to be paid by the order maker to the `feeRecipientAddress` in the event of an order fill. Partial fills result in partial fees.                                                                                                                                                                                                |
-| takerFee                | The fee to be paid by the taker to the `feeRecipientAddress` in the event of an order fill.                                                                                                                                                                                                                                            |                                                                                                                    
+| Field                     | Description                                                                                                                                                                                                                                                                                                                           |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `feeRecipientAddress`     | The entity that will receive any fees stipulated by the order. This is typically used to incentivize off-chain order relay.                                                                                                                                                                                                           |
+| `makerFeeAssetData`       | Identifying token information of the asset(s) the maker must pay to the `feeRecipientAddress`.                                                                                                                                                                                                                                        |
+| `takerFeeAssetData`       | Identifying token information of the asset(s) the taker must pay to the `feeRecipientAddress`.                                                                                                                                                                                                                                        |
+| `senderAddress`           | An advanced field that doesn't need to be set. It allows the maker to enforce that the order flow through some additional logic before it can be filled (e.g., a KYC whitelist) -- more on the ability to extend 0x later.                                                                                                            |
+| `makerFee`                | The fee to be paid by the order maker to the `feeRecipientAddress` in the event of an order fill. Partial fills result in partial fees.                                                                                                                                                                                               |
+| `takerFee`                | The fee to be paid by the taker to the `feeRecipientAddress` in the event of an order fill.                                                                                                                                                                                                                                           |                                                                                                                    
 
 ### Examples 
 
