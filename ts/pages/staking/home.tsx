@@ -26,8 +26,53 @@ import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { Epoch, PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
 
-const sortByProtocolFeesDesc = (a: PoolWithStats, b: PoolWithStats) => {
+const sortByStaked = (a: PoolWithStats, b: PoolWithStats): number =>
+    b.nextEpochStats.approximateStakeRatio - a.nextEpochStats.approximateStakeRatio;
+
+const sortByProtocolFeesDesc = (a: PoolWithStats, b: PoolWithStats): number => {
     return b.currentEpochStats.totalProtocolFeesGeneratedInEth - a.currentEpochStats.totalProtocolFeesGeneratedInEth;
+};
+
+const sortByRewardsShared = (a: PoolWithStats, b: PoolWithStats): number => {
+    const aRewardsShared = _.isNil(a.nextEpochStats.operatorShare) ? 0 : 1 - a.nextEpochStats.operatorShare;
+    const bRewardsShared = _.isNil(b.nextEpochStats.operatorShare) ? 0 : 1 - b.nextEpochStats.operatorShare;
+
+    return bRewardsShared - aRewardsShared;
+};
+
+enum SortingParameter {
+    Staked = 'staked',
+    ProtocolFees = 'protocolFees',
+    RewardsShared = 'rewardsShared',
+}
+
+const sortFnMapping: { [key: string]: (a: PoolWithStats, b: PoolWithStats) => number } = {
+    [SortingParameter.Staked]: sortByStaked,
+    [SortingParameter.ProtocolFees]: sortByProtocolFeesDesc,
+    [SortingParameter.RewardsShared]: sortByRewardsShared,
+};
+
+interface PoolsHeaderProps {
+    setPoolSortingParam: (sortingParam: SortingParameter) => undefined;
+}
+const PoolsHeader: React.FC<PoolsHeaderProps> = ({ setPoolSortingParam }) => {
+    return (
+        <>
+            <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                Staking Pools
+            </Heading>
+            <select
+                onChange={e => {
+                    const selected = e.target.value as SortingParameter;
+                    setPoolSortingParam(selected);
+                }}
+            >
+                <option value={SortingParameter.Staked}>Staked</option>
+                <option value={SortingParameter.RewardsShared}>RewardsShared</option>
+                <option value={SortingParameter.ProtocolFees}>ProtocolFees</option>
+            </select>
+        </>
+    );
 };
 
 export interface StakingIndexProps {}
@@ -38,6 +83,8 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const apiClient = useAPIClient(networkId);
     const { currentEpochRewards } = useStake(networkId, providerState);
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
+
+    const [poolSortingParam, setPoolSortingParam] = React.useState<SortingParameter>(SortingParameter.ProtocolFees);
 
     React.useEffect(() => {
         const fetchAndSetPoolsAsync = async () => {
@@ -53,8 +100,8 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         if (!stakingPools) {
             return undefined;
         }
-        return [...stakingPools.sort(sortByProtocolFeesDesc)];
-    }, [stakingPools]);
+        return [...stakingPools].sort(sortFnMapping[poolSortingParam]);
+    }, [poolSortingParam, stakingPools]);
 
     // TODO(kimpers): centralize data fetching so we only fetch once
     React.useEffect(() => {
@@ -122,9 +169,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                 />
             </SectionWrapper>
             <SectionWrapper>
-                <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
-                    Staking Pools
-                </Heading>
+                <PoolsHeader setPoolSortingParam={setPoolSortingParam} />
                 {sortedStakingPools &&
                     sortedStakingPools.map(pool => {
                         return (
