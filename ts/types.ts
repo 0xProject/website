@@ -4,6 +4,19 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
 
+export interface MailchimpSubscriberInfo {
+    FNAME?: string;
+    LNAME?: string;
+    ETHADDRESS?: string;
+    ADDRESS?: {
+        addr1: string;
+        city: string;
+        state: string;
+        zip: string;
+        country: string;
+    };
+}
+
 /*
  * Staking dashboard vote history example
  * Example Vote History
