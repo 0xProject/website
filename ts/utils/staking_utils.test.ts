@@ -6,10 +6,10 @@ import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { SAMPLE_POOLS } from 'ts/test/fixtures/staking_pools';
 
-import * as inputJson from 'ts/test/fixtures/staking_rec_algo_test_input_1.json';
-import * as inputJson2 from 'ts/test/fixtures/staking_rec_algo_test_input_2.json';
-import * as outputJson from 'ts/test/fixtures/staking_rec_algo_test_output_1.json';
-import * as outputJson2 from 'ts/test/fixtures/staking_rec_algo_test_output_2.json';
+import * as inputJsonTestCase1 from 'ts/test/fixtures/staking_rec_algo_test_input_1.json';
+import * as inputJsonTestCase2 from 'ts/test/fixtures/staking_rec_algo_test_input_2.json';
+import * as outputJsonTestCase1 from 'ts/test/fixtures/staking_rec_algo_test_output_1.json';
+import * as outputJsonTestCase2 from 'ts/test/fixtures/staking_rec_algo_test_output_2.json';
 
 const { getRecommendedStakingPools } = stakingUtils;
 
@@ -17,15 +17,15 @@ const { getRecommendedStakingPools } = stakingUtils;
 // These tests assert on the serialized input/output from those test cases.
 describe('getRecommendedStakingPools implementation', () => {
     test('recommendation algo kroger test case 1', () => {
-        const { zrxToStake, pools } = inputJson as any;
+        const { zrxToStake, pools } = inputJsonTestCase1 as any;
         const recommendedPools = getRecommendedStakingPools(zrxToStake, pools);
-        expect(recommendedPools).toEqual(outputJson);
+        expect(recommendedPools).toEqual(outputJsonTestCase1);
     });
 
     test('recommendation algo kroeger test case 2', () => {
-        const { zrxToStake, pools } = inputJson2 as any;
+        const { zrxToStake, pools } = inputJsonTestCase2 as any;
         const recommendedPools = getRecommendedStakingPools(zrxToStake, pools);
-        expect(recommendedPools).toEqual(outputJson2);
+        expect(recommendedPools).toEqual(outputJsonTestCase2);
     });
 });
 
