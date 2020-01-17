@@ -1,0 +1,153 @@
+{
+    "zrxToStake": 1000,
+    "pools": [
+        {
+            "poolId": "6",
+            "operatorAddress": "0x98eaba59aae48fed4c5a45233def85ef7d608be3",
+            "createdAt": {
+                "blockNumber": 9057355,
+                "txHash": "0xe998321f488b1ac967eed3534890b515ce44c25af374161101b61e816c0521bb"
+            },
+            "metaData": {
+                "name": "Zaidan's War Chest",
+                "bio": "Funding the alpha wars (circa 2019). The official Zaidan staking pool run by Paradigm Labs.",
+                "location": "Sol III",
+                "isVerified": true,
+                "logoUrl": "https://github.com/0xProject/0x-staking-pool-registry/raw/master/logos/zaidan.png",
+                "websiteUrl": "http://paradigm.market"
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0.35538,
+            "currentEpochStats": {
+                "poolId": "6",
+                "zrxStaked": 1075.2,
+                "operatorShare": 0.95,
+                "approximateStakeRatio": 0.01964032551469692,
+                "makerAddresses": [
+                    "0x533014661bfcaf6f0431b2e406dc6590f02ad61d",
+                    "0x98eaba59aae48fed4c5a45233def85ef7d608be3"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0.35538
+            },
+            "nextEpochStats": {
+                "poolId": "6",
+                "zrxStaked": 2139410.3059230885,
+                "operatorShare": 0.95,
+                "approximateStakeRatio": 1.2078266645874827,
+                "makerAddresses": [
+                    "0x98eaba59aae48fed4c5a45233def85ef7d608be3",
+                    "0x533014661bfcaf6f0431b2e406dc6590f02ad61d"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "2",
+            "operatorAddress": "0xba782e9fbac2c7bfc1ce409b3909099b6ed61f80",
+            "createdAt": {
+                "blockNumber": 9045011,
+                "txHash": "0xfa078e2d08cf371f584fbfcb7952ae9c774b1ba276899e6324b1c0f1388dc101"
+            },
+            "metaData": {
+                "name": "Rigo ZRX Staker",
+                "bio": "Organizing the free flow of value.",
+                "location": "Switzerland",
+                "isVerified": true,
+                "logoUrl": "https://github.com/0xProject/0x-staking-pool-registry/raw/master/logos/rigo.png",
+                "websiteUrl": "https://rigo.network"
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0.0542573826213,
+            "currentEpochStats": {
+                "poolId": "2",
+                "zrxStaked": 668.865,
+                "operatorShare": 0.9,
+                "approximateStakeRatio": 0.07781048765526112,
+                "makerAddresses": [
+                    "0x320c38912b1611a0706c0a74427f64fa5dc3598e",
+                    "0xd2a2fc3062eaca22a90086423ca098083c8554df",
+                    "0xba782e9fbac2c7bfc1ce409b3909099b6ed61f80"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0.0558023826213
+            },
+            "nextEpochStats": {
+                "poolId": "2",
+                "zrxStaked": 338274.225,
+                "operatorShare": 0.9,
+                "approximateStakeRatio": 1.2162411066940044,
+                "makerAddresses": [
+                    "0xba782e9fbac2c7bfc1ce409b3909099b6ed61f80",
+                    "0xd2a2fc3062eaca22a90086423ca098083c8554df",
+                    "0x320c38912b1611a0706c0a74427f64fa5dc3598e"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "16",
+            "operatorAddress": "0x5265bde27f57e738be6c1f6ab3544e82cdc92a8f",
+            "createdAt": {
+                "blockNumber": 9249116,
+                "txHash": "0xa6b3b9e50ec73968c02c4a0e06006262bd52e99185753d89d79d3bd3b8047ea6"
+            },
+            "metaData": {
+                "name": "Veridex",
+                "bio": "Veridex, your open source dex. Costumize and build your dex with our dex wizard.",
+                "location": "Brazil",
+                "isVerified": true,
+                "logoUrl": "https://github.com/0xProject/0x-staking-pool-registry/raw/master/logos/veridex.png",
+                "websiteUrl": "https://dex.verisafe.io"
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0.0036,
+            "currentEpochStats": {
+                "poolId": "16",
+                "zrxStaked": 0,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "16",
+                "zrxStaked": 37913.6,
+                "operatorShare": 0.8,
+                "approximateStakeRatio": 2.1129831589632584,
+                "makerAddresses": [
+                    "0xd00995a10db2e58a1a90270485056629134b151b",
+                    "0x3332769d8bd3d6291c1d7a08c353b3f459ab7d8a",
+                    "0x5265bde27f57e738be6c1f6ab3544e82cdc92a8f",
+                    "0x20b5f69d108dfc446f64e7393ff4ffd5130ed268"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "10",
+            "operatorAddress": "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19",
+            "createdAt": {
+                "blockNumber": 9060010,
+                "txHash": "0x02b56d5b07055c72bcb85e028db47952e02690651f6917b8855e48883bd898f8"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0,
+            "currentEpochStats": {
+                "poolId": "10",
+                "zrxStaked": 1,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [
+                    "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "10",
+                "zrxStaked": 316,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [
+                    "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        }]
+}
