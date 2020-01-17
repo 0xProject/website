@@ -171,6 +171,7 @@ export const constants = {
     SCROLL_CONTAINER_ID: 'scroll_container',
     SCROLL_TOP_ID: 'pageScrollTop',
     CFL_DOCS: `${WebsitePaths.DocsGuides}/contract-fillable-liquidity`,
+    STAKING_FAQ_DOCS: `${WebsitePaths.DocsGuides}/zrx-portal-faq`,
     NETWORK_NAME_BY_ID: {
         1: Networks.Mainnet,
         3: Networks.Ropsten,

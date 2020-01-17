@@ -20,6 +20,7 @@ import { useStake } from 'ts/hooks/use_stake';
 import { StakingHero } from 'ts/components/staking/hero';
 import { Heading } from 'ts/components/text';
 import { useAPIClient } from 'ts/hooks/use_api_client';
+import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
@@ -95,10 +96,21 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                 figure={<CFLMetrics />}
                 videoId="qP_oZAjRkTs"
                 actions={
-                    <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
-                        Get Started
-                    </Button>
-                // tslint:disable-next-line: jsx-curly-spacing
+                    <>
+                        <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
+                            Get Started
+                        </Button>
+                        <Button
+                            to={constants.STAKING_FAQ_DOCS}
+                            isInline={true}
+                            color={colors.brandLight}
+                            isTransparent={true}
+                            borderColor={colors.brandLight}
+                        >
+                            Staking FAQ
+                        </Button>
+                    </>
+                    // tslint:disable-next-line: jsx-curly-spacing
                 }
             />
             <SectionWrapper>
