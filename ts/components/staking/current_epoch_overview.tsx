@@ -1,3 +1,4 @@
+import { BigNumber } from '@0x/utils';
 import { formatDistanceStrict, isPast } from 'date-fns';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -8,7 +9,7 @@ import { formatEther, formatZrx } from 'ts/utils/format_number';
 
 interface CurrentEpochOverviewProps {
     currentEpochEndDate?: Date;
-    currentEpochRewards?: number;
+    currentEpochRewards?: BigNumber;
     numMarketMakers?: number;
     zrxStaked?: number;
 }
