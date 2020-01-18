@@ -144,12 +144,13 @@ A [0x order](/docs/core-concepts#the-0x-order-message-format) with additional fi
 
 # Swap
 
-This API faciliates consuming the best-priced liquidity from the [Mesh](https://0x-org.gitbook.io/mesh/) network and the greater DEX ecosystem through the [ERC20BridgeProxy](https://github.com/0xProject/ZEIPs/issues/47).   
+This API faciliates consuming the best-priced liquidity from the [Mesh](https://0x-org.gitbook.io/mesh/) network and the greater DEX ecosystem through the [ERC20BridgeProxy](https://github.com/0xProject/ZEIPs/issues/47).
+Follow the "[Swap Tokens with 0x API](/docs/guides/swap-tokens-with-0x-api)" guide to see how to use it.
 
 ## GET /swap/v0/quote
 
 Get an easy-to-consume quote for buying or selling any token. 
-The return format is a valid unsigned Ethereum transaction and can be submitted directly to an Ethereum node to complete the swap. 
+The return format is a valid unsigned Ethereum transaction and can be submitted directly to an Ethereum node to complete the swap.
 
 ### Request 
 
@@ -179,7 +180,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `gas`         | The estimated gas limit that should be used to send the transaction. This is only returned if `takerAddress` is provided in the request.                                                         |
 | `protocolFee` | The amount of ether paid towards the protocol fee (in wei).                                                                                                                                      |
 | `buyAmount`   | The amount of `buyToken` (in `buyToken` units) that would be bought in this swap.                                                                                                                |
-| `sellToken`   | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.                                                                                                                |
+| `sellAmount`   | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.                                                                                                                |
 | `orders`      | [Signed orders](/docs/api#signed-order) that data is comprised of.                                                                                                                               |
 
 ### Examples 
@@ -293,7 +294,7 @@ If the [`eth_call`](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call) fai
 
 #### Forwarder Transactions
 
-Use "ETH" as the `sellToken` to receive a [Forwarder](/docs/guides/v3-forwarder-specification) transaction, which will allow you swap without having set allowances on your tokens.
+Use "ETH" as the `sellToken` to receive a [Forwarder](/docs/guides/v3-forwarder-specification) transaction, which will allow you to swap without having set allowances on your tokens.
 
 <HttpCall fontSize="16px" path="/swap/v0/quote?buyToken=DAI&sellToken=ETH&buyAmount=10000000" />
 
