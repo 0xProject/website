@@ -144,7 +144,7 @@ A [0x order](/docs/core-concepts#the-0x-order-message-format) with additional fi
 
 # Swap
 
-This API faciliates consuming the best-priced liquidity from the [Mesh](https://0x-org.gitbook.io/mesh/) network and the greater DEX ecosystem through the [ERC20BridgeProxy](https://github.com/0xProject/ZEIPs/issues/47).
+This API faciliates consuming the best-priced liquidity from the [0x Mesh](https://0x-org.gitbook.io/mesh/) network and the greater DEX ecosystem through the [ERC20BridgeProxy](https://github.com/0xProject/ZEIPs/issues/47).
 Follow the "[Swap Tokens with 0x API](/docs/guides/swap-tokens-with-0x-api)" guide to see how to use it.
 
 ## GET /swap/v0/quote
@@ -432,7 +432,9 @@ No request params.
 
 # SRA
 
-The documentation for the Standard Relayer API. An API specification that is implemented by several 0x Relayers, including [Radar Relay](https://developers.radarrelay.com/api/0x-sra) and [Bamboo Relay](https://sra.bamboorelay.com/zrx.html).
+An API specification that is implemented by several 0x relayers (exchanges), including [Radar Relay](https://developers.radarrelay.com/api/0x-sra) and [Bamboo Relay](https://sra.bamboorelay.com/zrx.html).
+It allows you to interact with the liquidity of a certain relayer, including querying and posting to their orderbook. 
+In the 0x API case, it allows you to query and post to the [0x Mesh](https://0x-org.gitbook.io/mesh/) network.
 
 ## GET /sra/v3/asset_pairs
 
@@ -523,6 +525,7 @@ All the fields below are filter fields on the [signed orders](/docs/api#signed-o
 | `takerAddress`          | (Optional) The party that is allowed to fill the order. If set to a specific party, the order cannot be filled by anyone else. If left unspecified, anyone can fill the order.                                                                                                                                                                    |
 | `makerAssetData`        | (Optional) Contains all the identifying information about the asset(s) the order maker is trying to sell.                                                                                                                                                                                                                                         |
 | `takerAssetData`        | (Optional) Identifying information of the asset(s) the taker must trade in exchange for the maker's asset(s).                                                                                                                                                                                                                                     |
+| `traderAssetData`       | (Optional) Filters for either the `takerAssetData` or the `makerAssetData`.                                                                                                                                                                                                                                                                       |
 | `makerAssetAmount`      | (Optional) Amount of the maker's asset(s) being offered by the maker.                                                                                                                                                                                                                                                                             |
 | `takerAssetAmount`      | (Optional) Amount of the taker's asset(s) the maker will accept in exchange for their maker asset(s). In order to calculate the price the maker is offering, one can divide the `makerAssetAmount` by the `takerAssetAmount` (the calculation is [a bit more complex](/docs/guides/v3-specification#assetproxy) if multiple assets are involved). |
 | `feeRecipientAddress`   | (Optional) The entity that will receive any fees stipulated by the order. This is typically used to incentivize off-chain order relay.                                                                                                                                                                                                            |
@@ -587,7 +590,7 @@ All the fields below are filter fields on the [signed orders](/docs/api#signed-o
 
 ## POST /sra/v3/order
 
-Submit a signed order to the [Mesh](https://0x-org.gitbook.io/mesh/) network.
+Submit a signed order to the [0x Mesh](https://0x-org.gitbook.io/mesh/) network.
 
 ### Request 
 
@@ -902,3 +905,103 @@ A valid Ethereum address(s).
 }
 ```
 </CodeTabs>
+
+## Websocket API
+
+The Standard Relayer API also exposes a websocket server at the root endpoint. 
+
+| Network | Endpoint                      |
+| ------- | ----------------------------- |
+| Mainnet | wss://api.0x.org/sra/v3       |
+| Kovan   | wss://kovan.api.0x.org/sra/v3 |
+
+The server will allow you to subscribe to 0x order updates in the [0x Mesh](https://0x-org.gitbook.io/mesh/) network, 
+and will push updates whenever the "fillability" of an order changes. 
+In practice, this will happen whenever a new order is added, an order is cancelled, or an order is filled. 
+At the moment, the update message will not specify the exact reason for the update.
+
+All messages (both request, and response) adhere to the format below:
+
+| Field          | Description                                                                                                                                               |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type`         | The type of message being sent. Only "subscribe" is supported for now.                                                                                    |
+| `channel`      | The topic of the messaging. Only "orders" is supported for now.                                                                                           |
+| `requestId`    | A string uuid that will be sent back by the server in response messages so the client can appropriately respond when multiple subscriptions are made.     |
+| `payload`      | (Optional) A JSON object documented below, that contains the body of the message.                                                                         |
+
+### Request
+
+| Field                   | Description                                                                                                                                                                                                                                                                                                                                       |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `makerAssetProxyId`     | (Optional) The asset proxy ID part of the maker [asset data](/docs/guides/v3-specification#assetdata). Example: `0xf47261b0` for ERC20, `0x02571792` for ERC721.                                                                                                                                                                                  |
+| `takerAssetProxyId`     | (Optional) The asset proxy ID ID part of the taker [asset data](/docs/guides/v3-specification#assetdata). Example: `0xf47261b0` for ERC20, `0x02571792` for ERC721.                                                                                                                                                                               |
+| `makerAssetAddress`     | (Optional) The contract address part of the maker [asset data](/docs/guides/v3-specification#assetdata).                                                                                                                                                                                                                                          |
+| `takerAssetAddress`     | (Optional) The contract address part of the taker [asset data](/docs/guides/v3-specification#assetdata).                                                                                                                                                                                                                                          |
+| `makerAssetData`        | (Optional) Contains all the identifying information about the asset(s) the order maker is trying to sell.                                                                                                                                                                                                                                         |
+| `takerAssetData`        | (Optional) Identifying information of the asset(s) the taker must trade in exchange for the maker's asset(s).                                                                                                                                                                                                                                     |
+| `traderAssetData`       | (Optional) Filters for either the `takerAssetData` or the `makerAssetData`.                                                                                                                                                                                                                                                                       |
+
+### Response
+
+A list consisting of signed orders with metaData.
+
+| Field         | Description                                                                                                        |
+| ------------- | -------------------------------------------------------------------------------------------------------------------|
+| `order`       | Raw [signed orders](/docs/api#signed-order).                                                                       |
+| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |
+
+### Examples
+
+#### Subscribe to All Order Updates
+
+<CodeTabs tabs={['Request']}>
+
+```json
+{
+    "type": "subscribe",
+    "channel": "orders",
+    "requestId": "123e4567-e89b-12d3-a456-426655440000"
+}
+```
+</CodeTabs>
+
+
+<CodeTabs tabs={['Update']}>
+
+```json
+{
+  "type": "update",
+  "channel": "orders",
+  "payload": [
+    {
+      "order": {
+        "chainId": 1,
+        "exchangeAddress": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
+        "makerAddress": "0x6924a03bb710eaf199ab6ac9f2bb148215ae9b5d",
+        "makerAssetData": "0xf47261b000000000000000000000000089d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+        "makerFeeAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "makerAssetAmount": "9801000000000000000000",
+        "makerFee": "0",
+        "takerAddress": "0x0000000000000000000000000000000000000000",
+        "takerAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "takerFeeAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "takerAssetAmount": "57528575831456142732",
+        "takerFee": "0",
+        "senderAddress": "0x0000000000000000000000000000000000000000",
+        "feeRecipientAddress": "0xa258b39954cef5cb142fd567a46cddb31a670124",
+        "expirationTimeSeconds": "1579315756",
+        "salt": "1579315576818",
+        "signature": "0x1c193301e31de7ce08e38c99854b620060506b7a685f9c65852c230623a6fb3df97373cf84c63112274fc09f95f657a9e55b9ab9771303693168dd07df0c9d56c503"
+      },
+      "metaData": {
+        "orderHash": "0x35d09c7e163da5c94d8ee2ac311190051a8dfdc10cfd497fd79dc422d3fb8b43",
+        "remainingFillableTakerAssetAmount": "57528575831456142732"
+      }
+    }
+  ],
+  "requestId": "123"
+}
+```
+</CodeTabs>
+
+
