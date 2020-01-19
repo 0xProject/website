@@ -28,7 +28,10 @@ export class APIClient {
     }
 
     public async getStakingPoolsAsync(): Promise<StakingAPIPoolsResponse> {
-        const result = await fetchUtils.requestAsync<StakingAPIPoolsResponse>(utils.getAPIBaseUrl(this.networkId), STAKING_POOLS_ENDPOINT);
+        const result = await fetchUtils.requestAsync<StakingAPIPoolsResponse>(
+            utils.getAPIBaseUrl(this.networkId),
+            STAKING_POOLS_ENDPOINT,
+        );
         return result;
     }
 
@@ -44,19 +47,25 @@ export class APIClient {
     public async getDelegatorAsync(delegatorAddress: string): Promise<StakingAPIDelegatorResponse> {
         const result = await fetchUtils.requestAsync(
             utils.getAPIBaseUrl(this.networkId),
-            `${DELEGATOR_ENDPOINT}/${delegatorAddress}`,
+            `${DELEGATOR_ENDPOINT}/${delegatorAddress.toLowerCase()}`,
         );
 
         return result;
     }
 
     public async getStakingEpochsAsync(): Promise<StakingAPIEpochsResponse> {
-        const result = await fetchUtils.requestAsync<StakingAPIEpochsResponse>(utils.getAPIBaseUrl(this.networkId), STAKING_EPOCHS_ENDPOINT);
+        const result = await fetchUtils.requestAsync<StakingAPIEpochsResponse>(
+            utils.getAPIBaseUrl(this.networkId),
+            STAKING_EPOCHS_ENDPOINT,
+        );
         return result;
     }
 
     public async getStakingStatsAsync(): Promise<StakingAPIStatsResponse> {
-        const result = await fetchUtils.requestAsync<StakingAPIStatsResponse>(utils.getAPIBaseUrl(this.networkId), STAKING_STATS_ENDPOINT);
+        const result = await fetchUtils.requestAsync<StakingAPIStatsResponse>(
+            utils.getAPIBaseUrl(this.networkId),
+            STAKING_STATS_ENDPOINT,
+        );
         return result;
     }
 
