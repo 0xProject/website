@@ -140,7 +140,6 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                 */}
 
                 <Button
-                    to="/"
                     color={colors.red}
                     borderColor="#D5D5D5"
                     bgColor={colors.white}
@@ -150,6 +149,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                     isNoBorder={true}
                     padding="15px 35px"
                     isFullWidth={true}
+                    onClick={onRemoveStake}
                 >
                     Remove
                 </Button>
