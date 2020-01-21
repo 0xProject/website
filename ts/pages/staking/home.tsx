@@ -13,6 +13,7 @@ import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 
 import { CurrentEpochOverview } from 'ts/components/staking/current_epoch_overview';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
+import { PoolsListSortingSelector } from 'ts/components/staking/pools_list_sorting_selector';
 import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
 
 import { useStake } from 'ts/hooks/use_stake';
@@ -24,7 +25,7 @@ import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
-import { Epoch, PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
+import { Epoch, PoolsListSortingParameter, PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
 
 const sortByStaked = (a: PoolWithStats, b: PoolWithStats): number =>
     b.nextEpochStats.approximateStakeRatio - a.nextEpochStats.approximateStakeRatio;
@@ -40,40 +41,17 @@ const sortByRewardsShared = (a: PoolWithStats, b: PoolWithStats): number => {
     return bRewardsShared - aRewardsShared;
 };
 
-enum SortingParameter {
-    Staked = 'staked',
-    ProtocolFees = 'protocolFees',
-    RewardsShared = 'rewardsShared',
-}
-
 const sortFnMapping: { [key: string]: (a: PoolWithStats, b: PoolWithStats) => number } = {
-    [SortingParameter.Staked]: sortByStaked,
-    [SortingParameter.ProtocolFees]: sortByProtocolFeesDesc,
-    [SortingParameter.RewardsShared]: sortByRewardsShared,
+    [PoolsListSortingParameter.Staked]: sortByStaked,
+    [PoolsListSortingParameter.ProtocolFees]: sortByProtocolFeesDesc,
+    [PoolsListSortingParameter.RewardsShared]: sortByRewardsShared,
 };
 
-interface PoolsHeaderProps {
-    setPoolSortingParam: (sortingParam: SortingParameter) => undefined;
-}
-const PoolsHeader: React.FC<PoolsHeaderProps> = ({ setPoolSortingParam }) => {
-    return (
-        <>
-            <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
-                Staking Pools
-            </Heading>
-            <select
-                onChange={e => {
-                    const selected = e.target.value as SortingParameter;
-                    setPoolSortingParam(selected);
-                }}
-            >
-                <option value={SortingParameter.Staked}>Staked</option>
-                <option value={SortingParameter.RewardsShared}>RewardsShared</option>
-                <option value={SortingParameter.ProtocolFees}>ProtocolFees</option>
-            </select>
-        </>
-    );
-};
+const HeadingRow = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
 
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = () => {
@@ -84,7 +62,9 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const { currentEpochRewards } = useStake(networkId, providerState);
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
 
-    const [poolSortingParam, setPoolSortingParam] = React.useState<SortingParameter>(SortingParameter.ProtocolFees);
+    const [poolSortingParam, setPoolSortingParam] = React.useState<PoolsListSortingParameter>(
+        PoolsListSortingParameter.ProtocolFees,
+    );
 
     React.useEffect(() => {
         const fetchAndSetPoolsAsync = async () => {
@@ -169,7 +149,12 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                 />
             </SectionWrapper>
             <SectionWrapper>
-                <PoolsHeader setPoolSortingParam={setPoolSortingParam} />
+                <HeadingRow>
+                    <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                        Staking Pools
+                    </Heading>
+                    <PoolsListSortingSelector setPoolSortingParam={setPoolSortingParam} />
+                </HeadingRow>
                 {sortedStakingPools &&
                     sortedStakingPools.map(pool => {
                         return (

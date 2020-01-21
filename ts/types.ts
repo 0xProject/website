@@ -4,6 +4,12 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
 
+export enum PoolsListSortingParameter {
+    Staked = 'staked',
+    ProtocolFees = 'protocolFees',
+    RewardsShared = 'rewardsShared',
+}
+
 export interface MailchimpSubscriberInfo {
     FNAME?: string;
     LNAME?: string;
