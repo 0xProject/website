@@ -8,10 +8,11 @@ import { colors } from 'ts/style/colors';
 import { PoolsListSortingParameter } from 'ts/types';
 
 const Wrapper = styled.div`
-    width: 450px;
+    @media (min-width: 768px) {
+        width: 450px;
+    }
 `;
 
-// TODO: align arrow properly
 const Arrow = ({ isExpanded }: { isExpanded?: boolean }) => (
     <svg
         style={{ transform: isExpanded ? 'rotate(180deg)' : null }}
@@ -33,12 +34,23 @@ const ExpandedMenu = styled.div`
     flex-direction: column;
     width: 450px;
     padding: 30px;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        left: 0;
+    }
 `;
 
 const ToggleRow = styled.div`
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
     user-select: none;
     cursor: pointer;
+
+    * + * {
+        margin-left: 8px;
+    }
 `;
 
 const MenuItem = styled.div`
@@ -49,20 +61,26 @@ const MenuItem = styled.div`
     }
 `;
 
-const StyledText = styled(Text).attrs({
-    fontFamily: 'Formular',
-    fontSize: '20px',
-})`
+const StyledText = styled(Text)`
+    font-family: 'Formular', monospace;
+    font-size: 20px;
     font-feature-settings: 'tnum' on, 'lnum' on;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
 `;
 
-const StyledParagraph = styled(Text).attrs({
-    fontFamily: 'Formular',
-    fontSize: '17px',
-    fontColor: 'rgba(0,0,0,0.7)',
-    fontWeight: 300,
-})`
-    max-width: 350px;
+const StyledDescription = styled(Text)`
+    font-family: 'Formular', monospace;
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 300;
+    font-size: 14px;
+
+    @media (min-width: 768px) {
+        font-size: 17px;
+        max-width: 350px;
+    }
 `;
 
 const sortingParamMapping = {
@@ -83,31 +101,29 @@ export const PoolsListSortingSelector: React.FC<PoolsListSortingSelectorProps> =
     return (
         <Wrapper onClick={() => setIsExpanded(_isExpanded => !_isExpanded)}>
             <ToggleRow>
-                <StyledText Tag="span">Sort by </StyledText>
-                <StyledText Tag="span" fontColor={colors.textDarkSecondary}>
-                    {sortingParamMapping[currentSortingParam]}{' '}
-                </StyledText>
+                <StyledText>Sort by</StyledText>
+                <StyledText fontColor={colors.textDarkSecondary}>{sortingParamMapping[currentSortingParam]}</StyledText>
                 <Arrow isExpanded={isExpanded} />
             </ToggleRow>
             {isExpanded && (
                 <ExpandedMenu>
                     <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.Staked)}>
                         <StyledText>{sortingParamMapping[PoolsListSortingParameter.Staked]}</StyledText>
-                        <StyledParagraph>
+                        <StyledDescription>
                             An approximation for how fully staked the pool is for the upcoming epoch
-                        </StyledParagraph>
+                        </StyledDescription>
                     </MenuItem>
                     <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.RewardsShared)}>
                         <StyledText>{sortingParamMapping[PoolsListSortingParameter.RewardsShared]}</StyledText>
-                        <StyledParagraph>
+                        <StyledDescription>
                             An approximation for how fully staked the pool is for the upcoming epoch
-                        </StyledParagraph>
+                        </StyledDescription>
                     </MenuItem>
                     <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.ProtocolFees)}>
                         <StyledText>{sortingParamMapping[PoolsListSortingParameter.ProtocolFees]}</StyledText>
-                        <StyledParagraph>
+                        <StyledDescription>
                             An approximation for how fully staked the pool is for the upcoming epoch
-                        </StyledParagraph>
+                        </StyledDescription>
                     </MenuItem>
                 </ExpandedMenu>
             )}

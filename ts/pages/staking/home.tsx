@@ -51,6 +51,11 @@ const HeadingRow = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: start;
+    }
 `;
 
 export interface StakingIndexProps {}
