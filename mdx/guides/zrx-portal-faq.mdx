@@ -1,0 +1,88 @@
+## What is a market maker?
+
+In every 0x trade, there is a maker (the address who created the order) and a taker (the address that accepts the order and fills it). When you are trading on a typical 0x relayer, chances are that you’re either one of the two. If you’re executing a market order, you will be a taker as these orders exist already in the orderbook. If you’re adding an order to the orderbook that takes time to be filled by other users, then you will be the maker of that order.
+
+There is a special category of traders, called market makers, that provide a significant amount of orders in 0x orderbooks. Market makers are not the usual retail trader, and are often incorporated as a business. Their function is to make it possible to have liquid markets with tight spreads between bid and ask, and low slippage when executing large orders. These traders adopt specific strategies to benefit from their activity, realizing relatively small profits (out of order spreads) with high frequency. Market makers exist in ‘traditional’ markets, as well as in crypto markets over centralized and decentralized exchanges. 
+
+## What is a staking pool?
+
+0x liquidity providers are entitled to receive rewards in exchange for their activity, which is crucial for the good functioning of 0x markets. In order to collect these rewards, they need to stake ZRX tokens. To do so, they create staking pools, which allow them to stake their ZRX and attract other tokenholders’ ZRX, provided that they share a portion of rewards with them. By allowing other tokenholders to stake with them, they increase their ability to collect rewards.
+
+## I am a market maker on 0x, what should I do?
+
+You should create a staking pool, as you are eligible to rewards - which are currently being distributed to other staking pools. You can refer to [this guide](https://0x.org/docs/guides/create-staking-pool) on how to setup a staking pool.
+
+## I am not a market maker, but I hold ZRX. What should I do?
+
+We encourage you to use the [ZRX Portal](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#62-paying-liquidity-rewards-finalization) to stake your tokens with the staking pools you prefer, to start earning rewards. If you’re unsure about which staking pool to stake with, simply use the [staking wizard](https://0x.org/zrx/staking/wizard?step=start) which will simplify the work for you.
+
+## How are liquidity rewards calculated?
+
+In every 0x trade, there is a maker (the address who created the order) and a taker (the address that accepts the order and fills it). In 0x v3, every taker pays a small fee that is ‘attributed’ to the maker address. 
+
+Every epoch (a period of 10 days), all protocol fees are accumulated into a unique pool. 
+At the end of the epoch, all rewards are automatically distributed to staking pool based on a [formula](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#62-paying-liquidity-rewards-finalization). Without going too much into details (refer to the “stake-based liquidity incentives” section of this [blog post](https://blog.0xproject.com/0x-roadmap-2019-part-4-proposal-for-stake-based-liquidity-incentive-52c16558df29) if you are interested), it suffices to say that a staking pool will accumulate rewards proportionally to two quantities: 
+
+* the protocol fees attributed to the maker addresses registered in the pool, during that epoch
+* number of ZRX staked in the pool during that epoch
+
+
+In turn, a staking pool operator can decide to share rewards with other tokenholders staking with them. Every tokenholder that has staked with a pool is eligible to a reward equal to their share of ZRX staked (excluding the ZRX staked by the pool operator).
+
+<Image align="center" src="/images/docs/staking_rewards.png" alt="staking" width="700px" padding="20px" marginBottom="3rem" />
+
+## How are rewards distributed? 
+
+Rewards are denominated in ETH. You will be able to withdraw them from [your account page](https://0x.org/zrx/account). If you’re a staking pool operator, you will be automatically sent rewards at the end of each epoch.
+
+## What wallets are currently supported in the ZRX Portal?
+
+Currently ZRX Portal supports Metamask. You can connect your Ledger or Trezor hardware wallets to Metamask.
+We were able to stake on mobile using the [Coinbase Wallet App](https://wallet.coinbase.com/).
+
+## Is staking secure?
+
+The system has been audited by two independent auditors (Consensys Diligence and Trails of Bits). In particular, you refer to section 4 of [this report](https://diligence.consensys.net/audits/2019/10/0x-v3-staking/) to find more details. Quoting from there "ZRX deposits and withdrawals make use of a fairly simple ZrxVault contract, which includes a fail-safe mechanism which can be triggered by 0x if needed to allow stakers to directly withdraw their ZRX. Excluding malicious action by 0x themselves, ZRX deposits and withdrawals have low risk of fund loss."
+
+## What is an epoch?
+
+An epoch is a recurring period of 10 days used by the staking system to calculate and distribute eligible rewards to staking pools. Every state modification of the staking system (including a stake action) taken during an epoch is effective the next epoch.
+
+
+## What are “rewards shared”?
+
+Rewards shared is the ‘cut’ of rewards shared by the staking pool operator with the tokenholders staking with the pool. For example, consider a pool with 10% rewards shared. At the end of each epoch, the 10% pool rewards are distributed to all tokenholders who have staked with the pool, according to their share.
+
+## What are ‘collected fees’? 
+
+Protocol fees associated to a staking pool are basically the fees originated from orders that were created by the market makers registered in the pool. These fees represent the activity of the market makers behind the staking pool, and it’s a crucial . As explained in the “How are rewards calculated?” section, rewards are proportional to the share of protocol fees generated by the pool.
+
+
+## What is the stake %, or stake ratio?
+
+The stake ratio is calculated dividing the relative share of ZRX staked (the ZRX staked in the pool, divided by the total ZRX staked in the system) by the 'liquidity share' (the fees that are attributed to the pool's makers, divided by the total fees generated by other market makers in staking pools). 
+
+## What does it mean when a pool is under or over-staked? How do I choose the optimal parameters?
+
+The rewards per unit of ZRX staked are maximized when your stake ratio is equal to 1. The stake ratio is calculated dividing the relative share of ZRX staked (your ZRX staked divided by the total ZRX staked in the system) by your 'liquidity share' (the fees your orders have generated divided by the total fees generated by other staked market makers). 
+When these two quantities are equal, your stake ratio is 1, and your rewards per unit of ZRX staked are maximized. 
+When your staking pool is under-staked (the relative share of ZRX is smaller than the liquidity share), your pool will not be allocated the entirety of the eligible fees. Increasing the balance of ZRX staked (by adding them yourself or incentivizing other token holders to delegate) will progressively maximize the liquidity rewards received.
+
+
+## The pool I am operating or I am staking is not accumulating protocol fees but has a high amount of ZRX staked. Will I receive rewards?
+
+No. As explained above, the rewards distributed are proportional to the ZRX staked in the pool, and the protocol fees generated by orders where the maker is registered in the pool. If any of these two quantities is 0, rewards will be 0. Actually, there is a minimum of 100 ZRX staked needed to receive rewards.
+
+## The staking pool I have created is not displayed in the homepage. Why?
+
+ZRX Portal filters out pools that either do not have any ZRX staked or that are not generating any protocol fees. 
+
+## I have staked with a pool. What now?
+
+As you have seen in the last steps of the staking flow, the stake comes into effect the upcoming epoch. That means that if you have staked in epoch e, in epoch e+1 you stake will be active, and you’ll be eligible to widthdraw rewards at the start of epoch e+2.
+Keep your stake live to keep receiving rewards. Alternatively, you can remove your stake and re-allocate your stake to another pool. 
+
+## I want to remove my current stake. What should I do?
+
+If you decide to remove your stake, simply go to your account page and click on “remove” from the pools you are staking with. You will need to wait the end of the epoch before being able to withdraw your ZRX, and stake again.
+

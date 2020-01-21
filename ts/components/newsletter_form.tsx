@@ -23,8 +23,6 @@ interface IArrowProps {
     isSubmitted: boolean;
 }
 
-const NEWSLETTER_TAG = 'newsletter';
-
 export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
     const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
     const emailInput = React.createRef<HTMLInputElement>();
@@ -41,7 +39,7 @@ export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
         }
 
         try {
-            await backendClient.subscribeToNewsletterAsync(email, NEWSLETTER_TAG);
+            await backendClient.subscribeToNewsletterAsync(email);
         } catch (e) {
             errorReporter.report(e);
         }

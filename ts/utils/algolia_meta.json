@@ -251,6 +251,15 @@
             "topics": ["Protocol Developer"],
             "difficulty": "Advanced",
             "path": "guides/bug-bounty-program.mdx"
+        },
+        "zrx-portal-faq": {
+            "title": "ZRX Portal FAQ",
+            "subtitle": "A list of FAQ on how to stake with the ZRX Portal",
+            "description": "A list of FAQ on how to stake with the ZRX Portal",
+            "tags": ["Staking", "Market Maker"],
+            "topics": ["Staking", "Market Maker"],
+            "difficulty": "Beginner",
+            "path": "guides/zrx-portal-faq.mdx"
         }
     },
     "tools": {

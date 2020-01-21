@@ -1,5 +1,6 @@
 import { logUtils } from '@0x/utils';
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -11,9 +12,11 @@ import { Inner } from 'ts/components/staking/wizard/inner';
 
 import { colors } from 'ts/style/colors';
 
-import { WebsitePaths } from 'ts/types';
+import { State } from 'ts/redux/reducer';
+import { AccountReady, WebsitePaths } from 'ts/types';
 
 import { backendClient } from 'ts/utils/backend_client';
+import { configs } from 'ts/utils/configs.ts';
 import { errorReporter } from 'ts/utils/error_reporter';
 
 const StyledHeading = styled(Heading)`
@@ -112,9 +115,10 @@ const CircleThumbsUp = () => (
     </svg>
 );
 
-const STAKING_NEWSLETTER_TAG = 'staking_updates';
-
 export const Newsletter = () => {
+    const providerState = useSelector((state: State) => state.providerState);
+    const ethAddress = (providerState.account as AccountReady).address;
+
     const [email, setEmail] = React.useState<string>('');
     const [hasSubmitted, setHasSubmitted] = React.useState<boolean>(false);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -126,7 +130,11 @@ export const Newsletter = () => {
             }
             try {
                 setIsLoading(true);
-                await backendClient.subscribeToNewsletterAsync(email.trim(), STAKING_NEWSLETTER_TAG);
+                await backendClient.subscribeToNewsletterAsync(
+                    email,
+                    { ETHADDRESS: ethAddress },
+                    configs.STAKING_UPDATES_NEWSLETTER_ID,
+                );
                 setHasSubmitted(true);
             } catch (err) {
                 logUtils.warn(`Unable to register email to newsletter`, email, err);
@@ -134,7 +142,7 @@ export const Newsletter = () => {
             }
             setIsLoading(false);
         },
-        [email],
+        [email, ethAddress],
     );
 
     return (

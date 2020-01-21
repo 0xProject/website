@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 
 import {
     GasInfo,
+    MailchimpSubscriberInfo,
     WebsiteBackendCFLMetricsData,
     WebsiteBackendGasInfo,
     WebsiteBackendJobInfo,
@@ -62,10 +63,16 @@ export const backendClient = {
         const result = await fetchUtils.requestAsync(utils.getBackendBaseUrl(), TOKENS_ENDPOINT);
         return result;
     },
-    async subscribeToNewsletterAsync(email: string, ...tags: string[]): Promise<Response> {
+    async subscribeToNewsletterAsync(
+        email: string,
+        subscriberInfo?: MailchimpSubscriberInfo,
+        list?: string,
+    ): Promise<Response> {
         const result = await fetchUtils.postAsync(utils.getBackendBaseUrl(), SUBSCRIBE_MAILCHIMP_NEWSLETTER_ENDPOINT, {
-            email,
-            tags,
+            email: email.trim(),
+            list,
+            tags: [location.href],
+            subscriberInfo,
         });
         return result;
     },

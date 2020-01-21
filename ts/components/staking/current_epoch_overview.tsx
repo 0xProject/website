@@ -1,4 +1,5 @@
-import { differenceInCalendarDays } from 'date-fns';
+import { BigNumber } from '@0x/utils';
+import { formatDistanceStrict, isPast } from 'date-fns';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -8,7 +9,7 @@ import { formatEther, formatZrx } from 'ts/utils/format_number';
 
 interface CurrentEpochOverviewProps {
     currentEpochEndDate?: Date;
-    currentEpochRewards?: number;
+    currentEpochRewards?: BigNumber;
     numMarketMakers?: number;
     zrxStaked?: number;
 }
@@ -56,13 +57,21 @@ const Explanation = styled(Text).attrs({
     width: '100%',
 })``;
 
+const timeToEpochEnd = (currentEpochEndDate?: Date): string => {
+    if (!currentEpochEndDate || isPast(currentEpochEndDate)) {
+        return '-';
+    }
+
+    const now = new Date();
+    return formatDistanceStrict(currentEpochEndDate, now, { roundingMethod: 'ceil' });
+};
+
 export const CurrentEpochOverview: React.FC<CurrentEpochOverviewProps> = ({
     currentEpochEndDate,
     currentEpochRewards,
     numMarketMakers,
     zrxStaked,
 }) => {
-    const now = new Date();
     return (
         <WrapperRow>
             <OverviewItem>
@@ -70,11 +79,7 @@ export const CurrentEpochOverview: React.FC<CurrentEpochOverviewProps> = ({
                 <Explanation>ZRX Staked</Explanation>
             </OverviewItem>
             <OverviewItem>
-                <Metric>
-                    {currentEpochEndDate
-                        ? `${Math.max(differenceInCalendarDays(currentEpochEndDate, now), 0)} days`
-                        : '-'}
-                </Metric>
+                <Metric>{timeToEpochEnd(currentEpochEndDate)}</Metric>
                 <Explanation>Epoch ends</Explanation>
             </OverviewItem>
             <OverviewItem>

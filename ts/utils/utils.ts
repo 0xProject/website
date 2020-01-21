@@ -322,6 +322,8 @@ export const utils = {
             return Providers.Parity;
         } else if (anyProvider.isMetaMask) {
             return Providers.Metamask;
+        } else if (anyProvider.isImToken) {
+            return Providers.ImToken;
         } else if (_.get(window, 'SOFA') !== undefined) {
             return Providers.CoinbaseWallet;
         } else if (_.get(window, '__CIPHER__') !== undefined) {

@@ -66,11 +66,13 @@ export const constants = {
         [Providers.Opera]: 'Opera Wallet',
         [Providers.Fallback]: 'Fallback',
         [Providers.WalletConnect]: 'Wallet Connect',
+        [Providers.ImToken]: 'imToken',
     } as { [key in Providers]: string },
     PROVIDER_TYPE_TO_ICON: {
         [Providers.Metamask]: 'metamask_icon',
         [Providers.CoinbaseWallet]: 'coinbase_wallet_icon',
         [Providers.TrustWallet]: 'trust_wallet_icon',
+        [Providers.ImToken]: 'im_token_wallet_icon',
     } as { [key: string]: string | undefined },
     NO_ACCOUNT: {
         state: AccountState.None,
@@ -171,6 +173,7 @@ export const constants = {
     SCROLL_CONTAINER_ID: 'scroll_container',
     SCROLL_TOP_ID: 'pageScrollTop',
     CFL_DOCS: `${WebsitePaths.DocsGuides}/abcs-of-contract-fillable-liquidity`,
+    STAKING_FAQ_DOCS: `${WebsitePaths.DocsGuides}/zrx-portal-faq`,
     NETWORK_NAME_BY_ID: {
         1: Networks.Mainnet,
         3: Networks.Ropsten,
