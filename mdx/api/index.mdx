@@ -1,6 +1,7 @@
 # Introduction
 
-The 0x HTTP API is the easiest way to interact with 0x liquidity. All the code is open source and available at the [0x-api GitHub repo](https://github.com/0xProject/0x-api).
+The 0x HTTP API is the easiest way to source liquidity from [0x Mesh](https://0x-org.gitbook.io/mesh/) as well as Kyber, Uniswap, Oasis and other decentralized exchange networks. 
+All the code is open source and available at the [0x-api GitHub repo](https://github.com/0xProject/0x-api).
 
 We offer hosted versions for different Ethereum networks. Requests for more networks, and questions/feedback in general should be directed at our [Discord](https://discord.gg/YDm4wx).
 
@@ -137,14 +138,15 @@ A [0x order](/docs/core-concepts#the-0x-order-message-format) with additional fi
 
 ## Misc.
 
-*   All requests and responses should be of "application/json" content type
+*   All requests and responses should be of "application/json" content type.
 *   All token amounts are sent in amounts of the smallest level of precision (base units). (e.g if a token has 18 decimal places, selling 1 token would show up as selling "1000000000000000000" units by this API).
 *   All addresses are sent as lower-case (non-checksummed) Ethereum addresses with the `0x` prefix.
 *   All parameters should use **lowerCamelCase**.
 
 # Swap
 
-This API faciliates consuming the best-priced liquidity from the [0x Mesh](https://0x-org.gitbook.io/mesh/) network and the greater DEX ecosystem through the [ERC20BridgeProxy](https://github.com/0xProject/ZEIPs/issues/47).
+This API faciliates consuming the best-priced liquidity from [0x Mesh](https://0x-org.gitbook.io/mesh/) and the greater DEX ecosystem through the [ERC20BridgeProxy](https://github.com/0xProject/ZEIPs/issues/47).
+We use smart order routing to split up your transaction across decentralized exchange networks to be filled with the lowest slippage possible.
 Follow the "[Swap Tokens with 0x API](/docs/guides/swap-tokens-with-0x-api)" guide to see how to use it.
 
 ## GET /swap/v0/quote
@@ -434,7 +436,7 @@ No request params.
 
 An API specification that is implemented by several 0x relayers (exchanges), including [Radar Relay](https://developers.radarrelay.com/api/0x-sra) and [Bamboo Relay](https://sra.bamboorelay.com/zrx.html).
 It allows you to interact with the liquidity of a certain relayer, including querying and posting to their orderbook. 
-In the 0x API case, it allows you to query and post to the [0x Mesh](https://0x-org.gitbook.io/mesh/) network.
+In the 0x API case, it allows you to query and post to [0x Mesh](https://0x-org.gitbook.io/mesh/).
 
 ## GET /sra/v3/asset_pairs
 
@@ -590,7 +592,7 @@ All the fields below are filter fields on the [signed orders](/docs/api#signed-o
 
 ## POST /sra/v3/order
 
-Submit a signed order to the [0x Mesh](https://0x-org.gitbook.io/mesh/) network.
+Submit a signed order to [0x Mesh](https://0x-org.gitbook.io/mesh/).
 
 ### Request 
 
@@ -915,7 +917,7 @@ The Standard Relayer API also exposes a websocket server at the root endpoint.
 | Mainnet | wss://api.0x.org/sra/v3       |
 | Kovan   | wss://kovan.api.0x.org/sra/v3 |
 
-The server will allow you to subscribe to 0x order updates in the [0x Mesh](https://0x-org.gitbook.io/mesh/) network, 
+The server will allow you to subscribe to 0x order updates in [0x Mesh](https://0x-org.gitbook.io/mesh/), 
 and will push updates whenever the "fillability" of an order changes. 
 In practice, this will happen whenever a new order is added, an order is cancelled, or an order is filled. 
 At the moment, the update message will not specify the exact reason for the update.
