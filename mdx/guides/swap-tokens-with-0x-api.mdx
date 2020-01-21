@@ -1,6 +1,9 @@
+The swap API provides a method for performing token swaps (e.g. ETH to DAI) that aggregates offers from multiple DEXes to ensure you always receive the best price.
+You can read more the in the [0x API specification](/docs/api).
+
 All code snippets provided are designed to work in a browser environment with an injected web3 instance (like [Metamask](https://metamask.io/)). You can use the [npm web3 module](https://www.npmjs.com/package/web3) and modify these snippets to run them in a node environment.
 
-## Swap ETH for 1 DAI
+## Buy 1 DAI with ETH
 
 You can perform a two-line token swap like so: 
 
@@ -8,22 +11,25 @@ You can perform a two-line token swap like so:
 (async () => {
     // buying 1 DAI with ETH
     const response = await fetch(
-        'https://api.0x.org/swap/v0/quote?buyToken=DAI&sellToken=ETH&buyAmount=1000000000000000000 (https://api.0x.org/swap/v0/quote?buyToken=DAI&sellToken=WETH&buyAmount=1000)'
-        );
+        'https://api.0x.org/swap/v0/quote?buyToken=DAI&sellToken=ETH&buyAmount=1000000000000000000'
+    );
     
     await window.web3.eth.sendTransaction(await response.json());
 })();
 ```
 
 Behind the scenes, `/swap/v0/quote` is getting you the best rate across the DEX ecosystem by aggregating liquidity from 
-sources like Oasis, Uniswap, and Kyber. 
+sources like Kyber, Uniswap, Oasis and more. [Try it out!](https://codepen.io/fragosti/pen/xxbmgqy).
+
+Since we used ETH as our `sellToken`, the API returned a [Forwarder](/docs/guides/v3-forwarder-specification) transaction,
+which allowed us to get around setting [allowances](https://tokenallowance.io/) on any ERC20 tokens (including the `buyToken`).
 
 ## Selling ETH instead of buying DAI
 
 The above example demonstrates how to buy 1 DAI with ETH, we can easily sell 1 ETH for X DAI like so: 
 
 ```javascript
-import * as qs from 'qs';
+import qs from 'qs';
 
 (async () => {
     // selling 1 ETH for DAI
@@ -35,7 +41,7 @@ import * as qs from 'qs';
     
     const response = await fetch(
         `https://api.0x.org/swap/v0/quote?${qs.stringify(params)}`
-        );
+    );
     
     await window.web3.eth.sendTransaction(await response.json());
 })();
@@ -45,10 +51,11 @@ Instead of specifying `buyAmount`, provide `sellAmount` in the params. If both a
 
 ## Swapping between ERC20 token pairs
 
-Because this is a swap between ERC20 tokens, you need to give the [0x ERC20Proxy](https://etherscan.io/address/0x95e6f48254609a6ee006f7d493c8e5fb97094cef) approval to move your tokens for you. Otherwise, the token swap works exactly the same way as before.
+Because this is a swap between ERC20 tokens, you need to give the [0x ERC20Proxy](https://etherscan.io/address/0x95e6f48254609a6ee006f7d493c8e5fb97094cef) smart contract [approval](https://tokenallowance.io/) to move your tokens for you. 
+Otherwise, the token swap works exactly the same way as before.
 
 ```javascript
-import * as qs from 'qs';
+import qs from 'qs';
 
 (async () => {
     // buying 1 DAI with USDC
@@ -60,20 +67,23 @@ import * as qs from 'qs';
     
     const response = await fetch(
         `https://api.0x.org/swap/v0/quote?${qs.stringify(params)}`
-        );
+    );
     
     await window.web3.eth.sendTransaction(await response.json());
 })();
 ```
 
+This time, the API returned a [`marketSellOrdersFillOrKill`](https://0x.org/docs/guides/v3-specification#marketsellordersfillorkill) transaction on the 0x exchange smart contract.
+
 ## Specifying a taker address for your swaps
 
 You can optionally provide a `takerAddress` to get a specific gas amount to send with the swap transaction. 
 
-The API will also perform a `eth_call` to catch any reverts that would occur if the `takerAddress` attempts to swap the tokens. An HTTP response with status `400` will be returned if the eth_call results in a revert (ie. the swap fails), along with reasons for the revert.
+The API will also perform a [`eth_call`](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call) to catch any reverts that would occur if the `takerAddress` attempts to swap the tokens. 
+An HTTP response with status `400` will be returned if the [`eth_call`](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call) results in a revert (ie. the swap fails), along with reasons for the revert.
 
 ```javascript 
-import * as qs from 'qs';
+import qs from 'qs';
 
 (async () => {
     // selling 1 ETH for DAI
@@ -86,7 +96,7 @@ import * as qs from 'qs';
 
     const response = await fetch(
         `https://api.0x.org/swap/v0/quote?${qs.stringify(params)}`
-        );
+    );
     const responseJson = await response.json();
     if (response.ok) {
         await window.web3.eth.sendTransaction(responseJson);
@@ -102,7 +112,7 @@ import * as qs from 'qs';
 Here is a handy checklist to go through to diagnose a revert issue:
 
 * Does the `takerAddress` have enough balance? Check by comparing the `sellAmount` provided in the response of the endpoint against the `takerAddress`‘s `sellToken` balance.
-* If `sellToken` is a ERC20 token, (not ETH), the `takerAddress` will need to approve [0x ERC20Proxy](https://etherscan.io/address/0x95e6f48254609a6ee006f7d493c8e5fb97094cef).
+* If `sellToken` is an ERC20 token, (not ETH), the `takerAddress` will need to approve the [0x ERC20Proxy smart contract](https://etherscan.io/address/0x95e6f48254609a6ee006f7d493c8e5fb97094cef).
 
 ## Seeing tokens available for swapping
 
@@ -114,7 +124,7 @@ The `/swap/v0/tokens` endpoint is useful to see a registry of all tokens and the
         
     const tokens = (await response.json()).records;
     
-    console.log(`${JSON.stringify(tokens, null, 2)}`);
+    console.log(JSON.stringify(tokens, null, 2));
 })();
 ```
 
@@ -143,7 +153,7 @@ Logs:
 The response of `/swap/v0/quote` provides a number of entries to easily understand the terms/rate of the swap you are performing.
 
 ```javascript
-import * as qs from 'qs';
+import qs from 'qs';
 
 (async () => {
     // selling 1 ETH for DAI
@@ -156,7 +166,7 @@ import * as qs from 'qs';
 
     const response = await fetch(
         `https://api.0x.org/swap/v0/quote?${qs.stringify(params)}`
-        );
+    );
         
     const quote = await response.json();
     console.log(`price: ${quote.price}`); // the price of one ETH in DAI
@@ -195,12 +205,13 @@ const executeQuote = async (quote) => {
 
 ### Changing the gasPrice parameter
 
-In 0x v3, a new protocol fee (paid in ETH or WETH) dependent on gas price is introduced. Provide the optional param `gasPrice` so 0x API can calculate an accurate `protocolFee` for the quote. If no `gasPrice` parameter is provided, the API will utilize the ‘fast’ gasPrice provided by ethgasstation. If you decide to use a lower `gasPrice` than the one provided to the API, the protocol will refund the excess ETH paid.
+In 0x v3, a new protocol fee (paid in ETH or WETH) that depends on gas price is introduced. 
+Provide the optional param `gasPrice` so 0x API can calculate an accurate `protocolFee` for the quote. If no `gasPrice` parameter is provided, the API will utilize the ‘fast’ gasPrice provided by [ethgasstation](https://ethgasstation.info/). If you decide to use a lower `gasPrice` than the one provided to the API, the protocol will refund the excess ETH paid.
 
 Below we compare the differences in the price of the quote for different provided values of `gasPrice`.
 
 ```javascript
-import * as qs from 'qs';
+import qs from 'qs';
 
 (async () => {
     // selling 1 ETH for DAI with varying gasPrices (in wei)
@@ -231,12 +242,12 @@ value for gasPrice of 15 wei: 1000000000002250000
 
 You can pay protocol fees in either ETH or WETH. If you intend to pay the protocol fee in WETH a few changes to your implementation are needed:
 
-* You will not be able to perform swaps with `sellToken` set as ETH AND pay protocol fee in WETH, switch to using WETH as `sellToken` instead.
+* You will not be able to perform swaps with `sellToken` set as ETH and pay protocol fee in WETH. Switch to using WETH as `sellToken` instead.
 * To pay the `protocolFee` in WETH, the [0x Staking contract](https://etherscan.io/address/0xa26e80e7dea86279c6d778d702cc413e6cffa777) will need an approval to access `takerAddress` WETH balance.
 * Instead of passing the provided value in `sendTransaction`, pass `value: 0` since the fees are paid in WETH instead of the ETH sent along with the transaction.
 
 ```javascript
-import * as qs from 'qs';
+import qs from 'qs';
 
 (async () => {
     // selling 1 WETH for DAI
@@ -254,7 +265,6 @@ import * as qs from 'qs';
     const quote = await response.json();
     
     if (response.ok) {
-        // set value to zero so protocol fee will be pa
         await window.web3.eth.sendTransaction({
             ...quote,
             ...{
@@ -275,4 +285,5 @@ Now that you got your feet wet with 0x API, let’s point you to other resources
 
 * Refer to our [API spec](/docs/api)for detailed documentation on the 0x API.
 * 0x API is open sourced! [Look through](https://github.com/0xProject/0x-api) the codebase or deploy your own 0x API instance. 
+* Don't hesitate to reach out on [Discord](https://discord.gg/YDm4wx) for help.
 
