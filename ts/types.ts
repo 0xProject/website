@@ -530,7 +530,7 @@ export enum WebsiteLegacyPaths {
 export enum WebsitePaths {
     Portal = '/portal',
     Docs = '/docs',
-    DocsApiExplorer = '/docs/api-explorer',
+    DocsApi = '/docs/api',
     DocsCoreConcepts = '/docs/core-concepts',
     DocsGuides = '/docs/guides',
     DocsTools = '/docs/tools',

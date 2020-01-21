@@ -146,10 +146,10 @@ const style = {
         color: '#EA526F',
     },
     'hljs-string': {
-        color: '#CD8987',
+        color: '#934943',
     },
     'hljs-meta-string': {
-        color: '#CD8987',
+        color: '#934943',
     },
     'hljs-regexp': {
         color: '#9A5334',
@@ -199,13 +199,13 @@ const style = {
         color: '#BD63C5',
     },
     'hljs-attr': {
-        color: '#90BEDE',
+        color: '#1F6CBC',
     },
     'hljs-attribute': {
-        color: '#90BEDE',
+        color: '#1F6CBC',
     },
     'hljs-builtin-name': {
-        color: '#90BEDE',
+        color: '#1F6CBC',
     },
     'hljs-section': {
         color: 'gold',
