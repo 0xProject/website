@@ -153,7 +153,10 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                     <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
                         Staking Pools
                     </Heading>
-                    <PoolsListSortingSelector setPoolSortingParam={setPoolSortingParam} />
+                    <PoolsListSortingSelector
+                        setPoolSortingParam={setPoolSortingParam}
+                        currentSortingParam={poolSortingParam}
+                    />
                 </HeadingRow>
                 {sortedStakingPools &&
                     sortedStakingPools.map(pool => {
