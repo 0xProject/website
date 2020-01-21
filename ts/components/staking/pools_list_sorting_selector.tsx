@@ -30,7 +30,9 @@ const ExpandedMenu = styled.div`
     border: 1px solid rgba(92, 92, 92, 0.15);
     position: absolute;
     display: flex;
+    flex-direction: column;
     width: 450px;
+    padding: 30px;
 `;
 
 const ToggleRow = styled.div`
@@ -39,12 +41,35 @@ const ToggleRow = styled.div`
     cursor: pointer;
 `;
 
-const MenuItem = styled.div``;
+const MenuItem = styled.div`
+    cursor: pointer;
+
+    & + & {
+        margin-top: 30px;
+    }
+`;
 
 const StyledText = styled(Text).attrs({
     fontFamily: 'Formular',
     fontSize: '20px',
-})``;
+})`
+    font-feature-settings: 'tnum' on, 'lnum' on;
+`;
+
+const StyledParagraph = styled(Text).attrs({
+    fontFamily: 'Formular',
+    fontSize: '17px',
+    fontColor: 'rgba(0,0,0,0.7)',
+    fontWeight: 300,
+})`
+    max-width: 350px;
+`;
+
+const sortingParamMapping = {
+    [PoolsListSortingParameter.Staked]: 'Staked',
+    [PoolsListSortingParameter.RewardsShared]: 'Rewards Shared',
+    [PoolsListSortingParameter.ProtocolFees]: 'Fees Generated',
+};
 
 interface PoolsListSortingSelectorProps {
     setPoolSortingParam: (sortingParam: PoolsListSortingParameter) => void;
@@ -60,14 +85,29 @@ export const PoolsListSortingSelector: React.FC<PoolsListSortingSelectorProps> =
             <ToggleRow>
                 <StyledText Tag="span">Sort by </StyledText>
                 <StyledText Tag="span" fontColor={colors.textDarkSecondary}>
-                    {currentSortingParam}{' '}
+                    {sortingParamMapping[currentSortingParam]}{' '}
                 </StyledText>
                 <Arrow isExpanded={isExpanded} />
             </ToggleRow>
             {isExpanded && (
                 <ExpandedMenu>
-                    <MenuItem>
-                        <span>hello world</span>
+                    <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.Staked)}>
+                        <StyledText>{sortingParamMapping[PoolsListSortingParameter.Staked]}</StyledText>
+                        <StyledParagraph>
+                            An approximation for how fully staked the pool is for the upcoming epoch
+                        </StyledParagraph>
+                    </MenuItem>
+                    <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.RewardsShared)}>
+                        <StyledText>{sortingParamMapping[PoolsListSortingParameter.RewardsShared]}</StyledText>
+                        <StyledParagraph>
+                            An approximation for how fully staked the pool is for the upcoming epoch
+                        </StyledParagraph>
+                    </MenuItem>
+                    <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.ProtocolFees)}>
+                        <StyledText>{sortingParamMapping[PoolsListSortingParameter.ProtocolFees]}</StyledText>
+                        <StyledParagraph>
+                            An approximation for how fully staked the pool is for the upcoming epoch
+                        </StyledParagraph>
                     </MenuItem>
                 </ExpandedMenu>
             )}
