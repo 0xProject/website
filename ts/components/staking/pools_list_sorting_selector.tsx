@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import styled from 'styled-components';
 
+import { Button } from 'ts/components/button';
 import { Text } from 'ts/components/ui/text';
 
 import { colors } from 'ts/style/colors';
+import { constants } from 'ts/utils/constants';
 
 import { PoolsListSortingParameter } from 'ts/types';
 
@@ -83,6 +85,17 @@ const StyledDescription = styled(Text)`
     }
 `;
 
+const StyledButton = styled(Button)`
+    /* Override default button styles */
+    && {
+        font-size: 14px;
+
+        @media (min-width: 768px) {
+            font-size: 17px;
+        }
+    }
+`;
+
 const sortingParamMapping = {
     [PoolsListSortingParameter.Staked]: 'Staked',
     [PoolsListSortingParameter.RewardsShared]: 'Rewards Shared',
@@ -110,19 +123,58 @@ export const PoolsListSortingSelector: React.FC<PoolsListSortingSelectorProps> =
                     <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.Staked)}>
                         <StyledText>{sortingParamMapping[PoolsListSortingParameter.Staked]}</StyledText>
                         <StyledDescription>
-                            An approximation for how fully staked the pool is for the upcoming epoch
+                            An approximation for how fully stake the pool is for current epoch.{' '}
+                            <StyledButton
+                                target="_blank"
+                                href={`${constants.STAKING_FAQ_DOCS}#what-is-the-stake--or-stake-ratio`}
+                                isInline={true}
+                                isTransparent={true}
+                                isNoBorder={true}
+                                isNoPadding={true}
+                                onClick={(e: MouseEvent<HTMLElement>) => {
+                                    e.stopPropagation();
+                                }}
+                            >
+                                Learn more
+                            </StyledButton>
                         </StyledDescription>
                     </MenuItem>
                     <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.RewardsShared)}>
                         <StyledText>{sortingParamMapping[PoolsListSortingParameter.RewardsShared]}</StyledText>
                         <StyledDescription>
-                            An approximation for how fully staked the pool is for the upcoming epoch
+                            The percent of rewards the pool is sharing with stakers.{' '}
+                            <StyledButton
+                                target="_blank"
+                                href={`${constants.STAKING_FAQ_DOCS}#what-are-rewards-shared`}
+                                isInline={true}
+                                isTransparent={true}
+                                isNoBorder={true}
+                                isNoPadding={true}
+                                onClick={(e: MouseEvent<HTMLElement>) => {
+                                    e.stopPropagation();
+                                }}
+                            >
+                                Learn more
+                            </StyledButton>
                         </StyledDescription>
                     </MenuItem>
                     <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.ProtocolFees)}>
                         <StyledText>{sortingParamMapping[PoolsListSortingParameter.ProtocolFees]}</StyledText>
                         <StyledDescription>
-                            An approximation for how fully staked the pool is for the upcoming epoch
+                            The fees the pool has collected in the current epoch.{' '}
+                            <StyledButton
+                                target="_blank"
+                                href={`${constants.STAKING_FAQ_DOCS}#what-are-collected-fees`}
+                                isInline={true}
+                                isTransparent={true}
+                                isNoBorder={true}
+                                isNoPadding={true}
+                                onClick={(e: MouseEvent<HTMLElement>) => {
+                                    e.stopPropagation();
+                                }}
+                            >
+                                Learn more
+                            </StyledButton>
                         </StyledDescription>
                     </MenuItem>
                 </ExpandedMenu>
