@@ -1,10 +1,5 @@
 {
-    "api": {
-        "api": {
-            "title": "API Specification",
-            "path": "api/index.mdx"
-        }
-    },
+    "api": {"api": {"title": "API Specification", "path": "api/index.mdx"}},
     "core-concepts": {
         "core-concepts": {
             "title": "Core Concepts",
@@ -13,6 +8,15 @@
         }
     },
     "guides": {
+        "swap-tokens-with-0x-api": {
+            "title": "Swap Tokens With 0x API",
+            "subtitle": "Learn how to complete a token swap with 0x API /swap/v0/* endpoint",
+            "description": "Learn how to complete a token swap with 0x API /swap/v0/* endpoint",
+            "tags": ["0x API"],
+            "topics": ["0x API"],
+            "difficulty": "Beginner",
+            "path": "guides/swap-tokens-with-0x-api.mdx"
+        },
         "create-staking-pool": {
             "title": "Create and manage your staking pool",
             "subtitle": "Learn how to create and manage your staking pool to collect liquidity rewards",
@@ -63,14 +67,14 @@
             "difficulty": "Beginner",
             "externalUrl": "https://0x-org.gitbook.io/mesh/getting-started/deployment"
         },
-        "contract-fillable-liquidity": {
-            "title": "Contract-fillable Liquidity",
-            "subtitle": "Swap tokens by tapping into 0x's networked liquidity",
-            "description": "Want to tap into 0x liquidity for your DeFi Dapp or protocol? Learn how to use @0x/asset-swapper to find the best priced 0x orders and format them so they can be filled by a smart contract.",
+        "abcs-of-contract-fillable-liquidity": {
+            "title": "ABCs of contract-fillable liquidity",
+            "subtitle": "Integrate 0x’s liquidity into your smart contracts.",
+            "description": "Integrate 0x’s liquidity into your smart contracts.",
             "tags": ["CFL"],
             "topics": ["CFL"],
             "difficulty": "Intermediate",
-            "path": "guides/contract-fillable-liquidity.mdx"
+            "path": "guides/abcs-of-contract-fillable-liquidity.mdx"
         },
         "0x-cheat-sheet": {
             "title": "0x Cheat Sheet",

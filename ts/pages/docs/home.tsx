@@ -74,15 +74,9 @@ const usefulLinks = [
 
 const getStartedLinks = [
     {
-        heading: 'Launch an exchange in a few minutes',
-        description: 'Learn how to spin up an exchange or marketplace in seconds.',
-        href: constants.URL_LAUNCH_KIT_TUTORIAL_YOUTUBE,
-        target: '_blank',
-    },
-    {
-        heading: 'Tap into contract-fillable liquidity',
-        description: 'Source contract-fillable liquidity at the best prices from 0x.',
-        url: `${WebsitePaths.DocsGuides}/contract-fillable-liquidity`,
+        heading: 'Swap Tokens With 0x API',
+        description: 'Learn how to complete a token swap with 0x API /swap/v0/* endpoint.',
+        url: `${WebsitePaths.DocsGuides}/swap-tokens-with-0x-api`,
     },
     {
         heading: 'Start market-making on 0x',
@@ -93,6 +87,12 @@ const getStartedLinks = [
         heading: 'Add 0x Instant to your website / mobile app',
         description: 'Add a free and simple crypto purchasing flow to your website or mobile app.',
         url: `${WebsitePaths.DocsGuides}/integrate-instant`,
+    },
+    {
+        heading: 'Launch an exchange in a few minutes',
+        description: 'Learn how to spin up an exchange or marketplace in seconds.',
+        href: constants.URL_LAUNCH_KIT_TUTORIAL_YOUTUBE,
+        target: '_blank',
     },
 ];
 

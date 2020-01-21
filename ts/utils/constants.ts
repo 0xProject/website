@@ -170,7 +170,7 @@ export const constants = {
     DOCS_SCROLL_DURATION_MS: 0,
     SCROLL_CONTAINER_ID: 'scroll_container',
     SCROLL_TOP_ID: 'pageScrollTop',
-    CFL_DOCS: `${WebsitePaths.DocsGuides}/contract-fillable-liquidity`,
+    CFL_DOCS: `${WebsitePaths.DocsGuides}/abcs-of-contract-fillable-liquidity`,
     NETWORK_NAME_BY_ID: {
         1: Networks.Mainnet,
         3: Networks.Ropsten,
