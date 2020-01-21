@@ -731,6 +731,7 @@ export enum Providers {
     Cipher = 'CIPHER',
     TrustWallet = 'TRUST_WALLET',
     WalletConnect = 'WALLET_CONNECT',
+    ImToken = 'IM_TOKEN',
     Opera = 'OPERA',
     Fallback = 'FALLBACK',
 }
