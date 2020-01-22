@@ -393,8 +393,8 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
             <Container>
                 <GraphHeading>Historical Details</GraphHeading>
                 <HistoryChart
-                    fees={historicalEpochs.map(e => e.totalRewardsPaidInEth)}
-                    rewards={historicalEpochs.map(e => e.membersRewardsPaidInEth)}
+                    totalRewards={historicalEpochs.map(e => e.totalRewardsPaidInEth)}
+                    memberRewards={historicalEpochs.map(e => e.membersRewardsPaidInEth)}
                     epochs={historicalEpochs.map(e => e.epochId)}
                     labels={historicalEpochs.map(e => format(new Date(e.epochEndTimestamp), 'd MMM'))}
                 />

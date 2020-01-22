@@ -9,8 +9,8 @@ import { colors } from 'ts/style/colors';
 import { formatEther } from 'ts/utils/format_number';
 
 interface HistoryChartProps {
-    fees: number[];
-    rewards: number[];
+    totalRewards: number[];
+    memberRewards: number[];
     labels: string[];
     epochs: number[];
 }
@@ -155,7 +155,7 @@ const Container = styled.div`
 `;
 
 export const HistoryChart: React.FC<HistoryChartProps> = props => {
-    const { fees, rewards, labels, epochs } = props;
+    const { totalRewards, memberRewards, labels, epochs } = props;
 
     const container = React.useRef(null);
 
@@ -172,18 +172,18 @@ export const HistoryChart: React.FC<HistoryChartProps> = props => {
         datasets: [
             {
                 ...getDefaultDataset(colors.brandLight),
-                data: fees,
+                data: totalRewards,
                 label: 'Total rewards ',
             },
             {
                 ...getDefaultDataset('#A2F5EB'),
-                data: rewards,
+                data: memberRewards,
                 label: 'Rewards shared ',
             },
         ],
-    }), [fees, labels, rewards]);
+    }), [totalRewards, labels, memberRewards]);
 
-    const options = useMemo(() => getOptions(epochs, fees, rewards), [epochs, fees, rewards]);
+    const options = useMemo(() => getOptions(epochs, totalRewards, memberRewards), [epochs, totalRewards, memberRewards]);
 
     return (
         <Container ref={container}>
