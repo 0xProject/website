@@ -51,7 +51,13 @@ export const Button: React.StatelessComponent<ButtonInterface> = (props: ButtonI
     }
 
     const Component = linkElem ? ButtonBase.withComponent<any>(linkElem) : ButtonBase;
-    const targetProp = href && target ? { target } : {};
+    const targetProp: { target?: string; rel?: string } = href && target ? { target } : {};
+
+    // NOTE: See https://developers.google.com/web/tools/lighthouse/audits/noopener
+    if (targetProp.target === '_blank') {
+        targetProp.rel = 'noopener';
+    }
+
     const buttonProps = isButton ? { disabled: isDisabled } : {};
 
     return (

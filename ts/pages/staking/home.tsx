@@ -13,6 +13,7 @@ import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 
 import { CurrentEpochOverview } from 'ts/components/staking/current_epoch_overview';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
+import { PoolsListSortingSelector } from 'ts/components/staking/pools_list_sorting_selector';
 import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
 
 import { useStake } from 'ts/hooks/use_stake';
@@ -24,11 +25,38 @@ import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
-import { Epoch, PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
+import { Epoch, PoolsListSortingParameter, PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
 
-const sortByProtocolFeesDesc = (a: PoolWithStats, b: PoolWithStats) => {
+const sortByStaked = (a: PoolWithStats, b: PoolWithStats): number =>
+    b.nextEpochStats.approximateStakeRatio - a.nextEpochStats.approximateStakeRatio;
+
+const sortByProtocolFeesDesc = (a: PoolWithStats, b: PoolWithStats): number => {
     return b.currentEpochStats.totalProtocolFeesGeneratedInEth - a.currentEpochStats.totalProtocolFeesGeneratedInEth;
 };
+
+const sortByRewardsShared = (a: PoolWithStats, b: PoolWithStats): number => {
+    const aRewardsShared = _.isNil(a.nextEpochStats.operatorShare) ? 0 : 1 - a.nextEpochStats.operatorShare;
+    const bRewardsShared = _.isNil(b.nextEpochStats.operatorShare) ? 0 : 1 - b.nextEpochStats.operatorShare;
+
+    return bRewardsShared - aRewardsShared;
+};
+
+const sortFnMapping: { [key: string]: (a: PoolWithStats, b: PoolWithStats) => number } = {
+    [PoolsListSortingParameter.Staked]: sortByStaked,
+    [PoolsListSortingParameter.ProtocolFees]: sortByProtocolFeesDesc,
+    [PoolsListSortingParameter.RewardsShared]: sortByRewardsShared,
+};
+
+const HeadingRow = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: start;
+    }
+`;
 
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = () => {
@@ -38,6 +66,10 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const apiClient = useAPIClient(networkId);
     const { currentEpochRewards } = useStake(networkId, providerState);
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
+
+    const [poolSortingParam, setPoolSortingParam] = React.useState<PoolsListSortingParameter>(
+        PoolsListSortingParameter.ProtocolFees,
+    );
 
     React.useEffect(() => {
         const fetchAndSetPoolsAsync = async () => {
@@ -53,8 +85,8 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         if (!stakingPools) {
             return undefined;
         }
-        return [...stakingPools.sort(sortByProtocolFeesDesc)];
-    }, [stakingPools]);
+        return [...stakingPools].sort(sortFnMapping[poolSortingParam]);
+    }, [poolSortingParam, stakingPools]);
 
     // TODO(kimpers): centralize data fetching so we only fetch once
     React.useEffect(() => {
@@ -122,9 +154,15 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                 />
             </SectionWrapper>
             <SectionWrapper>
-                <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
-                    Staking Pools
-                </Heading>
+                <HeadingRow>
+                    <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                        Staking Pools
+                    </Heading>
+                    <PoolsListSortingSelector
+                        setPoolSortingParam={setPoolSortingParam}
+                        currentSortingParam={poolSortingParam}
+                    />
+                </HeadingRow>
                 {sortedStakingPools &&
                     sortedStakingPools.map(pool => {
                         return (

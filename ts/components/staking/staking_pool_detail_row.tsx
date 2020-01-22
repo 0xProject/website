@@ -78,7 +78,7 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
         </PoolOverviewSection>
         <PoolPerformanceSection>
             <PoolPerformanceItem>
-                <span>Collected Fees</span>
+                <span>Fees generated</span>
                 <span>{formatEther(totalFeesGeneratedInEth || 0).formatted} ETH</span>
             </PoolPerformanceItem>
             <PoolPerformanceItem>
