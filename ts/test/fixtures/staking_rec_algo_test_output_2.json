@@ -1,0 +1,33 @@
+[
+    {
+        "pool": {
+            "poolId": "17",
+            "operatorAddress": "0x7c6c2ff8bae428d61ea0c0bc6b68dd0129ce55a9",
+            "createdAt": {
+                "blockNumber": 9253465,
+                "txHash": "0x2f710c6e88483765d3b03d2e86e2d5d9851bf4b7fbe94c51436f0b50c50504ed"
+            },
+            "metaData": { "isVerified": false },
+            "sevenDayProtocolFeesGeneratedInEth": 0.0232599783837,
+            "currentEpochStats": {
+                "poolId": "17",
+                "zrxStaked": 0,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "17",
+                "zrxStaked": 246254.78,
+                "operatorShare": 0.5,
+                "approximateStakeRatio": 2.126174244051133,
+                "makerAddresses": [
+                    "0x7c6c2ff8bae428d61ea0c0bc6b68dd0129ce55a9",
+                    "0x8fd0155f564d5021bb0755a97b358b26323103f5"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        "zrxAmount": 1.87
+    }
+]

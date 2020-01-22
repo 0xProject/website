@@ -1,0 +1,582 @@
+{
+    "zrxToStake": 1.87,
+    "pools": [
+        {
+            "poolId": "6",
+            "operatorAddress": "0x98eaba59aae48fed4c5a45233def85ef7d608be3",
+            "createdAt": {
+                "blockNumber": 9057355,
+                "txHash": "0xe998321f488b1ac967eed3534890b515ce44c25af374161101b61e816c0521bb"
+            },
+            "metaData": {
+                "name": "Zaidan's War Chest",
+                "bio": "Funding the alpha wars (circa 2019). The official Zaidan staking pool run by Paradigm Labs.",
+                "location": "Sol III",
+                "isVerified": true,
+                "logoUrl": "https://github.com/0xProject/0x-staking-pool-registry/raw/master/logos/zaidan.png",
+                "websiteUrl": "http://paradigm.market"
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0.35538,
+            "currentEpochStats": {
+                "poolId": "6",
+                "zrxStaked": 1075.2,
+                "operatorShare": 0.95,
+                "approximateStakeRatio": 0.01964032551469692,
+                "makerAddresses": [
+                    "0x533014661bfcaf6f0431b2e406dc6590f02ad61d",
+                    "0x98eaba59aae48fed4c5a45233def85ef7d608be3"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0.35538
+            },
+            "nextEpochStats": {
+                "poolId": "6",
+                "zrxStaked": 2139410.3059230885,
+                "operatorShare": 0.95,
+                "approximateStakeRatio": 1.2089952399727961,
+                "makerAddresses": [
+                    "0x98eaba59aae48fed4c5a45233def85ef7d608be3",
+                    "0x533014661bfcaf6f0431b2e406dc6590f02ad61d"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "2",
+            "operatorAddress": "0xba782e9fbac2c7bfc1ce409b3909099b6ed61f80",
+            "createdAt": {
+                "blockNumber": 9045011,
+                "txHash": "0xfa078e2d08cf371f584fbfcb7952ae9c774b1ba276899e6324b1c0f1388dc101"
+            },
+            "metaData": {
+                "name": "Rigo ZRX Staker",
+                "bio": "Organizing the free flow of value.",
+                "location": "Switzerland",
+                "isVerified": true,
+                "logoUrl": "https://github.com/0xProject/0x-staking-pool-registry/raw/master/logos/rigo.png",
+                "websiteUrl": "https://rigo.network"
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0.0542573826213,
+            "currentEpochStats": {
+                "poolId": "2",
+                "zrxStaked": 668.865,
+                "operatorShare": 0.9,
+                "approximateStakeRatio": 0.07781048765526112,
+                "makerAddresses": [
+                    "0x320c38912b1611a0706c0a74427f64fa5dc3598e",
+                    "0xd2a2fc3062eaca22a90086423ca098083c8554df",
+                    "0xba782e9fbac2c7bfc1ce409b3909099b6ed61f80"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0.0558023826213
+            },
+            "nextEpochStats": {
+                "poolId": "2",
+                "zrxStaked": 338274.225,
+                "operatorShare": 0.9,
+                "approximateStakeRatio": 1.217417823073564,
+                "makerAddresses": [
+                    "0xba782e9fbac2c7bfc1ce409b3909099b6ed61f80",
+                    "0xd2a2fc3062eaca22a90086423ca098083c8554df",
+                    "0x320c38912b1611a0706c0a74427f64fa5dc3598e"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "16",
+            "operatorAddress": "0x5265bde27f57e738be6c1f6ab3544e82cdc92a8f",
+            "createdAt": {
+                "blockNumber": 9249116,
+                "txHash": "0xa6b3b9e50ec73968c02c4a0e06006262bd52e99185753d89d79d3bd3b8047ea6"
+            },
+            "metaData": {
+                "name": "Veridex",
+                "bio": "Veridex, your open source dex. Costumize and build your dex with our dex wizard.",
+                "location": "Brazil",
+                "isVerified": true,
+                "logoUrl": "https://github.com/0xProject/0x-staking-pool-registry/raw/master/logos/veridex.png",
+                "websiteUrl": "https://dex.verisafe.io"
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0.0036,
+            "currentEpochStats": {
+                "poolId": "16",
+                "zrxStaked": 0,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "16",
+                "zrxStaked": 37913.6,
+                "operatorShare": 0.8,
+                "approximateStakeRatio": 2.11502747557055,
+                "makerAddresses": [
+                    "0xd00995a10db2e58a1a90270485056629134b151b",
+                    "0x3332769d8bd3d6291c1d7a08c353b3f459ab7d8a",
+                    "0x5265bde27f57e738be6c1f6ab3544e82cdc92a8f",
+                    "0x20b5f69d108dfc446f64e7393ff4ffd5130ed268"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "10",
+            "operatorAddress": "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19",
+            "createdAt": {
+                "blockNumber": 9060010,
+                "txHash": "0x02b56d5b07055c72bcb85e028db47952e02690651f6917b8855e48883bd898f8"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0,
+            "currentEpochStats": {
+                "poolId": "10",
+                "zrxStaked": 1,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [
+                    "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "10",
+                "zrxStaked": 316,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [
+                    "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "7",
+            "operatorAddress": "0xcb2f1abbb5f249e0272a4b369d757a6d09349b10",
+            "createdAt": {
+                "blockNumber": 9057813,
+                "txHash": "0x2b18027dd582dd8c1299066a7577ff4c24cfe2b4df358973fc3700dc471a2b5d"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0,
+            "currentEpochStats": {
+                "poolId": "7",
+                "zrxStaked": 0,
+                "operatorShare": 0.9,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "7",
+                "zrxStaked": 0,
+                "operatorShare": 0.9,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "8",
+            "operatorAddress": "0xcb2f1abbb5f249e0272a4b369d757a6d09349b10",
+            "createdAt": {
+                "blockNumber": 9057843,
+                "txHash": "0x8b8bef06370a3185bfa21ac44ed3607a6a4b51490949d5688b1a5ec0f3a31b00"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0,
+            "currentEpochStats": {
+                "poolId": "8",
+                "zrxStaked": 100,
+                "operatorShare": 0.925,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [
+                    "0x4dd4b455ef180056ff1455226a4b1a8373397235",
+                    "0xcb2f1abbb5f249e0272a4b369d757a6d09349b10"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "8",
+                "zrxStaked": 37510.87,
+                "operatorShare": 0.925,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [
+                    "0x4dd4b455ef180056ff1455226a4b1a8373397235",
+                    "0xcb2f1abbb5f249e0272a4b369d757a6d09349b10"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "4",
+            "operatorAddress": "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19",
+            "createdAt": {
+                "blockNumber": 9054503,
+                "txHash": "0x308432730a1b374cc92d68d50fdf769f59cffd04d2d67d4574d664dbf485cb2b"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0,
+            "currentEpochStats": {
+                "poolId": "4",
+                "zrxStaked": 0,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "4",
+                "zrxStaked": 0,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "11",
+            "operatorAddress": "0x9f6aef5abe4f5963f3c0919814f0e691a1d6de6d",
+            "createdAt": {
+                "blockNumber": 9068088,
+                "txHash": "0xe7c0f78627bdef8ba3803415a3840ac45f3e8657d7ca2218834e956b549dc964"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0,
+            "currentEpochStats": {
+                "poolId": "11",
+                "zrxStaked": 0,
+                "operatorShare": 0.95,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "11",
+                "zrxStaked": 0,
+                "operatorShare": 0.95,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "17",
+            "operatorAddress": "0x7c6c2ff8bae428d61ea0c0bc6b68dd0129ce55a9",
+            "createdAt": {
+                "blockNumber": 9253465,
+                "txHash": "0x2f710c6e88483765d3b03d2e86e2d5d9851bf4b7fbe94c51436f0b50c50504ed"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0.0232599783837,
+            "currentEpochStats": {
+                "poolId": "17",
+                "zrxStaked": 0,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "17",
+                "zrxStaked": 246254.78,
+                "operatorShare": 0.5,
+                "approximateStakeRatio": 2.126174244051133,
+                "makerAddresses": [
+                    "0x7c6c2ff8bae428d61ea0c0bc6b68dd0129ce55a9",
+                    "0x8fd0155f564d5021bb0755a97b358b26323103f5"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "12",
+            "operatorAddress": "0x9f6aef5abe4f5963f3c0919814f0e691a1d6de6d",
+            "createdAt": {
+                "blockNumber": 9068140,
+                "txHash": "0x781ada4c6f778c603a34f6c392bb3eea6e7fb174f58f88f936c6c8df94736f7e"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0.4489187892549,
+            "currentEpochStats": {
+                "poolId": "12",
+                "zrxStaked": 10569.82966063,
+                "operatorShare": 0.95,
+                "approximateStakeRatio": 0.11096639367891059,
+                "makerAddresses": [
+                    "0x6425bb021dabd5d6b443a1ab47b003a1b7a27d4b",
+                    "0x2cfb4faaece38d5d03ef1ec9dfdf34964d6ab1b3",
+                    "0x998497ffc64240d6a70c38e544521d09dcd23293",
+                    "0x9f6aef5abe4f5963f3c0919814f0e691a1d6de6d"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0.6183422545767
+            },
+            "nextEpochStats": {
+                "poolId": "12",
+                "zrxStaked": 2237093.58966063,
+                "operatorShare": 0.95,
+                "approximateStakeRatio": 0.7265721025123612,
+                "makerAddresses": [
+                    "0x9f6aef5abe4f5963f3c0919814f0e691a1d6de6d",
+                    "0x2cfb4faaece38d5d03ef1ec9dfdf34964d6ab1b3",
+                    "0x6425bb021dabd5d6b443a1ab47b003a1b7a27d4b",
+                    "0x998497ffc64240d6a70c38e544521d09dcd23293"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "3",
+            "operatorAddress": "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19",
+            "createdAt": {
+                "blockNumber": 9054464,
+                "txHash": "0x3e9402c25c7e153e641ac0a1bcca0dffa77e8df2ebf35eeae9170d3d9633ac3b"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0,
+            "currentEpochStats": {
+                "poolId": "3",
+                "zrxStaked": 2,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "3",
+                "zrxStaked": 521,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "5",
+            "operatorAddress": "0x4f01628c9091484b9cf1a610553bef1504ce1c94",
+            "createdAt": {
+                "blockNumber": 9055505,
+                "txHash": "0x33efc501684d70d6af5046ee59dbe500626f9ebf5b849e33eb4629793496bd62"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0.000645,
+            "currentEpochStats": {
+                "poolId": "5",
+                "zrxStaked": 50,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0.5032255676544758,
+                "makerAddresses": [
+                    "0x4f01628c9091484b9cf1a610553bef1504ce1c94"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0.000645
+            },
+            "nextEpochStats": {
+                "poolId": "5",
+                "zrxStaked": 1065,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0.33159913087322695,
+                "makerAddresses": [
+                    "0x4f01628c9091484b9cf1a610553bef1504ce1c94"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "15",
+            "operatorAddress": "0xbc5eea869e6a7a30aa41b3b83111aedf23846e33",
+            "createdAt": {
+                "blockNumber": 9243707,
+                "txHash": "0xc6843b0779acad8fb41e947b4317a80db60e4e4c7c951b2ca3aeb1ae0fa188cc"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0.0030225,
+            "currentEpochStats": {
+                "poolId": "15",
+                "zrxStaked": 0,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "15",
+                "zrxStaked": 139281.18,
+                "operatorShare": 0.95,
+                "approximateStakeRatio": 9.254428798587549,
+                "makerAddresses": [
+                    "0xbc5eea869e6a7a30aa41b3b83111aedf23846e33"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "14",
+            "operatorAddress": "0xaa19c7fbebeaa6a8d515a5a90cf7de4ba3beec84",
+            "createdAt": {
+                "blockNumber": 9238014,
+                "txHash": "0x23e1610a9355bf3df59ee74f5bd64b4171ad882e39fdaf2b4ac3af37bc826086"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0,
+            "currentEpochStats": {
+                "poolId": "14",
+                "zrxStaked": 0,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "14",
+                "zrxStaked": 0,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [
+                    "0xaa19c7fbebeaa6a8d515a5a90cf7de4ba3beec84"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "13",
+            "operatorAddress": "0xc898fbee1cc94c0ff077faa5449915a506eff384",
+            "createdAt": {
+                "blockNumber": 9175801,
+                "txHash": "0x5fcef039064b85eae50daba24fe545c6cd4ad2a20ea473009180e2fdb474ef1c"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0.0107475,
+            "currentEpochStats": {
+                "poolId": "13",
+                "zrxStaked": 147787.12010369822,
+                "operatorShare": 1,
+                "approximateStakeRatio": 89.26506820563183,
+                "makerAddresses": [
+                    "0x46ff57a955741b607e320dfe44cfa28b1d546090",
+                    "0x6eea55e094c6f7ab3f719b36eb27a5eb5ad787b0"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0.0107475
+            },
+            "nextEpochStats": {
+                "poolId": "13",
+                "zrxStaked": 148120.53010369823,
+                "operatorShare": 1,
+                "approximateStakeRatio": 2.7677782635533625,
+                "makerAddresses": [
+                    "0x6eea55e094c6f7ab3f719b36eb27a5eb5ad787b0",
+                    "0x46ff57a955741b607e320dfe44cfa28b1d546090"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "9",
+            "operatorAddress": "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19",
+            "createdAt": {
+                "blockNumber": 9059959,
+                "txHash": "0xf20f277c517af270dc5e8987e51bf83b67a9666b43633f7d4113629af45bf1b8"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0,
+            "currentEpochStats": {
+                "poolId": "9",
+                "zrxStaked": 0,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "9",
+                "zrxStaked": 0,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "1",
+            "operatorAddress": "0xab6489f054f6fbe7c02820f3d7e52f6cc0bc503f",
+            "createdAt": {
+                "blockNumber": 9039759,
+                "txHash": "0x3fe104faee0779b98385ca26476dcec88b0d3be4130e713a3042c355a8cfe9cd"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0,
+            "currentEpochStats": {
+                "poolId": "1",
+                "zrxStaked": 94.06,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [
+                    "0xab6489f054f6fbe7c02820f3d7e52f6cc0bc503f"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "1",
+                "zrxStaked": 374.71,
+                "operatorShare": 1,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [
+                    "0xab6489f054f6fbe7c02820f3d7e52f6cc0bc503f"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        },
+        {
+            "poolId": "18",
+            "operatorAddress": "0x1a5344fa29eb810b93265dae0975d46790781dd2",
+            "createdAt": {
+                "blockNumber": 9281817,
+                "txHash": "0xcc4a089aab3b4711d1769ee5304d1834d82f716ca26e6a8b313155d88e2cc3e0"
+            },
+            "metaData": {
+                "isVerified": false
+            },
+            "sevenDayProtocolFeesGeneratedInEth": 0,
+            "currentEpochStats": {
+                "poolId": "18",
+                "zrxStaked": 0,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [],
+                "totalProtocolFeesGeneratedInEth": 0
+            },
+            "nextEpochStats": {
+                "poolId": "18",
+                "zrxStaked": 5797.61,
+                "operatorShare": 0.8,
+                "approximateStakeRatio": 0,
+                "makerAddresses": [
+                    "0x75e8caefdf9d90869391a870f7dff3df72217334",
+                    "0x1a5344fa29eb810b93265dae0975d46790781dd2"
+                ],
+                "totalProtocolFeesGeneratedInEth": 0
+            }
+        }
+    ]
+}

@@ -1,3 +1,4 @@
+// tslint:disable: number-literal-format
 import { BigNumber } from '@0x/utils';
 import { sum } from 'lodash';
 
@@ -5,9 +6,30 @@ import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { SAMPLE_POOLS } from 'ts/test/fixtures/staking_pools';
 
+import * as inputJsonTestCase1 from 'ts/test/fixtures/staking_rec_algo_test_input_1.json';
+import * as inputJsonTestCase2 from 'ts/test/fixtures/staking_rec_algo_test_input_2.json';
+import * as outputJsonTestCase1 from 'ts/test/fixtures/staking_rec_algo_test_output_1.json';
+import * as outputJsonTestCase2 from 'ts/test/fixtures/staking_rec_algo_test_output_2.json';
+
 const { getRecommendedStakingPools } = stakingUtils;
 
-describe('getRecommendedStakingPools', () => {
+// Kroeger wrote some test cases from his python script.
+// These tests assert on the serialized input/output from those test cases.
+describe('getRecommendedStakingPools implementation', () => {
+    test('recommendation algo kroger test case 1', () => {
+        const { zrxToStake, pools } = inputJsonTestCase1 as any;
+        const recommendedPools = getRecommendedStakingPools(zrxToStake, pools);
+        expect(recommendedPools).toEqual(outputJsonTestCase1);
+    });
+
+    test('recommendation algo kroeger test case 2', () => {
+        const { zrxToStake, pools } = inputJsonTestCase2 as any;
+        const recommendedPools = getRecommendedStakingPools(zrxToStake, pools);
+        expect(recommendedPools).toEqual(outputJsonTestCase2);
+    });
+});
+
+describe('getRecommendedStakingPools rounding', () => {
     test('should not break on zero', () => {
         const totalRequestedToStake = 0;
         const recommendedPools = getRecommendedStakingPools(totalRequestedToStake, SAMPLE_POOLS);

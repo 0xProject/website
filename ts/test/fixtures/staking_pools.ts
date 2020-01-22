@@ -292,6 +292,4 @@ const SAMPLE_POOLS: PoolWithStats[] = [
     },
 ];
 
-export {
-    SAMPLE_POOLS,
-};
+export { SAMPLE_POOLS };
