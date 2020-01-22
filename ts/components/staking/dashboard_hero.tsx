@@ -255,15 +255,17 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                         </Title>
                         <HorizontalList>
                             <li>{utils.getAddressBeginAndEnd(operatorAddress)}</li>
-                            {websiteUrl && <li>{websiteUrl}</li>}
-                            <li>
-                                <a href="">{formatPercent(rewardsShared).minimized}% Rewards Shared</a>
-                            </li>
+                            {websiteUrl && (
+                                <li>
+                                    <a href={websiteUrl} target="_blank" rel="noopener">
+                                        {websiteUrl}
+                                    </a>
+                                </li>
+                            )}
+                            <li>{formatPercent(rewardsShared).minimized}% Rewards Shared</li>
                             {isVerified && (
                                 <VerificationIndicator>
-                                    <a href="">
-                                        <Checkmark /> Verified identity
-                                    </a>
+                                    <Checkmark /> Verified identity
                                 </VerificationIndicator>
                             )}
                         </HorizontalList>
