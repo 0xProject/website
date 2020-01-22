@@ -13,7 +13,6 @@ interface BaseComponentProps {
     linkLabel: string;
     linkUrl?: string;
     isExternalLink?: boolean;
-    linkHref?: string;
     linkAction?: () => void;
     history: History;
     location: Location;
