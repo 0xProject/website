@@ -178,7 +178,7 @@ export const MarketMaker: React.FC<MarketMakerProps> = props => {
             </Heading>
             <Metrics>
                 <Metric>
-                    <MetricTitle>Collected fees</MetricTitle>
+                    <MetricTitle>Fees generated</MetricTitle>
                     <MetricAmount>{formatEther(collectedFees).formatted} ETH</MetricAmount>
                     <StyledInfoTooltip id="fees">
                         The fees the pool has collected in the current epoch
