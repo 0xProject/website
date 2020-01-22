@@ -31,6 +31,7 @@ export interface SectionProps extends WrapProps {
     overflow?: string;
     padding?: string;
     margin?: string;
+    marginBottom?: string;
     paddingMobile?: string;
     hasBorder?: boolean;
     hasHover?: boolean;
@@ -56,7 +57,7 @@ export interface ColumnProps {
     maxWidth?: string;
 }
 
-export const Section: React.FunctionComponent<SectionProps> = (props: SectionProps) => {
+export const Section: React.FunctionComponent<SectionProps> = React.memo((props: SectionProps) => {
     if (props.omitWrapper) {
         return <SectionBase {...props} />;
     }
@@ -78,7 +79,7 @@ export const Section: React.FunctionComponent<SectionProps> = (props: SectionPro
             <Wrap {...wrapProps}>{props.children}</Wrap>
         </SectionBase>
     );
-};
+});
 
 export const Column = styled.div<ColumnProps>`
     width: ${props => props.width};
@@ -118,6 +119,7 @@ const SectionBase = styled.section<SectionProps>`
     cursor: ${props => props.hasHover && 'pointer'};
     border: ${props => props.hasBorder && `1px solid ${props.theme.lightBgColor}`};
     margin: ${props => (props.margin ? props.margin : '0 auto')};
+    margin-bottom: ${props => (props.marginBottom ? props.marginBottom : props.margin || '0')};
     padding: ${props => props.isPadded && (props.padding || '120px 0')};
     background-color: ${props => props.theme[`${props.bgColor}BgColor`] || props.bgColor};
     position: relative;
