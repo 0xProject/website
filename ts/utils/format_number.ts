@@ -67,6 +67,7 @@ export const TEN = createBigNumber(10, 10);
 
 export const ETHER_NUMBER_OF_DECIMALS = 5;
 export const ZRX_NUMBER_OF_DECIMALS = 2;
+export const DAI_NUMBER_OF_DECIMALS = 2;
 
 export const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 export const USUAL_NUMBER_DECIMAL_PLACES = 4;
@@ -359,6 +360,25 @@ export function formatZrx(num: NumStrBigNumber, opts: FormattedCryptoOptions = {
         decimalsRounded: ZRX_NUMBER_OF_DECIMALS,
         roundDown: true, // round down to be safe and avoid ui mismatches
         denomination: v => `${v} ZRX`,
+        positiveSign: false,
+        zeroStyled: false,
+        blankZero: false,
+        bigUnitPostfix: false,
+        ...restOpts,
+    });
+}
+
+export function formatDai(num: NumStrBigNumber, opts: FormattedCryptoOptions = {}): FormattedNumber {
+    const { fromBaseUnits, ...restOpts } = opts;
+    const normalizedNum: NumStrBigNumber = fromBaseUnits
+        ? Web3Wrapper.toUnitAmount(createBigNumber(num), constants.DECIMAL_PLACES_ZRX)
+        : num;
+
+    return formatNumber(normalizedNum, {
+        decimals: ZRX_NUMBER_OF_DECIMALS,
+        decimalsRounded: ZRX_NUMBER_OF_DECIMALS,
+        roundDown: true, // round down to be safe and avoid ui mismatches
+        denomination: v => `${v} DAI`,
         positiveSign: false,
         zeroStyled: false,
         blankZero: false,
