@@ -2,7 +2,7 @@ import * as React from 'react';
 
 // Importing a light build (only supporting svg renderer) for lottie (NB: still 40,9K gzipped :O )
 // React-lottie did not work with our animations for some reason (guessing some features were not yet supported)
-import lottie from 'lottie-web/build/player/lottie_light';
+import lottie from 'lottie-web';
 
 interface IAnimationLoaderProps {
     name: string;
