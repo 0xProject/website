@@ -28,7 +28,7 @@ export interface DefinitionProps {
     className?: string;
 }
 
-export const Definition: React.FC<DefinitionProps> = ({ className, ...props }: DefinitionProps) => (
+export const Definition: React.FC<DefinitionProps> = React.memo(({ className, ...props }: DefinitionProps) => (
     <Wrap {...props} className={className}>
         {!!props.icon && (
             <Icon
@@ -76,7 +76,7 @@ export const Definition: React.FC<DefinitionProps> = ({ className, ...props }: D
             )}
         </TextWrap>
     </Wrap>
-);
+));
 
 const Wrap = styled.div<DefinitionProps>`
     max-width: ${props => props.isInline && '354px'};
