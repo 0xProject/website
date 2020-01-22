@@ -173,7 +173,7 @@ export const HistoryChart: React.FC<HistoryChartProps> = props => {
             {
                 ...getDefaultDataset(colors.brandLight),
                 data: fees,
-                label: 'Fees collected ',
+                label: 'Total rewards ',
             },
             {
                 ...getDefaultDataset('#A2F5EB'),

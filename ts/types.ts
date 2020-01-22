@@ -857,7 +857,7 @@ export interface WebsiteBackendStakingPoolInfo {
 }
 
 export interface StakingHistoryDataset {
-    // 'Fees collected' or 'Rewards shared'
+    // 'Total rewards' or 'Rewards shared'
     title: string;
     data: StakingHistoryTimePoint[];
 }
