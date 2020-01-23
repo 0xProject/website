@@ -87,7 +87,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
             />
             {/* First below the fold section (order viz) */}
             <Section bgColor="dark" isFlex={true} marginBottom={'70px'} maxWidth="1170px">
-                <LeftHalfContainerWithMobileMarginBottom>
+                <FlexColumnContainerWithMobileMargins>
                     <SmallerTitle>
                         Focus on your product.
                         <br />
@@ -97,7 +97,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                         Smart order routing splits up your transaction across decentralized exchange networks to be
                         filled with the lowest slippage possible.
                     </Description>
-                </LeftHalfContainerWithMobileMarginBottom>
+                </FlexColumnContainerWithMobileMargins>
                 <FlexColumnContainer style={{ minHeight: 170 }}>
                     <OrderExamplesVizContainer>
                         <OrderExampleFrontOrder>
@@ -212,10 +212,10 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                         and execute the trade at the best price possible.
                     </CenteredDescription>
                     <div style={{ width: '100%', maxWidth: 1040 }}>
-                        <SwapCodeContainer>
-                            <SwapCodeContainerLabelRow>
+                        <SwapCodeExampleContainer>
+                            <SwapCodeExampleTitleRow>
                                 <SwapCodeLabel>Fill order in JavaScript</SwapCodeLabel>
-                                <SwapCodeExampleButtonContainer>
+                                <SwapCodeExampleLaunchExampleContainer>
                                     <Button
                                         fontSize={'16px'}
                                         target={'_blank'}
@@ -225,8 +225,8 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                                     >
                                         Launch in CodePen
                                     </Button>
-                                </SwapCodeExampleButtonContainer>
-                            </SwapCodeContainerLabelRow>
+                                </SwapCodeExampleLaunchExampleContainer>
+                            </SwapCodeExampleTitleRow>
                             <SyntaxHighlighterContainer>
                                 <SyntaxHighlighter
                                     style={dark}
@@ -245,7 +245,7 @@ console.log('Success!', txId);
 `}
                                 </SyntaxHighlighter>
                             </SyntaxHighlighterContainer>
-                        </SwapCodeContainer>
+                        </SwapCodeExampleContainer>
                     </div>
                 </VerticalFlow>
             </Section>
@@ -498,7 +498,7 @@ const SecondaryLabel = styled(Label)`
     text-align: right;
 `;
 
-const SwapCodeContainer = styled.div`
+const SwapCodeExampleContainer = styled.div`
     position: relative;
     display: flex;
     flex-direction: column;
@@ -766,13 +766,13 @@ const OrderExampleBackingOrder = styled.div`
     transform: translate(10px, -10px);
 `;
 
-const LeftHalfContainerWithMobileMarginBottom = styled(FlexColumnContainer)`
+const FlexColumnContainerWithMobileMargins = styled(FlexColumnContainer)`
     @media (max-width: 1024px) {
         margin-bottom: 40px;
     }
 `;
 
-const SwapCodeContainerLabelRow = styled.div`
+const SwapCodeExampleTitleRow = styled.div`
     display: flex;
     flex: 1;
     flex-wrap: wrap;
@@ -790,7 +790,7 @@ const SwapCodeLabel = styled.div`
     align-self: flex-end;
 `;
 
-const SwapCodeExampleButtonContainer = styled.div``;
+const SwapCodeExampleLaunchExampleContainer = styled.div``;
 
 const Checkmark = () => (
     <svg id="checkmark-icon" width="18" height="13" viewBox="0 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg">
