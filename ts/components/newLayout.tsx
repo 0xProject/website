@@ -119,7 +119,7 @@ const SectionBase = styled.section<SectionProps>`
     cursor: ${props => props.hasHover && 'pointer'};
     border: ${props => props.hasBorder && `1px solid ${props.theme.lightBgColor}`};
     margin: ${props => (props.margin ? props.margin : '0 auto')};
-    margin-bottom: ${props => (props.marginBottom ? props.marginBottom : props.margin || '0')};
+    margin-bottom: ${props => (props.marginBottom ? props.marginBottom : null)};
     padding: ${props => props.isPadded && (props.padding || '120px 0')};
     background-color: ${props => props.theme[`${props.bgColor}BgColor`] || props.bgColor};
     position: relative;
