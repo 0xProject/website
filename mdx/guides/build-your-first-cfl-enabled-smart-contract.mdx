@@ -1,0 +1,270 @@
+To learn more about contract fillable liquidity at a high level, read this guide [here](/docs/guides/abcs-of-contract-fillable-liquidity). If you are comfortable with the concepts of contract fillable liquidity (CFL), feel free to continue this guide and create your first CFL integration with 0x.
+
+## Overview
+
+After you complete this guide, you will have a smart-contract that swaps Ether for DAI, powered by 0x API.
+
+At a high level, in this guide we will complete 3 main steps:
+
+1. Leverage 0x API `/swap/v0/quote` endpoint to fetch a quote for a specified swap.
+2. Send calldata for a 0x protocol contract call provided in the response of `/swap/v0/quote` to your smart contract.
+3. Fill 0x orders in your smart contract.
+
+Let’s get rollin’!
+
+---
+
+## Setting up your off-chain web3 script 👩🏻‍🔬
+
+We will be using our **getting started with 0x API** starter project found [here](https://github.com/0xProject/0x-api-starter-guide-code). The repo has a basic setup for smart contract development and interacting with them on ganache.
+
+*Note: The repo leverages 0x Core Team’s tooling for smart contract development; while they are generally similar to other development tooling like truffle, there are minor differences. If any difference is note worthy, we will take the time to highlight it within the guide.*
+
+Begin by cloning the starter project:
+
+```shell
+$ git clone https://github.com/0xProject/0x-api-starter-guide-code
+```
+
+For this guide, and other 0x API guides, we will be creating a ganache network that forks Ethereum’s mainnet state. With the fork, we can safely interact with 0x Protocol and other DeFi protocols without consuming real ether. We have prepared a script in the starter project code that sets up the ganache fork of mainnet, no additional work is required on your part.
+
+### Setting up a .env file
+The starter project requires a few environment variables to work properly:
+
+```dotfile
+ETHEREUM_RPC_URL=<INSERT_URL_HERE>
+MNEMONIC=<INSERT_MNEMONIC_HERE>
+```
+
+For the mnemonic, because we are using a mainnet forked ganache environment, use an account that has some amount of ether on mainnet. In the ganache environment, the fork will have your account with ether ready to be used to deploy and interact with smart contracts.
+
+<Notification type="alert">Use a test account, DO NOT use an account with your personal savings.</Notification>
+
+Now that you have setup the `.env` file, let’s install the npm packages:
+
+```shell
+$ npm install
+```
+
+We will be interacting mainly with the `examples/` folder’s .ts files; they are scripts that represent web3 interactions with your smart contract that one may find in a Dapp’s front end. For this guide, we will be mainly concerned with the web3/simple_CFL_token_swap.ts file:
+
+```javascript
+// libraries
+import * as qs from 'qs';
+import * as fetch from 'node-fetch';
+
+// utils
+import { baseUnitAmount, setUpWeb3GanacheAsync, fetchERC20BalanceFactory } from './utils';
+import { migrationAsync } from '../migrations/migration';
+
+// wrappers
+// TODO: wrapper imports goes here
+
+// constants
+const ETHEREUM_RPC_URL = process.env.ETHEREUM_RPC_URL;
+const MNEMONIC = process.env.MNEMONIC;
+const DAI_CONTRACT = '0x6b175474e89094c44da98b954eedeac495271d0f'; // DAI mainnet contract address
+
+(async () => {
+    // initialize ganache fork and deploy contracts
+    const { web3Wrapper, provider } = await setUpWeb3GanacheAsync(MNEMONIC, ETHEREUM_RPC_URL);
+    const { simpleTokenSwapAddress } = await migrationAsync(provider, web3Wrapper);
+    
+    // handy util to check address balance of DAI
+    const fetchDAIBalanceAsync = fetchERC20BalanceFactory(provider, DAI_CONTRACT);
+
+    // 1. call 0x api for a quote for one dollar of DAI.
+
+    // TODO: write fetch GET call to get a swap quote from 0x API
+
+    // 2. send response from 0x api to your smart contract
+
+    // TODO: write web3 smart contract interaction
+
+})()
+```
+
+## Fetching a quote from 0x API 🥏
+
+As described in the [Overview section](/docs/guides/build-your-first-cfl-enabled-smart-contract#overview), 0x-powered CFL begins off-chain, before any web3 interactions are made. For this guide, we will be buying 1 DAI (specified by a variable in the script) with ETH (note, not WETH). By specifying `buyAmount` instead of `sellAmount`, the API understands you intend to buy 1 unit of DAI, not sell 1 unit of ETH.
+
+```javascript
+    (async () => {
+        ...
+        // 1. call 0x API for a quote for one dollar of DAI.
+        const buyAmount = baseUnitAmount(1);
+
+        const params = {
+            sellToken: 'ETH',
+            buyToken: 'DAI',
+            buyAmount: buyAmount.toString(),
+        }
+
+        const res = await fetch(`https://api.0x.org/swap/quote?${qs.stringify(params)}`);
+        const quote = await res.json();
+
+        console.log('Received quote:', quote);
+        ...
+    })()
+```
+
+*Note: baseUnitAmount is a handy util tool provided that adjusts a number by the number of decimals an asset has. In DAI’s case, there is 18 decimals; baseUnitAmount would be buying 1 DAI.*
+
+Run the script, with what we have now by running:
+
+```shell
+$ npm run test:simple_CFL_token_swap
+```
+
+It will take a moment as it is booting up ganache, but once that is done. it will fetch a quote from 0x API.
+
+You should see the quote printed out with the following structure:
+
+```json
+Received quote: {
+  to: '0xa3ac9844514b96bb502627ca9dceb57c4be289e3',
+  data: '0x942d33c0000000000000000000000000000000000000...
+  value: '8078746250988326',
+  gasPrice: '8000000000',
+  ...
+}
+```
+You can [execute](/docs/guides/swap-tokens-with-0x-api) a transaction with these parameters directly from your address to test the swap. But for the sake of CFL, we will be executing the provided transaction in a smart contract.
+
+## Setting up your on-chain smart contract 💡
+
+The starter-project has already prepared you a smart contract development environment, powered by 0x tools. We will only need to make additions to the smart contracts written in solidity for this guide.
+
+For the sake of the guide, we will be modifying the `SimpleTokenSwapContract.sol` file.
+
+```solidity
+pragma solidity ^0.5.9;
+pragma experimental ABIEncoderV2;
+
+import "@0x/contracts-exchange-forwarder/contracts/src/interfaces/IForwarder.sol";
+
+contract SimpleTokenSwapContract
+{
+    IForwarder internal FORWARDER;
+    constructor (address _forwarder)
+        public
+    {
+        FORWARDER = IForwarder(_forwarder);
+    }
+    
+    ...
+
+    // TODO: Add a function that executes the transaction provided by the API
+}
+```
+
+In the solidity code, we have imported the file `IForwarder.sol`; you can simply consider IForwarder to be the 0x protocol interface that you will be executing the transaction with. The `to` address provided in the quote is the address of the [Forwarder contract](https://etherscan.io/address/0x4ef40d1bf0983899892946830abf99eca2dbc5ce) deployed on mainnet.
+
+Let’s begin by adding the function definition of the CFL function:
+
+```solidity
+function liquidityRequiringFunction(bytes memory callDataHex)
+    public
+    payable
+    returns (bool)
+{
+    return false;
+}
+```
+Note that the parameter we will be passing to `liquidityRequiringFunction`, `callDataHex`, is the `data` provided by 0x API and contains all the necessary payload to execute a smart contract interaction with `FORWARDER` and perform a swap.
+
+Also, the function must be `payable` as we will be performing a swap with the user’s provided ETH `value`.
+
+With the `callDataHex` let’s execute the transaction with `FORWARDER`:
+
+```solidity
+function liquidityRequiringFunction(bytes memory callDataHex)
+    public
+    payable
+    returns (bool)
+{
+    (bool success, bytes memory _data) = address(FORWARDER).call.value(msg.value)(callDataHex);
+    return success;
+}
+```
+
+Assuming success is true, we have just written our first 0x-powered CFL smart-contract! Within _data contains more data in regards to the executed swap.
+
+Let’s compile and build the smart contract we just wrote: 
+
+```shell
+$ npm run build_contracts
+```
+
+With that, your smart contract is ready to be used! 🎉
+
+*Note: veteran defi developers will note the trivial nature of the written contract; please don’t deploy and use this in mainnet! In some more advanced guides, we will be talking about our recommended engineering practices with verifying the swap successfully happen, and other more nuanced feature with 0x CFL.*
+
+## Executing the swap 🔁
+
+Coming back to the web3 script we began earlier, let’s now interact with the smart contract we wrote. 0x tools make interacting with smart contracts easy with auto-generated typescript wrappers. Simply import the wrappers.
+
+Before we interact with our CFL smartcontract, let’s initialize some variables and import a few things:
+
+```javascript
+import { SimpleTokenSwapContractContract } from '../generated-wrappers/simple_token_swap_contract';
+
+(async () => {
+    ...
+    // 2. send response from 0x api to your smart contract
+
+    const userAddresses = await web3Wrapper.getAvailableAddressesAsync();
+    const from = userAddresses[0];
+
+    const contract = new SimpleTokenSwapContractContract(simpleTokenSwapAddress, provider);
+});
+```
+
+Now let’s execute a transaction with our CFL contract: 
+
+```javascript
+    (async () => {
+        ...
+        try {
+            console.log(`contract dai balance before: ${await fetchDAIBalanceAsync(simpleTokenSwapAddress)}`);
+            const txHash = await contract.liquidityRequiringFunction(quote.data).sendTransactionAsync({
+                from,
+                value: quote.value,
+                gasPrice: quote.gasPrice,
+                gas: 300000,
+            });
+            console.log(`contract dai balance after: ${await fetchDAIBalanceAsync(simpleTokenSwapAddress)}`);
+        } catch (e) {
+            console.log(e)
+        }
+    });
+```
+
+Note how we are sending `quote.data` as the provided parameter to `liquidityRequiringFunction`. Because of the trivial nature of the function, we will be simply passing `value` and `gasPrice` from the quote, unaltered.
+
+With this, run the script with `npm test:simple_CFL_token_swap` and you should see:
+
+```
+contract dai balance before: 0
+contract dai balance after: 10000000000000000000
+```
+
+Walla! Your CFL smart contract now has a balance of 1 DAI. You have just executed your first 0x CFL transaction using 0x API!
+
+Feel free to checkout our finished guide code in the `finished` branch:
+
+```shell
+$ git checkout finished
+```
+
+---
+
+## Wrapping Up
+
+While the smart contract written in this guide is trivial and doesn’t do much of anything beyond swapping, we now have the knowledge and foundation to create a number of more advanced smart contracts powered by 0x protocol.
+
+* Build a simple margin trading CFL smart contract with this guide [here](/).
+* Build a protocol fee abstracting CFL smart contract with this guide [here](/).
+* Refer to our [API specification](/docs/api)for detailed documentation on the 0x API.
+* 0x API is open sourced! [Look through](https://github.com/0xProject/0x-api) the codebase or deploy your own 0x API instance. 
+* Don't hesitate to reach out on [Discord](https://discord.gg/YDm4wx) for help.
