@@ -91,7 +91,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                     <SmallerTitle>
                         Focus on your product.
                         <br />
-                        Let us find the best prices.
+                        Let 0x find the best prices.
                     </SmallerTitle>
                     <Description style={{ marginBottom: 0, maxWidth: 524 }}>
                         Smart order routing splits up your transaction across decentralized exchange networks to be
