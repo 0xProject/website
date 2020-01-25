@@ -1,4 +1,3 @@
-import { formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -8,7 +7,9 @@ import { Heading } from 'ts/components/text';
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { PanelHeader } from 'ts/components/ui/panel_header';
 import { StatFigure } from 'ts/components/ui/stat_figure';
+
 import { colors } from 'ts/style/colors';
+import { stakingUtils } from 'ts/utils/staking_utils';
 
 interface UserData {
     zrxStakedFormatted: string;
@@ -44,7 +45,6 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
     isVerified,
     onRemoveStake,
 }) => {
-    const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(nextEpochApproximateStart));
     return (
         <Wrap>
             <Flex>
@@ -107,7 +107,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                                 Next epoch
                             </Heading>
 
-                            {stakingStartsFormattedTime}
+                            {stakingUtils.getTimeToEpochDate(nextEpochApproximateStart)}
                         </div>
                     </InlineStats>
 

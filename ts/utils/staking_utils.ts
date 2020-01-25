@@ -1,4 +1,5 @@
 import { BigNumber } from '@0x/utils';
+import { formatDistanceStrict, isPast } from 'date-fns';
 import * as _ from 'lodash';
 
 import { constants } from 'ts/utils/constants';
@@ -97,5 +98,13 @@ export const stakingUtils = {
     },
     isPoolActive: (pool: PoolWithStats) => {
         return pool.currentEpochStats.totalProtocolFeesGeneratedInEth > 0 || pool.nextEpochStats.zrxStaked > 0;
+    },
+    getTimeToEpochDate: (epochDate?: Date): string => {
+        if (!epochDate || isPast(epochDate)) {
+            return '-';
+        }
+
+        const now = new Date();
+        return formatDistanceStrict(epochDate, now, { roundingMethod: 'ceil' });
     },
 };

@@ -1,6 +1,6 @@
 import { BigNumber, hexUtils, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { differenceInCalendarDays, format } from 'date-fns';
+import { format } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -117,8 +117,6 @@ export const Account: React.FC<AccountProps> = () => {
     const { stakingContract, unstake, withdrawStake, withdrawRewards } = useStake(networkId, providerState);
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
-
-    const now = new Date();
 
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
@@ -408,7 +406,7 @@ export const Account: React.FC<AccountProps> = () => {
                                 formatZrx(amount).minimized
                             } ZRX will be staked with ${stakingUtils.getPoolDisplayName(
                                 pool,
-                            )} in ${differenceInCalendarDays(new Date(nextEpochStats.epochStart.timestamp), now)} days`;
+                            )} in ${stakingUtils.getTimeToEpochDate(new Date(nextEpochStats.epochStart.timestamp))}`;
 
                             subtitle = 'Your tokens will be automatically staked when the new epoch starts';
                             statLabel = 'Staking starts';

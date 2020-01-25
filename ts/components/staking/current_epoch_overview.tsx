@@ -1,14 +1,15 @@
 import { BigNumber } from '@0x/utils';
-import { formatDistanceStrict, isPast } from 'date-fns';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { Text } from 'ts/components/ui/text';
+
 import { colors } from 'ts/style/colors';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
+import { stakingUtils } from 'ts/utils/staking_utils';
 
 interface CurrentEpochOverviewProps {
-    currentEpochEndDate?: Date;
+    nextEpochStartDate?: Date;
     currentEpochRewards?: BigNumber;
     numMarketMakers?: number;
     zrxStaked?: number;
@@ -57,17 +58,8 @@ const Explanation = styled(Text).attrs({
     width: '100%',
 })``;
 
-const timeToEpochEnd = (currentEpochEndDate?: Date): string => {
-    if (!currentEpochEndDate || isPast(currentEpochEndDate)) {
-        return '-';
-    }
-
-    const now = new Date();
-    return formatDistanceStrict(currentEpochEndDate, now, { roundingMethod: 'ceil' });
-};
-
 export const CurrentEpochOverview: React.FC<CurrentEpochOverviewProps> = ({
-    currentEpochEndDate,
+    nextEpochStartDate,
     currentEpochRewards,
     numMarketMakers,
     zrxStaked,
@@ -79,7 +71,7 @@ export const CurrentEpochOverview: React.FC<CurrentEpochOverviewProps> = ({
                 <Explanation>ZRX Staked</Explanation>
             </OverviewItem>
             <OverviewItem>
-                <Metric>{timeToEpochEnd(currentEpochEndDate)}</Metric>
+                <Metric>{stakingUtils.getTimeToEpochDate(nextEpochStartDate)}</Metric>
                 <Explanation>Epoch ends</Explanation>
             </OverviewItem>
             <OverviewItem>
