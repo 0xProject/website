@@ -531,7 +531,7 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
             return newTotal;
         }, new BigNumber(0)),
     ).minimized;
-    const stakingStartsFormattedTime = formatDistanceStrict(new Date(), new Date(nextEpochStats.epochStart.timestamp));
+    const stakingStartsFormattedTime = stakingUtils.getTimeToEpochDate(new Date(nextEpochStats.epochStart.timestamp));
     return (
         <RelativeContainer>
             <>
