@@ -73,7 +73,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                 labelText={'0x API'}
                 isFullWidth={true}
                 sectionPadding={'60px 0 120px 0'}
-                description="Easily integrate with 0x API once to source liquidity from 0x Mesh, Kyber, Uniswap, and more and swap tokens at the best price."
+                description="Easily integrate with 0x API once to aggregate liquidity from 0x Mesh, Kyber, Uniswap, and more and swap tokens at the best price."
                 showFigureBottomMobile={true}
                 isCenteredMobile={true}
                 figure={
