@@ -302,7 +302,7 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
             {/* Examples/guides section */}
             <ResponsiveFlexSection bgColor="black" isFlex={true} maxWidth="1170px">
                 <FlexColumnContainer style={{ flex: 'inherit', marginRight: 120, flexWrap: 'wrap' }}>
-                    <Title style={{ wordBreak: 'break-word' }}>Get Started</Title>
+                    <Title style={{ wordBreak: 'normal' }}>Get Started</Title>
                 </FlexColumnContainer>
                 <FlexColumnWrapped>
                     <ExampleRowContainer>
@@ -865,6 +865,7 @@ const CurlEndpointText = styled.div`
     font-size: 16px;
     @media (max-width: 500px) {
         font-size: 14px;
+        word-break: break-word;
     }
 `;
 
