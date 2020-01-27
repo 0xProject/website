@@ -71,7 +71,7 @@ const navItems: NavItemProps[] = [
     },
 ];
 
-export const HeaderBase: React.FC<HeaderProps> = props => {
+export const HeaderBase: React.FC<HeaderProps> = React.memo(props => {
     const { isNavToggled, toggleMobileNav, theme } = props;
 
     const onUnpin = () => {
@@ -113,7 +113,7 @@ export const HeaderBase: React.FC<HeaderProps> = props => {
             </StyledHeader>
         </Headroom>
     );
-};
+});
 
 export const Header = withTheme(HeaderBase);
 

@@ -12,9 +12,12 @@ import { Column, Section, WrapSticky } from 'ts/components/newLayout';
 import { SiteWrap } from 'ts/components/siteWrap';
 import { Slide, Slider } from 'ts/components/slider/slider';
 import { Heading } from 'ts/components/text';
+
+import { ModalContact } from 'ts/components/modals/modal_contact';
+
 import { documentConstants } from 'ts/utils/document_meta_constants';
 
-import { ModalContact } from '../components/modals/modal_contact';
+import { WebsitePaths } from 'ts/types';
 
 const offersData = [
     {
@@ -103,8 +106,8 @@ export class NextWhy extends React.Component<Props> {
     }
     public render(): React.ReactNode {
         const buildAction = (
-            <Button href="/docs" isWithArrow={true} isAccentColor={true}>
-                Build on 0x
+            <Button to={WebsitePaths.ZeroExApi} isWithArrow={true} isAccentColor={true}>
+                Build on 0x API
             </Button>
         );
         return (
@@ -122,7 +125,7 @@ export class NextWhy extends React.Component<Props> {
                         titleSize="small"
                         description="0x Protocol facilitates the decentralized exchange of a growing number of Ethereum-based tokens, including all ERC-20 and ERC-721 assets."
                         icon="supportForAllEthereumStandards"
-                        iconSize="large"
+                        iconSize={160}
                         isInline={true}
                     />
 
@@ -131,7 +134,7 @@ export class NextWhy extends React.Component<Props> {
                         titleSize="small"
                         description="0x is lowering the barrier to entry by building a layer of networked liquidity that allows businesses to tap into a shared pool of digital assets."
                         icon="networkedLiquidity"
-                        iconSize="large"
+                        iconSize={160}
                         isInline={true}
                     />
 
@@ -140,7 +143,7 @@ export class NextWhy extends React.Component<Props> {
                         titleSize="small"
                         description="0x is a modular system that enables businesses and projects, known as relayers, to easily add exchange functionality to any product experience."
                         icon="flexibleIntegration"
-                        iconSize="large"
+                        iconSize={160}
                         isInline={true}
                     />
                 </Section>
@@ -218,7 +221,7 @@ export class NextWhy extends React.Component<Props> {
                 <Banner
                     heading="Ready to get started?"
                     subline="Dive into our docs, or contact us if needed"
-                    mainCta={{ text: 'Get Started', href: '/docs' }}
+                    mainCta={{ text: 'Get Started', href: '/api' }}
                     secondaryCta={{ text: 'Get in Touch', onClick: this._onOpenContactModal.bind(this) }}
                 />
                 <ModalContact isOpen={this.state.isContactModalOpen} onDismiss={this._onDismissContactModal} />
