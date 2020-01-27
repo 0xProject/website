@@ -9,6 +9,7 @@ const URL_ZEROEX_CHAT = 'https://discord.gg/d3FTX3M';
 export const constants = {
     DECIMAL_PLACES_ETH: 18,
     DECIMAL_PLACES_ZRX: 18,
+    DECIMAL_PLACES_DAI: 18,
     ETHER_TOKEN_SYMBOL: 'WETH',
     ZRX_TOKEN_SYMBOL: 'ZRX',
     ETHER_SYMBOL: 'ETH',

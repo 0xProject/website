@@ -1,6 +1,7 @@
-import { BigNumber } from '@0x/utils';
+import { BigNumber, logUtils } from '@0x/utils';
 import React, { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { useSelector } from 'react-redux';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import dark from 'react-syntax-highlighter/dist/cjs/styles/hljs/vs2015';
 import styled from 'styled-components';
@@ -21,6 +22,9 @@ import { documentConstants } from 'ts/utils/document_meta_constants';
 import { Translate } from 'ts/utils/translate';
 
 import { WebsitePaths } from 'ts/types';
+import { utils } from 'ts/utils/utils';
+
+import { State } from 'ts/redux/reducer';
 
 export interface ApiPageProps {
     location: Location;
@@ -28,6 +32,7 @@ export interface ApiPageProps {
 }
 
 const ZeroExApi: React.FC<ApiPageProps> = () => {
+    const networkId = useSelector((state: State) => state.networkId);
     const [isCopied, setIsCopied] = React.useState<boolean>(false);
     const copyButtonText = isCopied ? 'Copied!' : 'Copy to clipboard';
 
@@ -38,11 +43,13 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
 
     const [quote, setQuote] = useState<any | undefined>();
 
-    const takerAmount = new BigNumber(100000000); // 100$ in usdc (only 8 digits?)
-    const formattedTakerAmount = takerAmount // 100$ in usdc (only 8 digits?)
+    const takerAmount = new BigNumber(100000000); // 100$ in usdc (USDC == 6 digits)
+    const formattedTakerAmount = takerAmount
         .dividedToIntegerBy(1)
         .toString();
-    const quoteEndpoint = `https://api.0x.org/swap/v0/quote?sellAmount=${formattedTakerAmount}&buyToken=DAI&sellToken=USDC`;
+
+    const API_BASE = utils.getAPIBaseUrl(networkId || 1);
+    const quoteEndpoint = `${API_BASE}/swap/v0/quote?sellAmount=${formattedTakerAmount}&buyToken=DAI&sellToken=USDC`;
 
     React.useEffect(() => {
         const fetchQuote = async () => {
@@ -51,8 +58,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                 const fetchedQuote = await res.json();
                 setQuote(fetchedQuote);
             } catch (e) {
-                // tslint:disable-next-line: no-console
-                console.log(e);
+                logUtils.warn('Error fetching quote for 0x API markeing page', e);
             }
         };
         // tslint:disable-next-line: no-floating-promises
@@ -240,8 +246,9 @@ const response = await fetch(
 );
 const quote = await response.json();
 // Send to ethereum with your favorite Web3 Library
-const txId = await window.web3.eth.sendTransaction(quote);
-console.log('Success!', txId);
+window.web3.eth.sendTransaction(quote, (err, txId) => {
+  console.log('Success!', txId);
+});
 `}
                                 </SyntaxHighlighter>
                             </SyntaxHighlighterContainer>

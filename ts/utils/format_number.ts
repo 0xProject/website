@@ -371,7 +371,7 @@ export function formatZrx(num: NumStrBigNumber, opts: FormattedCryptoOptions = {
 export function formatDai(num: NumStrBigNumber, opts: FormattedCryptoOptions = {}): FormattedNumber {
     const { fromBaseUnits, ...restOpts } = opts;
     const normalizedNum: NumStrBigNumber = fromBaseUnits
-        ? Web3Wrapper.toUnitAmount(createBigNumber(num), constants.DECIMAL_PLACES_ZRX)
+        ? Web3Wrapper.toUnitAmount(createBigNumber(num), constants.DECIMAL_PLACES_DAI)
         : num;
 
     return formatNumber(normalizedNum, {
