@@ -29,6 +29,7 @@ class BaseComponent extends React.PureComponent<BaseComponentProps> {
             window.open(
                 linkUrl,
                 '_blank', // New window
+                'noopener',
               );
         } else {
         this.props.history.push(linkUrl);
