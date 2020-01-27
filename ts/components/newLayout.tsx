@@ -32,6 +32,7 @@ export interface SectionProps extends WrapProps {
     padding?: string;
     margin?: string;
     marginBottom?: string;
+    justifyContent?: string;
     paddingMobile?: string;
     hasBorder?: boolean;
     hasHover?: boolean;
@@ -72,6 +73,7 @@ export const Section: React.FunctionComponent<SectionProps> = React.memo((props:
         'isCentered',
         'isWrapped',
         'isFlex',
+        'justifyContent',
     ]);
 
     return (

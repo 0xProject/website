@@ -13,6 +13,7 @@ import { BlockIconLink } from 'ts/components/blockIconLink';
 import { Button } from 'ts/components/button';
 import { DocumentTitle } from 'ts/components/document_title';
 import { Hero } from 'ts/components/hero';
+import { Icon } from 'ts/components/icon';
 import { Section } from 'ts/components/newLayout';
 import { SiteWrap } from 'ts/components/siteWrap';
 
@@ -44,9 +45,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
     const [quote, setQuote] = useState<any | undefined>();
 
     const takerAmount = new BigNumber(100000000); // 100$ in usdc (USDC == 6 digits)
-    const formattedTakerAmount = takerAmount
-        .dividedToIntegerBy(1)
-        .toString();
+    const formattedTakerAmount = takerAmount.dividedToIntegerBy(1).toString();
 
     const API_BASE = utils.getAPIBaseUrl(networkId || 1);
     const quoteEndpoint = `${API_BASE}/swap/v0/quote?sellAmount=${formattedTakerAmount}&buyToken=DAI&sellToken=USDC`;
@@ -92,7 +91,8 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                 }
             />
             {/* First below the fold section (order viz) */}
-            <Section bgColor="dark" isFlex={true} marginBottom={'70px'} maxWidth="1170px">
+            {/* marginBottom={'70px'} */}
+            <Section bgColor="dark" isFlex={true} maxWidth="1170px">
                 <FlexColumnContainerWithMobileMargins>
                     <SmallerTitle>
                         Focus on your product.
@@ -132,8 +132,41 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                     </OrderExamplesVizContainer>
                 </FlexColumnContainer>
             </Section>
+
+            <ResponsiveColumnSection
+                justifyContent={'center'}
+                bgColor="black"
+                isFlex={true}
+                maxWidth="1170px"
+                padding={'84px 0 66px 0'}
+                paddingMobile={'64px 0 40px 0'}
+            >
+                <div>
+                    <LogoSectionColumnContainer>
+                        <LogosTitle>Powering the future of open finance</LogosTitle>
+                        <LogosUsingZeroExApiContainer>
+                            <LogoIconContainer>
+                                <Icon name={'0x-api-logos/nuo'} size={'natural'} />
+                            </LogoIconContainer>
+                            <LogoIconContainer>
+                                <Icon name={'0x-api-logos/bzx'} size={'natural'} />
+                            </LogoIconContainer>
+                            <LogoIconContainer>
+                                <Icon name={'0x-api-logos/zerion'} size={'natural'} />
+                            </LogoIconContainer>
+                            <LogoIconContainer>
+                                <Icon name={'0x-api-logos/defi-saver'} size={'natural'} />
+                            </LogoIconContainer>
+                            <LogoIconContainer>
+                                <Icon name={'0x-api-logos/topo'} size={'natural'} />
+                            </LogoIconContainer>
+                        </LogosUsingZeroExApiContainer>
+                    </LogoSectionColumnContainer>
+                </div>
+            </ResponsiveColumnSection>
+
             {/* Get a quote section - API curl & request/response JSON */}
-            <Section bgColor="dark" isFlex={true} marginBottom={'70px'} maxWidth="1170px">
+            <Section bgColor="dark" isFlex={true} maxWidth="1170px" marginBottom={'40px'}>
                 <FlexColumnContainer>
                     <PadddedFlexColumnContainer>
                         <SmallerTitle>Easily get a quote</SmallerTitle>
@@ -319,6 +352,8 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
     );
 };
 
+const LogoSection = styled.div``;
+
 const JSONResponsePre = styled.pre`
     background: ${colors.black} !important;
     margin: 0px;
@@ -465,6 +500,7 @@ const OrderVizKyber = styled.div`
     display: flex;
     flex-direction: column;
     width: calc(25% - 5px);
+    justify-content: space-between;
     margin-right: 10px;
 `;
 
@@ -568,7 +604,6 @@ const RequestLabelRow = styled.div`
 const RequestEndpointRow = styled.div`
     padding: 20px 20px 0 20px;
     margin-bottom: 24px;
-    overflow-x: auto;
 `;
 
 const RequestConfigurationRow = styled.div`
@@ -627,7 +662,7 @@ const ValuePropDescription = styled.div`
 `;
 
 const CallToActionContainer = styled.div`
-    margin-bottom: 25;
+    margin-bottom: 25px;
 `;
 
 const ExampleRowContainer = styled.div`
@@ -785,19 +820,22 @@ const SwapCodeExampleTitleRow = styled.div`
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    padding: 15px 25px;
+    padding: 10px 25px;
     border-bottom: 2px solid #111a19;
 `;
 
 const SwapCodeLabel = styled.div`
     font-size: 16px;
     color: #898990;
+    padding: 4px 0;
     /* This is to offset the arrow in the link on the other side of the row */
     display: flex;
     align-self: flex-end;
 `;
 
-const SwapCodeExampleLaunchExampleContainer = styled.div``;
+const SwapCodeExampleLaunchExampleContainer = styled.div`
+    padding: 4px 0;
+`;
 
 const Checkmark = () => (
     <svg id="checkmark-icon" width="18" height="13" viewBox="0 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -831,6 +869,51 @@ const ResponsiveFlexSection = styled(Section)`
     @media (max-width: 1040px) {
         flex-direction: column;
     }
+`;
+
+const ResponsiveColumnSection = styled(Section)`
+    justify-content: center;
+
+    @media (min-width: 768px) {
+        justify-content: center;
+    }
+    /* @media (max-width: 1040px) { */
+    /* flex-direction: column; */
+    /* } */
+`;
+
+const LogosUsingZeroExApiContainer = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+`;
+
+const LogoIconContainer = styled.div`
+    padding: 30px;
+`;
+
+const LogosTitle = styled.div`
+    font-family: Formular;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    text-align: center;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+    color: #898990;
+    margin-bottom: 10px;
+    @media (max-width: 768px) {
+        margin-bottom: 20px;
+    }
+`;
+
+const LogoSectionColumnContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
 `;
 
 // tslint:disable-next-line: max-file-line-count
