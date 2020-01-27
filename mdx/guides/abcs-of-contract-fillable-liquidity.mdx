@@ -1,38 +1,45 @@
-**Contract fillable liquidity (CFL)** is the ability for smart contracts to programmatically swap tokens by filling orders on decentralized exchanges. This opens up new abilities for DeFi protocols, such as:
+# Introduction to Using 0x Liquidity In Smart Contracts
 
-- Seamlessly swap between ETH ↔ DAI ↔ MKR, allowing users to effectively interact with CDPs (Collateral Debt Positions) with ETH instead of MKR
-- Use your margin trading protocol to offer users deep liquidity pools with competitive slippages
-- Easily rebalance portfolios with atomic token swaps
+0x Protocol's networked liquidity can extend the capabilities of your DeFi project. This guide highlights some general concepts to help you start tapping into 0x's networked liquidity from within your smart contract.
 
-**Contract fillable liquidity** allows for better user experiences to be created for your DeFi product/protocol, and with [0x API](/0x-api) users can experience the best prices available across the DEX ecosystem. 
 
-## Navigating the world of contract fillable liquidity with 0x protocol
+## What can I do with 0x liquidity?
 
-If you are just learning about contract fillable liquidity and the 0x protocol, don’t fret, let’s walk through the journey of liquidity from its origination point to its eventual consumption by your smart contracts.
+The ability for smart contracts to programmatically swap tokens (also known as [Contract Fillable Liquidity](https://blog.0xproject.com/contract-fillable-liquidity-made-simple-8b9cf1b2f2f2)) opens up a new world of opportunities for DeFi projects, such as:
 
-1. Orders, A “unit of liquidity” in the 0x protocol
+* Seamlessly swap between ETH ↔ DAI ↔ MKR, allowing users to effectively interact with CDPs (Collateral Debt Positions) with ETH instead of DAI and MKR
+* Use your margin trading protocol to offer users deep liquidity pools with competitive slippages
+* Abstract away transaction fees
+* Easily rebalance portfolios with atomic token swaps
 
-    Orders, 0x's representation of liquidity, are promises from one user, the maker, to swap a certain token with another token at a specified rate. The 0x protocol specifies a specific format that all 0x orders [abide to](/docs/core-concepts#the-0x-order-message-format). For a number of large asset pairs (i.e ETH/DAI, ETH/USDC), professional market makers produce a constant stream of orders thereby providing a consistent source of liquidity at competitive rates.
+In addition, [0x API](./swap-tokens-with-0x-api) offers an easy-to-use interface for accessing the best prices for token swaps. By combining both and integrating competitively priced token swaps into smart contracts, DeFi projects can leverage network liquidity to create powerful new user experiences. 
 
-2. Networked Liquidity, sharing orders to the world
 
-    After 0x orders are created and signed by market makers, they need to reach takers; this is where 0x Mesh comes in. 0x Mesh is a P2P protocol that creates a decentralized global “networked” pool of liquidity. Networked liquidity, unlike the fragmented nature of traditional, centralized, financial markets/exchanges, guarantees takers are getting the best price 0x protocol can offer.
+## Core concepts
 
-3. 0x API, Simple + Easy interface to networked liquidity
+### Orders: A unit of liquidity
 
-    While any developer or user can directly interact with 0x Mesh, the lower level nature of the P2P protocol requires a deep understanding of 0x protocol to properly utilize. 0x API offers a higher level interface to consume liquidity from 0x Mesh and other DEX sources. With its familiar HTTP interface, 0x API makes *“I need to buy 10 DAI” *or *“I need to sell 1.5 Ether”* only a GET call away.
+**Orders **represent a single unit of liquidity on 0x Protocol. An order is a promise to swap a certain token for another token at a specified rate. The 0x Protocol specifies a [standard order format](../core-concepts#the-0x-order-message-format) that formalizes this promise. For a number of large asset pairs (i.e ETH/DAI, ETH/USDC), professional market makers produce a constant stream of orders, thus providing a consistent source of liquidity at competitive rates.
 
-4. Filling 0x orders, interacting with 0x Protocol Contracts
+### Networked Liquidity: sharing orders with the world
 
-    At some point, to utilize the provided response from the API, your smart contract will need to interact with 0x protocol’s smart contracts. Similar to STL in C++, 0x Protocol Smart Contracts is the core “library” that smart contracts leverage to “fill” orders and enable exchange functionality. With the provided `calldata` sent to your smart contract as a parameter, a simple `.call.value()()` will execute the swap.
+An order involves two parties: a maker, who creates and signs the order; and a taker, who fills the order. For takers to find the best prices, they need to have access to the most possible orders. 0x Mesh is a P2P protocol that functions as a decentralized global network for sharing orders. This results in a massive pool of “networked liquidity”. Unlike the fragmented nature of traditional centralized financial exchanges, networked liquidity guarantees takers are getting the best price available. 
 
-## Building with CFL guides
+### 0x API: A one-step interface to networked liquidity
 
-Get started writing 0x-powered CFL smart contracts:
+Any user can interact directly with the 0x Mesh network. However, the lower-level nature of the P2P protocol has a steeper learning curve to fully leverage it. 0x API offers a high-level interface to consume networked liquidity from 0x Mesh and other DEX aggregators. A simple HTTP request allows potential takers to obtain available orders (quotes) for the best prices on the network for swapping their desired tokens. 
 
-#### **Coming Soon** Creating your first CFL-enabled smart contract
+### Fill 0x orders from your smart contract
 
-After finishing this guide, you will have a smart contract buying DAI with ETH. This guide highlights, at a high level the golden path for CFL integration.
+After obtaining satisfactory quotes for all necessary token swaps, your smart contract needs to execute the swap by interacting with 0x Protocol smart contracts. These are the core “libraries” that other smart contracts use to fill orders.  In the following guides, we will show exactly how to implement order filling within your smart contract.
+
+## Building with 0x liquidity in smart contracts
+
+Now that you are familiar with the core concepts of consuming liquidity from a smart contract, let's get started building!
+
+#### **Coming Soon** Creating a smart contract that consumes 0x liquidity
+
+After finishing this guide, you will have a smart contract buying DAI with ETH. This guide highlights, at a high level, the golden path for integrating network liquidity into your smart contract.
 
 #### **Coming Soon** Creating a Margin trading DEFI product
 
