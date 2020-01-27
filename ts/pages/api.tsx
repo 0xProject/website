@@ -150,14 +150,14 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                                     <Icon name={'0x-api-logos/nuo'} size={'natural'} />
                                 </LogoIconContainer>
                             </LogoExternalLink>
-                            <LogoExternalLink href={'https://fulcrum.trade'} target="_blank" rel="noopener">
-                                <LogoIconContainer>
-                                    <Icon name={'0x-api-logos/bzx'} size={'natural'} />
-                                </LogoIconContainer>
-                            </LogoExternalLink>
                             <LogoExternalLink href={'https://zerion.io'} target="_blank" rel="noopener">
                                 <LogoIconContainer>
                                     <Icon name={'0x-api-logos/zerion'} size={'natural'} />
+                                </LogoIconContainer>
+                            </LogoExternalLink>
+                            <LogoExternalLink href={'https://fulcrum.trade'} target="_blank" rel="noopener">
+                                <LogoIconContainer>
+                                    <Icon name={'0x-api-logos/bzx'} size={'natural'} />
                                 </LogoIconContainer>
                             </LogoExternalLink>
                             <LogoExternalLink href={'https://defisaver.com'} target="_blank" rel="noopener">
