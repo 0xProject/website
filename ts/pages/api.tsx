@@ -132,7 +132,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                     </OrderExamplesVizContainer>
                 </FlexColumnContainer>
             </Section>
-
+            {/* Partner Logos */}
             <ResponsiveColumnSection
                 justifyContent={'center'}
                 bgColor="black"
@@ -351,8 +351,6 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
         </SiteWrap>
     );
 };
-
-const LogoSection = styled.div``;
 
 const JSONResponsePre = styled.pre`
     background: ${colors.black} !important;
