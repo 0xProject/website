@@ -145,21 +145,31 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                     <LogoSectionColumnContainer>
                         <LogosTitle>Powering the future of open finance</LogosTitle>
                         <LogosUsingZeroExApiContainer>
-                            <LogoIconContainer>
-                                <Icon name={'0x-api-logos/nuo'} size={'natural'} />
-                            </LogoIconContainer>
-                            <LogoIconContainer>
-                                <Icon name={'0x-api-logos/bzx'} size={'natural'} />
-                            </LogoIconContainer>
-                            <LogoIconContainer>
-                                <Icon name={'0x-api-logos/zerion'} size={'natural'} />
-                            </LogoIconContainer>
-                            <LogoIconContainer>
-                                <Icon name={'0x-api-logos/defi-saver'} size={'natural'} />
-                            </LogoIconContainer>
-                            <LogoIconContainer>
-                                <Icon name={'0x-api-logos/topo'} size={'natural'} />
-                            </LogoIconContainer>
+                            <LogoExternalLink href={'https://www.nuo.network'} target="_blank" rel="noopener">
+                                <LogoIconContainer>
+                                    <Icon name={'0x-api-logos/nuo'} size={'natural'} />
+                                </LogoIconContainer>
+                            </LogoExternalLink>
+                            <LogoExternalLink href={'https://fulcrum.trade'} target="_blank" rel="noopener">
+                                <LogoIconContainer>
+                                    <Icon name={'0x-api-logos/bzx'} size={'natural'} />
+                                </LogoIconContainer>
+                            </LogoExternalLink>
+                            <LogoExternalLink href={'https://zerion.io'} target="_blank" rel="noopener">
+                                <LogoIconContainer>
+                                    <Icon name={'0x-api-logos/zerion'} size={'natural'} />
+                                </LogoIconContainer>
+                            </LogoExternalLink>
+                            <LogoExternalLink href={'https://defisaver.com'} target="_blank" rel="noopener">
+                                <LogoIconContainer>
+                                    <Icon name={'0x-api-logos/defi-saver'} size={'natural'} />
+                                </LogoIconContainer>
+                            </LogoExternalLink>
+                            <LogoExternalLink href={'https://topo.finance'} target="_blank" rel="noopener">
+                                <LogoIconContainer>
+                                    <Icon name={'0x-api-logos/topo'} size={'natural'} />
+                                </LogoIconContainer>
+                            </LogoExternalLink>
                         </LogosUsingZeroExApiContainer>
                     </LogoSectionColumnContainer>
                 </div>
@@ -906,6 +916,8 @@ const LogosTitle = styled.div`
         margin-bottom: 20px;
     }
 `;
+
+const LogoExternalLink = styled.a``;
 
 const LogoSectionColumnContainer = styled.div`
     display: flex;
