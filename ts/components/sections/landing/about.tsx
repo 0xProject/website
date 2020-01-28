@@ -26,7 +26,7 @@ export const SectionLandingAbout = () => (
             instruments to assets that could have never existed before.
         </Paragraph>
 
-        <DeveloperLink href={WebsitePaths.ZeroExApi} isWithArrow={true} isAccentColor={true}>
+        <DeveloperLink to={WebsitePaths.ZeroExApi} isWithArrow={true} isAccentColor={true}>
             Build on 0x API
         </DeveloperLink>
 

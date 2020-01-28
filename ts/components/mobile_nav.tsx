@@ -25,13 +25,10 @@ export const MobileNav: React.FC<IMobileNavProps> = props => {
                 <h4>Products</h4>
                 <ul>
                     <li>
+                        <Link to={WebsitePaths.ZeroExApi}>0x API</Link>
+                    </li>
+                    <li>
                         <Link to={WebsitePaths.Instant}>0x Instant</Link>
-                    </li>
-                    <li>
-                        <Link to={WebsitePaths.LaunchKit}>0x Launch Kit</Link>
-                    </li>
-                    <li>
-                        <Link to={WebsitePaths.AssetSwapperPage}>Swap Tokens</Link>
                     </li>
                     <li>
                         <Link to={WebsitePaths.Staking}>ZRX</Link>

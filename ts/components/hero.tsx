@@ -69,7 +69,7 @@ interface TitleProps {
 const Title = styled.h1<TitleProps>`
     font-size: ${props => (props.isLarge ? '80px' : '50px')};
     font-weight: 300;
-    line-height: 1.1;
+    line-height: 1.2;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 30px;
