@@ -329,7 +329,7 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
                             </ExampleDescription>
                         </ExampleLeftContainer>
                         <ExampleLink>
-                            <Button href="/docs/api" isWithArrow={true} isAccentColor={true}>
+                            <Button href="/docs/guides/use-0x-api-liquidity-in-your-smart-contracts" isWithArrow={true} isAccentColor={true}>
                                 View Guide
                             </Button>
                         </ExampleLink>
