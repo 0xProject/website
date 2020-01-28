@@ -268,7 +268,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                     <div style={{ width: '100%', maxWidth: 1040 }}>
                         <SwapCodeExampleContainer>
                             <SwapCodeExampleTitleRow>
-                                <SwapCodeLabel>Fill order in JavaScript</SwapCodeLabel>
+                                <SwapCodeLabel>Fill order in JavaScript with MetaMask</SwapCodeLabel>
                                 <SwapCodeExampleLaunchExampleContainer>
                                     <Button
                                         fontSize={'16px'}

@@ -16,11 +16,6 @@ const navData = [
         description: 'Embed simple token purchasing in any app or website',
         url: WebsitePaths.Instant,
     },
-    {
-        title: '0x Launch Kit',
-        description: 'Launch an exchange or NFT marketplace in minutes',
-        url: WebsitePaths.LaunchKit,
-    },
 ];
 
 export const DropdownProducts: React.FC = () => (

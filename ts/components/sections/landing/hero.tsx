@@ -9,11 +9,7 @@ import { HeroAnimation } from 'ts/components/heroAnimation';
 import { ModalVideo } from 'ts/components/modals/modal_video';
 import { WebsitePaths } from 'ts/types';
 
-// const announcement = {
-//     headline: 'Vote on ZEIP-24 & ZEIP-39',
-//     href: '/vote',
-//     shouldOpenInNewTab: false,
-// };
+const announcement = { headline: 'Introducing 0x API', to: WebsitePaths.ZeroExApi };
 
 export interface SectionlandingHeroProps {}
 export interface SectionLandingHeroState {
@@ -36,7 +32,7 @@ export class SectionLandingHero extends React.Component<SectionlandingHeroProps,
                     description="0x is an open protocol that enables the peer-to-peer exchange of assets on the Ethereum blockchain."
                     figure={<LandingAnimation image={<HeroAnimation />} />}
                     actions={<HeroActions onPlayVideoClick={this._openModalVideo} />}
-                    // announcement={announcement}
+                    announcement={announcement}
                 />
                 <ModalVideo
                     channel="youtube"
