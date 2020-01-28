@@ -104,7 +104,7 @@ You can also request quotes with token addresses instead of symbols as `buyToken
 
 You can optionally provide a `takerAddress` to get a specific `gas` amount to send with the swap transaction. 
 
-The API performs an `eth_call` under the hood to catch any reverts that would occur if the `takerAddress` attempts to swap the tokens. An HTTP response with status 400 will be returned if the `eth_call` results in a revert (ie. the proposed swap fails), along with reasons for the revert.
+The API performs an [`eth_call`](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call) under the hood to catch any reverts that would occur if the `takerAddress` attempts to swap the tokens. An HTTP response with status 400 will be returned if the `eth_call` results in a revert (ie. the proposed swap fails), along with reasons for the revert.
 
 ```
 import * as qs from 'qs';
