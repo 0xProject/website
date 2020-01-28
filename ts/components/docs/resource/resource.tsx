@@ -8,6 +8,7 @@ import { Tag } from 'ts/components/docs/resource/tag';
 import { Heading, Paragraph } from 'ts/components/text';
 
 import { colors } from 'ts/style/colors';
+import { WebsitePaths } from 'ts/types';
 
 interface IHitProps {
     hit: IResourceProps;
@@ -18,18 +19,24 @@ export interface IResourceProps {
     difficulty?: Difficulty;
     externalUrl?: string;
     isCommunity?: boolean;
+    path?: string;
+    id?: string;
     url?: string;
     tags: string[];
 }
 
 export const Resource: React.FC<IHitProps> = ({ hit }) => {
-    const { difficulty, description, externalUrl, isCommunity, tags, title, url } = hit;
-    const to = externalUrl ? externalUrl : url;
-
+    const { difficulty, description, externalUrl, isCommunity, tags, title, url, id } = hit;
+    let to = externalUrl ? externalUrl : url;
+    // HACK(johnrjj)
+    // For some reason, the ABCS of liquidity guide does not return an eternalUrl or url.
+    if (!to) {
+        to = `/docs/guides/${id}`;
+    }
     return (
         <ResourceWrapper>
             <Heading color={colors.brandDark} size="small" marginBottom="8px">
-                <Link shouldOpenInNewTab={externalUrl ? true : false} to={to}>
+                <Link shouldOpenInNewTab={externalUrl ? true : false} to={to || WebsitePaths.DocsGuides}>
                     {title}
                 </Link>
             </Heading>
