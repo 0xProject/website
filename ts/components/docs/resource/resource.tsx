@@ -36,7 +36,7 @@ export const Resource: React.FC<IHitProps> = ({ hit }) => {
     return (
         <ResourceWrapper>
             <Heading color={colors.brandDark} size="small" marginBottom="8px">
-                <Link shouldOpenInNewTab={externalUrl ? true : false} to={to || WebsitePaths.DocsGuides}>
+                <Link shouldOpenInNewTab={externalUrl ? true : false} to={to}>
                     {title}
                 </Link>
             </Heading>
