@@ -66,7 +66,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
 
     return (
         <SiteWrap theme="dark">
-            <DocumentTitle {...documentConstants.ZeroExApi} />
+            <DocumentTitle {...documentConstants.API} />
             <Hero
                 title="Access all DEX liquidity through one API"
                 isLargeTitle={false}
