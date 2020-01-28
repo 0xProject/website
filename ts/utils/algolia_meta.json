@@ -1,13 +1,13 @@
 {
     "api": {
         "api": {
-            "title": "API Specification", 
+            "title": "API Specification",
             "subtitle": "Learn how to use the 0x HTTP API",
             "description": "The easiest way to source liquidity from 0x Mesh as well as Kyber, Uniswap, Oasis and other decentralized exchange networks.",
             "path": "api/index.mdx",
             "tags": ["0x API"],
             "topics": ["0x API"],
-            "difficulty": "Easy"
+            "difficulty": "Beginner"
         }
     },
     "core-concepts": {
@@ -27,14 +27,14 @@
             "difficulty": "Beginner",
             "path": "guides/swap-tokens-with-0x-api.mdx"
         },
-        "build-your-first-cfl-enabled-smart-contract": {
-            "title": "Build your first CFL-enabled smart contract",
+        "use-0x-api-liquidity-in-your-smart-contracts": {
+            "title": "Use 0x API Liquidity in Your Smart Contracts",
             "subtitle": "Allow your users to do simple atomic token swaps in your dApp with 0x API",
             "description": "Allow your users to do simple atomic token swaps in your dApp with 0x API",
             "tags": ["0x API", "CFL"],
             "topics": ["0x API", "CFL"],
             "difficulty": "Beginner",
-            "path": "guides/build-your-first-cfl-enabled-smart-contract.mdx"
+            "path": "guides/use-0x-api-liquidity-in-your-smart-contracts.mdx"
         },
         "create-staking-pool": {
             "title": "Create and manage your staking pool",
