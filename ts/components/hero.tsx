@@ -12,7 +12,7 @@ interface Props {
     isLargeTitle?: boolean;
     isFullWidth?: boolean;
     isCenteredMobile?: boolean;
-    description: string;
+    description: React.ReactNode | string;
     figure?: React.ReactNode;
     actions?: React.ReactNode;
     background?: React.ReactNode;

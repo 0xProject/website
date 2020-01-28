@@ -73,7 +73,12 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                 labelText={'0x API'}
                 isFullWidth={true}
                 sectionPadding={'60px 0 120px 0'}
-                description="Easily integrate with 0x API once to aggregate liquidity from 0x Mesh, Kyber, Uniswap, and more and swap tokens at the best price."
+                description={
+                    <WrappedDescription>
+                        Easily integrate with 0x API once to aggregate liquidity from 0x Mesh, Kyber, Uniswap, and more
+                        and swap tokens at the best price.
+                    </WrappedDescription>
+                }
                 showFigureBottomMobile={true}
                 isCenteredMobile={true}
                 figure={
@@ -308,7 +313,7 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
                     <ExampleRowContainer>
                         <ExampleLeftContainer>
                             <ExampleLabel>Swap Tokens with 0x API</ExampleLabel>
-                            <ExampleDescription>Complete a token swap with 0x API</ExampleDescription>
+                            <ExampleDescription>Complete a token swap with 0x API using web3</ExampleDescription>
                         </ExampleLeftContainer>
                         <ExampleLink>
                             <Button href="/docs/guides/swap-tokens-with-0x-api" isWithArrow={true} isAccentColor={true}>
@@ -318,20 +323,9 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
                     </ExampleRowContainer>
                     <ExampleRowContainer>
                         <ExampleLeftContainer>
-                            <ExampleLabel>Margin trading with 0x API</ExampleLabel>
-                            <ExampleDescription>Create a margin trading DeFi product using 0x API</ExampleDescription>
-                        </ExampleLeftContainer>
-                        <ExampleLink>
-                            <Button href="/docs/api" isWithArrow={true} isAccentColor={true}>
-                                View Guide
-                            </Button>
-                        </ExampleLink>
-                    </ExampleRowContainer>
-                    <ExampleRowContainer>
-                        <ExampleLeftContainer>
-                            <ExampleLabel>Abstract away Protocol Fees</ExampleLabel>
+                            <ExampleLabel>Use 0x API Liquidity in Your Smart Contracts</ExampleLabel>
                             <ExampleDescription>
-                                Use 0x API with other 0x tools for advanced functionality
+                                Complete a token swap in your smart contracts with 0x API
                             </ExampleDescription>
                         </ExampleLeftContainer>
                         <ExampleLink>
@@ -340,6 +334,20 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
                             </Button>
                         </ExampleLink>
                     </ExampleRowContainer>
+                    {/* TODO(johnrjj) -- Uncomment when released */}
+                    {/* <ExampleRowContainer>
+                        <ExampleLeftContainer>
+                            <ExampleLabel>Margin trading with 0x API</ExampleLabel>
+                            <ExampleDescription>
+                                Create a margin trading DeFi product using 0x API
+                            </ExampleDescription>
+                        </ExampleLeftContainer>
+                        <ExampleLink>
+                            <Button href="/docs/api" isWithArrow={true} isAccentColor={true}>
+                                View Guide
+                            </Button>
+                        </ExampleLink>
+                    </ExampleRowContainer> */}
                 </FlexColumnWrapped>
             </ResponsiveFlexSection>
             {/* More info/CTA section  */}
@@ -925,6 +933,15 @@ const LogoSectionColumnContainer = styled.div`
     flex-direction: column;
     align-self: center;
     justify-content: center;
+`;
+
+// This is strictly for above-the-fold line break aesthetics.
+// These values were manually calculated and don't have any specific meaning.
+const WrappedDescription = styled.div`
+    padding-right: 70px;
+    @media (max-width: 768px) {
+        padding-right: inherit;
+    }
 `;
 
 // tslint:disable-next-line: max-file-line-count
