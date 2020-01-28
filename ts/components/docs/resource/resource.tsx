@@ -8,7 +8,6 @@ import { Tag } from 'ts/components/docs/resource/tag';
 import { Heading, Paragraph } from 'ts/components/text';
 
 import { colors } from 'ts/style/colors';
-import { WebsitePaths } from 'ts/types';
 
 interface IHitProps {
     hit: IResourceProps;
