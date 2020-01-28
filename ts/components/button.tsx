@@ -38,7 +38,7 @@ export interface ButtonInterface {
     fontWeight?: string;
 }
 
-export const Button: React.StatelessComponent<ButtonInterface> = (props: ButtonInterface) => {
+export const Button: React.StatelessComponent<ButtonInterface> = React.memo((props: ButtonInterface) => {
     const { children, href, isWithArrow, to, shouldUseAnchorTag, target, isDisabled, className } = props;
     const isButton = !href && !to;
     let linkElem;
@@ -71,7 +71,7 @@ export const Button: React.StatelessComponent<ButtonInterface> = (props: ButtonI
             )}
         </Component>
     );
-};
+});
 
 Button.defaultProps = {
     // borderColor: 'rgba(255, 255, 255, .4)',

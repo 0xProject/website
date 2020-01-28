@@ -20,7 +20,7 @@ declare module 'react-headroom';
 declare module 'zeroExInstant';
 declare module 'react-toggle-component';
 declare module 'react-tabs';
-
+declare module 'react-syntax-highlighter/dist/cjs/styles/hljs/vs2015';
 declare module '*.json' {
     const json: any;
     /* tslint:disable */

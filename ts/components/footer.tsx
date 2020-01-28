@@ -32,9 +32,9 @@ const linkRows: LinkRows[] = [
         heading: 'Products',
         isOnMobile: true,
         links: [
+            { url: WebsitePaths.ZeroExApi, text: '0x API' },
             { url: WebsitePaths.Instant, text: '0x Instant' },
             { url: WebsitePaths.LaunchKit, text: '0x Launch Kit' },
-            { url: WebsitePaths.AssetSwapperPage, text: 'Asset Swapper' },
             { url: WebsitePaths.Extensions, text: 'Extensions' },
             { url: WebsitePaths.Vote, text: 'Governance' },
         ],
@@ -75,7 +75,7 @@ interface IFooterProps {
     isDocs?: boolean;
 }
 
-export const Footer: React.FC<IFooterProps> = ({ isDocs }) => (
+export const Footer: React.FC<IFooterProps> = React.memo(({ isDocs }) => (
     <FooterWrap isDocs={isDocs}>
         <FlexWrap>
             <FooterColumn width="35%">
@@ -99,7 +99,7 @@ export const Footer: React.FC<IFooterProps> = ({ isDocs }) => (
             </FooterColumn>
         </FlexWrap>
     </FooterWrap>
-);
+));
 
 const LinkList = (props: LinkListProps) => (
     <List>
