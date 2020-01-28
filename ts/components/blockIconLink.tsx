@@ -12,6 +12,7 @@ interface BaseComponentProps {
     title: string;
     linkLabel: string;
     linkUrl?: string;
+    isExternalLink?: boolean;
     linkAction?: () => void;
     history: History;
     location: Location;
@@ -20,12 +21,18 @@ interface BaseComponentProps {
 
 class BaseComponent extends React.PureComponent<BaseComponentProps> {
     public onClick = (): void => {
-        const { linkAction, linkUrl } = this.props;
+        const { linkAction, linkUrl, isExternalLink } = this.props;
 
         if (linkAction) {
             linkAction();
+        } else if (isExternalLink) {
+            window.open(
+                linkUrl,
+                '_blank', // New window
+                'noopener',
+              );
         } else {
-            this.props.history.push(linkUrl);
+        this.props.history.push(linkUrl);
         }
     };
 

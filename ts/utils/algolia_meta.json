@@ -1,5 +1,15 @@
 {
-    "api": {"api": {"title": "API Specification", "path": "api/index.mdx"}},
+    "api": {
+        "api": {
+            "title": "API Specification", 
+            "subtitle": "Learn how to use the 0x HTTP API",
+            "description": "The easiest way to source liquidity from 0x Mesh as well as Kyber, Uniswap, Oasis and other decentralized exchange networks.",
+            "path": "api/index.mdx",
+            "tags": ["0x API"],
+            "topics": ["0x API"],
+            "difficulty": "Easy"
+        }
+    },
     "core-concepts": {
         "core-concepts": {
             "title": "Core Concepts",
@@ -280,8 +290,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Protocol Developer"],
             "type": "Typescript Libraries",
-            "path": "tools/@0x/asset-swapper/v4.0.0/reference.mdx",
-            "versions": ["v4.0.0"]
+            "path": "tools/@0x/asset-swapper/v4.0.1/reference.mdx",
+            "versions": ["v4.0.1"]
         },
         "0x.js": {
             "title": "0x.js",
@@ -291,8 +301,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Relayer", "Protocol Developer"],
             "type": "Typescript Libraries",
-            "path": "tools/0x.js/v9.0.4/reference.mdx",
-            "versions": ["v9.0.4"]
+            "path": "tools/0x.js/v9.0.5/reference.mdx",
+            "versions": ["v9.0.5"]
         },
         "connect": {
             "title": "0x Connect",

@@ -16,6 +16,16 @@ export const documentConstants: { [s: string]: DocumentMetadata } = {
         description: 'Check out the wide range of projects and businesses building in the 0x ecosystem!',
         keywords: '',
     },
+    API: {
+        title: 'Swap tokens at the best prices',
+        description: 'A single developer endpoint to source an aggregation of liquidity',
+        keywords: 'aggregated liquidity, DeFi liquidity, DEX, Decentralized Exchange, Ethereum, 0x, 0x Protocol, Tokens, ZRX, Crypto Exchange, Cryptocurrency, Crypto, DeFi, Decentralized Finance, crypto trading, token swaps, swap tokens, swap crypto, fill orders, networked liquidity, contract-fillable liquidity, CFL, atomic arbitrage, arbitrage bots, algo trading',
+    },
+    ZRX_PORTAL: {
+        title: 'Stake and vote with your ZRX tokens',
+        description: 'Earn liquidity rewards by staking ZRX',
+        keywords: 'DEX, Decentralized Exchange, Ethereum, 0x, 0x Protocol, ZRX, token staking, ZRX token, ZRX price, ZRX staking, ZRX voting, 0x governance, Crypto Exchange, Cryptocurrency, Crypto, DeFi, Decentralized Finance, Open Finance, Crypto Market Maker, Networked Liquidity, 0x Home, staking dashboard',
+    },
     WHY: {
         title: '0x: Features and Benefits',
         description:

@@ -9,6 +9,7 @@ const URL_ZEROEX_CHAT = 'https://discord.gg/d3FTX3M';
 export const constants = {
     DECIMAL_PLACES_ETH: 18,
     DECIMAL_PLACES_ZRX: 18,
+    DECIMAL_PLACES_DAI: 18,
     ETHER_TOKEN_SYMBOL: 'WETH',
     ZRX_TOKEN_SYMBOL: 'ZRX',
     ETHER_SYMBOL: 'ETH',
@@ -147,6 +148,7 @@ export const constants = {
     URL_CANONICAL_WETH_POST: 'https://blog.0xproject.com/canonical-weth-a9aa7d0279dd',
     URL_ZEROEX_CHAT,
     URL_RELAYER_REGISTRY: 'https://github.com/0xProject/0x-relayer-registry',
+    URL_ZEROEX_API: 'https://github.com/0xProject/0x-api',
     URL_LAUNCH_KIT: 'https://github.com/0xProject/0x-launch-kit',
     URL_LAUNCH_KIT_ERC20_DEMO: 'https://demo.0x.org/erc20/',
     URL_LAUNCH_KIT_ERC721_DEMO: 'https://demo.0x.org/marketplace/',

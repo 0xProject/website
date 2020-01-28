@@ -104,8 +104,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         fetchAndSetEpochs();
     }, [apiClient]);
 
-    // Current epoch ends right before next one starts
-    const currentEpochEndDate = nextEpochStats && new Date(nextEpochStats.epochStart.timestamp);
+    const nextEpochStartDate = nextEpochStats && new Date(nextEpochStats.epochStart.timestamp);
 
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
@@ -148,7 +147,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
             <SectionWrapper>
                 <CurrentEpochOverview
                     zrxStaked={nextEpochStats && nextEpochStats.zrxStaked}
-                    currentEpochEndDate={currentEpochEndDate}
+                    nextEpochStartDate={nextEpochStartDate}
                     currentEpochRewards={currentEpochRewards}
                     numMarketMakers={stakingPools && stakingPools.length}
                 />

@@ -7,9 +7,9 @@ import { WebsitePaths } from 'ts/types';
 
 const navData = [
     {
-        title: 'Asset Swapper',
-        description: 'Funnel 0x liquidity into your DeFi smart contracts',
-        url: WebsitePaths.AssetSwapperPage,
+        title: '0x API',
+        description: 'Single integration point to access all DEX liquidity',
+        url: WebsitePaths.ZeroExApi,
     },
     {
         title: '0x Instant',
@@ -20,11 +20,6 @@ const navData = [
         title: '0x Launch Kit',
         description: 'Launch an exchange or NFT marketplace in minutes',
         url: WebsitePaths.LaunchKit,
-    },
-    {
-        title: 'Governance',
-        description: 'Vote on ZEIPs to upgrade the 0x protocol',
-        url: WebsitePaths.Vote,
     },
 ];
 

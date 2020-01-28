@@ -26,8 +26,8 @@ export const SectionLandingAbout = () => (
             instruments to assets that could have never existed before.
         </Paragraph>
 
-        <DeveloperLink href={`${WebsitePaths.Why}#cases`} isWithArrow={true} isAccentColor={true}>
-            Discover how developers use 0x
+        <DeveloperLink href={WebsitePaths.ZeroExApi} isWithArrow={true} isAccentColor={true}>
+            Build on 0x API
         </DeveloperLink>
 
         <hr

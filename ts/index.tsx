@@ -29,6 +29,7 @@ import { AccountActivity } from 'ts/pages/account/activity';
 import { Account } from 'ts/pages/account/dashboard';
 import { StakingPoolActivity } from 'ts/pages/staking/history';
 
+import { ZeroExApi } from 'ts/pages/api';
 import { CFL } from 'ts/pages/cfl';
 import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
@@ -74,37 +75,39 @@ render(
                 <Provider store={store}>
                     <Switch>
                         {/* Next (new site) routes */}
-                        <Route exact={true} path="/" component={NextLanding as any} />
-                        <Route exact={true} path={WebsitePaths.Why} component={NextWhy as any} />
-                        <Route exact={true} path={WebsitePaths.MarketMaker} component={NextMarketMaker as any} />
-                        <Route exact={true} path={WebsitePaths.Explore} component={Explore as any} />
-                        <Route exact={true} path={WebsitePaths.Credits} component={Credits as any} />
-                        <Route exact={true} path={WebsitePaths.Instant} component={Next0xInstant as any} />
-                        <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit as any} />
-                        <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem as any} />
+                        <Route exact={true} path="/" component={NextLanding} />
+                        <Route exact={true} path={WebsitePaths.Why} component={NextWhy} />
+                        <Route exact={true} path={WebsitePaths.MarketMaker} component={NextMarketMaker} />
+                        <Route exact={true} path={WebsitePaths.Explore} component={Explore} />
+                        <Route exact={true} path={WebsitePaths.Credits} component={Credits} />
+                        <Route exact={true} path={WebsitePaths.Instant} component={Next0xInstant} />
+                        <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit} />
+                        <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem} />
 
-                        <Route exact={true} path={WebsitePaths.Account} component={Account as any} />
-                        <Route exact={true} path={WebsitePaths.AccountActivity} component={AccountActivity as any} />
-                        <Route exact={true} path={WebsitePaths.Staking} component={StakingIndex as any} />
-                        <Route exact={true} path={WebsitePaths.StakingWizard} component={StakingWizard as any} />
-                        <Route exact={true} path={WebsitePaths.StakingWizardRemove} component={RemoveStake as any} />
-                        <Route exact={true} path={WebsitePaths.StakingPool} component={StakingPool as any} />
+                        <Route exact={true} path={WebsitePaths.ZeroExApi} component={ZeroExApi} />
+
+                        <Route exact={true} path={WebsitePaths.Account} component={Account} />
+                        <Route exact={true} path={WebsitePaths.AccountActivity} component={AccountActivity} />
+                        <Route exact={true} path={WebsitePaths.Staking} component={StakingIndex} />
+                        <Route exact={true} path={WebsitePaths.StakingWizard} component={StakingWizard} />
+                        <Route exact={true} path={WebsitePaths.StakingWizardRemove} component={RemoveStake} />
+                        <Route exact={true} path={WebsitePaths.StakingPool} component={StakingPool} />
                         <Route
                             exact={true}
                             path={WebsitePaths.StakingPoolActivity}
-                            component={StakingPoolActivity as any}
+                            component={StakingPoolActivity}
                         />
-                        <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex as any} />
-                        <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance as any} />
+                        <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex} />
+                        <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance} />
 
-                        <Route exact={true} path={WebsitePaths.Extensions} component={Extensions as any} />
-                        <Route exact={true} path={WebsitePaths.AssetSwapperPage} component={CFL as any} />
-                        <Route exact={true} path={WebsitePaths.PrivacyPolicy} component={PrivacyPolicy as any} />
-                        <Route exact={true} path={WebsitePaths.TermsOfService} component={TermsOfService as any} />
-                        <Route exact={true} path={WebsitePaths.AboutMission} component={NextAboutMission as any} />
-                        <Route exact={true} path={WebsitePaths.AboutTeam} component={NextAboutTeam as any} />
-                        <Route exact={true} path={WebsitePaths.AboutPress} component={NextAboutPress as any} />
-                        <Route exact={true} path={WebsitePaths.AboutJobs} component={NextAboutJobs as any} />
+                        <Route exact={true} path={WebsitePaths.Extensions} component={Extensions} />
+                        <Route exact={true} path={WebsitePaths.AssetSwapperPage} component={CFL} />
+                        <Route exact={true} path={WebsitePaths.PrivacyPolicy} component={PrivacyPolicy} />
+                        <Route exact={true} path={WebsitePaths.TermsOfService} component={TermsOfService} />
+                        <Route exact={true} path={WebsitePaths.AboutMission} component={NextAboutMission} />
+                        <Route exact={true} path={WebsitePaths.AboutTeam} component={NextAboutTeam} />
+                        <Route exact={true} path={WebsitePaths.AboutPress} component={NextAboutPress} />
+                        <Route exact={true} path={WebsitePaths.AboutJobs} component={NextAboutJobs} />
                         {/*
                                   Note(ez): We remove/replace all old routes with next routes
                                   once we're ready to put a ring on it. for now let's keep em there for reference

@@ -7,6 +7,7 @@ import { Icon } from 'ts/components/icon';
 
 import { HeroAnimation } from 'ts/components/heroAnimation';
 import { ModalVideo } from 'ts/components/modals/modal_video';
+import { WebsitePaths } from 'ts/types';
 
 // const announcement = {
 //     headline: 'Vote on ZEIP-24 & ZEIP-39',
@@ -69,7 +70,7 @@ interface HeroActionsProps {
 
 const HeroActions: React.FC<HeroActionsProps> = props => (
     <>
-        <Button href="https://0x.org/docs" isInline={true}>
+        <Button to={WebsitePaths.ZeroExApi} isInline={true}>
             Get Started
         </Button>
 

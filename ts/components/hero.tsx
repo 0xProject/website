@@ -7,11 +7,12 @@ import { Announcement, AnnouncementProps } from './announcement';
 interface Props {
     title: string;
     maxWidth?: string;
+    labelText?: string;
     maxWidthHeading?: string;
     isLargeTitle?: boolean;
     isFullWidth?: boolean;
     isCenteredMobile?: boolean;
-    description: string;
+    description: React.ReactNode | string;
     figure?: React.ReactNode;
     actions?: React.ReactNode;
     background?: React.ReactNode;
@@ -73,7 +74,7 @@ const Title = styled.h1<TitleProps>`
     margin-right: auto;
     margin-bottom: 30px;
     max-width: ${props => props.maxWidth};
-    ${addFadeInAnimation('0.5s')}
+    ${addFadeInAnimation('0.5s', '0.05s')}
 
     @media (max-width: 1024px) {
         font-size: 60px;
@@ -104,6 +105,9 @@ interface ContentProps {
 const Content = styled.div<ContentProps>`
     width: 100%;
 
+    @media (min-width: 768px) {
+        max-width: ${props => props.width};
+    }
     @media (min-width: 768px) {
         max-width: ${props => props.width};
     }
@@ -157,6 +161,18 @@ const BackgroundWrap = styled.div`
     top: 0;
 `;
 
+const Label = styled.div`
+    font-weight: 300;
+    font-size: 22px;
+    color: #898990;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+    margin-bottom: 20px;
+    @media (min-width: 768px) {
+        margin-top: 35px;
+    }
+    ${addFadeInAnimation('0.5s')}
+`;
+
 export class Hero extends React.Component<Props> {
     public static defaultProps = {
         isCenteredMobile: true,
@@ -185,6 +201,7 @@ export class Hero extends React.Component<Props> {
 
                     <Content width={props.maxWidth ? props.maxWidth : props.figure ? '546px' : '678px'}>
                         {!!props.announcement && <Announcement {...props.announcement} />}
+                        {!!props.labelText && <Label>{props.labelText}</Label>}
                         <Title isLarge={props.isLargeTitle} maxWidth={props.maxWidthHeading}>
                             {props.title}
                         </Title>
