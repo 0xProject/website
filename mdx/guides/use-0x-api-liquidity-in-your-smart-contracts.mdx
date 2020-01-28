@@ -22,7 +22,7 @@ We will use our [0x API starter project](https://github.com/0xProject/0x-api-sta
 
 Begin by cloning the starter project and installing dependencies:
 
-```
+```sh
 $ git clone https://github.com/0xProject/0x-api-starter-guide-code
 $ cd 0x-api-starter-guide-code
 $ npm install
@@ -47,7 +47,7 @@ We first use 0x API to get a competitively priced quote for the token swap. By s
 
 Open `examples/simple_contract_token_swap.ts` and add the following snippet:
 
-```
+```typescript
 // examples/simple_contract_token_swap.ts
 
 // 1. call 0x API for a quote for one dollar of DAI.
@@ -91,7 +91,7 @@ This is a valid Ethereum transaction that you can execute directly from your add
 0x API starter project contains a smart contract development environment. We need to make some additions to `contracts/SimpleTokenSwapContract.sol`.
 
 
-```
+```solidity
 // contracts/SimpleTokenSwapContract.sol
 
 pragma solidity ^0.5.9;
@@ -120,7 +120,7 @@ Recall that in our example, the user wants to execute a transaction requiring DA
 
 Let’s begin by adding the type definition of the function that requires a token swap:
 
-```
+```solidity
 function functionThatRequiresDAI(bytes memory callDataHex) // the data provided by 0x API, containing the necessary payload to execute the swap transaction
     public
     payable // MUST be payable as we will be performing a swap with the user's ether value
@@ -134,7 +134,7 @@ function functionThatRequiresDAI(bytes memory callDataHex) // the data provided 
 Next, pass the callData to the `Forwarder` contract:
 
 
-```
+```solidity
 function functionThatRequiresDAI(bytes memory callDataHex)
     public
     payable
@@ -150,7 +150,7 @@ Assuming `success` is true, we have just written our first smart contract that u
 
 Let’s compile and build the smart contract we just wrote: 
 
-```
+```sh
 npm run build_contracts
 ```
 
@@ -164,7 +164,7 @@ Let’s put it all together to see what the user experience would be like.
 
 0x tools make it easy to interact with our new smart contract by automatically generating a TypeScript wrapper. We need to import the new wrapper and instantiate it:
 
-```
+```typescript
 // examples/simple_contract_token_swap.ts
 
 import { ERC20TokenContract } from '@0x/contracts-erc20'
@@ -185,7 +185,7 @@ const contract = new SimpleTokenSwapContractContract(simpleTokenSwapAddress, pro
 
 Now let’s execute the transaction with our new smart contract: 
 
-```
+```typescript
 try {
     console.log(`contract dai balance before: ${await daiContract.balanceOf(simpleTokenSwapAddress).callAsync()}`);
     const txHash = await contract.functionThatRequiresDAI(quote.data).sendTransactionAsync({
@@ -210,7 +210,6 @@ contract dai balance after: 10000000000000000000
 ```
 
 Voila! Your smart contract now has a balance of 1 DAI. You have just used 0x API’s liquidity in a smart contract for the first time!
-* * *
 
 ## Wrapping Up
 
