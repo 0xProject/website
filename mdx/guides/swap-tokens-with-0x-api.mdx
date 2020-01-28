@@ -1,35 +1,42 @@
-The swap API provides a method for performing token swaps (e.g. ETH to DAI) that aggregates offers from multiple DEXes to ensure you always receive the best price.
-You can read more the in the [0x API specification](/docs/api).
+# Swap tokens with 0x API
 
-All code snippets provided are designed to work in a browser environment with an injected web3 instance (like [Metamask](https://metamask.io/)). You can use the [npm web3 module](https://www.npmjs.com/package/web3) and modify these snippets to run them in a node environment.
+0x API aggregates offers from multiple decentralized exchanges to ensure that you always receive the best price when swapping tokens. 
 
-## Buy 1 DAI with ETH
+In this guide, we refer to “swap” and “quote” interchangeably. A “quote” is a response from the 0x API describing a transaction that, if executed, would swap the specified tokens.
 
-You can perform a two-line token swap like so: 
+All code snippets provided are designed to work in a browser environment with an injected web3 instance (like [Metamask](https://metamask.io/)). You can use the[npm web3 module](https://www.npmjs.com/package/web3) and modify these snippets to run them in a node environment.
 
-```javascript
+## Swap ETH for 1 DAI
+
+Perform a simple token swap to buy 1 DAI with ETH:
+
+```
+import * as qs from 'qs';
+
 (async () => {
     // buying 1 DAI with ETH
-    const response = await fetch(
-        'https://api.0x.org/swap/v0/quote?buyToken=DAI&sellToken=ETH&buyAmount=1000000000000000000'
-    );
+    const params = {
+        buyToken: 'DAI',
+        sellToken: 'ETH',
+        buyAmount: '1000000000000000000',
+    }
     
+    const response = await fetch(
+        `https://api.0x.org/swap/v0/quote?${qs.stringify(params)}`
+    );
+ 
     await window.web3.eth.sendTransaction(await response.json());
 })();
 ```
 
-Behind the scenes, `/swap/v0/quote` is getting you the best rate across the DEX ecosystem by aggregating liquidity from 
-sources like Kyber, Uniswap, Oasis and more. [Try it out!](https://codepen.io/fragosti/pen/xxbmgqy).
+Behind the scenes, 0x API gets the best rate across the DEX ecosystem by aggregating liquidity from Kyber, Uniswap, Oasis, and more. The API response is a valid Ethereum transaction. 
 
-Since we used ETH as our `sellToken`, the API returned a [Forwarder](/docs/guides/v3-forwarder-specification) transaction,
-which allowed us to get around setting [allowances](https://tokenallowance.io/) on any ERC20 tokens (including the `buyToken`).
+## Sell 1 ETH for DAI
 
-## Selling ETH instead of buying DAI
+The above example demonstrates how to buy 1 DAI with ETH. We can easily sell 1 ETH for *x* DAI too:
 
-The above example demonstrates how to buy 1 DAI with ETH, we can easily sell 1 ETH for X DAI like so: 
-
-```javascript
-import qs from 'qs';
+```
+import * as qs from 'qs';
 
 (async () => {
     // selling 1 ETH for DAI
@@ -47,17 +54,35 @@ import qs from 'qs';
 })();
 ```
 
-Instead of specifying `buyAmount`, provide `sellAmount` in the params. If both are provided `sellAmount` is used over `buyAmount`.
+Instead of specifying `buyAmount`, provide `sellAmount` in the params. If both are provided `sellAmount` is used over `buyAmount`. Refer to the [documentation](../api#get-swapv0quote) for more details.
 
-## Swapping between ERC20 token pairs
 
-Because this is a swap between ERC20 tokens, you need to give the [0x ERC20Proxy](https://etherscan.io/address/0x95e6f48254609a6ee006f7d493c8e5fb97094cef) smart contract [approval](https://tokenallowance.io/) to move your tokens for you. 
-Otherwise, the token swap works exactly the same way as before.
+## Swap ERC20 token pairs
 
-```javascript
-import qs from 'qs';
+Because this is a swap between ERC20 tokens, we need to give the [0x ERC20Proxy](./v3-specification#assetproxy) smart contract an approval to move your tokens for you. Otherwise, the token swap works exactly as before:
+
+```
+import * as qs from 'qs';
+
+import { ERC20TokenContract } from '@0x/contract-wrappers';
+import { BigNumber } from '@0x/utils';
+import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 
 (async () => {
+
+    // Set up proxy approval
+    const USDCaddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const USDCcontract = new ERC20TokenContract(USDCaddress, provider);
+    const maxApproval = new BigNumber(2).pow(256).minus(1);
+
+    // Send the approval to the 0x ERC20Proxy smart contract
+    const chainId = 1;
+    const contractAddresses = getContractAddressesForChainOrThrow(chainId);
+    const approvalTxData = USDCcontract
+        .approve(contractAddresses.erc20Proxy, maxApproval)
+        .getABIEncodedTransactionData();
+    await window.web3.eth.sendTransaction(approvalTxData);
+    
     // buying 1 DAI with USDC
     const params = {
         buyToken: 'DAI',
@@ -67,23 +92,22 @@ import qs from 'qs';
     
     const response = await fetch(
         `https://api.0x.org/swap/v0/quote?${qs.stringify(params)}`
-    );
+        );
     
     await window.web3.eth.sendTransaction(await response.json());
 })();
 ```
 
-This time, the API returned a [`marketSellOrdersFillOrKill`](https://0x.org/docs/guides/v3-specification#marketsellordersfillorkill) transaction on the 0x exchange smart contract.
+You can also request quotes with token addresses instead of symbols as `buyToken` or `sellToken`. Refer to the [documentation](../api#get-swapv0quote) for the full specification. 
 
-## Specifying a taker address for your swaps
+## Specify a taker address for your swaps
 
-You can optionally provide a `takerAddress` to get a specific gas amount to send with the swap transaction. 
+You can optionally provide a `takerAddress` to get a specific `gas` amount to send with the swap transaction. 
 
-The API will also perform a [`eth_call`](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call) to catch any reverts that would occur if the `takerAddress` attempts to swap the tokens. 
-An HTTP response with status `400` will be returned if the [`eth_call`](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call) results in a revert (ie. the swap fails), along with reasons for the revert.
+The API performs an `eth_call` under the hood to catch any reverts that would occur if the `takerAddress` attempts to swap the tokens. An HTTP response with status 400 will be returned if the `eth_call` results in a revert (ie. the proposed swap fails), along with reasons for the revert.
 
-```javascript 
-import qs from 'qs';
+```
+import * as qs from 'qs';
 
 (async () => {
     // selling 1 ETH for DAI
@@ -107,30 +131,29 @@ import qs from 'qs';
 })();
 ```
 
-## Diagnosing issues with reverts
+## Diagnosing revert issues
 
-Here is a handy checklist to go through to diagnose a revert issue:
+Here is a handy checklist to go through if you encounter reverts:
 
 * Does the `takerAddress` have enough balance? Check by comparing the `sellAmount` provided in the response of the endpoint against the `takerAddress`‘s `sellToken` balance.
-* If `sellToken` is an ERC20 token, (not ETH), the `takerAddress` will need to approve the [0x ERC20Proxy smart contract](https://etherscan.io/address/0x95e6f48254609a6ee006f7d493c8e5fb97094cef).
+* If `sellToken` is an ERC20 token (most tokens that are not `ETH`), the `takerAddress` will need to approve the 0x ERC20Proxy smart contract. [@0x/contract-addresses](https://github.com/0xProject/0x-monorepo/blob/development/packages/contract-addresses/addresses.json) contains the most up-to-date address for the ERC20Proxy contract. 
 
-## Seeing tokens available for swapping
+## Find tokens available for swapping
 
-The `/swap/v0/tokens` endpoint is useful to see a registry of all tokens and their respective token symbols available to swap through `/swap/v0/quote`. We maintain and update a registry of all the tokens (off-chain) and their token symbols available through `/swap/v0/quote`. Feel free to make edits or additions in the open-source repo [here](https://github.com/0xProject/0x-api).
+0x API also offers a registry of swappable tokens and their respective symbols. This returns all tokens that have available quotes through the /quote endpoint. The registry is maintained and updated off-chain and we welcome [edits or additions](https://github.com/0xProject/0x-api/blob/master/src/token_metadatas_for_networks.ts)! 
+<Notification>Note that this endpoint only reflects liquidity for symbols in the registry. You can also call the /swap endpoint with token addresses instead of symbols.</Notification>
 
-```javascript
+```
 (async () => {
     const response = await fetch('https://api.0x.org/swap/v0/tokens');
-        
     const tokens = (await response.json()).records;
-    
-    console.log(JSON.stringify(tokens, null, 2));
+    console.log(`${JSON.stringify(tokens, null, 2)}`);
 })();
 ```
 
 Logs:
 
-```json
+```
 [
     {
         "symbol": "DAI",
@@ -148,12 +171,12 @@ Logs:
 ]
 ```
 
-## Understanding the quote you are getting
+## Understand the provided quote
 
-The response of `/swap/v0/quote` provides a number of entries to easily understand the terms/rate of the swap you are performing.
+The API response contains information about the terms and rate of the proposed swap:
 
-```javascript
-import qs from 'qs';
+```
+import * as qs from 'qs';
 
 (async () => {
     // selling 1 ETH for DAI
@@ -179,39 +202,39 @@ import qs from 'qs';
 
 Logs:
 
-```json
+```
 price: 170.016662957413269675
 buyAmount: 170016662957413269675
 sellAmount: 1000000000000000000
 ```
 
-Refer to the [docs](/docs/api) for other entries that you may want to inspect before executing the swap.
+[Refer to the docs](../api#response-1) for other entries that you may want to inspect before executing the swap.
 
 ## Other ways to perform a token swap
 
 With the response from the API, you can fill the quote in a number of ways:
 
-* Like above, simply pass the response into sendTransaction
+* Like above, pass the response into `sendTransaction`
 
-```javascript
+```
 const executeQuote = async (quote) => {
     await window.web3.eth.sendTransaction(quote);
 };
 ```
-* Leverage 0x typescript tooling like [@0x/asset-swapper](https://0.0.0.0:3572/docs/tools/asset-swapper/v3.0.3) or [@0x/contract-wrappers](https://0.0.0.0:3572/docs/tools/contract-wrappers/v13.3.0).
-* Pass a few entries in the quote to a smart contract to perform the swap on-chain. Learn more [here](/docs/guides/abcs-of-contract-fillable-liquidity).
+
+* Leverage 0x TypeScript tooling like `@0x/asset-swapper` or `@0x/contract-wrappers`.
+* Forward the quote to a smart contract to perform the swap on-chain. This relies on concepts introduced in [Introduction to Using 0x API Liquidity In Smart Contracts](./introduction-to-using-0x-api-liquidity-in-smart-contracts.mdx)
 
 ## Advanced features
 
-### Changing the gasPrice parameter
+### Use the gasPrice parameter to calculate protocol fees
 
-In 0x v3, a new protocol fee (paid in ETH or WETH) that depends on gas price is introduced. 
-Provide the optional param `gasPrice` so 0x API can calculate an accurate `protocolFee` for the quote. If no `gasPrice` parameter is provided, the API will utilize the ‘fast’ gasPrice provided by [ethgasstation](https://ethgasstation.info/). If you decide to use a lower `gasPrice` than the one provided to the API, the protocol will refund the excess ETH paid.
+0x V3 introduces a new protocol fee paid in ETH or WETH. The amount of this fee is dependent on gas price. You can provide an optional param `gasPrice` when requesting quotes to calculate an accurate `protocolFee`. If no `gasPrice` parameter is provided, the API will utilize the ‘fast’ `gasPrice` provided by [ethgasstation](https://ethgasstation.info/). If you execute the quote with a lower `gasPrice` than the one provided to the API, the protocol will refund the excess ETH.
 
-Below we compare the differences in the price of the quote for different provided values of `gasPrice`.
+Below we compare the differences in the price of the quote for different values of `gasPrice`:
 
-```javascript
-import qs from 'qs';
+```
+import * as qs from 'qs';
 
 (async () => {
     // selling 1 ETH for DAI with varying gasPrices (in wei)
@@ -222,7 +245,9 @@ import qs from 'qs';
             sellAmount: '1000000000000000000',
             gasPrice,
         }
-        const response = await fetch(`https://api.0x.org/swap/v0/quote?${qs.stringify(params)}`);
+        const response = await fetch(
+            `https://api.0x.org/swap/v0/quote?${qs.stringify(params)}`
+        );
         const quote = await response.json();
     
         console.log(`value for gasPrice of ${gasPrice} wei: ${quote.protocolFee}`);
@@ -230,24 +255,22 @@ import qs from 'qs';
 })();
 ```
 
-Logs: 
-
-```javascript
+```
 value for gasPrice of 1 wei:  1000000000000150000
 value for gasPrice of 5 wei:  1000000000000750000
 value for gasPrice of 15 wei: 1000000000002250000
 ```
 
-### Paying the fee in WETH
+### Pay protocol fees in WETH
 
-You can pay protocol fees in either ETH or WETH. If you intend to pay the protocol fee in WETH a few changes to your implementation are needed:
+You can pay protocol fees in either ETH or WETH. If you intend to pay the protocol fee in WETH, you will need to make the following changes to your implementation:
 
-* You will not be able to perform swaps with `sellToken` set as ETH and pay protocol fee in WETH. Switch to using WETH as `sellToken` instead.
-* To pay the `protocolFee` in WETH, the [0x Staking contract](https://etherscan.io/address/0xa26e80e7dea86279c6d778d702cc413e6cffa777) will need an approval to access `takerAddress` WETH balance.
-* Instead of passing the provided value in `sendTransaction`, pass `value: 0` since the fees are paid in WETH instead of the ETH sent along with the transaction.
+* You will not be able to perform swaps with `sellToken` set as ETH _and_ pay protocol fee in WETH. Switch to using WETH as `sellToken` instead.
+* To pay the `protocolFee` in WETH, the [0x Staking contract](./v3-specification#staking) will need an approval to access the WETH balance for `takerAddress`.
+* Instead of passing the provided `value` in `sendTransaction`, pass `value: 0` since the fees are paid in WETH instead of the ETH sent along with the transaction.
 
-```javascript
-import qs from 'qs';
+```
+import * as qs from 'qs';
 
 (async () => {
     // selling 1 WETH for DAI
@@ -265,11 +288,10 @@ import qs from 'qs';
     const quote = await response.json();
     
     if (response.ok) {
+        // set value to zero so protocol fee will be paid in WETH
         await window.web3.eth.sendTransaction({
             ...quote,
-            ...{
-                value: 0,
-            }
+            value: 0, // override the value param
         });
     } else {
         // handle the error
@@ -277,14 +299,13 @@ import qs from 'qs';
 })();
 ```
 
----
+* * *
 
-## Wrapping up
+## Next steps
 
-Now that you got your feet wet with 0x API, let’s point you to other resources available to make leveraging 0x protocol as easy as possible:
+Now that you’ve got your feet wet with 0x API, here are some other resources to make using 0x protocol as easy as possible:
 
-* Learn more about leveraging 0x API in your smart contracts [here](/docs/guides/abcs-of-contract-fillable-liquidity).
-* Refer to our [API specification](/docs/api)for detailed documentation on the 0x API.
-* 0x API is open sourced! [Look through](https://github.com/0xProject/0x-api) the codebase or deploy your own 0x API instance. 
-* Don't hesitate to reach out on [Discord](https://discord.gg/YDm4wx) for help.
+* Refer to our [0x API specification](../api) for detailed documentation
+* 0x API is [open source](https://github.com/0xProject/0x-api)! Look through the codebase and deploy your own 0x API instance.
+* Don’t hesitate to reach out on [Discord](https://discordapp.com/invite/d3FTX3M) for help! The 0x Core team is active on Discord to help teams building with all things 0x.
 
