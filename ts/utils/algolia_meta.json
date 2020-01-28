@@ -27,6 +27,15 @@
             "difficulty": "Beginner",
             "path": "guides/swap-tokens-with-0x-api.mdx"
         },
+        "build-your-first-cfl-enabled-smart-contract": {
+            "title": "Build your first CFL-enabled smart contract",
+            "subtitle": "Allow your users to do simple atomic token swaps in your dApp with 0x API",
+            "description": "Allow your users to do simple atomic token swaps in your dApp with 0x API",
+            "tags": ["0x API", "CFL"],
+            "topics": ["0x API", "CFL"],
+            "difficulty": "Beginner",
+            "path": "guides/build-your-first-cfl-enabled-smart-contract.mdx"
+        },
         "create-staking-pool": {
             "title": "Create and manage your staking pool",
             "subtitle": "Learn how to create and manage your staking pool to collect liquidity rewards",
