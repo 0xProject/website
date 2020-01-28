@@ -49,6 +49,8 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
 
     const API_BASE = utils.getAPIBaseUrl(networkId || 1);
     const quoteEndpoint = `${API_BASE}/swap/v0/quote?sellAmount=${formattedTakerAmount}&buyToken=DAI&sellToken=USDC`;
+    // Surround endpoint in quotes so users can directly curl this (otherwise the ampersands escape out when pasting into terminal)
+    const copyableQuoteEndpoint = `"${quoteEndpoint}"`;
 
     React.useEffect(() => {
         const fetchQuote = async () => {
@@ -220,7 +222,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                     <RequestContainer>
                         <RequestLabelRow>
                             <Label>Get Price Quote</Label>
-                            <CopyToClipboard text={quoteEndpoint} onCopy={handleCopyClick}>
+                            <CopyToClipboard text={copyableQuoteEndpoint} onCopy={handleCopyClick}>
                                 <SecondaryLabel>{copyButtonText}</SecondaryLabel>
                             </CopyToClipboard>
                         </RequestLabelRow>
