@@ -86,14 +86,14 @@
             "difficulty": "Beginner",
             "externalUrl": "https://0x-org.gitbook.io/mesh/getting-started/deployment"
         },
-        "abcs-of-contract-fillable-liquidity": {
-            "title": "ABCs of contract-fillable liquidity",
+        "introduction-to-using-0x-liquidity-in-smart-contracts": {
+            "title": "Introduction to Using 0x Liquidity In Smart Contracts",
             "subtitle": "Integrate 0x’s liquidity into your smart contracts.",
             "description": "Integrate 0x’s liquidity into your smart contracts.",
             "tags": ["CFL"],
             "topics": ["CFL"],
             "difficulty": "Intermediate",
-            "path": "guides/abcs-of-contract-fillable-liquidity.mdx"
+            "path": "guides/introduction-to-using-0x-liquidity-in-smart-contracts.mdx"
         },
         "0x-cheat-sheet": {
             "title": "0x Cheat Sheet",
