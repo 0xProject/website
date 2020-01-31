@@ -424,7 +424,7 @@ export const Account: React.FC<AccountProps> = () => {
                             >
                                 <StatFigure
                                     label={statLabel}
-                                    value={format(new Date(nextEpochStats.epochStart.timestamp), 'd/M/yy')}
+                                    value={format(new Date(nextEpochStats.epochStart.timestamp), 'M/d/yy')}
                                 />
                             </AccountActivitySummary>
                         );
