@@ -12,7 +12,7 @@ import Checkmark from 'ts/icons/illustrations/checkmark.svg';
 import { colors } from 'ts/style/colors';
 
 import { WebsitePaths } from 'ts/types';
-import { formatPercent } from 'ts/utils/format_number';
+import { formatPercent, formatZrx } from 'ts/utils/format_number';
 import { utils } from 'ts/utils/utils';
 
 interface Metrics {
@@ -32,6 +32,7 @@ interface DashboardHeroProps {
     operatorAddress: string;
     isVerified: boolean;
     estimatedStake: number;
+    zrxToStaked: number;
     rewardsShared: number;
     iconUrl: string;
     tabs: DashBoardHeroTabs[];
@@ -227,6 +228,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
     websiteUrl,
     isVerified,
     estimatedStake,
+    zrxToStaked,
     rewardsShared,
     iconUrl,
 }) => {
@@ -280,7 +282,10 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                             </StakingButton>
                             <Progressbar progress={estimatedStake} />
                             <ProgressbarText>
-                                {formatPercent(estimatedStake).minimized}% estimated stake
+                                {formatPercent(estimatedStake).minimized}% estimated stake{' '}
+                                {zrxToStaked > 1
+                                    ? `(${formatZrx(zrxToStaked, { bigUnitPostfix: true }).full} remaining)`
+                                    : ''}
                             </ProgressbarText>
                         </ButtonContainer>
                     </Column>

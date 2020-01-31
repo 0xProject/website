@@ -277,6 +277,9 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
     // Only allow epochs that have finished into historical data
     const historicalEpochs = stakingPool.epochRewards.filter(x => !!x.epochEndTimestamp);
 
+    const fullyStakedZrx = nextEpoch.zrxStaked / (nextEpoch.approximateStakeRatio || 1);
+    const zrxToStaked = Math.max(fullyStakedZrx - nextEpoch.zrxStaked, 0);
+
     return (
         <StakingPageLayout isHome={true} title="Staking pool">
             <DashboardHero
@@ -286,6 +289,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 operatorAddress={stakingPool.operatorAddress}
                 isVerified={stakingPool.metaData.isVerified}
                 estimatedStake={nextEpoch.approximateStakeRatio * 100}
+                zrxToStaked={zrxToStaked}
                 rewardsShared={(1 - nextEpoch.operatorShare) * 100}
                 iconUrl={stakingPool.metaData.logoUrl}
                 tabs={[
