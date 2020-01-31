@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
-import { analytics } from 'ts/utils/analytics';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
+import { trackEvent } from 'ts/utils/google_analytics';
 import { providerStateFactory } from 'ts/utils/providers/provider_state_factory';
 
 const PROVIDER_CHAIN_CHANGED_EVENT = 'chainChanged';
@@ -85,9 +85,9 @@ export const useWallet = () => {
             }
         }
 
-        analytics.track(constants.STAKING.TRACKING.CONNECT_WALLET, {
-            provider: providerState.displayName || 'UnknownWallet',
-        });
+        const { TRACKING } = constants.STAKING;
+
+        trackEvent(TRACKING.CONNECT_WALLET, { provider: providerState.displayName || 'UnknownWallet' });
     }, [cleanupCurrentProvider, currentNetworkId, dispatcher, handleAccountsChange, handleNetworksChange]);
 
     const logoutWallet = useCallback(() => {

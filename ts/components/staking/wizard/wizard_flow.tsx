@@ -37,7 +37,7 @@ import { constants } from 'ts/utils/constants';
 import { formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
-import { analytics } from 'ts/utils/analytics';
+import { trackEvent } from 'ts/utils/google_analytics';
 
 const getFormattedTimeLeft = (secondsLeft: number) => {
     if (secondsLeft === 0) {
@@ -268,7 +268,8 @@ export interface StakingInputPaneProps {
 type AmountTrackingValue = '25%' | '50%' | '100%' | 'custom';
 const trackStakingAmountSelected = _.debounce(
     (value: AmountTrackingValue): void => {
-        analytics.track(constants.STAKING.TRACKING.STAKING_AMOUNT_EVENT, { value });
+        const { TRACKING } = constants.STAKING;
+        trackEvent(TRACKING.STAKING_AMOUNT_EVENT, { value });
     },
     1000,
     { trailing: true },
@@ -478,7 +479,8 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
 };
 
 const trackStartStakingScreenViewed = _.once(() => {
-    analytics.track(constants.STAKING.TRACKING.START_STAKING_SCREEN_VIEWED);
+    const { TRACKING } = constants.STAKING;
+    trackEvent(TRACKING.START_STAKING_SCREEN_VIEWED);
 });
 
 const DescriptionContainer = styled.div`
