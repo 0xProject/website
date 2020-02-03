@@ -170,22 +170,24 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `slippagePercentage` | (Optional, defaults to ".2") The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. |
 | `gasPrice`           | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                       |
 | `takerAddress`       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
-
+| `discluded`          | (Optional) Liquidity sources (Eth2Dai, Uniswap, Kyber, Native) that will not be included in the provided quote.                                                                                                     |
 
 ### Response
 
-| Field         | Description                                                                                                                                                                                                                                |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `price`       | If `buyAmount` was specified in the request it provides the price of `buyToken` in `sellToken` and vice versa. This price does not include the `slippage` provided in the request above, and therefore represents the best possible price. |
-| `to`          | The address of the contract to send call `data` to.                                                                                                                                                                                        |
-| `data`        | The call data required to be sent to the `to` contract address.                                                                                                                                                                            |
-| `value`       | The amount of ether (in wei) that should be sent with the transaction. (Assuming protocolFee is paid in ether).                                                                                                                            |
-| `gasPrice`    | The gas price (in wei) that should be used to send the transaction. The transaction needs to be sent with this `gasPrice` or lower for the transaction to be successful.                                                                   |
-| `gas`         | The estimated gas limit that should be used to send the transaction. This is only returned if `takerAddress` is provided in the request.                                                                                                   |
-| `protocolFee` | The amount of ether paid towards the protocol fee (in wei).                                                                                                                                                                                |
-| `buyAmount`   | The amount of `buyToken` (in `buyToken` units) that would be bought in this swap.                                                                                                                                                          |
-| `sellAmount`   | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.                                                                                                                                                         |
-| `orders`      | [Signed orders](/docs/api#signed-order) that data is comprised of.                                                                                                                                                                         |
+| Field               | Description                                                                                                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `price`             | If `buyAmount` was specified in the request it provides the price of `buyToken` in `sellToken` and vice versa. This price does not include the `slippage` provided in the request above, and therefore represents the best possible price. |
+| `to`                | The address of the contract to send call `data` to.                                                                                                                                              |
+| `data`              | The call data required to be sent to the `to` contract address.                                                                                                                                  |
+| `value`             | The amount of ether (in wei) that should be sent with the transaction. (Assuming protocolFee is paid in ether).                                                                                  |
+| `gasPrice`          | The gas price (in wei) that should be used to send the transaction. The transaction needs to be sent with this `gasPrice` or lower for the transaction to be successful.                         |
+| `gas`               | The estimated gas limit that should be used to send the transaction. This is only returned if `takerAddress` is provided in the request.                                                         |
+| `protocolFee`       | The amount of ether paid towards the protocol fee (in wei).                                                                                                                                      |
+| `buyAmount`         | The amount of `buyToken` (in `buyToken` units) that would be bought in this swap.                                                                                                                |
+| `sellAmount`        | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.                                                                                                                |
+| `buyTokenAddress`   | The ERC20 token address of the token you want to receive in quote.                                                                                                                               |
+| `sellTokenAddress`  | The ERC20 token addrerss of the token you want to sell with quote.                                                                                                                               |
+| `orders`            | [Signed orders](/docs/api#signed-order) that data is comprised of.                                                                                                                               |
 
 ### Examples 
 
