@@ -14,9 +14,11 @@ const PROVIDER_CHAIN_CHANGED_EVENT = 'chainChanged';
 const PROVIDER_ACCOUNTS_CHANGED_EVENT = 'accountsChanged';
 const PROVIDER_NETWORK_CHANGED_EVENT = 'networkChanged';
 
+let hasAutoConnected = false;
+
 export const useWallet = () => {
     const dispatch = useDispatch();
-    const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
+    const [dispatcher, setDispatcher] = useState<Dispatcher>(new Dispatcher(dispatch));
 
     const accountsChangedRef = useRef<() => void | undefined>(undefined);
     const networkChangedRef = useRef<(networkId: string) => void | undefined>(undefined);
@@ -94,6 +96,35 @@ export const useWallet = () => {
         cleanupCurrentProvider();
         dispatcher.setAccountStateLoading();
     }, [cleanupCurrentProvider, dispatcher]);
+
+    // HACK(kimpers): If the user have  already connected the wallet then getAccounts will return a list of accounts
+    // in that case it's safe to automatically connect to the wallet and log them in
+    // if the account list is empty then we should wait for the user to manually connect the wallet
+    //
+    // NOTE: unclear wallet support outside of MetaMask but should not break anything
+    useEffect(() => {
+        // NOTE: This should only run once globally
+        if (hasAutoConnected) {
+            return;
+        }
+        hasAutoConnected = true;
+
+        const web3 = (window as any)?.web3;
+
+        if (web3?.eth?.getAccounts) {
+            web3.eth.getAccounts((accountsErr: Error, accounts: string[]) => {
+                if (accountsErr) {
+                    return;
+                }
+                if (accounts.length) {
+                    connectToWallet().catch((err: Error) => {
+                        logUtils.warn(`Failed to connect wallet ${err}`);
+                        errorReporter.report(err);
+                    });
+                }
+            });
+        }
+    }, [connectToWallet]);
 
     return {
         connectToWallet: useCallback(() => {
