@@ -8,6 +8,7 @@ import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { CallToAction } from 'ts/components/call_to_action';
+import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading } from 'ts/components/text';
 import { InfoTooltip } from 'ts/components/ui/info_tooltip';
@@ -100,9 +101,13 @@ export const Account: React.FC<AccountProps> = () => {
     const voteHistory: VoteHistory[] = [];
 
     const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
+    const [changePoolDetails, setChangePoolDetails] = React.useState<{ poolId: string; zrxAmount: number } | undefined>(
+        undefined,
+    );
     const [isFetchingDelegatorData, setIsFetchingDelegatorData] = React.useState<boolean>(false);
     const [delegatorData, setDelegatorData] = React.useState<StakingAPIDelegatorResponse | undefined>(undefined);
     const [poolWithStatsMap, setPoolWithStatsMap] = React.useState<PoolWithStatsMap | undefined>(undefined);
+    const [stakingPools, setStakingPools] = React.useState<PoolWithStats[]>(undefined);
     const [availableRewardsMap, setAvailableRewardsMap] = React.useState<PoolToRewardsMap | undefined>(undefined);
     const [totalAvailableRewards, setTotalAvailableRewards] = React.useState<BigNumber>(new BigNumber(0));
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
@@ -114,7 +119,7 @@ export const Account: React.FC<AccountProps> = () => {
     const [pendingUnstakePoolSet, setPendingUnstakePoolSet] = React.useState<Set<string>>(new Set());
 
     const apiClient = useAPIClient(networkId);
-    const { stakingContract, unstake, withdrawStake, withdrawRewards } = useStake(networkId, providerState);
+    const { stakingContract, unstake, withdrawStake, withdrawRewards, moveStake } = useStake(networkId, providerState);
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
 
@@ -147,6 +152,7 @@ export const Account: React.FC<AccountProps> = () => {
             );
 
             setDelegatorData(delegatorResponse);
+            setStakingPools(poolsResponse.stakingPools);
             setPoolWithStatsMap(_poolWithStatsMap);
             setNextEpochStats(epochsResponse.nextEpoch);
             setCurrentEpochStakeMap(_currentEpochStakeMap);
@@ -501,6 +507,10 @@ export const Account: React.FC<AccountProps> = () => {
                                         userData={userData}
                                         nextEpochApproximateStart={new Date(nextEpochStats.epochStart.timestamp)}
                                         isVerified={pool.metaData.isVerified}
+                                        onMoveStake={() => {
+                                            const zrxAmount = delegatorPoolStats.zrxStaked;
+                                            setChangePoolDetails({ poolId, zrxAmount });
+                                        }}
                                         onRemoveStake={() => {
                                             const zrxAmount = delegatorPoolStats.zrxStaked;
                                             unstake([{ poolId, zrxAmount }], () => {
@@ -548,6 +558,13 @@ export const Account: React.FC<AccountProps> = () => {
             )}
 
             <AccountApplyModal isOpen={isApplyModalOpen} onDismiss={() => toggleApplyModal(false)} />
+            <ChangePoolDialog
+                stakingPools={stakingPools || []}
+                moveStake={moveStake}
+                currentPoolDetails={changePoolDetails}
+                isOpen={!!changePoolDetails}
+                onDismiss={() => setChangePoolDetails(undefined)}
+            />
         </StakingPageLayout>
     );
 };

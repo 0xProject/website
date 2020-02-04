@@ -43,6 +43,7 @@ const toAggregatedStats = (stats: BigNumber[]) => {
 export interface UseStakeHookResult {
     depositAndStake: (stakingPools: StakePoolData[], callback?: () => void) => void;
     unstake: (stakePoolData: StakePoolData[], callback?: () => void) => void;
+    moveStake: (fromPoolId: string, toPoolId: string, zrxAmount: number, callback?: () => void) => void;
     withdrawStake: (zrxAmountBaseUnits: BigNumber, callback?: () => void) => void;
     withdrawRewards: (poolIds: string[], callback?: () => void) => void;
     stakingContract?: StakingContract;
@@ -164,6 +165,25 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
             await executeWithData(data);
         },
         [executeWithData, loadingState, stakingContract],
+    );
+
+    const moveStakeAsync = useCallback(
+        async (fromPoolId: string, toPoolId: string, zrxAmount: number) => {
+            const zrxAmountBaseUnits = toZrxBaseUnits(zrxAmount);
+            const fromPoolIdPadded = utils.toPaddedHex(fromPoolId);
+            const toPoolIdPadded = utils.toPaddedHex(toPoolId);
+
+            const data = stakingContract
+                .moveStake(
+                    { status: StakeStatus.Delegated, poolId: fromPoolIdPadded },
+                    { status: StakeStatus.Delegated, poolId: toPoolIdPadded },
+                    zrxAmountBaseUnits,
+                )
+                .getABIEncodedTransactionData();
+
+            await executeWithData([data]);
+        },
+        [executeWithData, stakingContract],
     );
 
     const withdrawStakeAsync = useCallback(
@@ -289,6 +309,17 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
                 .then(callback)
                 .catch((err: Error) => {
                     trackEvent(TRACKING.UNSTAKE, { success: false });
+                    handleError(err);
+                });
+        },
+        moveStake: (fromPoolId: string, toPoolId: string, zrxAmount: number, callback?: () => void) => {
+            moveStakeAsync(fromPoolId, toPoolId, zrxAmount)
+                .then(() => {
+                    trackEvent(TRACKING.MOVE_STAKE, { success: true });
+                })
+                .then(callback)
+                .catch((err: Error) => {
+                    trackEvent(TRACKING.MOVE_STAKE, { success: false });
                     handleError(err);
                 });
         },
