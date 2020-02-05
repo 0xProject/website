@@ -337,9 +337,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                             {
                                 title: 'Fees Generated',
                                 number: `${
-                                    // Use totalRewardsPaidInEth instead of protocolFeesGeneratedInEth because
-                                    // totalRewardsPaidInEth is protocolFeesGeneratedInEth (and subsidies)
-                                    formatEther(stakingPool.allTimeStats.totalRewardsPaidInEth, {
+                                    formatEther(stakingPool.allTimeStats.protocolFeesGeneratedInEth, {
                                         decimalsRounded: 4,
                                         decimals: 4,
                                     }).formatted
