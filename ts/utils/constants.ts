@@ -188,4 +188,5 @@ export const constants = {
         [Networks.Rinkeby]: 4,
         [Networks.Kovan]: 42,
     } as { [networkName: string]: number },
+    ZEROEX_API_GOOGLE_ADWORDS_CAMPAIGN: 'AW-686996921/Xl4oCODNwsIBELn7yscC',
 };
