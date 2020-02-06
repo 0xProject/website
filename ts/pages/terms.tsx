@@ -16,7 +16,7 @@ export const TermsOfService = () => (
                     Terms of Service
                 </Heading>
                 <Heading asElement="h4" size="small" marginBottom="50px" isMuted={true} isCentered={true}>
-                    These terms of service are effective as of January 9, 2020
+                    These terms of service are effective as of February 5, 2020
                 </Heading>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     Thank you for your interest in 0x. These terms of service, together with any documents and
@@ -280,12 +280,15 @@ export const TermsOfService = () => (
                     investment adviser or commodity trading adviser to any person.
                 </Paragraph>
                 <Paragraph size="default" isMuted={true} textAlign="left">
-                    ZeroEx does not operate or control the underlying software protocols that are used in connection
-                    with the ZRX Tokens or the 0x smart contracts beyond currently maintaining the ability to turn off
-                    the exchange functionality within the 0x smart contracts. In general, the underlying protocols are
-                    open-source and anyone can use, copy, modify, and distribute them. ZeroEx is not responsible for
-                    operation of the underlying protocols such as Ethereum, and ZeroEx makes no guarantee of their
-                    functionality, security, or availability.
+                    ZeroEx does not have the ability to modify or control in any manner the code underlying ZRX Tokens
+                    smart contract. The ability to modify the 0x smart contracts is managed by a multi-signature wallet
+                    currently controlled by ZeroEx and described in more detail{' '}
+                    <a href="https://github.com/0xProject/0x-protocol-specification/blob/master/v3/zero-ex-governor.md">
+                        here
+                    </a>
+                    . In general, the underlying protocols are open-source and anyone can use, copy, modify, and
+                    distribute them. ZeroEx is not responsible for operation of the underlying protocols such as
+                    Ethereum, and ZeroEx makes no guarantee of their functionality, security, or availability.
                 </Paragraph>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     To the maximum extent permitted under Applicable Law, the Site and the Services (and any of their
