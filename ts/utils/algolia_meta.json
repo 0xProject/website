@@ -36,6 +36,15 @@
             "difficulty": "Beginner",
             "path": "guides/use-0x-api-liquidity-in-your-smart-contracts.mdx"
         },
+        "how-to-set-your-token-allowances": {
+            "title": "How to Set your Token Allowances",
+            "subtitle": "Learn how to set your allowances in a dApp and in code",
+            "description": "Learn how to set your allowances in a dApp and in code",
+            "tags": ["Trader", "Market Maker"],
+            "topics": ["Trader", "Market Maker"],
+            "difficulty": "Beginner",
+            "path": "guides/how-to-set-your-token-allowances.mdx"
+        },
         "create-staking-pool": {
             "title": "Create and manage your staking pool",
             "subtitle": "Learn how to create and manage your staking pool to collect liquidity rewards",
