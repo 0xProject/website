@@ -296,6 +296,8 @@ export const Account: React.FC<AccountProps> = () => {
         );
     }
 
+    const nextEpochStart = nextEpochStats && new Date(nextEpochStats.epochStart.timestamp);
+
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
@@ -412,7 +414,7 @@ export const Account: React.FC<AccountProps> = () => {
                                 formatZrx(amount).minimized
                             } ZRX will be staked with ${stakingUtils.getPoolDisplayName(
                                 pool,
-                            )} in ${stakingUtils.getTimeToEpochDate(new Date(nextEpochStats.epochStart.timestamp))}`;
+                            )} in ${stakingUtils.getTimeToEpochDate(nextEpochStart)}`;
 
                             subtitle = 'Your tokens will be automatically staked when the new epoch starts';
                             statLabel = 'Staking starts';
@@ -428,10 +430,7 @@ export const Account: React.FC<AccountProps> = () => {
                                 poolId={poolId}
                                 address={pool.operatorAddress}
                             >
-                                <StatFigure
-                                    label={statLabel}
-                                    value={format(new Date(nextEpochStats.epochStart.timestamp), 'M/d/yy')}
-                                />
+                                <StatFigure label={statLabel} value={format(nextEpochStart, 'M/d/yy')} />
                             </AccountActivitySummary>
                         );
                     })}
@@ -505,7 +504,7 @@ export const Account: React.FC<AccountProps> = () => {
                                             formatEther(pool.sevenDayProtocolFeesGeneratedInEth).full as string
                                         }
                                         userData={userData}
-                                        nextEpochApproximateStart={new Date(nextEpochStats.epochStart.timestamp)}
+                                        nextEpochApproximateStart={nextEpochStart}
                                         isVerified={pool.metaData.isVerified}
                                         onMoveStake={() => {
                                             const zrxAmount = delegatorPoolStats.zrxStaked;
@@ -563,6 +562,8 @@ export const Account: React.FC<AccountProps> = () => {
                 moveStake={moveStake}
                 currentPoolDetails={changePoolDetails}
                 isOpen={!!changePoolDetails}
+                nextEpochStart={nextEpochStart}
+                availableRewardsMap={availableRewardsMap}
                 onDismiss={() => setChangePoolDetails(undefined)}
             />
         </StakingPageLayout>
