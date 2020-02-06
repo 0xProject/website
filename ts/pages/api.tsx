@@ -20,12 +20,23 @@ import { SiteWrap } from 'ts/components/siteWrap';
 import { colors } from 'ts/utils/colors';
 import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';
+import { trackEvent } from 'ts/utils/google_analytics';
 import { Translate } from 'ts/utils/translate';
-
-import { WebsitePaths } from 'ts/types';
 import { utils } from 'ts/utils/utils';
 
+import { WebsitePaths } from 'ts/types';
+
 import { State } from 'ts/redux/reducer';
+
+// tslint:disable-next-line: no-empty
+const noop = () => {};
+
+const trackZeroExApiAdConversion = () => {
+    trackEvent('conversion', {
+        send_to: constants.ZEROEX_API_GOOGLE_ADWORDS_CAMPAIGN,
+        event_callback: noop,
+    });
+};
 
 export interface ApiPageProps {
     location: Location;
@@ -91,7 +102,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                 figureMaxWidth="500px"
                 maxWidth="600px"
                 actions={
-                    <Button to={WebsitePaths.DocsApi} isInline={true}>
+                    <Button onClick={() => trackZeroExApiAdConversion()} to={WebsitePaths.DocsApi} isInline={true}>
                         View API Docs
                     </Button>
                     // tslint:disable-next-line:jsx-curly-spacing
@@ -212,6 +223,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                                 isAccentColor={true}
                                 to={WebsitePaths.DocsApi}
                                 target={undefined}
+                                onClick={() => trackZeroExApiAdConversion()}
                             >
                                 View API Documentation
                             </Button>
@@ -318,7 +330,12 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
                             <ExampleDescription>Complete a token swap with 0x API using web3</ExampleDescription>
                         </ExampleLeftContainer>
                         <ExampleLink>
-                            <Button href="/docs/guides/swap-tokens-with-0x-api" isWithArrow={true} isAccentColor={true}>
+                            <Button
+                                onClick={() => trackZeroExApiAdConversion()}
+                                href="/docs/guides/swap-tokens-with-0x-api"
+                                isWithArrow={true}
+                                isAccentColor={true}
+                            >
                                 View Guide
                             </Button>
                         </ExampleLink>
@@ -331,7 +348,12 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
                             </ExampleDescription>
                         </ExampleLeftContainer>
                         <ExampleLink>
-                            <Button href="/docs/guides/use-0x-api-liquidity-in-your-smart-contracts" isWithArrow={true} isAccentColor={true}>
+                            <Button
+                                onClick={() => trackZeroExApiAdConversion()}
+                                href="/docs/guides/use-0x-api-liquidity-in-your-smart-contracts"
+                                isWithArrow={true}
+                                isAccentColor={true}
+                            >
                                 View Guide
                             </Button>
                         </ExampleLink>
