@@ -34,7 +34,6 @@ const noop = () => {};
 const trackZeroExApiAdConversion = () => {
     trackEvent('conversion', {
         send_to: constants.ZEROEX_API_GOOGLE_ADWORDS_CAMPAIGN,
-        event_callback: noop,
     });
 };
 
