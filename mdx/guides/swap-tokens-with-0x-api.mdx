@@ -302,7 +302,7 @@ import * as qs from 'qs';
 
 ### Choosing liquidity sources
 
-With the `discluded` optional parameter in `swap/v0/quote`, you can specify which liquidity sources will not be used when providing a quote.
+With the `excludedSources` optional parameter in `swap/v0/quote`, you can specify which liquidity sources will not be used when providing a quote.
 
 ```javascript
 import qs from 'qs';
@@ -314,7 +314,7 @@ import qs from 'qs';
         sellToken: 'WETH',
         sellAmount: '1000000000000000000',
         takerAddress: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B', // vitalik's address
-        discluded: 'Uniswap,Kyber', // provide a quote with only Eth2Dai and 0x native orders
+        excludedSources: 'Uniswap,Kyber', // provide a quote with only Eth2Dai and 0x native orders
     }
 
     const response = await fetch(

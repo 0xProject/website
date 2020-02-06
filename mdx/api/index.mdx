@@ -170,7 +170,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `slippagePercentage` | (Optional, defaults to ".2") The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. |
 | `gasPrice`           | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                       |
 | `takerAddress`       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
-| `discluded`          | (Optional) Liquidity sources (Eth2Dai, Uniswap, Kyber, Native) that will not be included in the provided quote.                                                                                                     |
+| `excludedSources`          | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`                                                                                                    |
 
 ### Response
 
