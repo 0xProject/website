@@ -154,6 +154,7 @@ Follow the "[Swap Tokens with 0x API](/docs/guides/swap-tokens-with-0x-api)" gui
 
 Get an easy-to-consume quote for buying or selling any token. 
 The return format is a valid unsigned Ethereum transaction and can be submitted directly to an Ethereum node to complete the swap.
+For transactions where the `sellToken` is not ETH, you will have to [set your allowances](/docs/guides/how-to-set-your-token-allowances).
 
 ### Request 
 
@@ -173,18 +174,18 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 
 ### Response
 
-| Field         | Description                                                                                                                                                                                      |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `price`       | If `buyAmount` was specified in the request it provides the price of `buyToken` in `sellToken` and vice versa. This price does not include the `slippage` provided in the request above.       |
-| `to`          | The address of the contract to send call `data` to.                                                                                                                                              |
-| `data`        | The call data required to be sent to the `to` contract address.                                                                                                                                  |
-| `value`       | The amount of ether (in wei) that should be sent with the transaction. (Assuming protocolFee is paid in ether).                                                                                  |
-| `gasPrice`    | The gas price (in wei) that should be used to send the transaction. The transaction needs to be sent with this `gasPrice` or lower for the transaction to be successful.                         |
-| `gas`         | The estimated gas limit that should be used to send the transaction. This is only returned if `takerAddress` is provided in the request.                                                         |
-| `protocolFee` | The amount of ether paid towards the protocol fee (in wei).                                                                                                                                      |
-| `buyAmount`   | The amount of `buyToken` (in `buyToken` units) that would be bought in this swap.                                                                                                                |
-| `sellAmount`   | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.                                                                                                                |
-| `orders`      | [Signed orders](/docs/api#signed-order) that data is comprised of.                                                                                                                               |
+| Field         | Description                                                                                                                                                                                                                                |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `price`       | If `buyAmount` was specified in the request it provides the price of `buyToken` in `sellToken` and vice versa. This price does not include the `slippage` provided in the request above, and therefore represents the best possible price. |
+| `to`          | The address of the contract to send call `data` to.                                                                                                                                                                                        |
+| `data`        | The call data required to be sent to the `to` contract address.                                                                                                                                                                            |
+| `value`       | The amount of ether (in wei) that should be sent with the transaction. (Assuming protocolFee is paid in ether).                                                                                                                            |
+| `gasPrice`    | The gas price (in wei) that should be used to send the transaction. The transaction needs to be sent with this `gasPrice` or lower for the transaction to be successful.                                                                   |
+| `gas`         | The estimated gas limit that should be used to send the transaction. This is only returned if `takerAddress` is provided in the request.                                                                                                   |
+| `protocolFee` | The amount of ether paid towards the protocol fee (in wei).                                                                                                                                                                                |
+| `buyAmount`   | The amount of `buyToken` (in `buyToken` units) that would be bought in this swap.                                                                                                                                                          |
+| `sellAmount`   | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.                                                                                                                                                         |
+| `orders`      | [Signed orders](/docs/api#signed-order) that data is comprised of.                                                                                                                                                                         |
 
 ### Examples 
 

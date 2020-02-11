@@ -1,0 +1,47 @@
+# How to set your token allowances
+
+Some interactions with 0x require or are improved by setting [token allowances](https://tokenallowance.io/),
+or in other words, giving 0x's smart contracts permission to move certain tokens on your behalf.
+For example, to trade ERC20 tokens you will have to give an allowance to the [ERC20Proxy](/docs/guides/v3-specification#assetproxy) contract.
+Another example is paying protocol fees in WETH. If you would like do enable that feature, you will need to give a WETH allowance to the [StakingProxy](/docs/guides/v3-staking-specification#architecture).
+You can look up the addresses for our smart contract deployments in the [0x cheat sheet](/docs/guides/0x-cheat-sheet#mainnet-1).
+
+
+## Setting Allowances on Etherscan
+
+There are a lot of dApps that let you set your allowances in Metamask (including [RadarRelay](https://app.radarrelay.com/)), but for this example we will be using [Etherscan](http://etherscan.io/).
+To set your WETH allowance for the ERC20Proxy contract you can navigate to the [Dapp view for the WETH ERC20](https://etherscan.io/dapp/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2#writeContract) contract.
+Here you can use Metamask to call the `approve` method to approve the ERC20Proxy for the max uint256 amount which is `115792089237316195423570985008687907853269984665640564039457584007913129639935`.
+Again, you can find the address of the ERC20Proxy in the [0x cheat sheet](/docs/guides/0x-cheat-sheet#mainnet-1).
+
+![Setting an approval in Etherscan!](/images/docs/approval.png)
+
+You can give a WETH allowance to any smart contract this way. To set your allowance for a different token, you'll have to navigate to the smart contract interface for that token.
+
+
+## Setting Allowances with Web3.js
+
+All code snippets provided are designed to work in a browser environment with an injected web3 instance (like [Metamask](https://metamask.io/)). 
+You can use the [npm web3 module](https://www.npmjs.com/package/web3) and modify these snippets to run them in a node environment.
+
+```
+import { ERC20TokenContract } from '@0x/contract-wrappers';
+import { BigNumber } from '@0x/utils';
+import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
+
+(async () => {
+    const web3 = window.web3;
+    // Set up proxy approval
+    const USDCaddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const USDCcontract = new ERC20TokenContract(USDCaddress, web3.eth.currentProvider);
+    const maxApproval = new BigNumber(2).pow(256).minus(1);
+
+    // Send the approval to the 0x ERC20Proxy smart contract
+    const chainId = 1;
+    const contractAddresses = getContractAddressesForChainOrThrow(chainId);
+    const approvalTxData = USDCcontract
+        .approve(contractAddresses.erc20Proxy, maxApproval)
+        .getABIEncodedTransactionData();
+    await web3.eth.sendTransaction(approvalTxData);
+})();
+```

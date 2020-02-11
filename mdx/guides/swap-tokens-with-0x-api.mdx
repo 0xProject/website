@@ -59,7 +59,8 @@ Instead of specifying `buyAmount`, provide `sellAmount` in the params. If both a
 
 ## Swap ERC20 token pairs
 
-Because this is a swap between ERC20 tokens, we need to give the [0x ERC20Proxy](./v3-specification#assetproxy) smart contract an approval to move your tokens for you. Otherwise, the token swap works exactly as before:
+Because this is a swap between ERC20 tokens, we need to give the [0x ERC20Proxy](./v3-specification#assetproxy) smart contract [an approval to move your tokens](/docs/guides/how-to-set-your-token-allowances) for you. 
+Otherwise, the token swap works exactly as before:
 
 ```
 import * as qs from 'qs';
@@ -69,10 +70,10 @@ import { BigNumber } from '@0x/utils';
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 
 (async () => {
-
+    const web3 = window.web3;
     // Set up proxy approval
     const USDCaddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
-    const USDCcontract = new ERC20TokenContract(USDCaddress, provider);
+    const USDCcontract = new ERC20TokenContract(USDCaddress, web3.eth.currentProvider);
     const maxApproval = new BigNumber(2).pow(256).minus(1);
 
     // Send the approval to the 0x ERC20Proxy smart contract
@@ -94,7 +95,7 @@ import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
         `https://api.0x.org/swap/v0/quote?${qs.stringify(params)}`
         );
     
-    await window.web3.eth.sendTransaction(await response.json());
+    await web3.eth.sendTransaction(await response.json());
 })();
 ```
 
