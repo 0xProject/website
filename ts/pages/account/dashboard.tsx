@@ -123,6 +123,30 @@ export const Account: React.FC<AccountProps> = () => {
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
 
+    const onChangePool = React.useCallback(
+        (fromPoolId: string, toPoolId: string, zrxAmount: number) => {
+            moveStake(fromPoolId, toPoolId, zrxAmount, () => {
+                // If TX is successful optimistically update UI before API has received the new state
+                const fromPoolNextEpochStake = Math.max((nextEpochStakeMap[fromPoolId] || 0) - zrxAmount, 0);
+                const toPoolNextEpochStake = (nextEpochStakeMap[toPoolId] || 0) + zrxAmount;
+
+                // If the user has any pending rewards with the pool they are moving from the contract will
+                // automatically send the rewards to the user's address
+                const withdrawnRewards = availableRewardsMap[fromPoolId] ?? 0;
+                if (withdrawnRewards > 0) {
+                    setTotalAvailableRewards(_totalAvailableRewards => _totalAvailableRewards.minus(withdrawnRewards));
+                }
+
+                setNextEpochStakeMap(stakeMap => ({
+                    ...stakeMap,
+                    [fromPoolId]: fromPoolNextEpochStake,
+                    [toPoolId]: toPoolNextEpochStake,
+                }));
+            });
+        },
+        [availableRewardsMap, moveStake, nextEpochStakeMap],
+    );
+
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
             const [delegatorResponse, poolsResponse, epochsResponse] = await Promise.all([
@@ -559,7 +583,7 @@ export const Account: React.FC<AccountProps> = () => {
             <AccountApplyModal isOpen={isApplyModalOpen} onDismiss={() => toggleApplyModal(false)} />
             <ChangePoolDialog
                 stakingPools={stakingPools || []}
-                moveStake={moveStake}
+                onChangePool={onChangePool}
                 currentPoolDetails={changePoolDetails}
                 isOpen={!!changePoolDetails}
                 nextEpochStart={nextEpochStart}

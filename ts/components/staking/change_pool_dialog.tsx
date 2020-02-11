@@ -27,7 +27,7 @@ interface ChangePoolDialogProps {
     };
     nextEpochStart: Date;
     availableRewardsMap?: { [key: string]: BigNumber };
-    moveStake: (fromPoolId: string, toPoolId: string, zrxAmount: number, callback?: () => void) => void;
+    onChangePool: (fromPoolId: string, toPoolId: string, zrxAmount: number) => void;
 }
 
 interface PoolWithDisplayName extends PoolWithStats {
@@ -38,7 +38,7 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
     isOpen,
     onDismiss,
     stakingPools,
-    moveStake,
+    onChangePool,
     nextEpochStart,
     availableRewardsMap,
     currentPoolDetails = {},
@@ -110,7 +110,7 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                         <ButtonWrapper>
                             <ConfirmButton
                                 onClick={() => {
-                                    moveStake(fromPool.poolId, toPool.poolId, zrxAmount);
+                                    onChangePool(fromPool.poolId, toPool.poolId, zrxAmount);
                                     clearAndDismiss();
                                 }}
                             >
