@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
-import { ScreenWidths } from 'ts/types';
 
 interface ThumbnailProps {
     size: number;
@@ -27,10 +26,6 @@ const BaseLogoContainer = styled.div<{ cutOffRem?: number; size: number }>`
     border: 1px solid #d9d9d9;
     height: ${props => props.size}px;
     width: ${props => props.size}px;
-
-    @media (max-width: ${props => `${props.cutOffRem || ScreenWidths.Lg}rem`}) {
-        display: none;
-    }
 `;
 
 const JazziconContainer = styled(BaseLogoContainer)``;

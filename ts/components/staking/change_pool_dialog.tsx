@@ -165,6 +165,10 @@ const ButtonWrapper = styled.div`
     margin-top: 33px;
     display: flex;
     justify-content: flex-end;
+
+    @media (max-width: 768px) {
+        justify-content: center;
+    }
 `;
 
 const StyledParagraph = styled(Paragraph)`
@@ -195,15 +199,19 @@ const StyledInput = styled(Input)`
 
 const InputWrapper = styled.div`
     display: flex;
-    align-items: center;
+    align-items: baseline;
 
-    box-shadow: 0px 1px 0px #b4bebd;
-    margin-bottom: 23px;
+    @media (min-width: 768px) {
+        box-shadow: 0px 1px 0px #b4bebd;
+        margin-bottom: 23px;
+    }
 `;
 
 const PoolsListWrapper = styled.div`
-    height: 450px;
     overflow-y: scroll;
+    @media (min-width: 768px) {
+        height: 450px;
+    }
 `;
 
 const ConfirmButton = styled(Button)`
@@ -222,6 +230,11 @@ const ButtonClose = styled(Button)`
     position: absolute;
     right: -10px;
     top: -30px;
+
+    @media (max-width: 768px) {
+        top: 15px;
+        right: 15px;
+    }
 
     path {
         fill: ${colors.black};
@@ -261,7 +274,7 @@ const StyledDialogContent = styled(DialogContent)`
         border: 1px solid #e5e5e5;
 
         @media (max-width: 768px) {
-            height: 100vh;
+            min-height: 100vh;
             width: 100vw;
             margin: 0;
             padding: 30px;

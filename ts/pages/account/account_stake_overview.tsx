@@ -154,6 +154,16 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                 */}
 
                 <Button
+                    color={colors.white}
+                    fontSize="17px"
+                    fontWeight="300"
+                    padding="15px 35px"
+                    isFullWidth={true}
+                    onClick={onMoveStake}
+                >
+                    Change
+                </Button>
+                <Button
                     color={colors.red}
                     borderColor="#D5D5D5"
                     bgColor={colors.white}
