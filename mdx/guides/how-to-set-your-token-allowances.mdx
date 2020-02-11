@@ -1,20 +1,18 @@
 # How to set your token allowances
 
-Some interactions with 0x require or are improved by setting token allowances,
-or in other words, giving 0x's smart contracts permission to move certain tokens on your behalf. 
-Depending on the context, you will have to provide an allowance to one of the [AssetProxy](/docs/guides/v3-specification#assetproxy) contracts
-or [StakingProxy](/docs/guides/v3-staking-specification#architecture) contract. 
+Some interactions with 0x require or are improved by setting [token allowances](https://tokenallowance.io/),
+or in other words, giving 0x's smart contracts permission to move certain tokens on your behalf.
+For example, to trade ERC20 tokens you will have to give an allowance to the [ERC20Proxy](/docs/guides/v3-specification#assetproxy) contract.
+Another example is paying protocol fees in WETH. If you would like do enable that feature, you will need to give a WETH allowance to the [StakingProxy](/docs/guides/v3-staking-specification#architecture).
 You can look up the addresses for our smart contract deployments in the [0x cheat sheet](/docs/guides/0x-cheat-sheet#mainnet-1).
-
-You can read more about [the ERC20 token allowance function](https://tokenallowance.io/), but this guide will focus on how to set them.
 
 
 ## Setting Allowances on Etherscan
 
-There are a lot of dApps that let you set your allowances in Metamask (including [RadarRelay](https://app.radarrelay.com/)).
-Here we will use Etherscan as they allow you to interact with any smart contract. 
-To set your WETH allowance for the ERC20AssetProxy contract you can navigate to the [Dapp view for the WETH ERC20](https://etherscan.io/dapp/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2#writeContract) contract.
-Here you can use Metamask to call the `approve` method to approve the ERC20AssetProxy for the max uint256 amount which is `115792089237316195423570985008687907853269984665640564039457584007913129639935`.
+There are a lot of dApps that let you set your allowances in Metamask (including [RadarRelay](https://app.radarrelay.com/)), but for this example we will be using [Etherscan](http://etherscan.io/).
+To set your WETH allowance for the ERC20Proxy contract you can navigate to the [Dapp view for the WETH ERC20](https://etherscan.io/dapp/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2#writeContract) contract.
+Here you can use Metamask to call the `approve` method to approve the ERC20Proxy for the max uint256 amount which is `115792089237316195423570985008687907853269984665640564039457584007913129639935`.
+Again, you can find the address of the ERC20Proxy in the [0x cheat sheet](/docs/guides/0x-cheat-sheet#mainnet-1).
 
 ![Setting an approval in Etherscan!](/images/docs/approval.png)
 
