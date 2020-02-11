@@ -1,8 +1,7 @@
 import { BigNumber } from '@0x/utils';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
-import Fuse from 'fuse.js';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -11,6 +10,7 @@ import { Input } from 'ts/components/modals/input';
 import { Thumbnail } from 'ts/components/staking/thumbnail.tsx';
 import { Heading, Paragraph } from 'ts/components/text';
 
+import { useSearch } from 'ts/hooks/use_search';
 import { zIndex } from 'ts/style/z_index';
 import { PoolWithStats } from 'ts/types';
 import { colors } from 'ts/utils/colors';
@@ -34,6 +34,10 @@ interface PoolWithDisplayName extends PoolWithStats {
     displayName: string;
 }
 
+const searchOptions = {
+    keys: ['displayName'],
+};
+
 export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
     isOpen,
     onDismiss,
@@ -43,35 +47,20 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
     availableRewardsMap,
     currentPoolDetails = {},
 }) => {
+    const stakingPoolsWithName: PoolWithDisplayName[] = useMemo(
+        () =>
+            stakingPools.sort(stakingUtils.sortByProtocolFeesDesc).map(pool => ({
+                ...pool,
+                displayName: stakingUtils.getPoolDisplayName(pool),
+            })),
+        [stakingPools],
+    );
+
+    const { setSearchTerm, searchResults } = useSearch<PoolWithDisplayName>(stakingPoolsWithName, searchOptions);
     const { poolId: fromPoolId, zrxAmount } = currentPoolDetails;
 
-    const [search, setSearch] = useState<string>('');
-    const [poolsList, setPoolsList] = useState<PoolWithStats[]>([]);
-    const [fuse, setFuse] = useState<Fuse<PoolWithDisplayName, { keys: string[] }> | undefined>(undefined);
     const [selectedPoolId, setSelectedPoolId] = useState<string | undefined>(undefined);
     const [isConfirmSceen, setIsConfirmScreen] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (!stakingPools.length) {
-            return;
-        }
-
-        setFuse(
-            new Fuse(
-                stakingPools.map(pool => ({ ...pool, displayName: stakingUtils.getPoolDisplayName(pool) })),
-                { keys: ['displayName'] },
-            ),
-        );
-    }, [stakingPools]);
-
-    useEffect(() => {
-        if (!fuse) {
-            return;
-        }
-
-        const results = fuse.search<PoolWithStats>(search);
-        setPoolsList(results);
-    }, [fuse, search]);
 
     const fromPool = stakingPools.find(p => p.poolId === fromPoolId);
     const toPool = stakingPools.find(p => p.poolId === selectedPoolId);
@@ -80,7 +69,7 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
     const clearAndDismiss = () => {
         setSelectedPoolId(undefined);
         setIsConfirmScreen(false);
-        setSearch('');
+        setSearchTerm('');
         onDismiss();
     };
 
@@ -128,12 +117,12 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                             <StyledInput
                                 width="full"
                                 placeholder="Search Pools"
-                                onChange={e => setSearch(e.target.value)}
+                                onChange={e => setSearchTerm(e.target.value)}
                             />
                         </InputWrapper>
 
                         <PoolsListWrapper>
-                            {(poolsList.length ? poolsList : stakingPools).map(pool => (
+                            {(searchResults.length ? searchResults : stakingPools).map(pool => (
                                 <Pool
                                     key={pool.poolId}
                                     onClick={() => setSelectedPoolId(pool.poolId)}
@@ -210,7 +199,7 @@ const InputWrapper = styled.div`
 const PoolsListWrapper = styled.div`
     overflow-y: scroll;
     @media (min-width: 768px) {
-        height: 450px;
+        height: 500px;
     }
 `;
 
@@ -260,8 +249,8 @@ const StyledDialogOverlay = styled(DialogOverlay)`
         background-color: rgba(255, 255, 255, 0.8);
         z-index: ${zIndex.overlay};
 
-        @media (max-width: 768px) {
-            background: white;
+        @media (min-width: 768px) {
+            overflow: hidden;
         }
     }
 `;
