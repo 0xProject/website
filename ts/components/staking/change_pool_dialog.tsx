@@ -81,20 +81,21 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                 </ButtonClose>
                 {isConfirmSceen ? (
                     <>
-                        <StyledHeading as="h3">Change stake confirmation</StyledHeading>
+                        <StyledHeading as="h3">Move stake confirmation</StyledHeading>
                         <StyledParagraph>
                             You are moving {formattedAmount} ZRX from {stakingUtils.getPoolDisplayName(fromPool)} to{' '}
-                            {stakingUtils.getPoolDisplayName(toPool)}
+                            {stakingUtils.getPoolDisplayName(toPool)}.
                         </StyledParagraph>
                         <StyledParagraph>
                             Your funds will be transfered at the beginning of the next epoch (in{' '}
-                            {stakingUtils.getTimeToEpochDate(nextEpochStart)})
+                            {stakingUtils.getTimeToEpochDate(nextEpochStart)}).
                         </StyledParagraph>
                         <StyledParagraph>
-                            Your current rewards will be automatically deposited into your wallet{' '}
+                            The rewards you have collected with this pool{' '}
                             {availableRewardsMap?.[fromPool.poolId]
-                                ? `(${formatEther(availableRewardsMap[fromPool.poolId]).minimized} ETH)`
+                                ? `(${formatEther(availableRewardsMap[fromPool.poolId]).minimized} ETH) `
                                 : ''}
+                            will automatically be sent to your wallet now.
                         </StyledParagraph>
                         <ButtonWrapper>
                             <ConfirmButton
@@ -103,7 +104,7 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                                     clearAndDismiss();
                                 }}
                             >
-                                I understand, change my stake
+                                I understand, move my stake
                             </ConfirmButton>
                         </ButtonWrapper>
                     </>
@@ -200,6 +201,7 @@ const PoolsListWrapper = styled.div`
     overflow-y: scroll;
     @media (min-width: 768px) {
         height: 500px;
+        max-height: 40vh;
     }
 `;
 

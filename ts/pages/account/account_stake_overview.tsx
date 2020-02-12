@@ -91,7 +91,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                         padding="15px 35px"
                         onClick={onMoveStake}
                     >
-                        Change
+                        Move
                     </Button>
                     <Button
                         color={colors.red}
@@ -161,7 +161,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                     isFullWidth={true}
                     onClick={onMoveStake}
                 >
-                    Change
+                    Move
                 </Button>
                 <Button
                     color={colors.red}
