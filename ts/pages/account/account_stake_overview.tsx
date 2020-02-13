@@ -28,6 +28,7 @@ interface StakeOverviewProps {
     userData: UserData;
     nextEpochApproximateStart: Date;
     isVerified: boolean;
+    onMoveStake: () => void;
     onRemoveStake: () => void;
 }
 
@@ -43,6 +44,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
     userData,
     nextEpochApproximateStart,
     isVerified,
+    onMoveStake,
     onRemoveStake,
 }) => {
     return (
@@ -79,6 +81,18 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                         </div>
                     </InlineStats>
 
+                    <Button
+                        color={colors.red}
+                        borderColor={colors.border}
+                        bgColor={colors.white}
+                        fontSize="17px"
+                        fontWeight="300"
+                        isNoBorder={true}
+                        padding="15px 35px"
+                        onClick={onMoveStake}
+                    >
+                        Move
+                    </Button>
                     <Button
                         color={colors.red}
                         borderColor={colors.border}
@@ -139,6 +153,16 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                     </Button>
                 */}
 
+                <Button
+                    color={colors.white}
+                    fontSize="17px"
+                    fontWeight="300"
+                    padding="15px 35px"
+                    isFullWidth={true}
+                    onClick={onMoveStake}
+                >
+                    Move
+                </Button>
                 <Button
                     color={colors.red}
                     borderColor="#D5D5D5"

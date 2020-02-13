@@ -27,24 +27,10 @@ import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { Epoch, PoolsListSortingParameter, PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
 
-const sortByStaked = (a: PoolWithStats, b: PoolWithStats): number =>
-    b.nextEpochStats.approximateStakeRatio - a.nextEpochStats.approximateStakeRatio;
-
-const sortByProtocolFeesDesc = (a: PoolWithStats, b: PoolWithStats): number => {
-    return b.currentEpochStats.totalProtocolFeesGeneratedInEth - a.currentEpochStats.totalProtocolFeesGeneratedInEth;
-};
-
-const sortByRewardsShared = (a: PoolWithStats, b: PoolWithStats): number => {
-    const aRewardsShared = _.isNil(a.nextEpochStats.operatorShare) ? 0 : 1 - a.nextEpochStats.operatorShare;
-    const bRewardsShared = _.isNil(b.nextEpochStats.operatorShare) ? 0 : 1 - b.nextEpochStats.operatorShare;
-
-    return bRewardsShared - aRewardsShared;
-};
-
 const sortFnMapping: { [key: string]: (a: PoolWithStats, b: PoolWithStats) => number } = {
-    [PoolsListSortingParameter.Staked]: sortByStaked,
-    [PoolsListSortingParameter.ProtocolFees]: sortByProtocolFeesDesc,
-    [PoolsListSortingParameter.RewardsShared]: sortByRewardsShared,
+    [PoolsListSortingParameter.Staked]: stakingUtils.sortByStakedDesc,
+    [PoolsListSortingParameter.ProtocolFees]: stakingUtils.sortByProtocolFeesDesc,
+    [PoolsListSortingParameter.RewardsShared]: stakingUtils.sortByRewardsSharedDesc,
 };
 
 const HeadingRow = styled.div`

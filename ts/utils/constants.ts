@@ -31,6 +31,7 @@ export const constants = {
             CONNECT_WALLET: 'Connect Wallet',
             STAKE: 'Stake',
             UNSTAKE: 'Unstake',
+            MOVE_STAKE: 'Move Stake',
             WITHDRAW_STAKE: 'Withdraw Stake',
             WITHDRAW_REWARDS: 'Withdraw Rewards',
             START_STAKING_SCREEN_VIEWED: 'Start Staking Screen Viewed',

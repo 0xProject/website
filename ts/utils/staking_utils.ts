@@ -83,6 +83,7 @@ export const stakingUtils = {
         }
         return orderedRecs;
     },
+
     getPoolDisplayName({ poolId, metaData }: { poolId: string; metaData?: { name?: string } }): string {
         const name = metaData && metaData.name;
 
@@ -96,9 +97,11 @@ export const stakingUtils = {
 
         return `${name.slice(0, 37).trim()}...`;
     },
+
     isPoolActive: (pool: PoolWithStats) => {
         return pool.currentEpochStats.totalProtocolFeesGeneratedInEth > 0 || pool.nextEpochStats.zrxStaked > 0;
     },
+
     getTimeToEpochDate: (epochDate?: Date): string => {
         if (!epochDate || isPast(epochDate)) {
             return '-';
@@ -106,5 +109,21 @@ export const stakingUtils = {
 
         const now = new Date();
         return formatDistanceStrict(epochDate, now, { roundingMethod: 'ceil' });
+    },
+
+    sortByStakedDesc: (a: PoolWithStats, b: PoolWithStats): number =>
+        b.nextEpochStats.approximateStakeRatio - a.nextEpochStats.approximateStakeRatio,
+
+    sortByProtocolFeesDesc: (a: PoolWithStats, b: PoolWithStats): number => {
+        return (
+            b.currentEpochStats.totalProtocolFeesGeneratedInEth - a.currentEpochStats.totalProtocolFeesGeneratedInEth
+        );
+    },
+
+    sortByRewardsSharedDesc: (a: PoolWithStats, b: PoolWithStats): number => {
+        const aRewardsShared = _.isNil(a.nextEpochStats.operatorShare) ? 0 : 1 - a.nextEpochStats.operatorShare;
+        const bRewardsShared = _.isNil(b.nextEpochStats.operatorShare) ? 0 : 1 - b.nextEpochStats.operatorShare;
+
+        return bRewardsShared - aRewardsShared;
     },
 };
