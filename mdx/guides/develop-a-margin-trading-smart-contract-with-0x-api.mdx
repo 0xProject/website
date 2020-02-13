@@ -1,0 +1,573 @@
+# Create a margin trading smart contract with 0x API
+
+Allow your users to perform complex financial transactions with your Dapp, powered by 0x API. This guide assumes that you are comfortable with the concept of leveraging networked liquidity within a smart contract.
+
+## Overview
+
+Margin trading is a pivotal part of any financial ecosystem; with a smart contract, easily build a trust-less margin position contract with 0x liquidity and Compound Finance money markets.
+
+At a high level, we will be building a smart contract that will have two main functionalities:
+
+1. open a leverage position on ETH with the ETH/DAI market
+2. close the leverage position
+
+## Set up your off-chain web3 environment
+
+We will use our 0x API starter project (https://github.com/0xProject/0x-api-starter-guide-code), which has a basic setup for developing smart contracts and interacting with them on ganache.
+
+<Notification>This project leverages the 0x Core Team’s smart contract development tooling, which is generally similar to other development tooling like truffle. If there are noteworthy differences, we will highlight them within this guide.</Notification>
+
+Begin by cloning the starter project and installing dependencies:
+
+```sh
+$ git clone https://github.com/0xProject/0x-api-starter-guide-code
+$ cd 0x-api-starter-guide-code
+$ npm install
+```
+
+For development, we will create a ganache network that forks Ethereum’s mainnet state. On the fork, we can safely interact with DeFi protocols without consuming real ether. The starter project includes a script that sets up the fork for you. 
+
+### Configure the .env file
+
+```
+ETHEREUM_RPC_URL=http://localhost:8545
+MNEMONIC=<INSERT_MNEMONIC_HERE>
+```
+
+For the mnemonic, because we are using a mainnet forked ganache environment, use an account that has some amount of ether on mainnet. In the ganache environment, the fork will have your account with ether ready to be used to deploy and interact with smart contracts. **Warning: use a test account, DO NOT use an account with your personal savings.**
+
+We will be interacting mainly with the `examples/` folder’s `.ts` files; they are scripts that represent web3 interactions with your smart contract that one may find in a Dapp’s front end. For this guide, we will be mainly concerned with the `examples/smart_contract_margin_trading.ts` file.
+
+## Writing a margin position smart contract
+
+Before we begin writing the contract, let's break down what happens when we open a position.
+
+Open a position:
+
+1. Send the amount of ETH to the contract to leverage.
+2. Deposit the ETH (on the user's behalf) in Compound Finance ETH pool.
+3. With the deposited ETH, we can borrow DAI, in this example that amount is set by the `sellAmount` provided by the 0x quote.
+4. With the DAI borrowed, sell for WETH
+5. Update contract state to monitor position size
+
+Note: The `sellAmount` amount is chosen off-chain and must be under the collateral ratio set by Compound Finance. (For ETH, you can only borrow 75% of the value supplied)
+
+With the pseudo-code above, let's begin setting up the smart contract. For the sake of simplicity and minimal state management, we will be writing a smart contract that handles only one open position at a time. `positionBalance` will be how we maintain the total ETH (in Compound Finance, and held WETH) held by the smart contract. With a few modifiers, we can monitor the state of the position held by the smart contract.
+
+### Contract Constructor
+
+Because we will be interacting with a number of Defi protocols, we will need a few references to the varying protocol's smart contracts. We will need to initialize our smart contract with all the references passed at deployment.
+
+```solidity
+...
+constructor (
+        address _exchange,
+        address _comptroller,
+        address _cdai,
+        address _dai,
+        address _ceth,
+        address _weth
+        )
+        public
+    {
+        EXCHANGE = IExchange(_exchange);
+        COMPTROLLER = IComptroller(_comptroller);
+        CDAI = ICERC20(_ceth);
+        CETH = ICETH(_cdai);
+        WETH = IEtherToken(_weth);
+        DAI = IERC20Token(_dai);
+
+        OWNER = msg.sender;
+
+        // Enter markets
+        _enterMarkets();
+    }
+...
+```
+
+Let's break down a few of the references we are going to be interacting with:
+
+
+1. `EXCHANGE`: the main 0x protocol smart contract to interact with
+2. `COMPTROLLER`: the main compound finance smart contract to interact with
+3. `CDAI`, `CETH`: 'c' tokens used by compound finance to represent assets in the protocol and accrued interests
+
+`_enterMarkets()` is a function that allows the contract to interact with Compound Finance for the ETH and DAI money markets.
+
+### Opening a position
+
+The function signature for the `open` function is defined as so:
+
+```solidity
+function open(ZeroExQuote memory quote)
+  public
+  payable
+  onlyOwner
+  onlyWhenClosed
+  returns (uint256 positionBalance, uint256 borrowBalance)
+{
+...
+}
+```
+
+The function will only allow the `OWNER` to open a position and only when the smart contract has no currently opened positions. The parameter `quote` will contain the 0x API response to marketBuy WETH with DAI.
+
+#### Determining amount of ETH to deposit into Compound finance
+
+With the `protocolFee` introduced in version 3 of 0x protocol, some of the ETH sent along the transaction will be reserved to pay the `protocolFee`. Before we deposit ETH into Compound finance, we will need to calculate how much of `msg.value` we can deposit.
+
+```solidity
+function open(ZeroExQuote memory quote)
+  public
+  payable
+  onlyOwner
+  onlyWhenClosed
+  returns (uint256 positionBalance, uint256 wethBalance, uint256 borrowBalance)
+{
+    ...
+  // 1. increase position by msg.value - protocolFeeAmount
+  positionBalance = msg.value.safeSub(quote.protocolFeeAmount);
+}
+```
+
+#### Deposit and borrow DAI
+
+With `positionBalance`, we can then deposit and mint cETH with Compound Finance.
+
+```solidity
+...
+// 2. increase position by msg.value - protocolFeeAmount
+positionBalance = msg.value.safeSub(quote.protocolFeeAmount);
+// 3. mint collateral in compound
+CETH.mint.value(positionBalance)()
+...
+```
+
+Now that we have `accountLiquidity` (borrowing power in Compound Finance), let's borrow DAI from Compound Finance. We will be borrowing the exact amount of DAI we intend to sell with 0x liquidity. Off-chain, `sellAmount` is calculated based on our desired leverage.
+
+```
+...
+// 4. borrow token
+assert(CDAI.borrow(quote.sellAmount) == 0);
+...
+```
+
+Compound finance returns a non-zero value if an error occurs during the function call, with an `assert` we can proceed with the function only when the function doesn't throw any errors.
+
+#### Swaping for ETH with 0x liquidity 
+
+To swap with 0x, the 0x exchange contracts will need to have access to move DAI from the `MarginPositionContract`. With the provided functions in the starter code, let’s approve `MAX_AMOUNT` of DAI: 
+
+```solidity
+...
+// 4. approve 0x exchange to move DAI
+_approve(address(DAI), _getZeroExApprovalAddress());
+...
+```
+
+Since the quote is passed off-chain, it is worth verifying that the assets you intend to sell and buy.
+
+```solidity
+...
+// 5. verify quote is valid
+require(quote.sellToken == address(WETH), "not buying WETH");
+require(quote.buyToken == address(DAI), "not buying WETH");
+...
+```
+
+Now that we have verified and set the approvals to perform a swap with 0x protocol, let’s call `EXCHANGE` with `callDataHex` provided in the quote.
+
+```solidity
+...
+// 6. execute swap
+(bool success, bytes memory data) = address(EXCHANGE).call.value(quote.protocolFeeAmount)(quote.calldataHex);
+require(success, "Swap not filled.");
+// 7. decode fill results
+LibFillResults.FillResults memory fillResults = abi.decode(data (LibFillResults.FillResults));
+...
+```
+
+#### Updating the contract state
+
+With that, we have just swapped DAI for WETH, effectively opening our margin position. Before we finish this function, let’s update the contract state and return some results to the user. From the 0x contract call, we have a receipt that contains the actual amount of buy and sell token swapped.
+
+```solidity
+...
+// 8. position size increase by bought amount of WETH (makerAssetFilledAmount)
+positionBalance += fillResults.makerAssetFilledAmount;
+borrowBalance = CDAI.borrowBalanceCurrent(address(this));
+// at this point you have CETH, and swapped for WETH
+}
+```
+
+At this point, the open function should look like this:
+
+```solidity
+    function open(ZeroExQuote memory quote)
+        public
+        payable
+        onlyOwner
+        onlyWhenClosed
+        returns (uint256 positionBalance, uint256 borrowBalance)
+    {
+        // 1. increase position by msg.value - protocolFee
+        positionBalance = msg.value.safeSub(quote.protocolFee);
+        // 2. mint collateral in compound
+        CETH.mint.value(positionBalance)();
+        // 3. borrow token
+        require(CDAI.borrow(quote.sellAmount) == 0, "borrow didn't work");
+        // 4. approve 0x exchange to move DAI
+        _approve(address(DAI), _getZeroExApprovalAddress());
+        // 5. verify quote is valid
+        require(quote.sellToken == address(WETH), "not buying WETH");
+        require(quote.buyToken == address(DAI), "not buying WETH");
+        // 6. execute swap
+        (bool success, bytes memory data) = address(EXCHANGE).call.value(quote.protocolFee)(quote.calldataHex);
+        require(success, "Swap not filled.");
+        // 7. decode fill results
+        LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
+        // 8. position size increase by bought amount of WETH
+        positionBalance += fillResults.makerAssetFilledAmount;
+        borrowBalance = CDAI.borrowBalanceCurrent(address(this));
+        // at this point you have CETH, and swapped for WETH
+    }
+```
+
+### Closing a position
+
+In many ways, closing a position is reversing the actions of opening a position.
+
+Close a position:
+
+1. With the WETH held by contract, swap for the amount of DAI borrowed + interest.
+2. Pay back the `borrowBalance` with DAI
+3. Redeem (withdraw) the ETH in compound finance
+4. Unwrap all the WETH remaining (if any) to ETH
+5. Transfer all the ETH back to the user
+
+If ETH has risen in price, then you will have more remaining WETH after buying DAI.
+
+Let’s begin by defining the function signature for `close`:
+
+```solidity
+function close(
+    ZeroExQuote memory quote
+)
+    public
+    onlyOwner
+    onlyWhenOpen
+    returns (uint ethBalance)
+{
+...
+}
+```
+
+Intuitively, it makes sense to only be able to close a position if there is one open, hence the modifier `onlyWhenOpen`.
+
+#### Buying DAI back.
+
+Similar to swapping from DAI to WETH in `open`, we will need to do a few things before swapping:
+
+```solidity
+...
+// 1. approve for swap
+_approve(address(WETH), _getZeroExApprovalAddress());
+// 2. verify swap
+uint256 wethBalance = WETH.balanceOf(address(this));
+uint256 daiBorrowBalance = CDAI.borrowBalanceCurrent(address(this)); // TODO
+require(wethBalance > quote.sellAmount, "not enough to swap");
+require(quote.buyToken == address(DAI), "not buying DAI");
+require(daiBorrowBalance < quote.buyAmount, "not enough DAI to repay");
+...
+```
+
+Here, we are approving 0x contracts and verifying that the quote provided is trading the right assets and has valid sell and buy amounts. Off-chain, we will be calculating the exact amount of DAI (`buyAmount`) to buy.
+
+Once verified, let’s perform the swap:
+
+```solidity
+// 3. execute swap
+(bool success, bytes memory data) = address(EXCHANGE).call.value(quote.protocolFee)(quote.calldataHex);
+require(success, "Swap not filled.");
+// 4. decode results
+LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
+```
+
+At this point, the contract should have a balance of `daiBorrowBalance` DAI held by the contract.
+
+#### Repay borrowed DAI and withdraw ETH
+
+With the DAI bought with 0x API, let’s repay back our `borrowBalance` on Compound finance:
+
+```solidity
+...
+// 5. return back DAI
+_approve(address(DAI), address(CDAI));
+require(CDAI.repayBorrow(fillResults.makerAssetFilledAmount) == 0);
+...
+```
+
+To return DAI back, an approval for the `CDAI` contract is needed. With `fillResults.makerAssetFilledAmount` we can repay the exact amount of DAI acquired with 0x. Once, `borrowBalance` is repaid, let’s withdraw the ETH deposited in `CETH`.
+
+```solidity
+...
+require(CETH.redeem(CETH.balanceOfUnderlying(address(this))) == 0);
+...
+```
+
+At this point, the contract holds ETH and WETH (whatever WETH remains not swapped for DAI). For the sake of UX, we will be unwrapping WETH to ETH and transferring all the ETH back to the owner. Then let’s reset `positionBalance` and allow another position to be opened.
+
+```solidity
+...
+    // 7. withdraw all WETH Balance;
+    WETH.withdraw(wethBalance);
+    // 8. transfer all ETH back to owner;
+    ethBalance = address(this).balance;
+    OWNER.transfer(address(this).balance);
+    // 9. reset balance
+    positionBalance = 0;
+}
+...
+```
+
+At this point `close` function should look something like this:
+
+```solidity
+function close(
+    ZeroExQuote memory quote
+)
+    public
+    onlyOwner
+    onlyWhenOpen
+    returns (uint ethBalance)
+{
+    // approve for swap
+    _approve(address(WETH), _getZeroExApprovalAddress());
+    // verify swap
+    uint256 wethBalance = WETH.balanceOf(address(this));
+    uint256 daiBorrowBalance = CDAI.borrowBalanceCurrent(address(this)); // TODO
+
+    require(wethBalance > quote.sellAmount, "not enough to swap");
+    require(quote.buyToken == address(DAI), "not buying DAI");
+    require(daiBorrowBalance < quote.buyAmount, "not enough DAI to repay");
+    // execute swap
+    (bool success, bytes memory data) = address(EXCHANGE).call.value(quote.protocolFee)(quote.calldataHex);
+    require(success, "Swap not filled.");
+    // decode results
+    LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
+    // return back DAI
+    _approve(address(DAI), address(CDAI));
+    // approve Compound Finance CDAI
+    assert(CDAI.repayBorrow(fillResults.makerAssetFilledAmount) == 0);
+    // get back ETH
+    assert(CETH.redeem(CETH.balanceOfUnderlying(address(this))) == 0); // TODO correct?
+    // withdraw all WETH Balance;
+    WETH.withdraw(wethBalance);
+    // transfer all ETH back to owner;
+    ethBalance = address(this).balance;
+    OWNER.transfer(address(this).balance);
+    // reset balance
+    positionBalance = 0;
+}
+```
+
+### Adding some handy functions.
+
+To make interacting with the margin contract easier with web3, let’s add a public function that returns the contracts DAI `borrowBalance`.
+
+```solidity
+function getBorrowBalance() public onlyOwner returns (uint256) {
+    return CDAI.borrowBalanceCurrent(address(this));
+}
+```
+
+With that, we are done with the contract! Let’s write some web3 code to interact with the contract just written. Before we do so, let’s compile the contracts and build typescript contract-wrappers:
+
+```sh
+$ npm run build:contracts
+```
+
+## Interacting with the contract
+
+Prepared in the getting started code is an `example/smart_contract_margin_trading.ts` script that allows you to easily interact with the contract written. We will be working on finishing the open and close functions.
+
+### Opening the position in web3
+
+We will be fleshing out the `openAsync` function to fetch a quote from 0x API and execute a contract call with our margin trading contract.
+
+```js
+const openAsync = async (web3Wrapper: Web3Wrapper, contract: SimpleMarginTradingContract) => {
+    ...
+}
+```
+
+Let’s begin by calculating the `positionSize` and amount of leverage:
+
+```js
+...
+// calculations for margin trading
+const positionSize = baseUnitAmount(0.1);
+const leverage = 0.5; // 1.5x leverage 
+const buyAmount = positionSize.multipliedBy(leverage);
+...
+```
+
+With `buyAmount` we can fetch a quote from 0x API to buy WETH:
+
+```js
+...
+const params = {
+    buyToken: 'ETH',
+    sellToken: 'DAI',
+    buyAmount: buyAmount.toString(),
+}
+
+const res = await fetch(`https://api.0x.org/swap/v0/quote?${qs.stringify(params)}`);
+const quote = await res.json();
+...
+```
+
+The quote will allow us to buy `buyAmount` DAI with ETH. To prepare the response provided for consumption on-chain, let’s reformat the quote response to the key value pairs used on-chain.
+
+```js
+// prepare API response for contract use
+const onchainPassableQuote = {
+    buyToken: WETH_CONTRACT,
+    sellToken: DAI_CONTRACT,
+    buyAmount: quote.buyAmount,
+    sellAmount: quote.sellAmount,
+    protocolFee: quote.protocolFee,
+    calldataHex: quote.data,
+};
+const value = positionSize.plus(quote.protocolFee);
+```
+
+Since we will be using ETH to pay protocol fees with 0x, we will need to send additional ETH with the transaction along with the `positionSize`. With the above variables, let’s call the smart contract.
+
+```js
+// 3. execute a smart contract call to open a margin position
+try {
+    const results = await contract.open(onchainPassableQuote).callAsync({
+        from: takerAddress,
+        value,
+        gasPrice: quote.gasPrice,
+        gas: 3000000,
+    });
+
+    console.log(`position size: (ETH in Compound + WETH): ${results[0]}`);
+    console.log(`dai borrowed from Compound: ${results[1]}`);
+    
+    await contract.open(onchainPassableQuote).awaitTransactionSuccessAsync({
+        from: takerAddress,
+        value,
+        gasPrice: quote.gasPrice,
+        gas: 3000000,
+    });
+    console.log("opened position.");
+} catch (e) {
+    throw e;
+}
+```
+
+We have called the contract with `callAsync` to see the return results of performing a margin trade before actually executing it with `awaitTransactionSuccessAsync`:
+
+```
+position size: (ETH in Compound + WETH): 150000000000000000
+dai borrowed from Compound: 8998532000000000000
+```
+
+Th DAI borrowed should be approximately half the value of ETH in DAI. With that, you have just opened a position with the margin trading contract! 
+
+### Closing the position in web3
+
+We will be fleshing out the `closeAsync` function to fetch a quote from 0x API and execute a contract call with our margin trading contract.
+
+```js
+const closeAsync = async (web3Wrapper: Web3Wrapper, contract: SimpleMarginTradingContract) => {
+    ...
+}
+```
+
+From the contract, we will need to know the DAI borrow balance to create an accurate quote. We will be using the helper function we created earlier to get the `daiBorrowBalance`:
+
+```js
+...
+const daiBorrowBalance = await contract.getBorrowBalance().callAsync({
+    from: takerAddress,
+});
+...
+```
+
+Similar to `openAsync` let’s fetch and prepare a quote with `daiBorrowBalance` set as the `buyAmount`.
+
+```js
+...
+const params = {
+    buyToken: 'DAI',
+    sellToken: 'WETH',
+    buyAmount: daiBorrowBalance.toString(),
+}
+
+const res = await fetch(`https://api.0x.org/swap/v0/quote?${qs.stringify(params)}`);
+const quote = await res.json();
+
+const onchainPassableQuote = {
+    buyToken: WETH_CONTRACT,
+    sellToken: DAI_CONTRACT,
+    buyAmount: quote.buyAmount,
+    sellAmount: quote.sellAmount,
+    protocolFee: quote.protocolFee,
+    calldataHex: quote.data,
+};
+
+const value = quote.protocolFee;
+...
+```
+
+Now, let’s call the smart contract: 
+
+```js
+// 3. execute a smart contract call to open a margin position
+try {
+    const results = await contract.close(onchainPassableQuote).callAsync({
+        from: takerAddress,
+        value,
+        gasPrice: quote.gasPrice,
+        gas: 9000000,
+    });
+
+    console.log(`eth balance size after closing position: ${results[0]}`);
+
+    await contract.close(onchainPassableQuote).awaitTransactionSuccessAsync({
+        from: takerAddress,
+        value,
+        gasPrice: quote.gasPrice,
+        gas: 9000000,
+    });
+    console.log("closed position.");
+} catch (e) {
+    throw e;
+}
+```
+
+With that, we have just closed the margin position! You can see the total ETH returned to the user with the return value from `.close()`.
+
+Run the script to test your smart contract:
+
+```sh
+$ npm run test:margin_trading
+```
+
+## Wrapping Up
+Just like that, you wrote a margin trading smart contract with 0x + Compound. Keep in mind this is a rather primitive example of a margin trading experience. There is a number of follow ups a developer can do with the code written here:
+
+* liquidation prevention functions to “top up” the collateral provided to Compound
+* better error handling
+* manage multiple positions with one contract
+
+If you want to take the ideas brought up to the next level, we have a number of resources you can leverage (haha get it?):
+
+* Refer to our [0x API specification](https://0x.org/docs/api) for detailed documentation
+* 0x API is open source! Look through the codebase and deploy your own 0x API instance.
+
+
