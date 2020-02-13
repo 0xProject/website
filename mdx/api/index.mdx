@@ -448,9 +448,10 @@ No request params.
 
 # SRA
 
-An API specification that is implemented by several 0x relayers (exchanges), including [Radar Relay](https://developers.radarrelay.com/api/0x-sra) and [Bamboo Relay](https://sra.bamboorelay.com/zrx.html).
+The Standard Relayer API is an API specification that is implemented by several 0x relayers (exchanges), including [Radar Relay](https://developers.radarrelay.com/api/0x-sra) and [Bamboo Relay](https://sra.bamboorelay.com/zrx.html).
 It allows you to interact with the liquidity of a certain relayer, including querying and posting to their orderbook. 
 In the 0x API case, it allows you to query and post to [0x Mesh](https://0x-org.gitbook.io/mesh/).
+The 0x API provides a superset of the SRA, and contains functionality that is not strictly part of the spec.
 
 ## GET /sra/v3/asset_pairs
 
@@ -643,6 +644,78 @@ No response fields when successful. An [error](/docs/api#errors) when unsuccessf
     "chainId": 1,
     "takerFeeAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 }
+
+```
+
+</HttpCall>
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+Empty response body
+```
+
+</CodeTabs>
+
+## POST /sra/v3/orders
+
+Submit a list of signed orders to [0x Mesh](https://0x-org.gitbook.io/mesh/).
+
+### Request 
+
+A list of [signed orders](/docs/api#signed-order).
+
+### Response
+
+No response fields when successful. An [error](/docs/api#errors) when unsuccessful.                                                                                                                      
+
+### Examples 
+
+#### Post some Orders
+
+<HttpCall verb="POST" path="/sra/v3/orders" >
+
+```json
+[
+    {
+        "signature": "0x1b619623be7d177f19c2e987fa974ded5c000dd5c6dfdcb7cd17da31fe2cd94aef19ab0ffb2b29f66142a754ddb165c0d2ddc98fcb45ca7a348e4c05c77216c60103",
+        "senderAddress": "0x0000000000000000000000000000000000000000",
+        "makerAddress": "0x320c38912b1611a0706c0a74427f64fa5dc3598e",
+        "takerAddress": "0x0000000000000000000000000000000000000000",
+        "makerFee": "0",
+        "takerFee": "0",
+        "makerAssetAmount": "47479678912656000",
+        "takerAssetAmount": "43835664000000000000",
+        "makerAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "takerAssetData": "0xf47261b00000000000000000000000004fbb350052bca5417566f188eb2ebce5b19bc964",
+        "salt": "1576832996",
+        "exchangeAddress": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
+        "feeRecipientAddress": "0xc898fbee1cc94c0ff077faa5449915a506eff384",
+        "expirationTimeSeconds": "1576876106",
+        "makerFeeAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "chainId": 1,
+        "takerFeeAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+    },
+    {
+        "chainId": 1,
+        "exchangeAddress": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
+        "makerAddress": "0x34a745008a643EebC58920eaa29Fb1165b4A288E",
+        "takerAddress": "0x0000000000000000000000000000000000000000",
+        "senderAddress": "0x0000000000000000000000000000000000000000",
+        "feeRecipientAddress": "0x0000000000000000000000000000000000000000",
+        "expirationTimeSeconds": "1581622438",
+        "salt": "57463001705562505303173771608709981140201802981513964194805445934931647828038",
+        "makerAssetAmount": "7",
+        "takerAssetAmount": "7",
+        "makerAssetData": "0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498",
+        "takerAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "makerFeeAssetData": "0x",
+        "takerFeeAssetData": "0x",
+        "makerFee": "0",
+        "takerFee": "0",
+        "signature": "0x1ca5c47bb11eb911e9130463ac01fb4ef2754e852161350468d2ef4006d3b82773477e810d2c53765cc308359f49b9a4497ec50e60c1e68e80849e333ad6ee62e002"
+    }
+]
 
 ```
 
