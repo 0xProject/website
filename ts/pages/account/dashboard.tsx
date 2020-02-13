@@ -10,6 +10,7 @@ import { Button } from 'ts/components/button';
 import { CallToAction } from 'ts/components/call_to_action';
 import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
+import { RemoveStakeDialog } from 'ts/components/staking/remove_stake_dialog';
 import { Heading } from 'ts/components/text';
 import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { StatFigure } from 'ts/components/ui/stat_figure';
@@ -83,9 +84,11 @@ interface PendingAction {
     amount: number;
 }
 
-// TODO(johnrjj) - After going to a pool that has been staked in, hitting the 'Remove' button,
-// and running the transaction, the balances do not update, even after a good amount of time (30min+ etc)
-// Is there a way we can query web3 directly?? (tl;dr 'Pending' removes are flaky/not sure if they are working)
+interface PoolDetails {
+    poolId: string;
+    zrxAmount: number;
+}
+
 export const Account: React.FC<AccountProps> = () => {
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
@@ -101,9 +104,8 @@ export const Account: React.FC<AccountProps> = () => {
     const voteHistory: VoteHistory[] = [];
 
     const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
-    const [changePoolDetails, setChangePoolDetails] = React.useState<{ poolId: string; zrxAmount: number } | undefined>(
-        undefined,
-    );
+    const [changePoolDetails, setChangePoolDetails] = React.useState<PoolDetails | undefined>(undefined);
+    const [removeStakePoolDetails, setRemoveStakePoolDetails] = React.useState<PoolDetails | undefined>(undefined);
     const [isFetchingDelegatorData, setIsFetchingDelegatorData] = React.useState<boolean>(false);
     const [delegatorData, setDelegatorData] = React.useState<StakingAPIDelegatorResponse | undefined>(undefined);
     const [poolWithStatsMap, setPoolWithStatsMap] = React.useState<PoolWithStatsMap | undefined>(undefined);
@@ -536,18 +538,7 @@ export const Account: React.FC<AccountProps> = () => {
                                         }}
                                         onRemoveStake={() => {
                                             const zrxAmount = delegatorPoolStats.zrxStaked;
-                                            unstake([{ poolId, zrxAmount }], () => {
-                                                // If TX is successful optimistically update UI before
-                                                // API has received the new state
-                                                const nextEpochStake = Math.max(
-                                                    (nextEpochStakeMap[poolId] || 0) - zrxAmount,
-                                                    0,
-                                                );
-                                                setNextEpochStakeMap(stakeMap => ({
-                                                    ...stakeMap,
-                                                    [poolId]: nextEpochStake,
-                                                }));
-                                            });
+                                            setRemoveStakePoolDetails({ poolId, zrxAmount });
                                         }}
                                     />
                                 );
@@ -589,6 +580,35 @@ export const Account: React.FC<AccountProps> = () => {
                 nextEpochStart={nextEpochStart}
                 availableRewardsMap={availableRewardsMap}
                 onDismiss={() => setChangePoolDetails(undefined)}
+            />
+            <RemoveStakeDialog
+                stakingPools={stakingPools || []}
+                poolDetails={removeStakePoolDetails}
+                isOpen={!!removeStakePoolDetails}
+                nextEpochStart={nextEpochStart}
+                availableRewardsMap={availableRewardsMap}
+                onDismiss={() => setRemoveStakePoolDetails(undefined)}
+                onRemoveStake={(poolId: string, zrxAmount: number) => {
+                    unstake([{ poolId, zrxAmount }], () => {
+                        // If TX is successful optimistically update UI before
+                        // API has received the new state
+
+                        // If the user has any pending rewards with the pool they are removing the contract will
+                        // automatically send the rewards to the user's address
+                        const withdrawnRewards = availableRewardsMap[poolId] ?? 0;
+                        if (withdrawnRewards > 0) {
+                            setTotalAvailableRewards(_totalAvailableRewards =>
+                                _totalAvailableRewards.minus(withdrawnRewards),
+                            );
+                        }
+
+                        const nextEpochStake = Math.max((nextEpochStakeMap[poolId] || 0) - zrxAmount, 0);
+                        setNextEpochStakeMap(stakeMap => ({
+                            ...stakeMap,
+                            [poolId]: nextEpochStake,
+                        }));
+                    });
+                }}
             />
         </StakingPageLayout>
     );
