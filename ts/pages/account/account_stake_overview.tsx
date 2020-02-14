@@ -81,30 +81,32 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                         </div>
                     </InlineStats>
 
-                    <Button
-                        color={colors.red}
-                        borderColor={colors.border}
-                        bgColor={colors.white}
-                        fontSize="17px"
-                        fontWeight="300"
-                        isNoBorder={true}
-                        padding="15px 35px"
-                        onClick={onMoveStake}
-                    >
-                        Move
-                    </Button>
-                    <Button
-                        color={colors.red}
-                        borderColor={colors.border}
-                        bgColor={colors.white}
-                        fontSize="17px"
-                        fontWeight="300"
-                        isNoBorder={true}
-                        padding="15px 35px"
-                        onClick={onRemoveStake}
-                    >
-                        Remove
-                    </Button>
+                    <ButtonWrapper>
+                        <Button
+                            color={colors.textDarkPrimary}
+                            borderColor={colors.border}
+                            bgColor={colors.white}
+                            fontSize="17px"
+                            fontWeight="300"
+                            isNoBorder={true}
+                            padding="15px 35px"
+                            onClick={onMoveStake}
+                        >
+                            Move
+                        </Button>
+                        <Button
+                            color={colors.red}
+                            borderColor={colors.border}
+                            bgColor={colors.white}
+                            fontSize="17px"
+                            fontWeight="300"
+                            isNoBorder={true}
+                            padding="15px 35px"
+                            onClick={onRemoveStake}
+                        >
+                            Remove
+                        </Button>
+                    </ButtonWrapper>
                 </Action>
 
                 <Action>
@@ -195,6 +197,17 @@ const Wrap = styled.div`
     @media (max-width: 768px) {
         padding: 20px;
         background: ${colors.backgroundLightGrey};
+    }
+`;
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    button {
+        width: 133px;
+    }
+
+    button + button {
+        margin-left: 10px;
     }
 `;
 
