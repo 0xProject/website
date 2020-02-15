@@ -11,7 +11,7 @@ import Checkmark from 'ts/icons/illustrations/checkmark.svg';
 
 import { colors } from 'ts/style/colors';
 
-import { WebsitePaths } from 'ts/types';
+import { EtherscanLinkSuffixes, WebsitePaths } from 'ts/types';
 import { formatPercent, formatZrx } from 'ts/utils/format_number';
 import { utils } from 'ts/utils/utils';
 
@@ -35,6 +35,7 @@ interface DashboardHeroProps {
     zrxToStaked: number;
     rewardsShared: number;
     iconUrl: string;
+    networkId: number;
     tabs: DashBoardHeroTabs[];
 }
 
@@ -231,6 +232,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
     zrxToStaked,
     rewardsShared,
     iconUrl,
+    networkId,
 }) => {
     const [selectedTabIndex, setSelectedTabIndex] = React.useState<number>(0);
 
@@ -256,7 +258,19 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                             )}
                         </Title>
                         <HorizontalList>
-                            <li>{utils.getAddressBeginAndEnd(operatorAddress)}</li>
+                            <li>
+                                <a
+                                    href={utils.getEtherScanLinkIfExists(
+                                        operatorAddress,
+                                        networkId,
+                                        EtherscanLinkSuffixes.Address,
+                                    )}
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    {utils.getAddressBeginAndEnd(operatorAddress)}
+                                </a>
+                            </li>
                             {websiteUrl && (
                                 <li>
                                     <a href={websiteUrl} target="_blank" rel="noopener">

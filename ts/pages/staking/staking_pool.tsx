@@ -292,6 +292,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 zrxToStaked={zrxToStaked}
                 rewardsShared={(1 - nextEpoch.operatorShare) * 100}
                 iconUrl={stakingPool.metaData.logoUrl}
+                networkId={networkId}
                 tabs={[
                     {
                         title: 'Current Epoch',
