@@ -325,6 +325,10 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                                     }).formatted
                                 } ETH`,
                             },
+                            {
+                                title: 'Number of trades',
+                                number: currentEpoch.numberOfFills,
+                            },
                         ],
                     },
                     {
@@ -351,6 +355,10 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                                         decimalsRounded: 4,
                                     }).formatted
                                 } ETH`,
+                            },
+                            {
+                                title: 'Number of trades',
+                                number: stakingPool.allTimeStats.numberOfFills,
                             },
                         ],
                     },

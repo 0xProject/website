@@ -17,7 +17,7 @@ import { utils } from 'ts/utils/utils';
 
 interface Metrics {
     title: string;
-    number: string;
+    number: string | number;
 }
 
 interface DashBoardHeroTabs {
