@@ -1155,6 +1155,7 @@ export interface PoolEpochRewards extends RewardsStats {
 
 export interface AllTimePoolStats extends RewardsStats {
     protocolFeesGeneratedInEth: number;
+    numberOfFills: number;
 }
 
 export interface PoolWithHistoricalStats extends PoolWithStats {
@@ -1170,9 +1171,13 @@ export interface StakingAPIPoolByIdResponse {
 export interface EpochPoolStats {
     poolId: string;
     zrxStaked: number;
-    operatorShare: number;
+    shareOfStake: number;
+    operatorShare?: number;
     makerAddresses: string[];
     totalProtocolFeesGeneratedInEth: number;
+    shareOfFees: number;
+    numberOfFills: number;
+    shareOfFills: number;
     approximateStakeRatio: number;
 }
 
