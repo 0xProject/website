@@ -299,8 +299,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Protocol Developer"],
             "type": "Typescript Libraries",
-            "path": "tools/@0x/asset-swapper/v4.1.2/reference.mdx",
-            "versions": ["v4.1.2"]
+            "path": "tools/@0x/asset-swapper/v4.2.0/reference.mdx",
+            "versions": ["v4.2.0"]
         },
         "0x.js": {
             "title": "0x.js",
@@ -310,8 +310,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Relayer", "Protocol Developer"],
             "type": "Typescript Libraries",
-            "path": "tools/0x.js/v9.1.0/reference.mdx",
-            "versions": ["v9.1.0"]
+            "path": "tools/0x.js/v9.1.1/reference.mdx",
+            "versions": ["v9.1.1"]
         },
         "connect": {
             "title": "0x Connect",
@@ -343,8 +343,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Relayer"],
             "type": "Typescript Libraries",
-            "path": "tools/@0x/contract-wrappers/v13.5.0/reference.mdx",
-            "versions": ["v13.5.0"]
+            "path": "tools/@0x/contract-wrappers/v13.6.0/reference.mdx",
+            "versions": ["v13.6.0"]
         },
         "json-schemas": {
             "title": "0x JSON Schemas",
@@ -367,8 +367,8 @@
             "tags": ["Trader", "Relayer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/order-utils/v10.2.0/reference.mdx",
-            "versions": ["v10.2.0"]
+            "path": "tools/@0x/order-utils/v10.2.1/reference.mdx",
+            "versions": ["v10.2.1"]
         },
         "sol-compiler": {
             "title": "sol-compiler",
@@ -579,8 +579,8 @@
             "isFeatured": false,
             "tags": ["Protocol Developer", "Relayer"],
             "type": "CLI",
-            "path": "tools/@0x/migrations/v6.1.0/reference.mdx",
-            "versions": ["v6.1.0"]
+            "path": "tools/@0x/migrations/v6.2.0/reference.mdx",
+            "versions": ["v6.2.0"]
         },
         "launch-kit-wizard": {
             "title": "Launch Kit Wizard",
