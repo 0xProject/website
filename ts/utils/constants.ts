@@ -69,6 +69,7 @@ export const constants = {
         [Providers.Opera]: 'Opera Wallet',
         [Providers.Fallback]: 'Fallback',
         [Providers.WalletConnect]: 'Wallet Connect',
+        [Providers.WalletLink]: 'Wallet Link',
         [Providers.ImToken]: 'imToken',
     } as { [key in Providers]: string },
     PROVIDER_TYPE_TO_ICON: {

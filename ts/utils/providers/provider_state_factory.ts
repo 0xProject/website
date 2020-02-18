@@ -3,7 +3,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { SupportedProvider, ZeroExProvider } from 'ethereum-types';
 import * as _ from 'lodash';
 
-import { Maybe, Network, ProviderState } from 'ts/types';
+import { Maybe, Network, Providers, ProviderState } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
@@ -57,6 +57,21 @@ export const providerStateFactory = {
         } else {
             return undefined;
         }
+    },
+
+    getInitialProviderStateFromWalletLink: (networkId: Network): ProviderState => {
+        const provider = providerFactory.getWalletLinkProvider(networkId);
+
+        const providerState: ProviderState = {
+            name: constants.PROVIDER_TYPE_TO_NAME[Providers.WalletLink],
+            displayName: Providers.WalletLink,
+            providerType: Providers.WalletLink,
+            provider,
+            web3Wrapper: new Web3Wrapper(provider),
+            account: constants.LOADING_ACCOUNT,
+        };
+
+        return providerState;
     },
 
     getInitialProviderStateFallback: (network: Network, walletDisplayName?: string): ProviderState => {

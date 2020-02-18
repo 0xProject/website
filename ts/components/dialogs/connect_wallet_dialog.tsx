@@ -320,22 +320,32 @@ export const ConnectWalletDialog = () => {
             });
         }
 
+        const mobileProviders: ProviderInfo[] = [
+            {
+                name: 'Wallet Link',
+                onClick: () => {
+                    connectToWallet(Providers.WalletLink);
+                    onCloseDialog();
+                },
+            },
+        ];
+
         if (isMobile) {
-            _walletProviders.push({
-                title: 'Mobile wallet',
-                providers: [
-                    {
-                        name: 'Other mobile wallets',
-                        icon: (
-                            <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
-                                <IconPlus />
-                            </div>
-                        ),
-                        onClick: () => setShouldShowOtherWallets(true),
-                    },
-                ],
+            mobileProviders.push({
+                name: 'Other mobile wallets',
+                icon: (
+                    <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
+                        <IconPlus />
+                    </div>
+                ),
+                onClick: () => setShouldShowOtherWallets(true),
             });
         }
+
+        _walletProviders.push({
+            title: 'Mobile wallet',
+            providers: mobileProviders,
+        });
 
         setWalletProviders(_walletProviders);
     }, [

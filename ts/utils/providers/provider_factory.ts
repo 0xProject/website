@@ -1,11 +1,17 @@
 import { EmptyWalletSubprovider, RPCSubprovider, Web3ProviderEngine } from '@0x/subproviders';
 import { providerUtils } from '@0x/utils';
 import { ZeroExProvider } from 'ethereum-types';
+import _ from 'lodash';
+import WalletLink from 'walletlink';
 
 import { Maybe, Network } from 'ts/types';
 import { configs } from 'ts/utils/configs';
 
 const { PUBLIC_NODE_URLS_BY_NETWORK_ID } = configs;
+
+const walletLink = new WalletLink({
+    appName: '0x Staking',
+});
 
 // TODO(kimpers): Copied from instant, migrate to a package that can be shared
 export const providerFactory = {
@@ -23,6 +29,28 @@ export const providerFactory = {
             return provider;
         }
         return undefined;
+    },
+
+    getWalletLinkProvider: (network: Network): ZeroExProvider => {
+        const rpcUrl = PUBLIC_NODE_URLS_BY_NETWORK_ID[network][0];
+        const walletLinkProvider = walletLink.makeWeb3Provider(rpcUrl, network);
+
+        if (!walletLinkProvider || !walletLinkProvider.enable) {
+            throw new Error('Failed to connect to WalletLink');
+        }
+
+        // HACK(kimpers): TEMPORARY HACK until we revamp wallet handling
+        // Currently can't use standardizeOrThrow because it's checking this.accounts.length to
+        // determine if we are already connected which does not exist in WalletLink
+        const standardizedProvider: ZeroExProvider = {
+            isMetaMask: false,
+            isParity: false,
+            stop: _.noop.bind(_),
+            enable: (walletLinkProvider.enable as any).bind(walletLinkProvider),
+            sendAsync: (walletLinkProvider.sendAsync as any).bind(walletLinkProvider),
+        };
+
+        return standardizedProvider;
     },
 
     getFallbackNoSigningProvider: (network: Network): Web3ProviderEngine => {

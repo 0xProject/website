@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
+import { Providers, ProviderState } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { trackEvent } from 'ts/utils/google_analytics';
@@ -63,32 +64,38 @@ export const useWallet = () => {
         }
     }, [currentProviderState.provider]);
 
-    const connectToWallet = useCallback(async () => {
-        cleanupCurrentProvider();
-        const providerState = providerStateFactory.getInitialProviderState(currentNetworkId);
+    const connectToWallet = useCallback(
+        async (providerOverride?: Providers) => {
+            cleanupCurrentProvider();
+            const providerState: ProviderState =
+                providerOverride === Providers.WalletLink
+                    ? providerStateFactory.getInitialProviderStateFromWalletLink(currentNetworkId)
+                    : providerStateFactory.getInitialProviderState(currentNetworkId);
 
-        const networkId = await providerState.web3Wrapper.getNetworkIdAsync();
-        if (networkId !== currentNetworkId) {
-            dispatcher.updateNetworkId(networkId);
-        }
-
-        await asyncDispatcher.fetchAccountInfoAndDispatchToStoreAsync(providerState, dispatcher, networkId, true);
-
-        const newProvider = providerState.provider as any;
-        if (newProvider.on) {
-            accountsChangedRef.current = handleAccountsChange;
-            newProvider.on(PROVIDER_ACCOUNTS_CHANGED_EVENT, accountsChangedRef.current);
-
-            networkChangedRef.current = handleNetworksChange;
-            for (const networkEvent of [PROVIDER_NETWORK_CHANGED_EVENT, PROVIDER_CHAIN_CHANGED_EVENT]) {
-                newProvider.on(networkEvent, networkChangedRef.current);
+            const networkId = await providerState.web3Wrapper.getNetworkIdAsync();
+            if (networkId !== currentNetworkId) {
+                dispatcher.updateNetworkId(networkId);
             }
-        }
 
-        const { TRACKING } = constants.STAKING;
+            await asyncDispatcher.fetchAccountInfoAndDispatchToStoreAsync(providerState, dispatcher, networkId, true);
 
-        trackEvent(TRACKING.CONNECT_WALLET, { provider: providerState.displayName || 'UnknownWallet' });
-    }, [cleanupCurrentProvider, currentNetworkId, dispatcher, handleAccountsChange, handleNetworksChange]);
+            const newProvider = providerState.provider as any;
+            if (newProvider.on) {
+                accountsChangedRef.current = handleAccountsChange;
+                newProvider.on(PROVIDER_ACCOUNTS_CHANGED_EVENT, accountsChangedRef.current);
+
+                networkChangedRef.current = handleNetworksChange;
+                for (const networkEvent of [PROVIDER_NETWORK_CHANGED_EVENT, PROVIDER_CHAIN_CHANGED_EVENT]) {
+                    newProvider.on(networkEvent, networkChangedRef.current);
+                }
+            }
+
+            const { TRACKING } = constants.STAKING;
+
+            trackEvent(TRACKING.CONNECT_WALLET, { provider: providerState.displayName || 'UnknownWallet' });
+        },
+        [cleanupCurrentProvider, currentNetworkId, dispatcher, handleAccountsChange, handleNetworksChange],
+    );
 
     const logoutWallet = useCallback(() => {
         cleanupCurrentProvider();
@@ -96,12 +103,15 @@ export const useWallet = () => {
     }, [cleanupCurrentProvider, dispatcher]);
 
     return {
-        connectToWallet: useCallback(() => {
-            connectToWallet().catch((err: Error) => {
-                logUtils.warn(`Failed to connect wallet ${err}`);
-                errorReporter.report(err);
-            });
-        }, [connectToWallet]),
+        connectToWallet: useCallback(
+            (providerOverride?: Providers) => {
+                connectToWallet(providerOverride).catch((err: Error) => {
+                    logUtils.warn(`Failed to connect wallet ${err}`);
+                    errorReporter.report(err);
+                });
+            },
+            [connectToWallet],
+        ),
         logoutWallet,
     };
 };
