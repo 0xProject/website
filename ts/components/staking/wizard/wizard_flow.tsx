@@ -1,5 +1,5 @@
 import { BigNumber } from '@0x/utils';
-import { formatDistanceStrict } from 'date-fns';
+import { addDays, formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -534,6 +534,7 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
         }, new BigNumber(0)),
     ).minimized;
     const stakingStartsFormattedTime = stakingUtils.getTimeToEpochDate(new Date(nextEpochStats.epochStart.timestamp));
+    const unlockTokensMinimumFormattedTime = stakingUtils.getTimeToEpochDate(addDays(new Date(nextEpochStats.epochStart.timestamp), constants.STAKING_EPOCH_LENGTH_IN_DAYS));
     return (
         <RelativeContainer>
             <>
@@ -559,7 +560,7 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
                     <>
                         <DescriptionContainer>
                             <Description>Your tokens will be locked.</Description>
-                            <DescriptionLabel>Unlocking will take between 2-4 weeks (1-2 Epochs)</DescriptionLabel>
+                            <DescriptionLabel>Unlocking will be available in {unlockTokensMinimumFormattedTime}</DescriptionLabel>
                         </DescriptionContainer>
                         <DescriptionContainer>
                             <Description>You give 50% of your voting powers.</Description>
