@@ -297,6 +297,7 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
                 topLabels={[`Available: ${roundedZrxBalance} ZRX`]}
                 labels={[StakingPercentageValue.Fourth, StakingPercentageValue.Half, StakingPercentageValue.All]}
                 value={stakeAmount}
+                shouldFocusOnInit={true}
                 selectedLabel={selectedLabel}
                 onLabelChange={(label: string) => {
                     if (label === StakingPercentageValue.Fourth) {
@@ -413,6 +414,7 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
                 topLabels={[`Available: ${roundedZrxBalance} ZRX`]}
                 labels={[StakingPercentageValue.Fourth, StakingPercentageValue.Half, StakingPercentageValue.All]}
                 value={stakeAmount}
+                shouldFocusOnInit={true}
                 selectedLabel={selectedLabel}
                 onLabelChange={(label: string) => {
                     if (label === StakingPercentageValue.Fourth) {
