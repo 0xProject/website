@@ -1,4 +1,4 @@
-import { logUtils } from '@0x/utils';
+import { BigNumber, logUtils } from '@0x/utils';
 import { format } from 'date-fns';
 import * as _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -9,10 +9,9 @@ import styled from 'styled-components';
 import { DashboardHero } from 'ts/components/staking/dashboard_hero';
 import { HistoryChart } from 'ts/components/staking/history_chart';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
+import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 
 import { useAPIClient } from 'ts/hooks/use_api_client';
-
-// import { colors } from 'ts/style/colors';
 
 import { State } from 'ts/redux/reducer';
 import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
@@ -50,6 +49,11 @@ const GraphHeading = styled(Heading)`
         display: block;
     }
 `;
+
+const TooltipLabel = styled.span`
+    font-weight: 600;
+`;
+
 /*
 const TradingPairContainer = styled.div`
     display: inline-block;
@@ -274,6 +278,11 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
     const currentEpoch = stakingPool.currentEpochStats;
     const nextEpoch = stakingPool.nextEpochStats;
 
+    // Reminder: stake change can be negative
+    const zrxStakeChangeBetweenEpochs = new BigNumber(nextEpoch.zrxStaked || 0)
+        .minus(new BigNumber(currentEpoch.zrxStaked || 0))
+        .toNumber();
+
     // Only allow epochs that have finished into historical data
     const historicalEpochs = stakingPool.epochRewards.filter(x => !!x.epochEndTimestamp);
 
@@ -304,7 +313,34 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                             // },
                             {
                                 title: 'ZRX Staked',
-                                number: `${formatZrx(currentEpoch.zrxStaked).minimized}`,
+                                number: `${formatZrx(nextEpoch.zrxStaked).minimized}`,
+                                headerComponent: () => (
+                                    <InfoTooltip id="next-epoch-staked-balance">
+                                        <div>
+                                            <div>
+                                                <TooltipLabel>Current Epoch:</TooltipLabel>{' '}
+                                                {
+                                                    formatZrx(currentEpoch.zrxStaked, {
+                                                        decimals: 2,
+                                                        decimalsRounded: 2,
+                                                        roundDown: true,
+                                                    }).full
+                                                }
+                                            </div>
+                                            <div>
+                                                <TooltipLabel>Pending Epoch:</TooltipLabel>{' '}
+                                                {
+                                                    formatZrx(zrxStakeChangeBetweenEpochs, {
+                                                        decimals: 2,
+                                                        decimalsRounded: 2,
+                                                        roundDown: true,
+                                                        positiveSign: zrxStakeChangeBetweenEpochs >= 0,
+                                                    }).full
+                                                }
+                                            </div>
+                                        </div>
+                                    </InfoTooltip>
+                                ),
                             },
                             {
                                 title: 'Fees Generated',

@@ -81,6 +81,16 @@ describe('formatNumber', () => {
         });
         expect(roundedAndMinimized.minimized).toBe('0.000398');
     });
+
+    test('negative number should be formatted with minus sign', () => {
+        // tslint:disable-next-line: number-literal-format
+        const roundedAndMinimized = formatNumber(new BigNumber(-30000.12345), {
+            decimals: 3,
+            decimalsRounded: 3,
+            roundDown: true,
+        });
+        expect(roundedAndMinimized.minimized).toBe('-30,000.123');
+    });
 });
 
 describe('formatPercent', () => {

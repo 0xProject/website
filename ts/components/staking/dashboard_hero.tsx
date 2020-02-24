@@ -18,6 +18,7 @@ import { utils } from 'ts/utils/utils';
 interface Metrics {
     title: string;
     number: string | number;
+    headerComponent?: () => JSX.Element;
 }
 
 interface DashBoardHeroTabs {
@@ -106,6 +107,10 @@ const FiguresList = styled.ol`
 `;
 
 const Figure = styled.li`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
     background-color: ${colors.white};
     padding: 10px;
     margin-right: 15px;
@@ -114,6 +119,12 @@ const Figure = styled.li`
         width: calc(50% - 15px);
         padding: 20px;
     }
+`;
+
+const FigureHeader = styled.header`
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
 `;
 
 const FigureTitle = styled.span`
@@ -323,7 +334,10 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                                 {metrics.map(metric => {
                                     return (
                                         <Figure key={`${metric.title}${metric.number}`}>
-                                            <FigureTitle>{metric.title}</FigureTitle>
+                                            <FigureHeader>
+                                                <FigureTitle>{metric.title}</FigureTitle>
+                                                {metric.headerComponent && metric.headerComponent()}
+                                            </FigureHeader>
                                             <FigureNumber>{metric.number}</FigureNumber>
                                         </Figure>
                                     );
