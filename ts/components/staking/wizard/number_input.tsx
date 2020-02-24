@@ -63,7 +63,7 @@ const Input = styled.input<InputProps>`
     border: 0;
     font-size: 20px;
     font-family: 'Formular', monospace;
-    color: ${props => (props.isError ? colors.orange : colors.black)}
+    color: ${props => (props.isError ? colors.orange : colors.black)};
     outline: none;
     width: 60%;
     &::placeholder {
