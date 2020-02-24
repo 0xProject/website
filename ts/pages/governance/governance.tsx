@@ -1,5 +1,6 @@
 import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
+import moment from 'moment';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
@@ -65,6 +66,11 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
     }
     public render(): React.ReactNode {
         const { isVoteReceived, tally } = this.state;
+
+        const now = moment();
+        const pstOffset = '-0800';
+        const deadlineToVote = this._proposalData?.voteEndDate?.utcOffset(pstOffset);
+        const hasVoteEnded = deadlineToVote?.isBefore(now) || false;
         return (
             <StakingPageLayout isHome={false} title="0x Governance">
                 <DocumentTitle {...documentConstants.VOTE} />
@@ -86,9 +92,12 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                     </Column>
                     <Column width="30%" maxWidth="300px">
                         <VoteStats tally={tally} />
-                        <VoteButton onClick={this._onOpenVoteModal.bind(this)} isWithArrow={false}>
-                            {isVoteReceived ? 'Vote Received' : 'Vote'}
-                        </VoteButton>
+                        {
+                            !hasVoteEnded &&
+                            <VoteButton onClick={this._onOpenVoteModal.bind(this)} isWithArrow={false}>
+                                {isVoteReceived ? 'Vote Received' : 'Vote'}
+                            </VoteButton>
+                        }
                     </Column>
                 </Section>
 
