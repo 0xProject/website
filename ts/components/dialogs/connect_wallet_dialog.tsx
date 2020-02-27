@@ -12,6 +12,7 @@ import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
 import { AccountState, Providers } from 'ts/types';
+import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
 import { useWallet } from 'ts/hooks/use_wallet';
@@ -322,7 +323,9 @@ export const ConnectWalletDialog = () => {
 
         const mobileProviders: ProviderInfo[] = [
             {
-                name: 'Wallet Link',
+                // NOTE: We show WalletLink as Coinbase Wallet for name recognition
+                name: constants.PROVIDER_TYPE_TO_NAME[Providers.WalletLink],
+                providerType: Providers.WalletLink,
                 onClick: () => {
                     connectToWallet(Providers.WalletLink);
                     onCloseDialog();

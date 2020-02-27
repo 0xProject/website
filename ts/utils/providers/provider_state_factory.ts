@@ -61,10 +61,11 @@ export const providerStateFactory = {
 
     getInitialProviderStateFromWalletLink: (networkId: Network): ProviderState => {
         const provider = providerFactory.getWalletLinkProvider(networkId);
+        const name = constants.PROVIDER_TYPE_TO_NAME[Providers.WalletLink];
 
         const providerState: ProviderState = {
-            name: constants.PROVIDER_TYPE_TO_NAME[Providers.WalletLink],
-            displayName: Providers.WalletLink,
+            name,
+            displayName: name,
             providerType: Providers.WalletLink,
             provider,
             web3Wrapper: new Web3Wrapper(provider),
