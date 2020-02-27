@@ -9,8 +9,11 @@ import { configs } from 'ts/utils/configs';
 
 const { PUBLIC_NODE_URLS_BY_NETWORK_ID } = configs;
 
+const LOGO_URL_0x = 'https://0x.org/images/0x_logo.png';
+
 const walletLink = new WalletLink({
-    appName: '0x Staking',
+    appName: '0x Portal',
+    appLogoUrl: LOGO_URL_0x,
 });
 
 // TODO(kimpers): Copied from instant, migrate to a package that can be shared
