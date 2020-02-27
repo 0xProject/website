@@ -101,8 +101,11 @@ export const useWallet = () => {
 
     const logoutWallet = useCallback(() => {
         cleanupCurrentProvider();
+        const providerState: ProviderState = providerStateFactory.getInitialProviderState(currentNetworkId);
+
+        dispatcher.updateProviderState(providerState);
         dispatcher.setAccountStateLoading();
-    }, [cleanupCurrentProvider, dispatcher]);
+    }, [cleanupCurrentProvider, currentNetworkId, dispatcher]);
 
     return {
         connectToWallet: useCallback(
