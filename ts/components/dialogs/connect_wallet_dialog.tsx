@@ -304,7 +304,7 @@ export const ConnectWalletDialog = () => {
     useEffect(() => {
         const _walletProviders: WalletProviderCategory[] = [];
 
-        if (providerState.account.state !== AccountState.None) {
+        if (providerState.account.state !== AccountState.None && providerState.providerType !== Providers.WalletLink) {
             _walletProviders.push({
                 title: 'Detected wallet',
                 providers: [
@@ -354,6 +354,7 @@ export const ConnectWalletDialog = () => {
         onCloseDialog,
         providerState.account.state,
         providerState.displayName,
+        providerState.provider,
         providerState.providerType,
     ]);
 

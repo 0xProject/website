@@ -410,6 +410,13 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
             return reduceStateWithAccount(state, newAccount);
         }
 
+        case ActionTypes.UpdateProviderState: {
+            return {
+                ...state,
+                providerState: action.data,
+            };
+        }
+
         // Shared
         case ActionTypes.ShowFlashMessage: {
             return {

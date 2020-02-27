@@ -72,6 +72,8 @@ export const useWallet = () => {
                     ? providerStateFactory.getInitialProviderStateFromWalletLink(currentNetworkId)
                     : providerStateFactory.getInitialProviderState(currentNetworkId);
 
+            dispatcher.updateProviderState(providerState);
+
             const networkId = await providerState.web3Wrapper.getNetworkIdAsync();
             if (networkId !== currentNetworkId) {
                 dispatcher.updateNetworkId(networkId);
