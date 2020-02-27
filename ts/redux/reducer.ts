@@ -19,6 +19,7 @@ import {
     TokenByAddress,
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
+import { environments } from 'ts/utils/environments';
 import { providerStateFactory } from 'ts/utils/providers/provider_state_factory';
 import { Translate } from 'ts/utils/translate';
 import { utils } from 'ts/utils/utils';
@@ -67,7 +68,8 @@ export interface State {
     translate: Translate;
 }
 
-const DEFAULT_NETWORK_ID = Network.Mainnet;
+const DEFAULT_NETWORK_ID = environments.isDevelopment() ? Network.Kovan : Network.Mainnet;
+
 export const INITIAL_STATE: State = {
     // Portal
     blockchainErr: BlockchainErrs.NoError,

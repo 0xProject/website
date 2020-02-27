@@ -32,6 +32,7 @@ export const providerFactory = {
     },
 
     getWalletLinkProvider: (network: Network): ZeroExProvider => {
+        // NOTE: chainId will not update depending on the user's setting in the Coinbase Wallet app like with MetaMask
         const rpcUrl = PUBLIC_NODE_URLS_BY_NETWORK_ID[network][0];
         const walletLinkProvider = walletLink.makeWeb3Provider(rpcUrl, network);
 
