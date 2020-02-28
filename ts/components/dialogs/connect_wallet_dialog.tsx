@@ -12,6 +12,7 @@ import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
 import { AccountState, Providers } from 'ts/types';
+import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
 import { useWallet } from 'ts/hooks/use_wallet';
@@ -304,7 +305,7 @@ export const ConnectWalletDialog = () => {
     useEffect(() => {
         const _walletProviders: WalletProviderCategory[] = [];
 
-        if (providerState.account.state !== AccountState.None) {
+        if (providerState.account.state !== AccountState.None && providerState.providerType !== Providers.WalletLink) {
             _walletProviders.push({
                 title: 'Detected wallet',
                 providers: [
@@ -320,22 +321,34 @@ export const ConnectWalletDialog = () => {
             });
         }
 
+        const mobileProviders: ProviderInfo[] = [
+            {
+                // NOTE: We show WalletLink as Coinbase Wallet for name recognition
+                name: constants.PROVIDER_TYPE_TO_NAME[Providers.WalletLink],
+                providerType: Providers.WalletLink,
+                onClick: () => {
+                    connectToWallet(Providers.WalletLink);
+                    onCloseDialog();
+                },
+            },
+        ];
+
         if (isMobile) {
-            _walletProviders.push({
-                title: 'Mobile wallet',
-                providers: [
-                    {
-                        name: 'Other mobile wallets',
-                        icon: (
-                            <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
-                                <IconPlus />
-                            </div>
-                        ),
-                        onClick: () => setShouldShowOtherWallets(true),
-                    },
-                ],
+            mobileProviders.push({
+                name: 'Other mobile wallets',
+                icon: (
+                    <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
+                        <IconPlus />
+                    </div>
+                ),
+                onClick: () => setShouldShowOtherWallets(true),
             });
         }
+
+        _walletProviders.push({
+            title: 'Mobile wallet',
+            providers: mobileProviders,
+        });
 
         setWalletProviders(_walletProviders);
     }, [
@@ -344,6 +357,7 @@ export const ConnectWalletDialog = () => {
         onCloseDialog,
         providerState.account.state,
         providerState.displayName,
+        providerState.provider,
         providerState.providerType,
     ]);
 

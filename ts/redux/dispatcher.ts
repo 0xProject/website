@@ -8,6 +8,7 @@ import {
     BlockchainErrs,
     Language,
     PortalOrder,
+    ProviderState,
     ProviderType,
     ScreenWidths,
     Side,
@@ -200,6 +201,13 @@ export class Dispatcher {
         this._dispatch({
             type: ActionTypes.UpdateIsConnectWalletDialogOpen,
             data: isOpen,
+        });
+    }
+
+    public updateProviderState(providerState: ProviderState): void {
+        this._dispatch({
+            type: ActionTypes.UpdateProviderState,
+            data: providerState,
         });
     }
 

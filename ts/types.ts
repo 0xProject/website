@@ -212,6 +212,7 @@ export enum ActionTypes {
     UpdateAccountEthBalance = 'UPDATE_ACCOUNT_ETH_BALANCE',
     UpdateAccountZrxBalance = 'UPDATE_ACCOUNT_ZRX_BALANCE',
     UpdateAccountZrxAllowance = 'UPDATE_ACCOUNT_ZRX_ALLOWANCE',
+    UpdateProviderState = 'UPDATE_PROVIDER_STATE',
 
     // Shared
     ShowFlashMessage = 'SHOW_FLASH_MESSAGE',
@@ -739,6 +740,7 @@ export enum Providers {
     Cipher = 'CIPHER',
     TrustWallet = 'TRUST_WALLET',
     WalletConnect = 'WALLET_CONNECT',
+    WalletLink = 'WALLET_LINK',
     ImToken = 'IM_TOKEN',
     Opera = 'OPERA',
     Fallback = 'FALLBACK',

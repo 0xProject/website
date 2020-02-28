@@ -1,7 +1,12 @@
+import { environments } from 'ts/utils/environments';
+
 import { GoogleSheetLeadUrls, OutdatedWrappedEtherByNetworkId, PublicNodeUrlsByNetworkId } from '../types';
 
 const BASE_URL = window.location.origin;
-const INFURA_API_KEY = 'T5WSC8cautR4KXyYgsRs';
+// NOTE: Production key only works on 0x.org and 0xproject.com
+const INFURA_API_KEY = environments.isDevelopment()
+    ? '3cd49e08510e484aaf1253fc1fa58f0c'
+    : 'dbb71566cad444979f59c42b11b4f603';
 
 export const configs = {
     AMOUNT_DISPLAY_PRECSION: 5,
@@ -46,10 +51,10 @@ export const configs = {
     ] as OutdatedWrappedEtherByNetworkId[],
     // The order matters. We first try first node and only then fall back to others.
     PUBLIC_NODE_URLS_BY_NETWORK_ID: {
-        [1]: ['https://eth-mainnet.alchemyapi.io/jsonrpc/8JwI7bMSK8ojsPDbyeHt6NK8w23afo1q'], // [`https://mainnet.infura.io/${INFURA_API_KEY}`, 'https://mainnet.0x.org'],
-        [42]: [`https://kovan.infura.io/${INFURA_API_KEY}`, 'https://kovan.0x.org'],
-        [3]: [`https://ropsten.infura.io/${INFURA_API_KEY}`],
-        [4]: [`https://rinkeby.infura.io/${INFURA_API_KEY}`],
+        [1]: ['https://eth-mainnet.alchemyapi.io/jsonrpc/8JwI7bMSK8ojsPDbyeHt6NK8w23afo1q'], // [`https://mainnet.infura.io/v3/${INFURA_API_KEY}`, 'https://mainnet.0x.org'],
+        [42]: [`https://kovan.infura.io/v3/${INFURA_API_KEY}`, 'https://kovan.0x.org'],
+        [3]: [`https://ropsten.infura.io/v3/${INFURA_API_KEY}`],
+        [4]: [`https://rinkeby.infura.io/v3/${INFURA_API_KEY}`],
     } as PublicNodeUrlsByNetworkId,
     SYMBOLS_OF_MINTABLE_KOVAN_TOKENS: ['ZRX', 'MKR', 'MLN', 'GNT', 'DGD', 'REP'],
     SYMBOLS_OF_MINTABLE_ROPSTEN_TOKENS: ['ZRX', 'MKR', 'MLN', 'GNT', 'DGD', 'REP'],
