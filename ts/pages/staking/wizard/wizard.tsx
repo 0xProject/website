@@ -1,7 +1,7 @@
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import * as zeroExInstant from 'zeroExInstant';
 
@@ -23,6 +23,8 @@ import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
 import { useStakingWizard, WizardRouterSteps } from 'ts/hooks/use_wizard';
 
+import { asyncDispatcher } from 'ts/redux/async_dispatcher';
+import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import {
     AccountReady,
@@ -54,9 +56,12 @@ const Container = styled.div`
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
     // If coming from the market maker page, poolId will be provided
     const { poolId } = useQuery<{ poolId: string | undefined }>();
+    const { providerState } = props;
+
+    const dispatch = useDispatch();
+    const dispatcher = new Dispatcher(dispatch);
 
     const networkId = useSelector((state: State) => state.networkId);
-    const providerState = useSelector((state: State) => state.providerState);
     const apiClient = useAPIClient(networkId);
 
     const [stakingPools, setStakingPools] = useState<PoolWithStats[] | undefined>(undefined);
@@ -68,8 +73,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const stake = useStake(networkId, providerState);
     const allowance = useAllowance();
 
-    const allowanceBaseUnits =
-        (props.providerState.account as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
+    const allowanceBaseUnits = (providerState.account as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
 
     const doesNeedTokenApproval = allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);
 
@@ -148,6 +152,16 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         return next(WizardRouterSteps.ReadyToStake);
     }, [currentStep, doesNeedTokenApproval, next]);
 
+    const onUpdateAccountBalances = useCallback(() => {
+        // tslint:disable-next-line:no-floating-promises
+        asyncDispatcher.fetchAccountBalanceAndDispatchToStoreAsync(
+            (providerState.account as AccountReady).address,
+            providerState.web3Wrapper,
+            dispatcher,
+            networkId,
+        );
+    }, [dispatcher, networkId, providerState.account, providerState.web3Wrapper]);
+
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
             <Container>
@@ -179,6 +193,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                     zrxBalance={zrxBalance}
                                     providerState={providerState}
                                     onGoToNextStep={handleClickNextStep}
+                                    onUpdateAccountBalances={onUpdateAccountBalances}
                                 />
                             )}
                             {currentStep === WizardRouterSteps.ApproveTokens && (
@@ -214,6 +229,7 @@ export interface SetupStakingProps {
     zrxBalanceBaseUnitAmount?: BigNumber;
     zrxBalance?: BigNumber;
     poolId?: string;
+    onUpdateAccountBalances: () => void;
 }
 
 // Substeps of the start step
@@ -235,6 +251,7 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
     zrxBalance,
     poolId,
     onGoToNextStep,
+    onUpdateAccountBalances,
 }) => {
     let wizardFlowStep: WizardSetupSteps = WizardSetupSteps.Empty;
     if (providerState.account.state !== AccountState.Ready) {
@@ -275,12 +292,14 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
                     onClick={() =>
                         zeroExInstant.render(
                             {
+                                provider: providerState.provider,
                                 orderSource: 'https://api.0x.org/sra/',
                                 availableAssetDatas: [
                                     '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
                                 ],
                                 defaultSelectedAssetData:
                                     '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
+                                onSuccess: onUpdateAccountBalances,
                             },
                             'body',
                         )
