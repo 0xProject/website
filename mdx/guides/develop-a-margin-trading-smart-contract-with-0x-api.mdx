@@ -70,14 +70,14 @@ constructor (
         )
         public
     {
-        EXCHANGE = IExchange(_exchange);
-        COMPTROLLER = IComptroller(_comptroller);
-        CDAI = ICERC20(_ceth);
-        CETH = ICETH(_cdai);
-        WETH = IEtherToken(_weth);
-        DAI = IERC20Token(_dai);
+        exchange = IExchange(_exchange);
+        comptroller = IComptroller(_comptroller);
+        cdai = ICERC20(_ceth);
+        ceth = ICETH(_cdai);
+        weth = IEtherToken(_weth);
+        dai = IERC20Token(_dai);
 
-        OWNER = msg.sender;
+        owner = msg.sender;
 
         // Enter markets
         _enterMarkets();
@@ -88,9 +88,9 @@ constructor (
 Let's break down a few of the references we are going to be interacting with:
 
 
-1. `EXCHANGE`: the main 0x protocol smart contract to interact with
-2. `COMPTROLLER`: the main compound finance smart contract to interact with
-3. `CDAI`, `CETH`: 'c' tokens used by compound finance to represent assets in the protocol and accrued interests
+1. `exchange`: the main 0x protocol smart contract to interact with
+2. `comptroller`: the main compound finance smart contract to interact with
+3. `cdai`, `ceth`: 'c' tokens used by compound finance to represent assets in the protocol and accrued interests
 
 `_enterMarkets()` is a function that allows the contract to interact with Compound Finance for the ETH and DAI money markets.
 
@@ -110,7 +110,7 @@ function open(ZeroExQuote memory quote)
 }
 ```
 
-The function will only allow the `OWNER` to open a position and only when the smart contract has no currently opened positions. The parameter `quote` will contain the 0x API response to marketBuy WETH with DAI.
+The function will only allow the `owner` to open a position and only when the smart contract has no currently opened positions. The parameter `quote` will contain the 0x API response to marketBuy WETH with DAI.
 
 #### Determining amount of ETH to deposit into Compound finance
 
@@ -139,7 +139,7 @@ With `positionBalance`, we can then deposit and mint cETH with Compound Finance.
 // 2. increase position by msg.value - protocolFeeAmount
 positionBalance = msg.value.safeSub(quote.protocolFeeAmount);
 // 3. mint collateral in compound
-CETH.mint.value(positionBalance)()
+ceth.mint.value(positionBalance)()
 ...
 ```
 
@@ -148,11 +148,11 @@ Now that we have `accountLiquidity` (borrowing power in Compound Finance), let's
 ```
 ...
 // 4. borrow token
-assert(CDAI.borrow(quote.sellAmount) == 0);
+require(cdai.borrow(quote.sellAmount) == 0, "Borrow DAI failed.");
 ...
 ```
 
-Compound finance returns a non-zero value if an error occurs during the function call, with an `assert` we can proceed with the function only when the function doesn't throw any errors.
+Compound finance returns a non-zero value if an error occurs during the function call, with a `require` we can proceed with the function only when the function doesn't throw any errors.
 
 #### Swaping for ETH with 0x liquidity 
 
@@ -161,7 +161,7 @@ To swap with 0x, the 0x exchange contracts will need to have access to move DAI 
 ```solidity
 ...
 // 4. approve 0x exchange to move DAI
-_approve(address(DAI), _getZeroExApprovalAddress());
+_approve(address(dai), _getZeroExApprovalAddress());
 ...
 ```
 
@@ -170,20 +170,20 @@ Since the quote is passed off-chain, it is worth verifying that the assets you i
 ```solidity
 ...
 // 5. verify quote is valid
-require(quote.sellToken == address(WETH), "not buying WETH");
-require(quote.buyToken == address(DAI), "not buying WETH");
+require(quote.sellToken == address(weth), "not buying WETH");
+require(quote.buyToken == address(dai), "not buying WETH");
 ...
 ```
 
-Now that we have verified and set the approvals to perform a swap with 0x protocol, let’s call `EXCHANGE` with `callDataHex` provided in the quote.
+Now that we have verified and set the approvals to perform a swap with 0x protocol, let’s call `exchange` with `callDataHex` provided in the quote.
 
 ```solidity
 ...
 // 6. execute swap
-(bool success, bytes memory data) = address(EXCHANGE).call.value(quote.protocolFeeAmount)(quote.calldataHex);
+(bool success, bytes memory data) = address(exchange).call.value(quote.protocolFeeAmount)(quote.calldataHex);
 require(success, "Swap not filled.");
 // 7. decode fill results
-LibFillResults.FillResults memory fillResults = abi.decode(data (LibFillResults.FillResults));
+LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
 ...
 ```
 
@@ -194,8 +194,8 @@ With that, we have just swapped DAI for WETH, effectively opening our margin pos
 ```solidity
 ...
 // 8. position size increase by bought amount of WETH (makerAssetFilledAmount)
-positionBalance += fillResults.makerAssetFilledAmount;
-borrowBalance = CDAI.borrowBalanceCurrent(address(this));
+positionBalance.safeAdd(fillResults.makerAssetFilledAmount);
+borrowBalance = cdai.borrowBalanceCurrent(address(this));
 // at this point you have CETH, and swapped for WETH
 }
 ```
@@ -213,22 +213,22 @@ At this point, the open function should look like this:
         // 1. increase position by msg.value - protocolFee
         positionBalance = msg.value.safeSub(quote.protocolFee);
         // 2. mint collateral in compound
-        CETH.mint.value(positionBalance)();
+        ceth.mint.value(positionBalance)();
         // 3. borrow token
-        require(CDAI.borrow(quote.sellAmount) == 0, "borrow didn't work");
+        require(cdai.borrow(quote.sellAmount) == 0, "borrow didn't work");
         // 4. approve 0x exchange to move DAI
-        _approve(address(DAI), _getZeroExApprovalAddress());
+        _approve(address(dai), _getZeroExApprovalAddress());
         // 5. verify quote is valid
-        require(quote.sellToken == address(WETH), "not buying WETH");
-        require(quote.buyToken == address(DAI), "not buying WETH");
+        require(quote.sellToken == address(weth), "not selling WETH");
+        require(quote.buyToken == address(dai), "not buying DAI");
         // 6. execute swap
-        (bool success, bytes memory data) = address(EXCHANGE).call.value(quote.protocolFee)(quote.calldataHex);
+        (bool success, bytes memory data) = address(exchange).call.value(quote.protocolFee)(quote.calldataHex);
         require(success, "Swap not filled.");
         // 7. decode fill results
         LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
         // 8. position size increase by bought amount of WETH
-        positionBalance += fillResults.makerAssetFilledAmount;
-        borrowBalance = CDAI.borrowBalanceCurrent(address(this));
+        positionBalance.safeAdd(fillResults.makerAssetFilledAmount);
+        borrowBalance = cdai.borrowBalanceCurrent(address(this));
         // at this point you have CETH, and swapped for WETH
     }
 ```
@@ -271,12 +271,12 @@ Similar to swapping from DAI to WETH in `open`, we will need to do a few things 
 ```solidity
 ...
 // 1. approve for swap
-_approve(address(WETH), _getZeroExApprovalAddress());
+_approve(address(weth), _getZeroExApprovalAddress());
 // 2. verify swap
-uint256 wethBalance = WETH.balanceOf(address(this));
-uint256 daiBorrowBalance = CDAI.borrowBalanceCurrent(address(this)); // TODO
+uint256 wethBalance = weth.balanceOf(address(this));
+uint256 daiBorrowBalance = cdai.borrowBalanceCurrent(address(this));
 require(wethBalance > quote.sellAmount, "not enough to swap");
-require(quote.buyToken == address(DAI), "not buying DAI");
+require(quote.buyToken == address(dai), "not buying DAI");
 require(daiBorrowBalance < quote.buyAmount, "not enough DAI to repay");
 ...
 ```
@@ -287,7 +287,7 @@ Once verified, let’s perform the swap:
 
 ```solidity
 // 3. execute swap
-(bool success, bytes memory data) = address(EXCHANGE).call.value(quote.protocolFee)(quote.calldataHex);
+(bool success, bytes memory data) = address(exchange).call.value(quote.protocolFee)(quote.calldataHex);
 require(success, "Swap not filled.");
 // 4. decode results
 LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
@@ -302,16 +302,16 @@ With the DAI bought with 0x API, let’s repay back our `borrowBalance` on Compo
 ```solidity
 ...
 // 5. return back DAI
-_approve(address(DAI), address(CDAI));
-require(CDAI.repayBorrow(fillResults.makerAssetFilledAmount) == 0);
+_approve(address(dai), address(cdai));
+require(cdai.repayBorrow(fillResults.makerAssetFilledAmount) == 0);
 ...
 ```
 
-To return DAI back, an approval for the `CDAI` contract is needed. With `fillResults.makerAssetFilledAmount` we can repay the exact amount of DAI acquired with 0x. Once, `borrowBalance` is repaid, let’s withdraw the ETH deposited in `CETH`.
+To return DAI back, an approval for the `cdai` contract is needed. With `fillResults.makerAssetFilledAmount` we can repay the exact amount of DAI acquired with 0x. Once, `borrowBalance` is repaid, let’s withdraw the ETH deposited in `ceth`.
 
 ```solidity
 ...
-require(CETH.redeem(CETH.balanceOfUnderlying(address(this))) == 0);
+require(ceth.redeem(CETH.balanceOfUnderlying(address(this))) == 0);
 ...
 ```
 
@@ -320,10 +320,10 @@ At this point, the contract holds ETH and WETH (whatever WETH remains not swappe
 ```solidity
 ...
     // 7. withdraw all WETH Balance;
-    WETH.withdraw(wethBalance);
+    weth.withdraw(wethBalance);
     // 8. transfer all ETH back to owner;
     ethBalance = address(this).balance;
-    OWNER.transfer(address(this).balance);
+    owner.transfer(address(this).balance);
     // 9. reset balance
     positionBalance = 0;
 }
@@ -342,30 +342,30 @@ function close(
     returns (uint ethBalance)
 {
     // approve for swap
-    _approve(address(WETH), _getZeroExApprovalAddress());
+    _approve(address(weth), _getZeroExApprovalAddress());
     // verify swap
-    uint256 wethBalance = WETH.balanceOf(address(this));
-    uint256 daiBorrowBalance = CDAI.borrowBalanceCurrent(address(this)); // TODO
+    uint256 wethBalance = weth.balanceOf(address(this));
+    uint256 daiBorrowBalance = cdai.borrowBalanceCurrent(address(this));
 
     require(wethBalance > quote.sellAmount, "not enough to swap");
-    require(quote.buyToken == address(DAI), "not buying DAI");
+    require(quote.buyToken == address(dai), "not buying DAI");
     require(daiBorrowBalance < quote.buyAmount, "not enough DAI to repay");
     // execute swap
-    (bool success, bytes memory data) = address(EXCHANGE).call.value(quote.protocolFee)(quote.calldataHex);
+    (bool success, bytes memory data) = address(exchange).call.value(quote.protocolFee)(quote.calldataHex);
     require(success, "Swap not filled.");
     // decode results
     LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
     // return back DAI
-    _approve(address(DAI), address(CDAI));
     // approve Compound Finance CDAI
-    assert(CDAI.repayBorrow(fillResults.makerAssetFilledAmount) == 0);
+    _approve(address(dai), address(cdai));
+    require(cdai.repayBorrow(fillResults.makerAssetFilledAmount) == 0, "repayment of DAI to Compound failed");
     // get back ETH
-    assert(CETH.redeem(CETH.balanceOfUnderlying(address(this))) == 0); // TODO correct?
+    require(ceth.redeem(ceth.balanceOfUnderlying(address(this))) == 0, "withdraw of ETH from Compound failed");
     // withdraw all WETH Balance;
-    WETH.withdraw(wethBalance);
+    weth.withdraw(wethBalance);
     // transfer all ETH back to owner;
     ethBalance = address(this).balance;
-    OWNER.transfer(address(this).balance);
+    owner.transfer(address(this).balance);
     // reset balance
     positionBalance = 0;
 }
@@ -377,7 +377,7 @@ To make interacting with the margin contract easier with web3, let’s add a pub
 
 ```solidity
 function getBorrowBalance() public onlyOwner returns (uint256) {
-    return CDAI.borrowBalanceCurrent(address(this));
+    return cdai.borrowBalanceCurrent(address(this));
 }
 ```
 
@@ -564,6 +564,8 @@ Just like that, you wrote a margin trading smart contract with 0x + Compound. Ke
 * liquidation prevention functions to “top up” the collateral provided to Compound
 * better error handling
 * manage multiple positions with one contract
+
+<Notification type="alert">The margin trading contract is unaudited and is NOT recommended to be use on mainnet with real ETH.</Notification>
 
 If you want to take the ideas brought up to the next level, we have a number of resources you can leverage (haha get it?):
 
