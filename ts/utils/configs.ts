@@ -25,7 +25,7 @@ export const configs = {
     DEFAULT_DERIVATION_PATH: `44'/60'/0'`,
     // WARNING: ZRX & WETH MUST always be default trackedTokens
     DEFAULT_TRACKED_TOKEN_SYMBOLS: ['WETH', 'ZRX'],
-    DOMAIN_VOTE: 'vote.0x.org',
+    DOMAIN_VOTE: 'vote.api.0x.org',
     VOTE_INSTANT_ORDER_SOURCE: 'https://api.radarrelay.com/0x/v2/',
     VOTE_INSTANT_ASSET_DATAS: ['0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498'],
     GOOGLE_ANALYTICS_ID: 'UA-98720122-1',
