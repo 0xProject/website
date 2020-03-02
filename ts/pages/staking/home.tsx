@@ -115,7 +115,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                 actions={
                     <>
                         <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
-                            Get Started
+                            Start Staking
                         </Button>
                         <Button
                             to={constants.STAKING_FAQ_DOCS}
