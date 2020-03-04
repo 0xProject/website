@@ -71,6 +71,7 @@ export const constants = {
         [Providers.WalletConnect]: 'Wallet Connect',
         [Providers.WalletLink]: 'Coinbase Wallet',
         [Providers.ImToken]: 'imToken',
+        [Providers.Bitpie]: 'Bitpie',
     } as { [key in Providers]: string },
     PROVIDER_TYPE_TO_ICON: {
         [Providers.Metamask]: 'metamask_icon',
@@ -78,6 +79,7 @@ export const constants = {
         [Providers.WalletLink]: 'coinbase_wallet_icon',
         [Providers.TrustWallet]: 'trust_wallet_icon',
         [Providers.ImToken]: 'im_token_wallet_icon',
+        [Providers.Bitpie]: 'bitpie_wallet_logo',
     } as { [key: string]: string | undefined },
     NO_ACCOUNT: {
         state: AccountState.None,
