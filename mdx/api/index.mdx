@@ -517,6 +517,59 @@ No request params.
 ```
 </CodeTabs>
 
+## GET /swap/v0/prices
+
+Get the amount of `sellToken` to purchase one unit (not base unit, one unit adjusted by number of decimals for asset) for tokens supported by `/swap/v0/*` endpoints.
+If a token is not returned, it may still be available but not queryable by token symbol. 
+
+### Request
+
+| Query Param          | Description                                                                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sellToken`          | The ERC20 token address or symbol of the token you want to get the price of tokens in. "ETH" can be provided as a valid `sellToken`.                                                                                                      |
+
+### Response
+
+Response will be an array of token symbols and the respective price in `sellToken` for one buy unit.
+
+| Field         | Description                                                           |
+| ------------- | ----------------------------------------------------------------------|
+| `symbol`      | The symbol representing the Ethereum token.                           |
+| `price`       | The price, in units of `sellToken`, of one unit of `symbol` token .   |
+
+### Examples 
+
+#### Get price of tokens in DAI
+
+<HttpCall path="/swap/v0/tokens?sellToken=DAI" />
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+{
+    "records": [
+        {
+            "symbol": "REP",
+            "price": "12.698115840934444557"
+        },
+        {
+            "symbol": "WETH",
+            "price": "230.093517897509429761"
+        },
+        {
+            "symbol": "ZRX",
+            "price": "0.279612731616675046"
+        },
+        {
+            "symbol": "USDC",
+            "price": "0.997928"
+        },
+        ...
+    ]
+}
+```
+
+</CodeTabs>
 
 # SRA
 
