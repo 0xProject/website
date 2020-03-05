@@ -61,27 +61,27 @@ Because we will be interacting with a number of Defi protocols, we will need a f
 ```solidity
 ...
 constructor (
-        address _exchange,
-        address _comptroller,
-        address _cdai,
-        address _dai,
-        address _ceth,
-        address _weth
-        )
-        public
-    {
-        exchange = IExchange(_exchange);
-        comptroller = IComptroller(_comptroller);
-        cdai = ICERC20(_ceth);
-        ceth = ICETH(_cdai);
-        weth = IEtherToken(_weth);
-        dai = IERC20Token(_dai);
+    address _exchange,
+    address _comptroller,
+    address _cdai,
+    address _dai,
+    address payable _ceth,
+    address _weth
+    )
+    public
+{
+    exchange = IExchange(_exchange);
+    comptroller = IComptroller(_comptroller);
+    cdai = ICERC20(_cdai);
+    ceth = ICEther(_ceth);
+    weth = IEtherToken(_weth);
+    dai = IERC20Token(_dai);
 
-        owner = msg.sender;
+    owner = msg.sender;
 
-        // Enter markets
-        _enterMarkets();
-    }
+    // Enter markets
+    _enterMarkets();
+}
 ...
 ```
 
@@ -100,11 +100,11 @@ The function signature for the `open` function is defined as so:
 
 ```solidity
 function open(ZeroExQuote memory quote)
-  public
-  payable
-  onlyOwner
-  onlyWhenClosed
-  returns (uint256 positionBalance, uint256 borrowBalance)
+    public
+    payable
+    onlyowner
+    onlyWhenClosed
+    returns (uint256 positionBalance, uint256 borrowBalance)
 {
 ...
 }
@@ -125,8 +125,8 @@ function open(ZeroExQuote memory quote)
   returns (uint256 positionBalance, uint256 wethBalance, uint256 borrowBalance)
 {
     ...
-  // 1. increase position by msg.value - protocolFeeAmount
-  positionBalance = msg.value.safeSub(quote.protocolFeeAmount);
+    // 1. increase position by msg.value - protocolFeeAmount
+    positionBalance = msg.value.safeSub(quote.protocolFeeAmount);
 }
 ```
 
@@ -135,21 +135,19 @@ function open(ZeroExQuote memory quote)
 With `positionBalance`, we can then deposit and mint cETH with Compound Finance.
 
 ```solidity
-...
-// 2. increase position by msg.value - protocolFeeAmount
-positionBalance = msg.value.safeSub(quote.protocolFeeAmount);
-// 3. mint collateral in compound
-ceth.mint.value(positionBalance)()
-...
+    ...
+    // 2. mint collateral in compound
+    ceth.mint.value(positionBalance)();
+    ...
 ```
 
 Now that we have `accountLiquidity` (borrowing power in Compound Finance), let's borrow DAI from Compound Finance. We will be borrowing the exact amount of DAI we intend to sell with 0x liquidity. Off-chain, `sellAmount` is calculated based on our desired leverage.
 
 ```
-...
-// 4. borrow token
-require(cdai.borrow(quote.sellAmount) == 0, "Borrow DAI failed.");
-...
+    ...
+    // 3. borrow token
+    require(cdai.borrow(quote.sellAmount) == 0, "Failed to borrow cDAI from Compound Finance");
+    ...
 ```
 
 Compound finance returns a non-zero value if an error occurs during the function call, with a `require` we can proceed with the function only when the function doesn't throw any errors.
@@ -159,32 +157,32 @@ Compound finance returns a non-zero value if an error occurs during the function
 To swap with 0x, the 0x exchange contracts will need to have access to move DAI from the `MarginPositionContract`. With the provided functions in the starter code, let’s approve `MAX_AMOUNT` of DAI: 
 
 ```solidity
-...
-// 4. approve 0x exchange to move DAI
-_approve(address(dai), _getZeroExApprovalAddress());
-...
+    ...
+    // 4. approve 0x exchange to move DAI
+    _approve(address(dai), _getZeroExApprovalAddress());
+    ...
 ```
 
 Since the quote is passed off-chain, it is worth verifying that the assets you intend to sell and buy.
 
 ```solidity
-...
-// 5. verify quote is valid
-require(quote.sellToken == address(weth), "not buying WETH");
-require(quote.buyToken == address(dai), "not buying WETH");
-...
+    ...
+    // 5. verify quote is valid
+    require(quote.sellToken == address(weth), "Provided quote is not selling WEth");
+    require(quote.buyToken == address(dai), "Provided quote is not buying Dai")
+    ...
 ```
 
 Now that we have verified and set the approvals to perform a swap with 0x protocol, let’s call `exchange` with `callDataHex` provided in the quote.
 
 ```solidity
-...
-// 6. execute swap
-(bool success, bytes memory data) = address(exchange).call.value(quote.protocolFeeAmount)(quote.calldataHex);
-require(success, "Swap not filled.");
-// 7. decode fill results
-LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
-...
+    ...
+    // 6. execute swap
+    (bool success, bytes memory data) = address(exchange).call.value(quote.protocolFee)(quote.calldataHex);
+    require(success, "Swap not filled");
+    // 7. decode fill results
+    LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
+    ...
 ```
 
 #### Updating the contract state
@@ -192,11 +190,11 @@ LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults
 With that, we have just swapped DAI for WETH, effectively opening our margin position. Before we finish this function, let’s update the contract state and return some results to the user. From the 0x contract call, we have a receipt that contains the actual amount of buy and sell token swapped.
 
 ```solidity
-...
-// 8. position size increase by bought amount of WETH (makerAssetFilledAmount)
-positionBalance.safeAdd(fillResults.makerAssetFilledAmount);
-borrowBalance = cdai.borrowBalanceCurrent(address(this));
-// at this point you have CETH, and swapped for WETH
+    ...
+    // 8. position size increase by bought amount of WETH
+    positionBalance.safeAdd(fillResults.makerAssetFilledAmount);
+    borrowBalance = cdai.borrowBalanceCurrent(address(this));
+    // at this point you have ceth, and swapped for WETH
 }
 ```
 
@@ -206,7 +204,7 @@ At this point, the open function should look like this:
     function open(ZeroExQuote memory quote)
         public
         payable
-        onlyOwner
+        onlyowner
         onlyWhenClosed
         returns (uint256 positionBalance, uint256 borrowBalance)
     {
@@ -215,21 +213,21 @@ At this point, the open function should look like this:
         // 2. mint collateral in compound
         ceth.mint.value(positionBalance)();
         // 3. borrow token
-        require(cdai.borrow(quote.sellAmount) == 0, "borrow didn't work");
+        require(cdai.borrow(quote.sellAmount) == 0, "Failed to borrow cDAI from Compound Finance");
         // 4. approve 0x exchange to move DAI
         _approve(address(dai), _getZeroExApprovalAddress());
         // 5. verify quote is valid
-        require(quote.sellToken == address(weth), "not selling WETH");
-        require(quote.buyToken == address(dai), "not buying DAI");
+        require(quote.sellToken == address(weth), "Provided quote is not selling WEth");
+        require(quote.buyToken == address(dai), "Provided quote is not buying Dai");
         // 6. execute swap
         (bool success, bytes memory data) = address(exchange).call.value(quote.protocolFee)(quote.calldataHex);
-        require(success, "Swap not filled.");
+        require(success, "Swap not filled");
         // 7. decode fill results
         LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
         // 8. position size increase by bought amount of WETH
         positionBalance.safeAdd(fillResults.makerAssetFilledAmount);
         borrowBalance = cdai.borrowBalanceCurrent(address(this));
-        // at this point you have CETH, and swapped for WETH
+        // at this point you have ceth, and swapped for WETH
     }
 ```
 
@@ -254,7 +252,7 @@ function close(
     ZeroExQuote memory quote
 )
     public
-    onlyOwner
+    onlyowner
     onlyWhenOpen
     returns (uint ethBalance)
 {
@@ -269,16 +267,16 @@ Intuitively, it makes sense to only be able to close a position if there is one 
 Similar to swapping from DAI to WETH in `open`, we will need to do a few things before swapping:
 
 ```solidity
-...
-// 1. approve for swap
-_approve(address(weth), _getZeroExApprovalAddress());
-// 2. verify swap
-uint256 wethBalance = weth.balanceOf(address(this));
-uint256 daiBorrowBalance = cdai.borrowBalanceCurrent(address(this));
-require(wethBalance > quote.sellAmount, "not enough to swap");
-require(quote.buyToken == address(dai), "not buying DAI");
-require(daiBorrowBalance < quote.buyAmount, "not enough DAI to repay");
-...
+    ...
+    // 1. approve for swap
+    _approve(address(weth), _getZeroExApprovalAddress());
+    // 2. verify swap
+    uint256 wethBalance = weth.balanceOf(address(this));
+    uint256 daiBorrowBalance = cdai.borrowBalanceCurrent(address(this));
+    require(wethBalance >= quote.sellAmount, "Provided quote doesn't provide sufficient liquidity");
+    require(quote.buyToken == address(dai), "Provided quote doesn't buy DAI");
+    require(daiBorrowBalance < quote.buyAmount, "Provided quote doesn't provide sufficient liquidity");
+    ...
 ```
 
 Here, we are approving 0x contracts and verifying that the quote provided is trading the right assets and has valid sell and buy amounts. Off-chain, we will be calculating the exact amount of DAI (`buyAmount`) to buy.
@@ -286,11 +284,13 @@ Here, we are approving 0x contracts and verifying that the quote provided is tra
 Once verified, let’s perform the swap:
 
 ```solidity
-// 3. execute swap
-(bool success, bytes memory data) = address(exchange).call.value(quote.protocolFee)(quote.calldataHex);
-require(success, "Swap not filled.");
-// 4. decode results
-LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
+    ...
+    // 3. execute swap
+    (bool success, bytes memory data) = address(exchange).call.value(quote.protocolFee)(quote.calldataHex);
+    require(success, "Swap not filled");
+    // 4. decode results
+    LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
+    ...
 ```
 
 At this point, the contract should have a balance of `daiBorrowBalance` DAI held by the contract.
@@ -300,26 +300,27 @@ At this point, the contract should have a balance of `daiBorrowBalance` DAI held
 With the DAI bought with 0x API, let’s repay back our `borrowBalance` on Compound finance:
 
 ```solidity
-...
-// 5. return back DAI
-_approve(address(dai), address(cdai));
-require(cdai.repayBorrow(fillResults.makerAssetFilledAmount) == 0);
-...
+    ...
+    // 5. return back dai
+    _approve(address(dai), address(cdai));
+    require(cdai.repayBorrow(fillResults.makerAssetFilledAmount) == 0, "Repayment of DAI to Compound Finance failed");
+    ...
 ```
 
 To return DAI back, an approval for the `cdai` contract is needed. With `fillResults.makerAssetFilledAmount` we can repay the exact amount of DAI acquired with 0x. Once, `borrowBalance` is repaid, let’s withdraw the ETH deposited in `ceth`.
 
 ```solidity
-...
-require(ceth.redeem(CETH.balanceOfUnderlying(address(this))) == 0);
-...
+    ...
+    // 6. get back ETH
+    require(ceth.redeem(ceth.balanceOfUnderlying(address(this))) == 0, "Withdrawal of ETH from Compound Finance failed");
+    ...
 ```
 
 At this point, the contract holds ETH and WETH (whatever WETH remains not swapped for DAI). For the sake of UX, we will be unwrapping WETH to ETH and transferring all the ETH back to the owner. Then let’s reset `positionBalance` and allow another position to be opened.
 
 ```solidity
-...
-    // 7. withdraw all WETH Balance;
+    ...
+    // 7. withdraw all weth Balance;
     weth.withdraw(wethBalance);
     // 8. transfer all ETH back to owner;
     ethBalance = address(this).balance;
@@ -327,48 +328,45 @@ At this point, the contract holds ETH and WETH (whatever WETH remains not swappe
     // 9. reset balance
     positionBalance = 0;
 }
-...
 ```
 
 At this point `close` function should look something like this:
 
 ```solidity
-function close(
-    ZeroExQuote memory quote
-)
-    public
-    onlyOwner
-    onlyWhenOpen
-    returns (uint ethBalance)
-{
-    // approve for swap
-    _approve(address(weth), _getZeroExApprovalAddress());
-    // verify swap
-    uint256 wethBalance = weth.balanceOf(address(this));
-    uint256 daiBorrowBalance = cdai.borrowBalanceCurrent(address(this));
-
-    require(wethBalance > quote.sellAmount, "not enough to swap");
-    require(quote.buyToken == address(dai), "not buying DAI");
-    require(daiBorrowBalance < quote.buyAmount, "not enough DAI to repay");
-    // execute swap
-    (bool success, bytes memory data) = address(exchange).call.value(quote.protocolFee)(quote.calldataHex);
-    require(success, "Swap not filled.");
-    // decode results
-    LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
-    // return back DAI
-    // approve Compound Finance CDAI
-    _approve(address(dai), address(cdai));
-    require(cdai.repayBorrow(fillResults.makerAssetFilledAmount) == 0, "repayment of DAI to Compound failed");
-    // get back ETH
-    require(ceth.redeem(ceth.balanceOfUnderlying(address(this))) == 0, "withdraw of ETH from Compound failed");
-    // withdraw all WETH Balance;
-    weth.withdraw(wethBalance);
-    // transfer all ETH back to owner;
-    ethBalance = address(this).balance;
-    owner.transfer(address(this).balance);
-    // reset balance
-    positionBalance = 0;
-}
+    function close(
+       ZeroExQuote memory quote
+    )
+        public
+        onlyowner
+        onlyWhenOpen
+        returns (uint ethBalance)
+    {
+        // 1. approve for swap
+        _approve(address(weth), _getZeroExApprovalAddress());
+        // 2. verify swap
+        uint256 wethBalance = weth.balanceOf(address(this));
+        uint256 daiBorrowBalance = cdai.borrowBalanceCurrent(address(this));
+        require(wethBalance >= quote.sellAmount, "Provided quote doesn't provide sufficient liquidity");
+        require(quote.buyToken == address(dai), "Provided quote doesn't buy DAI");
+        require(daiBorrowBalance < quote.buyAmount, "Provided quote doesn't provide sufficient liquidity");
+        // 3. execute swap
+        (bool success, bytes memory data) = address(exchange).call.value(quote.protocolFee)(quote.calldataHex);
+        require(success, "Swap not filled");
+        // 4. decode results
+        LibFillResults.FillResults memory fillResults = abi.decode(data, (LibFillResults.FillResults));
+        // 5. return back dai
+        _approve(address(dai), address(cdai));
+        require(cdai.repayBorrow(fillResults.makerAssetFilledAmount) == 0, "Repayment of DAI to Compound Finance failed");
+        // 6. get back ETH
+        require(ceth.redeem(ceth.balanceOfUnderlying(address(this))) == 0, "Withdrawal of ETH from Compound Finance failed");
+        // 7. withdraw all weth Balance;
+        weth.withdraw(wethBalance);
+        // 8. transfer all ETH back to owner;
+        ethBalance = address(this).balance;
+        owner.transfer(address(this).balance);
+        // 9. reset balance
+        positionBalance = 0;
+    }
 ```
 
 ### Adding some handy functions.
@@ -376,9 +374,14 @@ function close(
 To make interacting with the margin contract easier with web3, let’s add a public function that returns the contracts DAI `borrowBalance`.
 
 ```solidity
-function getBorrowBalance() public onlyOwner returns (uint256) {
-    return cdai.borrowBalanceCurrent(address(this));
-}
+    // handy function to get borrowed dai amount
+    function getBorrowBalance()
+        public
+        onlyowner
+        returns (uint256)
+    {
+        return cdai.borrowBalanceCurrent(address(this));
+    }
 ```
 
 With that, we are done with the contract! Let’s write some web3 code to interact with the contract just written. Before we do so, let’s compile the contracts and build typescript contract-wrappers:
