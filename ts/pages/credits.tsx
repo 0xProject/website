@@ -90,6 +90,14 @@ export class Credits extends React.Component<CreditsProps> {
                             iconSize={80}
                             isInline={true}
                         />
+                        <CenteredDefinition
+                            title="Taloflow"
+                            titleSize="small"
+                            description="3 months of AWS cost monitoring and optimization (up to $50,000 per month) + a free billing audit"
+                            icon="tim_logo_black"
+                            iconSize={80}
+                            isInline={true}
+                        />
                     </FlexWrap>
                 </Section>
 
