@@ -101,11 +101,12 @@ import "@0x/contracts-exchange-forwarder/contracts/src/interfaces/IForwarder.sol
 
 contract SimpleTokenSwapContract
 {
-    IForwarder internal FORWARDER;
+    IForwarder internal forwarder;
+
     constructor (address _forwarder)
         public
     {
-        FORWARDER = IForwarder(_forwarder);
+        forwarder = IForwarder(_forwarder);
     }
     
     ...
@@ -140,7 +141,7 @@ function functionThatRequiresDAI(bytes memory callDataHex)
     payable
     returns (bool)
 {
-    (bool success, bytes memory _data) = address(FORWARDER).call.value(msg.value)(callDataHex);
+    (bool success, bytes memory _data) = address(forwarder).call.value(msg.value)(callDataHex);
     // TODO: execute original user transaction that requires DAI
     return success;
 }

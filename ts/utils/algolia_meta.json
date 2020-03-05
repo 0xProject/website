@@ -18,6 +18,15 @@
         }
     },
     "guides": {
+        "develop-a-margin-trading-smart-contract-with-0x-api": {
+            "title": "Develop a margin trading smart contract with 0x API",
+            "subtitle": "Develop a contract to leverage Eth with Compound Finance + 0x API",
+            "description": "Develop a contract to leverage Eth with Compound Finance + 0x API",
+            "tags": ["0x API", "CFL"],
+            "topics": ["0x API", "CFL"],
+            "difficulty": "Advanced",
+            "path": "guides/develop-a-margin-trading-smart-contract-with-0x-api.mdx"
+        },
         "swap-tokens-with-0x-api": {
             "title": "Swap Tokens With 0x API",
             "subtitle": "Learn how to complete a token swap with 0x API /swap/v0/* endpoint",
