@@ -362,7 +362,7 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
                             </ExampleDescription>
                         </ExampleLeftContainer>
                         <ExampleLink>
-                            <Button 
+                            <Button
                                 onClick={() => trackZeroExApiAdConversion()}
                                 href="/docs/guides/develop-a-margin-trading-smart-contract-with-0x-api"
                                 isWithArrow={true}
