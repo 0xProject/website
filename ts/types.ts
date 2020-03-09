@@ -743,6 +743,7 @@ export enum Providers {
     WalletLink = 'WALLET_LINK',
     ImToken = 'IM_TOKEN',
     Opera = 'OPERA',
+    Bitpie = 'BITPIE',
     Fallback = 'FALLBACK',
 }
 

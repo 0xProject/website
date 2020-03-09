@@ -316,6 +316,9 @@ export const utils = {
         const anyProvider = provider as any;
         if (provider.constructor.name === 'EthereumProvider') {
             return Providers.Mist;
+        } else if (_.get(window, 'Bitpie')) {
+            // NOTE: Bitpie is TrustWallet based so isTrust is also true
+            return Providers.Bitpie;
         } else if (anyProvider.isTrust) {
             return Providers.TrustWallet;
         } else if (anyProvider.isParity) {
