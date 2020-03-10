@@ -65,7 +65,7 @@ const codeData: CodeTab[] = [
         code: `import { SwapQuoter } from '@0x/asset-swapper';
 
 const apiUrl = 'https://api.0x.org/sra/';
-const daiTokenAddress = '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359';
+const daiTokenAddress = '0x6b175474e89094c44da98b954eedeac495271d0f';
 const wethTokenAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
 
 const quoter = SwapQuoter.getSwapQuoterForStandardRelayerAPIUrl(

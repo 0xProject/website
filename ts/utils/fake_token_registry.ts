@@ -374,8 +374,8 @@ export const fakeTokenRegistry: { [networkId: string]: FakeTokenRegistryEntry[] 
             decimals: 18,
         },
         {
-            address: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
-            name: 'Dai Stablecoin v1.0',
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            name: 'Dai Stablecoin',
             symbol: 'DAI',
             decimals: 18,
         },
