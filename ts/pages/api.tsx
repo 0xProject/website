@@ -354,8 +354,7 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
                             </Button>
                         </ExampleLink>
                     </ExampleRowContainer>
-                    {/* TODO(johnrjj) -- Uncomment when released */}
-                    {/* <ExampleRowContainer>
+                    <ExampleRowContainer>
                         <ExampleLeftContainer>
                             <ExampleLabel>Margin trading with 0x API</ExampleLabel>
                             <ExampleDescription>
@@ -363,11 +362,16 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
                             </ExampleDescription>
                         </ExampleLeftContainer>
                         <ExampleLink>
-                            <Button href="/docs/api" isWithArrow={true} isAccentColor={true}>
+                            <Button
+                                onClick={() => trackZeroExApiAdConversion()}
+                                href="/docs/guides/develop-a-margin-trading-smart-contract-with-0x-api"
+                                isWithArrow={true}
+                                isAccentColor={true}
+                            >
                                 View Guide
                             </Button>
                         </ExampleLink>
-                    </ExampleRowContainer> */}
+                    </ExampleRowContainer>
                 </FlexColumnWrapped>
             </ResponsiveFlexSection>
             {/* More info/CTA section  */}
