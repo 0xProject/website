@@ -36,7 +36,7 @@ export const Progressbar: React.FC<ProgressbarProps> = (props: ProgressbarProps)
     let adjustedProgress;
     let isOverLimit;
     if (props.progress > 100) {
-        adjustedProgress = Math.round((100 / props.progress) * 100);
+        adjustedProgress = 0;
         isOverLimit = true;
     } else {
         adjustedProgress = props.progress;

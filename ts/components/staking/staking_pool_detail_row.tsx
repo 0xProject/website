@@ -10,7 +10,14 @@ import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
 import { formatEther } from 'ts/utils/format_number';
 
-const RoundedPercentage = ({ percentage }: { percentage: number }) => <span>{Math.round(percentage)}%</span>;
+const StyledStatLabel = styled.div`
+    position: relative;
+    font-size: 18px;
+    line-height: 22px;
+    @media (max-width: ${ScreenWidths.Lg}rem) {
+        font-size: 17px;
+    }
+`;
 
 const ShortenedEthAddress = ({ address }: { address: string }) => (
     <DetailsText>{utils.getAddressBeginAndEnd(address)}</DetailsText>
@@ -27,7 +34,7 @@ interface IStakingPoolDetailRowProps {
     address: string;
     totalFeesGeneratedInEth: number;
     stakeRatio: number;
-    rewardsSharedRatio: number;
+    averageRewardsSharedInEth: number;
     isVerified: boolean;
     poolId: string;
     websiteUrl?: string;
@@ -43,7 +50,7 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
     websiteUrl,
     isVerified,
     totalFeesGeneratedInEth,
-    rewardsSharedRatio,
+    averageRewardsSharedInEth,
     stakeRatio,
     to,
 }) => (
@@ -81,13 +88,18 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
                 <span>Fees generated</span>
                 <span>{formatEther(totalFeesGeneratedInEth || 0).formatted} ETH</span>
             </PoolPerformanceItem>
-            <PoolPerformanceItem>
-                <span>Rewards Shared</span>
-                <RoundedPercentage percentage={rewardsSharedRatio * 100} />
-            </PoolPerformanceItem>
             <PoolPerformanceItem cutOffRem={ScreenWidths.Sm}>
-                <span>Staked</span>
-                <RoundedPercentage percentage={stakeRatio * 100} />
+                <span>Avg. rewards shared</span>
+                <span>{formatEther(averageRewardsSharedInEth || 0).formatted} ETH</span>
+            </PoolPerformanceItem>
+            <PoolPerformanceItem>
+                <span>Saturation</span>
+                <div>
+                    <StyledStatLabel>
+                        {Math.round(stakeRatio * 100)}%
+                        <SaturationBar percentage={stakeRatio * 100} />
+                    </StyledStatLabel>
+                </div>
             </PoolPerformanceItem>
         </PoolPerformanceSection>
     </StakingPoolDetailRowWrapper>
@@ -179,7 +191,7 @@ const DetailsText = styled.span`
 const PoolPerformanceSection = styled.div`
     display: flex;
     margin-left: auto;
-    width: 448px;
+    width: 480px;
     justify-content: space-around;
 
     @media (max-width: ${ScreenWidths.Lg}rem) {
@@ -190,6 +202,7 @@ const PoolPerformanceSection = styled.div`
 
 const PoolPerformanceItem = styled.div<{ cutOffRem?: number }>`
     display: flex;
+    position: relative;
     flex-direction: column;
     justify-content: center;
     flex: 1;
@@ -226,3 +239,48 @@ const Ellipse = styled.div`
     opacity: 0.2;
     margin: 0 12px;
 `;
+
+const SaturationBarContainer = styled.div`
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    max-width: 84px;
+`;
+
+const RedBackground = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e71d36;
+`;
+
+const GreenBackground = styled(RedBackground)`
+    background-color: #ace0dc;
+`;
+
+const GreenPercentageWidth = styled.div<{ percentage: number }>`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: ${props => props.percentage}%;
+    bottom: 0;
+    background-color: #00ae99;
+`;
+
+const SaturationBar: React.FC<{ percentage: number }> = ({ percentage }) => {
+    return (
+        <SaturationBarContainer>
+            {percentage > 100 ? (
+                <RedBackground />
+            ) : (
+                <GreenBackground>
+                    <GreenPercentageWidth percentage={percentage} />
+                </GreenBackground>
+            )}
+        </SaturationBarContainer>
+    );
+};
