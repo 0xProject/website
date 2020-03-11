@@ -1,6 +1,6 @@
 import { PoolWithStats } from 'ts/types';
 
-// Snapshot from Kovan (2/15/2020)
+// Snapshot from Kovan - https://staging.api.0x.org/staking/pools
 const SAMPLE_POOLS: PoolWithStats[] = [
     {
         poolId: '6',
