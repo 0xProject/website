@@ -32,6 +32,7 @@ const ExpandedMenu = styled.div`
     background: ${colors.backgroundLightGrey};
     border: 1px solid rgba(92, 92, 92, 0.15);
     position: absolute;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     width: 450px;
@@ -98,7 +99,7 @@ const StyledButton = styled(Button)`
 
 const sortingParamMapping = {
     [PoolsListSortingParameter.Staked]: 'Staked',
-    [PoolsListSortingParameter.RewardsShared]: 'Rewards Shared',
+    [PoolsListSortingParameter.RewardsShared]: 'Average Rewards Shared',
     [PoolsListSortingParameter.ProtocolFees]: 'Fees Generated',
 };
 
@@ -142,7 +143,7 @@ export const PoolsListSortingSelector: React.FC<PoolsListSortingSelectorProps> =
                     <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.RewardsShared)}>
                         <StyledText>{sortingParamMapping[PoolsListSortingParameter.RewardsShared]}</StyledText>
                         <StyledDescription>
-                            The percent of rewards the pool is sharing with stakers.{' '}
+                            The average rewards the pool has shared with stakers, per epoch.{' '}
                             <StyledButton
                                 target="_blank"
                                 href={`${constants.STAKING_FAQ_DOCS}#what-are-rewards-shared`}
