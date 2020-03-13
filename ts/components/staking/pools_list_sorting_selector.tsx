@@ -98,7 +98,7 @@ const StyledButton = styled(Button)`
 `;
 
 const sortingParamMapping = {
-    [PoolsListSortingParameter.Staked]: 'Staked',
+    [PoolsListSortingParameter.Staked]: 'Saturation',
     [PoolsListSortingParameter.RewardsShared]: 'Average Rewards Shared',
     [PoolsListSortingParameter.ProtocolFees]: 'Fees Generated',
 };
@@ -124,10 +124,10 @@ export const PoolsListSortingSelector: React.FC<PoolsListSortingSelectorProps> =
                     <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.Staked)}>
                         <StyledText>{sortingParamMapping[PoolsListSortingParameter.Staked]}</StyledText>
                         <StyledDescription>
-                            An approximation for how fully stake the pool is for current epoch.{' '}
+                            An approximation of the pool saturation for the upcoming epoch.{' '}
                             <StyledButton
                                 target="_blank"
-                                href={`${constants.STAKING_FAQ_DOCS}#what-is-the-stake--or-stake-ratio`}
+                                href={`${constants.STAKING_FAQ_DOCS}#what-is-saturation-previously-called-stake--or-stake-ratio`}
                                 isInline={true}
                                 isTransparent={true}
                                 isNoBorder={true}
