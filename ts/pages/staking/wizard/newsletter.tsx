@@ -130,11 +130,11 @@ export const Newsletter = () => {
             }
             try {
                 setIsLoading(true);
-                await backendClient.subscribeToNewsletterAsync(
+                await backendClient.subscribeToNewsletterAsync({
                     email,
-                    { ETHADDRESS: ethAddress },
-                    configs.STAKING_UPDATES_NEWSLETTER_ID,
-                );
+                    subscriberInfo: { ETHADDRESS: ethAddress },
+                    list: configs.STAKING_UPDATES_NEWSLETTER_ID,
+                });
                 setHasSubmitted(true);
             } catch (err) {
                 logUtils.warn(`Unable to register email to newsletter`, email, err);

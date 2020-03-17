@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { fadeIn } from 'ts/style/keyframes';
 
 import { backendClient } from 'ts/utils/backend_client';
+import { configs } from 'ts/utils/configs';
 import { errorReporter } from 'ts/utils/error_reporter';
 
 interface IFormProps {
@@ -39,7 +40,12 @@ export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
         }
 
         try {
-            await backendClient.subscribeToNewsletterAsync(email);
+            await backendClient.subscribeToNewsletterAsync({
+                email,
+                list: configs.GENERAL_MAILING_LIST_ID,
+                tags: ['Ecosystem'],
+                interests: { [configs.GENERAL_LIST_ECOSYSTEM_UPDATES_INTEREST_ID]: true },
+            });
         } catch (e) {
             errorReporter.report(e);
         }

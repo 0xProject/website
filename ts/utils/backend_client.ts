@@ -63,15 +63,24 @@ export const backendClient = {
         const result = await fetchUtils.requestAsync(utils.getBackendBaseUrl(), TOKENS_ENDPOINT);
         return result;
     },
-    async subscribeToNewsletterAsync(
-        email: string,
-        subscriberInfo?: MailchimpSubscriberInfo,
-        list?: string,
-    ): Promise<Response> {
+    async subscribeToNewsletterAsync({
+        email,
+        subscriberInfo,
+        list,
+        tags,
+        interests,
+    }: {
+        email: string;
+        subscriberInfo?: MailchimpSubscriberInfo;
+        list?: string;
+        tags?: string[];
+        interests?: { [key: string]: boolean };
+    }): Promise<Response> {
         const result = await fetchUtils.postAsync(utils.getBackendBaseUrl(), SUBSCRIBE_MAILCHIMP_NEWSLETTER_ENDPOINT, {
             email: email.trim(),
             list,
-            tags: [location.href],
+            tags: [...(tags || []), location.href],
+            interests,
             subscriberInfo,
         });
         return result;
