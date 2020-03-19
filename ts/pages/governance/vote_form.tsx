@@ -218,7 +218,7 @@ export class VoteForm extends React.Component<Props> {
 
             const voteDomain = environments.isProduction()
                 ? `https://${configs.DOMAIN_VOTE}`
-                : `https://${configs.DOMAIN_VOTE}/staging`;
+                : `https://${configs.DOMAIN_VOTE_STAGING}`;
             const voteEndpoint = `${voteDomain}/v1/vote`;
             const requestBody = { ...signedVote, comment };
             const response = await fetch(voteEndpoint, {

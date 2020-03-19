@@ -12,7 +12,7 @@ import { Column, FlexWrap, Section } from 'ts/components/newLayout';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading, Paragraph } from 'ts/components/text';
 import { Countdown } from 'ts/pages/governance/countdown';
-import { Proposal, proposals } from 'ts/pages/governance/data';
+import { Proposal, proposals, stagingProposals } from 'ts/pages/governance/data';
 import { ModalVote } from 'ts/pages/governance/modal_vote';
 import { RatingBar } from 'ts/pages/governance/rating_bar';
 import { VoteInfo, VoteValue } from 'ts/pages/governance/vote_form';
@@ -58,7 +58,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
     constructor(props: RouteComponentProps<any>) {
         super(props);
         const zeipId = parseInt(props.match.params.zeip.split('-')[1], 10);
-        this._proposalData = proposals[zeipId];
+        this._proposalData = environments.isProduction() ? proposals[zeipId] : stagingProposals[zeipId];
     }
     public componentDidMount(): void {
         // tslint:disable:no-floating-promises
@@ -222,7 +222,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
         try {
             const voteDomain = environments.isProduction()
                 ? `https://${configs.DOMAIN_VOTE}`
-                : `https://${configs.DOMAIN_VOTE}/staging`;
+                : `https://${configs.DOMAIN_VOTE_STAGING}`;
             const voteEndpoint = `${voteDomain}/v1/tally/${this._proposalData.zeipId}`;
             const response = await fetch(voteEndpoint, {
                 method: 'get',

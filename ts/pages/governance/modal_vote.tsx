@@ -8,7 +8,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
-import { Icon } from 'ts/components/icon';
 import { ButtonClose } from 'ts/components/modals/button_close';
 import { Heading, Paragraph } from 'ts/components/text';
 import { GlobalStyle } from 'ts/constants/globalStyle';
@@ -77,7 +76,7 @@ export class ModalVote extends React.Component<Props> {
         super(props);
     }
     public render(): React.ReactNode {
-        const { isOpen, onDismiss, zeipId } = this.props;
+        const { isOpen, onDismiss } = this.props;
         const { isSuccessful, selectedAddress, currentBalance, isErrorModalOpen, errorMessage } = this.state;
         const bigNumberFormat = {
             decimalSeparator: '.',
@@ -102,14 +101,9 @@ export class ModalVote extends React.Component<Props> {
                     <StyledDialogContent>
                         {this._renderFormContent()}
                         <Confirmation isSuccessful={isSuccessful}>
-                            <Icon name={`zeip-${zeipId}`} size="large" margin={[0, 0, 'default', 0]} />
                             <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
                                 Vote Received!
                             </Heading>
-                            <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-                                Your vote will help to decide the future of the protocol. You will be receiving a custom
-                                “I voted” NFT as a token of our appreciation.
-                            </Paragraph>
                             <Paragraph isMuted={true} color={colors.textDarkPrimary}>
                                 You voted from {selectedAddress} with {formattedBalance} ZRX
                             </Paragraph>
@@ -144,7 +138,7 @@ export class ModalVote extends React.Component<Props> {
     }
     private _shareViaTwitterAsync(): void {
         const { zeipId } = this.props;
-        const tweetText = encodeURIComponent(`I voted on ZEIP-${zeipId}! 🗳️#VoteWithZRX https://0x.org/vote`);
+        const tweetText = encodeURIComponent(`I voted on ZEIP-${zeipId}! 🗳️#VoteWithZRX https://0x.org/zrx/vote`);
         window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, 'Share your vote', 'width=500,height=400');
     }
     private _renderConnectWalletFormContent(): React.ReactNode {

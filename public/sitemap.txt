@@ -48,4 +48,5 @@ https://0x.org/docs/tools/asset-swapper
 https://0x.org/docs/tools/migrations
 https://0x.org/careers
 https://0x.org/credits
-https://0x.org/vote
+https://0x.org/zrx/vote
+https://0x.org/zrx/staking

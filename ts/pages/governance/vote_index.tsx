@@ -8,7 +8,7 @@ import { DocumentTitle } from 'ts/components/document_title';
 import { Column, Section } from 'ts/components/newLayout';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading, Paragraph } from 'ts/components/text';
-import { Proposal, proposals } from 'ts/pages/governance/data';
+import { Proposal, proposals, stagingProposals } from 'ts/pages/governance/data';
 import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
 import { TallyInterface } from 'ts/types';
 import { configs } from 'ts/utils/configs';
@@ -16,8 +16,9 @@ import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
 
-const ZEIP_IDS = Object.keys(proposals).map(idString => parseInt(idString, 10));
-const ZEIP_PROPOSALS: Proposal[] = ZEIP_IDS.map(id => proposals[id]).sort(
+const PROPOSALS = environments.isProduction() ? proposals : stagingProposals;
+const ZEIP_IDS = Object.keys(PROPOSALS).map(idString => parseInt(idString, 10));
+const ZEIP_PROPOSALS: Proposal[] = ZEIP_IDS.map(id => PROPOSALS[id]).sort(
     (a, b) => b.voteStartDate.unix() - a.voteStartDate.unix(),
 );
 
@@ -81,7 +82,7 @@ export class VoteIndex extends React.Component<VoteIndexProps, VoteIndexState> {
         try {
             const voteDomain = environments.isProduction()
                 ? `https://${configs.DOMAIN_VOTE}`
-                : `https://${configs.DOMAIN_VOTE}/staging`;
+                : `https://${configs.DOMAIN_VOTE_STAGING}`;
             const voteEndpoint = `${voteDomain}/v1/tally/${zeipId}`;
             const response = await fetch(voteEndpoint, {
                 method: 'get',
