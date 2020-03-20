@@ -176,7 +176,6 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                     zeipId={this._proposalData.zeipId}
                     isOpen={this.state.isVoteModalOpen}
                     onDismiss={this._onDismissVoteModal}
-                    onWalletConnected={this._onWalletConnected.bind(this)}
                     onVoted={this._onVoteReceived.bind(this)}
                 />
             </StakingPageLayout>

@@ -1,22 +1,21 @@
-import { ContractWrappers } from '@0x/contract-wrappers';
 import { signatureUtils } from '@0x/order-utils';
 import { ECSignature, SignatureType } from '@0x/types';
 import { BigNumber, signTypedDataUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import '@reach/dialog/styles.css';
-import { ZeroExProvider } from 'ethereum-types';
 import * as ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
+import { MetamaskSubprovider } from '@0x/subproviders';
 import { Button } from 'ts/components/button';
 import { Input } from 'ts/components/modals/input';
 import { Heading, Paragraph } from 'ts/components/text';
 import { PreferenceSelecter } from 'ts/pages/governance/preference_selecter';
 import { colors } from 'ts/style/colors';
-import { InjectedProvider } from 'ts/types';
+import { Providers, ProviderState } from 'ts/types';
 import { configs } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
@@ -33,23 +32,17 @@ export interface VoteInfo {
 
 interface Props {
     onDismiss?: () => void;
-    onWalletConnected?: (providerName: string) => void;
     onError?: (errorMessage: string) => void;
     onVoted?: (userInfo: VoteInfo) => void;
-    web3Wrapper?: Web3Wrapper;
-    contractWrappers?: ContractWrappers;
     currentBalance?: BigNumber;
+    providerState: ProviderState;
     selectedAddress: string;
-    injectedProvider?: InjectedProvider;
-    provider?: ZeroExProvider;
     zeipId: number;
+    networkId: number;
 }
 
 interface State {
-    isWalletConnected: boolean;
-    isSubmitting: boolean;
     isSuccessful: boolean;
-    isVoted: boolean;
     selectedAddress?: string;
     votePreference?: string;
     voteHash?: string;
@@ -80,18 +73,12 @@ interface ErrorProps {
 export class VoteForm extends React.Component<Props> {
     public static defaultProps = {
         currentBalance: new BigNumber(0),
-        isWalletConnected: false,
-        isSubmitting: false,
         isSuccessful: false,
-        isVoted: false,
         errors: {},
     };
     public networkId: number;
     public state: State = {
-        isWalletConnected: false,
-        isSubmitting: false,
         isSuccessful: false,
-        isVoted: false,
         votePreference: null,
         errors: {},
     };
@@ -112,7 +99,7 @@ export class VoteForm extends React.Component<Props> {
             fractionGroupSize: 0,
         };
         const formattedBalance = Web3Wrapper.toUnitAmount(currentBalance, constants.DECIMAL_PLACES_ETH).toFormat(
-            0,
+            2,
             BigNumber.ROUND_FLOOR,
             bigNumberFormat,
         );
@@ -142,7 +129,7 @@ export class VoteForm extends React.Component<Props> {
                 <Paragraph isMuted={true} color={colors.textDarkPrimary}>
                     <strong>Voting address:</strong> {selectedAddress}
                     <br />
-                    <strong>Voting balance:</strong> {formattedBalance} ZRX
+                    <strong>Voting power:</strong> {formattedBalance} ZRX
                 </Paragraph>
                 <InputRow>
                     <Input
@@ -178,10 +165,9 @@ export class VoteForm extends React.Component<Props> {
         e.preventDefault();
 
         const { votePreference, comment } = this.state;
-        const { currentBalance, selectedAddress, zeipId } = this.props;
-        const makerAddress = selectedAddress;
+        const { currentBalance, selectedAddress, zeipId, networkId } = this.props;
 
-        const chainId = 1;
+        const chainId = networkId;
         const domainType = [
             { name: 'name', type: 'string' },
             { name: 'chainId', type: 'uint256' },
@@ -200,7 +186,7 @@ export class VoteForm extends React.Component<Props> {
         const message = {
             zeip: zeipId,
             preference: votePreference,
-            from: makerAddress,
+            from: selectedAddress,
         };
         const typedData = {
             types: {
@@ -215,7 +201,7 @@ export class VoteForm extends React.Component<Props> {
         const voteHashBuffer = signTypedDataUtils.generateTypedDataHash(typedData);
         const voteHashHex = `0x${voteHashBuffer.toString('hex')}`;
         try {
-            const signedVote = await this._signVoteAsync(makerAddress, typedData);
+            const signedVote = await this._signVoteAsync(selectedAddress, typedData);
             // Store the signed vote
             this.setState(prevState => ({
                 ...prevState,
@@ -264,12 +250,12 @@ export class VoteForm extends React.Component<Props> {
                   isSuccessful: false,
               });
     }
-    private async _signVoteAsync(signerAddress: string, typedData: any): Promise<SignedVote> {
-        const { provider: providerEngine } = this.props;
+    private async _signVoteAsync(selectedAddress: string, typedData: any): Promise<SignedVote> {
+        const { web3Wrapper, providerType } = this.props.providerState;
         let signatureHex;
 
         try {
-            signatureHex = await this._eip712SignatureAsync(signerAddress, typedData);
+            signatureHex = await this._eip712SignatureAsync(selectedAddress, typedData, web3Wrapper);
         } catch (err) {
             // HACK: We are unable to handle specific errors thrown since provider is not an object
             //       under our control. It could be Metamask Web3, Ethers, or any general RPC provider.
@@ -279,16 +265,29 @@ export class VoteForm extends React.Component<Props> {
             if (err.message.includes('User denied message signature')) {
                 throw err;
             }
-
+            // Handle the inconsistency with Metamask and send eth_sign as
+            // personal_sign
+            const provider =
+                providerType === Providers.Metamask
+                    ? new MetamaskSubprovider(web3Wrapper.getProvider())
+                    : web3Wrapper.getProvider();
             const voteHashBuffer = signTypedDataUtils.generateTypedDataHash(typedData);
             const voteHashHex = `0x${voteHashBuffer.toString('hex')}`;
-            signatureHex = await signatureUtils.ecSignHashAsync(providerEngine, voteHashHex, signerAddress);
+            signatureHex = await signatureUtils.ecSignHashAsync(
+                provider,
+                voteHashHex,
+                selectedAddress,
+            );
         }
         const signedVote = { ...typedData.message, signature: signatureHex };
         return signedVote;
     }
-    private readonly _eip712SignatureAsync = async (address: string, typedData: any): Promise<string> => {
-        const signature = await this.props.web3Wrapper.signTypedDataAsync(address, typedData);
+    private readonly _eip712SignatureAsync = async (
+        address: string,
+        typedData: any,
+        web3Wrapper: Web3Wrapper,
+    ): Promise<string> => {
+        const signature = await web3Wrapper.signTypedDataAsync(address, typedData);
         const ecSignatureRSV = this._parseSignatureHexAsRSV(signature);
         const signatureBuffer = Buffer.concat([
             ethUtil.toBuffer(ecSignatureRSV.v),
