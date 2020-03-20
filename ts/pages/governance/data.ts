@@ -210,6 +210,21 @@ export const proposals: Proposals = {
     },
 };
 
+export const stagingProposals: Proposals = {
+    23: {
+        ...proposals[23],
+        title: 'Trade Bundles of Flowers',
+        voteStartDate: moment(Math.floor(Date.now() / 1000), 'X').add(-1, 'day'),
+        voteEndDate: moment(Math.floor(Date.now() / 1000), 'X').add(1, 'day'),
+    },
+    56: {
+        ...proposals[56],
+        title: 'PhoneCallAssetProxy',
+        voteStartDate: moment(Math.floor(Date.now() / 1000), 'X').add(1, 'day'),
+        voteEndDate: moment(Math.floor(Date.now() / 1000), 'X').add(2, 'day'),
+    },
+};
+
 export const ZERO_TALLY: TallyInterface = {
     yes: new BigNumber(0),
     no: new BigNumber(0),

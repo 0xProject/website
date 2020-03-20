@@ -12,7 +12,7 @@ import { Column, FlexWrap, Section } from 'ts/components/newLayout';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading, Paragraph } from 'ts/components/text';
 import { Countdown } from 'ts/pages/governance/countdown';
-import { Proposal, proposals } from 'ts/pages/governance/data';
+import { Proposal, proposals, stagingProposals } from 'ts/pages/governance/data';
 import { ModalVote } from 'ts/pages/governance/modal_vote';
 import { RatingBar } from 'ts/pages/governance/rating_bar';
 import { VoteInfo, VoteValue } from 'ts/pages/governance/vote_form';
@@ -29,7 +29,6 @@ interface LabelInterface {
 
 interface State {
     isVoteModalOpen: boolean;
-    isWalletConnected: boolean;
     isVoteReceived: boolean;
     providerName?: string;
     tally?: TallyInterface;
@@ -50,7 +49,6 @@ const riskLabels: LabelInterface = {
 export class Governance extends React.Component<RouteComponentProps<any>> {
     public state: State = {
         isVoteModalOpen: false,
-        isWalletConnected: false,
         isVoteReceived: false,
         providerName: 'Metamask',
     };
@@ -58,7 +56,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
     constructor(props: RouteComponentProps<any>) {
         super(props);
         const zeipId = parseInt(props.match.params.zeip.split('-')[1], 10);
-        this._proposalData = proposals[zeipId];
+        this._proposalData = environments.isProduction() ? proposals[zeipId] : stagingProposals[zeipId];
     }
     public componentDidMount(): void {
         // tslint:disable:no-floating-promises
@@ -176,7 +174,6 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                     zeipId={this._proposalData.zeipId}
                     isOpen={this.state.isVoteModalOpen}
                     onDismiss={this._onDismissVoteModal}
-                    onWalletConnected={this._onWalletConnected.bind(this)}
                     onVoted={this._onVoteReceived.bind(this)}
                 />
             </StakingPageLayout>
@@ -202,10 +199,6 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
         this.setState({ ...this.state, isVoteModalOpen: false });
     };
 
-    private readonly _onWalletConnected = (providerName: string): void => {
-        this.setState({ ...this.state, isWalletConnected: true, providerName });
-    };
-
     private readonly _onVoteReceived = (voteInfo: VoteInfo): void => {
         const { userBalance, voteValue } = voteInfo;
         const tally = { ...this.state.tally };
@@ -222,7 +215,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
         try {
             const voteDomain = environments.isProduction()
                 ? `https://${configs.DOMAIN_VOTE}`
-                : `https://${configs.DOMAIN_VOTE}/staging`;
+                : `https://${configs.DOMAIN_VOTE_STAGING}`;
             const voteEndpoint = `${voteDomain}/v1/tally/${this._proposalData.zeipId}`;
             const response = await fetch(voteEndpoint, {
                 method: 'get',

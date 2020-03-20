@@ -1,50 +1,33 @@
-import { ContractWrappers } from '@0x/contract-wrappers';
-import { BigNumber } from '@0x/utils';
+import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
-import { ZeroExProvider } from 'ethereum-types';
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
+import { ERC20TokenContract } from '@0x/contract-wrappers';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'ts/components/button';
-import { Icon } from 'ts/components/icon';
 import { ButtonClose } from 'ts/components/modals/button_close';
 import { Heading, Paragraph } from 'ts/components/text';
 import { GlobalStyle } from 'ts/constants/globalStyle';
-import { ConnectForm, WalletConnectedProps } from 'ts/pages/governance/connect_form';
+import { useAPIClient } from 'ts/hooks/use_api_client';
 import { ErrorModal } from 'ts/pages/governance/error_modal';
 import { VoteForm, VoteInfo } from 'ts/pages/governance/vote_form';
+import { Dispatcher } from 'ts/redux/dispatcher';
+import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
+import { AccountReady } from 'ts/types';
 import { constants } from 'ts/utils/constants';
+import { errorReporter } from 'ts/utils/error_reporter';
 
-interface Props {
+interface ModalVoteProps {
     theme?: GlobalStyle;
     isOpen?: boolean;
     onDismiss?: () => void;
-    onWalletConnected?: (providerName: string) => void;
     onVoted?: (voteInfo: VoteInfo) => void;
     zeipId: number;
-}
-
-interface State {
-    currentBalance: BigNumber;
-    isWalletConnected: boolean;
-    providerName: string;
-    isSubmitting: boolean;
-    isSuccessful: boolean;
-    isErrorModalOpen?: boolean;
-    isVoted: boolean;
-    votePreference: string | null;
-    voteHash?: string;
-    signedVote?: any;
-    errorMessage?: string;
-    errors: ErrorProps;
-    web3Wrapper?: Web3Wrapper;
-    contractWrappers?: ContractWrappers;
-    providerEngine?: ZeroExProvider;
-    web3?: any;
-    selectedAddress?: string;
 }
 
 interface FormProps {
@@ -52,187 +35,158 @@ interface FormProps {
     isSubmitting?: boolean;
 }
 
-interface ErrorProps {
-    [key: string]: string;
-}
+export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss, onVoted: onVoteInfoReceived }) => {
+    const providerState = useSelector((state: State) => state.providerState);
+    const networkId = useSelector((state: State) => state.networkId);
+    const account = providerState.account as AccountReady;
+    const dispatch = useDispatch();
+    const apiClient = useAPIClient(networkId);
 
-// This is a copy of the generic form and includes a number of extra fields
-// TODO remove the extraneous fields
-export class ModalVote extends React.Component<Props> {
-    public networkId: number;
-    public state: State = {
-        currentBalance: new BigNumber(0),
-        isWalletConnected: false,
-        providerName: 'Metamask',
-        selectedAddress: null,
-        isSubmitting: false,
-        providerEngine: null,
-        isSuccessful: false,
-        isVoted: false,
-        votePreference: null,
-        errors: {},
-    };
-    // shared fields
-    public constructor(props: Props) {
-        super(props);
-    }
-    public render(): React.ReactNode {
-        const { isOpen, onDismiss, zeipId } = this.props;
-        const { isSuccessful, selectedAddress, currentBalance, isErrorModalOpen, errorMessage } = this.state;
-        const bigNumberFormat = {
-            decimalSeparator: '.',
-            groupSeparator: ',',
-            groupSize: 3,
-            secondaryGroupSize: 0,
-            fractionGroupSeparator: ' ',
-            fractionGroupSize: 0,
+    const [currentVotingPower, setCurrentVotingPower] = React.useState(new BigNumber(0));
+    const [isFetchingVotingPowerData, setIsFetchingVotingPowerData] = React.useState<boolean>(false);
+
+    React.useEffect(() => {
+        const fetchDelegatorData = async () => {
+            // TODO 10x cleaner if 0x-vote exported this as an API
+            const zrxToken = new ERC20TokenContract(
+                getContractAddressesForChainOrThrow(networkId).zrxToken,
+                providerState.web3Wrapper.getProvider(),
+            );
+            const [delegatorResponse, zrxBalanceBaseUnits, poolsResponse] = await Promise.all([
+                apiClient.getDelegatorAsync(account.address),
+                zrxToken.balanceOf(account.address).callAsync(),
+                apiClient.getStakingPoolsAsync(),
+            ]);
+            const { zrxStaked, zrxDeposited } = delegatorResponse.forCurrentEpoch;
+            const undelegated = zrxDeposited - zrxStaked;
+            const stakedVotingPower = zrxStaked / 2 + undelegated;
+            const operatedPools = poolsResponse.stakingPools.filter(p => p.operatorAddress === account.address);
+            // Voting Power for the operator of the pool is 0.5 * total staked
+            const totalDelegatedToAccount = operatedPools
+                .reduce((acc, p) => acc.plus(p.currentEpochStats.zrxStaked), new BigNumber(0))
+                .dividedBy(2);
+            // 1 * ZRX balance + 1 * undelegated + 0.5 * delegated + 0.5 * staked to pool account is operator of
+            const votingPower = zrxBalanceBaseUnits.plus(
+                Web3Wrapper.toBaseUnitAmount(
+                    totalDelegatedToAccount.plus(stakedVotingPower),
+                    constants.DECIMAL_PLACES_ZRX,
+                ),
+            );
+            setCurrentVotingPower(votingPower);
         };
-        const formattedBalance = Web3Wrapper.toUnitAmount(currentBalance, constants.DECIMAL_PLACES_ETH).toFormat(
-            0,
-            BigNumber.ROUND_FLOOR,
-            bigNumberFormat,
-        );
-        return (
-            <>
-                <DialogOverlay
-                    style={{ background: 'rgba(0, 0, 0, 0.75)', zIndex: 30 }}
-                    isOpen={isOpen}
-                    onDismiss={onDismiss}
-                >
-                    <StyledDialogContent>
-                        {this._renderFormContent()}
-                        <Confirmation isSuccessful={isSuccessful}>
-                            <Icon name={`zeip-${zeipId}`} size="large" margin={[0, 0, 'default', 0]} />
-                            <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
-                                Vote Received!
-                            </Heading>
-                            <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-                                Your vote will help to decide the future of the protocol. You will be receiving a custom
-                                “I voted” NFT as a token of our appreciation.
-                            </Paragraph>
-                            <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-                                You voted from {selectedAddress} with {formattedBalance} ZRX
-                            </Paragraph>
-                            <ButtonWrap>
-                                <Button type="button" onClick={this._shareViaTwitterAsync.bind(this)}>
-                                    Tweet
-                                </Button>
-                                <Button type="button" onClick={this._onDone.bind(this)}>
-                                    Done
-                                </Button>
-                            </ButtonWrap>
-                        </Confirmation>
-                        <ButtonClose onClick={this.props.onDismiss} />
-                        <ErrorModal
-                            isOpen={isErrorModalOpen}
-                            text={errorMessage}
-                            onClose={this._onCloseError.bind(this)}
-                        />
-                    </StyledDialogContent>
-                </DialogOverlay>
-            </>
-        );
-    }
-    public _renderFormContent(): React.ReactNode {
-        switch (this.state.isWalletConnected) {
-            case true:
-                return this._renderVoteFormContent();
-            case false:
-            default:
-                return this._renderConnectWalletFormContent();
+        if (!account.address || isFetchingVotingPowerData) {
+            return;
         }
-    }
-    private _shareViaTwitterAsync(): void {
-        const { zeipId } = this.props;
-        const tweetText = encodeURIComponent(`I voted on ZEIP-${zeipId}! 🗳️#VoteWithZRX https://0x.org/vote`);
-        window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, 'Share your vote', 'width=500,height=400');
-    }
-    private _renderConnectWalletFormContent(): React.ReactNode {
-        const { web3Wrapper } = this.state;
-        return (
-            <>
-                <ConnectForm
-                    web3Wrapper={web3Wrapper}
-                    onDismiss={this.props.onDismiss}
-                    onWalletConnected={this._onWalletConnected.bind(this)}
-                    onError={this._onError.bind(this)}
-                />
-            </>
-        );
-    }
-    private _renderVoteFormContent(): React.ReactNode {
-        const { currentBalance, selectedAddress, web3Wrapper, web3, providerEngine } = this.state;
+        setIsFetchingVotingPowerData(true);
+        fetchDelegatorData()
+            .then(() => setIsFetchingVotingPowerData(false))
+            .catch(err => {
+                setIsFetchingVotingPowerData(false);
+                logUtils.warn(err);
+                errorReporter.report(err);
+            });
+    }, [account.address, apiClient, isFetchingVotingPowerData, networkId, providerState.web3Wrapper]);
+
+    const onToggleConnectWalletDialog = React.useCallback(
+        (open: boolean) => {
+            const dispatcher = new Dispatcher(dispatch);
+            dispatcher.updateIsConnectWalletDialogOpen(open);
+        },
+        [dispatch],
+    );
+
+    const [isSuccessful, setSuccess] = React.useState(false);
+    const onVoted = React.useCallback((voteInfo: VoteInfo) => {
+        setSuccess(true);
+        onVoteInfoReceived(voteInfo);
+    }, [onVoteInfoReceived]);
+    const [errorMessage, setErrorMessage] = React.useState<string | undefined>(undefined);
+    const [isErrorModalOpen, setErrorModalOpen] = React.useState(false);
+    const onVoteError = React.useCallback((message: string) => {
+        setSuccess(false);
+        setErrorMessage(message);
+        setErrorModalOpen(true);
+    }, []);
+
+    const onModalDismiss = React.useCallback(() => {
+        setSuccess(false);
+        setErrorMessage(undefined);
+        setErrorModalOpen(false);
+        onDismiss();
+    }, [onDismiss]);
+
+    const bigNumberFormat = {
+        decimalSeparator: '.',
+        groupSeparator: ',',
+        groupSize: 3,
+        secondaryGroupSize: 0,
+        fractionGroupSeparator: ' ',
+        fractionGroupSize: 0,
+    };
+    const formattedBalance = Web3Wrapper.toUnitAmount(currentVotingPower, constants.DECIMAL_PLACES_ZRX).toFormat(
+        2,
+        BigNumber.ROUND_FLOOR,
+        bigNumberFormat,
+    );
+
+    const _renderVoteFormContent = (): React.ReactNode => {
         return (
             <>
                 <VoteForm
-                    currentBalance={currentBalance}
-                    selectedAddress={selectedAddress}
-                    web3Wrapper={web3Wrapper}
-                    injectedProvider={web3}
-                    onDismiss={this.props.onDismiss}
-                    provider={providerEngine}
-                    zeipId={this.props.zeipId}
-                    onVoted={this._onVoted.bind(this)}
-                    onError={this._onError.bind(this)}
+                    currentBalance={currentVotingPower}
+                    selectedAddress={account.address}
+                    providerState={providerState}
+                    onDismiss={onModalDismiss}
+                    zeipId={zeipId}
+                    networkId={networkId}
+                    onVoted={onVoted}
+                    onError={onVoteError}
                 />
             </>
         );
-    }
-    private _onWalletConnected(props: WalletConnectedProps): void {
-        const {
-            contractWrappers,
-            selectedAddress,
-            currentBalance,
-            providerName,
-            injectedProviderIfExists,
-            web3Wrapper,
-            providerEngine,
-        } = props;
+    };
+    const _shareViaTwitterAsync = (): void => {
+        const tweetText = encodeURIComponent(`I voted on ZEIP-${zeipId}! 🗳️#VoteWithZRX https://0x.org/zrx/vote`);
+        window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, 'Share your vote', 'width=500,height=400');
+    };
 
-        this.setState({
-            ...this.state,
-            web3Wrapper,
-            contractWrappers,
-            web3: injectedProviderIfExists,
-            isWalletConnected: true,
-            providerName,
-            currentBalance,
-            selectedAddress,
-            providerEngine,
-        });
-
-        this.props.onWalletConnected(providerName);
+    if (!account.address && isOpen) {
+        onToggleConnectWalletDialog(true);
+        return <div />;
     }
-    private _onVoted(voteInfo: VoteInfo): void {
-        this.setState({
-            isSuccessful: true,
-        });
-
-        if (this.props.onVoted) {
-            this.props.onVoted(voteInfo);
-        }
-    }
-    private _onDone(): void {
-        this.setState({
-            isErrorModalOpen: false,
-            isSuccessful: false,
-        });
-
-        this.props.onDismiss();
-    }
-    private _onError(errorMessage: string): void {
-        this.setState({
-            errorMessage,
-            isErrorModalOpen: true,
-        });
-    }
-    private _onCloseError(): void {
-        this.setState({
-            errorMessage: '',
-            isErrorModalOpen: false,
-        });
-    }
-}
+    onToggleConnectWalletDialog(false);
+    return (
+        <>
+            <DialogOverlay
+                style={{ background: 'rgba(0, 0, 0, 0.75)', zIndex: 30 }}
+                isOpen={isOpen}
+                onDismiss={onModalDismiss}
+            >
+                <StyledDialogContent>
+                    {!isErrorModalOpen && _renderVoteFormContent()}
+                    <Confirmation isSuccessful={isSuccessful}>
+                        <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
+                            Vote Received!
+                        </Heading>
+                        <Paragraph isMuted={true} color={colors.textDarkPrimary}>
+                            You voted from {account.address} with {formattedBalance} ZRX
+                        </Paragraph>
+                        <ButtonWrap>
+                            <Button type="button" onClick={_shareViaTwitterAsync}>
+                                Tweet
+                            </Button>
+                            <Button type="button" onClick={onModalDismiss}>
+                                Done
+                            </Button>
+                        </ButtonWrap>
+                    </Confirmation>
+                    <ButtonClose onClick={onModalDismiss} />
+                    <ErrorModal isOpen={isErrorModalOpen} text={errorMessage} onClose={onModalDismiss} />
+                </StyledDialogContent>
+            </DialogOverlay>
+        </>
+    );
+};
 
 const StyledDialogContent = styled(DialogContent)`
     position: relative;
