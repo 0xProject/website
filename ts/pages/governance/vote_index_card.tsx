@@ -73,7 +73,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = ({
         <ReactRouterLink to={`${WebsitePaths.Vote}/zeip-${zeipId}`}>
             <Section
                 hasBorder={isPastProposal}
-                bgColor={!isPastProposal ? 'dark' : 'none'}
+                bgColor="none"
                 padding="30px 30px 10px"
                 hasHover={true}
                 margin="30px auto"
