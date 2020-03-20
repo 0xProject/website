@@ -29,7 +29,6 @@ interface LabelInterface {
 
 interface State {
     isVoteModalOpen: boolean;
-    isWalletConnected: boolean;
     isVoteReceived: boolean;
     providerName?: string;
     tally?: TallyInterface;
@@ -50,7 +49,6 @@ const riskLabels: LabelInterface = {
 export class Governance extends React.Component<RouteComponentProps<any>> {
     public state: State = {
         isVoteModalOpen: false,
-        isWalletConnected: false,
         isVoteReceived: false,
         providerName: 'Metamask',
     };
@@ -199,10 +197,6 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
 
     private readonly _onDismissVoteModal = (): void => {
         this.setState({ ...this.state, isVoteModalOpen: false });
-    };
-
-    private readonly _onWalletConnected = (providerName: string): void => {
-        this.setState({ ...this.state, isWalletConnected: true, providerName });
     };
 
     private readonly _onVoteReceived = (voteInfo: VoteInfo): void => {

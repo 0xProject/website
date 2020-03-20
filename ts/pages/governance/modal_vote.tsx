@@ -1,4 +1,4 @@
-import { BigNumber } from '@0x/utils';
+import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
@@ -20,6 +20,7 @@ import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { AccountReady } from 'ts/types';
 import { constants } from 'ts/utils/constants';
+import { errorReporter } from 'ts/utils/error_reporter';
 
 interface ModalVoteProps {
     theme?: GlobalStyle;
@@ -77,7 +78,13 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
             return;
         }
         setIsFetchingVotingPowerData(true);
-        fetchDelegatorData().then(() => setIsFetchingVotingPowerData(false));
+        fetchDelegatorData()
+            .then(() => setIsFetchingVotingPowerData(false))
+            .catch(err => {
+                setIsFetchingVotingPowerData(false);
+                logUtils.warn(err);
+                errorReporter.report(err);
+            });
     }, [account.address, apiClient]);
 
     const onToggleConnectWalletDialog = React.useCallback(
