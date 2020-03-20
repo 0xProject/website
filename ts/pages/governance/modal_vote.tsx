@@ -42,7 +42,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
     const dispatch = useDispatch();
     const apiClient = useAPIClient(networkId);
 
-    const [currentBalance, setCurrentBalance] = React.useState(new BigNumber(0));
+    const [currentVotingPower, setCurrentVotingPower] = React.useState(new BigNumber(0));
     const [isFetchingVotingPowerData, setIsFetchingVotingPowerData] = React.useState<boolean>(false);
 
     React.useEffect(() => {
@@ -69,10 +69,10 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
             const votingPower = zrxBalanceBaseUnits.plus(
                 Web3Wrapper.toBaseUnitAmount(
                     totalDelegatedToAccount.plus(stakedVotingPower),
-                    constants.DECIMAL_PLACES_ETH,
+                    constants.DECIMAL_PLACES_ZRX,
                 ),
             );
-            setCurrentBalance(votingPower);
+            setCurrentVotingPower(votingPower);
         };
         if (!account.address || isFetchingVotingPowerData) {
             return;
@@ -85,7 +85,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
                 logUtils.warn(err);
                 errorReporter.report(err);
             });
-    }, [account.address, apiClient]);
+    }, [account.address, apiClient, isFetchingVotingPowerData, networkId, providerState.web3Wrapper]);
 
     const onToggleConnectWalletDialog = React.useCallback(
         (open: boolean) => {
@@ -99,7 +99,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
     const onVoted = React.useCallback((voteInfo: VoteInfo) => {
         setSuccess(true);
         onVoteInfoReceived(voteInfo);
-    }, []);
+    }, [onVoteInfoReceived]);
     const [errorMessage, setErrorMessage] = React.useState<string | undefined>(undefined);
     const [isErrorModalOpen, setErrorModalOpen] = React.useState(false);
     const onVoteError = React.useCallback((message: string) => {
@@ -113,7 +113,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
         setErrorMessage(undefined);
         setErrorModalOpen(false);
         onDismiss();
-    }, []);
+    }, [onDismiss]);
 
     const bigNumberFormat = {
         decimalSeparator: '.',
@@ -123,7 +123,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
         fractionGroupSeparator: ' ',
         fractionGroupSize: 0,
     };
-    const formattedBalance = Web3Wrapper.toUnitAmount(currentBalance, constants.DECIMAL_PLACES_ETH).toFormat(
+    const formattedBalance = Web3Wrapper.toUnitAmount(currentVotingPower, constants.DECIMAL_PLACES_ZRX).toFormat(
         2,
         BigNumber.ROUND_FLOOR,
         bigNumberFormat,
@@ -133,7 +133,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
         return (
             <>
                 <VoteForm
-                    currentBalance={currentBalance}
+                    currentBalance={currentVotingPower}
                     selectedAddress={account.address}
                     providerState={providerState}
                     onDismiss={onModalDismiss}

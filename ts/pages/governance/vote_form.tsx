@@ -98,7 +98,7 @@ export class VoteForm extends React.Component<Props> {
             fractionGroupSeparator: ' ',
             fractionGroupSize: 0,
         };
-        const formattedBalance = Web3Wrapper.toUnitAmount(currentBalance, constants.DECIMAL_PLACES_ETH).toFormat(
+        const formattedBalance = Web3Wrapper.toUnitAmount(currentBalance, constants.DECIMAL_PLACES_ZRX).toFormat(
             2,
             BigNumber.ROUND_FLOOR,
             bigNumberFormat,
