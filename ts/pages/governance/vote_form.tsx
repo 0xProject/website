@@ -10,6 +10,7 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { Button } from 'ts/components/button';
 import { Input } from 'ts/components/modals/input';
 import { Heading, Paragraph } from 'ts/components/text';
@@ -180,7 +181,12 @@ export class VoteForm extends React.Component<Props> {
         const { currentBalance, selectedAddress, zeipId } = this.props;
         const makerAddress = selectedAddress;
 
-        const domainType = [{ name: 'name', type: 'string' }];
+        const chainId = 1;
+        const domainType = [
+            { name: 'name', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+            { name: 'verifyingContract', type: 'address' },
+        ];
         const voteType = [
             { name: 'preference', type: 'string' },
             { name: 'zeip', type: 'uint256' },
@@ -188,6 +194,8 @@ export class VoteForm extends React.Component<Props> {
         ];
         const domainData = {
             name: '0x Protocol Governance',
+            chainId,
+            verifyingContract: getContractAddressesForChainOrThrow(chainId).exchange.toLowerCase(),
         };
         const message = {
             zeip: zeipId,
