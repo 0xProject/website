@@ -232,7 +232,7 @@ export const stagingProposals: Proposals = {
         ],
         url: 'https://github.com/0xProject/ZEIPs/issues/76',
         voteStartDate: moment(1585292400, 'X'),
-        voteEndDate: moment(1586134800, 'X'),
+        voteEndDate: moment(1586131200, 'X'),
         benefit: {
             title: 'Benefit',
             summary: [
