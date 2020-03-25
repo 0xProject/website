@@ -170,7 +170,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `slippagePercentage` | (Optional, defaults to ".01") The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. |
 | `gasPrice`           | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                       |
 | `takerAddress`       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
-| `excludedSources`          | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `Curve`) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`                                                                                                    |
+| `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
 
 ### Response
 
@@ -245,7 +245,7 @@ Specify a `buyToken`, `sellToken` and either a `buyAmount` or `sellAmount` to ge
 </CodeTabs>
 
 #### Excluding liquidity sources
-Supply a comma delimited list of liquidty source names to exclude them from the aggregator logic.
+Supply a comma delimited list of liquidty source names to exclude them from the aggregator logic. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources.
 
 <HttpCall fontSize="12px" path="/swap/v0/quote?buyToken=DAI&sellToken=ETH&buyAmount=100000000&excludedSources=0x,Kyber" />
 
@@ -520,7 +520,7 @@ No request params.
 ## GET /swap/v0/prices
 
 Get the amount of `sellToken` to purchase one unit (not base unit, one unit adjusted by number of decimals for asset) for tokens supported by `/swap/v0/*` endpoints.
-If a token is not returned, it may still be available but not queryable by token symbol. 
+If a token is not returned, it may still be available but not queryable by token symbol.
 
 ### Request
 
@@ -537,7 +537,7 @@ Response will be an array of token symbols and the respective price in `sellToke
 | `symbol`      | The symbol representing the Ethereum token.                           |
 | `price`       | The price of `symbol` in `sellToken`.   |
 
-### Examples 
+### Examples
 
 #### Get price of tokens in DAI
 
