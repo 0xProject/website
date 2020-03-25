@@ -68,7 +68,10 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
         const now = moment();
         const pstOffset = '-0800';
         const deadlineToVote = this._proposalData?.voteEndDate?.utcOffset(pstOffset);
+        const voteStartDate = this._proposalData?.voteStartDate?.utcOffset(pstOffset);
         const hasVoteEnded = deadlineToVote?.isBefore(now) || false;
+        const hasVoteStarted = voteStartDate ? now.isAfter(voteStartDate) : false;
+
         return (
             <StakingPageLayout isHome={false} title="0x Governance">
                 <DocumentTitle {...documentConstants.VOTE} />
@@ -90,12 +93,11 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                     </Column>
                     <Column width="30%" maxWidth="300px">
                         <VoteStats tally={tally} />
-                        {
-                            !hasVoteEnded &&
+                        {hasVoteStarted && !hasVoteEnded && (
                             <VoteButton onClick={this._onOpenVoteModal.bind(this)} isWithArrow={false}>
                                 {isVoteReceived ? 'Vote Received' : 'Vote'}
                             </VoteButton>
-                        }
+                        )}
                     </Column>
                 </Section>
 
