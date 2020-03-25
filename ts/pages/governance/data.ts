@@ -208,6 +208,46 @@ export const proposals: Proposals = {
             ],
         },
     },
+    76: {
+        zeipId: 76,
+        title: 'Standard ZEIP Process',
+        summary: [
+            `This ZEIP introduces a standard process to mange the entire lifecycle of ZeroEx Improvement Proposals. This includes: category and phase tags, community polls for core proposals, and mandatory fields such as implementation designated team.`,
+            `Absence of a standard in the ZEIP process causes problems in the coordination of the 0x community: vague or unknown purpose of the process itself, unclear expectations on what course of action a ZEIP would take, including whether the proposal would be implemented on or not. The introduction of a standard aims at solving these problems and to create a richer pipeline of proposals from the 0x community.`,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/76',
+        voteStartDate: moment(1585292400, 'X'),
+        voteEndDate: moment(1586131200, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `A standardized process ultimately helps to create a high-quality pipeline of improvement proposals for the 0x core contracts, parameters, and other operational aspects of the community.`,
+                `The introduction of the intermediary poll for core ZEIP will make sure the community is bought into having the designated team (not necessarily the 0x Core team) spend time and resources to work on the specific proposal. This will become even more important once the funding of the development work (and potential audit) will be coming from the community treasury.`,
+                `The entire lifecycle of community-driven proposals and support becomes clearer to outline: general ideas are discussed in the 0x forum, change proposals are formalized into ZEIP, while questions are handled in Discord, Telegram and Reddit.`,
+            ],
+            rating: 3,
+            links: [
+                {
+                    text: 'ZEIP template',
+                    url: 'https://github.com/0xProject/ZEIPs/blob/master/ISSUE_TEMPLATE.md',
+                },
+                {
+                    text: '0x Forum',
+                    url:
+                        'https://forum.0x.org/',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Actively managing the process will constitue an overhead cost for the designated ZEIP committee. This latter will consists initially of members of the 0x Core team, but overtime it will have to be open to other members of the community. `,
+            ],
+            rating: 1,
+            links: [
+            ],
+        },
+    },
 };
 
 export const stagingProposals: Proposals = {
