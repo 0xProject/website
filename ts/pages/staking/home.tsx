@@ -157,6 +157,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                                 poolId={pool.poolId}
                                 name={stakingUtils.getPoolDisplayName(pool)}
                                 thumbnailUrl={pool.metaData.logoUrl}
+                                isFullSizeTumbnail={pool.poolId === '12'}
                                 isVerified={pool.metaData.isVerified}
                                 address={pool.operatorAddress}
                                 totalFeesGeneratedInEth={pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
