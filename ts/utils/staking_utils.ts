@@ -121,9 +121,6 @@ export const stakingUtils = {
     },
 
     sortByRewardsSharedDesc: (a: PoolWithStats, b: PoolWithStats): number => {
-        const aRewardsShared = _.isNil(a.nextEpochStats.operatorShare) ? 0 : 1 - a.nextEpochStats.operatorShare;
-        const bRewardsShared = _.isNil(b.nextEpochStats.operatorShare) ? 0 : 1 - b.nextEpochStats.operatorShare;
-
-        return bRewardsShared - aRewardsShared;
+        return b.avgMemberRewardInEth - a.avgMemberRewardInEth;
     },
 };

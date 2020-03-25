@@ -39,6 +39,7 @@ interface IStakingPoolDetailRowProps {
     poolId: string;
     websiteUrl?: string;
     thumbnailUrl?: string;
+    isFullSizeTumbnail?: boolean;
     to?: string;
 }
 
@@ -53,10 +54,11 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
     averageRewardsSharedInEth,
     stakeRatio,
     to,
+    isFullSizeTumbnail,
 }) => (
     <StakingPoolDetailRowWrapper as={to && Link} to={to}>
         {thumbnailUrl ? (
-            <Logo>
+            <Logo isFullSizeThumbnail={isFullSizeTumbnail}>
                 <img src={thumbnailUrl} />
             </Logo>
         ) : (
@@ -150,8 +152,8 @@ const BaseLogoContainer = styled.div`
 
 const JazziconContainer = styled(BaseLogoContainer)``;
 
-const Logo = styled(BaseLogoContainer)`
-    padding: 15px;
+const Logo = styled(BaseLogoContainer)<{ isFullSizeThumbnail?: boolean }>`
+    padding: ${props => (props.isFullSizeThumbnail ? 0 : 15)}px;
     display: flex;
     align-items: center;
     justify-content: center;
