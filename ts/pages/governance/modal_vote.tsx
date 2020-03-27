@@ -85,7 +85,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
                 logUtils.warn(err);
                 errorReporter.report(err);
             });
-    }, [account.address, apiClient, isFetchingVotingPowerData, networkId, providerState.web3Wrapper]);
+    }, [account.address, apiClient, networkId, providerState.web3Wrapper]);
 
     const onToggleConnectWalletDialog = React.useCallback(
         (open: boolean) => {
