@@ -109,11 +109,6 @@ const team: TeamMember[] = [
         title: 'Engineer',
     },
     {
-        imageUrl: '/images/team/weijew.jpg',
-        name: 'Weijie Wu',
-        title: 'Research Fellow',
-    },
-    {
         imageUrl: '/images/team/jasons.jpg',
         name: 'Jason Somensatto',
         title: 'Senior Counsel',
@@ -132,11 +127,6 @@ const team: TeamMember[] = [
         imageUrl: '/images/team/brento.jpg',
         name: 'Brent Oshiro',
         title: 'Community Engagement Lead',
-    },
-    {
-        imageUrl: '/images/team/marcs.jpg',
-        name: 'Marc Savino',
-        title: 'Technical Sourcer',
     },
     {
         imageUrl: '/images/team/danielp.jpg',
