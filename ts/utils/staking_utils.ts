@@ -99,7 +99,7 @@ export const stakingUtils = {
     },
 
     isPoolActive: (pool: PoolWithStats) => {
-        return pool.currentEpochStats.totalProtocolFeesGeneratedInEth > 0 || pool.nextEpochStats.zrxStaked > 0;
+        return pool.currentEpochStats.totalProtocolFeesGeneratedInEth > 0 || pool.avgMemberRewardInEth > 0;
     },
 
     getTimeToEpochDate: (epochDate?: Date): string => {
