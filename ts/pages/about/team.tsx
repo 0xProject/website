@@ -51,17 +51,17 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/jacobe.jpg',
         name: 'Jacob Evans',
-        title: 'Ecosystem Engineer',
+        title: 'Senior Engineer',
     },
     {
         imageUrl: '/images/team/greg.jpg',
         name: 'Greg Hysen',
-        title: 'Protocol Engineer',
+        title: 'Senior Protocol Engineer',
     },
     {
         imageUrl: '/images/team/blake.jpg',
         name: 'Blake Henderson',
-        title: 'Ecosystem Programs Lead',
+        title: 'Product Manager',
     },
     {
         imageUrl: '/images/team/zack.jpg',
@@ -76,7 +76,7 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/francesco.jpg',
         name: 'Francesco Agosti',
-        title: 'Engineer',
+        title: 'Senior Engineer',
     },
     {
         imageUrl: '/images/team/chrisk.jpg',
@@ -86,7 +86,7 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/alexb.jpg',
         name: 'Alex Browne',
-        title: 'Senior Engineer',
+        title: 'Tech Lead',
     },
     {
         imageUrl: '/images/team/peterz.jpg',
@@ -106,7 +106,7 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/eugenea.jpg',
         name: 'Eugene Aumson',
-        title: 'Engineer',
+        title: 'Senior Engineer',
     },
     {
         imageUrl: '/images/team/jasons.jpg',
@@ -131,7 +131,7 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/danielp.jpg',
         name: 'Daniel Pyrathon',
-        title: 'Engineer',
+        title: 'Senior Engineer',
     },
     {
         imageUrl: '/images/team/lawrencef.jpg',
@@ -191,12 +191,12 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/kimp.jpg',
         name: 'Kim Persson',
-        title: 'Software Engineer',
+        title: 'Engineer',
     },
     {
         imageUrl: '/images/team/johnj.jpg',
         name: 'John Johnson',
-        title: 'Front-end Engineer',
+        title: 'Senior Engineer',
     },
     {
         imageUrl: '/images/team/nicoles.jpg',
