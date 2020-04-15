@@ -635,6 +635,113 @@ Response will be an array of token symbols and the respective price in `sellToke
 
 </CodeTabs>
 
+# Meta Transactions
+
+This API makes it easy for integrators to offer their users a meta-transaction trading experience. It provides a superset of the liquidity available via the Swap API (additionally including RFQ liquidity), and also allows integrators to submit the transaction on behalf of their users, effectively subsidizing the gas cost and protocol fees, and thereby obviating the need for their users to own Ether.
+
+Follow the "[Unlocking meta-transaction swaps with 0x API](/docs/guides/unlocking-meta-transaction-swaps)" guide to see how to use it.
+
+## GET /meta_transaction/v0/price
+
+Before being committed to a trade, a requestor should send quote requests to the `/price` endpoint. This endpoint will compute the best price available and return it to the caller. Once a trader has decided they wish to perform the trade, a final request should be made to the `/quote` endpoint.
+
+### Request
+
+Either a `sellAmount` or `buyAmount` is required.
+When both are provided, `sellAmount` takes precedence over `buyAmount`.
+
+| Query Param          | Description                                                                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sellToken`          | The ERC20 token address or symbol of the token you want to send. "ETH" is not supported, use "WETH" instead.                                                                                                      |
+| `buyToken`           | The ERC20 token address or symbol of the token you want to receive. "ETH" is not supported, use "WETH" instead.`)                                                                                                                                                 |
+| `sellAmount`         | (Optional) The amount of `sellToken` (in `sellToken` base units) you want to send.                                                                                                                                       |
+| `buyAmount`          | (Optional) The amount of `buyToken` (in `buyToken` base units) you want to receive.                                                                                                                                      |
+| `slippagePercentage` | (Optional) The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. This parameter will change over time with market conditions. |
+| `takerAddress`       | (Required) The address which will fill the quote.          |
+| `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
+
+### Response
+
+| Field               | Description                                                                                                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `price`             | If `buyAmount` was specified in the request it provides the price of `buyToken` in `sellToken` and vice versa. This price does not include the `slippage` provided in the request above, and therefore represents the best possible price. |
+| `buyAmount`         | The amount of `buyToken` (in `buyToken` units) that would be bought in this swap. Certain on-chain sources do not allow specifying `buyAmount`, when using `buyAmount` these sources are excluded. |
+| `sellAmount`        | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.  Specifying `sellAmount` is the recommended way to interact with 0xAPI as it covers all on-chain sources.                                                                                                             |
+| `sources`           | The percentage distribution of `buyAmount` or `sellAmount` split between each liquidity source. Ex: `[{ name: '0x', proportion: "0.8" }, { name: 'Kyber', proportion: "0.2"}]`                   |
+| `buyTokenAddress`   | The ERC20 token address of the token you want to receive in quote.                                                                                                                               |
+| `sellTokenAddress`  | The ERC20 token address of the token you want to sell with quote.                                                                                                                               |
+
+## GET /meta_transaction/v0/quote
+
+When a trader has shown an intent to complete a trade, calling this `/quote` endpoint will return a [0x transaction](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions) hash for them to sign, confirming to the details of the trade. 0x transactions is a 0x-native feature that enables meta-transactions by separating the taker of a trade included in an Ethereum transaction, from the party submitting the Ethereum transaction. Once the trader has signed the 0x transaction hash, the integrator should send it to the `/fill` endpoint. 
+
+### Request
+
+Either a `sellAmount` or `buyAmount` is required.
+When both are provided, `sellAmount` takes precedence over `buyAmount`.
+
+| Query Param          | Description                                                                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sellToken`          | The ERC20 token address or symbol of the token you want to send. "ETH" is not supported, use "WETH" instead.                                                                                                      |
+| `buyToken`           | The ERC20 token address or symbol of the token you want to receive. "ETH" is not supported, use "WETH" instead.`)                                                                                                                                                 |
+| `sellAmount`         | (Optional) The amount of `sellToken` (in `sellToken` base units) you want to send.                                                                                                                                       |
+| `buyAmount`          | (Optional) The amount of `buyToken` (in `buyToken` base units) you want to receive.                                                                                                                                      |
+| `slippagePercentage` | (Optional) The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. This parameter will change over time with market conditions. |
+| `takerAddress`       | (Required) The address which will fill the quote.          |
+| `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
+
+### Response
+
+| Field               | Description                                                                                                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `price`             | If `buyAmount` was specified in the request it provides the price of `buyToken` in `sellToken` and vice versa. This price does not include the `slippage` provided in the request above, and therefore represents the best possible price. |
+| `buyAmount`         | The amount of `buyToken` (in `buyToken` units) that would be bought in this swap. Certain on-chain sources do not allow specifying `buyAmount`, when using `buyAmount` these sources are excluded. |
+| `sellAmount`        | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.  Specifying `sellAmount` is the recommended way to interact with 0xAPI as it covers all on-chain sources.                                                                                                             |
+| `zeroExTransactionHash`           | The 0x transaction hash that must be signed by the trader.                   |
+| `zeroExTransaction`           | The 0x transaction struct containing the encoded calldata that calls a 0x exchange contract method with the best-priced orders as a parameter.                   |
+| `sources`           | The percentage distribution of `buyAmount` or `sellAmount` split between each liquidity source. Ex: `[{ name: '0x', proportion: "0.8" }, { name: 'Kyber', proportion: "0.2"}]`                   |
+| `buyTokenAddress`   | The ERC20 token address of the token you want to receive in quote.                                                                                                                               |
+| `sellTokenAddress`  | The ERC20 token address of the token you want to sell with quote.                                                                                                                               |
+| `orders`            | [Signed orders](/docs/api#signed-order) that data is comprised of.                                                                                                                               |
+
+## GET /meta_transaction/v0/fill
+
+The endpoint accepts a signed 0x transaction hash and will do one of two things: (1) submit the Ethereum transaction executing the trade encoded in the 0x transaction OR (2) return an unsigned Ethereum transaction that executes the 0x transaction. (1) occurs IF the request is sent with a whitelisted `0x-api-key` header (reach out to us about this possibility) and otherwise returns the unsigned Ethereum transaction for either the end user or integrator/dApp to sign and broadcast. 
+
+### Request
+
+| HTTP Header          | Description                                                                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `0x-api-key`          | A 0x api key identifying the caller to the API.                                                                                                      |
+
+
+| Query Param          | Description                                                                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `signature`          | (Required) 0x transaction hex-encoded signature.                                                                                                      |
+| `zeroExTransaction`           | (Required) The 0x transaction struct corresponding to the supplied signature.                                                                                                                                                 |
+
+### Responses
+
+#### Case (1)
+
+HTTP Status: 200
+
+| Field               | Description                                                                                                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ethereumTransactionHash`             | The hash of the signed Ethereum transaction executing the 0x transaction. |
+| `signedEthereumTransaction`         | The hex-encoded signed Ethereum transaction that can be re-broadcast if desired (0x API has already broadcast it as well). |
+
+
+#### Case (2)
+
+HTTP Status: 502
+
+| Field               | Description                                                                                                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `code`             | Error code. |
+| `reason`         | Human-readable error message. |
+| `ethereumTransaction`         | The raw Ethereum transaction the caller must sign and broadcast to execute the trade encoded in the 0x transaction. |
+
 # SRA
 
 The Standard Relayer API is an API specification that is implemented by several 0x relayers (exchanges), including [Radar Relay](https://developers.radarrelay.com/api/0x-sra) and [Bamboo Relay](https://sra.bamboorelay.com/zrx.html).
