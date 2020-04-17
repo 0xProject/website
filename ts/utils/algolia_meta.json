@@ -29,12 +29,21 @@
         },
         "swap-tokens-with-0x-api": {
             "title": "Swap Tokens With 0x API",
-            "subtitle": "Learn how to complete a token swap with 0x API /swap/v0/* endpoint",
-            "description": "Learn how to complete a token swap with 0x API /swap/v0/* endpoint",
+            "subtitle": "Learn how to complete a token swap with 0x API /swap/v0/* endpoints",
+            "description": "Learn how to complete a token swap with 0x API /swap/v0/* endpoints",
             "tags": ["0x API"],
             "topics": ["0x API"],
             "difficulty": "Beginner",
             "path": "guides/swap-tokens-with-0x-api.mdx"
+        },
+        "unlocking-meta-transaction-swaps": {
+            "title": "Unlocking Meta-transaction Swaps With 0x API",
+            "subtitle": "Learn how to complete a meta-transaction swap using 0x API /meta-transactions/v0/* endpoints",
+            "description": "Learn how to complete a meta-transaction swap using 0x API /meta-transactions/v0/* endpoints",
+            "tags": ["0x API"],
+            "topics": ["0x API"],
+            "difficulty": "Beginner",
+            "path": "guides/unlocking-meta-transaction-swaps.mdx"
         },
         "use-0x-api-liquidity-in-your-smart-contracts": {
             "title": "Use 0x API Liquidity in Your Smart Contracts",
@@ -166,12 +175,7 @@
             "title": "0x Coordinator Specification (v2)",
             "description": "A comprehensive technical spec of the first coordinator model developer by the 0x core team (soft-cancel variant)",
             "tags": ["Coordinator", "Relayer", "Trader", "Protocol Developer"],
-            "topics": [
-                "Coordinator",
-                "Relayer",
-                "Trader",
-                "Protocol Developer"
-            ],
+            "topics": ["Coordinator", "Relayer", "Trader", "Protocol Developer"],
             "difficulty": "Advanced",
             "path": "guides/v2-coordinator-specification.mdx"
         },
@@ -219,40 +223,16 @@
         "v3-staking-specification": {
             "title": "0x Staking Specification (v3)",
             "description": "The technical spec for the Staking in 0x protocol v3. Allowing Market Makers to receive rebates when orders are filled.",
-            "tags": [
-                "Specs",
-                "Relayer",
-                "Trader",
-                "Market Maker",
-                "Protocol Developer"
-            ],
-            "topics": [
-                "Specs",
-                "Relayer",
-                "Trader",
-                "Market Maker",
-                "Protocol Developer"
-            ],
+            "tags": ["Specs", "Relayer", "Trader", "Market Maker", "Protocol Developer"],
+            "topics": ["Specs", "Relayer", "Trader", "Market Maker", "Protocol Developer"],
             "difficulty": "Advanced",
             "path": "guides/v3-staking-specification.mdx"
         },
         "v3-coordinator-specification": {
             "title": "0x Coordinator Specification (v3)",
             "description": "A comprehensive technical spec of the first coordinator model developer by the 0x core team (soft-cancel variant)",
-            "tags": [
-                "Coordinator",
-                "Relayer",
-                "Trader",
-                "Market Maker",
-                "Protocol Developer"
-            ],
-            "topics": [
-                "Coordinator",
-                "Relayer",
-                "Trader",
-                "Market Maker",
-                "Protocol Developer"
-            ],
+            "tags": ["Coordinator", "Relayer", "Trader", "Market Maker", "Protocol Developer"],
+            "topics": ["Coordinator", "Relayer", "Trader", "Market Maker", "Protocol Developer"],
             "difficulty": "Advanced",
             "path": "guides/v3-coordinator-specification.mdx"
         },
