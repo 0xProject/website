@@ -652,12 +652,12 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 
 | Query Param          | Description                                                                                                                                                                                                         |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `takerAddress`       | (Required) The address which will fill the quote.          |
 | `sellToken`          | The ERC20 token address or symbol of the token you want to send. "ETH" is not supported, use "WETH" instead.                                                                                                      |
 | `buyToken`           | The ERC20 token address or symbol of the token you want to receive. "ETH" is not supported, use "WETH" instead.`)                                                                                                                                                 |
 | `sellAmount`         | (Optional) The amount of `sellToken` (in `sellToken` base units) you want to send.                                                                                                                                       |
 | `buyAmount`          | (Optional) The amount of `buyToken` (in `buyToken` base units) you want to receive.                                                                                                                                      |
 | `slippagePercentage` | (Optional) The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. This parameter will change over time with market conditions. |
-| `takerAddress`       | (Required) The address which will fill the quote.          |
 | `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
 
 ### Response
@@ -704,7 +704,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `sources`           | The percentage distribution of `buyAmount` or `sellAmount` split between each liquidity source. Ex: `[{ name: '0x', proportion: "0.8" }, { name: 'Kyber', proportion: "0.2"}]`                   |
 | `orders`            | [Signed orders](/docs/api#signed-order) that data is comprised of.                                                                                                                               |
 
-## GET /meta_transaction/v0/fill
+## POST /meta_transaction/v0/fill
 
 This endpoint accepts a signed 0x transaction hash and will do one of two things: (1) submit the Ethereum transaction executing the trade encoded in the 0x transaction OR (2) return an unsigned Ethereum transaction that executes the 0x transaction. (1) occurs IF the request is sent with a whitelisted `0x-api-key` header (reach out to us about this possibility) and otherwise returns the unsigned Ethereum transaction for either the end user or integrator/dApp to sign and broadcast. 
 
