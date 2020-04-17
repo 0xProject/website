@@ -637,13 +637,13 @@ Response will be an array of token symbols and the respective price in `sellToke
 
 # Meta Transactions
 
-This API makes it easy for integrators to offer their users a meta-transaction trading experience. It provides a superset of the liquidity available via the Swap API (additionally including RFQ liquidity), and also allows integrators to submit the transaction on behalf of their users, effectively subsidizing the gas cost and protocol fees, and thereby obviating the need for their users to own Ether.
+This API makes it easy for integrators to offer their users a meta-transaction trading experience. It provides a superset of the liquidity available via the Swap API (additionally including RFQ liquidity), and also allows integrators to submit the transaction on behalf of their users. This allows them to subsidize the gas cost and protocol fees, removing the need for their users to own Ether.
 
 Follow the "[Unlocking meta-transaction swaps with 0x API](/docs/guides/unlocking-meta-transaction-swaps)" guide to see how to use it.
 
 ## GET /meta_transaction/v0/price
 
-Before a trader has committed to a trade, a requestor should send quote requests to the `/price` endpoint. This endpoint will compute the best price available and return it to the caller. Once a trader has decided they wish to perform the trade, a final request should be made by the requestor to the `/quote` endpoint.
+The price endpoint returns an indicative quote to the caller. An indicative quote is non-binding, but representative of the best price the taker would receive were a trade to occur right now. Once a taker has decided they wish to perform the trade, a final quote request should be made to the `/quote` endpoint.
 
 ### Request
 
@@ -673,7 +673,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 
 ## GET /meta_transaction/v0/quote
 
-When a trader has shown an intent to complete a trade, calling this `/quote` endpoint will return a [0x transaction](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions) hash for them to sign. In signing the 0x transaction, they are agreeing to the details of the trade. 0x transactions are a 0x-native feature that enables meta-transactions by separating the taker of a trade, from the party submitting the Ethereum transaction. Once the trader has signed the 0x transaction hash, the integrator should send it to the `/fill` endpoint. 
+When a trader has shown an intent to complete a trade, calling this `/quote` endpoint will return the hash of a [0x transaction](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions) for them to sign. In signing the 0x transaction, they are agreeing to the details of the trade. 0x transactions are a 0x-native feature that enables meta-transactions by separating the taker of a trade, from the party submitting the Ethereum transaction. Once the trader has signed the 0x transaction hash, the integrator should send it to the `/fill` endpoint. 
 
 ### Request
 
@@ -706,7 +706,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 
 ## POST /meta_transaction/v0/fill
 
-This endpoint accepts a signed 0x transaction hash and will do one of two things: (1) submit the Ethereum transaction executing the trade encoded in the 0x transaction OR (2) return an unsigned Ethereum transaction that executes the 0x transaction. (1) occurs IF the request is sent with a whitelisted `0x-api-key` header (reach out to us about this possibility) and otherwise returns the unsigned Ethereum transaction for either the end user or integrator/dApp to sign and broadcast. 
+This endpoint accepts a signed 0x transaction hash and will do one of two things: (1) submit the Ethereum transaction executing the trade encoded in the 0x transaction OR (2) return an unsigned Ethereum transaction that executes the 0x transaction. (1) occurs if the request is sent with a whitelisted `0x-api-key` header or if a liquidity provider is willing to submit trades their involved in on the taker's behalf. If neither of these is true, it returns the unsigned Ethereum transaction for either the end user or integrator/dApp to sign and broadcast. 
 
 ### Request
 
