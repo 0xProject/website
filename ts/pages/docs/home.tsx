@@ -84,15 +84,15 @@ const getStartedLinks = [
         url: `${WebsitePaths.DocsGuides}/market-making-on-0x`,
     },
     {
-        heading: 'Add 0x Instant to your website / mobile app',
-        description: 'Add a free and simple crypto purchasing flow to your website or mobile app.',
-        url: `${WebsitePaths.DocsGuides}/integrate-instant`,
+        heading: 'Intro to using 0x liquidity in smart contracts',
+        description: 'A primer on the core concepts to use 0x liquidity in smart contracts.',
+        href: `${WebsitePaths.DocsGuides}/introduction-to-using-0x-liquidity-in-smart-contracts`,
+        target: '_blank',
     },
     {
-        heading: 'Launch an exchange in a few minutes',
-        description: 'Learn how to spin up an exchange or marketplace in seconds.',
-        href: constants.URL_LAUNCH_KIT_TUTORIAL_YOUTUBE,
-        target: '_blank',
+        heading: 'Develop a margin trading smart contract with 0x API',
+        description: 'Leverage 0x liquidity and Compound finance to create a margin trading smart contract.',
+        url: `${WebsitePaths.DocsGuides}/develop-a-margin-trading-smart-contract-with-0x-api`,
     },
 ];
 
