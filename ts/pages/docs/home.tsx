@@ -86,8 +86,7 @@ const getStartedLinks = [
     {
         heading: 'Intro to using 0x liquidity in smart contracts',
         description: 'A primer on the core concepts to use 0x liquidity in smart contracts.',
-        href: `${WebsitePaths.DocsGuides}/introduction-to-using-0x-liquidity-in-smart-contracts`,
-        target: '_blank',
+        url: `${WebsitePaths.DocsGuides}/introduction-to-using-0x-liquidity-in-smart-contracts`,
     },
     {
         heading: 'Develop a margin trading smart contract with 0x API',
