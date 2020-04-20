@@ -94,7 +94,7 @@ export const useWallet = () => {
 
             const { TRACKING } = constants.STAKING;
 
-            trackEvent(TRACKING.CONNECT_WALLET, { provider: providerState.displayName || 'UnknownWallet' });
+            trackEvent(TRACKING.CONNECT_WALLET, { event_label: providerState.displayName || 'UnknownWallet' });
         },
         [cleanupCurrentProvider, currentNetworkId, dispatcher, handleAccountsChange, handleNetworksChange],
     );

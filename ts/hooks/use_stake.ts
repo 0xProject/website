@@ -293,55 +293,55 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         depositAndStake: (stakePoolData: StakePoolData[], callback?: () => void) => {
             depositAndStakeAsync(stakePoolData)
                 .then(() => {
-                    trackEvent(TRACKING.STAKE, { success: true });
+                    trackEvent(TRACKING.STAKE, { event_label: 'success' });
                 })
                 .then(callback)
                 .catch((err: Error) => {
-                    trackEvent(TRACKING.STAKE, { success: false });
+                    trackEvent(TRACKING.STAKE, { event_label: 'failed' });
                     handleError(err);
                 });
         },
         unstake: (stakePoolData: StakePoolData[], callback?: () => void) => {
             unstakeFromPoolsAsync(stakePoolData)
                 .then(() => {
-                    trackEvent(TRACKING.UNSTAKE, { success: true });
+                    trackEvent(TRACKING.UNSTAKE, { event_label: 'success' });
                 })
                 .then(callback)
                 .catch((err: Error) => {
-                    trackEvent(TRACKING.UNSTAKE, { success: false });
+                    trackEvent(TRACKING.UNSTAKE, { event_label: 'failed' });
                     handleError(err);
                 });
         },
         moveStake: (fromPoolId: string, toPoolId: string, zrxAmount: number, callback?: () => void) => {
             moveStakeAsync(fromPoolId, toPoolId, zrxAmount)
                 .then(() => {
-                    trackEvent(TRACKING.MOVE_STAKE, { success: true });
+                    trackEvent(TRACKING.MOVE_STAKE, { event_label: 'success' });
                 })
                 .then(callback)
                 .catch((err: Error) => {
-                    trackEvent(TRACKING.MOVE_STAKE, { success: false });
+                    trackEvent(TRACKING.MOVE_STAKE, { event_label: 'failed' });
                     handleError(err);
                 });
         },
         withdrawStake: (zrxAmountBaseUnits: BigNumber, callback?: () => void) => {
             withdrawStakeAsync(zrxAmountBaseUnits)
                 .then(() => {
-                    trackEvent(TRACKING.WITHDRAW_STAKE, { success: true });
+                    trackEvent(TRACKING.WITHDRAW_STAKE, { event_label: 'success' });
                 })
                 .then(callback)
                 .catch((err: Error) => {
-                    trackEvent(TRACKING.WITHDRAW_STAKE, { success: false });
+                    trackEvent(TRACKING.WITHDRAW_STAKE, { event_label: 'failed' });
                     handleError(err);
                 });
         },
         withdrawRewards: (poolIds: string[], callback?: () => void) => {
             withdrawRewardsAsync(poolIds)
                 .then(() => {
-                    trackEvent(TRACKING.WITHDRAW_REWARDS, { success: true });
+                    trackEvent(TRACKING.WITHDRAW_REWARDS, { event_label: 'success' });
                 })
                 .then(callback)
                 .catch((err: Error) => {
-                    trackEvent(TRACKING.WITHDRAW_REWARDS, { success: false });
+                    trackEvent(TRACKING.WITHDRAW_REWARDS, { event_label: 'failed' });
                     handleError(err);
                 });
         },
