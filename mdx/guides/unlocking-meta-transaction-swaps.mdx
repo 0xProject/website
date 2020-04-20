@@ -64,7 +64,7 @@ In order for the user to agree to the trade, they must sign the 0x transaction h
 
 ### Execute the trade
 
-Once the user has signed the 0x transaction, supply the signature and 0x transaction to the [/meta-transactions/v0/fill](/docs/api#get-metatxnv0fill) endpoint. This endpoint will do one of two things:
+Once the user has signed the 0x transaction, supply the signature and 0x transaction to the [/meta-transactions/v0/submit](/docs/api#get-metatxnv0submit) endpoint. This endpoint will do one of two things:
 
 1. Submit the Ethereum transaction executing the trade encoded in the 0x transaction
 2. Return an unsigned Ethereum transaction that executes the 0x transaction. 
@@ -74,7 +74,7 @@ Once the user has signed the 0x transaction, supply the signature and 0x transac
 ```
 (async () => {    
     const response = await fetch(
-        `https://api.0x.org/meta_transaction/v0/fill`, {
+        `https://api.0x.org/meta_transaction/v0/submit`, {
             method: 'POST',
             body: JSON.stringify({
                 signature: 0X_TRANSACTION_SIGNATURE,

@@ -673,7 +673,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 
 ## GET /meta_transaction/v0/quote
 
-When a trader has shown an intent to complete a trade, calling this `/quote` endpoint will return the hash of a [0x transaction](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions) for them to sign. In signing the 0x transaction, they are agreeing to the details of the trade. 0x transactions are a 0x-native feature that enables meta-transactions by separating the taker of a trade, from the party submitting the Ethereum transaction. Once the trader has signed the 0x transaction hash, the integrator should send it to the `/fill` endpoint. 
+When a trader has shown an intent to complete a trade, calling this `/quote` endpoint will return the hash of a [0x transaction](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions) for them to sign. In signing the 0x transaction, they are agreeing to the details of the trade. 0x transactions are a 0x-native feature that enables meta-transactions by separating the taker of a trade, from the party submitting the Ethereum transaction. Once the trader has signed the 0x transaction hash, the integrator should send it to the `/submit` endpoint. 
 
 ### Request
 
@@ -704,7 +704,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `sources`           | The percentage distribution of `buyAmount` or `sellAmount` split between each liquidity source. Ex: `[{ name: '0x', proportion: "0.8" }, { name: 'Kyber', proportion: "0.2"}]`                   |
 | `orders`            | [Signed orders](/docs/api#signed-order) that data is comprised of.                                                                                                                               |
 
-## POST /meta_transaction/v0/fill
+## POST /meta_transaction/v0/submit
 
 This endpoint accepts a signed 0x transaction hash and will do one of two things: (1) submit the Ethereum transaction executing the trade encoded in the 0x transaction OR (2) return an unsigned Ethereum transaction that executes the 0x transaction. (1) occurs if the request is sent with a whitelisted `0x-api-key` header or if a liquidity provider is willing to submit trades their involved in on the taker's behalf. If neither of these is true, it returns the unsigned Ethereum transaction for either the end user or integrator/dApp to sign and broadcast. 
 
