@@ -1247,7 +1247,7 @@ export interface StakingAPIDelegatorHistoryItem {
     blockNumber: number;
     eventTimestamp: string;
     transactionHash: string | null;
-    eventArgs: {};
+    eventArgs: any;
 }
 
 export interface RawAllTimeDelegatorPoolsStats {

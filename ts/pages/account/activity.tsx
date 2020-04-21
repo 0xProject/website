@@ -23,54 +23,9 @@ import { errorReporter } from 'ts/utils/error_reporter';
 
 export interface ActivityProps {}
 
-interface MockData {
-    eventType: string;
-    address: string;
-    blockNumber: number | null;
-    eventTimestamp: string;
-    transactionHash: string | null;
-    eventArgs: any;
-}
-
 const columns = ['Event timestamp', 'Event', 'Transaction'];
 
-const MOCK_DATA: MockData[] = [
-    {
-        eventType: 'earned_rewards',
-        address: '0x48917cf4498f8835df24c9b1afb61c218b486d6c',
-        blockNumber: 9173541,
-        eventTimestamp: '2019-12-28T01:47:41.000Z',
-        transactionHash: null,
-        eventArgs: {
-            reward: 0.0017117874283162444,
-            epochId: 4,
-            poolId: '6',
-        },
-    },
-    {
-        eventType: 'staked',
-        address: '0x48917cf4498f8835df24c9b1afb61c218b486d6c',
-        blockNumber: 9091858,
-        eventTimestamp: '2019-12-12T01:55:03.000Z',
-        transactionHash: '0x6da705810037fbfee5d61b7c9a82ca57794078073f5ace326d5ed8664980daba',
-        eventArgs: {
-            zrxAmount: 2.5,
-            poolId: '6',
-        },
-    },
-    {
-    eventType: 'deposited_zrx',
-    address: '0x48917cf4498f8835df24c9b1afb61c218b486d6c',
-    blockNumber: 9091858,
-    eventTimestamp: '2019-12-12T01:55:03.000Z',
-    transactionHash: '0x6da705810037fbfee5d61b7c9a82ca57794078073f5ace326d5ed8664980daba',
-    eventArgs: {
-        zrxAmount: 2.5,
-        },
-    },
-];
-
-function parseEvent(event: MockData): {title: string; subtitle: string} {
+function parseEvent(event: StakingAPIDelegatorHistoryItem): {title: string; subtitle: string} {
     if (event.eventType === 'earned_rewards') {
         const title = 'Earned Rewards';
         const subtitle = `You earned ${formatEther(event.eventArgs.reward).formatted} ETH from pool ${event.eventArgs.poolId} for epoch ${event.eventArgs.epochId}.`;
