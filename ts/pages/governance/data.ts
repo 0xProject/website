@@ -308,7 +308,7 @@ export const stagingProposals: Proposals = {
         title: 'Set length of staking epochs to 7 days',
         summary: [
             `This ZEIP proposes to decrease the current epoch length from 10 to 7 days. In this way, epoch finalizations align to a weekly schedule, to be triggered on Saturdays around 3am GMT.`,
-            `This proposal also includes a change in administrative timelocks for the StakingProxy and ZrxVault contracts, in otder to align them to this new epoch duration. All timelocks for those two contracts with value 10 and 20 days will be set to 7 and 14 days, respectively.`,
+            `This proposal also includes a change in administrative timelocks for the StakingProxy and ZrxVault contracts, in order to align them to this new epoch duration. All timelocks for those two contracts with value 10 and 20 days will be set to 7 and 14 days, respectively.`,
         ],
         url: 'https://github.com/0xProject/ZEIPs/issues/77',
         voteStartDate: moment(1587880811, 'X'),
@@ -345,7 +345,7 @@ export const stagingProposals: Proposals = {
                     text: 'Staking security audit',
                     url:
                         'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
-                }
+                },
             ],
         },
     },
