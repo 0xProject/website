@@ -345,7 +345,7 @@ export const stagingProposals: Proposals = {
                     text: 'Staking security audit',
                     url:
                         'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
-                }
+                },
             ],
         },
     },
