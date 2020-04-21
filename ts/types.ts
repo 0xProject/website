@@ -1241,6 +1241,15 @@ export interface StakingAPIDelegatorResponse {
     allTime: AllTimeDelegatorStats;
 }
 
+export interface StakingAPIDelegatorHistoryItem {
+    eventType: string;
+    address: string;
+    blockNumber: number;
+    eventTimestamp: string;
+    transactionHash: string | null;
+    eventArgs: {};
+}
+
 export interface RawAllTimeDelegatorPoolsStats {
     pool_id: string;
     reward: string;

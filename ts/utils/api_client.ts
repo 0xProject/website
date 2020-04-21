@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 
 import {
     Network,
+    StakingAPIDelegatorHistoryItem,
     StakingAPIDelegatorResponse,
     StakingAPIEpochsResponse,
     StakingAPIPoolByIdResponse,
@@ -14,6 +15,7 @@ import { utils } from 'ts/utils/utils';
 
 const STAKING_POOLS_ENDPOINT = '/staking/pools';
 const DELEGATOR_ENDPOINT = '/staking/delegator';
+const DELEGATOR_HISTORY_ENDPOINT = '/staking/delegator/events';
 const STAKING_EPOCHS_ENDPOINT = '/staking/epochs';
 const STAKING_STATS_ENDPOINT = '/staking/stats';
 
@@ -48,6 +50,15 @@ export class APIClient {
         const result = await fetchUtils.requestAsync(
             utils.getAPIBaseUrl(this.networkId),
             `${DELEGATOR_ENDPOINT}/${delegatorAddress.toLowerCase()}`,
+        );
+
+        return result;
+    }
+
+    public async getDelegatorHistoryAsync(delegatorAddress: string): Promise<StakingAPIDelegatorHistoryItem[]> {
+        const result = await fetchUtils.requestAsync(
+            utils.getAPIBaseUrl(this.networkId),
+            `${DELEGATOR_HISTORY_ENDPOINT}/${delegatorAddress.toLowerCase()}`,
         );
 
         return result;
