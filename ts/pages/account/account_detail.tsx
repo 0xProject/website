@@ -34,7 +34,7 @@ export const AccountDetail: React.StatelessComponent<AccountDetailProps> = ({
                         isWithArrow={true}
                         isAccentColor={true}
                         shouldUseAnchorTag={true}
-                        target="_blank"
+                        target="_self"
                     >
                         Show all activity
                     </Button>
