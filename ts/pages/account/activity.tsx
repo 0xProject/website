@@ -42,7 +42,7 @@ function parseEvent(event: StakingAPIDelegatorHistoryItem): {title: string; subt
         const title = 'Staked';
         const subtitle = `You staked ${formatZrx(event.eventArgs.zrxAmount).formatted} ZRX with pool ${event.eventArgs.poolId}.`;
         return {title, subtitle};
-    } else if (event.eventType === 'removed_staked') {
+    } else if (event.eventType === 'removed_stake') {
         const title = 'Removed Stake';
         const subtitle = `You removed ${formatZrx(event.eventArgs.zrxAmount).formatted} ZRX from pool ${event.eventArgs.poolId}.`;
         return {title, subtitle};

@@ -5,6 +5,7 @@ import { Button } from 'ts/components/button';
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
 
 import { colors } from 'ts/style/colors';
+import { WebsitePaths } from 'ts/types';
 import { utils } from 'ts/utils/utils';
 
 export interface AccountDetailProps {
@@ -30,11 +31,10 @@ export const AccountDetail: React.StatelessComponent<AccountDetailProps> = ({
                 </Avatar>
                 <ButtonWrapper>
                     <Button
-                        href="/zrx/account/activity"
+                        to={WebsitePaths.AccountActivity}
                         isWithArrow={true}
                         isAccentColor={true}
                         shouldUseAnchorTag={true}
-                        target="_self"
                     >
                         Show all activity
                     </Button>
