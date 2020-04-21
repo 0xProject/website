@@ -48,7 +48,7 @@ function parseEvent(event: StakingAPIDelegatorHistoryItem): {title: string; subt
         return {title, subtitle};
     } else if (event.eventType === 'moved_stake') {
         const title = 'Moved Stake';
-        const subtitle = `You moved ${formatZrx(event.eventArgs.zrxAmount).formatted} ZRX from pool ${event.eventArgs.fromPoolId} to pool ${event.eventArgs.fromPoolId}.`;
+        const subtitle = `You moved ${formatZrx(event.eventArgs.zrxAmount).formatted} ZRX from pool ${event.eventArgs.fromPoolId} to pool ${event.eventArgs.toPoolId}.`;
         return {title, subtitle};
     } else {
         return {title: 'Unknown event', subtitle: ''};
