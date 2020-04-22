@@ -248,6 +248,52 @@ export const proposals: Proposals = {
             ],
         },
     },
+    77: {
+        zeipId: 77,
+        title: 'Adjust the length of staking epochs',
+        summary: [
+            `This ZEIP proposes to decrease the current epoch length from 10 to 7 days. This way, epoch finalizations align to a weekly schedule, to be triggered on Saturdays around 3am GMT.`,
+            `This ZEIP also includes a change in administrative timelocks for the StakingProxy and ZrxVault contracts, in order to align them to this new epoch duration. All timelocks for those two contracts with a value of 10 and 20 days will be set to 7 and 14 days, respectively.`,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/77',
+        voteStartDate: moment(1587888000, 'X'),
+        voteEndDate: moment(1588737600, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `A shorter epoch duration produces historical data points more often, which helps staking participants (pool operators and ZRX delegators) make their decisions. Also, it also gives stakers a shorter delay between when an action is taken (for example stake ZRX, withdraw ZRX, transfer stake from one pool to another).`,
+                `Of all the time intervals available, 7 days represents an obvious choice since it allows stakers and delegators to align on a weekly schedule. Having epochs restart on weekends was the preferred option in informal discussions with the community.`,
+            ],
+            rating: 2,
+            links: [
+                {
+                    text: 'Initial set of staking parameters',
+                    url:
+                        'https://github.com/0xProject/ZEIPs/issues/61',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Staking contracts were designed to safely allow updates of a specific set of parameters via a SetParams function.`,
+                `This functionality does not trigger security-critical operations, and was considered safe by external security auditors.`,
+            ],
+            rating: 1,
+            links: [
+                {
+                    text: 'SetParams function',
+                    url:
+                        'https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#36-setting-parameters',
+                },
+                {
+                    text: 'Staking security audit',
+                    url:
+                        'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
+                },
+            ],
+        },
+    },
 };
 
 export const stagingProposals: Proposals = {
@@ -305,19 +351,19 @@ export const stagingProposals: Proposals = {
     },
     77: {
         zeipId: 77,
-        title: 'Set length of staking epochs to 7 days',
+        title: 'Adjust the length of staking epochs',
         summary: [
-            `This ZEIP proposes to decrease the current epoch length from 10 to 7 days. In this way, epoch finalizations align to a weekly schedule, to be triggered on Saturdays around 3am GMT.`,
-            `This proposal also includes a change in administrative timelocks for the StakingProxy and ZrxVault contracts, in order to align them to this new epoch duration. All timelocks for those two contracts with value 10 and 20 days will be set to 7 and 14 days, respectively.`,
+            `This ZEIP proposes to decrease the current epoch length from 10 to 7 days. This way, epoch finalizations align to a weekly schedule, to be triggered on Saturdays around 3am GMT.`,
+            `This ZEIP also includes a change in administrative timelocks for the StakingProxy and ZrxVault contracts, in order to align them to this new epoch duration. All timelocks for those two contracts with a value of 10 and 20 days will be set to 7 and 14 days, respectively.`,
         ],
         url: 'https://github.com/0xProject/ZEIPs/issues/77',
-        voteStartDate: moment(1587880811, 'X'),
-        voteEndDate: moment(1588744811, 'X'),
+        voteStartDate: moment(1587888000, 'X'),
+        voteEndDate: moment(1588737600, 'X'),
         benefit: {
             title: 'Benefit',
             summary: [
-                `A shorter epoch duration produces historical data points more often, which helps staking participants (pool operators and ZRX delegators) make their decisions. Also, it allows to shorten the delay between when an action is taken (for example stake ZRX, withdraw ZRX, transfer stake from one pool to another) and when it takes effect.`,
-                `Of all the time intervals available, 7 days represents an obvious choice since it allows to align to weekly schedules. Having epochs restart on weekends was the preferred option in informal discussions with the community.`,
+                `A shorter epoch duration produces historical data points more often, which helps staking participants (pool operators and ZRX delegators) make their decisions. Also, it also gives stakers a shorter delay between when an action is taken (for example stake ZRX, withdraw ZRX, transfer stake from one pool to another).`,
+                `Of all the time intervals available, 7 days represents an obvious choice since it allows stakers and delegators to align on a weekly schedule. Having epochs restart on weekends was the preferred option in informal discussions with the community.`,
             ],
             rating: 2,
             links: [
