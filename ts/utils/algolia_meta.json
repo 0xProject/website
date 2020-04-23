@@ -29,12 +29,21 @@
         },
         "swap-tokens-with-0x-api": {
             "title": "Swap Tokens With 0x API",
-            "subtitle": "Learn how to complete a token swap with 0x API /swap/v0/* endpoint",
-            "description": "Learn how to complete a token swap with 0x API /swap/v0/* endpoint",
+            "subtitle": "Learn how to complete a token swap with 0x API /swap/v0/* endpoints",
+            "description": "Learn how to complete a token swap with 0x API /swap/v0/* endpoints",
             "tags": ["0x API"],
             "topics": ["0x API"],
             "difficulty": "Beginner",
             "path": "guides/swap-tokens-with-0x-api.mdx"
+        },
+        "unlocking-meta-transaction-swaps": {
+            "title": "Unlocking Meta-transaction Swaps With 0x API",
+            "subtitle": "Learn how to complete a meta-transaction swap using 0x API /meta-transactions/v0/* endpoints",
+            "description": "Learn how to complete a meta-transaction swap using 0x API /meta-transactions/v0/* endpoints",
+            "tags": ["0x API"],
+            "topics": ["0x API"],
+            "difficulty": "Beginner",
+            "path": "guides/unlocking-meta-transaction-swaps.mdx"
         },
         "use-0x-api-liquidity-in-your-smart-contracts": {
             "title": "Use 0x API Liquidity in Your Smart Contracts",
