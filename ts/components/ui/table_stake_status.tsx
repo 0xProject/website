@@ -49,6 +49,5 @@ const StatusText = styled.strong<StatusTextProps>`
 `;
 
 const StatusId = styled.span`
-    font-size: 17px;
     color: ${colors.textDarkSecondary};
 `;
