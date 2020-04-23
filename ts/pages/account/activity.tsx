@@ -19,11 +19,13 @@ import { utils } from 'ts/utils/utils';
 
 import { logUtils } from '@0x/utils';
 import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useWindowDimensions } from 'ts/hooks/use_window_dimensions';
 import { errorReporter } from 'ts/utils/error_reporter';
 
 export interface ActivityProps {}
 
 const columns = ['Event timestamp', 'Event', 'Transaction'];
+const shortWidthColumns = ['Event timestamp', 'Event'];
 
 function parseEvent(event: StakingAPIDelegatorHistoryItem): {title: string; subtitle: string} {
     if (event.eventType === 'earned_rewards') {
@@ -59,6 +61,9 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
     const dispatch = useDispatch();
+
+    const dimensions = useWindowDimensions();
+    const width = dimensions.width;
 
     const onOpenConnectWalletDialog = React.useCallback(() => {
         const dispatcher = new Dispatcher(dispatch);
@@ -145,7 +150,7 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
                     Activity
                 </Heading>
 
-                <Table columns={columns}>
+                <Table columns={width > 600 ? columns : shortWidthColumns}>
                     {_.map(delegatorHistory, row => {
                         const description = parseEvent(row);
 
@@ -157,6 +162,10 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
                                             year: 'numeric',
                                             month: 'short',
                                             day: '2-digit',
+                                          }).format(new Date(row.eventTimestamp))}
+                                    </strong>
+                                    <strong>
+                                        {Intl.DateTimeFormat('en-US', {
                                             hour: 'numeric',
                                             minute: '2-digit',
                                             second: '2-digit',
@@ -169,11 +178,13 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
                                         subtitle={description.subtitle}
                                     />
                                 </td>
+                                {width > 600 ?
                                 <td>
                                     <a href={utils.getEtherScanLinkIfExists(row.transactionHash, networkId, EtherscanLinkSuffixes.Tx)} target="_blank" rel="noopener">
                                         {row.transactionHash === null ? '-' : utils.getAddressBeginAndEnd(row.transactionHash)}
                                     </a>
                                 </td>
+                                : ``}
                             </tr>
                         );
                     })}
@@ -187,20 +198,26 @@ const ContentWrap = styled.div`
     width: calc(100% - 40px);
     max-width: 1152px;
     margin: 90px auto 0 auto;
+    h1 {
+        font-size: 4vw;
+    }
+    font-size: 3vw;
 
     a {
         color: ${colors.brandLight};
     }
 
-    @media (max-width: 768px) {
+    @media screen and (min-width: 750px) {
         h1 {
-            font-size: 34px;
+            font-size: 24px;
         }
+        font-size: 18px;
     }
 `;
 
 const DateCell = styled.td`
     color: ${colors.textDarkSecondary};
+    white-space: nowrap;
 
     strong {
         display: block;
@@ -210,11 +227,6 @@ const DateCell = styled.td`
 `;
 
 const StyledStakeStatus = styled(StakeStatus)`
-    @media (max-width: 768px) {
-        span {
-            display: none;
-        }
-    }
 `;
 
 const SectionWrapper = styled.div`
