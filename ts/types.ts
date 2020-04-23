@@ -1119,7 +1119,6 @@ export interface Epoch {
     epochEnd?: TransactionDate;
     zrxStaked: number;
     zrxDeposited: number;
-    protocolFeesGeneratedInEth: number;
 }
 
 export interface PoolMetadata {
