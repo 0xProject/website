@@ -16,7 +16,7 @@ Let’s get started!
 
 ## Set up your off-chain web3 environment 
 
-We will use our [0x API starter project](https://github.com/0xProject/0x-api-starter-guide-code), which has a basic setup for developing smart contracts and interacting with them on ganache. 
+We will use our [0x API starter project](https://github.com/0xProject/0x-api-starter-guide-code), which has a basic setup for developing smart contracts and interacting with them on a provided test network. 
 
 <Notification>This project leverages the 0x Core Team’s smart contract development tooling, which is generally similar to other development tooling like truffle. If there are noteworthy differences, we will highlight them within this guide.</Notification>
 
@@ -28,16 +28,17 @@ $ cd 0x-api-starter-guide-code
 $ npm install
 ```
 
-For development, we will create a ganache network that forks Ethereum’s mainnet state. On the fork, we can safely interact with DeFi protocols without consuming real ether. The starter project includes a script that sets up the fork for you. 
+For development, we will be leveraging the Kovan test network and the respective kovan 0x api endpoint: `kovan.api.0x.org/swap/v0/quote`. 
 
 ### Configure the .env file
 
 ```
-ETHEREUM_RPC_URL=http://localhost:8545
+ETHEREUM_RPC_URL=<INSERT_RPC_URL_HERE>
 MNEMONIC=<INSERT_MNEMONIC_HERE>
+NETWORK_ID=42
 ```
 
-For the mnemonic, because we are using a mainnet forked ganache environment, use an account that has some amount of ether on mainnet. In the ganache environment, the fork will have your account with ether ready to be used to deploy and interact with smart contracts. **Warning: use a test account, DO NOT use an account with your personal savings.**
+For the mnemonic, because we are using the Kovan network, use an account that has some amount of Kovan ETH (KETH). Acquire KETH from a [faucet](https://faucet.kovan.network).
 
 ## Fetch a quote from 0x API 
 
@@ -61,18 +62,18 @@ const params = {
     sellAmount: sellAmount.toString(),
 }
 
-const res = await fetch(`${SWAP_URL}/quote?${qs.stringify(params)}`);
+const res = await fetch(`https://kovan.api.0x.org/swap/v0/quote?${qs.stringify(params)}`);
 const quote = await res.json();
 
 console.log('Received quote:', quote);
 ```
 
-Note: `baseUnitAmount` adjusts the supplied integer by the number of decimals an asset has. In DAI’s case, there are 18 decimal places; `baseUnitAmount` would be buying 1 DAI.
+Note: `baseUnitAmount` adjusts the supplied integer by the number of decimals an asset has. In DAI’s case, there are 18 decimal places; `baseUnitAmount(1)` would be buying 1 DAI.
 
 Run the script:
 `$ npm run test:simple_contract_token_swap`
 
-It will take some time to start the ganache environment, but will eventually fetch a quote from 0x API. You should see the quote printed out with the following structure:
+You should see the quote printed out with the following structure:
 
 ```
 Received quote: {
@@ -84,7 +85,7 @@ Received quote: {
 }
 ```
 
-This is a valid Ethereum transaction that you can execute directly from your address to test the swap. We will refer to this as the “swap transaction”, to differentiate from the original user transaction. Let’s imagine that the DApp smart contract needs to perform some additional steps before proceeding with the original user transaction. For now, the DApp front-end should not swap the tokens yet, and must pass the quote to the DApp smart contract instead.
+This is a valid Ethereum transaction that you can execute directly from your address to test the swap. We will refer to this as the “swap transaction”, to differentiate from the original user transaction. Let’s imagine that the DApp smart contract needs to perform some additional steps before proceeding with the original user transaction. For now, the DApp front-end should not swap the tokens yet, and pass the quote to the DApp smart contract instead.
 
 ### Set up your on-chain smart contract 
 
@@ -115,7 +116,7 @@ contract SimpleTokenSwapContract
 }
 ```
 
-In the solidity code, we have imported the file `IForwarder.sol`. IForwarder is the 0x protocol interface that we will use to execute the transaction. The `to` address provided in the 0x API quote is the address of the `Forwarder` contract deployed on mainnet.
+In the solidity code, we have imported the file `IForwarder.sol`. IForwarder is the 0x protocol interface that we will use to execute the transaction. The `to` address provided in the 0x API quote is the address of the `Forwarder` contract deployed on Kovan.
 
 Recall that in our example, the user wants to execute a transaction requiring DAI, but they only own ETH. The DApp front-end detected this and obtained a quote for buying DAI. However, the original transaction required some preliminary steps in the DApp smart contract before it could be executed. Let’s imagine that the DApp smart contract has now verified that we want to proceed with the original transaction, so we are now ready to execute the swap transaction. 
 
