@@ -27,18 +27,18 @@ export function exportDataToCSVAndDownloadForUser(
 
     const csv = convertToCSV(headers, objArray);
 
-    const exportedFilenmae = `${fileTitle}.csv` || 'export.csv';
+    const exportedFilename = `${fileTitle}.csv` || 'export.csv';
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     if (navigator.msSaveBlob) { // IE 10+
-        navigator.msSaveBlob(blob, exportedFilenmae);
+        navigator.msSaveBlob(blob, exportedFilename);
     } else {
         const link = document.createElement('a');
         if (link.download !== undefined) { // feature detection
             // Browsers that support HTML5 download attribute
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', exportedFilenmae);
+            link.setAttribute('download', exportedFilename);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
