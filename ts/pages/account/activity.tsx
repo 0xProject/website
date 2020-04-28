@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { Button } from 'ts/components/button';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading } from 'ts/components/text';
 import { Breadcrumb } from 'ts/components/ui/breadcrumb';
@@ -20,6 +21,7 @@ import { utils } from 'ts/utils/utils';
 import { logUtils } from '@0x/utils';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useWindowDimensions } from 'ts/hooks/use_window_dimensions';
+import { exportDataToCSVAndDownloadForUser } from 'ts/utils/csv_export_utils';
 import { errorReporter } from 'ts/utils/error_reporter';
 
 export interface ActivityProps {}
@@ -57,6 +59,15 @@ function parseEvent(event: StakingAPIDelegatorHistoryItem): {title: string; subt
     }
 }
 
+const csvHeaders = [
+    'event_type',
+    'address',
+    'block_number',
+    'event_timestamp',
+    'transaction_hash',
+    'event_args',
+];
+
 export const AccountActivity: React.FC<ActivityProps> = () => {
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
@@ -76,6 +87,7 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
     const [delegatorHistory, setDelegatorHistory] = React.useState<StakingAPIDelegatorHistoryItem[] | undefined>(undefined);
 
     const accountLoaded = account && account.address;
+    const isDataLoaded = delegatorHistory !== undefined;
 
     const apiClient = useAPIClient(networkId);
 
@@ -137,6 +149,21 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
         },
     ];
 
+    if (!isDataLoaded) {
+        return (
+            <StakingPageLayout title="0x Staking | Activity">
+                <SectionWrapper>
+                    <Heading />
+                    <CallToAction
+                        icon="wallet"
+                        title="Loading"
+                        description="Grabbing data for your wallet."
+                    />
+                </SectionWrapper>
+            </StakingPageLayout>
+        );
+    }
+
     return (
         <StakingPageLayout title="0x Staking | Activity">
             <Breadcrumb crumbs={crumbs} />
@@ -145,17 +172,35 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
                 <Heading
                     asElement="h1"
                     fontWeight="500"
-                    marginBottom="60px"
+                    marginBottom="30px"
                 >
                     Activity
                 </Heading>
+                {width > 600 ?
+                <ButtonWrapper>
+                    <Button
+                        isWithArrow={true}
+                        isAccentColor={true}
+                        shouldUseAnchorTag={true}
+                        onClick={() => {
+                            try {
+                                exportDataToCSVAndDownloadForUser(csvHeaders, delegatorHistory, 'staking_activity');
+                            } catch (e) {
+                                errorReporter.report(e);
+                                alert('Error exporting CSV.');
+                            }}
+                          }
+                    >
+                        Export to CSV
+                    </Button>
+                </ButtonWrapper> : `` }
 
                 <Table columns={width > 600 ? columns : shortWidthColumns}>
-                    {_.map(delegatorHistory, row => {
+                    {_.map(delegatorHistory, (row, index) => {
                         const description = parseEvent(row);
 
                         return (
-                            <tr>
+                            <tr key={index}>
                                 <DateCell>
                                     <strong>
                                         {Intl.DateTimeFormat('en-US', {
@@ -184,7 +229,7 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
                                         {row.transactionHash === null ? '-' : utils.getAddressBeginAndEnd(row.transactionHash)}
                                     </a>
                                 </td>
-                                : ``}
+                                : null}
                             </tr>
                         );
                     })}
@@ -237,4 +282,9 @@ const SectionWrapper = styled.div`
     & + & {
         margin-top: 90px;
     }
+`;
+
+const ButtonWrapper = styled.div`
+    margin-left: 1rem;
+    margin-bottom: 22px;
 `;
