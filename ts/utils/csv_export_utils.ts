@@ -20,7 +20,7 @@ function convertToCSV(
     return str;
 }
 
-export function exportCSVFile(
+export function exportDataToCSVAndDownloadForUser(
     headers: string[],
     objArray: Array<{[key: string]: any}>,
     fileTitle?: string): any {

@@ -21,7 +21,7 @@ import { utils } from 'ts/utils/utils';
 import { logUtils } from '@0x/utils';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useWindowDimensions } from 'ts/hooks/use_window_dimensions';
-import { exportCSVFile } from 'ts/utils/csv_export_utils';
+import { exportDataToCSVAndDownloadForUser } from 'ts/utils/csv_export_utils';
 import { errorReporter } from 'ts/utils/error_reporter';
 
 export interface ActivityProps {}
@@ -182,7 +182,14 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
                         isWithArrow={true}
                         isAccentColor={true}
                         shouldUseAnchorTag={true}
-                        onClick={() => {exportCSVFile(csvHeaders, delegatorHistory, 'staking_activity'); }}
+                        onClick={() => {
+                            try {
+                                exportDataToCSVAndDownloadForUser(csvHeaders, delegatorHistory, 'staking_activity');
+                            } catch (e) {
+                                errorReporter.report(e);
+                                alert('Error exporting CSV.');
+                            }}
+                          }
                     >
                         Export to CSV
                     </Button>
