@@ -2,10 +2,11 @@ import { BigNumber } from '@0x/utils';
 import { formatDistanceStrict, isPast } from 'date-fns';
 import * as _ from 'lodash';
 
+import { Decimal } from 'decimal.js';
 import { constants } from 'ts/utils/constants';
 import { formatZrx } from 'ts/utils/format_number';
 
-import { PoolWithStats, StakingPoolRecomendation } from 'ts/types';
+import { EpochWithFees, PoolWithStats, StakingPoolRecomendation } from 'ts/types';
 
 interface PoolStatSummary {
     poolId: string;
@@ -17,6 +18,20 @@ interface PoolStatSummary {
 interface GetRecommendedStakingPoolsOptions {
     alpha: number;
     numIterations: number;
+}
+
+interface ExpectedRewardsSummary {
+    expectedTotalReward: BigNumber;
+    expectedOperatorReward: BigNumber;
+    expectedMemberReward: BigNumber;
+    totalWeightedStake: BigNumber;
+    operatorAddress: string;
+    operatorZrxStaked: BigNumber;
+    memberZrxStaked: BigNumber;
+}
+
+interface ExpectedPoolRewards {
+    [poolId: string]: ExpectedRewardsSummary;
 }
 
 export const stakingUtils = {
@@ -82,6 +97,77 @@ export const stakingUtils = {
             ).roundedValue;
         }
         return orderedRecs;
+    },
+
+    getExpectedPoolRewards(
+        pools: PoolWithStats[],
+        currentEpoch: EpochWithFees,
+        currentRewardBalance: BigNumber,
+        scaledToEndOfEpoch: boolean,
+    ): ExpectedPoolRewards {
+        const alpha = constants.COBBS_DOUGLAS_ALPHA;
+        const delegatorStakeWeight = constants.DELEGATOR_STAKE_WEIGHT;
+        const epochLengthInDays = constants.STAKING_EPOCH_LENGTH_IN_DAYS;
+        const SECONDS_IN_A_DAY = 86400;
+        const epochLengthInSeconds = epochLengthInDays * SECONDS_IN_A_DAY;
+
+        // Determine the scale factor b/t data at this point and the end of the epoch
+        // Scale can be set to 1 with scaledToEndOfEpoch = false, making the esimate what would
+        // happen if the epoch ended now with no future projection
+        const now = new Date();
+        const epochStart = new Date(currentEpoch.epochStart.timestamp);
+
+        const timeElapsed = (now.getTime() - epochStart.getTime()) / 1000;
+        const scaleFactor = scaledToEndOfEpoch ? new BigNumber(epochLengthInSeconds).dividedBy(new BigNumber(timeElapsed)) : new BigNumber(1);
+
+        // --Expected total rewards--
+        // Rewards can include non-fee items like rollover and subsidies
+        // Fees will be projected forward, the other items will not be scaled
+        const currentEpochProtocolFees = new BigNumber(currentEpoch.protocolFeesGeneratedInEth);
+        const nonFeeRewards = (currentRewardBalance).minus(currentEpochProtocolFees);
+        const projectedCurrentEpochProtocolFees = currentEpochProtocolFees.multipliedBy(scaleFactor);
+        const projectedRewards = nonFeeRewards.plus(projectedCurrentEpochProtocolFees);
+
+        // --Other totals--
+        // To calculate expected rewards, we also need:
+        // 1. total protocol fees assignable to pools
+        // 2. total weighted stake
+        let totalWeightedStake = new BigNumber(0);
+        let totalPoolProtocolFees = new BigNumber(0);
+        for (const pool of pools) {
+            totalWeightedStake = totalWeightedStake.plus(pool.currentEpochStats.operatorZrxStaked);
+            totalWeightedStake = totalWeightedStake.plus(pool.currentEpochStats.memberZrxStaked * delegatorStakeWeight);
+            totalPoolProtocolFees = totalPoolProtocolFees.plus(pool.currentEpochStats.totalProtocolFeesGeneratedInEth);
+        }
+
+        const expectedPoolRewards: ExpectedPoolRewards = {};
+        // --Calculate Rewards by Pool--
+        for (const pool of pools) {
+            const poolFees =  new BigNumber(pool.currentEpochStats.totalProtocolFeesGeneratedInEth);
+            const memberZrxStaked = new BigNumber(pool.currentEpochStats.memberZrxStaked);
+            const operatorZrxStaked = new BigNumber(pool.currentEpochStats.operatorZrxStaked);
+            const poolWeightedStake = (memberZrxStaked.multipliedBy(delegatorStakeWeight)).plus(operatorZrxStaked);
+
+            // BigNumber can't handle fractional exponents, so bringing in the big guns--Decimal.js
+            const feeTerm = new BigNumber((new Decimal((poolFees.dividedBy(totalPoolProtocolFees).toString()))).pow(alpha).toString());
+            const stakeTerm = new BigNumber((new Decimal((poolWeightedStake.dividedBy(totalWeightedStake).toString()))).pow(1 - alpha).toString());
+
+            // This follows the reward calculation laid out at:
+            // https://github.com/0xProject/0x-protocol-specification/blob/master/staking/staking-specification.md#paying-liquidity-rewards-finalization
+            const expectedTotalReward = projectedRewards.multipliedBy(feeTerm).multipliedBy(stakeTerm);
+
+            expectedPoolRewards[pool.poolId] = {
+                expectedTotalReward,
+                expectedOperatorReward: expectedTotalReward.multipliedBy(pool.currentEpochStats.operatorShare),
+                expectedMemberReward: expectedTotalReward.multipliedBy(1 - pool.currentEpochStats.operatorShare),
+                totalWeightedStake: poolWeightedStake,
+                operatorAddress: pool.operatorAddress,
+                operatorZrxStaked,
+                memberZrxStaked,
+            };
+        }
+
+        return expectedPoolRewards;
     },
 
     getPoolDisplayName({ poolId, metaData }: { poolId: string; metaData?: { name?: string } }): string {

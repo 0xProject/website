@@ -1121,6 +1121,10 @@ export interface Epoch {
     zrxDeposited: number;
 }
 
+export interface EpochWithFees extends Epoch {
+    protocolFeesGeneratedInEth: number;
+}
+
 export interface PoolMetadata {
     isVerified: boolean;
     logoUrl?: string;
@@ -1175,6 +1179,8 @@ export interface StakingAPIPoolByIdResponse {
 export interface EpochPoolStats {
     poolId: string;
     zrxStaked: number;
+    operatorZrxStaked: number;
+    memberZrxStaked: number;
     shareOfStake: number;
     operatorShare?: number;
     makerAddresses: string[];
@@ -1216,6 +1222,11 @@ export interface PoolEpochRewards extends RewardsStats {
 export interface StakingAPIEpochsResponse {
     currentEpoch: Epoch;
     nextEpoch: Epoch;
+}
+
+export interface StakingAPIEpochsWithFeesResponse {
+    currentEpoch: EpochWithFees;
+    nextEpoch: EpochWithFees;
 }
 
 export interface AllTimeStats {
