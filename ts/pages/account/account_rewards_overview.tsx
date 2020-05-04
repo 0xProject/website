@@ -93,7 +93,7 @@ export const AccountRewardsOverview: React.StatelessComponent<RewardOverviewProp
                     padding="15px 35px"
                     onClick={onWithdrawRewards}
                 >
-                    Withdraw Available Rewards ({totalAvailableRewards} ETH)
+                    Withdraw Accumulated Rewards ({totalAvailableRewards} ETH)
                 </Button>
             </MobileActions>
         </Wrap>
