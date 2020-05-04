@@ -203,10 +203,15 @@ export const Account: React.FC<AccountProps> = () => {
             const _expectedCurrentEpochPoolRewards: ExpectedPoolRewards = {};
 
             for (const pool of delegatorResponse.forCurrentEpoch.poolData) {
-                // account for the case when account belongs to an operator
-                _expectedCurrentEpochPoolRewards[pool.poolId] = (account.address.toLowerCase() === _estimatedRewardsMap[pool.poolId].operatorAddress) ?
-                    _estimatedRewardsMap[pool.poolId].expectedOperatorReward :
-                    ((new BigNumber(pool.zrxStaked)).dividedBy(_estimatedRewardsMap[pool.poolId].memberZrxStaked)).multipliedBy(_estimatedRewardsMap[pool.poolId].expectedMemberReward);
+                if (pool.poolId === null) {
+                    _expectedCurrentEpochPoolRewards[pool.poolId] = new BigNumber(0);
+                } else {
+                    // account for the case when account belongs to an operator
+                    _expectedCurrentEpochPoolRewards[pool.poolId] = (account.address.toLowerCase() === _estimatedRewardsMap[pool.poolId].operatorAddress) ?
+                        _estimatedRewardsMap[pool.poolId].expectedOperatorReward :
+                        ((new BigNumber(pool.zrxStaked)).dividedBy(_estimatedRewardsMap[pool.poolId].memberZrxStaked)).multipliedBy(_estimatedRewardsMap[pool.poolId].expectedMemberReward);
+                }
+
             }
 
             const _expectedCurrentEpochRewards = Object.values(_expectedCurrentEpochPoolRewards).reduce<BigNumber>((prevValue, currentValue) => {

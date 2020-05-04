@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Heading } from 'ts/components/text';
+import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 
 import { colors } from 'ts/style/colors';
 
@@ -12,6 +13,11 @@ interface RewardOverviewProps {
     estimatedEpochRewards: string;
     lifetimeRewards: string;
     onWithdrawRewards: () => void;
+}
+
+interface ActionProps {
+    percentWidth?: number;
+    percentWidthMobile?: number;
 }
 
 export const AccountRewardsOverview: React.StatelessComponent<RewardOverviewProps> = ({
@@ -23,32 +29,39 @@ export const AccountRewardsOverview: React.StatelessComponent<RewardOverviewProp
     return (
         <Wrap>
             <Flex>
-                <Action>
+                <Action
+                    percentWidth={25}
+                    percentWidthMobile={50}
+                >
                     <div>
-                        <LeftJustifiedContent>
-                            <Heading marginBottom="12px">
-                                    Lifetime Rewards
-                            </Heading>
-                            {lifetimeRewards} ETH
-                        </LeftJustifiedContent>
+                        <Heading marginBottom="12px">
+                            Lifetime Rewards
+                        </Heading>
+                        {lifetimeRewards} ETH
                     </div>
+                </Action>
+                <Action
+                    percentWidth={25}
+                    percentWidthMobile={50}
+                >
                     <div>
-                        <LeftJustifiedContent>
-                            <Heading marginBottom="12px">
+                        <Heading marginBottom="12px">
+                            <FlexHeader>
                                 Estimated for this epoch
-                            </Heading>
-                            {estimatedEpochRewards} ETH
-                        </LeftJustifiedContent>
+                                <InfoTooltip id="epoch-estimated-rewards">
+                                    This estimate is expected to fluctuate at the beginning of an epoch, and progressively converge on the final value.
+                                </InfoTooltip>
+                            </FlexHeader>
+                        </Heading>
+                        {estimatedEpochRewards} ETH
                     </div>
                 </Action>
                 <CollapsibleAction>
                     <div>
-                        <LeftJustifiedContent>
-                            <Heading marginBottom="12px">
-                                Available Rewards
-                            </Heading>
-                            {totalAvailableRewards} ETH
-                        </LeftJustifiedContent>
+                        <Heading marginBottom="12px">
+                            Accumulated Rewards
+                        </Heading>
+                        {totalAvailableRewards} ETH
                     </div>
                     <div>
                         <ButtonWrapper>
@@ -94,7 +107,6 @@ const Wrap = styled.div`
 
     @media (max-width: 768px) {
         padding: 20px;
-        /*background: ${colors.backgroundLightGrey};*/
     }
 `;
 
@@ -129,18 +141,19 @@ const Flex = styled(FlexBase)`
     }
 `;
 
-const LeftJustifiedContent = styled.div`
-    text-align: left;
-    display: inline-block;
+const FlexHeader = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 `;
 
-const Action = styled(FlexBase)`
+const Action = styled(FlexBase)<ActionProps>`
     background-color: ${colors.backgroundLightGrey};
     justify-content: center;
     align-items: center;
 
     > div {
-        text-align: center;
+        text-align: left;
         flex: 1;
         padding: 0.5em;/* add some padding ?*/
         border-right: 1px solid #D9D9D9;
@@ -152,23 +165,23 @@ const Action = styled(FlexBase)`
 
     @media (min-width: 768px) {
         height: 7em;
-        width: calc(50% - 10px);
+        width: calc(${props => props.percentWidth ? props.percentWidth : 100}% - 10px);
         padding: 20px;
-        font-size: 17px;
+        font-size: 20px;
 
         h1 {
-            font-size: 14px;
+            font-size: 17px;
         }
     }
 
     @media (max-width: 768px) {
         height: 4em;
-        width: calc(100%);
+        width: calc(${props => props.percentWidthMobile ? props.percentWidthMobile : 100}% - 5px);
         margin-top: 20px;
-        font-size: 14px;
+        font-size: 17px;
 
         h1 {
-            font-size: 12px;
+            font-size: 14px;
         }
     }
 `;
@@ -179,10 +192,9 @@ const CollapsibleAction = styled(FlexBase)`
     align-items: center;
 
     > div {
-        text-align: center;
+        text-align: left;
         flex: 1;
         padding: 0.5em;/* add some padding ?*/
-        border-right: 1px solid #D9D9D9;
     }
 
     > div:last-child {
@@ -193,10 +205,10 @@ const CollapsibleAction = styled(FlexBase)`
         height: 7em;
         width: calc(50% - 10px);
         padding: 20px;
-        font-size: 17px;
+        font-size: 20px;
 
         h1 {
-            font-size: 14px;
+            font-size: 17px;
         }
     }
 
