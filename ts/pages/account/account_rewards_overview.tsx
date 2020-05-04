@@ -35,17 +35,6 @@ export const AccountRewardsOverview: React.StatelessComponent<RewardOverviewProp
                 >
                     <div>
                         <Heading marginBottom="12px">
-                            Lifetime Rewards
-                        </Heading>
-                        {lifetimeRewards} ETH
-                    </div>
-                </Action>
-                <Action
-                    percentWidth={25}
-                    percentWidthMobile={50}
-                >
-                    <div>
-                        <Heading marginBottom="12px">
                             <FlexHeader>
                                 Estimated for this epoch
                                 <InfoTooltip id="epoch-estimated-rewards">
@@ -54,6 +43,17 @@ export const AccountRewardsOverview: React.StatelessComponent<RewardOverviewProp
                             </FlexHeader>
                         </Heading>
                         {estimatedEpochRewards} ETH
+                    </div>
+                </Action>
+                <Action
+                    percentWidth={25}
+                    percentWidthMobile={50}
+                >
+                    <div>
+                        <Heading marginBottom="12px">
+                            Lifetime Rewards
+                        </Heading>
+                        {lifetimeRewards} ETH
                     </div>
                 </Action>
                 <CollapsibleAction>
@@ -175,8 +175,9 @@ const Action = styled(FlexBase)<ActionProps>`
     }
 
     @media (max-width: 768px) {
-        height: 4em;
+        height: 5.5em;
         width: calc(${props => props.percentWidthMobile ? props.percentWidthMobile : 100}% - 5px);
+        padding: 12px;
         margin-top: 20px;
         font-size: 17px;
 
