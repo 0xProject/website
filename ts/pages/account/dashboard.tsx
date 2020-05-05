@@ -134,6 +134,7 @@ export const Account: React.FC<AccountProps> = () => {
     );
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
+    const hasRewards = () => Boolean(allTimeRewards.isGreaterThan(0) || expectedCurrentEpochRewards.isGreaterThan(0));
 
     const onChangePool = React.useCallback(
         (fromPoolId: string, toPoolId: string, zrxAmount: number) => {
@@ -490,7 +491,7 @@ export const Account: React.FC<AccountProps> = () => {
             )}
 
             {/* TODO add loading animations or display partially loaded data */}
-            {hasDataLoaded() && (
+            {hasRewards() && (
                 <SectionWrapper>
                     <SectionHeader>
                         <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
