@@ -5,6 +5,7 @@ import {
     StakingAPIDelegatorHistoryItem,
     StakingAPIDelegatorResponse,
     StakingAPIEpochsResponse,
+    StakingAPIEpochsWithFeesResponse,
     StakingAPIPoolByIdResponse,
     StakingAPIPoolsResponse,
     StakingAPIStatsResponse,
@@ -17,6 +18,7 @@ const STAKING_POOLS_ENDPOINT = '/staking/pools';
 const DELEGATOR_ENDPOINT = '/staking/delegator';
 const DELEGATOR_HISTORY_ENDPOINT = '/staking/delegator/events';
 const STAKING_EPOCHS_ENDPOINT = '/staking/epochs';
+const STAKING_EPOCHS_WITH_FEES_ENDPOINT = '/staking/epochs?withFees=true';
 const STAKING_STATS_ENDPOINT = '/staking/stats';
 
 const getStakingPoolByIdEndpoint = (poolId: string) => {
@@ -68,6 +70,14 @@ export class APIClient {
         const result = await fetchUtils.requestAsync<StakingAPIEpochsResponse>(
             utils.getAPIBaseUrl(this.networkId),
             STAKING_EPOCHS_ENDPOINT,
+        );
+        return result;
+    }
+
+    public async getStakingEpochsWithFeesAsync(): Promise<StakingAPIEpochsWithFeesResponse> {
+        const result = await fetchUtils.requestAsync<StakingAPIEpochsWithFeesResponse>(
+            utils.getAPIBaseUrl(this.networkId),
+            STAKING_EPOCHS_WITH_FEES_ENDPOINT,
         );
         return result;
     }

@@ -22,6 +22,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 5.1665820269124945,
         currentEpochStats: {
             poolId: '6',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 1310928.64,
             shareOfStake: 0.09047059539097367,
             operatorShare: 0.95,
@@ -37,6 +39,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '6',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 1037040.58,
             shareOfStake: 0.06991843803275616,
             operatorShare: 0.95,
@@ -71,6 +75,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 3.5605950106123125,
         currentEpochStats: {
             poolId: '2',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 1018892.02,
             shareOfStake: 0.07031638860869792,
             operatorShare: 0.9,
@@ -88,6 +94,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '2',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 1270633.847553311,
             shareOfStake: 0.08566755790065486,
             operatorShare: 0.9,
@@ -124,6 +132,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 1.2765420635688522,
         currentEpochStats: {
             poolId: '16',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 831137.988,
             zrxStaked: 831137.988,
             shareOfStake: 0.057358994480749104,
             operatorShare: 0.8,
@@ -149,6 +159,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '16',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 1037332.128,
             zrxStaked: 1037332.128,
             shareOfStake: 0.06993809452563088,
             operatorShare: 0.8,
@@ -194,6 +206,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 13.826489115904913,
         currentEpochStats: {
             poolId: '20',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 4831815.30070667,
             shareOfStake: 0.33345614226122094,
             operatorShare: 0.95,
@@ -206,6 +220,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '20',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 6446157.47070667,
             shareOfStake: 0.43460716037263697,
             operatorShare: 0.95,
@@ -236,6 +252,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 13.403197198456905,
         currentEpochStats: {
             poolId: '12',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 5339054.34966063,
             shareOfStake: 0.36846202844310805,
             operatorShare: 0.95,
@@ -253,6 +271,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '12',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 3910585.28966063,
             shareOfStake: 0.2636560425118027,
             operatorShare: 0.95,
@@ -284,6 +304,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0,
         currentEpochStats: {
             poolId: '10',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 1,
             shareOfStake: 6.901260116719524e-8,
             operatorShare: 1,
@@ -296,6 +318,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '10',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 1,
             shareOfStake: 6.742112062071492e-8,
             operatorShare: 1,
@@ -322,6 +346,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0,
         currentEpochStats: {
             poolId: '7',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 0.9,
@@ -334,6 +360,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '7',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 0.9,
@@ -360,6 +388,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0,
         currentEpochStats: {
             poolId: '8',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 2510,
             shareOfStake: 0.00017322162892966005,
             operatorShare: 0.925,
@@ -375,6 +405,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '8',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 2510,
             shareOfStake: 0.00016922701275799443,
             operatorShare: 0.925,
@@ -404,6 +436,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0,
         currentEpochStats: {
             poolId: '4',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 1,
@@ -416,6 +450,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '4',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 1,
@@ -442,6 +478,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0,
         currentEpochStats: {
             poolId: '11',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 0.95,
@@ -454,6 +492,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '11',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 0.95,
@@ -480,6 +520,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0.506530390244448,
         currentEpochStats: {
             poolId: '17',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 565218.53,
             shareOfStake: 0.03900720098319838,
             operatorShare: 0.45,
@@ -492,6 +534,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '17',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 528067.4,
             shareOfStake: 0.03560289587126731,
             operatorShare: 0.45,
@@ -518,6 +562,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0,
         currentEpochStats: {
             poolId: '3',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 7,
             shareOfStake: 4.830882081703667e-7,
             operatorShare: 1,
@@ -530,6 +576,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '3',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 7,
             shareOfStake: 4.719478443450044e-7,
             operatorShare: 1,
@@ -556,6 +604,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0.04602176750966387,
         currentEpochStats: {
             poolId: '5',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 5858.96,
             shareOfStake: 0.00040434206973455025,
             operatorShare: 1,
@@ -568,6 +618,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '5',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 5558.96,
             shareOfStake: 0.0003747913126857294,
             operatorShare: 1,
@@ -594,6 +646,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0,
         currentEpochStats: {
             poolId: '21',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 0.9,
@@ -606,6 +660,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '21',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 0.9,
@@ -632,6 +688,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0.19356438109445123,
         currentEpochStats: {
             poolId: '15',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 116629.9,
             shareOfStake: 0.008048932772869865,
             operatorShare: 0.85,
@@ -648,6 +706,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '15',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 115181.56,
             shareOfStake: 0.0077656698500421124,
             operatorShare: 0.85,
@@ -678,6 +738,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0,
         currentEpochStats: {
             poolId: '14',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 1,
@@ -690,6 +752,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '14',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 1,
@@ -716,6 +780,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0.1304866339107116,
         currentEpochStats: {
             poolId: '22',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 190002.72,
             shareOfStake: 0.013112581936042271,
             operatorShare: 0.75,
@@ -731,6 +797,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '22',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 167959.62,
             shareOfStake: 0.01132402579942944,
             operatorShare: 0.75,
@@ -760,6 +828,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0.08709576088357711,
         currentEpochStats: {
             poolId: '13',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 147807.74010369822,
             shareOfStake: 0.010200596617200975,
             operatorShare: 1,
@@ -776,6 +846,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '13',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 147805.53010369823,
             shareOfStake: 0.009965214473530147,
             operatorShare: 1,
@@ -806,6 +878,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0,
         currentEpochStats: {
             poolId: '9',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 1,
@@ -818,6 +892,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '9',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 1,
@@ -844,6 +920,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0,
         currentEpochStats: {
             poolId: '19',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 0.000095,
@@ -856,6 +934,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '19',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 0,
             shareOfStake: 0,
             operatorShare: 0.000095,
@@ -882,6 +962,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0,
         currentEpochStats: {
             poolId: '1',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 75.65,
             shareOfStake: 0.00000522080327829832,
             operatorShare: 1,
@@ -894,6 +976,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '1',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 104.29,
             shareOfStake: 0.0000070313486695343585,
             operatorShare: 1,
@@ -920,6 +1004,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         avgTotalRewardInEth: 0.18519577776124913,
         currentEpochStats: {
             poolId: '18',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 130167.56,
             shareOfStake: 0.008983201903186957,
             operatorShare: 0.8,
@@ -935,6 +1021,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         },
         nextEpochStats: {
             poolId: '18',
+            operatorZrxStaked: 0,
+            memberZrxStaked: 100,
             zrxStaked: 163202.74,
             shareOfStake: 0.011003311619171174,
             operatorShare: 0.8,

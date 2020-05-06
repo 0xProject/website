@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-
 import { Button } from 'ts/components/button';
 import { CallToAction } from 'ts/components/call_to_action';
 import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
@@ -14,10 +13,13 @@ import { RemoveStakeDialog } from 'ts/components/staking/remove_stake_dialog';
 import { Heading } from 'ts/components/text';
 import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { StatFigure } from 'ts/components/ui/stat_figure';
+import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useStake } from 'ts/hooks/use_stake';
 import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
 import { AccountApplyModal } from 'ts/pages/account/account_apply_modal';
 import { AccountDetail } from 'ts/pages/account/account_detail';
 import { AccountFigure } from 'ts/pages/account/account_figure';
+import { AccountRewardsOverview } from 'ts/pages/account/account_rewards_overview';
 import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { Dispatcher } from 'ts/redux/dispatcher';
@@ -25,7 +27,7 @@ import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import {
     AccountReady,
-    Epoch,
+    EpochWithFees,
     PoolWithStats,
     StakeStatus,
     StakingAPIDelegatorResponse,
@@ -33,13 +35,10 @@ import {
     WebsitePaths,
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
-import { stakingUtils } from 'ts/utils/staking_utils';
-import { utils } from 'ts/utils/utils';
-
-import { useAPIClient } from 'ts/hooks/use_api_client';
-import { useStake } from 'ts/hooks/use_stake';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
+import { stakingUtils } from 'ts/utils/staking_utils';
+import { utils } from 'ts/utils/utils';
 
 export interface AccountProps {}
 
@@ -89,6 +88,10 @@ interface PoolDetails {
     zrxAmount: number;
 }
 
+interface ExpectedPoolRewards {
+    [poolId: string]: BigNumber;
+}
+
 export const Account: React.FC<AccountProps> = () => {
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
@@ -112,18 +115,26 @@ export const Account: React.FC<AccountProps> = () => {
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[]>(undefined);
     const [availableRewardsMap, setAvailableRewardsMap] = React.useState<PoolToRewardsMap | undefined>(undefined);
     const [totalAvailableRewards, setTotalAvailableRewards] = React.useState<BigNumber>(new BigNumber(0));
-    const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
+    const [nextEpochStats, setNextEpochStats] = React.useState<EpochWithFees | undefined>(undefined);
     const [undelegatedBalanceBaseUnits, setUndelegatedBalanceBaseUnits] = React.useState<BigNumber>(new BigNumber(0));
     const [currentEpochStakeMap, setCurrentEpochStakeMap] = React.useState<PoolToDelegatorStakeMap>({});
     const [nextEpochStakeMap, setNextEpochStakeMap] = React.useState<PoolToDelegatorStakeMap>({});
+    const [allTimeRewards, setAllTimeRewards] = React.useState<BigNumber>(new BigNumber(0));
+    // keeping in case we want to make use of by-pool estimated rewards
+    // const [expectedCurrentEpochPoolRewards, setExpectedCurrentEpochPoolRewards] = React.useState<ExpectedPoolRewards>(undefined);
+    const [expectedCurrentEpochRewards, setExpectedCurrentEpochRewards] = React.useState<BigNumber>(new BigNumber(0));
 
     const [pendingActions, setPendingActions] = React.useState<PendingAction[]>([]);
     const [pendingUnstakePoolSet, setPendingUnstakePoolSet] = React.useState<Set<string>>(new Set());
 
     const apiClient = useAPIClient(networkId);
-    const { stakingContract, unstake, withdrawStake, withdrawRewards, moveStake } = useStake(networkId, providerState);
+    const { stakingContract, unstake, withdrawStake, withdrawRewards, moveStake, currentEpochRewards } = useStake(
+        networkId,
+        providerState,
+    );
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
+    const hasRewards = () => Boolean(allTimeRewards.isGreaterThan(0) || expectedCurrentEpochRewards.isGreaterThan(0));
 
     const onChangePool = React.useCallback(
         (fromPoolId: string, toPoolId: string, zrxAmount: number) => {
@@ -136,7 +147,9 @@ export const Account: React.FC<AccountProps> = () => {
                 // automatically send the rewards to the user's address
                 const withdrawnRewards = availableRewardsMap[fromPoolId] ?? 0;
                 if (withdrawnRewards > 0) {
-                    setTotalAvailableRewards(_totalAvailableRewards => _totalAvailableRewards.minus(withdrawnRewards));
+                    setTotalAvailableRewards(_totalAvailableRewards =>
+                        _totalAvailableRewards.minus(withdrawnRewards),
+                    );
                 }
 
                 setNextEpochStakeMap(stakeMap => ({
@@ -154,7 +167,7 @@ export const Account: React.FC<AccountProps> = () => {
             const [delegatorResponse, poolsResponse, epochsResponse] = await Promise.all([
                 apiClient.getDelegatorAsync(account.address),
                 apiClient.getStakingPoolsAsync(),
-                apiClient.getStakingEpochsAsync(),
+                apiClient.getStakingEpochsWithFeesAsync(),
             ]);
 
             const _poolWithStatsMap = poolsResponse.stakingPools.reduce<PoolWithStatsMap>((memo, pool) => {
@@ -177,15 +190,46 @@ export const Account: React.FC<AccountProps> = () => {
                 {},
             );
 
+            const _allTimeRewards = delegatorResponse.allTime.poolData.reduce<BigNumber>((prevValue, currentValue) => {
+                return prevValue.plus(new BigNumber(currentValue.rewardsInEth));
+            }, new BigNumber(0));
+
+            const _estimatedRewardsMap = stakingUtils.getExpectedPoolRewards(
+                poolsResponse.stakingPools,
+                epochsResponse.currentEpoch,
+                currentEpochRewards,
+                true,
+            );
+
+            const _expectedCurrentEpochPoolRewards: ExpectedPoolRewards = {};
+
+            for (const pool of delegatorResponse.forCurrentEpoch.poolData) {
+                if (pool.poolId === null) {
+                    _expectedCurrentEpochPoolRewards[pool.poolId] = new BigNumber(0);
+                } else {
+                    // account for the case when account belongs to an operator
+                    _expectedCurrentEpochPoolRewards[pool.poolId] = (account.address.toLowerCase() === _estimatedRewardsMap[pool.poolId].operatorAddress) ?
+                        _estimatedRewardsMap[pool.poolId].expectedOperatorReward :
+                        ((new BigNumber(pool.zrxStaked)).dividedBy(_estimatedRewardsMap[pool.poolId].memberZrxStaked)).multipliedBy(_estimatedRewardsMap[pool.poolId].expectedMemberReward);
+                }
+
+            }
+
+            const _expectedCurrentEpochRewards = Object.values(_expectedCurrentEpochPoolRewards).reduce<BigNumber>((prevValue, currentValue) => {
+                return prevValue.plus(new BigNumber(currentValue));
+            }, new BigNumber(0));
+
             setDelegatorData(delegatorResponse);
             setStakingPools(poolsResponse.stakingPools);
             setPoolWithStatsMap(_poolWithStatsMap);
             setNextEpochStats(epochsResponse.nextEpoch);
             setCurrentEpochStakeMap(_currentEpochStakeMap);
             setNextEpochStakeMap(_nextEpochStakeMap);
+            setAllTimeRewards(_allTimeRewards);
+            setExpectedCurrentEpochRewards(_expectedCurrentEpochRewards);
         };
 
-        if (!account.address || isFetchingDelegatorData) {
+        if (!account.address || isFetchingDelegatorData  || !currentEpochRewards) {
             return;
         }
 
@@ -201,12 +245,11 @@ export const Account: React.FC<AccountProps> = () => {
                 errorReporter.report(err);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [account.address, apiClient]); // add isFetchingDelegatorData to dependency arr to turn on polling
+    }, [account.address, apiClient, currentEpochRewards]); // add isFetchingDelegatorData to dependency arr to turn on polling
 
     React.useEffect(() => {
         const fetchAvailableRewards = async () => {
-            const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter(
-                poolData => poolData.rewardsInEth > 0,
+            const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter(poolData => poolData.rewardsInEth > 0,
             );
 
             const undelegatedBalancesBaseUnits = await stakingContract
@@ -322,6 +365,21 @@ export const Account: React.FC<AccountProps> = () => {
         );
     }
 
+    if (!hasDataLoaded()) {
+        return (
+            <StakingPageLayout title="0x Staking | Account">
+                <SectionWrapper>
+                    <Heading />
+                    <CallToAction
+                        icon="wallet"
+                        title="Loading"
+                        description="Grabbing data for your wallet."
+                    />
+                </SectionWrapper>
+            </StakingPageLayout>
+        );
+    }
+
     const nextEpochStart = nextEpochStats && new Date(nextEpochStats.epochStart.timestamp);
 
     return (
@@ -369,37 +427,6 @@ export const Account: React.FC<AccountProps> = () => {
                             )}
                         >
                             <StakedZrxBalance delegatorData={delegatorData} />
-                        </AccountFigure>
-
-                        <AccountFigure
-                            label="Rewards"
-                            headerComponent={() => {
-                                if (totalAvailableRewards.gt(0)) {
-                                    return (
-                                        <Button
-                                            isWithArrow={true}
-                                            isTransparent={true}
-                                            fontSize="17px"
-                                            color={colors.brandLight}
-                                            onClick={() => {
-                                                const poolsWithRewards = Object.keys(availableRewardsMap).map(poolId =>
-                                                    utils.toPaddedHex(poolId),
-                                                );
-
-                                                withdrawRewards(poolsWithRewards, () => {
-                                                    setAvailableRewardsMap({});
-                                                    setTotalAvailableRewards(new BigNumber(0));
-                                                });
-                                            }}
-                                        >
-                                            Withdraw
-                                        </Button>
-                                    );
-                                }
-                                return null;
-                            }}
-                        >
-                            <span>{`${formatEther(totalAvailableRewards).minimized} ETH`}</span>
                         </AccountFigure>
                     </Figures>
                 </Inner>
@@ -460,6 +487,40 @@ export const Account: React.FC<AccountProps> = () => {
                             </AccountActivitySummary>
                         );
                     })}
+                </SectionWrapper>
+            )}
+
+            {/* TODO add loading animations or display partially loaded data */}
+            {hasRewards() && (
+                <SectionWrapper>
+                    <SectionHeader>
+                        <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                            Your Rewards
+                        </Heading>
+
+                        {/* <Button
+                            color={colors.brandDark}
+                            isWithArrow={true}
+                            isTransparent={true}
+                            onClick={() => toggleApplyModal(true)}
+                        >
+                            Apply to create a staking pool
+                        </Button> */}
+                    </SectionHeader>
+                    <AccountRewardsOverview
+                        totalAvailableRewards={formatEther(totalAvailableRewards).formatted}
+                        estimatedEpochRewards={formatEther(expectedCurrentEpochRewards).formatted}
+                        lifetimeRewards={formatEther(allTimeRewards).formatted}
+                        onWithdrawRewards={() => {
+                            const poolsWithRewards = Object.keys(availableRewardsMap).map(poolId =>
+                                utils.toPaddedHex(poolId),
+                            );
+                            withdrawRewards(poolsWithRewards, () => {
+                                setAvailableRewardsMap({});
+                                setTotalAvailableRewards(new BigNumber(0));
+                            });
+                        }}
+                    />
                 </SectionWrapper>
             )}
 
@@ -628,7 +689,7 @@ const HeaderWrapper = styled.div`
 `;
 
 const Inner = styled.div`
-    @media (min-width: 1200px) {
+    @media (min-width: 1000px) {
         display: flex;
         justify-content: space-between;
     }
@@ -640,7 +701,7 @@ const Inner = styled.div`
 `;
 
 const Figures = styled.div`
-    @media (max-width: 1200px) {
+    @media (max-width: 1000px) {
         padding-top: 24px;
     }
 

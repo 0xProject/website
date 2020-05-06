@@ -172,6 +172,7 @@ export const constants = {
     URL_ZEIP_REPO: 'https://github.com/0xProject/ZEIPs/',
     TYPES_SECTION_NAME: 'types',
     COBBS_DOUGLAS_ALPHA: 2 / 3,
+    DELEGATOR_STAKE_WEIGHT: 0.9,
     EXTERNAL_EXPORTS_SECTION_NAME: 'external exports',
     TYPE_TO_SYNTAX: {
         [SupportedDocJson.SolDoc]: 'solidity',
