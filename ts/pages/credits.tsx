@@ -77,7 +77,7 @@ export class Credits extends React.Component<CreditsProps> {
                         <CenteredDefinition
                             title="Digital Ocean"
                             titleSize="small"
-                            description="$25,000 in cloud credits to get your relayer off the ground"
+                            description="$2,000 in cloud credits, technical training, and priority support"
                             icon="digital_ocean"
                             iconSize={80}
                             isInline={true}

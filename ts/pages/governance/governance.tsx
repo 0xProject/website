@@ -71,6 +71,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
         const voteStartDate = this._proposalData?.voteStartDate?.utcOffset(pstOffset);
         const hasVoteEnded = deadlineToVote?.isBefore(now) || false;
         const hasVoteStarted = voteStartDate ? now.isAfter(voteStartDate) : false;
+        const isVoteActive = hasVoteStarted && !hasVoteEnded;
 
         return (
             <StakingPageLayout isHome={false} title="0x Governance">
@@ -93,7 +94,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                     </Column>
                     <Column width="30%" maxWidth="300px">
                         <VoteStats tally={tally} />
-                        {hasVoteStarted && !hasVoteEnded && (
+                        {isVoteActive && (
                             <VoteButton onClick={this._onOpenVoteModal.bind(this)} isWithArrow={false}>
                                 {isVoteReceived ? 'Vote Received' : 'Vote'}
                             </VoteButton>
@@ -166,12 +167,14 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                     </SectionWrap>
                 </Section>
 
-                <Banner
-                    heading={`Vote with ZRX on ZEIP-${this._proposalData.zeipId}`}
-                    subline="Use 0x Instant to quickly purchase ZRX for voting"
-                    mainCta={{ text: 'Get ZRX', onClick: this._onLaunchInstantClick.bind(this) }}
-                    secondaryCta={{ text: 'Vote', onClick: this._onOpenVoteModal.bind(this) }}
-                />
+                {isVoteActive && (
+                    <Banner
+                        heading={`Vote with ZRX on ZEIP-${this._proposalData.zeipId}`}
+                        subline="Use 0x Instant to quickly purchase ZRX for voting"
+                        mainCta={{ text: 'Get ZRX', onClick: this._onLaunchInstantClick.bind(this) }}
+                        secondaryCta={{ text: 'Vote', onClick: this._onOpenVoteModal.bind(this) }}
+                    />
+                )}
                 <ModalVote
                     zeipId={this._proposalData.zeipId}
                     isOpen={this.state.isVoteModalOpen}
