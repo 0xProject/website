@@ -20,7 +20,7 @@ We encourage you to use the [ZRX Portal](https://github.com/0xProject/0x-protoco
 
 In every 0x trade, there is a maker (the address who created the order) and a taker (the address that accepts the order and fills it). In 0x v3, every taker pays a small fee that is ‘attributed’ to the maker address. 
 
-Every epoch (a period of 10 days), all protocol fees are accumulated into a unique pool. 
+Every epoch (a period of 7 days), all protocol fees are accumulated into a unique pool.
 At the end of the epoch, all rewards are automatically distributed to staking pool based on a [formula](https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#62-paying-liquidity-rewards-finalization). Without going too much into details (refer to the “stake-based liquidity incentives” section of this [blog post](https://blog.0xproject.com/0x-roadmap-2019-part-4-proposal-for-stake-based-liquidity-incentive-52c16558df29) if you are interested), it suffices to say that a staking pool will accumulate rewards proportionally to two quantities: 
 
 * the protocol fees attributed to the maker addresses registered in the pool, during that epoch
@@ -46,7 +46,7 @@ The system has been audited by two independent auditors (Consensys Diligence and
 
 ## What is an epoch?
 
-An epoch is a recurring period of 10 days used by the staking system to calculate and distribute eligible rewards to staking pools. Every state modification of the staking system (including a stake action) taken during an epoch is effective the next epoch.
+An epoch is a recurring period of 7 days used by the staking system to calculate and distribute eligible rewards to staking pools. Every state modification of the staking system (including a stake action) taken during an epoch is effective the next epoch.
 
 
 ## What are “rewards shared”?
