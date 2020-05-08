@@ -263,7 +263,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                         <Title>
                             {title ? title : `Staking Pool #${poolId}`}{' '}
                             {isVerified && (
-                                <span title="Identitity verified">
+                                <span title="Identity verified">
                                     <CheckmarkThinDesktop />
                                 </span>
                             )}

@@ -66,7 +66,7 @@ export const AccountStakeOverview: React.StatelessComponent<StakeOverviewProps> 
                 <Stats>
                     <StatFigure label="Fees Generated" value={feesGenerated} />
                     <StatFigure label="Rewards Shared" value={`${Math.round(rewardsSharedRatio * 100)}%`} />
-                    <StatFigure label="Staked" value={`${Math.floor(stakeRatio * 100)}%`} />
+                    <StatFigure label="Saturation" value={`${Math.floor(stakeRatio * 100)}%`} />
                 </Stats>
             </Flex>
 
