@@ -4,9 +4,9 @@
 
 There are two main interfaces that 0x API will provide quotes for:
 
-**Exchange contract** - the main entry-point of the 0x protocol, all swap quotes are settled by the exchange contract.
+[**Exchange contract**](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#exchange) - the main entry-point of the 0x protocol, all swap quotes are settled by the exchange contract.
 
-**Forwarder extension contract** - a payable interface allowing swaps between native ETH (as a `sellToken`) and another ERC20 asset.
+[**Forwarder extension contract**](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/forwarder-specification.md) - a payable interface allowing swaps between native ETH (as a `sellToken`) and another ERC20 asset.
 
 Find the currently deployed contracts [here](https://0x.org/docs/guides/0x-cheat-sheet).
 
@@ -22,22 +22,21 @@ The current 0x API logic for selecting between forwarder or exchange is determin
 
 ## Are the smart contracts audited?
 
-The 0x core team holds itself to a high security standard with all the smart contracts written; 0x protocol’s contracts are open source and extensively tested by 0x core team’s internal protocol team and by external auditors.
+Yes, 0x protocol’s contracts are open source and extensively tested by 0x core team’s internal protocol team and by external auditors (Consensys dilligence, Trail of Bits).
 
-The [**Exchange**](https://0x.org/docs/guides/0x-cheat-sheet) contract, because they are the main canonical interface of the 0x protocol, is versioned, and governed by ZRX token holders. Because of its critical place in 0x infrastructure, the 0x core team employs a number of external audits to ensure the safe and intended usage of the 0x contract.
+The [**Exchange**](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#exchange) contract, because they are the main entry point of the 0x protocol, is versioned, and governed by ZRX token holders. Because of its critical place in 0x infrastructure, the 0x core team employs a number of external audits to ensure the safe and intended usage of the 0x contract.
 
-The [**Forwarder**](https://0x.org/docs/guides/0x-cheat-sheet) contract is (as we call it in the 0x ecosystem) an extension contract. Namely, it is an optional “middleware” contract that users can opt in/out of using when swapping. Because of its optionality and minimized attack surface (no approval of user funds needed to utilize Forwarder), the *Forwarder* contract is internally audited and constantly improved upon by the 0x core team.
+The [**Forwarder**](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/forwarder-specification.md) contract is internally audited and constantly improved upon by the 0x core team. Forwarder, an optional extension contract that users can opt in/out of using when swapping, has a minimized attack surface because no approval of user funds is needed.
 
 ## What is the difference between `price` and `guaranteedPrice`?
 
+The `price` field provides developers a sense of what the BEST price they could receive, denominated in `sellToken` for one `buyToken`. The `gauranteedPrice` is the price that developers can expect in a WORST case scenario where all the fallback orders are utilized over the better priced orders.
 
 Say you found a swap for ETH to DAI at 220 DAI while the market price for ETH is 200 DAI. Obviously this is a great price and will not last forever, a “race” of sorts occurs as users compete to settle the swap of ETH for 220 DAI by selecting a competitive gasPrice that would result in their transaction being mined over others. 
 
 When such a race happens, only one user gets to receive the swap of ETH for 220 DAI, the other users will see their transactions revert. 
 
 To ensure that users will always have their swap executed within a reasonable price, 0x API quoting logic provides a set of fallback orders, created with on-chain sources (kyber, uniswap, PLP, curve) that will be filled at a slightly worse rate if the more aggressively priced orders expires or are filled by somebody else.
-
-The `price` field provides developers a sense of what the BEST price you can receive, denominated in `sellToken` for one `buyToken`. The `gauranteedPrice` is the price that developers can expect in a WORST case scenario where all the fall back orders are utilized over the better priced orders.
 
 **TLDR** expect the actual settled price of a 0x quote to be somewhere between `price` and `gauranteedPrice`.
 
