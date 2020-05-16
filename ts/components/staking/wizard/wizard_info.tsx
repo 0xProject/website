@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Timeline } from 'ts/components/staking/wizard/timeline';
 
 import { colors } from 'ts/style/colors';
+import { constants } from 'ts/utils/constants';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 
 import { AllTimeStats, Epoch } from 'ts/types';
@@ -111,7 +112,7 @@ const IntroMetric = styled.li`
     }
 `;
 
-export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats, nextEpochStats, allTimeStats }) => {
+export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ nextEpochStats, allTimeStats }) => {
     return (
         <>
             <>
@@ -128,12 +129,20 @@ export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats, 
             <IntroMetrics>
                 <IntroMetric>
                     <h2>
-                        {allTimeStats ? formatEther(allTimeStats.totalRewardsPaidInEth, { decimals: 2 }).formatted : PLACEHOLDER} ETH
+                        {allTimeStats
+                            ? formatEther(allTimeStats.totalRewardsPaidInEth, { decimals: 2 }).formatted
+                            : PLACEHOLDER}{' '}
+                        ETH
                     </h2>
                     <p>Total rewards distributed</p>
                 </IntroMetric>
                 <IntroMetric>
-                    <h2>{nextEpochStats ? formatZrx(nextEpochStats.zrxStaked, { bigUnitPostfix: true }).formatted : PLACEHOLDER} ZRX</h2>
+                    <h2>
+                        {nextEpochStats
+                            ? formatZrx(nextEpochStats.zrxStaked, { bigUnitPostfix: true }).formatted
+                            : PLACEHOLDER}{' '}
+                        ZRX
+                    </h2>
                     <p>Total ZRX Staked</p>
                 </IntroMetric>
             </IntroMetrics>
@@ -143,8 +152,7 @@ export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ currentEpochStats, 
 
 export const ConfirmationWizardInfo: React.FC<ConfirmationWizardInfo> = ({ nextEpochStats }) => {
     const stakingStartsEpochDate = new Date(nextEpochStats ? nextEpochStats.epochStart.timestamp : null);
-    const ESTIMATED_EPOCH_LENGTH_IN_DAYS = 10;
-    const firstRewardsEpochDate = addDays(stakingStartsEpochDate, ESTIMATED_EPOCH_LENGTH_IN_DAYS);
+    const firstRewardsEpochDate = addDays(stakingStartsEpochDate, constants.STAKING_EPOCH_LENGTH_IN_DAYS);
 
     const now = new Date();
     const DATE_FORMAT = 'MM.dd';
