@@ -1,6 +1,6 @@
 import { BigNumber, hexUtils, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { format } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -370,17 +370,13 @@ export const Account: React.FC<AccountProps> = () => {
             <StakingPageLayout title="0x Staking | Account">
                 <SectionWrapper>
                     <Heading />
-                    <CallToAction
-                        icon="wallet"
-                        title="Loading"
-                        description="Grabbing data for your wallet."
-                    />
+                    <CallToAction icon="wallet" title="Loading" description="Grabbing data for your wallet." />
                 </SectionWrapper>
             </StakingPageLayout>
         );
     }
 
-    const nextEpochStart = nextEpochStats && new Date(nextEpochStats.epochStart.timestamp);
+    const nextEpochStart = nextEpochStats && subDays(new Date(nextEpochStats.epochStart.timestamp), 3);
 
     return (
         <StakingPageLayout title="0x Staking | Account">
