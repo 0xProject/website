@@ -1,4 +1,4 @@
-import { addDays, format, formatDistanceStrict, subDays } from 'date-fns';
+import { addDays, format, formatDistanceStrict } from 'date-fns';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -151,8 +151,7 @@ export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ nextEpochStats, all
 };
 
 export const ConfirmationWizardInfo: React.FC<ConfirmationWizardInfo> = ({ nextEpochStats }) => {
-    // TODO(kimpers): Remove this after epoch length changes have updated in the contract
-    const stakingStartsEpochDate = subDays(new Date(nextEpochStats ? nextEpochStats.epochStart.timestamp : null), 3);
+    const stakingStartsEpochDate = new Date(nextEpochStats ? nextEpochStats.epochStart.timestamp : null);
     const firstRewardsEpochDate = addDays(stakingStartsEpochDate, constants.STAKING_EPOCH_LENGTH_IN_DAYS);
 
     const now = new Date();
