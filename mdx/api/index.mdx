@@ -150,6 +150,40 @@ This API faciliates consuming the best-priced liquidity from [0x Mesh](https://0
 We use smart order routing to split up your transaction across decentralized exchange networks to be filled with the lowest slippage possible.
 Follow the "[Swap Tokens with 0x API](/docs/guides/swap-tokens-with-0x-api)" guide to see how to use it.
 
+## GET /swap/v0/price
+
+The price endpoint returns an indicative quote to the caller. An indicative quote is non-binding, but representative of the best price the taker would receive were a trade to occur right now. Once a taker has decided they wish to perform the trade, a final quote request should be made to the `/quote` endpoint.
+
+### Request
+
+Either a `sellAmount` or `buyAmount` is required.
+When both are provided, `sellAmount` takes precedence over `buyAmount`.
+
+| Query Param          | Description                                                                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sellToken`          | The ERC20 token address or symbol of the token you want to send. "ETH" can be provided as a valid `sellToken`.                                                                                                      |
+| `buyToken`           | The ERC20 token address or symbol of the token you want to receive. (`/swap/v0/price` doesn't support `buyToken` as "ETH", unless price requested is to [unwrap](/docs/api#examples) "WETH".`)                                                                                                                                                 |
+| `takerAddress`       | (Optional) The address which will fill the quote.          |
+| `sellAmount`         | (Optional) The amount of `sellToken` (in `sellToken` base units) you want to send.                                                                                                                                       |
+| `buyAmount`          | (Optional) The amount of `buyToken` (in `buyToken` base units) you want to receive.                                                                                                                                      |
+| `slippagePercentage` | (Optional) The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. This parameter will change over time with market conditions. |
+| `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
+
+### Response
+
+| Field               | Description                                                                                                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `price`             | If `buyAmount` was specified in the request it provides the price of `buyToken` in `sellToken` and vice versa. This price does not include the `slippage` provided in the request above, and therefore represents the best possible price. |
+| `value`             | The amount of ether (in wei) that should be sent with the transaction. (Assuming protocolFee is paid in ether).                                                                                  |
+| `gasPrice`          | The gas price (in wei) that should be used to send the transaction. The transaction needs to be sent with this `gasPrice` or lower for the transaction to be successful.                         |
+| `gas`               | The estimated gas limit that should be used to send the transaction. A computed estimate is returned in all responses, for a more accurate estimate provide a `takerAddress` in the request.                                                         |
+| `protocolFee`       | The amount of ether paid towards the protocol fee (in wei).                                                                                                                                      |
+| `buyAmount`         | The amount of `buyToken` (in `buyToken` units) that would be bought in this swap. Certain on-chain sources do not allow specifying `buyAmount`, when using `buyAmount` these sources are excluded. |
+| `sellAmount`        | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.  Specifying `sellAmount` is the recommended way to interact with 0xAPI as it covers all on-chain sources.                                                                                                             |
+| `sources`           | The percentage distribution of `buyAmount` or `sellAmount` split between each liquidity source. Ex: `[{ name: '0x', proportion: "0.8" }, { name: 'Kyber', proportion: "0.2"}]`                   |
+| `buyTokenAddress`   | The ERC20 token address of the token you want to receive in quote.                                                                                                                               |
+| `sellTokenAddress`  | The ERC20 token address of the token you want to sell with quote.                                                                                                                               |
+
 ## GET /swap/v0/quote
 
 Get an easy-to-consume quote for buying or selling any token.
