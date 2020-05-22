@@ -1,5 +1,5 @@
 import { BigNumber } from '@0x/utils';
-import { addDays, formatDistanceStrict, subDays } from 'date-fns';
+import { addDays, formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -535,12 +535,8 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
             return newTotal;
         }, new BigNumber(0)),
     ).minimized;
-    // TODO(kimpers): Remove this after epoch length changes have updated in the contract
-    const nextEpochStart = subDays(new Date(nextEpochStats.epochStart.timestamp), 3);
-    const stakingStartsFormattedTime = stakingUtils.getTimeToEpochDate(nextEpochStart);
-    const unlockTokensMinimumFormattedTime = stakingUtils.getTimeToEpochDate(
-        addDays(nextEpochStart, constants.STAKING_EPOCH_LENGTH_IN_DAYS),
-    );
+    const stakingStartsFormattedTime = stakingUtils.getTimeToEpochDate(new Date(nextEpochStats.epochStart.timestamp));
+    const unlockTokensMinimumFormattedTime = stakingUtils.getTimeToEpochDate(addDays(new Date(nextEpochStats.epochStart.timestamp), constants.STAKING_EPOCH_LENGTH_IN_DAYS));
     return (
         <RelativeContainer>
             <>

@@ -1,5 +1,4 @@
 import { logUtils } from '@0x/utils';
-import { subDays } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
@@ -91,7 +90,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         fetchAndSetEpochs();
     }, [apiClient]);
 
-    const nextEpochStartDate = nextEpochStats && subDays(new Date(nextEpochStats.epochStart.timestamp), 3);
+    const nextEpochStartDate = nextEpochStats && new Date(nextEpochStats.epochStart.timestamp);
 
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
