@@ -270,6 +270,10 @@ Specify a `buyToken`, `sellToken` and either a `sellAmount` to get a simple quot
     {
       "name": "LiquidityProvider",
       "proportion": "0"
+    },
+    {
+      "name": "MultiBridge",
+      "proportion": "0"
     }
   ],
   "orders": [
@@ -388,6 +392,10 @@ Supply a comma delimited list of liquidty source names to exclude them from the 
     {
       "name": "LiquidityProvider",
       "proportion": "1"
+    },
+    {
+      "name": "MultiBridge",
+      "proportion": "0"
     }
   ],
   "orders": [
@@ -488,6 +496,10 @@ Supply a `takerAddress` to use an [`eth_call`](https://github.com/ethereum/wiki/
     },
     {
       "name": "LiquidityProvider",
+      "proportion": "0"
+    },
+    {
+      "name": "MultiBridge",
       "proportion": "0"
     }
   ],
@@ -625,6 +637,10 @@ Use "ETH" as the `sellToken` to receive a [Forwarder](/docs/guides/v3-forwarder-
     {
       "name": "LiquidityProvider",
       "proportion": "1"
+    },
+    {
+      "name": "MultiBridge",
+      "proportion": "0"
     }
   ],
   "orders": [
@@ -907,7 +923,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 
 ## GET /meta_transaction/v0/quote
 
-When a trader has shown an intent to complete a trade, calling this `/quote` endpoint will return the hash of a [0x transaction](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions) for them to sign. In signing the 0x transaction, they are agreeing to the details of the trade. 0x transactions are a 0x-native feature that enables meta-transactions by separating the taker of a trade, from the party submitting the Ethereum transaction. Once the trader has signed the 0x transaction hash, the integrator should send it to the `/submit` endpoint. 
+When a trader has shown an intent to complete a trade, calling this `/quote` endpoint will return the hash of a [0x transaction](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions) for them to sign. In signing the 0x transaction, they are agreeing to the details of the trade. 0x transactions are a 0x-native feature that enables meta-transactions by separating the taker of a trade, from the party submitting the Ethereum transaction. Once the trader has signed the 0x transaction hash, the integrator should send it to the `/submit` endpoint.
 
 ### Request
 
@@ -930,7 +946,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `price`             | If `buyAmount` was specified in the request it provides the price of `buyToken` in `sellToken` and vice versa. This price does not include the `slippage` provided in the request above, and therefore represents the best possible price. |
 | `buyAmount`         | The amount of `buyToken` (in `buyToken` units) that would be bought in this swap. Certain on-chain sources do not allow specifying `buyAmount`, when using `buyAmount` these sources are excluded. |
-| `sellAmount`        | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.  Specifying `sellAmount` is the recommended way to interact with 0xAPI as it covers all on-chain sources.   
+| `sellAmount`        | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.  Specifying `sellAmount` is the recommended way to interact with 0xAPI as it covers all on-chain sources.
 | `buyTokenAddress`   | The ERC20 token address of the token you want to receive in quote.                                                                                                                               |
 | `sellTokenAddress`  | The ERC20 token address of the token you want to sell with quote.                                                                                                                               |                                                                                                          |
 | `zeroExTransactionHash`           | The 0x transaction hash that must be signed by the trader.                   |
@@ -940,7 +956,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 
 ## POST /meta_transaction/v0/submit
 
-This endpoint accepts a signed 0x transaction hash and will do one of two things: (1) submit the Ethereum transaction executing the trade encoded in the 0x transaction OR (2) return an unsigned Ethereum transaction that executes the 0x transaction. (1) occurs if the request is sent with a whitelisted `0x-api-key` header or if a liquidity provider is willing to submit trades their involved in on the taker's behalf. If neither of these is true, it returns the unsigned Ethereum transaction for either the end user or integrator/dApp to sign and broadcast. 
+This endpoint accepts a signed 0x transaction hash and will do one of two things: (1) submit the Ethereum transaction executing the trade encoded in the 0x transaction OR (2) return an unsigned Ethereum transaction that executes the 0x transaction. (1) occurs if the request is sent with a whitelisted `0x-api-key` header or if a liquidity provider is willing to submit trades their involved in on the taker's behalf. If neither of these is true, it returns the unsigned Ethereum transaction for either the end user or integrator/dApp to sign and broadcast.
 
 ### Request
 
