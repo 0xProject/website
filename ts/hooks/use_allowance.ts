@@ -7,10 +7,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
-import { AccountReady, ProviderState, TransactionLoadingState } from 'ts/types';
+import { AccountReady, Providers, ProviderState, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
+import { utils } from 'ts/utils/utils';
 
 export interface UseAllowanceHookResult {
     loadingState?: TransactionLoadingState;
@@ -47,6 +48,8 @@ export const useAllowance = (): UseAllowanceHookResult => {
 
         const currentAllowance = await zrxTokenContract.allowance(ownerAddress, erc20ProxyAddress).callAsync();
 
+        const isImToken = utils.getProviderType(providerState.provider) === Providers.ImToken;
+
         if (currentAllowance.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
             setEstimatedTimeMs(gasInfo.estimatedTimeMs);
             setLoadingState(TransactionLoadingState.WaitingForSignature);
@@ -54,7 +57,8 @@ export const useAllowance = (): UseAllowanceHookResult => {
                 .approve(erc20ProxyAddress, constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)
                 .awaitTransactionSuccessAsync({
                     from: ownerAddress,
-                    gasPrice: gasInfo.gasPriceInWei,
+                    // Due to an issue with the ImToken Wallet we can't pass the gas price parameters for that wallet
+                    gasPrice: isImToken ? undefined : gasInfo.gasPriceInWei,
                 });
 
             await txPromise.txHashPromise;

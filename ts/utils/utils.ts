@@ -314,9 +314,7 @@ export const utils = {
     // Copied from Instant
     getProviderType(provider: ZeroExProvider): Providers | undefined {
         const anyProvider = provider as any;
-        if (provider.constructor.name === 'EthereumProvider') {
-            return Providers.Mist;
-        } else if (_.get(window, 'Bitpie')) {
+        if (_.get(window, 'Bitpie')) {
             // NOTE: Bitpie is TrustWallet based so isTrust is also true
             return Providers.Bitpie;
         } else if (anyProvider.isTrust) {
@@ -333,6 +331,9 @@ export const utils = {
             return Providers.Cipher;
         } else if (utils.getBrowserType() === BrowserType.Opera && !anyProvider.isMetaMask) {
             return Providers.Opera;
+            // NOTE: Other wallets based on Mist can inherit the same constructor name
+        } else if (provider.constructor.name === 'EthereumProvider') {
+            return Providers.Mist;
         }
 
         return undefined;

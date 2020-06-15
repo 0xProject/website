@@ -7,7 +7,7 @@ import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 
-import { AccountReady, ProviderState, StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
+import { AccountReady, Providers, ProviderState, StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
@@ -68,6 +68,8 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
     const [stakingProxyContract, setStakingProxyContract] = useState<StakingProxyContract | undefined>(undefined);
     const [contractAddresses, setContractAddresses] = useState<ContractAddresses | undefined>(undefined);
 
+    const isImToken = utils.getProviderType(providerState.provider) === Providers.ImToken;
+
     useEffect(() => {
         const _ownerAddress = (providerState.account as AccountReady).address;
         const _contractAddresses = getContractAddressesForChainOrThrow(networkId);
@@ -93,9 +95,11 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
 
             const gasInfo = await backendClient.getGasInfoAsync();
 
-            const txPromise = stakingProxyContract
-                .batchExecute(data)
-                .awaitTransactionSuccessAsync({ from: ownerAddress, gasPrice: gasInfo.gasPriceInWei });
+            const txPromise = stakingProxyContract.batchExecute(data).awaitTransactionSuccessAsync({
+                from: ownerAddress,
+                // Due to an issue with the ImToken Wallet we can't pass the gas price parameters for that wallet
+                gasPrice: isImToken ? undefined : gasInfo.gasPriceInWei,
+            });
 
             await txPromise.txHashPromise;
             setEstimatedTimeMs(gasInfo.estimatedTimeMs);
@@ -105,7 +109,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
             setResult(txResult);
             setLoadingState(TransactionLoadingState.Success);
         },
-        [ownerAddress, stakingProxyContract],
+        [isImToken, ownerAddress, stakingProxyContract],
     );
 
     const depositAndStakeAsync = useCallback(
@@ -196,9 +200,11 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
 
             const gasInfo = await backendClient.getGasInfoAsync();
 
-            const txPromise = stakingContract
-                .unstake(zrxAmountBaseUnits)
-                .awaitTransactionSuccessAsync({ from: ownerAddress, gasPrice: gasInfo.gasPriceInWei });
+            const txPromise = stakingContract.unstake(zrxAmountBaseUnits).awaitTransactionSuccessAsync({
+                from: ownerAddress,
+                // Due to an issue with the ImToken Wallet we can't pass the gas price parameters for that wallet
+                gasPrice: isImToken ? undefined : gasInfo.gasPriceInWei,
+            });
 
             await txPromise.txHashPromise;
             setEstimatedTimeMs(gasInfo.estimatedTimeMs);
@@ -208,7 +214,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
             setResult(txResult);
             setLoadingState(TransactionLoadingState.Success);
         },
-        [loadingState, ownerAddress, stakingContract],
+        [isImToken, loadingState, ownerAddress, stakingContract],
     );
 
     const withdrawRewardsAsync = useCallback(
