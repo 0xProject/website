@@ -23,7 +23,7 @@ import { NextAboutMission } from 'ts/pages/about/mission';
 import { NextAboutPress } from 'ts/pages/about/press';
 import { NextAboutTeam } from 'ts/pages/about/team';
 import { Credits } from 'ts/pages/credits';
-import { Explore } from 'ts/pages/explore';
+// import { Explore } from 'ts/pages/explore';
 
 import { AccountActivity } from 'ts/pages/account/activity';
 import { Account } from 'ts/pages/account/dashboard';
@@ -78,7 +78,7 @@ render(
                         <Route exact={true} path="/" component={NextLanding} />
                         <Route exact={true} path={WebsitePaths.Why} component={NextWhy} />
                         <Route exact={true} path={WebsitePaths.MarketMaker} component={NextMarketMaker} />
-                        <Route exact={true} path={WebsitePaths.Explore} component={Explore} />
+                        {/* <Route exact={true} path={WebsitePaths.Explore} component={Explore} /> */}
                         <Route exact={true} path={WebsitePaths.Credits} component={Credits} />
                         <Route exact={true} path={WebsitePaths.Instant} component={Next0xInstant} />
                         <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit} />
@@ -92,11 +92,7 @@ render(
                         <Route exact={true} path={WebsitePaths.StakingWizard} component={StakingWizard} />
                         <Route exact={true} path={WebsitePaths.StakingWizardRemove} component={RemoveStake} />
                         <Route exact={true} path={WebsitePaths.StakingPool} component={StakingPool} />
-                        <Route
-                            exact={true}
-                            path={WebsitePaths.StakingPoolActivity}
-                            component={StakingPoolActivity}
-                        />
+                        <Route exact={true} path={WebsitePaths.StakingPoolActivity} component={StakingPoolActivity} />
                         <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex} />
                         <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance} />
 
