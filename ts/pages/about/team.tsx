@@ -31,7 +31,7 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/alexv.jpg',
         name: 'Alex Xu',
-        title: 'Director of Operations',
+        title: 'Chief of Staff',
     },
     {
         imageUrl: '/images/team/benb.jpg',
