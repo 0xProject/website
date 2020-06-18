@@ -29,14 +29,9 @@ const team: TeamMember[] = [
         title: 'Co-founder & CTO',
     },
     {
-        imageUrl: '/images/team/fabiob.jpg',
-        name: 'Fabio Berger',
-        title: 'Engineering Manager',
-    },
-    {
         imageUrl: '/images/team/alexv.jpg',
         name: 'Alex Xu',
-        title: 'Director of Operations',
+        title: 'Chief of Staff',
     },
     {
         imageUrl: '/images/team/benb.jpg',
@@ -202,6 +197,11 @@ const team: TeamMember[] = [
         imageUrl: '/images/team/nicoles.jpg',
         name: 'Nicole Setter',
         title: 'Workplace Experience Specialist',
+    },
+    {
+        imageUrl: '/images/team/maxt.jpg',
+        name: 'Max Torres',
+        title: 'Finance Lead',
     },
 ];
 
