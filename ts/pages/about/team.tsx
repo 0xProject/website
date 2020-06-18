@@ -29,11 +29,6 @@ const team: TeamMember[] = [
         title: 'Co-founder & CTO',
     },
     {
-        imageUrl: '/images/team/fabiob.jpg',
-        name: 'Fabio Berger',
-        title: 'Engineering Manager',
-    },
-    {
         imageUrl: '/images/team/alexv.jpg',
         name: 'Alex Xu',
         title: 'Director of Operations',
