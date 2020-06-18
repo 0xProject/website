@@ -198,6 +198,11 @@ const team: TeamMember[] = [
         name: 'Nicole Setter',
         title: 'Workplace Experience Specialist',
     },
+    {
+        imageUrl: '/images/team/maxt.jpg',
+        name: 'Max Torres',
+        title: 'Finance Lead',
+    },
 ];
 
 const advisors: TeamMember[] = [
