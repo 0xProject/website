@@ -122,4 +122,9 @@ export const documentConstants: { [s: string]: DocumentMetadata } = {
         description: 'Bring automatic token trading to your DeFi users with Asset Swapper',
         keywords: '',
     },
+    MESH: {
+        title: '',
+        description: '',
+        keywords: '',
+    },
 };
