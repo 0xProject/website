@@ -33,6 +33,7 @@ const linkRows: LinkRows[] = [
         isOnMobile: true,
         links: [
             { url: WebsitePaths.ZeroExApi, text: '0x API' },
+            { url: WebsitePaths.Mesh, text: '0x Mesh' },
             { url: WebsitePaths.Instant, text: '0x Instant' },
             { url: WebsitePaths.LaunchKit, text: '0x Launch Kit' },
             { url: WebsitePaths.Extensions, text: 'Extensions' },
