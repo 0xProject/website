@@ -16,6 +16,11 @@ const navData = [
         description: 'Embed simple token purchasing in any app or website',
         url: WebsitePaths.Instant,
     },
+    {
+        title: '0x Mesh',
+        description: 'Access token markets, permissionlessly',
+        url: WebsitePaths.Mesh,
+    },
 ];
 
 export const DropdownProducts: React.FC = () => (
