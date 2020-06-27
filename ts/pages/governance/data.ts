@@ -294,6 +294,55 @@ export const proposals: Proposals = {
             ],
         },
     },
+    79: {
+        zeipId: 79,
+        title: 'Set the protocol fee multiplier to 70,000',
+        summary: [
+            `This ZEIP proposes to decrease the current protocol fee multiplier from 150,000 to 70,000.  The goal is to lower the barrier of entry for trading 0x v3 liquidity, with the intent of ultimately increasing its adoption and the liquidity rewards received by market makers (and by token holders who stake with them).`,
+            `With the increase of average gas price over the last 3 months, Ethereum is a substantially different environment from when the current value was set, hence this proposal. The new value would make the 0x protocol fee roughly equivalent to 10bps (0.10%) of DEX median trade size. Refer to the ZEIP for more details.`,
+            `Given the setProtocolFeeMultiplier timelock, if this ZEIP passes, the change will be effective from epoch 28 (starting on 07/18).`,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/79',
+        voteStartDate: moment(1593867600, 'X'),
+        voteEndDate: moment(1594425630, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `A negative correlation was observed between the recent increase of gas prices and the volume of DEX protocols with higher gas cost. `,
+                `The goal of reducing the multiplier is to lower the barrier of entry for trading 0x v3 liquidity. For example, a decrease in the fee will make 0x liquidity more competitive on DEX aggregators that take gas cost into account.`,
+            ],
+            rating: 2,
+            links: [
+                {
+                    text: 'Initial set of staking parameters',
+                    url:
+                        'https://github.com/0xProject/ZEIPs/issues/61',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Staking contracts were designed to safely allow updates of a specific set of parameters via a SetParams function.`,
+                `This functionality does not trigger security-critical operations, and was considered safe by external security auditors.`,
+                `There is a risk that decreasing the fee multiplier will impact the liquidity rewards in the immediate short term.`,
+
+            ],
+            rating: 1,
+            links: [
+                {
+                    text: 'SetParams function ',
+                    url:
+                        'https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#36-setting-parameters',
+                },
+                {
+                    text: 'Staking security audit',
+                    url:
+                        'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
+                },
+            ],
+        },
+    },
 };
 
 export const stagingProposals: Proposals = {
@@ -384,6 +433,55 @@ export const stagingProposals: Proposals = {
             links: [
                 {
                     text: 'SetParams function',
+                    url:
+                        'https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#36-setting-parameters',
+                },
+                {
+                    text: 'Staking security audit',
+                    url:
+                        'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
+                },
+            ],
+        },
+    },
+    79: {
+        zeipId: 79,
+        title: 'Set the protocol fee multiplier to 70,000',
+        summary: [
+            `This ZEIP proposes to decrease the current protocol fee multiplier from 150,000 to 70,000.  The goal is to lower the barrier of entry for trading 0x v3 liquidity, with the intent of ultimately increasing its adoption and the liquidity rewards received by market makers (and by token holders who stake with them).`,
+            `With the increase of average gas price over the last 3 months, Ethereum is a substantially different environment from when the current value was set, hence this proposal. The new value would make the 0x protocol fee roughly equivalent to 10bps (0.10%) of DEX median trade size. Refer to the ZEIP for more details.`,
+            `Given the setProtocolFeeMultiplier timelock, if this ZEIP passes, the change will be effective from epoch 28 (starting on 07/18).`,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/79',
+        voteStartDate: moment(1593867600, 'X'),
+        voteEndDate: moment(1594425630, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `A negative correlation was observed between the recent increase of gas prices and the volume of DEX protocols with higher gas cost. `,
+                `The goal of reducing the multiplier is to lower the barrier of entry for trading 0x v3 liquidity. For example, a decrease in the fee will make 0x liquidity more competitive on DEX aggregators that take gas cost into account.`,
+            ],
+            rating: 2,
+            links: [
+                {
+                    text: 'Initial set of staking parameters',
+                    url:
+                        'https://github.com/0xProject/ZEIPs/issues/61',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Staking contracts were designed to safely allow updates of a specific set of parameters via a SetParams function.`,
+                `This functionality does not trigger security-critical operations, and was considered safe by external security auditors.`,
+                `There is a risk that decreasing the fee multiplier will impact the liquidity rewards in the immediate short term.`,
+
+            ],
+            rating: 1,
+            links: [
+                {
+                    text: 'SetParams function ',
                     url:
                         'https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#36-setting-parameters',
                 },
