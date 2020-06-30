@@ -38,8 +38,8 @@ const fetchOrders = async (baseAssetData: string, quoteAssetData: string) =>
 const markets = [
     {
         title: 'ETH/DAI',
-        baseAsset: '0xf47261b00000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
-        quoteAsset: '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        quoteAsset: '0xf47261b00000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+        baseAsset: '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
         getPrice: (order: SignedOrder, op: Operation) => {
             let price;
             const takerAssetAmount = new BigNumber(order.takerAssetAmount);
@@ -48,10 +48,10 @@ const markets = [
             // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
-                    price = makerAssetAmount.div(takerAssetAmount);
+                    price = takerAssetAmount.div(makerAssetAmount);
                     break;
                 case 'bid':
-                    price = takerAssetAmount.div(makerAssetAmount);
+                    price = makerAssetAmount.div(takerAssetAmount);
                     break;
             }
 
@@ -66,10 +66,10 @@ const markets = [
             // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
-                    size = makerAssetAmount.div(constant);
+                    size = takerAssetAmount.div(constant);
                     break;
                 case 'bid':
-                    size = takerAssetAmount.div(constant);
+                    size = makerAssetAmount.div(constant);
             }
 
             return size;
@@ -77,8 +77,8 @@ const markets = [
     },
     {
         title: 'ETH/USDC',
-        baseAsset: '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        quoteAsset: '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        quoteAsset: '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        baseAsset: '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
         getPrice: (order: SignedOrder, op: Operation) => {
             let price;
             const takerAssetAmount = new BigNumber(order.takerAssetAmount);
@@ -88,10 +88,10 @@ const markets = [
             // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
-                    price = makerAssetAmount.div(takerAssetAmount).times(constant);
+                    price = takerAssetAmount.div(makerAssetAmount).times(constant);
                     break;
                 case 'bid':
-                    price = takerAssetAmount.div(makerAssetAmount).times(constant);
+                    price = makerAssetAmount.div(takerAssetAmount).times(constant);
                     break;
             }
 
@@ -106,10 +106,10 @@ const markets = [
             // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
-                    size = makerAssetAmount.div(constant);
+                    size = takerAssetAmount.div(constant);
                     break;
                 case 'bid':
-                    size = takerAssetAmount.div(constant);
+                    size = makerAssetAmount.div(constant);
                     break;
             }
 
@@ -117,7 +117,7 @@ const markets = [
         },
     },
     {
-        title: 'SNX/DAI',
+        title: 'SNX/ETH',
         baseAsset: '0xf47261b0000000000000000000000000c011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
         quoteAsset: '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
         getPrice: (order: SignedOrder, op: Operation) => {
@@ -128,10 +128,10 @@ const markets = [
             // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
-                    price = makerAssetAmount.div(takerAssetAmount);
+                    price = takerAssetAmount.div(makerAssetAmount);
                     break;
                 case 'bid':
-                    price = takerAssetAmount.div(makerAssetAmount);
+                    price = makerAssetAmount.div(takerAssetAmount);
                     break;
             }
 
@@ -146,10 +146,10 @@ const markets = [
             // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
-                    size = makerAssetAmount.div(constant);
+                    size = takerAssetAmount.div(constant);
                     break;
                 case 'bid':
-                    size = takerAssetAmount.div(constant);
+                    size = makerAssetAmount.div(constant);
             }
 
             return size;
