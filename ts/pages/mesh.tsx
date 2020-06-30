@@ -9,6 +9,7 @@ import { Hero } from 'ts/components/hero';
 import { Heading, Paragraph } from 'ts/components/text';
 import { SiteWrap } from 'ts/components/siteWrap';
 
+import { EntryTable } from 'ts/pages/mesh/entry_table';
 import { LiquidityMarket } from 'ts/pages/mesh/liquidity_market';
 import { MeshStats } from 'ts/pages/mesh/mesh_stats';
 
@@ -47,7 +48,7 @@ export class Mesh extends React.Component {
                     figureMaxWidth="600px"
                     maxWidth="380px"
                     actions={
-                        <Button href={'#todo'} isInline={true}>
+                        <Button href={'#entry-point'} isInline={true}>
                             Choose an accesspoint
                         </Button>
                     }
@@ -106,6 +107,13 @@ export class Mesh extends React.Component {
                     <Column width="50%" maxWidth="550px">
                         <LiquidityMarket />
                     </Column>
+                </Section>
+
+                <Section id="entry-point" maxWidth="1170px">
+                    <Heading asElement="h2" size="medium" marginBottom="112px">
+                        Choose an entry point
+                    </Heading>
+                    <EntryTable />
                 </Section>
             </SiteWrap>
         );
