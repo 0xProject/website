@@ -265,7 +265,7 @@ interface RecordsProps {
     operation: Operation;
 }
 
-const formatPrice = (price: BigNumber) => formatNumber(price, { decimals: 6 }).formatted;
+const formatPrice = (price: BigNumber) => formatNumber(price, { decimals: 4 }).formatted;
 const formatSize = (size: BigNumber) => formatNumber(size, { decimals: 4 }).formatted;
 const formatSlippage = (size: BigNumber) => formatPercent(size, { decimals: 3 }).full;
 
