@@ -281,9 +281,9 @@ interface RecordsProps {
     operation: Operation;
 }
 
-const formatPrice = (price: BigNumber) => formatNumber(price, { decimals: 4 }).formatted;
-const formatSize = (size: BigNumber) => formatNumber(size, { decimals: 4 }).formatted;
-const formatSlippage = (size: BigNumber) => formatPercent(size, { decimals: 3 }).full;
+const formatPrice = (price: BigNumber) => formatNumber(price, { decimals: 2 }).formatted;
+const formatSize = (size: BigNumber) => formatNumber(size, { decimals: 2 }).formatted;
+const formatSlippage = (size: BigNumber) => formatPercent(size, { decimals: 2 }).full;
 
 const Records: React.FC<RecordsProps> = ({ orders, operation }) => {
     const emptyRows = ORDER_COUNT - orders.length;
@@ -322,7 +322,7 @@ const EmptyRecords: React.FC<{ count: number; operation: Operation }> = ({ count
 const Spread: React.FC<{ value: BigNumber }> = ({ value }) => (
     <tr className="spread">
         <td colSpan={3}>Spread</td>
-        <td>{value ? formatPercent(value, { decimals: 3 }).full : PLACEHOLDER}</td>
+        <td>{value ? formatPercent(value, { decimals: 2 }).full : PLACEHOLDER}</td>
     </tr>
 );
 
