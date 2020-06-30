@@ -2,11 +2,13 @@ import * as React from 'react';
 
 import { Blockquote } from 'ts/components/blockquote';
 import { Button } from 'ts/components/button';
-import { Column, Section } from 'ts/components/newLayout';
+import { Column } from 'ts/components/newLayout';
 import { Definition } from 'ts/components/definition';
 import { DocumentTitle } from 'ts/components/document_title';
 import { Hero } from 'ts/components/hero';
-import { Heading, Paragraph } from 'ts/components/text';
+import { Heading } from 'ts/components/text';
+import { Paragraph } from 'ts/components/text';
+import { Section } from 'ts/components/newLayout';
 import { SiteWrap } from 'ts/components/siteWrap';
 
 import { EntryTable } from 'ts/pages/mesh/entry_table';

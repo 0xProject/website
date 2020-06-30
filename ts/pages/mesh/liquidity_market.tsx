@@ -253,8 +253,6 @@ export const LiquidityMarket: React.FC = () => {
         setSelectedMarketIdx(index);
     };
 
-    const hasData = asks.length > 0 && bids.length > 0;
-
     return (
         <>
             <LiquidityMarketSelect items={markets} selectedItem={selectedMarketIdx} onSelectItem={handleSelectItem} />
