@@ -9,6 +9,7 @@ import { Hero } from 'ts/components/hero';
 import { Heading, Paragraph } from 'ts/components/text';
 import { SiteWrap } from 'ts/components/siteWrap';
 
+import { LiquidityMarket } from 'ts/pages/mesh/liquidity_market';
 import { MeshStats } from 'ts/pages/mesh/mesh_stats';
 
 import { documentConstants } from 'ts/utils/document_meta_constants';
@@ -88,6 +89,22 @@ export class Mesh extends React.Component {
                                 isWithMargin={true}
                             />
                         ))}
+                    </Column>
+                </Section>
+
+                <Section isFlex={true} maxWidth="1170px">
+                    <Column maxWidth="460px">
+                        <Heading asElement="h2" size="medium">
+                            See the networked liquidity live
+                        </Heading>
+
+                        <Paragraph size="medium" isMuted={true} padding={0}>
+                            Combined orders from own market makers with liquidity from the entire DEX market.
+                        </Paragraph>
+                    </Column>
+
+                    <Column width="50%" maxWidth="550px">
+                        <LiquidityMarket />
                     </Column>
                 </Section>
             </SiteWrap>
