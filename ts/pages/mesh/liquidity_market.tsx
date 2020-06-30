@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+
 import { BigNumber } from '@0x/utils';
 
 import { LiquidityMarketSelect } from 'ts/pages/mesh/liquidity_market_select';
@@ -31,7 +32,7 @@ type Operation = 'ask' | 'bid';
 const orderbookBaseUrl = configs.API_BASE_PROD_URL;
 const orderbookPath = '/sra/v3/orderbook';
 
-const fetchOrders = (baseAssetData: string, quoteAssetData: string) =>
+const fetchOrders = async (baseAssetData: string, quoteAssetData: string) =>
     fetchUtils.requestAsync(orderbookBaseUrl, orderbookPath, { baseAssetData, quoteAssetData });
 
 const markets = [
@@ -44,6 +45,7 @@ const markets = [
             const takerAssetAmount = new BigNumber(order.takerAssetAmount);
             const makerAssetAmount = new BigNumber(order.makerAssetAmount);
 
+            // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
                     price = makerAssetAmount.div(takerAssetAmount);
@@ -61,6 +63,7 @@ const markets = [
             const makerAssetAmount = new BigNumber(order.makerAssetAmount);
             const constant = new BigNumber('1.0e18');
 
+            // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
                     size = makerAssetAmount.div(constant);
@@ -82,6 +85,7 @@ const markets = [
             const makerAssetAmount = new BigNumber(order.makerAssetAmount);
             const constant = new BigNumber('1.0e12');
 
+            // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
                     price = makerAssetAmount.div(takerAssetAmount).times(constant);
@@ -99,6 +103,7 @@ const markets = [
             const makerAssetAmount = new BigNumber(order.makerAssetAmount);
             const constant = new BigNumber('1.0e6');
 
+            // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
                     size = makerAssetAmount.div(constant);
@@ -120,6 +125,7 @@ const markets = [
             const takerAssetAmount = new BigNumber(order.takerAssetAmount);
             const makerAssetAmount = new BigNumber(order.makerAssetAmount);
 
+            // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
                     price = makerAssetAmount.div(takerAssetAmount);
@@ -137,6 +143,7 @@ const markets = [
             const makerAssetAmount = new BigNumber(order.makerAssetAmount);
             const constant = new BigNumber('1.0e18');
 
+            // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
                     size = makerAssetAmount.div(constant);
@@ -167,22 +174,24 @@ export const LiquidityMarket: React.FC = () => {
             const market = markets[selectedMarketIdx];
             const orders = await fetchOrders(market.baseAsset, market.quoteAsset);
 
-            const bids = parseOrders(orders.bids.records, 'bid');
-            const asks = parseOrders(orders.asks.records, 'ask');
+            const _bids = parseOrders(orders.bids.records, 'bid');
+            const _asks = parseOrders(orders.asks.records, 'ask');
 
-            const midPrice = calcMidPrice(bids, asks);
+            const midPrice = calcMidPrice(_bids, _asks);
 
-            calcSlippage(bids, midPrice);
-            calcSlippage(asks, midPrice);
+            calcSlippage(_bids, midPrice);
+            calcSlippage(_asks, midPrice);
 
-            const spread = calcSpread(bids, asks);
+            const _spread = calcSpread(_bids, _asks);
 
-            setBids(bids);
-            setAsks(asks);
-            setSpread(spread);
+            setBids(_bids);
+            setAsks(_asks);
+            setSpread(_spread);
         };
 
         resetData();
+
+        // tslint:disable-next-line:no-floating-promises
         fetchData();
     }, [selectedMarketIdx]);
 
@@ -196,9 +205,9 @@ export const LiquidityMarket: React.FC = () => {
         }));
     };
 
-    const calcMidPrice = (bids: OrderData[], asks: OrderData[]) => {
-        const highestBidPrice = bids[0].price;
-        const lowestAskPrice = asks[0].price;
+    const calcMidPrice = (_bids: OrderData[], _asks: OrderData[]) => {
+        const highestBidPrice = _bids[0].price;
+        const lowestAskPrice = _asks[0].price;
 
         return highestBidPrice.plus(lowestAskPrice).dividedBy(2);
     };
@@ -210,14 +219,14 @@ export const LiquidityMarket: React.FC = () => {
         });
     };
 
-    const calcSpread = (bids: OrderData[], asks: OrderData[]) => {
-        let highestBidSlippage = bids.reduce((max, order) => {
+    const calcSpread = (_bids: OrderData[], _asks: OrderData[]) => {
+        const highestBidSlippage = _bids.reduce((max, order) => {
             return max.lt(order.slippage) ? order.slippage : max;
-        }, bids[0].slippage);
+        }, _bids[0].slippage);
 
-        let lowestAskSlippage = asks.reduce((min, order) => {
+        const lowestAskSlippage = _asks.reduce((min, order) => {
             return min.gt(order.slippage) ? order.slippage : min;
-        }, asks[0].slippage);
+        }, _asks[0].slippage);
 
         return highestBidSlippage.minus(lowestAskSlippage);
     };
@@ -264,7 +273,7 @@ const Records: React.FC<RecordsProps> = ({ orders, operation }) => (
     <>
         {orders.map(order => {
             return (
-                <tr className={operation}>
+                <tr key={order.order.signature} className={operation}>
                     <td>{utils.getAddressBeginAndEnd(order.order.makerAddress, 5, 2)}</td>
                     <td>{formatPrice(order.price)}</td>
                     <td>{formatSize(order.size)}</td>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { NodeStats, NodeDetails } from 'ts/pages/mesh/mesh_node_stats';
+import { NodeDetails, NodeStats } from 'ts/pages/mesh/mesh_node_stats';
 
 import { configs } from 'ts/utils/configs';
 import { fetchUtils } from 'ts/utils/fetch_utils';
@@ -16,8 +16,8 @@ const meshSnapshotPath = '/snapshot';
 const ordersBaseUrl = configs.API_BASE_PROD_URL;
 const ordersPath = '/sra/orders';
 
-const fetchMeshSnapshot = () => fetchUtils.requestAsync(meshSnapshotBaseUrl, meshSnapshotPath);
-const fetchOrders = () => fetchUtils.requestAsync(ordersBaseUrl, ordersPath);
+const fetchMeshSnapshot = async () => fetchUtils.requestAsync(meshSnapshotBaseUrl, meshSnapshotPath);
+const fetchOrders = async () => fetchUtils.requestAsync(ordersBaseUrl, ordersPath);
 
 export const MeshStats: React.FC = () => {
     const [meshData, setMeshData] = useState<{ numActiveNodes: number; numEdges: number }>();
@@ -30,18 +30,20 @@ export const MeshStats: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const [meshSnapshot, orders] = await Promise.all([fetchMeshSnapshot(), fetchOrders()]);
-            const meshData = parseMeshSnapshot(meshSnapshot);
+            const [meshSnapshotData, ordersData] = await Promise.all([fetchMeshSnapshot(), fetchOrders()]);
 
-            setMeshData(meshData);
-            setOrders(orders);
+            setMeshData(parseMeshSnapshot(meshSnapshotData));
+            setOrders(ordersData);
         };
 
+        // tslint:disable-next-line:no-floating-promises
         fetchData();
     }, []);
 
     const parseMeshSnapshot = meshSnapshot => {
-        if (!meshSnapshot) return { numActiveNodes: 0, numEdges: 0 };
+        if (!meshSnapshot) {
+            return { numActiveNodes: 0, numEdges: 0 };
+        }
 
         const numActiveNodes = meshSnapshot.meshNodes.filter(node => Object.keys(node.peers).length > 0).length;
         const numEdges = (numActiveNodes * (numActiveNodes - 1)) / 2;
@@ -53,20 +55,18 @@ export const MeshStats: React.FC = () => {
     };
 
     const getActiveNodes = () => {
-        if (!meshData) return PLACEHOLDER;
-        return formatNumber(meshData.numActiveNodes).formatted;
+        return meshData ? formatNumber(meshData.numActiveNodes).formatted : PLACEHOLDER;
     };
 
     const getConnections = () => {
-        if (!meshData) return PLACEHOLDER;
-        return formatNumber(meshData.numEdges).formatted;
+        return meshData ? formatNumber(meshData.numEdges).formatted : PLACEHOLDER;
     };
 
     const getOpenOrders = () => {
-        if (!orders) return PLACEHOLDER;
-        return formatNumber(orders.total).formatted;
+        return orders ? formatNumber(orders.total).formatted : PLACEHOLDER;
     };
 
+    // tslint:disable-next-line:no-unused-variable
     const showNodeDetails = (data: NodeDetails) => {
         setNodeDetails({ data, isVisible: true });
     };

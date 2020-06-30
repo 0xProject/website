@@ -15,9 +15,9 @@ interface LinkValue {
     title: string;
 }
 
-type TableEntry = {
+interface TableEntry {
     [key: string]: DataCellValue;
-};
+}
 
 const rows = [
     {

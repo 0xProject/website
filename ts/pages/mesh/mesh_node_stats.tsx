@@ -21,7 +21,9 @@ interface NodeStatsProps {
 }
 
 export const NodeStats: React.FC<NodeStatsProps> = ({ isVisible, data }) => {
-    if (!isVisible) return null;
+    if (!isVisible) {
+        return null;
+    }
 
     const formattedAddress = `Node ${utils.getAddressBeginAndEnd(data.peerId, 3, 5)}`;
     const location = data.city ? `${data.city}, ${data.country}` : data.country;

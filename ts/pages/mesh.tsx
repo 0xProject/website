@@ -51,6 +51,7 @@ export class Mesh extends React.Component {
                         <Button href={'#entry-point'} isInline={true}>
                             Choose an accesspoint
                         </Button>
+                        // tslint:disable-next-line:jsx-curly-spacing
                     }
                 />
 

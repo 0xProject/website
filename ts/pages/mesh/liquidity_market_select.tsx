@@ -1,13 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { constants } from 'ts/utils/constants';
-
 interface LiquidityMarketSelectProps {
-    items: {
+    items: Array<{
         title: string;
         subtitle?: string;
-    }[];
+    }>;
     selectedItem: number;
     onSelectItem: (index: number) => void;
 }
@@ -129,8 +127,8 @@ interface LabelProps {
 }
 
 const Label = styled.span<LabelProps>`
-    font-size: ${props => (props.size == 'default' ? '34px' : '20px')};
-    line-height: ${props => (props.size == 'default' ? '42px' : '27px')};
+    font-size: ${props => (props.size === 'default' ? '34px' : '20px')};
+    line-height: ${props => (props.size === 'default' ? '42px' : '27px')};
     opacity: ${props => (props.isMuted ? 0.7 : 1)};
 `;
 
