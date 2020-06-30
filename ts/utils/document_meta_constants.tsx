@@ -123,8 +123,9 @@ export const documentConstants: { [s: string]: DocumentMetadata } = {
         keywords: '',
     },
     MESH: {
-        title: '',
-        description: '',
+        title: 'Access peer-to-peer token markets',
+        description:
+            'Use 0x Mesh to access a global peer-to-peer orderbook for tokens. Decentralized, it supports any type of assets including NFTs.',
         keywords: '',
     },
 };
