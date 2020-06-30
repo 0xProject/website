@@ -231,7 +231,7 @@ export const LiquidityMarket: React.FC = () => {
             return min.gt(order.slippage) ? order.slippage : min;
         }, _asks[0].slippage);
 
-        return highestBidSlippage.minus(lowestAskSlippage);
+        return highestBidSlippage.minus(lowestAskSlippage).abs();
     };
 
     const handleSelectItem = (index: number) => {
