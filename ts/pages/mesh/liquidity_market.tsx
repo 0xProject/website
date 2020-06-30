@@ -43,6 +43,7 @@ const markets = [
         title: 'ETH/DAI',
         quoteAsset: '0xf47261b00000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
         baseAsset: '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        orderSizeThreshold: 50,
         getPrice: (order: SignedOrder, op: Operation) => {
             let price;
             const takerAssetAmount = new BigNumber(order.takerAssetAmount);
@@ -82,6 +83,7 @@ const markets = [
         title: 'ETH/USDC',
         quoteAsset: '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         baseAsset: '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        orderSizeThreshold: 50,
         getPrice: (order: SignedOrder, op: Operation) => {
             let price;
             const takerAssetAmount = new BigNumber(order.takerAssetAmount);
@@ -202,13 +204,23 @@ export const LiquidityMarket: React.FC = () => {
     }, [selectedMarketIdx]);
 
     const parseOrders = (records: OrderbookRecord[], op: Operation) => {
-        const { getPrice, getSize } = markets[selectedMarketIdx];
+        const { getPrice, getSize, orderSizeThreshold = 0 } = markets[selectedMarketIdx];
 
-        return records.slice(0, ORDER_COUNT).map(({ order }) => ({
+        const mappedRecords = records.map(({ order }) => ({
             order,
             price: getPrice(order, op),
             size: getSize(order, op),
         }));
+
+        const filteredRecords = mappedRecords.filter(order => order.size.gte(orderSizeThreshold));
+
+        // if there are more filtered records than required, return them
+        if (filteredRecords.length >= ORDER_COUNT) {
+            return filteredRecords.slice(0, ORDER_COUNT);
+        }
+
+        // else fall back to all retrieved records and return first
+        return mappedRecords.slice(0, ORDER_COUNT);
     };
 
     const calcMidPrice = (_bids: OrderData[], _asks: OrderData[]) => {
