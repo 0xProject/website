@@ -62,7 +62,7 @@ const entryTableData: TableEntry[] = [
         },
         isOpenSource: true,
         operationCost: 'Free',
-        usedBy: 'Augur, etc',
+        usedBy: 'Augur',
     },
     {
         title: 'Mesh Node',
@@ -75,7 +75,7 @@ const entryTableData: TableEntry[] = [
         },
         isOpenSource: true,
         operationCost: '$5-10 / month (based on our own DigitalOcean instances)',
-        usedBy: 'example, example example',
+        usedBy: '1Inch, TokenTrove',
     },
     {
         title: '0x API endpoints',
@@ -88,7 +88,7 @@ const entryTableData: TableEntry[] = [
         },
         isOpenSource: true,
         operationCost: 'Free',
-        usedBy: 'Matcha, etc, etc, etc',
+        usedBy: 'Microsponsors, aco.finance, opynmonitor',
     },
 ];
 
