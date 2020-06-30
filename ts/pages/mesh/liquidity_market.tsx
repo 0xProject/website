@@ -29,6 +29,9 @@ interface OrderData {
 
 type Operation = 'ask' | 'bid';
 
+const PLACEHOLDER = '-';
+const ORDER_COUNT = 5;
+
 const orderbookBaseUrl = configs.API_BASE_PROD_URL;
 const orderbookPath = '/sra/v3/orderbook';
 
@@ -201,7 +204,7 @@ export const LiquidityMarket: React.FC = () => {
     const parseOrders = (records: OrderbookRecord[], op: Operation) => {
         const { getPrice, getSize } = markets[selectedMarketIdx];
 
-        return records.slice(0, 5).map(({ order }) => ({
+        return records.slice(0, ORDER_COUNT).map(({ order }) => ({
             order,
             price: getPrice(order, op),
             size: getSize(order, op),
@@ -255,7 +258,7 @@ export const LiquidityMarket: React.FC = () => {
                 </thead>
                 <tbody>
                     <Records orders={asks} operation="ask" />
-                    {hasData && <Spread value={spread} />}
+                    <Spread value={spread} />
                     <Records orders={bids} operation="bid" />
                 </tbody>
             </Table>
@@ -272,29 +275,50 @@ const formatPrice = (price: BigNumber) => formatNumber(price, { decimals: 4 }).f
 const formatSize = (size: BigNumber) => formatNumber(size, { decimals: 4 }).formatted;
 const formatSlippage = (size: BigNumber) => formatPercent(size, { decimals: 3 }).full;
 
-const Records: React.FC<RecordsProps> = ({ orders, operation }) => (
+const Records: React.FC<RecordsProps> = ({ orders, operation }) => {
+    const emptyRows = ORDER_COUNT - orders.length;
+
+    return (
+        <>
+            {operation === 'ask' && emptyRows > 0 && <EmptyRecords count={emptyRows} operation={operation} />}
+            {orders.map(order => {
+                return (
+                    <tr key={order.order.signature} className={operation}>
+                        <td>{utils.getAddressBeginAndEnd(order.order.makerAddress, 5, 2)}</td>
+                        <td>{formatPrice(order.price)}</td>
+                        <td>{formatSize(order.size)}</td>
+                        <td>{formatSlippage(order.slippage)}</td>
+                    </tr>
+                );
+            })}
+            {operation === 'bid' && emptyRows > 0 && <EmptyRecords count={emptyRows} operation={operation} />}
+        </>
+    );
+};
+
+const EmptyRecords: React.FC<{ count: number; operation: Operation }> = ({ count, operation }) => (
     <>
-        {orders.map(order => {
-            return (
-                <tr key={order.order.signature} className={operation}>
-                    <td>{utils.getAddressBeginAndEnd(order.order.makerAddress, 5, 2)}</td>
-                    <td>{formatPrice(order.price)}</td>
-                    <td>{formatSize(order.size)}</td>
-                    <td>{formatSlippage(order.slippage)}</td>
-                </tr>
-            );
-        })}
+        {[...Array(count)].map((_e, i) => (
+            <tr key={`empty-${operation}-${i}`} className="empty">
+                <td>{PLACEHOLDER}</td>
+                <td>{PLACEHOLDER}</td>
+                <td>{PLACEHOLDER}</td>
+                <td>{PLACEHOLDER}</td>
+            </tr>
+        ))}
     </>
 );
 
 const Spread: React.FC<{ value: BigNumber }> = ({ value }) => (
     <tr className="spread">
         <td colSpan={3}>Spread</td>
-        <td>{formatPercent(value, { decimals: 3 }).full}</td>
+        <td>{value ? formatPercent(value, { decimals: 3 }).full : PLACEHOLDER}</td>
     </tr>
 );
 
 const Table = styled.table`
+    table-layout: fixed;
+
     margin: 40px auto 0;
     width: calc(100% - 10px);
 
@@ -309,6 +333,10 @@ const Table = styled.table`
         opacity: 0.7;
 
         text-align: left;
+
+        &:last-child {
+            width: 16%;
+        }
     }
 
     tr td {
@@ -341,5 +369,9 @@ const Table = styled.table`
         &:first-child {
             text-align: right;
         }
+    }
+
+    tr.empty td {
+        text-align: center;
     }
 `;
