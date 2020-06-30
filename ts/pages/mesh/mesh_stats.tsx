@@ -7,6 +7,24 @@ import { configs } from 'ts/utils/configs';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { formatNumber } from 'ts/utils/format_number';
 
+interface MeshNode {
+    name: string;
+    peerId: string;
+    multiAddress: string;
+    geo: {
+        [key: string]: number | string;
+    };
+    port: string;
+    meshVersion: string;
+    peers: {
+        [key: string]: any;
+    };
+}
+
+interface Snapshot {
+    meshNodes: MeshNode[];
+}
+
 const PLACEHOLDER = '-';
 
 const meshSnapshotBaseUrl = 'https://viz.mesh.0x.org';
@@ -40,7 +58,8 @@ export const MeshStats: React.FC = () => {
         fetchData();
     }, []);
 
-    const parseMeshSnapshot = meshSnapshot => {
+    // Question: what to do with Snapshot interface?
+    const parseMeshSnapshot = (meshSnapshot: Snapshot) => {
         if (!meshSnapshot) {
             return { numActiveNodes: 0, numEdges: 0 };
         }

@@ -125,9 +125,10 @@ interface DataCellProps {
 const DataCell: React.FC<DataCellProps> = ({ id, value }) => {
     switch (id) {
         case 'link':
+            const link = value as LinkValue;
             return (
                 <td>
-                    <TableLink href={value.href} title={value.title} />
+                    <TableLink href={link.href} title={link.title} />
                 </td>
             );
         case 'isOpenSource':
