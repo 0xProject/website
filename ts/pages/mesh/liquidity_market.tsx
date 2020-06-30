@@ -217,7 +217,7 @@ export const LiquidityMarket: React.FC = () => {
 
     const calcSlippage = (orders: OrderData[], midPrice: BigNumber) => {
         return orders.map(order => {
-            order.slippage = order.price.minus(midPrice).dividedBy(midPrice);
+            order.slippage = order.price.minus(midPrice).dividedBy(midPrice).multipliedBy(100);
             return order;
         });
     };
