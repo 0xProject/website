@@ -56,10 +56,6 @@ export const NodeStats: React.FC<NodeStatsProps> = ({ isVisible, data }) => {
 };
 
 const Wrap = styled.div`
-    position: absolute;
-    top: 20px;
-    left: 20px;
-
     padding: 32px;
     border: 1px solid ${colors.brandDark};
     background-color: #000;

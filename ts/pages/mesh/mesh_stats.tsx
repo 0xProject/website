@@ -81,7 +81,9 @@ export const MeshStats: React.FC = () => {
                 <Statistic title="open orders" value={getOpenOrders()} />
             </StatisticContainer>
 
-            <NodeStats {...nodeDetails} />
+            <NodeStatsContainer>
+                <NodeStats {...nodeDetails} />
+            </NodeStatsContainer>
         </Container>
     );
 };
@@ -103,13 +105,20 @@ const Container = styled.div`
 `;
 
 const GraphContainer = styled.div`
-    width: 100%;
+    width: 350px;
     margin-bottom: 40px;
 
     /* Temporary until content is implemented*/
-    padding-bottom: 100%;
+    height: 350px;
+    margin-left: auto;
 
     background-color: #efefef;
+`;
+
+const NodeStatsContainer = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
 `;
 
 const StatisticContainer = styled.ul`
