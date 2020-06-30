@@ -184,6 +184,9 @@ export const LiquidityMarket: React.FC = () => {
 
             const _spread = calcSpread(_bids, _asks);
 
+            // Reverse asks for display (price descending order)
+            _asks.reverse();
+
             setBids(_bids);
             setAsks(_asks);
             setSpread(_spread);
