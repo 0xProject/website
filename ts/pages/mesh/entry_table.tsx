@@ -23,30 +23,37 @@ const rows = [
     {
         id: 'runAs',
         title: 'Who runs it?',
+        hideMobile: true,
     },
     {
         id: 'aim',
         title: 'Choose this for...',
+        hideMobile: false,
     },
     {
         id: 'limitations',
         title: 'Limitations',
+        hideMobile: true,
     },
     {
         id: 'link',
         title: 'Get Started',
+        hideMobile: false,
     },
     {
         id: 'isOpenSource',
         title: 'Open Source',
+        hideMobile: true,
     },
     {
         id: 'operationCost',
         title: 'Est. operation cost',
+        hideMobile: true,
     },
     {
         id: 'usedBy',
         title: 'Used By',
+        hideMobile: false,
     },
 ];
 
@@ -92,51 +99,10 @@ const entryTableData: TableEntry[] = [
     },
 ];
 
-export const EntryTable: React.FC = () => (
-    <StyledTable>
-        <thead>
-            <tr>
-                <td>&nbsp;</td>
-                {entryTableData.map(item => (
-                    <th key={item.title.toString()} scope="col">
-                        {item.title}
-                    </th>
-                ))}
-            </tr>
-        </thead>
-        <tbody>
-            {rows.map(row => (
-                <tr key={`row-${row.id}`}>
-                    <th scope="row">{row.title}</th>
-                    {entryTableData.map((item, index) => (
-                        <DataCell key={`row-${row.id}-cell-${index}`} id={row.id} value={item[row.id]} />
-                    ))}
-                </tr>
-            ))}
-        </tbody>
-    </StyledTable>
-);
-
-interface DataCellProps {
+interface DefinitionProps {
     id: string;
     value: DataCellValue;
 }
-
-const DataCell: React.FC<DataCellProps> = ({ id, value }) => {
-    switch (id) {
-        case 'link':
-            const link = value as LinkValue;
-            return (
-                <td>
-                    <TableLink href={link.href} title={link.title} />
-                </td>
-            );
-        case 'isOpenSource':
-            return <td>{value ? <Checkmark /> : null}</td>;
-        default:
-            return <td>{value}</td>;
-    }
-};
 
 const TableLink: React.FC<TableLinkProps> = props => (
     <Button isWithArrow={true} isAccentColor={true} fontSize="inherit" href={props.href} target="_blank">
@@ -150,57 +116,139 @@ const Checkmark: React.FC = () => (
     </svg>
 );
 
-const StyledTable = styled.table`
-    tr {
-        height: 90px;
+const Definition: React.FC<DefinitionProps> = ({ id, value }) => {
+    switch (id) {
+        case 'link':
+            const link = value as LinkValue;
+            return (
+                <dd>
+                    <TableLink href={link.href} title={link.title} />
+                </dd>
+            );
+        case 'isOpenSource':
+            return <dd>{value ? <Checkmark /> : null}</dd>;
+        default:
+            return <dd>{value}</dd>;
+    }
+};
+
+export const EntryTable: React.FC = () => (
+    <Wrapper>
+        {entryTableData.map(item => (
+            <Column>
+                <Title>{item.title}</Title>
+                <dl>
+                    {rows.map(row => (
+                        <>
+                            <dt className={row.hideMobile && 'mobileHidden'}>{row.title}</dt>
+                            <Definition id={row.id} value={item[row.id]} />
+                        </>
+                    ))}
+                </dl>
+            </Column>
+        ))}
+    </Wrapper>
+);
+
+const Wrapper = styled.div`
+    @media (min-width: 768px) {
+        display: flex;
+        justify-content: center;
+
+        margin-left: 246px; /* offset row headings */
+    }
+`;
+
+const Column = styled.div`
+    dt,
+    dd {
+        padding: 12px 22px;
     }
 
-    th,
-    td {
-        padding: 12px 22px;
+    dt {
+        font-size: 14px;
+        line-height: 1.345;
+        text-align: left;
+        font-feature-settings: 'tnum' on, 'lnum' on;
+    }
+
+    dd {
+        background-color: #0d1413;
 
         font-weight: 300;
         font-size: 17px;
         line-height: 1.353;
-
         text-align: center;
-        vertical-align: middle;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:nth-of-type(even) {
+            background-color: ${colors.backgroundDark};
+        }
     }
 
-    tbody tr td {
-        background-color: #0d1413;
+    @media (max-width: 768px) {
+        margin-bottom: 12px;
+
+        .mobileHidden,
+        .mobileHidden + dd {
+            display: none;
+        }
     }
 
-    tbody tr:nth-child(even) td {
-        background-color: ${colors.backgroundDark};
-    }
+    @media (min-width: 768px) {
+        position: relative;
+        flex-basis: 33%;
 
-    th:not(:first-child):not(:last-child),
-    td:not(:first-child):not(:last-child) {
-        border-right: 12px solid ${colors.backgroundBlack};
-    }
+        &:not(:last-child) {
+            margin-right: 12px;
+        }
 
-    th[scope='col'] {
+        &:not(:first-child) dt {
+            display: none;
+        }
+
+        dt,
+        dd {
+            height: 90px;
+            padding: 12px 22px;
+        }
+
+        dt {
+            position: absolute;
+            width: 246px;
+            left: -246px;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            border: 1px solid #2f4644;
+            border-right: none;
+
+            font-size: 19px;
+            text-align: right;
+        }
+    }
+`;
+
+const Title = styled.h4`
+    font-size: 22px;
+    line-height: 1.345;
+
+    font-feature-settings: 'tnum' on, 'lnum' on;
+    background-color: ${colors.brandDark};
+
+    padding: 12px 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @media (min-width: 768px) {
         height: 115px;
-        width: 26%;
-
         font-size: 24px;
-        line-height: 1.345;
-
-        font-feature-settings: 'tnum' on, 'lnum' on;
-        background-color: ${colors.brandDark};
-    }
-
-    th[scope='row'] {
-        width: 246px;
-
-        border: 1px solid #2f4644;
-        border-right: none;
-
-        font-size: 19px;
-        line-height: 1.345;
-        text-align: right;
-
-        font-feature-settings: 'tnum' on, 'lnum' on;
     }
 `;

@@ -111,7 +111,7 @@ export class Mesh extends React.Component {
                 </Section>
 
                 <Section id="entry-point" maxWidth="1170px">
-                    <Heading asElement="h2" size="medium" marginBottom="112px">
+                    <Heading asElement="h2" size="medium" marginBottom="2em">
                         Choose an entry point
                     </Heading>
                     <EntryTable />
