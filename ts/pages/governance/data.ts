@@ -294,76 +294,22 @@ export const proposals: Proposals = {
             ],
         },
     },
-};
-
-export const stagingProposals: Proposals = {
-    23: {
-        ...proposals[23],
-        title: 'Trade Bundles of Flowers',
-        voteStartDate: moment(Math.floor(Date.now() / 1000), 'X').add(-1, 'day'),
-        voteEndDate: moment(Math.floor(Date.now() / 1000), 'X').add(1, 'day'),
-    },
-    56: {
-        ...proposals[56],
-        title: 'PhoneCallAssetProxy',
-        voteStartDate: moment(Math.floor(Date.now() / 1000), 'X').add(1, 'day'),
-        voteEndDate: moment(Math.floor(Date.now() / 1000), 'X').add(2, 'day'),
-    },
-    76: {
-        zeipId: 76,
-        title: 'Standard ZEIP Process',
+    79: {
+        zeipId: 79,
+        title: 'Set the protocol fee multiplier to 70,000',
         summary: [
-            `This ZEIP introduces a standard process to mange the entire lifecycle of ZeroEx Improvement Proposals. This includes: category and phase tags, community polls for core proposals, and mandatory fields such as implementation designated team.`,
-            `Absence of a standard in the ZEIP process causes problems in the coordination of the 0x community: vague or unknown purpose of the process itself, unclear expectations on what course of action a ZEIP would take, including whether the proposal would be implemented on or not. The introduction of a standard aims at solving these problems and to create a richer pipeline of proposals from the 0x community.`,
+            `This ZEIP proposes to decrease the current protocol fee multiplier from 150,000 to 70,000.  The goal is to lower the barrier of entry for trading 0x v3 liquidity, with the intent of ultimately increasing its adoption and the liquidity rewards received by market makers (and by token holders who stake with them).`,
+            `With the increase of average gas price over the last 3 months, Ethereum is a substantially different environment from when the current value was set, hence this proposal. The new value would make the 0x protocol fee roughly equivalent to 10bps (0.10%) of DEX median trade size. Refer to the ZEIP for more details.`,
+            `Given the setProtocolFeeMultiplier timelock, if this ZEIP passes, the change will be effective from epoch 28 (starting on 07/18).`,
         ],
-        url: 'https://github.com/0xProject/ZEIPs/issues/76',
-        voteStartDate: moment(1585292400, 'X'),
-        voteEndDate: moment(1586131200, 'X'),
+        url: 'https://github.com/0xProject/ZEIPs/issues/79',
+        voteStartDate: moment(1593867600, 'X'),
+        voteEndDate: moment(1594425630, 'X'),
         benefit: {
             title: 'Benefit',
             summary: [
-                `A standardized process ultimately helps to create a high-quality pipeline of improvement proposals for the 0x core contracts, parameters, and other operational aspects of the community.`,
-                `The introduction of the intermediary poll for core ZEIP will make sure the community is bought into having the designated team (not necessarily the 0x Core team) spend time and resources to work on the specific proposal. This will become even more important once the funding of the development work (and potential audit) will be coming from the community treasury.`,
-                `The entire lifecycle of community-driven proposals and support becomes clearer to outline: general ideas are discussed in the 0x forum, change proposals are formalized into ZEIP, while questions are handled in Discord, Telegram and Reddit.`,
-            ],
-            rating: 3,
-            links: [
-                {
-                    text: 'ZEIP template',
-                    url: 'https://github.com/0xProject/ZEIPs/blob/master/ISSUE_TEMPLATE.md',
-                },
-                {
-                    text: '0x Forum',
-                    url:
-                        'https://forum.0x.org/',
-                },
-            ],
-        },
-        risks: {
-            title: 'Risk',
-            summary: [
-                `Actively managing the process will constitue an overhead cost for the designated ZEIP committee. This latter will consists initially of members of the 0x Core team, but overtime it will have to be open to other members of the community. `,
-            ],
-            rating: 1,
-            links: [
-            ],
-        },
-    },
-    77: {
-        zeipId: 77,
-        title: 'Adjust the length of staking epochs',
-        summary: [
-            `This ZEIP proposes to decrease the current epoch length from 10 to 7 days. This way, epoch finalizations align to a weekly schedule, to be triggered on Saturdays around 3am GMT.`,
-            `This ZEIP also includes a change in administrative timelocks for the StakingProxy and ZrxVault contracts, in order to align them to this new epoch duration. All timelocks for those two contracts with a value of 10 and 20 days will be set to 7 and 14 days, respectively.`,
-        ],
-        url: 'https://github.com/0xProject/ZEIPs/issues/77',
-        voteStartDate: moment(1587888000, 'X'),
-        voteEndDate: moment(1588737600, 'X'),
-        benefit: {
-            title: 'Benefit',
-            summary: [
-                `A shorter epoch duration produces historical data points more often, which helps staking participants (pool operators and ZRX delegators) make their decisions. Also, it also gives stakers a shorter delay between when an action is taken (for example stake ZRX, withdraw ZRX, transfer stake from one pool to another).`,
-                `Of all the time intervals available, 7 days represents an obvious choice since it allows stakers and delegators to align on a weekly schedule. Having epochs restart on weekends was the preferred option in informal discussions with the community.`,
+                `A negative correlation was observed between the recent increase of gas prices and the volume of DEX protocols with higher gas cost. `,
+                `The goal of reducing the multiplier is to lower the barrier of entry for trading 0x v3 liquidity. For example, a decrease in the fee will make 0x liquidity more competitive on DEX aggregators that take gas cost into account.`,
             ],
             rating: 2,
             links: [
@@ -379,11 +325,71 @@ export const stagingProposals: Proposals = {
             summary: [
                 `Staking contracts were designed to safely allow updates of a specific set of parameters via a SetParams function.`,
                 `This functionality does not trigger security-critical operations, and was considered safe by external security auditors.`,
+                `There is a risk that decreasing the fee multiplier will impact the liquidity rewards in the immediate short term.`,
+
             ],
             rating: 1,
             links: [
                 {
-                    text: 'SetParams function',
+                    text: 'SetParams function ',
+                    url:
+                        'https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#36-setting-parameters',
+                },
+                {
+                    text: 'Staking security audit',
+                    url:
+                        'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
+                },
+            ],
+        },
+    },
+};
+
+export const stagingProposals: Proposals = {
+    23: {
+        ...proposals[23],
+        title: 'Trade Bundles of Flowers',
+        voteStartDate: moment(Math.floor(Date.now() / 1000), 'X').add(-1, 'day'),
+        voteEndDate: moment(Math.floor(Date.now() / 1000), 'X').add(1, 'day'),
+    },
+    79: {
+        zeipId: 79,
+        title: 'Set the protocol fee multiplier to 70,000',
+        summary: [
+            `This ZEIP proposes to decrease the current protocol fee multiplier from 150,000 to 70,000.  The goal is to lower the barrier of entry for trading 0x v3 liquidity, with the intent of ultimately increasing its adoption and the liquidity rewards received by market makers (and by token holders who stake with them).`,
+            `With the increase of average gas price over the last 3 months, Ethereum is a substantially different environment from when the current value was set, hence this proposal. The new value would make the 0x protocol fee roughly equivalent to 10bps (0.10%) of DEX median trade size. Refer to the ZEIP for more details.`,
+            `Given the setProtocolFeeMultiplier timelock, if this ZEIP passes, the change will be effective from epoch 28 (starting on 07/18).`,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/79',
+        voteStartDate: moment(1593867600, 'X'),
+        voteEndDate: moment(1594425630, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `A negative correlation was observed between the recent increase of gas prices and the volume of DEX protocols with higher gas cost. `,
+                `The goal of reducing the multiplier is to lower the barrier of entry for trading 0x v3 liquidity. For example, a decrease in the fee will make 0x liquidity more competitive on DEX aggregators that take gas cost into account.`,
+            ],
+            rating: 2,
+            links: [
+                {
+                    text: 'Initial set of staking parameters',
+                    url:
+                        'https://github.com/0xProject/ZEIPs/issues/61',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Staking contracts were designed to safely allow updates of a specific set of parameters via a SetParams function.`,
+                `This functionality does not trigger security-critical operations, and was considered safe by external security auditors.`,
+                `There is a risk that decreasing the fee multiplier will impact the liquidity rewards in the immediate short term.`,
+
+            ],
+            rating: 1,
+            links: [
+                {
+                    text: 'SetParams function ',
                     url:
                         'https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#36-setting-parameters',
                 },
