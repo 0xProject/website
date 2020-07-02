@@ -14,7 +14,7 @@ import { FlexWrap } from 'ts/components/newLayout';
 
 import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
-import { configs } from 'ts/utils/configs';
+import { constants } from 'ts/utils/constants';
 
 import { WebsitePaths } from 'ts/types';
 
@@ -104,7 +104,7 @@ export const HeaderBase: React.FC<HeaderProps> = React.memo(props => {
                         <TradeButton
                             bgColor={theme.headerButtonBg}
                             color="#ffffff"
-                            href={configs.MATCHA_PRODUCTION_URL}
+                            href={constants.MATCHA_PRODUCTION_URL}
                             target="_blank"
                         >
                             Trade on Matcha

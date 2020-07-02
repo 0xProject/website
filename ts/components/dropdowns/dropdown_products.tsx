@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Heading, Paragraph } from 'ts/components/text';
 import { WebsitePaths } from 'ts/types';
+import { constants } from 'ts/utils/constants';
 
 const navData = [
     {
@@ -12,17 +13,21 @@ const navData = [
         url: WebsitePaths.ZeroExApi,
     },
     {
-        title: '0x Instant',
-        description: 'Embed simple token purchasing in any app or website',
-        url: WebsitePaths.Instant,
+        title: 'Matcha',
+        description: 'Simple crypto trading for everyone',
+        url: constants.MATCHA_PRODUCTION_URL,
+        shouldOpenInNewTab: true,
     },
 ];
+
+const DropdownLink: React.FC<{ href?: string; to?: string }> = ({ href, to, children }) =>
+    href ? <a href={href}>{children}</a> : <Link to={to}>{children}</Link>;
 
 export const DropdownProducts: React.FC = () => (
     <List>
         {navData.map((item, index) => (
             <li key={`productLink-${index}`}>
-                <Link to={item.url}>
+                <DropdownLink href={item.url} to={item.url}>
                     <Heading asElement="h3" color="inherit" isNoMargin={true} size="small">
                         {item.title}
                     </Heading>
@@ -32,7 +37,7 @@ export const DropdownProducts: React.FC = () => (
                             {item.description}
                         </Paragraph>
                     )}
-                </Link>
+                </DropdownLink>
             </li>
         ))}
     </List>
