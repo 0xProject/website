@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
 import { Heading, Paragraph } from 'ts/components/text';
 import { WebsitePaths } from 'ts/types';
 import { constants } from 'ts/utils/constants';
+
+import { Link } from '../documentation/shared/link';
 
 const navData = [
     {
@@ -20,14 +20,11 @@ const navData = [
     },
 ];
 
-const DropdownLink: React.FC<{ href?: string; to?: string }> = ({ href, to, children }) =>
-    href ? <a href={href}>{children}</a> : <Link to={to}>{children}</Link>;
-
 export const DropdownProducts: React.FC = () => (
     <List>
         {navData.map((item, index) => (
             <li key={`productLink-${index}`}>
-                <DropdownLink href={item.url} to={item.url}>
+                <Link to={item.url} shouldOpenInNewTab={item.shouldOpenInNewTab}>
                     <Heading asElement="h3" color="inherit" isNoMargin={true} size="small">
                         {item.title}
                     </Heading>
@@ -37,7 +34,7 @@ export const DropdownProducts: React.FC = () => (
                             {item.description}
                         </Paragraph>
                     )}
-                </DropdownLink>
+                </Link>
             </li>
         ))}
     </List>
