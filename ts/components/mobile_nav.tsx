@@ -28,6 +28,9 @@ export const MobileNav: React.FC<IMobileNavProps> = props => {
                         <Link to={WebsitePaths.ZeroExApi}>0x API</Link>
                     </li>
                     <li>
+                        <Link to={WebsitePaths.Mesh}>0x Mesh</Link>
+                    </li>
+                    <li>
                         <Link to={WebsitePaths.Instant}>0x Instant</Link>
                     </li>
                     <li>
