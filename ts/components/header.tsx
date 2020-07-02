@@ -4,7 +4,7 @@ import MediaQuery from 'react-responsive';
 import styled, { css, withTheme } from 'styled-components';
 import { Link } from 'ts/components/documentation/shared/link';
 
-//  import { Button } from 'ts/components/button';
+import { Button } from 'ts/components/button';
 import { DropdownProducts } from 'ts/components/dropdowns/dropdown_products';
 import { DropdownResources } from 'ts/components/dropdowns/dropdown_resources';
 import { Hamburger } from 'ts/components/hamburger';
@@ -14,6 +14,7 @@ import { FlexWrap } from 'ts/components/newLayout';
 
 import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
+import { configs } from 'ts/utils/configs';
 
 import { WebsitePaths } from 'ts/types';
 
@@ -72,7 +73,7 @@ const navItems: NavItemProps[] = [
 ];
 
 export const HeaderBase: React.FC<HeaderProps> = React.memo(props => {
-    const { isNavToggled, toggleMobileNav } = props;
+    const { isNavToggled, toggleMobileNav, theme } = props;
 
     const onUnpin = () => {
         if (isNavToggled) {
@@ -99,13 +100,16 @@ export const HeaderBase: React.FC<HeaderProps> = React.memo(props => {
                         ))}
                     </NavLinks>
 
-                    {/*
                     <MediaQuery minWidth={990}>
-                        <TradeButton bgColor={theme.headerButtonBg} color="#ffffff" to={WebsitePaths.Explore}>
-                            Trade on 0x
+                        <TradeButton
+                            bgColor={theme.headerButtonBg}
+                            color="#ffffff"
+                            href={configs.MATCHA_PRODUCTION_URL}
+                            target="_blank"
+                        >
+                            Trade on Matcha
                         </TradeButton>
                     </MediaQuery>
-                    */}
 
                     <MediaQuery maxWidth={800}>
                         <Hamburger isOpen={isNavToggled} onClick={toggleMobileNav} />
@@ -253,6 +257,6 @@ const DropdownWrap = styled.div<DropdownWrapInterface>`
     }
 `;
 
-// const TradeButton = styled(Button)`
-// padding: 14px 22px !important;
-// `;
+const TradeButton = styled(Button)`
+    padding: 14px 22px !important;
+`;
