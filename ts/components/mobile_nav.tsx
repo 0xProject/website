@@ -1,15 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
-
-import { Link } from 'ts/components/documentation/shared/link';
-
 import { WrapGrid, WrapProps } from 'ts/components/newLayout';
-
 import { zIndex } from 'ts/style/z_index';
-
+import { WebsitePaths } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 
-import { WebsitePaths } from 'ts/types';
+import { Link } from 'ts/components/documentation/shared/link';
 
 interface IMobileNavProps {
     isToggled: boolean;
@@ -28,7 +24,9 @@ export const MobileNav: React.FC<IMobileNavProps> = props => {
                         <Link to={WebsitePaths.ZeroExApi}>0x API</Link>
                     </li>
                     <li>
-                        <Link to={WebsitePaths.Instant}>0x Instant</Link>
+                        <Link to={constants.MATCHA_PRODUCTION_URL} shouldOpenInNewTab={true}>
+                            Matcha
+                        </Link>
                     </li>
                     <li>
                         <Link to={WebsitePaths.Staking}>ZRX</Link>
@@ -65,7 +63,8 @@ const Wrap = styled.nav<{ isToggled: boolean }>`
     height: 450px;
     background-color: ${props => props.theme.mobileNavBgUpper};
     color: ${props => props.theme.mobileNavColor};
-    transition: ${props => (props.isToggled ? 'visibility 0s, transform 0.5s' : 'visibility 0s 0.5s, transform 0.5s')};
+    transition: ${props =>
+        props.isToggled ? 'visibility 0s, transform 0.5s' : 'visibility 0s 0.5s, transform 0.5s'};
     transform: translate3d(0, ${props => (props.isToggled ? 0 : '-100%')}, 0);
     visibility: ${props => !props.isToggled && 'hidden'};
     position: fixed;
