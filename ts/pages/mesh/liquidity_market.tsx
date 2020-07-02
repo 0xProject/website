@@ -329,15 +329,20 @@ const Spread: React.FC<{ value: BigNumber }> = ({ value }) => (
 const Table = styled.table`
     table-layout: fixed;
 
-    margin: 40px auto 0;
-    width: calc(100% - 10px);
+    margin: 20px auto 0;
+    width: 100%;
+
+    @media (min-width: 768px) {
+        margin-top: 40px;
+        width: calc(100% - 10px);
+    }
 
     th {
         padding-bottom: 7px;
 
         font-weight: 300;
-        font-size: 17px;
-        line-height: 23px;
+        font-size: 15px;
+        line-height: 20px;
 
         color: #ffffff;
         opacity: 0.7;
@@ -345,22 +350,49 @@ const Table = styled.table`
         text-align: left;
 
         &:last-child {
-            width: 16%;
+            width: 20%;
+        }
+
+        @media (max-width: 768px) {
+            &:first-child {
+                width: 30%;
+            }
+        }
+
+        @media (min-width: 768px) {
+            font-size: 17px;
+            line-height: 23px;
+
+            &:last-child {
+                width: 16%;
+            }
         }
     }
 
     tr td {
-        font-size: 20px;
-        line-height: 27px;
-        /* identical to box height */
-
+        font-size: 15px;
+        line-height: 20px;
         font-feature-settings: 'tnum' on, 'lnum' on;
+
         color: #ffffff;
 
-        padding: 8px 40px 8px 0;
+        padding: 4px 10px 4px 0;
 
         &:last-child {
             padding-right: 0;
+        }
+
+        @media (max-width: 768px) {
+            &:last-child {
+                text-align: right;
+            }
+        }
+
+        @media (min-width: 768px) {
+            font-size: 20px;
+            line-height: 27px;
+
+            padding: 8px 40px 8px 0;
         }
     }
 

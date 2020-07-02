@@ -50,12 +50,10 @@ export const Blockquote: React.FC<BlockquoteProps> = ({ citeUrl, citeLabel, chil
 const Wrap = styled.figure`
     position: relative;
 
-    margin: 0 20px;
-    padding: 40px 40px 28px;
+    padding: 30px 30px 28px;
     border: 1px solid ${colors.brandLight};
 
     @media (min-width: 768px) {
-        margin: 0;
         padding: 60px 60px 48px;
     }
 `;

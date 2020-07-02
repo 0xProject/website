@@ -56,7 +56,7 @@ export class Mesh extends React.Component {
                 />
 
                 {/* Prevent double spacing between hero and this section */}
-                <Section isWrapped={false} padding="28px 0 120px" paddingMobile="8px 0 40px" overflow="visible">
+                <Section isWrapped={false} padding="28px 0 120px" paddingMobile="28px 0 40px" overflow="visible">
                     <Blockquote
                         citeUrl="https://twitter.com/VitalikButerin/status/1249421031682510849"
                         citeLabel="Vitalik Buterin, Twitter"

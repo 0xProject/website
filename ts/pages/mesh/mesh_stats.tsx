@@ -124,7 +124,7 @@ const Container = styled.div`
 `;
 
 const GraphContainer = styled.div`
-    width: 350px;
+    max-width: 350px;
     margin-bottom: 40px;
 
     /* Temporary until content is implemented*/
@@ -146,7 +146,7 @@ const StatisticContainer = styled.ul`
 `;
 
 const StatisticWrapper = styled.li`
-    padding: 0 40px;
+    padding: 0 6px;
     flex-basis: 33%;
 
     &:not(:last-child) {
@@ -155,15 +155,29 @@ const StatisticWrapper = styled.li`
 
     & header {
         font-weight: 300;
-        font-size: 17px;
-        line-height: 23px;
+        font-size: 14px;
+        line-height: 20px;
 
         margin-bottom: 13px;
     }
 
     & span {
-        font-size: 28px;
-        line-height: 38px;
+        font-size: 20px;
+        line-height: 30px;
         font-feature-settings: 'tnum' on, 'lnum' on;
+    }
+
+    @media (min-width: 768px) {
+        padding: 0 40px;
+
+        & header {
+            font-size: 17px;
+            line-height: 23px;
+        }
+
+        & span {
+            font-size: 28px;
+            line-height: 38px;
+        }
     }
 `;

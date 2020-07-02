@@ -127,9 +127,14 @@ interface LabelProps {
 }
 
 const Label = styled.span<LabelProps>`
-    font-size: ${props => (props.size === 'default' ? '34px' : '20px')};
-    line-height: ${props => (props.size === 'default' ? '42px' : '27px')};
+    font-size: ${props => (props.size === 'default' ? '26px' : '18px')};
+    line-height: ${props => (props.size === 'default' ? '32px' : '25px')};
     opacity: ${props => (props.isMuted ? 0.7 : 1)};
+
+    @media (min-width: 768px) {
+        font-size: ${props => (props.size === 'default' ? '34px' : '20px')};
+        line-height: ${props => (props.size === 'default' ? '42px' : '27px')};
+    }
 `;
 
 Label.defaultProps = {
