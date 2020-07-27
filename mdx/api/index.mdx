@@ -682,6 +682,39 @@ Easily wrap and unwrap between ETH and WETH by requesting a swap quote by settin
 ```
 </CodeTabs>
 
+#### Ensure RFQ-T liquidity
+
+RFQ-T liquidity can only be accessed if the request supplies a taker address, a permissioned API key via header `0x-api-key`, and the query parameter `intentOnFilling=true`.  For more details see the guide [Understanding RFQ-T and the 0x API](/docs/guides/understanding-rfqt-0x-api).  Also, ensure that `Native` sources have not been excluded.
+
+An RFQ-T quote can be identified by its inclusion of one or more orders with a `takerAddress` matching the `takerAddress` that was supplied in the request.  However, the lack of such an order in a quote does not indicate that RFQ-T liquidity was not considered; it only indicates that RFQ-T liquidity was not competitive enough to be included in the quote.
+
+<HttpCall fontSize="16px" path="/swap/v0/quote?buyToken=WETH&sellToken=ETH&buyAmount=10000000&takerAddress=0xffffffffffffffffffffffffffffffffffffffff" />
+
+<CodeTabs tabs={['200 - Unwrapping Transaction']}>
+
+```json
+{
+  "price": "1",
+  "guaranteedPrice": "1",
+  "to": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+  "data": "0xd0e30db0869584cd0000000000000000000000001000000000000000000000000000000000000011000000000000000000000000000000000000000000000000000000005ecd4245",
+  "value": "10000000",
+  "gas": "40000",
+  "estimatedGas": "40000",
+  "gasPrice": "36000000000",
+  "protocolFee": "0",
+  "minimumProtocolFee": "0",
+  "estimatedGasTokenRefund": "0",
+  "buyTokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+  "sellTokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+  "buyAmount": "10000000",
+  "sellAmount": "10000000",
+  "sources": [],
+  "orders": []
+}
+```
+</CodeTabs>
+
 ## GET /swap/v0/tokens
 
 Get the tokens with known symbols available for trading in the [`/swap/v0/quote`](#get-swapv0quote) endpoint.

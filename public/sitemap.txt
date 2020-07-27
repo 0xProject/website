@@ -16,6 +16,7 @@ https://0x.org/docs/guides/integrate-instant
 https://0x.org/docs/guides/ganache-setup
 https://0x.org/docs/guides/using-the-standard-relayer-api
 https://0x.org/docs/guides/web3-provider-explained
+https://0x.org/docs/guides/understanding-rfqt
 https://0x.org/docs
 https://0x.org/about
 https://0x.org/about/mission
