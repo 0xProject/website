@@ -175,6 +175,8 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `takerAddress`       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
 | `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
 | `includedSources`    | (Optional) For now only supports `RFQT`, which should be used when the integrator only wants RFQT liquidity without any other DEX orders. Requires a particular agreement with the 0x integrations team. This parameter cannot be combined with `includedSources`. |
+| `intentOnFilling`    | (Required when `includedSources=RFQT`) When requesting RFQT liquidity, `intentOnFilling=true` tells our market makers that the integrator is committed to completing the trade |
+| `skipValidation`     | (Optional, requires `takerAddress`) When set to `true`, the 0x API does not simulate the trade on-chain                                                                        |
 
 ### Response
 
