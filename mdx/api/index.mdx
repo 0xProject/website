@@ -170,7 +170,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `slippagePercentage` | (Optional) The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. This parameter will change over time with market conditions. |
 | `gasPrice`           | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                       |
 | `takerAddress`       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
-| `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
+| `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L28) for a full list of sources  |
 
 ### Response
 
@@ -229,6 +229,14 @@ Specify a `buyToken`, `sellToken` and either a `sellAmount` to get a simple quot
     },
     {
       "name": "Uniswap",
+      "proportion": "0"
+    },
+    {
+      "name": "Uniswap_V2",
+      "proportion": "0"
+    },
+    {
+      "name": "Uniswap_V2_ETH",
       "proportion": "0"
     },
     {
@@ -342,6 +350,14 @@ Supply a comma delimited list of liquidty source names to exclude them from the 
       "proportion": "0"
     },
     {
+      "name": "Uniswap_V2",
+      "proportion": "0"
+    },
+    {
+      "name": "Uniswap_V2_ETH",
+      "proportion": "0"
+    },
+    {
       "name": "Eth2Dai",
       "proportion": "0"
     },
@@ -432,6 +448,14 @@ Supply a `takerAddress` to use an [`eth_call`](https://github.com/ethereum/wiki/
     },
     {
       "name": "Uniswap",
+      "proportion": "0"
+    },
+    {
+      "name": "Uniswap_V2",
+      "proportion": "0"
+    },
+    {
+      "name": "Uniswap_V2_ETH",
       "proportion": "0"
     },
     {
@@ -560,6 +584,14 @@ Use "ETH" as the `sellToken` to receive a [Forwarder](/docs/guides/v3-forwarder-
     },
     {
       "name": "Uniswap",
+      "proportion": "0"
+    },
+    {
+      "name": "Uniswap_V2",
+      "proportion": "0"
+    },
+    {
+      "name": "Uniswap_V2_ETH",
       "proportion": "0"
     },
     {
