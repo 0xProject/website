@@ -23,7 +23,7 @@ const descriptionCasesData = [
     },
     {
         title: 'Limit orders, for more control',
-        description: 'Create markets with more granular control over pricing than AMMs like uniswap.',
+        description: 'Create markets with more granular control over pricing than AMMs.',
         icon: 'orderBooks',
     },
     {
