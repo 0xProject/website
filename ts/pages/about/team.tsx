@@ -69,11 +69,6 @@ const team: TeamMember[] = [
         title: 'Technical Fellow',
     },
     {
-        imageUrl: '/images/team/francesco.jpg',
-        name: 'Francesco Agosti',
-        title: 'Senior Engineer',
-    },
-    {
         imageUrl: '/images/team/chrisk.jpg',
         name: 'Chris Kalani',
         title: 'GM, Matcha',
