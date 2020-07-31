@@ -32,7 +32,14 @@ export interface MeshNodeMetaData {
     stats?: MeshNodeStats;
     peers: MeshNodeMetaData[];
 }
+export interface GraphNode {
+    name: string;
+    group: number;
+    x?: number;
+    y?: number;
+    metadata: MeshNodeMetaData;
+}
 export interface GraphNodeData {
-    nodes: Array<{ name: string; group: number; x?: number; y?: number }>;
+    nodes: GraphNode[];
     links: Array<{ source: number; target: number; value: number }>;
 }

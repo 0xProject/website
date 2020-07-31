@@ -40,7 +40,7 @@ export class Mesh extends React.Component {
                 <DocumentTitle {...documentConstants.MESH} />
 
                 <Hero
-                    title="Access token markets, Permissionlessly"
+                    title="Access token markets, permissionlessly"
                     description="Use 0x Mesh to access a global peer-to-peer orderbook for tokens"
                     isFullWidth={true}
                     showFigureBottomMobile={true}

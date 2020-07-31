@@ -1,12 +1,16 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { GraphNodeData, MeshNodeMetaData } from './types';
+import { GraphNode, GraphNodeData, MeshNodeMetaData } from './types';
 
-const parseMeshData = (data: any): GraphNodeData => {
-    const meshNodes = data.meshNodes.filter((m: any) => {
-        return Object.keys(m.peers).length !== 0;
-    });
+const parseMeshData = (data: { meshNodes: MeshNodeMetaData[] }): GraphNodeData => {
+    const meshNodes = data.meshNodes
+        .filter(m => {
+            return Object.keys(m.peers).length > 0;
+        })
+        .sort((a, b) => {
+            return Object.keys(b.peers).length - Object.keys(a.peers).length;
+        });
     const nodes = meshNodes.map((m: any) => {
         const node = { name: m.name, group: 0, metadata: m };
         return node;
@@ -24,9 +28,10 @@ const parseMeshData = (data: any): GraphNodeData => {
 interface MeshGraphProps {
     meshSnapshot: { meshNodes: MeshNodeMetaData[] };
     showNodeDetails: (data: MeshNodeMetaData) => void;
+    selectedNode: MeshNodeMetaData;
 }
 
-export const MeshGraph: React.FC<MeshGraphProps> = ({ meshSnapshot, showNodeDetails }) => {
+export const MeshGraph: React.FC<MeshGraphProps> = ({ meshSnapshot, showNodeDetails, selectedNode }) => {
     const ref = useRef(null);
     const [isRendered, setRendered] = useState(false);
     useEffect(
@@ -77,8 +82,32 @@ export const MeshGraph: React.FC<MeshGraphProps> = ({ meshSnapshot, showNodeDeta
                     d.fy = null;
                 };
 
-                const clicked = (d: any) => {
-                    showNodeDetails(d.metadata);
+                const pulsate = (selection: d3.Selection<SVGCircleElement, GraphNode, SVGSVGElement, any>) => {
+                    recursive_transitions();
+
+                    function recursive_transitions(): void {
+                        selection
+                            .transition()
+                            .duration(300)
+                            .attr('stroke-width', 2)
+                            .attr('r', 8)
+                            .ease(d3.easeSinIn)
+                            .transition()
+                            .duration(300)
+                            .attr('stroke-width', 3)
+                            .attr('r', 12)
+                            .ease(d3.easeSinIn)
+                            .on('end', recursive_transitions);
+                    }
+                };
+
+                const stopPulsate = (selection: d3.Selection<SVGElement, any, SVGElement, any>) => {
+                    selection
+                        .transition()
+                        .duration(200)
+                        .attr('r', 6)
+                        // tslint:disable-next-line:number-literal-format
+                        .attr('stroke-width', 1.0);
                 };
 
                 const node = svg
@@ -91,7 +120,18 @@ export const MeshGraph: React.FC<MeshGraphProps> = ({ meshSnapshot, showNodeDeta
                     // tslint:disable-next-line:number-literal-format
                     .style('stroke-width', 1.0)
                     .style('fill', '#00AE99')
-                    .on('click', clicked)
+                    .on('click', function(d: GraphNode): void {
+                        stopPulsate(svg.selectAll('circle'));
+                        const selected_circles: d3.Selection<
+                            SVGCircleElement,
+                            GraphNode,
+                            SVGSVGElement,
+                            undefined
+                            // tslint:disable-next-line:no-invalid-this
+                        > = d3.select(this);
+                        pulsate(selected_circles);
+                        showNodeDetails(d.metadata);
+                    })
                     .call(
                         d3
                             .drag<SVGCircleElement, any>()
@@ -100,7 +140,6 @@ export const MeshGraph: React.FC<MeshGraphProps> = ({ meshSnapshot, showNodeDeta
                             .on('end', dragEnded),
                     );
 
-                setRendered(true);
                 force.on('tick', () => {
                     link.attr('x1', (d: any) => d.source.x)
                         .attr('y1', (d: any) => d.source.y)
@@ -109,6 +148,14 @@ export const MeshGraph: React.FC<MeshGraphProps> = ({ meshSnapshot, showNodeDeta
 
                     node.attr('cx', (d: any) => d.x).attr('cy', (d: any) => d.y);
                 });
+                setRendered(true);
+                const firstElementSelection = svg
+                    .selectAll<SVGCircleElement, GraphNode>('circle')
+                    .filter((_, i) => i === 0)
+                    .each(d => {
+                        showNodeDetails(d.metadata);
+                    });
+                pulsate(firstElementSelection);
             }
         },
         [meshSnapshot],

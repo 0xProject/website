@@ -19,7 +19,6 @@ export const NodeStats: React.FC<NodeStatsProps> = ({ isVisible, data }) => {
     }
 
     const formattedAddress = `Node ${utils.getAddressBeginAndEnd(data.peerId, 3, 5)}`;
-    const location = data.geo.city ? `${data.geo.city}, ${data.geo.country}` : data.geo.country;
     const numOrders = data.stats?.numOrders_number ? formatNumber(data.stats.numOrders_number).formatted : '-';
     const numPeers = data.stats?.numPeers_number ? formatNumber(data.stats.numPeers_number).formatted : '-';
 
@@ -38,12 +37,12 @@ export const NodeStats: React.FC<NodeStatsProps> = ({ isVisible, data }) => {
                     <Value>{numPeers}</Value>
                 </Item>
                 <Item>
-                    <Label>ip</Label>
-                    <Value>{data.ip}</Value>
+                    <Label>country</Label>
+                    <Value>{data.geo.country}</Value>
                 </Item>
                 <Item>
-                    <Label>location</Label>
-                    <Value>{location}</Value>
+                    <Label>city</Label>
+                    <Value>{data.geo.city ? data.geo.city : data.geo.country}</Value>
                 </Item>
             </ListWrap>
         </Wrap>
