@@ -38,6 +38,7 @@
         "@0x/web3-wrapper": "^7.0.2",
         "@reach/dialog": "^0.1.3",
         "@reach/tabs": "^0.1.6",
+        "@types/d3": "^5.7.2",
         "accounting": "^0.4.1",
         "algoliasearch": "^3.33.0",
         "basscss": "^8.0.3",
