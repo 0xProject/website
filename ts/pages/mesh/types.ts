@@ -33,6 +33,6 @@ export interface MeshNodeMetaData {
     peers: MeshNodeMetaData[];
 }
 export interface GraphNodeData {
-    nodes: Array<{ name: string; group: number }>;
+    nodes: Array<{ name: string; group: number; x?: number; y?: number }>;
     links: Array<{ source: number; target: number; value: number }>;
 }

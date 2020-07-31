@@ -26,7 +26,7 @@ const fetchMeshSnapshot = async () => fetchUtils.requestAsync(meshSnapshotBaseUr
 const fetchOrders = async () => fetchUtils.requestAsync(ordersBaseUrl, ordersPath);
 
 export const MeshStats: React.FC = () => {
-    const [meshSnapshot, setMeshSnapshot] = useState<{ meshNodes: MeshNodeMetaData[] }>();
+    const [meshFetchedSnapshot, setMeshSnapshot] = useState<{ meshNodes: MeshNodeMetaData[] }>();
     const [meshData, setMeshData] = useState<{ numActiveNodes: number; numEdges: number }>();
     const [orders, setOrders] = useState();
 
@@ -83,7 +83,7 @@ export const MeshStats: React.FC = () => {
     return (
         <Container>
             <GraphContainer>
-                <MeshGraph meshSnapshot={meshSnapshot} showNodeDetails={showNodeDetails} />
+                <MeshGraph meshSnapshot={meshFetchedSnapshot} showNodeDetails={showNodeDetails} />
             </GraphContainer>
 
             <StatisticContainer>
