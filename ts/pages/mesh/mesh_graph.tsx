@@ -87,12 +87,12 @@ export const MeshGraph: React.FC<MeshGraphProps> = ({ meshSnapshot, showNodeDeta
                     function recursive_transitions(): void {
                         selection
                             .transition()
-                            .duration(300)
+                            .duration(500)
                             .attr('stroke-width', 2)
                             .attr('r', 8)
                             .ease(d3.easeSinIn)
                             .transition()
-                            .duration(300)
+                            .duration(500)
                             .attr('stroke-width', 3)
                             .attr('r', 12)
                             .ease(d3.easeSinIn)
