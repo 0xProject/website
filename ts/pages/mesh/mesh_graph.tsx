@@ -28,10 +28,9 @@ const parseMeshData = (data: { meshNodes: MeshNodeMetaData[] }): GraphNodeData =
 interface MeshGraphProps {
     meshSnapshot: { meshNodes: MeshNodeMetaData[] };
     showNodeDetails: (data: MeshNodeMetaData) => void;
-    selectedNode: MeshNodeMetaData;
 }
 
-export const MeshGraph: React.FC<MeshGraphProps> = ({ meshSnapshot, showNodeDetails, selectedNode }) => {
+export const MeshGraph: React.FC<MeshGraphProps> = ({ meshSnapshot, showNodeDetails }) => {
     const ref = useRef(null);
     const [isRendered, setRendered] = useState(false);
     useEffect(
