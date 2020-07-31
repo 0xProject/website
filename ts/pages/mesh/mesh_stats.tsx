@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { NodeDetails, NodeStats } from 'ts/pages/mesh/mesh_node_stats';
-
 import { configs } from 'ts/utils/configs';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { formatNumber } from 'ts/utils/format_number';
 
-interface MeshNode {
-    name: string;
-    peerId: string;
-    multiAddress: string;
-    geo: {
-        [key: string]: number | string;
-    };
-    port: string;
-    meshVersion: string;
-    peers: {
-        [key: string]: any;
-    };
-}
+import { MeshGraph } from './mesh_graph';
+import { NodeStats } from './mesh_node_stats';
+import { MeshNodeMetaData } from './types';
 
 interface Snapshot {
-    meshNodes: MeshNode[];
+    meshNodes: MeshNodeMetaData[];
 }
 
 const PLACEHOLDER = '-';
@@ -38,10 +26,11 @@ const fetchMeshSnapshot = async () => fetchUtils.requestAsync(meshSnapshotBaseUr
 const fetchOrders = async () => fetchUtils.requestAsync(ordersBaseUrl, ordersPath);
 
 export const MeshStats: React.FC = () => {
+    const [meshSnapshot, setMeshSnapshot] = useState<{ meshNodes: MeshNodeMetaData[] }>();
     const [meshData, setMeshData] = useState<{ numActiveNodes: number; numEdges: number }>();
     const [orders, setOrders] = useState();
 
-    const [nodeDetails, setNodeDetails] = useState<{ data?: NodeDetails; isVisible: boolean }>({
+    const [nodeDetails, setNodeDetails] = useState<{ data?: MeshNodeMetaData; isVisible: boolean }>({
         data: undefined,
         isVisible: false,
     });
@@ -51,6 +40,7 @@ export const MeshStats: React.FC = () => {
             const [meshSnapshotData, ordersData] = await Promise.all([fetchMeshSnapshot(), fetchOrders()]);
 
             setMeshData(parseMeshSnapshot(meshSnapshotData));
+            setMeshSnapshot(meshSnapshotData);
             setOrders(ordersData);
         };
 
@@ -86,13 +76,15 @@ export const MeshStats: React.FC = () => {
     };
 
     // tslint:disable-next-line:no-unused-variable
-    const showNodeDetails = (data: NodeDetails) => {
+    const showNodeDetails = (data: MeshNodeMetaData) => {
         setNodeDetails({ data, isVisible: true });
     };
 
     return (
         <Container>
-            <GraphContainer>{/* TODO: implement interactive graph  */}</GraphContainer>
+            <GraphContainer>
+                <MeshGraph meshSnapshot={meshSnapshot} showNodeDetails={showNodeDetails} />
+            </GraphContainer>
 
             <StatisticContainer>
                 <Statistic title="active nodes" value={getActiveNodes()} />
@@ -131,7 +123,7 @@ const GraphContainer = styled.div`
     height: 350px;
     margin-left: auto;
 
-    background-color: #efefef;
+    background-color: #000;
 `;
 
 const NodeStatsContainer = styled.div`

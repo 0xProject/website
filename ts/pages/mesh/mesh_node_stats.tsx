@@ -6,18 +6,11 @@ import { colors } from 'ts/style/colors';
 import { formatNumber } from 'ts/utils/format_number';
 import { utils } from 'ts/utils/utils';
 
-export interface NodeDetails {
-    peerId: string;
-    numOrders: number;
-    numPeers: number;
-    ip: string;
-    country: string;
-    city: string;
-}
+import { MeshNodeMetaData } from './types';
 
 interface NodeStatsProps {
     isVisible: boolean;
-    data?: NodeDetails;
+    data?: MeshNodeMetaData;
 }
 
 export const NodeStats: React.FC<NodeStatsProps> = ({ isVisible, data }) => {
@@ -26,7 +19,9 @@ export const NodeStats: React.FC<NodeStatsProps> = ({ isVisible, data }) => {
     }
 
     const formattedAddress = `Node ${utils.getAddressBeginAndEnd(data.peerId, 3, 5)}`;
-    const location = data.city ? `${data.city}, ${data.country}` : data.country;
+    const location = data.geo.city ? `${data.geo.city}, ${data.geo.country}` : data.geo.country;
+    const numOrders = data.stats?.numOrders_number ? formatNumber(data.stats.numOrders_number).formatted : '-';
+    const numPeers = data.stats?.numPeers_number ? formatNumber(data.stats.numPeers_number).formatted : '-';
 
     return (
         <Wrap>
@@ -36,11 +31,11 @@ export const NodeStats: React.FC<NodeStatsProps> = ({ isVisible, data }) => {
             <ListWrap>
                 <Item>
                     <Label>order count</Label>
-                    <Value>{formatNumber(data.numOrders).formatted}</Value>
+                    <Value>{numOrders}</Value>
                 </Item>
                 <Item>
                     <Label>peer count</Label>
-                    <Value>{data.numPeers}</Value>
+                    <Value>{numPeers}</Value>
                 </Item>
                 <Item>
                     <Label>ip</Label>
