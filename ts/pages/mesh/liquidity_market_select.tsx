@@ -132,8 +132,8 @@ const Label = styled.span<LabelProps>`
     opacity: ${props => (props.isMuted ? 0.7 : 1)};
 
     @media (min-width: 768px) {
-        font-size: ${props => (props.size === 'default' ? '34px' : '20px')};
-        line-height: ${props => (props.size === 'default' ? '42px' : '27px')};
+        font-size: ${props => (props.size === 'default' ? '28px' : '20px')};
+        line-height: ${props => (props.size === 'default' ? '38px' : '27px')};
     }
 `;
 
