@@ -135,14 +135,14 @@ const Definition: React.FC<DefinitionProps> = ({ id, value }) => {
 export const EntryTable: React.FC = () => (
     <Wrapper>
         {entryTableData.map(item => (
-            <Column>
+            <Column key={item.title.toString()}>
                 <Title>{item.title}</Title>
                 <dl>
                     {rows.map(row => (
-                        <>
-                            <dt className={row.hideMobile && 'mobileHidden'}>{row.title}</dt>
+                        <React.Fragment key={row.title.toString()}>
+                            <dt className={row.hideMobile ? 'mobileHidden' : ''}>{row.title}</dt>
                             <Definition id={row.id} value={item[row.id]} />
-                        </>
+                        </React.Fragment>
                     ))}
                 </dl>
             </Column>

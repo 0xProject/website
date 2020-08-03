@@ -1,23 +1,21 @@
+import { SignedOrder } from '@0x/types';
+import { BigNumber } from '@0x/utils';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-import { BigNumber } from '@0x/utils';
-
 import { LiquidityMarketSelect } from 'ts/pages/mesh/liquidity_market_select';
-
 import { configs } from 'ts/utils/configs';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { formatNumber, formatPercent } from 'ts/utils/format_number';
 import { utils } from 'ts/utils/utils';
 
-import { SignedOrder } from '@0x/types';
-
 interface OrderbookRecord {
     order: SignedOrder;
-    metaData: {
-        orderHash: string;
-        remainingFillableTakerAssetAmount: string;
-    };
+    metaData: OrderMetaData;
+}
+
+interface OrderMetaData {
+    orderHash: string;
+    remainingFillableTakerAssetAmount: string;
 }
 
 interface OrderData {
@@ -37,6 +35,26 @@ const orderbookPath = '/sra/v3/orderbook';
 
 const fetchOrders = async (baseAssetData: string, quoteAssetData: string) =>
     fetchUtils.requestAsync(orderbookBaseUrl, orderbookPath, { baseAssetData, quoteAssetData });
+
+const getSizeWithConstant = (order: SignedOrder, op: Operation, metaData: OrderMetaData, constant: BigNumber) => {
+    let size;
+    const takerAssetAmount = new BigNumber(order.takerAssetAmount);
+    const makerAssetAmount = new BigNumber(order.makerAssetAmount);
+    const remainingFillableTakerAssetAmount = new BigNumber(metaData.remainingFillableTakerAssetAmount);
+
+    // tslint:disable-next-line:switch-default
+    switch (op) {
+        case 'ask':
+            size = remainingFillableTakerAssetAmount.div(constant);
+            break;
+        case 'bid':
+            size = remainingFillableTakerAssetAmount
+                .div(takerAssetAmount)
+                .multipliedBy(makerAssetAmount)
+                .div(constant);
+    }
+    return size;
+};
 
 const markets = [
     {
@@ -61,22 +79,9 @@ const markets = [
 
             return price;
         },
-        getSize: (order: SignedOrder, op: Operation) => {
-            let size;
-            const takerAssetAmount = new BigNumber(order.takerAssetAmount);
-            const makerAssetAmount = new BigNumber(order.makerAssetAmount);
+        getSize: (order: SignedOrder, op: Operation, metaData: OrderMetaData) => {
             const constant = new BigNumber('1.0e18');
-
-            // tslint:disable-next-line:switch-default
-            switch (op) {
-                case 'ask':
-                    size = takerAssetAmount.div(constant);
-                    break;
-                case 'bid':
-                    size = makerAssetAmount.div(constant);
-            }
-
-            return size;
+            return getSizeWithConstant(order, op, metaData, constant);
         },
     },
     {
@@ -102,23 +107,9 @@ const markets = [
 
             return price;
         },
-        getSize: (order: SignedOrder, op: Operation) => {
-            let size;
-            const takerAssetAmount = new BigNumber(order.takerAssetAmount);
-            const makerAssetAmount = new BigNumber(order.makerAssetAmount);
+        getSize: (order: SignedOrder, op: Operation, metaData: OrderMetaData) => {
             const constant = new BigNumber('1.0e6');
-
-            // tslint:disable-next-line:switch-default
-            switch (op) {
-                case 'ask':
-                    size = takerAssetAmount.div(constant);
-                    break;
-                case 'bid':
-                    size = makerAssetAmount.div(constant);
-                    break;
-            }
-
-            return size;
+            return getSizeWithConstant(order, op, metaData, constant);
         },
     },
     {
@@ -142,22 +133,9 @@ const markets = [
 
             return price;
         },
-        getSize: (order: SignedOrder, op: Operation) => {
-            let size;
-            const takerAssetAmount = new BigNumber(order.takerAssetAmount);
-            const makerAssetAmount = new BigNumber(order.makerAssetAmount);
+        getSize: (order: SignedOrder, op: Operation, metaData: OrderMetaData) => {
             const constant = new BigNumber('1.0e18');
-
-            // tslint:disable-next-line:switch-default
-            switch (op) {
-                case 'ask':
-                    size = takerAssetAmount.div(constant);
-                    break;
-                case 'bid':
-                    size = makerAssetAmount.div(constant);
-            }
-
-            return size;
+            return getSizeWithConstant(order, op, metaData, constant);
         },
     },
 ];
@@ -174,42 +152,45 @@ export const LiquidityMarket: React.FC = () => {
         setSpread(undefined);
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const market = markets[selectedMarketIdx];
-            const orders = await fetchOrders(market.baseAsset, market.quoteAsset);
+    useEffect(
+        () => {
+            const fetchData = async () => {
+                const market = markets[selectedMarketIdx];
+                const orders = await fetchOrders(market.baseAsset, market.quoteAsset);
 
-            const _bids = parseOrders(orders.bids.records, 'bid');
-            const _asks = parseOrders(orders.asks.records, 'ask');
+                const _bids = parseOrders(orders.bids.records, 'bid');
+                const _asks = parseOrders(orders.asks.records, 'ask');
 
-            const midPrice = calcMidPrice(_bids, _asks);
+                const midPrice = calcMidPrice(_bids, _asks);
 
-            calcSlippage(_bids, midPrice);
-            calcSlippage(_asks, midPrice);
+                calcSlippage(_bids, midPrice);
+                calcSlippage(_asks, midPrice);
 
-            const _spread = calcSpread(_bids, _asks);
+                const _spread = calcSpread(_bids, _asks);
 
-            // Reverse asks for display (price descending order)
-            _asks.reverse();
+                // Reverse asks for display (price descending order)
+                _asks.reverse();
 
-            setBids(_bids);
-            setAsks(_asks);
-            setSpread(_spread);
-        };
+                setBids(_bids);
+                setAsks(_asks);
+                setSpread(_spread);
+            };
 
-        resetData();
+            resetData();
 
-        // tslint:disable-next-line:no-floating-promises
-        fetchData();
-    }, [selectedMarketIdx]);
+            // tslint:disable-next-line:no-floating-promises
+            fetchData();
+        },
+        [selectedMarketIdx],
+    );
 
     const parseOrders = (records: OrderbookRecord[], op: Operation) => {
         const { getPrice, getSize, orderSizeThreshold = 0 } = markets[selectedMarketIdx];
 
-        const mappedRecords = records.map(({ order }) => ({
+        const mappedRecords = records.map(({ order, metaData }) => ({
             order,
             price: getPrice(order, op),
-            size: getSize(order, op),
+            size: getSize(order, op, metaData),
         }));
 
         const filteredRecords = mappedRecords.filter(order => order.size.gte(orderSizeThreshold));
@@ -224,27 +205,45 @@ export const LiquidityMarket: React.FC = () => {
     };
 
     const calcMidPrice = (_bids: OrderData[], _asks: OrderData[]) => {
-        const highestBidPrice = _bids[0].price;
-        const lowestAskPrice = _asks[0].price;
+        let midPrice;
+        if (_bids.length === 0) {
+            if (_asks.length > 0) {
+                midPrice = _asks[0].price;
+            }
+        }
+        if (_asks.length === 0) {
+            if (_bids.length > 0) {
+                midPrice = _bids[0].price;
+            }
+        }
+        if (midPrice === undefined) {
+            midPrice = _bids[0].price.plus(_asks[0].price).dividedBy(2);
+        }
 
-        return highestBidPrice.plus(lowestAskPrice).dividedBy(2);
+        return midPrice;
     };
 
     const calcSlippage = (orders: OrderData[], midPrice: BigNumber) => {
         return orders.map(order => {
-            order.slippage = order.price.minus(midPrice).dividedBy(midPrice).multipliedBy(100);
+            order.slippage = order.price
+                .minus(midPrice)
+                .dividedBy(midPrice)
+                .multipliedBy(100);
             return order;
         });
     };
 
     const calcSpread = (_bids: OrderData[], _asks: OrderData[]) => {
+        const firstBidSlippage = _bids.length > 0 ? _bids[0].slippage : new BigNumber(0);
+        const firstAskSlippage = _asks.length > 0 ? _asks[0].slippage : new BigNumber(0);
+
         const highestBidSlippage = _bids.reduce((max, order) => {
             return max.lt(order.slippage) ? order.slippage : max;
-        }, _bids[0].slippage);
+        }, firstBidSlippage);
 
         const lowestAskSlippage = _asks.reduce((min, order) => {
             return min.gt(order.slippage) ? order.slippage : min;
-        }, _asks[0].slippage);
+        }, firstAskSlippage);
 
         return highestBidSlippage.minus(lowestAskSlippage).abs();
     };

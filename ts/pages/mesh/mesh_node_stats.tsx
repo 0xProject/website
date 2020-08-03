@@ -38,11 +38,11 @@ export const NodeStats: React.FC<NodeStatsProps> = ({ isVisible, data }) => {
                 </Item>
                 <Item>
                     <Label>country</Label>
-                    <Value>{data.geo.country}</Value>
+                    <Value>{data.geo?.country}</Value>
                 </Item>
                 <Item>
                     <Label>city</Label>
-                    <Value>{data.geo.city ? data.geo.city : data.geo.country}</Value>
+                    <Value>{data.geo?.city ? data.geo?.city : data.geo?.country}</Value>
                 </Item>
             </ListWrap>
         </Wrap>
