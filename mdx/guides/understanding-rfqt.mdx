@@ -1,1 +1,62 @@
-# Understanding 0x API's RFQ-T liquidity model
+In its role as a DEX aggregator, the 0x API integrates both on- and off-chain liquidity. On-chain liquidity is sourced by sampling smart contract liquidity pools, such as Uniswap and Curve. Off-chain liquidity has historically been sourced only by surveying open orderbooks on 0x Mesh.
+
+With the use of RFQ-T, the API aggregates not just on-chain pools and Mesh order books, but also real-time quotes from live market makers offering exclusive pricing.
+
+RFQ is an abbreviation of Request for Quote, in that the 0x API requests quotes from market makers on behalf of its clients. The -T suffix indicates that the settlement transaction is to be submitted to the blockchain by the Taker. (An RFQ-M model, in which the maker submits the transaction, is under consideration, but is outside the scope of this Guide.)
+
+## Limitations of Open Liquidity
+
+Market makers providing open liquidity are subject to unique risks that impact their bottom-line pricing. If asset prices exhibit great movement in the markets, outstanding orders can flip from profitable to loss-incurring. And cancelling outstanding orders can be expensive and unreliable, subject to gas markets and front-running. Carrying these risks has a real cost, and that cost effectively deteriorates pricing for takers.
+
+In practice, such losses are largely at the hands of one particular class of takers: arb bots. If makers share orders with an unspecified/null taker address, as is typical in Mesh order sharing, then those orders can be filled by anyone, including arb bots. Human traders, on the other hand, are extremely unlikely to be able to take advantage of such arbitrage opportunities, and if market makers could somehow serve orders only to those human users, they could afford to offer better prices to them.
+
+## Trusted Takers
+
+The 0x API now automatically attempts to supplement every quote with RFQ-T liquidity. The biggest determinant of whether such live quotes will be aggregated with other liquidity sources is whether the client is a known and trusted taker
+
+Trusted takers are identified by an API key, specified in the HTTP header `0x-api-key`. In addition, to qualify for RFQ-T liquidity, the request must also specify a non-null `takerAddress` query parameter, which will be included in the order that the maker signs, preventing anyone else from filling that order.
+
+The 0x API can be configured with a list of API keys which are permitted to access RFQ-T liquidity. For the instance at `api.0x.org`, the 0x team is maintaining a list of trusted API integrators, which at this time includes such projects as DeFi Saver and Zerion, and of course 0x's own Matcha.
+
+## Dedicated Makers
+
+In addition to the 0x API configuration identifying trusted takers, it also contains a list of specific market makers that participate in the RFQ-T model. Each maker is identified by an HTTP API endpoint URL, and each endpoint has an associated list of asset pairs for which that endpoint will provide quotes.
+
+For the instance at `api.0x.org`, the 0x team is maintaining a list of trusted market makers, which at this time includes 0x's own Periscope Trading, as well as a handful of other trusted partners.
+
+Whenever a trusted taker reqeuests a quote for an asset pair known to be served by at least one RFQ-T maker, the API's response will take RFQ-T liquidity into consideration.
+
+## Quote types: indicative vs firm
+
+In order to improve capital efficiency, the RFQ-T model introduces a new request/response flow: first request pricing, then request a fillable quote.
+
+When market makers provide a quote that can be settled, in the form of a 0x order that can be filled by submitting it to the blockchain, the taker of that order has an expectation that the swap will actually settle (that it won't revert due to lack of available maker assets). In order to uphold this expectation, makers should refrain from using those same assets as the basis for any other quotes, for the duration of the order.
+
+However, if every price inquiry required the maker to reserve funds, they would quickly end up with all of their funds reserved, and they would be unable to provide any other quotes until those assets were available again.
+
+To aleviate this potential capital inefficiency, the RFQ-T model introduces the distinction between "indicative pricing" and "firm quotes."
+
+The 0x API offers two different endpoints for the use of RFQ-T. One is an "indicative pricing" endpoint, hosted at `/swap/vX/price`. This endpoint responds with pricing information, but that response does not contain a full 0x order, so it does not constitute a legitimate transaction that can be submitted to the blockchain. Therefore, when a market maker services an indicative request they do not need to reserve any funds for it, leaving their funds available for other quotes to other clients.
+
+The other endpoint is for "firm quotes," and is hosted at `/swap/vX/quote`. This endpoint responds with a full 0x order, which can be submitted to the blockchain by the client. Therefore it is expected that the maker has reserved the maker assets required to settle the trade, leaving the order unlikely to revert.
+
+Note that the `/swap/vX/quote` endpoint is also used to access non-RFQ-T liquidity as well. In order to qualify for access to RFQ-T liquidity, the request must include query parameter `intentOnFilling=true` (in addition to the aforementioned `0x-api-key` and non-null `takerAddress`).
+
+0x API clients should strictly adhere to a rule of using indicative pricing by default, and of only requesting firm quotes when the user is actually intent on filling. For example, a continuously updating price display on a web page should be fed by indicative pricing, and a trade confirmation display should be fed by firm quotes.
+
+## Maker endpoint interactions
+
+When a 0x API client submits a request that qualifies for RFQ-T liquidity, the API will, during the handling of that request, submit HTTP requests to market makers' endpoints, and integrate their responses into the response for its own client.
+
+[diagram: RFQ-T request-response flow]
+
+Take note: the market maker endpoints are to be consumed only by the API, on behalf of its users. They are not to be consumed directly by users themselves.
+
+### Maker endpoint specification
+
+
+## Observing RFQ-T liquidity
+
+[Not immediately obvious, grouped together with "0x"/"Native", look for a non-null taker address.]
+
+## Debugging: skipValidation=true

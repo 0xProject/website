@@ -317,9 +317,9 @@
             "path": "guides/0x-api-faq.mdx"
         },
         "understanding-rfqt": {
-            "title": "Understanding the 0x API's RFQ-T Liquidity Model",
-            "subtitle": "A guide to how the 0x API handles Requests for Quotes to be submitted by Takers",
-            "description": "A guide to how the 0x API handles Requests for Quotes to be submitted by Takers",
+            "title": "RFQ-T in the 0x API",
+            "subtitle": "Learn how the 0x API interacts directly with market makers to supplement open liquidity with exclusive pricing",
+            "description": "Learn how the 0x API interacts directly with market makers to supplement open liquidity with exclusive pricing",
             "tags": ["0x API", "0x API"],
             "topics": ["0x API", "0x API"],
             "difficulty": "Advanced",
