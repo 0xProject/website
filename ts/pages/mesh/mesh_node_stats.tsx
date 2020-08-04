@@ -50,6 +50,10 @@ export const NodeStats: React.FC<NodeStatsProps> = ({ isVisible, data }) => {
 };
 
 const Wrap = styled.div`
+    @media (max-width: 768px) {
+        display: none;
+    }
+
     padding: 32px;
     border: 1px solid ${colors.brandDark};
     background-color: #000;
