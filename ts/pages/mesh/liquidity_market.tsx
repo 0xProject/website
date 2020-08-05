@@ -113,28 +113,28 @@ const markets = [
         },
     },
     {
-        title: 'SNX/ETH',
-        baseAsset: '0xf47261b0000000000000000000000000c011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
-        quoteAsset: '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        title: 'USDC/DAI',
+        baseAsset: '0xf47261b00000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+        quoteAsset: '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        orderSizeThreshold: 50,
         getPrice: (order: SignedOrder, op: Operation) => {
             let price;
             const takerAssetAmount = new BigNumber(order.takerAssetAmount);
             const makerAssetAmount = new BigNumber(order.makerAssetAmount);
-
+            const constant = new BigNumber('1.0e12');
             // tslint:disable-next-line:switch-default
             switch (op) {
                 case 'ask':
-                    price = takerAssetAmount.div(makerAssetAmount);
+                    price = takerAssetAmount.div(makerAssetAmount).times(constant);
                     break;
                 case 'bid':
-                    price = makerAssetAmount.div(takerAssetAmount);
+                    price = makerAssetAmount.div(takerAssetAmount).times(constant);
                     break;
             }
-
             return price;
         },
         getSize: (order: SignedOrder, op: Operation, metaData: OrderMetaData) => {
-            const constant = new BigNumber('1.0e18');
+            const constant = new BigNumber('1.0e6');
             return getSizeWithConstant(order, op, metaData, constant);
         },
     },
