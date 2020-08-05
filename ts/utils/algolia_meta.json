@@ -316,14 +316,14 @@
             "difficulty": "Beginner",
             "path": "guides/0x-api-faq.mdx"
         },
-        "understanding-rfqt": {
+        "rfqt-in-the-0x-api": {
             "title": "RFQ-T in the 0x API",
             "subtitle": "Learn how the 0x API interacts directly with market makers to supplement open liquidity with exclusive pricing",
             "description": "Learn how the 0x API interacts directly with market makers to supplement open liquidity with exclusive pricing",
-            "tags": ["0x API", "0x API"],
-            "topics": ["0x API", "0x API"],
+            "tags": ["0x API"],
+            "topics": ["0x API"],
             "difficulty": "Advanced",
-            "path": "guides/understanding-rfqt.mdx"
+            "path": "guides/rfqt-in-the-0x-api.mdx"
         }
     },
     "tools": {
