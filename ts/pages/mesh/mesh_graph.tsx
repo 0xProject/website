@@ -40,9 +40,12 @@ export const MeshGraph: React.FC<MeshGraphProps> = ({ meshSnapshot, showNodeDeta
                 const height = 350;
                 const data: GraphNodeData =
                     meshSnapshot !== undefined ? parseMeshData(meshSnapshot) : { nodes: [], links: [] };
+
                 const force = d3
                     .forceSimulation()
                     .nodes(data.nodes)
+                    .force('x', d3.forceX(width / 2).strength(0.05))
+                    .force('y', d3.forceY(height / 2).strength(0.05))
                     .force('charge', d3.forceManyBody().strength(-220))
                     .force('link', d3.forceLink(data.links).distance(150))
                     .force('center', d3.forceCenter(width / 2, height / 2));
@@ -51,7 +54,8 @@ export const MeshGraph: React.FC<MeshGraphProps> = ({ meshSnapshot, showNodeDeta
                     .select(ref.current)
                     .append('svg')
                     .attr('width', width)
-                    .attr('height', height);
+                    .attr('height', height)
+                    .attr('viewBox', `0 0 ${width} ${height}`);
 
                 const link = svg
                     .selectAll('line')
