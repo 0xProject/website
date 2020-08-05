@@ -311,8 +311,8 @@
             "title": "0x API FAQ",
             "subtitle": "A list of FAQs on how to best utilize 0x API liquidity in your Defi product.",
             "description": "A list of FAQs on how to best utilize 0x API liquidity in your Defi product.",
-            "tags": ["0x API", "0x API"],
-            "topics": ["0x API", "0x API"],
+            "tags": ["0x API"],
+            "topics": ["0x API"],
             "difficulty": "Beginner",
             "path": "guides/0x-api-faq.mdx"
         },
