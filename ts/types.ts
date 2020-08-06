@@ -76,6 +76,11 @@ export interface AccountNotReady {
     state: AccountState.None | AccountState.Loading | AccountState.Locked;
 }
 
+export interface IWallet {
+    connector: any;
+    name: string;
+}
+
 export type Account = AccountReady | AccountNotReady;
 
 export interface ProviderState {

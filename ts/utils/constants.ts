@@ -1,7 +1,8 @@
 import { BigNumber } from '@0x/utils';
-import { AccountNotReady, AccountState, Networks, Providers, WebsitePaths } from 'ts/types';
+import { AccountNotReady, AccountState, Networks, Providers, WebsitePaths, IWallet } from 'ts/types';
 
 import { SupportedDocJson } from '../types';
+import { injected, walletconnect, walletlink } from './connectors';
 
 const URL_FORUM = 'https://forum.0x.org';
 const URL_ZEROEX_CHAT = 'https://discord.gg/d3FTX3M';
@@ -81,6 +82,20 @@ export const constants = {
         [Providers.ImToken]: 'im_token_wallet_icon',
         [Providers.Bitpie]: 'bitpie_wallet_logo',
     } as { [key: string]: string | undefined },
+    SUPPORTED_WALLETS: {
+        Injected: {
+            connector: injected,
+            name: 'Metamask',
+        },
+        WalletConnect: {
+            connector: walletconnect,
+            name: 'Wallet Connect',
+        },
+        WalletLink: {
+            connector: walletlink,
+            name: 'Coinbase Wallet',
+        },
+    } as { [key: string]: IWallet | undefined },
     NO_ACCOUNT: {
         state: AccountState.None,
     } as AccountNotReady,

@@ -186,7 +186,7 @@ const ConnectButton = styled(Button).attrs({
 `;
 
 export const SubMenu = (props: ISubMenuProps) => {
-    if (props.connector) {
+    if (props.account) {
         return <ConnectedWallet {...props} />;
     }
 

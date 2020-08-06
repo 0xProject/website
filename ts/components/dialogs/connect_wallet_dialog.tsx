@@ -20,19 +20,7 @@ import { zIndex } from 'ts/style/z_index';
 import { utils } from 'ts/utils/utils';
 
 import { useEdgerConnect, useInactiveListener } from 'ts/hooks/use_web3';
-import { injected, walletconnect, walletlink } from 'ts/utils/connectors';
-
-enum ConnectorNames {
-    Injected = 'Injected',
-    WalletConnect = 'WalletConnect',
-    WalletLink = 'WalletLink',
-}
-
-const connectorsByName: { [connectorName in ConnectorNames]: any } = {
-    [ConnectorNames.Injected]: injected,
-    [ConnectorNames.WalletConnect]: walletconnect,
-    [ConnectorNames.WalletLink]: walletlink,
-};
+import { constants } from 'ts/utils/constants';
 
 function getErrorMessage(error: Error) {
     if (error instanceof NoEthereumProviderError) {
@@ -82,7 +70,9 @@ const WalletProviderButton = styled(Button).attrs({
     borderColor: '#d9d9d9',
     borderRadius: '0px',
     isTransparent: true,
+    isConnected: false,
 })`
+    border: ${(props) => props.isConnected && `1px solid #00AE99`}
     height: 70px;
     width: 100%;
     display: flex;
@@ -165,14 +155,15 @@ const WalletCategoryStyling = styled.div`
 interface WalletOptionProps {
     name?: string;
     onClick?: () => void;
-    connector?: any;
+    connector: any;
+    isConnected: boolean;
 }
-const WalletOption = ({ name, onClick, connector }: WalletOptionProps) => {
+const WalletOption = ({ name, onClick, connector, isConnected }: WalletOptionProps) => {
     const iconName = utils.getProviderIcon(connector);
 
     return (
         <WalletCategoryStyling>
-            <WalletProviderButton onClick={onClick}>
+            <WalletProviderButton isConnected={isConnected} onClick={onClick}>
                 {iconName && (
                     <>
                         <Icon name={iconName} size={30} />
@@ -181,7 +172,7 @@ const WalletOption = ({ name, onClick, connector }: WalletOptionProps) => {
                 )}
                 <div style={{ textAlign: 'left' }}>
                     <Heading asElement="h5" size={20} marginBottom="0">
-                        {utils.getProviderNameFromConnector(connector)}
+                        {name}
                     </Heading>
                 </div>
             </WalletProviderButton>
@@ -250,14 +241,12 @@ const StyledProviderOptions = styled.div`
 
 export const ConnectWalletDialog = () => {
     const isOpen = useSelector((state: State) => state.isConnectWalletDialogOpen);
-    const { connector, activate, active, error } = useWeb3React();
+    const { connector, activate, error } = useWeb3React();
     const [activatingConnector, setActivatingConnector] = useState<any>();
 
     useEffect(() => {
-        let prevConnector = connector;
         if (activatingConnector && activatingConnector === connector) {
             setActivatingConnector(undefined);
-            console.log(prevConnector, connector);
         }
     }, [activatingConnector, connector]);
 
@@ -285,17 +274,17 @@ export const ConnectWalletDialog = () => {
                     </ButtonClose>
                 </HeadingRow>
                 <StyledProviderOptions>
-                    {connectorsByName ? (
-                        Object.keys(connectorsByName).map((name, i) => {
-                            const currentConnector = connectorsByName[name];
+                    {constants.SUPPORTED_WALLETS ? (
+                        Object.keys(constants.SUPPORTED_WALLETS).map((key) => {
+                            const currentConnector = constants.SUPPORTED_WALLETS[key]['connector'];
                             const isConnected = currentConnector === connector;
-                            const disabled = !triedEager || !!activatingConnector || isConnected || !!error;
 
                             return (
                                 <WalletOption
-                                    key={`wallet-button-${i}`}
-                                    name={name}
+                                    key={`wallet-button-${key}`}
+                                    name={constants.SUPPORTED_WALLETS[key]['name']}
                                     connector={currentConnector}
+                                    isConnected={isConnected}
                                     onClick={() => {
                                         setActivatingConnector(currentConnector);
                                         activate(currentConnector);

@@ -37,7 +37,7 @@ interface FormProps {
 }
 
 export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss, onVoted: onVoteInfoReceived }) => {
-    const { account } = useWeb3React<Web3Wrapper>();
+    const { account, connector } = useWeb3React<Web3Wrapper>();
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
     // const account = providerState.account as AccountReady;
@@ -49,11 +49,9 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
 
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
+            const provider = await connector.getProvider();
             // TODO 10x cleaner if 0x-vote exported this as an API
-            const zrxToken = new ERC20TokenContract(
-                getContractAddressesForChainOrThrow(networkId).zrxToken,
-                providerState.web3Wrapper.getProvider(),
-            );
+            const zrxToken = new ERC20TokenContract(getContractAddressesForChainOrThrow(networkId).zrxToken, provider);
             const [delegatorResponse, zrxBalanceBaseUnits, poolsResponse] = await Promise.all([
                 apiClient.getDelegatorAsync(account),
                 zrxToken.balanceOf(account).callAsync(),
@@ -87,7 +85,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
                 logUtils.warn(err);
                 errorReporter.report(err);
             });
-    }, [account, apiClient, networkId, providerState.web3Wrapper]);
+    }, [account, apiClient, networkId, connector]);
 
     const onToggleConnectWalletDialog = React.useCallback(
         (open: boolean) => {
