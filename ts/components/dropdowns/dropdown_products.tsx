@@ -18,6 +18,11 @@ const navData = [
         url: constants.MATCHA_PRODUCTION_URL,
         shouldOpenInNewTab: true,
     },
+    {
+        title: '0x Mesh',
+        description: 'Access token markets, permissionlessly',
+        url: WebsitePaths.Mesh,
+    },
 ];
 
 export const DropdownProducts: React.FC = () => (

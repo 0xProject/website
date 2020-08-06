@@ -122,4 +122,11 @@ export const documentConstants: { [s: string]: DocumentMetadata } = {
         description: 'Bring automatic token trading to your DeFi users with Asset Swapper',
         keywords: '',
     },
+    MESH: {
+        title: '0x Mesh: Access peer-to-peer token markets',
+        description:
+            'Use 0x Mesh to access a global peer-to-peer orderbook for tokens. Decentralized, it supports any type of assets including NFTs.',
+        keywords:
+            'liquidity, DeFi, DEX, Decentralized Exchange, Ethereum, 0x, 0x Protocol, Tokens, ZRX, Crypto Exchange, Cryptocurrency, Crypto, DeFi, Decentralized Finance, crypto trading, token swaps, swap tokens, swap crypto, fill orders, networked liquidity, contract-fillable liquidity, CFL, atomic arbitrage, arbitrage bots, algo trading',
+    },
 };

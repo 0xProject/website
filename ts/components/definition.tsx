@@ -26,6 +26,7 @@ export interface DefinitionProps {
     description: React.ReactNode | string;
     actions?: Action[];
     className?: string;
+    inlineIconSpacing?: string;
 }
 
 export const Definition: React.FC<DefinitionProps> = React.memo(({ className, ...props }: DefinitionProps) => (
@@ -78,6 +79,10 @@ export const Definition: React.FC<DefinitionProps> = React.memo(({ className, ..
     </Wrap>
 ));
 
+Definition.defaultProps = {
+    inlineIconSpacing: '60px',
+};
+
 const Wrap = styled.div<DefinitionProps>`
     max-width: ${props => props.isInline && '354px'};
 
@@ -123,7 +128,7 @@ const TextWrap = styled.div<DefinitionProps>`
     }
 
     @media (min-width: 768px) {
-        margin-left: ${props => props.isInlineIcon && '60px'};
+        margin-left: ${props => props.isInlineIcon && props.inlineIconSpacing};
     }
 `;
 

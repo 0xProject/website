@@ -572,6 +572,7 @@ export enum WebsitePaths {
     Extensions = '/extensions',
     // Explore = '/explore',
     AssetSwapperPage = '/asset-swapper',
+    Mesh = '/mesh',
 }
 
 export enum DocPackages {

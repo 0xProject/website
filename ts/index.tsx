@@ -48,6 +48,8 @@ import { RemoveStake } from 'ts/pages/staking/wizard/remove';
 import { TermsOfService } from 'ts/pages/terms';
 import { NextWhy } from 'ts/pages/why';
 
+import { Mesh } from 'ts/pages/mesh';
+
 // Check if we've introduced an update that requires us to clear the tradeHistory local storage entries
 tradeHistoryStorage.clearIfRequired();
 trackedTokenStorage.clearIfRequired();
@@ -104,6 +106,7 @@ render(
                         <Route exact={true} path={WebsitePaths.AboutTeam} component={NextAboutTeam} />
                         <Route exact={true} path={WebsitePaths.AboutPress} component={NextAboutPress} />
                         <Route exact={true} path={WebsitePaths.AboutJobs} component={NextAboutJobs} />
+                        <Route exact={true} path={WebsitePaths.Mesh} component={Mesh} />
                         {/*
                                   Note(ez): We remove/replace all old routes with next routes
                                   once we're ready to put a ring on it. for now let's keep em there for reference
