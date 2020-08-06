@@ -38,6 +38,7 @@ import { configs } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
 import * as u2f from 'ts/vendor/u2f_api';
+import { injected, walletconnect, walletlink } from './connectors';
 
 export const utils = {
     assert(condition: boolean, message: string): void {
@@ -122,7 +123,7 @@ export const utils = {
     },
     */
     async sleepAsync(ms: number): Promise<NodeJS.Timer> {
-        return new Promise<NodeJS.Timer>(resolve => setTimeout(resolve, ms));
+        return new Promise<NodeJS.Timer>((resolve) => setTimeout(resolve, ms));
     },
     deepEqual(actual: any, expected: any, opts?: { strict: boolean }): boolean {
         return deepEqual(actual, expected, opts);
@@ -228,7 +229,7 @@ export const utils = {
         if (token.isRegistered) {
             return true; // Since it's registered, it is the canonical token
         }
-        const registeredTokens = _.filter(tokens, t => t.isRegistered);
+        const registeredTokens = _.filter(tokens, (t) => t.isRegistered);
         const tokenWithSameNameIfExists = _.find(registeredTokens, {
             name: token.name,
         });
@@ -352,6 +353,28 @@ export const utils = {
         }
         return constants.PROVIDER_TYPE_TO_NAME[providerTypeIfExists];
     },
+    getProviderNameFromConnector(connector: any): string {
+        if (connector === injected) {
+            return constants.PROVIDER_TYPE_TO_NAME['METAMASK'];
+        } else if (connector === walletconnect) {
+            return constants.PROVIDER_TYPE_TO_NAME['WALLET_CONNECT'];
+        } else if (connector === walletlink) {
+            return constants.PROVIDER_TYPE_TO_NAME['WALLET_LINK'];
+        } else {
+            return 'Wallet';
+        }
+    },
+    getProviderIcon(connector: any): string | undefined {
+        if (connector === injected) {
+            return constants.PROVIDER_TYPE_TO_ICON['METAMASK'];
+        } else if (connector === walletconnect) {
+            return constants.PROVIDER_TYPE_TO_ICON['COINBASE_WALLET'];
+        } else if (connector === walletlink) {
+            return constants.PROVIDER_TYPE_TO_ICON['WALLET_LINK'];
+        } else {
+            return undefined;
+        }
+    },
     // End of copy from Instant
     getProviderTypeIcon(providerType?: Providers): string | undefined {
         if (providerType === undefined) {
@@ -394,7 +417,7 @@ export const utils = {
     },
     getTrackedTokens(tokenByAddress: TokenByAddress): Token[] {
         const allTokens = _.values(tokenByAddress);
-        const trackedTokens = _.filter(allTokens, t => utils.isTokenTracked(t));
+        const trackedTokens = _.filter(allTokens, (t) => utils.isTokenTracked(t));
         return trackedTokens;
     },
     getFormattedAmountFromToken(token: Token, tokenState: TokenState): string {

@@ -1,6 +1,8 @@
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import { useWeb3React } from '@web3-react/core';
 
 import { Button } from 'ts/components/button';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
@@ -69,6 +71,7 @@ const csvHeaders = [
 ];
 
 export const AccountActivity: React.FC<ActivityProps> = () => {
+    const { account } = useWeb3React<Web3Wrapper>();
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
     const dispatch = useDispatch();
@@ -81,12 +84,10 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
         dispatcher.updateIsConnectWalletDialogOpen(true);
     }, [dispatch]);
 
-    const account = providerState.account as AccountReady;
-
     const [isFetchingDelegatorData, setIsFetchingDelegatorData] = React.useState<boolean>(false);
     const [delegatorHistory, setDelegatorHistory] = React.useState<StakingAPIDelegatorHistoryItem[] | undefined>(undefined);
 
-    const accountLoaded = account && account.address;
+    const accountLoaded = account && account;
     const isDataLoaded = delegatorHistory !== undefined;
 
     const apiClient = useAPIClient(networkId);
@@ -94,13 +95,13 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
             const [delegatorHistoryResponse] = await Promise.all([
-                apiClient.getDelegatorHistoryAsync(account.address),
+                apiClient.getDelegatorHistoryAsync(account),
             ]);
 
             setDelegatorHistory(delegatorHistoryResponse);
         };
 
-        if (!account.address || isFetchingDelegatorData) {
+        if (!account || isFetchingDelegatorData) {
             return;
         }
 
@@ -116,7 +117,7 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
                 errorReporter.report(err);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [account.address, apiClient]);
+    }, [account, apiClient]);
 
     if (!accountLoaded) {
         return (
@@ -141,7 +142,7 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
 
     const crumbs = [
         {
-            label: utils.getAddressBeginAndEnd(account.address, 7, 3),
+            label: utils.getAddressBeginAndEnd(account, 7, 3),
             url: '/zrx/account',
         },
         {

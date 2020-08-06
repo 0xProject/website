@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Headroom from 'react-headroom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import MediaQuery from 'react-responsive';
 import styled, { css } from 'styled-components';
+import { useWeb3React } from '@web3-react/core';
 
 import { MobileNav } from 'ts/components/docs/header/mobile_nav';
 import { Link } from 'ts/components/documentation/shared/link';
@@ -55,7 +56,7 @@ const navItems: NavItems[] = [
 ];
 
 export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav }) => {
-    const providerState = useSelector((state: State) => state.providerState);
+    const { deactivate, active, account, connector } = useWeb3React();
 
     const dispatch = useDispatch();
     const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
@@ -64,7 +65,6 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
         setDispatcher(new Dispatcher(dispatch));
     }, [dispatch]);
 
-    const { logoutWallet } = useWallet();
     const onUnpin = useCallback(() => {
         if (isNavToggled) {
             toggleMobileNav();
@@ -76,20 +76,16 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
         dispatcher.updateIsConnectWalletDialogOpen(true);
     }, [dispatcher, onUnpin]);
 
-    const onLogoutWallet = useCallback(() => {
-        onUnpin();
-        logoutWallet();
-    }, [logoutWallet, onUnpin]);
-
     const subMenu = (
         <SubMenu
             openConnectWalletDialogCB={unpinAndOpenWalletDialog}
-            logoutWalletCB={onLogoutWallet}
-            providerState={providerState}
+            deactivate={deactivate}
+            account={account}
+            active={active}
+            connector={connector}
         />
     );
 
-    const isWalletConnected = providerState.account.state === AccountState.Ready;
     return (
         <Headroom
             onUnpin={onUnpin}
@@ -122,7 +118,7 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
 
                     <MediaQuery maxWidth={1199}>
                         <div style={{ position: 'relative' }}>
-                            <WalletConnectedIndicator isConnected={isWalletConnected} isNavToggled={isNavToggled} />
+                            <WalletConnectedIndicator isConnected={active} isNavToggled={isNavToggled} />
                             <Hamburger isOpen={isNavToggled} onClick={toggleMobileNav} />
                         </div>
                         <MobileNav
@@ -131,7 +127,7 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
                             toggleMobileNav={toggleMobileNav}
                             hasBackButton={false}
                             hasSearch={false}
-                            navHeight={isWalletConnected ? 426 : 365}
+                            navHeight={active ? 426 : 365}
                         >
                             {subMenu}
                         </MobileNav>
@@ -185,9 +181,9 @@ const WalletConnectedIndicator = styled.div<WalletConnectedIndicatorProps>`
     height: 12px;
     border-radius: 50%;
     border: 1px solid #ffffff;
-    background-color: ${props => (props.isConnected ? '#00AE99' : '#E71D36')};
+    background-color: ${(props) => (props.isConnected ? '#00AE99' : '#E71D36')};
     transition: opacity 0.25s ease-in;
-    opacity: ${props => (props.isNavToggled ? 0 : 1)};
+    opacity: ${(props) => (props.isNavToggled ? 0 : 1)};
     position: absolute;
     top: -7px;
     right: -7px;

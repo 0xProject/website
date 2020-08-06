@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useWeb3React } from '@web3-react/core';
 import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { CallToAction } from 'ts/components/call_to_action';
@@ -93,6 +94,7 @@ interface ExpectedPoolRewards {
 }
 
 export const Account: React.FC<AccountProps> = () => {
+    const { account } = useWeb3React<Web3Wrapper>();
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
     const dispatch = useDispatch();
@@ -102,7 +104,6 @@ export const Account: React.FC<AccountProps> = () => {
         dispatcher.updateIsConnectWalletDialogOpen(true);
     }, [dispatch]);
 
-    const account = providerState.account as AccountReady;
     // NOTE: not yet implemented but left in for future reference
     const voteHistory: VoteHistory[] = [];
 
@@ -165,7 +166,7 @@ export const Account: React.FC<AccountProps> = () => {
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
             const [delegatorResponse, poolsResponse, epochsResponse] = await Promise.all([
-                apiClient.getDelegatorAsync(account.address),
+                apiClient.getDelegatorAsync(account),
                 apiClient.getStakingPoolsAsync(),
                 apiClient.getStakingEpochsWithFeesAsync(),
             ]);
@@ -208,7 +209,7 @@ export const Account: React.FC<AccountProps> = () => {
                     _expectedCurrentEpochPoolRewards[pool.poolId] = new BigNumber(0);
                 } else {
                     // account for the case when account belongs to an operator
-                    _expectedCurrentEpochPoolRewards[pool.poolId] = (account.address.toLowerCase() === _estimatedRewardsMap[pool.poolId].operatorAddress) ?
+                    _expectedCurrentEpochPoolRewards[pool.poolId] = (account.toLowerCase() === _estimatedRewardsMap[pool.poolId].operatorAddress) ?
                         _estimatedRewardsMap[pool.poolId].expectedOperatorReward :
                         ((new BigNumber(pool.zrxStaked)).dividedBy(_estimatedRewardsMap[pool.poolId].memberZrxStaked)).multipliedBy(_estimatedRewardsMap[pool.poolId].expectedMemberReward);
                 }
@@ -229,7 +230,7 @@ export const Account: React.FC<AccountProps> = () => {
             setExpectedCurrentEpochRewards(_expectedCurrentEpochRewards);
         };
 
-        if (!account.address || isFetchingDelegatorData  || !currentEpochRewards) {
+        if (!account || isFetchingDelegatorData  || !currentEpochRewards) {
             return;
         }
 
@@ -245,7 +246,7 @@ export const Account: React.FC<AccountProps> = () => {
                 errorReporter.report(err);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [account.address, apiClient, currentEpochRewards]); // add isFetchingDelegatorData to dependency arr to turn on polling
+    }, [account, apiClient, currentEpochRewards]); // add isFetchingDelegatorData to dependency arr to turn on polling
 
     React.useEffect(() => {
         const fetchAvailableRewards = async () => {
@@ -253,7 +254,7 @@ export const Account: React.FC<AccountProps> = () => {
             );
 
             const undelegatedBalancesBaseUnits = await stakingContract
-                .getOwnerStakeByStatus(account.address, StakeStatus.Undelegated)
+                .getOwnerStakeByStatus(account, StakeStatus.Undelegated)
                 .callAsync();
 
             const undelegatedInBothEpochsBaseUnits = undelegatedBalancesBaseUnits.currentEpochBalance.gt(
@@ -269,7 +270,7 @@ export const Account: React.FC<AccountProps> = () => {
                     const paddedHexPoolId = hexUtils.leftPad(hexUtils.toHex(poolData.poolId));
 
                     const availableRewardInEth = await stakingContract
-                        .computeRewardBalanceOfDelegator(paddedHexPoolId, account.address)
+                        .computeRewardBalanceOfDelegator(paddedHexPoolId, account)
                         .callAsync();
 
                     // TODO(kimpers): There is some typing issue here, circle back later to remove the BigNumber conversion
@@ -301,7 +302,7 @@ export const Account: React.FC<AccountProps> = () => {
             setTotalAvailableRewards(_totalAvailableRewards);
         };
 
-        if (!delegatorData || !account.address) {
+        if (!delegatorData || !account) {
             return;
         }
 
@@ -310,7 +311,7 @@ export const Account: React.FC<AccountProps> = () => {
             logUtils.warn(err);
             errorReporter.report(err);
         });
-    }, [delegatorData, account.address, stakingContract]);
+    }, [delegatorData, account, stakingContract]);
 
     React.useEffect(() => {
         const poolsWithActivity = _.uniq([...Object.keys(currentEpochStakeMap), ...Object.keys(nextEpochStakeMap)]);
@@ -342,7 +343,7 @@ export const Account: React.FC<AccountProps> = () => {
         );
     }, [currentEpochStakeMap, nextEpochStakeMap, delegatorData]);
 
-    const accountLoaded = account && account.address;
+    const accountLoaded = account && account;
 
     if (!accountLoaded) {
         return (
@@ -386,7 +387,7 @@ export const Account: React.FC<AccountProps> = () => {
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
                 <Inner>
-                    {account && account.address && <AccountDetail userEthAddress={account.address} />}
+                    {account && account && <AccountDetail userEthAddress={account} />}
                     <Figures>
                         <AccountFigure
                             label="Available"
