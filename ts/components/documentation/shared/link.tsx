@@ -89,6 +89,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
                         onMouseOver={this.props.onMouseOver}
                         onMouseEnter={this.props.onMouseEnter}
                         onMouseLeave={this.props.onMouseLeave}
+                        rel={this.props.shouldOpenInNewTab ? 'noopener' : undefined}
                     >
                         {this.props.children}
                     </a>

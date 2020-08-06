@@ -29,6 +29,11 @@ const introData: LinkConfig[] = [
         label: 'Legal Guide',
         url: `${WebsitePaths.DocsGuides}/legal-guide`,
     },
+    {
+        label: '0x Tracker',
+        url: constants.ZEROEX_TRACKER_URL,
+        shouldOpenInNewTab: true,
+    },
 ];
 
 const programsData: LinkConfig[] = [

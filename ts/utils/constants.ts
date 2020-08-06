@@ -186,6 +186,8 @@ export const constants = {
     SCROLL_TOP_ID: 'pageScrollTop',
     CFL_DOCS: `${WebsitePaths.DocsGuides}/abcs-of-contract-fillable-liquidity`,
     STAKING_FAQ_DOCS: `${WebsitePaths.DocsGuides}/zrx-portal-faq`,
+    ZEROEX_TRACKER_URL: 'https://0xtracker.com',
+    MATCHA_PRODUCTION_URL: 'https://matcha.xyz',
     NETWORK_NAME_BY_ID: {
         1: Networks.Mainnet,
         3: Networks.Ropsten,

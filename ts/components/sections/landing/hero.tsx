@@ -8,8 +8,13 @@ import { Icon } from 'ts/components/icon';
 import { HeroAnimation } from 'ts/components/heroAnimation';
 import { ModalVideo } from 'ts/components/modals/modal_video';
 import { WebsitePaths } from 'ts/types';
+import { constants } from 'ts/utils/constants';
 
-const announcement = { headline: 'Introducing 0x API', to: WebsitePaths.ZeroExApi };
+const announcement = {
+    headline: 'Say hello to Matcha!',
+    href: `${constants.MATCHA_PRODUCTION_URL}/blog/say-hello-to-matcha`,
+    shouldOpenInNewTab: true,
+};
 
 export interface SectionlandingHeroProps {}
 export interface SectionLandingHeroState {
