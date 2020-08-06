@@ -171,6 +171,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `gasPrice`           | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                       |
 | `takerAddress`       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
 | `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
+| `skipValidation`     | (Optional) Normally, whenever a `takerAddress` is provided, the API will validate the quote for the user. (For more details, see ["How does `takerAddress` help with catching issues?"](/docs/guides/0x-api-faq#how-does-takeraddress-help-with-catching-issues).)  When this parameter is set to `true`, that validation will be skipped. See also [here](/docs/guides/rfqt-in-the-0x-api#quote-validation). |
 
 ### Response
 
@@ -865,6 +866,84 @@ Response will be an array of token symbols and the respective price in `sellToke
             "price": "0.997928"
         },
     ]
+}
+```
+
+</CodeTabs>
+
+## GET /swap/v0/price
+
+Nearly identical to [`/swap/v0/quote`](#get-swapv0quote), but with a few key differences. Rather than returning a transaction that can be submitted to an Ethereum node, this resource simply indicates the pricing that would be available for an analogous call to `/swap/v0/quote`. Intended for use with RFQ-T; see [Quote Types: Indicative vs Firm](/docs/guides/rfqt-in-the-0x-api#quote-types-indicative-vs-firm) for more details.
+
+### Request
+
+Identical to the request schema for `/swap/v0/quote`, with one exception: the `skipValidation` parameter will always be considered to be `true`, even when a `takerAddress` has been specified.
+
+### Response
+
+Identical to the response schema for `/swap/v0/quote`, with one exception: the `orders` property will always be undefined.
+
+### Examples
+
+#### Get the price available for selling 1 ETH for DAI
+
+<HttpCall path="/swap/v0/price?sellToken=WETH&buyToken=DAI&sellAmount=1000000000000000000" />
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+{
+    "price": "391.1643362",
+    "value": "11340000000000000",
+    "gasPrice": "81000000000",
+    "gas": "605952",
+    "estimatedGas": "504960",
+    "protocolFee": "11340000000000000",
+    "minimumProtocolFee": "5670000000000000",
+    "buyTokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "buyAmount": "391164336200000000000",
+    "sellTokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "sellAmount": "1000000000000000000",
+    "sources": [
+        {
+            "name": "0x",
+            "proportion": "1"
+        },
+        {
+            "name": "Uniswap",
+            "proportion": "0"
+        },
+        {
+            "name": "Uniswap_V2",
+            "proportion": "0"
+        },
+        {
+            "name": "Eth2Dai",
+            "proportion": "0"
+        },
+        {
+            "name": "Kyber",
+            "proportion": "0"
+        },
+        {
+            "name": "Curve",
+            "proportion": "0"
+        },
+        {
+            "name": "LiquidityProvider",
+            "proportion": "0"
+        },
+        {
+            "name": "MultiBridge",
+            "proportion": "0"
+        },
+        {
+            "name": "Balancer",
+            "proportion": "0"
+        }
+    ],
+    "estimatedGasTokenRefund": "252480",
+    "allowanceTarget": "0x95e6f48254609a6ee006f7d493c8e5fb97094cef"
 }
 ```
 
