@@ -3,19 +3,52 @@ import '@reach/dialog/styles.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
+import {
+    NoEthereumProviderError,
+    UserRejectedRequestError as UserRejectedRequestErrorInjected,
+} from '@web3-react/injected-connector';
+import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector';
 
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
-import { Heading, Paragraph } from 'ts/components/text';
+import { Heading } from 'ts/components/text';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
-import { AccountState, Providers } from 'ts/types';
-import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
-import { useWallet } from 'ts/hooks/use_wallet';
+import { useEdgerConnect, useInactiveListener } from 'ts/hooks/use_web3';
+import { injected, walletconnect, walletlink } from 'ts/utils/connectors';
+
+enum ConnectorNames {
+    Injected = 'Injected',
+    WalletConnect = 'WalletConnect',
+    WalletLink = 'WalletLink',
+}
+
+const connectorsByName: { [connectorName in ConnectorNames]: any } = {
+    [ConnectorNames.Injected]: injected,
+    [ConnectorNames.WalletConnect]: walletconnect,
+    [ConnectorNames.WalletLink]: walletlink,
+};
+
+function getErrorMessage(error: Error) {
+    if (error instanceof NoEthereumProviderError) {
+        return 'No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.';
+    } else if (error instanceof UnsupportedChainIdError) {
+        return "You're connected to an unsupported network.";
+    } else if (
+        error instanceof UserRejectedRequestErrorInjected ||
+        error instanceof UserRejectedRequestErrorWalletConnect
+    ) {
+        return 'Please authorize this website to access your Ethereum account.';
+    } else {
+        console.error(error);
+        return 'An unknown error occurred. Check the console for more details.';
+    }
+}
 
 const StyledDialogOverlay = styled(DialogOverlay)`
     &[data-reach-dialog-overlay] {
@@ -31,7 +64,7 @@ const StyledDialogOverlay = styled(DialogOverlay)`
 const StyledDialogContent = styled(DialogContent)`
     &[data-reach-dialog-content] {
         width: 571px;
-        background: ${props => props.theme.bgColor};
+        background: ${(props) => props.theme.bgColor};
         border: 1px solid #e5e5e5;
 
         @media (max-width: 768px) {
@@ -118,10 +151,6 @@ const Divider = styled.div`
 `;
 
 const WalletCategoryStyling = styled.div`
-    & + & {
-        margin-top: 30px;
-    }
-
     /* Provider buttons wrapper */
     & > div {
         display: flex;
@@ -133,58 +162,29 @@ const WalletCategoryStyling = styled.div`
     }
 `;
 
-interface WalletCategoryProps {
-    title: string;
-    providers: ProviderInfo[];
+interface WalletOptionProps {
+    name?: string;
+    onClick?: () => void;
+    connector?: any;
 }
+const WalletOption = ({ name, onClick, connector }: WalletOptionProps) => {
+    const iconName = utils.getProviderIcon(connector);
 
-const IconIfExists = ({ provider }: { provider: ProviderInfo }) => {
-    if (provider.icon) {
-        return (
-            <>
-                {provider.icon}
-                <Divider />
-            </>
-        );
-    }
-
-    const iconName = utils.getProviderTypeIcon(provider.providerType);
-
-    if (iconName) {
-        return (
-            <>
-                <Icon name={iconName} size={30} />
-                <Divider />
-            </>
-        );
-    }
-
-    return null;
-};
-
-const WalletCategory = ({ title, providers }: WalletCategoryProps) => {
     return (
         <WalletCategoryStyling>
-            <Heading asElement="h5" color={colors.textDarkSecondary} size={20} marginBottom="15px">
-                {title}
-            </Heading>
-            <div>
-                {providers.map(provider => (
-                    <WalletProviderButton onClick={provider.onClick} key={provider.name}>
-                        <IconIfExists provider={provider} />
-                        <div style={{ textAlign: 'left' }}>
-                            <Heading asElement="h5" size={20} marginBottom="0">
-                                {provider.name}
-                            </Heading>
-                            {provider.description && (
-                                <Paragraph size="small" color="#898990" marginBottom="0">
-                                    {provider.description}
-                                </Paragraph>
-                            )}
-                        </div>
-                    </WalletProviderButton>
-                ))}
-            </div>
+            <WalletProviderButton onClick={onClick}>
+                {iconName && (
+                    <>
+                        <Icon name={iconName} size={30} />
+                        <Divider />{' '}
+                    </>
+                )}
+                <div style={{ textAlign: 'left' }}>
+                    <Heading asElement="h5" size={20} marginBottom="0">
+                        {utils.getProviderNameFromConnector(connector)}
+                    </Heading>
+                </div>
+            </WalletProviderButton>
         </WalletCategoryStyling>
     );
 };
@@ -240,51 +240,30 @@ const DashboardUrlWrapper = styled.div`
     user-select: all;
 `;
 
-interface OtherWalletScreenProps {
-    onDismiss: () => void;
-    onGoBack: () => void;
-}
-
-const OtherWalletScreen = ({ onDismiss, onGoBack }: OtherWalletScreenProps) => (
-    <>
-        <HeadingRow>
-            <ButtonBack isTransparent={true} isNoBorder={true} padding="0px" onClick={onGoBack}>
-                <Arrow />
-            </ButtonBack>
-            <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onDismiss}>
-                <Icon name="close-modal" />
-            </ButtonClose>
-        </HeadingRow>
-        <Heading asElement="h5" color={colors.textDarkSecondary} size={20} marginBottom="15px">
-            Other mobile wallets
-        </Heading>
-        <Paragraph size={20} color={colors.textDarkPrimary}>
-            Please open the link in your mobile wallet.
-        </Paragraph>
-        <DashboardUrlWrapper>
-            <Paragraph size={20} color={colors.textDarkPrimary} marginBottom="0">
-                https://0x.org/zrx
-            </Paragraph>
-        </DashboardUrlWrapper>
-    </>
-);
-
-interface ProviderInfo {
-    name: string;
-    providerType?: Providers;
-    description?: string;
-    icon?: React.ReactNode;
-    onClick?: () => void;
-}
-
-interface WalletProviderCategory {
-    title: string;
-    providers: ProviderInfo[];
-}
+const StyledProviderOptions = styled.div`
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+    max-width: 30rem;
+    margin: auto;
+`;
 
 export const ConnectWalletDialog = () => {
     const isOpen = useSelector((state: State) => state.isConnectWalletDialogOpen);
-    const providerState = useSelector((state: State) => state.providerState);
+    const { connector, activate, active, error } = useWeb3React();
+    const [activatingConnector, setActivatingConnector] = useState<any>();
+
+    useEffect(() => {
+        let prevConnector = connector;
+        if (activatingConnector && activatingConnector === connector) {
+            setActivatingConnector(undefined);
+            console.log(prevConnector, connector);
+        }
+    }, [activatingConnector, connector]);
+
+    const triedEager = useEdgerConnect();
+
+    useInactiveListener(!triedEager || !!activatingConnector);
 
     const dispatch = useDispatch();
     const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
@@ -292,101 +271,45 @@ export const ConnectWalletDialog = () => {
         setDispatcher(new Dispatcher(dispatch));
     }, [dispatch]);
 
-    const [shouldShowOtherWallets, setShouldShowOtherWallets] = useState<boolean>(false);
-    const [walletProviders, setWalletProviders] = useState<WalletProviderCategory[]>([]);
-
-    const isMobile = utils.isMobileOperatingSystem();
-
-    const onGoBack = useCallback(() => setShouldShowOtherWallets(false), []);
     const onCloseDialog = useCallback(() => dispatcher.updateIsConnectWalletDialogOpen(false), [dispatcher]);
-
-    const { connectToWallet } = useWallet();
-
-    useEffect(() => {
-        const _walletProviders: WalletProviderCategory[] = [];
-
-        if (providerState.account.state !== AccountState.None && providerState.providerType !== Providers.WalletLink) {
-            _walletProviders.push({
-                title: 'Detected wallet',
-                providers: [
-                    {
-                        name: providerState.displayName,
-                        providerType: providerState.providerType,
-                        onClick: () => {
-                            connectToWallet();
-                            onCloseDialog();
-                        },
-                    },
-                ],
-            });
-        }
-
-        const mobileProviders: ProviderInfo[] = [
-            {
-                // NOTE: We show WalletLink as Coinbase Wallet for name recognition
-                name: constants.PROVIDER_TYPE_TO_NAME[Providers.WalletLink],
-                providerType: Providers.WalletLink,
-                onClick: () => {
-                    connectToWallet(Providers.WalletLink);
-                    onCloseDialog();
-                },
-            },
-        ];
-
-        if (isMobile) {
-            mobileProviders.push({
-                name: 'Other mobile wallets',
-                icon: (
-                    <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
-                        <IconPlus />
-                    </div>
-                ),
-                onClick: () => setShouldShowOtherWallets(true),
-            });
-        }
-
-        _walletProviders.push({
-            title: 'Mobile wallet',
-            providers: mobileProviders,
-        });
-
-        setWalletProviders(_walletProviders);
-    }, [
-        connectToWallet,
-        isMobile,
-        onCloseDialog,
-        providerState.account.state,
-        providerState.displayName,
-        providerState.provider,
-        providerState.providerType,
-    ]);
 
     return (
         <StyledDialogOverlay isOpen={isOpen}>
             <StyledDialogContent>
-                {shouldShowOtherWallets ? (
-                    <OtherWalletScreen onDismiss={onCloseDialog} onGoBack={onGoBack} />
-                ) : (
-                    <>
-                        <HeadingRow>
-                            <Heading asElement="h3" marginBottom="0">
-                                Connect a wallet
-                            </Heading>
-                            <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onCloseDialog}>
-                                <Icon name="close-modal" />
-                            </ButtonClose>
-                        </HeadingRow>
-                        {walletProviders.length ? (
-                            walletProviders.map(({ title, providers }, i) => (
-                                <WalletCategory key={`wallet-category-${i}`} title={title} providers={providers} />
-                            ))
-                        ) : (
-                            <Heading asElement="h5" size={20} marginBottom="0">
-                                No wallet found
-                            </Heading>
-                        )}
-                    </>
-                )}
+                <HeadingRow>
+                    <Heading asElement="h3" marginBottom="0">
+                        Connect a wallet
+                    </Heading>
+                    <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onCloseDialog}>
+                        <Icon name="close-modal" />
+                    </ButtonClose>
+                </HeadingRow>
+                <StyledProviderOptions>
+                    {connectorsByName ? (
+                        Object.keys(connectorsByName).map((name, i) => {
+                            const currentConnector = connectorsByName[name];
+                            const isConnected = currentConnector === connector;
+                            const disabled = !triedEager || !!activatingConnector || isConnected || !!error;
+
+                            return (
+                                <WalletOption
+                                    key={`wallet-button-${i}`}
+                                    name={name}
+                                    connector={currentConnector}
+                                    onClick={() => {
+                                        setActivatingConnector(currentConnector);
+                                        activate(currentConnector);
+                                        onCloseDialog();
+                                    }}
+                                />
+                            );
+                        })
+                    ) : (
+                        <Heading asElement="h5" size={20} marginBottom="0">
+                            {!!error && getErrorMessage(error)}
+                        </Heading>
+                    )}
+                </StyledProviderOptions>
             </StyledDialogContent>
         </StyledDialogOverlay>
     );

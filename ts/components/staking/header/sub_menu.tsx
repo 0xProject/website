@@ -2,12 +2,11 @@ import * as React from 'react';
 import MediaQuery from 'react-responsive';
 import styled from 'styled-components';
 
-import { AccountReady, AccountState, ProviderState } from 'ts/types';
-
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
 import { utils } from 'ts/utils/utils';
+import { injected } from 'ts/utils/connectors';
 
 const SubMenuWrapper = styled.div`
     display: flex;
@@ -118,12 +117,19 @@ const MobileMenuWrapper = styled.div`
     }
 `;
 
-const ConnectedWallet = ({ providerState, openConnectWalletDialogCB, logoutWalletCB }: ISubMenuProps) => {
+const ConnectedWallet = ({ account, connector, openConnectWalletDialogCB, deactivate }: ISubMenuProps) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
     const toggleExpanded = () => setIsExpanded(!isExpanded);
 
-    const account = providerState.account as AccountReady;
-    const iconName = utils.getProviderTypeIcon(providerState.providerType);
+    const iconName = utils.getProviderIcon(connector);
+
+    const logout = () => {
+        if (connector !== injected) {
+            (connector as any).close();
+        } else {
+            deactivate();
+        }
+    };
 
     // TODO(kimpers): add svgs for all providers
     return (
@@ -133,7 +139,7 @@ const ConnectedWallet = ({ providerState, openConnectWalletDialogCB, logoutWalle
                 <MediaQuery maxWidth={1199}>
                     {(isMobile: boolean) => (
                         <EthAddress>
-                            {utils.getAddressBeginAndEnd(account.address, isMobile ? 9 : 5, isMobile ? 7 : 4)}
+                            {utils.getAddressBeginAndEnd(account, isMobile ? 9 : 5, isMobile ? 7 : 4)}
                         </EthAddress>
                     )}
                 </MediaQuery>
@@ -144,14 +150,14 @@ const ConnectedWallet = ({ providerState, openConnectWalletDialogCB, logoutWalle
             <MediaQuery maxWidth={1199}>
                 <MobileMenuWrapper>
                     <MenuItem onClick={openConnectWalletDialogCB}>Switch wallet</MenuItem>
-                    <MenuItem onClick={logoutWalletCB}>Logout</MenuItem>
+                    <MenuItem onClick={logout}>Logout</MenuItem>
                 </MobileMenuWrapper>
             </MediaQuery>
             <MediaQuery minWidth={1200}>
                 {isExpanded && (
                     <ExpandedMenu>
                         <MenuItem onClick={openConnectWalletDialogCB}>Switch wallet</MenuItem>
-                        <MenuItem onClick={logoutWalletCB}>Logout</MenuItem>
+                        <MenuItem onClick={logout}>Logout</MenuItem>
                     </ExpandedMenu>
                 )}
             </MediaQuery>
@@ -161,8 +167,10 @@ const ConnectedWallet = ({ providerState, openConnectWalletDialogCB, logoutWalle
 
 interface ISubMenuProps {
     openConnectWalletDialogCB: () => void;
-    logoutWalletCB: () => void;
-    providerState: ProviderState;
+    deactivate: () => void;
+    active: boolean;
+    account: string;
+    connector: any;
 }
 
 const ConnectButton = styled(Button).attrs({
@@ -178,9 +186,7 @@ const ConnectButton = styled(Button).attrs({
 `;
 
 export const SubMenu = (props: ISubMenuProps) => {
-    const isWalletConnected = props.providerState.account.state === AccountState.Ready;
-
-    if (isWalletConnected) {
+    if (props.connector) {
         return <ConnectedWallet {...props} />;
     }
 

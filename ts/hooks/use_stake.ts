@@ -6,6 +6,7 @@ import { addMilliseconds } from 'date-fns';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
+import { useWeb3React } from '@web3-react/core';
 
 import { AccountReady, ProviderState, StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
@@ -56,6 +57,7 @@ export interface UseStakeHookResult {
 }
 
 export const useStake = (networkId: ChainId, providerState: ProviderState): UseStakeHookResult => {
+    const { account } = useWeb3React<Web3Wrapper>();
     const [loadingState, setLoadingState] = useState<undefined | TransactionLoadingState>(undefined);
     const [error, setError] = useState<Error | undefined>(undefined);
     const [result, setResult] = useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
@@ -69,23 +71,22 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
     const [contractAddresses, setContractAddresses] = useState<ContractAddresses | undefined>(undefined);
 
     useEffect(() => {
-        const _ownerAddress = (providerState.account as AccountReady).address;
         const _contractAddresses = getContractAddressesForChainOrThrow(networkId);
 
-        setOwnerAddress(_ownerAddress);
+        setOwnerAddress(account);
         // NOTE: staking proxy has state and is a delegate proxy to staking contract, it can be used to initialize both contracts
         setStakingContract(
             new StakingContract(_contractAddresses.stakingProxy, providerState.provider, {
-                from: _ownerAddress,
+                from: account,
             }),
         );
         setStakingProxyContract(
             new StakingProxyContract(_contractAddresses.stakingProxy, providerState.provider, {
-                from: _ownerAddress,
+                from: account,
             }),
         );
         setContractAddresses(_contractAddresses);
-    }, [providerState, networkId]);
+    }, [account, networkId]);
 
     const executeWithData = useCallback(
         async (data: string[]) => {

@@ -4,6 +4,7 @@ import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
 import * as React from 'react';
 import styled from 'styled-components';
+import { useWeb3React } from '@web3-react/core';
 
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
@@ -36,9 +37,10 @@ interface FormProps {
 }
 
 export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss, onVoted: onVoteInfoReceived }) => {
+    const { account } = useWeb3React<Web3Wrapper>();
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
-    const account = providerState.account as AccountReady;
+    // const account = providerState.account as AccountReady;
     const dispatch = useDispatch();
     const apiClient = useAPIClient(networkId);
 
@@ -53,14 +55,14 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
                 providerState.web3Wrapper.getProvider(),
             );
             const [delegatorResponse, zrxBalanceBaseUnits, poolsResponse] = await Promise.all([
-                apiClient.getDelegatorAsync(account.address),
-                zrxToken.balanceOf(account.address).callAsync(),
+                apiClient.getDelegatorAsync(account),
+                zrxToken.balanceOf(account).callAsync(),
                 apiClient.getStakingPoolsAsync(),
             ]);
             const { zrxStaked, zrxDeposited } = delegatorResponse.forCurrentEpoch;
             const undelegated = zrxDeposited - zrxStaked;
             const stakedVotingPower = zrxStaked / 2 + undelegated;
-            const operatedPools = poolsResponse.stakingPools.filter(p => p.operatorAddress === account.address);
+            const operatedPools = poolsResponse.stakingPools.filter((p) => p.operatorAddress === account);
             // Voting Power for the operator of the pool is 0.5 * total staked
             const totalDelegatedToAccount = operatedPools
                 .reduce((acc, p) => acc.plus(p.currentEpochStats.zrxStaked), new BigNumber(0))
@@ -74,18 +76,18 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
             );
             setCurrentVotingPower(votingPower);
         };
-        if (!account.address || isFetchingVotingPowerData) {
+        if (!account || isFetchingVotingPowerData) {
             return;
         }
         setIsFetchingVotingPowerData(true);
         fetchDelegatorData()
             .then(() => setIsFetchingVotingPowerData(false))
-            .catch(err => {
+            .catch((err) => {
                 setIsFetchingVotingPowerData(false);
                 logUtils.warn(err);
                 errorReporter.report(err);
             });
-    }, [account.address, apiClient, networkId, providerState.web3Wrapper]);
+    }, [account, apiClient, networkId, providerState.web3Wrapper]);
 
     const onToggleConnectWalletDialog = React.useCallback(
         (open: boolean) => {
@@ -96,10 +98,13 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
     );
 
     const [isSuccessful, setSuccess] = React.useState(false);
-    const onVoted = React.useCallback((voteInfo: VoteInfo) => {
-        setSuccess(true);
-        onVoteInfoReceived(voteInfo);
-    }, [onVoteInfoReceived]);
+    const onVoted = React.useCallback(
+        (voteInfo: VoteInfo) => {
+            setSuccess(true);
+            onVoteInfoReceived(voteInfo);
+        },
+        [onVoteInfoReceived],
+    );
     const [errorMessage, setErrorMessage] = React.useState<string | undefined>(undefined);
     const [isErrorModalOpen, setErrorModalOpen] = React.useState(false);
     const onVoteError = React.useCallback((message: string) => {
@@ -134,7 +139,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
             <>
                 <VoteForm
                     currentBalance={currentVotingPower}
-                    selectedAddress={account.address}
+                    selectedAddress={account}
                     providerState={providerState}
                     onDismiss={onModalDismiss}
                     zeipId={zeipId}
@@ -150,7 +155,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
         window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, 'Share your vote', 'width=500,height=400');
     };
 
-    if (!account.address && isOpen) {
+    if (!account && isOpen) {
         onToggleConnectWalletDialog(true);
         return <div />;
     }
@@ -169,7 +174,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
                             Vote Received!
                         </Heading>
                         <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-                            You voted from {account.address} with {formattedBalance} ZRX
+                            You voted from {account} with {formattedBalance} ZRX
                         </Paragraph>
                         <ButtonWrap>
                             <Button type="button" onClick={_shareViaTwitterAsync}>
@@ -211,8 +216,8 @@ const Confirmation = styled.div<FormProps>`
     transition-delay: 0.4s;
     padding: 60px 60px;
     transform: translateY(-50%);
-    opacity: ${props => (props.isSuccessful ? `1` : `0`)};
-    visibility: ${props => (props.isSuccessful ? 'visible' : `hidden`)};
+    opacity: ${(props) => (props.isSuccessful ? `1` : `0`)};
+    visibility: ${(props) => (props.isSuccessful ? 'visible' : `hidden`)};
 
     p {
         max-width: 492px;
