@@ -8,7 +8,7 @@ import styled from 'styled-components';
 
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Button } from 'ts/components/button';
 import { ButtonClose } from 'ts/components/modals/button_close';
 import { Heading, Paragraph } from 'ts/components/text';
@@ -17,7 +17,6 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 import { ErrorModal } from 'ts/pages/governance/error_modal';
 import { VoteForm, VoteInfo } from 'ts/pages/governance/vote_form';
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
@@ -76,7 +75,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
         setIsFetchingVotingPowerData(true);
         fetchDelegatorData()
             .then(() => setIsFetchingVotingPowerData(false))
-            .catch((err) => {
+            .catch(err => {
                 setIsFetchingVotingPowerData(false);
                 logUtils.warn(err);
                 errorReporter.report(err);
@@ -209,8 +208,8 @@ const Confirmation = styled.div<FormProps>`
     transition-delay: 0.4s;
     padding: 60px 60px;
     transform: translateY(-50%);
-    opacity: ${(props) => (props.isSuccessful ? `1` : `0`)};
-    visibility: ${(props) => (props.isSuccessful ? 'visible' : `hidden`)};
+    opacity: ${props => (props.isSuccessful ? `1` : `0`)};
+    visibility: ${props => (props.isSuccessful ? 'visible' : `hidden`)};
 
     p {
         max-width: 492px;

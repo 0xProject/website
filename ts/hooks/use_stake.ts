@@ -6,7 +6,6 @@ import { addMilliseconds } from 'date-fns';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
 
 import { ProviderState, StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';

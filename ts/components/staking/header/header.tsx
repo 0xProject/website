@@ -1,10 +1,10 @@
+// tslint:disable: boolean-naming
 import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import Headroom from 'react-headroom';
 import { useDispatch } from 'react-redux';
 import MediaQuery from 'react-responsive';
 import styled, { css } from 'styled-components';
-import { useWeb3React } from '@web3-react/core';
 
 import { MobileNav } from 'ts/components/docs/header/mobile_nav';
 import { Link } from 'ts/components/documentation/shared/link';
@@ -180,9 +180,9 @@ const WalletConnectedIndicator = styled.div<WalletConnectedIndicatorProps>`
     height: 12px;
     border-radius: 50%;
     border: 1px solid #ffffff;
-    background-color: ${(props) => (props.isConnected ? '#00AE99' : '#E71D36')};
+    background-color: ${props => (props.isConnected ? '#00AE99' : '#E71D36')};
     transition: opacity 0.25s ease-in;
-    opacity: ${(props) => (props.isNavToggled ? 0 : 1)};
+    opacity: ${props => (props.isNavToggled ? 0 : 1)};
     position: absolute;
     top: -7px;
     right: -7px;
