@@ -36,7 +36,7 @@ interface Props {
     currentBalance?: BigNumber;
     selectedAddress: string;
     zeipId: number;
-    networkId: number;
+    chainId: number;
 }
 
 interface State {
@@ -74,7 +74,7 @@ export class VoteForm extends React.Component<Props> {
         isSuccessful: false,
         errors: {},
     };
-    public networkId: number;
+    public chainId: number;
     public state: State = {
         isSuccessful: false,
         votePreference: null,
@@ -163,9 +163,8 @@ export class VoteForm extends React.Component<Props> {
         e.preventDefault();
 
         const { votePreference, comment } = this.state;
-        const { currentBalance, selectedAddress, zeipId, networkId } = this.props;
+        const { currentBalance, selectedAddress, zeipId, chainId } = this.props;
 
-        const chainId = networkId;
         const domainType = [
             { name: 'name', type: 'string' },
             { name: 'chainId', type: 'uint256' },
