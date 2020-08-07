@@ -4,7 +4,7 @@ In its role as a DEX aggregator, the 0x API integrates both on- and off-chain li
 
 With the use of RFQ-T, the 0x API aggregates not just on-chain pools and Mesh order books, but also real-time quotes from live market makers offering pricing available exclusively for trusted clients of the API.
 
-RFQ is an abbreviation of Request for Quote, in that the 0x API requests quotes from market makers on behalf of its clients. The -T suffix indicates that the settlement transaction is to be submitted to the blockchain by the Taker. (An RFQ-M model, in which the maker submits the transaction, is under consideration, but is outside the scope of this Guide.)
+RFQ is an abbreviation of Request for Quote, in that the 0x API requests quotes from market makers on behalf of its clients. The -T suffix indicates that the settlement transaction is to be submitted to the Ethereum network by the Taker. (An RFQ-M model, in which the maker submits the transaction, is under consideration, but is outside the scope of this Guide.)
 
 # Limitations of Open Liquidity
 
@@ -52,11 +52,11 @@ To alleviate this potential capital inefficiency, the RFQ-T model introduces the
 
 ## Indicative Pricing
 
-The indicative pricing resource is hosted at [`/swap/v0/price`](/docs/api#get-swapv0price) and responds with pricing information, but that response does not contain a full 0x order, so it does not constitute a legitimate transaction that can be submitted to the blockchain. Therefore, when a market maker services an indicative request they do not need to reserve any capital for it, leaving their capital available for other quotes to other clients.
+The indicative pricing resource is hosted at [`/swap/v0/price`](/docs/api#get-swapv0price) and responds with pricing information, but that response does not contain a full 0x order, so it does not constitute a legitimate transaction that can be submitted to the Ethereum network. Therefore, when a market maker services an indicative request they do not need to reserve any capital for it, leaving their capital available for other quotes to other clients.
 
 ## Firm Quotes
 
-The firm quote resource is hosted at [`/swap/v0/quote`](/docs/api#get-swapv0quote) and responds with a full 0x order, which can be submitted to the blockchain by the client. Therefore it is expected that the maker has reserved the maker assets required to settle the trade, leaving the order unlikely to revert.
+The firm quote resource is hosted at [`/swap/v0/quote`](/docs/api#get-swapv0quote) and responds with a full 0x order, which can be submitted to an Ethereum node by the client. Therefore it is expected that the maker has reserved the maker assets required to settle the trade, leaving the order unlikely to revert.
 
 Note that while the [`/price`](/docs/api#get-swapv0price) resource is new and specific to RFQ-T, the [`/quote`](/docs/api#get-swapv0quote) resource is the same one already used to access non-RFQ-T liquidity through the API. In order to qualify for RFQ-T liquidity, the request must include the query parameter `intentOnFilling=true` (in addition to the aforementioned `0x-api-key` and non-null `takerAddress`).
 
@@ -68,7 +68,7 @@ Breaking this rule could lead to a maker noticing a specific integration consist
 
 # Maker Endpoint Interactions
 
-When a 0x API client submits a request that qualifies for RFQ-T liquidity, the 0x API will, during the handling of that request, submit HTTP requests to market makers' endpoints, and integrate their responses into the response for its own client.
+When a 0x API client submits a request that qualifies for RFQ-T liquidity, the 0x API will, during the handling of that request, submit requests to market makers' endpoints, and integrate their responses into the response for its own client.
 
 <Image src="/images/docs/rfqt-flow.png" align="center" alt="RFQ-T request-response flow" marginBottom="40px" />
 
@@ -139,7 +139,7 @@ Important note: A market maker should serve a unique order for each separate req
 
 ## Quote Validation
 
-Whenever a 0x API client specifies a `takerAddress` in their `/quote` request, the API will validate the quote before returning it to the client, avoiding a number of possible causes for transaction reverts. (For more details, see ["How does `takerAddress` help with catching issues?"](/docs/guides/0x-api-faq#how-does-takeraddress-help-with-catching-issues).)
+Whenever a 0x API client specifies a `takerAddress` in their [`/quote`](/docs/api#get-swapv0quote) request, the API will validate the quote before returning it to the client, avoiding a number of possible causes for transaction reverts. (For more details, see ["How does `takerAddress` help with catching issues?"](/docs/guides/0x-api-faq#how-does-takeraddress-help-with-catching-issues).)
 
 However, given that a `takerAddress` is required in order to obtain RFQ-T liquidity, and given that this requirement subverts the optionality of the quote validation feature, the implementation of RFQ-T introduced a new query parameter to the `/quote` resource: `skipValidation`. When this parameter is set to `true`, quote validation will be skipped. While validating even RFQ-T quotes is a best-practice recommended default, skipping validation can be useful in certain circumstances, such as when experimenting with a new maker integration deployment.
 
@@ -161,4 +161,4 @@ Knowing whether or not you have successfully accessed RFQ-T liquidity is at this
 
 One clue is whether the quote returned to the client indicates through its `sources` array that the liquidity is from `0x`. RFQ-T liquidity will only ever be part of the `0x` group.
 
-However, just because a quote is 100% `0x`-sourced does not necessarily mean it's 100% RFQ-T liquidity. The key thing to observe is the `takerAddress`es in the `orders` portion of the response. A `0x`-sourced order will have a null (`0x0000000000000000000000000000000000000000`) `takerAddress` if it was sourced from open (Mesh) orderbooks. If a `0x`-sourced order is from an RFQ-T quote provider, it will have a `takerAddress` that matches the `takerAddress` that was sent in the request to the 0x API.
+However, just because a quote is 100% `0x`-sourced does not necessarily mean it includes RFQ-T liquidity. The key thing to observe is the `takerAddress`es in the `orders` portion of the response. If a `0x`-sourced order is from a Mesh orderbook, it will have a null (`0x0000000000000000000000000000000000000000`) `takerAddress`. If a `0x`-sourced order is from an RFQ-T quote provider, it will have a `takerAddress` that matches the `takerAddress` that was sent in the request to the 0x API.
