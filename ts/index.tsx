@@ -73,8 +73,7 @@ const DOCUMENT_TITLE = '0x: The Protocol for Trading Tokens';
 const DOCUMENT_DESCRIPTION = 'An Open Protocol For Decentralized Exchange On The Ethereum Blockchain';
 
 function getLibrary(provider: any): Web3Wrapper {
-    const library = new Web3Wrapper(provider);
-    return library;
+    return new Web3Wrapper(provider);
 }
 
 render(
