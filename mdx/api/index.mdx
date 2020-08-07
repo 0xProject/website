@@ -172,6 +172,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `takerAddress`       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
 | `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
 | `skipValidation`     | (Optional) Normally, whenever a `takerAddress` is provided, the API will validate the quote for the user. (For more details, see ["How does `takerAddress` help with catching issues?"](/docs/guides/0x-api-faq#how-does-takeraddress-help-with-catching-issues).)  When this parameter is set to `true`, that validation will be skipped. See also [here](/docs/guides/rfqt-in-the-0x-api#quote-validation). |
+| `intentOnFilling`    | (Optional) Used to enable RFQ-T liquidity.  For more details see the guide [Understanding RFQ-T and the 0x API](/docs/guides/rfqt-in-the-0x-api). |
 
 ### Response
 
