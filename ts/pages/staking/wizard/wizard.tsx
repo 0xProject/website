@@ -12,6 +12,7 @@ import { Status } from 'ts/components/staking/wizard/status';
 import {
     ConnectWalletPane,
     MarketMakerStakeInputPane,
+    RecommendedPoolsStakeInputPane,
     StartStaking,
     TokenApprovalPane,
 } from 'ts/components/staking/wizard/wizard_flow';
@@ -186,10 +187,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                 />
                             )}
                             {currentStep === WizardRouterSteps.ApproveTokens && (
-                                <TokenApprovalPane
-                                    allowance={allowance}
-                                    onGoToNextStep={handleClickNextStep}
-                                />
+                                <TokenApprovalPane allowance={allowance} onGoToNextStep={handleClickNextStep} />
                             )}
                             {currentStep === WizardRouterSteps.ReadyToStake && (
                                 <StartStaking
@@ -285,7 +283,7 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
                     onGoToNextStep={onGoToNextStep}
                 />
             )}
-            {/* {account && !poolId && (
+            {account && !poolId && zrxBalance && zrxBalance.isGreaterThan(1) && (
                 <RecommendedPoolsStakeInputPane
                     onOpenConnectWalletDialog={onOpenConnectWalletDialog}
                     setSelectedStakingPools={setSelectedStakingPools}
@@ -293,7 +291,7 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
                     zrxBalance={zrxBalance}
                     onGoToNextStep={onGoToNextStep}
                 />
-            )} */}
+            )}
         </>
     );
 };

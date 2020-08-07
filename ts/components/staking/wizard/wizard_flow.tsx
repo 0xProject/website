@@ -286,6 +286,7 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
     const statusNode = getStatus(roundedStakeAmount, stakingPools);
     const recommendedPools = stakingUtils.getRecommendedStakingPools(roundedStakeAmount, stakingPools);
 
+    // const isStakeAmountAboveBalance = zrxBalance.isLessThan(roundedStakeAmount);
     const isStakeAmountAboveBalance = zrxBalance.isLessThan(roundedStakeAmount);
     const isZeroAmountStakeInput = stakeAmount && roundedStakeAmount <= 0;
 
