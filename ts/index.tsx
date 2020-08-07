@@ -5,6 +5,11 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+<<<<<<< HEAD
+=======
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import { Web3ReactProvider } from '@web3-react/core';
+>>>>>>> acfb2fb639ba9151afff298e994b1dcef7714640
 
 import { MetaTags } from 'ts/components/meta_tags';
 import { NotFound } from 'ts/containers/not_found';

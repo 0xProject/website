@@ -77,7 +77,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
         setIsFetchingVotingPowerData(true);
         fetchDelegatorData()
             .then(() => setIsFetchingVotingPowerData(false))
-            .catch(err => {
+            .catch((err) => {
                 setIsFetchingVotingPowerData(false);
                 logUtils.warn(err);
                 errorReporter.report(err);
@@ -210,8 +210,8 @@ const Confirmation = styled.div<FormProps>`
     transition-delay: 0.4s;
     padding: 60px 60px;
     transform: translateY(-50%);
-    opacity: ${props => (props.isSuccessful ? `1` : `0`)};
-    visibility: ${props => (props.isSuccessful ? 'visible' : `hidden`)};
+    opacity: ${(props) => (props.isSuccessful ? `1` : `0`)};
+    visibility: ${(props) => (props.isSuccessful ? 'visible' : `hidden`)};
 
     p {
         max-width: 492px;

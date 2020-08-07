@@ -51,7 +51,7 @@ const StyledDialogOverlay = styled(DialogOverlay)`
 const StyledDialogContent = styled(DialogContent)`
     &[data-reach-dialog-content] {
         width: 571px;
-        background: ${props => props.theme.bgColor};
+        background: ${(props) => props.theme.bgColor};
         border: 1px solid #e5e5e5;
 
         @media (max-width: 768px) {
