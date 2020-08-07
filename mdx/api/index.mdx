@@ -1049,7 +1049,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `sellAmount`         | (Optional) The amount of `sellToken` (in `sellToken` base units) you want to send.                                                                                                                                       |
 | `buyAmount`          | (Optional) The amount of `buyToken` (in `buyToken` base units) you want to receive.                                                                                                                                      |
 | `slippagePercentage` | (Optional) The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. This parameter will change over time with market conditions. |
-| `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
+| `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources, but note that for this parameter `Native` is expressed as `0x` |
 
 ### Response
 
