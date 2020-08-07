@@ -1,7 +1,8 @@
 import { BigNumber } from '@0x/utils';
-import { AccountNotReady, AccountState, Networks, Providers, WebsitePaths, IWallet } from 'ts/types';
+import { AccountNotReady, AccountState, IWallet, Networks, Providers, WebsitePaths } from 'ts/types';
 
 import { SupportedDocJson } from '../types';
+
 import { injected, walletconnect, walletlink } from './connectors';
 
 const URL_FORUM = 'https://forum.0x.org';

@@ -1,7 +1,7 @@
 import { AssetProxyId, ObjectMap, SignedOrder } from '@0x/types';
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { Provider, SupportedProvider, ZeroExProvider } from 'ethereum-types';
+import { Provider, SupportedProvider } from 'ethereum-types';
 import * as React from 'react';
 
 export enum PoolsListSortingParameter {

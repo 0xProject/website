@@ -3,11 +3,11 @@ import { ECSignature, SignatureType } from '@0x/types';
 import { BigNumber, signTypedDataUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import '@reach/dialog/styles.css';
+import { useWeb3React } from '@web3-react/core';
 import * as ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
-import { useWeb3React } from '@web3-react/core';
 
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { Button } from 'ts/components/button';
@@ -15,7 +15,6 @@ import { Input } from 'ts/components/modals/input';
 import { Heading, Paragraph } from 'ts/components/text';
 import { PreferenceSelecter } from 'ts/pages/governance/preference_selecter';
 import { colors } from 'ts/style/colors';
-import { Providers } from 'ts/types';
 import { configs } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
@@ -202,7 +201,7 @@ export class VoteForm extends React.Component<Props> {
         try {
             const signedVote = await this._signVoteAsync(selectedAddress, typedData);
             // Store the signed vote
-            this.setState((prevState) => ({
+            this.setState(prevState => ({
                 ...prevState,
                 signedVote,
                 voteHash: voteHashHex,
@@ -345,15 +344,15 @@ const ButtonRow = styled(InputRow)`
 `;
 
 const ButtonDisabled = styled(Button)<{ isDisabled?: boolean; disabled?: boolean }>`
-    background-color: ${(props) => props.disabled && '#898990'};
-    opacity: ${(props) => props.disabled && '0.4'};
+    background-color: ${props => props.disabled && '#898990'};
+    opacity: ${props => props.disabled && '0.4'};
 `;
 const Form = styled.form<FormProps>`
     position: relative;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 
-    opacity: ${(props) => props.isSuccessful && `0`};
-    visibility: ${(props) => props.isSuccessful && `hidden`};
+    opacity: ${props => props.isSuccessful && `0`};
+    visibility: ${props => props.isSuccessful && `hidden`};
 `;
 const PreferenceWrapper = styled.div`
     margin-bottom: 30px;

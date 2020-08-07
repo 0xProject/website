@@ -1,10 +1,10 @@
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
 import { logUtils } from '@0x/utils';
+import { useWeb3React } from '@web3-react/core';
 import { addMilliseconds } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useWeb3React } from '@web3-react/core';
 
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';

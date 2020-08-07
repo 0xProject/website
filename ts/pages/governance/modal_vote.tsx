@@ -2,9 +2,9 @@ import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
+import { useWeb3React } from '@web3-react/core';
 import * as React from 'react';
 import styled from 'styled-components';
-import { useWeb3React } from '@web3-react/core';
 
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
@@ -19,7 +19,6 @@ import { VoteForm, VoteInfo } from 'ts/pages/governance/vote_form';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { AccountReady } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 
@@ -58,7 +57,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
             const { zrxStaked, zrxDeposited } = delegatorResponse.forCurrentEpoch;
             const undelegated = zrxDeposited - zrxStaked;
             const stakedVotingPower = zrxStaked / 2 + undelegated;
-            const operatedPools = poolsResponse.stakingPools.filter((p) => p.operatorAddress === account);
+            const operatedPools = poolsResponse.stakingPools.filter(p => p.operatorAddress === account);
             // Voting Power for the operator of the pool is 0.5 * total staked
             const totalDelegatedToAccount = operatedPools
                 .reduce((acc, p) => acc.plus(p.currentEpochStats.zrxStaked), new BigNumber(0))
@@ -78,7 +77,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
         setIsFetchingVotingPowerData(true);
         fetchDelegatorData()
             .then(() => setIsFetchingVotingPowerData(false))
-            .catch((err) => {
+            .catch(err => {
                 setIsFetchingVotingPowerData(false);
                 logUtils.warn(err);
                 errorReporter.report(err);
@@ -211,8 +210,8 @@ const Confirmation = styled.div<FormProps>`
     transition-delay: 0.4s;
     padding: 60px 60px;
     transform: translateY(-50%);
-    opacity: ${(props) => (props.isSuccessful ? `1` : `0`)};
-    visibility: ${(props) => (props.isSuccessful ? 'visible' : `hidden`)};
+    opacity: ${props => (props.isSuccessful ? `1` : `0`)};
+    visibility: ${props => (props.isSuccessful ? 'visible' : `hidden`)};
 
     p {
         max-width: 492px;

@@ -1,10 +1,10 @@
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import * as zeroExInstant from 'zeroExInstant';
-import { useWeb3React } from '@web3-react/core';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
@@ -12,7 +12,6 @@ import { Status } from 'ts/components/staking/wizard/status';
 import {
     ConnectWalletPane,
     MarketMakerStakeInputPane,
-    RecommendedPoolsStakeInputPane,
     StartStaking,
     TokenApprovalPane,
 } from 'ts/components/staking/wizard/wizard_flow';
@@ -30,9 +29,7 @@ import {
     AccountReady,
     AllTimeStats,
     Epoch,
-    Network,
     PoolWithStats,
-    ProviderState,
     StakingPoolRecomendation,
     UserStakingChoice,
 } from 'ts/types';
@@ -42,7 +39,6 @@ import { stakingUtils } from 'ts/utils/staking_utils';
 
 export interface StakingWizardProps {
     onOpenConnectWalletDialog: () => void;
-    providerState: ProviderState;
 }
 
 const Container = styled.div`
@@ -51,11 +47,10 @@ const Container = styled.div`
     position: relative;
 `;
 
-export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
+export const StakingWizard: React.FC<StakingWizardProps> = props => {
     // If coming from the market maker page, poolId will be provided
     const { poolId } = useQuery<{ poolId: string | undefined }>();
-    const { providerState } = props;
-    const { connector, account, library, chainId } = useWeb3React<Web3Wrapper>();
+    const { connector, account, chainId } = useWeb3React<Web3Wrapper>();
 
     const dispatch = useDispatch();
     const dispatcher = new Dispatcher(dispatch);
@@ -186,7 +181,6 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                                     stakingPools={stakingPools}
                                     zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
                                     zrxBalance={zrxBalance}
-                                    providerState={providerState}
                                     onGoToNextStep={handleClickNextStep}
                                     onUpdateAccountBalances={onUpdateAccountBalances}
                                 />
@@ -194,7 +188,6 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                             {currentStep === WizardRouterSteps.ApproveTokens && (
                                 <TokenApprovalPane
                                     allowance={allowance}
-                                    providerState={providerState}
                                     onGoToNextStep={handleClickNextStep}
                                 />
                             )}
@@ -202,7 +195,6 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                                 <StartStaking
                                     stake={stake}
                                     nextEpochStats={nextEpochStats}
-                                    providerState={providerState}
                                     selectedStakingPools={selectedStakingPools}
                                 />
                             )}
@@ -216,7 +208,6 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
 
 // TODO(johnrjj) - Deserves its own file...
 export interface SetupStakingProps {
-    providerState: ProviderState;
     setSelectedStakingPools: React.Dispatch<React.SetStateAction<StakingPoolRecomendation[]>>;
     onOpenConnectWalletDialog: () => void;
     onGoToNextStep: () => void;
@@ -268,7 +259,7 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
                         const provider = await connector.getProvider();
                         return zeroExInstant.render(
                             {
-                                provider: provider,
+                                provider,
                                 orderSource: 'https://api.0x.org/sra/',
                                 availableAssetDatas: [
                                     '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',

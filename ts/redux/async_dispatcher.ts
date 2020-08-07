@@ -5,7 +5,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
 
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { AccountState, Network, ProviderState } from 'ts/types';
+import { Network } from 'ts/types';
 import { errorReporter } from 'ts/utils/error_reporter';
 
 // NOTE: Copied from Instant
@@ -25,10 +25,10 @@ export const asyncDispatcher = {
         let availableAddresses: string[];
         try {
             // TODO(bmillman): Add support at the web3Wrapper level for calling `eth_requestAccounts` instead of calling enable here
-            const isPrivacyModeEnabled = (provider as any).enable !== undefined;
+            const isPrivacyModeEnabled = (provider).enable !== undefined;
             availableAddresses =
                 isPrivacyModeEnabled && shouldAttemptUnlock
-                    ? await (provider as any).enable()
+                    ? await (provider).enable()
                     : await web3Wrapper.getAvailableAddressesAsync();
         } catch (e) {
             dispatcher.setAccountStateLocked();

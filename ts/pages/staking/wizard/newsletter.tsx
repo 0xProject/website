@@ -1,6 +1,6 @@
 import { logUtils } from '@0x/utils';
-import * as React from 'react';
 import { useWeb3React } from '@web3-react/core';
+import * as React from 'react';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -178,7 +178,7 @@ export const Newsletter = () => {
                                 type="email"
                                 value={email}
                                 width="full"
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={e => setEmail(e.target.value)}
                                 placeholder="Enter your e-mail"
                             />
 

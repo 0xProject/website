@@ -1,9 +1,9 @@
 import { BigNumber } from '@0x/utils';
+import { useWeb3React } from '@web3-react/core';
 import { addDays, formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
-import { useWeb3React } from '@web3-react/core';
 
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
@@ -12,7 +12,6 @@ import {
     Epoch,
     Network,
     PoolWithStats,
-    ProviderState,
     StakingPoolRecomendation,
     TransactionLoadingState,
     UserStakingChoice,
@@ -50,7 +49,6 @@ const getFormattedTimeLeft = (secondsLeft: number) => {
 };
 
 export interface WizardFlowProps {
-    providerState: ProviderState;
     onOpenConnectWalletDialog: () => void;
     networkId: Network;
     setSelectedStakingPools: React.Dispatch<React.SetStateAction<UserStakingChoice[]>>;
@@ -87,7 +85,7 @@ const ButtonWithIcon = styled(Button)`
     align-items: center;
 
     &:hover {
-        cursor: ${(props) => props.isDisabled && 'not-allowed'};
+        cursor: ${props => props.isDisabled && 'not-allowed'};
     }
 `;
 
@@ -196,7 +194,7 @@ const NumberRound = styled.span`
     border: 1px solid #f6f6f6;
 `;
 
-const ErrorButton: React.FC<ErrorButtonProps> = (props) => {
+const ErrorButton: React.FC<ErrorButtonProps> = props => {
     const { onSecondaryClick, message, secondaryButtonText } = props;
     return (
         <ErrorButtonContainer>
@@ -341,7 +339,7 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
             )}
             {recommendedPools && (
                 <PoolsContainer>
-                    {recommendedPools.map((rec) => {
+                    {recommendedPools.map(rec => {
                         return (
                             <MarketMaker
                                 poolId={rec.pool.poolId}
@@ -385,7 +383,7 @@ export interface MarketMakerStakeInputPaneProps {
     poolId: string;
 }
 
-export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps> = (props) => {
+export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps> = props => {
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
 
@@ -398,7 +396,7 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
         return null;
     }
 
-    const marketMakerPool = _.find(stakingPools, (p) => p.poolId === poolId);
+    const marketMakerPool = _.find(stakingPools, p => p.poolId === poolId);
 
     if (!marketMakerPool) {
         // TODO(johnrjj) error state
@@ -506,15 +504,14 @@ const DescriptionLabel = styled.div`
 `;
 
 export interface StartStakingProps {
-    providerState: ProviderState;
     stake: UseStakeHookResult;
     selectedStakingPools: UserStakingChoice[] | undefined;
     nextEpochStats?: Epoch;
 }
 
 // Core
-export const StartStaking: React.FC<StartStakingProps> = (props) => {
-    const { selectedStakingPools, stake, nextEpochStats, providerState } = props;
+export const StartStaking: React.FC<StartStakingProps> = props => {
+    const { selectedStakingPools, stake, nextEpochStats } = props;
     const { connector } = useWeb3React();
 
     const timeRemainingForStakingTransaction = useSecondsRemaining(stake.estimatedTransactionFinishTime);
@@ -583,7 +580,7 @@ export const StartStaking: React.FC<StartStakingProps> = (props) => {
                         <ButtonWithIcon
                             onClick={async () => {
                                 stake.depositAndStake(
-                                    selectedStakingPools.map((recommendation) => ({
+                                    selectedStakingPools.map(recommendation => ({
                                         poolId: recommendation.pool.poolId,
                                         zrxAmount: recommendation.zrxAmount,
                                     })),
@@ -619,7 +616,7 @@ export const StartStaking: React.FC<StartStakingProps> = (props) => {
                             }}
                             onSecondaryClick={() =>
                                 stake.depositAndStake(
-                                    selectedStakingPools.map((recommendation) => ({
+                                    selectedStakingPools.map(recommendation => ({
                                         poolId: recommendation.pool.poolId,
                                         zrxAmount: recommendation.zrxAmount,
                                     })),
@@ -657,13 +654,12 @@ const UnlockHeader = styled(CenteredHeader)`
 `;
 
 export interface TokenApprovalPaneProps {
-    providerState: ProviderState;
     allowance: UseAllowanceHookResult;
     onGoToNextStep: () => void;
 }
 
 export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
-    const { providerState, allowance, onGoToNextStep } = props;
+    const { allowance, onGoToNextStep } = props;
     const { account } = useWeb3React();
 
     const timeRemainingForAllowanceApproval = useSecondsRemaining(allowance.estimatedTransactionFinishTime);

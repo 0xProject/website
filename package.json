@@ -121,6 +121,7 @@
         "@types/algoliasearch": "^3.30.12",
         "@types/blockies": "^0.0.0",
         "@types/color": "^3.0.0",
+        "@types/d3": "^5.7.2",
         "@types/d3-array": "^2.0.0",
         "@types/deep-equal": "^1.0.0",
         "@types/find-versions": "^2.0.0",

@@ -1,8 +1,8 @@
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import { useWeb3React } from '@web3-react/core';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
-import { Web3Wrapper } from '@0x/web3-wrapper';
-import { useWeb3React } from '@web3-react/core';
 
 import { Button } from 'ts/components/button';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
@@ -11,12 +11,11 @@ import { Breadcrumb } from 'ts/components/ui/breadcrumb';
 import { Table } from 'ts/components/ui/table';
 import { StakeStatus } from 'ts/components/ui/table_stake_status';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { CallToAction } from 'ts/components/call_to_action';
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { AccountReady, EtherscanLinkSuffixes, StakingAPIDelegatorHistoryItem } from 'ts/types';
+import { EtherscanLinkSuffixes, StakingAPIDelegatorHistoryItem } from 'ts/types';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 import { utils } from 'ts/utils/utils';
 

@@ -1,9 +1,9 @@
 import { Middleware } from 'redux';
 import { State } from 'ts/redux/reducer';
-import { AccountReady, ActionTypes } from 'ts/types';
+import { ActionTypes } from 'ts/types';
 import { analytics } from 'ts/utils/analytics';
 
-export const analyticsMiddleware: Middleware = (store) => (next) => (action) => {
+export const analyticsMiddleware: Middleware = store => next => action => {
     const nextAction = next(action);
     const nextState = store.getState() as State;
     switch (action.type) {

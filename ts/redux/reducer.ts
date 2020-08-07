@@ -3,9 +3,6 @@ import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import {
-    Account,
-    AccountReady,
-    AccountState,
     Action,
     ActionTypes,
     BlockchainErrs,
@@ -178,7 +175,7 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
         case ActionTypes.UpdateTokenByAddress: {
             const tokenByAddress = { ...state.tokenByAddress };
             const tokens = action.data;
-            _.each(tokens, (token) => {
+            _.each(tokens, token => {
                 const updatedToken = {
                     ...tokenByAddress[token.address],
                     ...token,

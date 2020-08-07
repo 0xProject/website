@@ -1,11 +1,10 @@
 import { logUtils } from '@0x/utils';
+import { useWeb3React } from '@web3-react/core';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
-import { useWeb3React } from '@web3-react/core';
 
 import { colors } from 'ts/style/colors';
-
 
 import { Button } from 'ts/components/button';
 import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
@@ -147,7 +146,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                     />
                 </HeadingRow>
                 {sortedStakingPools &&
-                    sortedStakingPools.map((pool) => {
+                    sortedStakingPools.map(pool => {
                         return (
                             <StakingPoolDetailRow
                                 to={_.replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}

@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
-import { utils } from 'ts/utils/utils';
 import { injected } from 'ts/utils/connectors';
+import { utils } from 'ts/utils/utils';
 
 const SubMenuWrapper = styled.div`
     display: flex;
@@ -125,7 +125,7 @@ const ConnectedWallet = ({ account, connector, openConnectWalletDialogCB, deacti
 
     const logout = () => {
         if (connector !== injected) {
-            (connector as any).close();
+            (connector).close();
         } else {
             deactivate();
         }

@@ -6,9 +6,8 @@ import { addMilliseconds } from 'date-fns';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
 
-import { AccountReady, ProviderState, StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
+import { ProviderState, StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
@@ -24,7 +23,7 @@ const toZrxBaseUnits = (zrxAmount: number) =>
     Web3Wrapper.toBaseUnitAmount(new BigNumber(zrxAmount, 10), constants.DECIMAL_PLACES_ZRX);
 
 const normalizeStakePoolData = (stakePoolData: StakePoolData[]) =>
-    stakePoolData.map((pool) => ({
+    stakePoolData.map(pool => ({
         poolId: utils.toPaddedHex(pool.poolId),
         amountBaseUnits: toZrxBaseUnits(pool.zrxAmount),
     }));
@@ -56,10 +55,7 @@ export interface UseStakeHookResult {
     currentEpochRewards?: BigNumber;
 }
 
-export const useStake = (
-    networkId: ChainId,
-    { account, connector }: ProviderState,
-): UseStakeHookResult => {
+export const useStake = (networkId: ChainId, { account, connector }: ProviderState): UseStakeHookResult => {
     const [loadingState, setLoadingState] = useState<undefined | TransactionLoadingState>(undefined);
     const [error, setError] = useState<Error | undefined>(undefined);
     const [result, setResult] = useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
@@ -73,7 +69,7 @@ export const useStake = (
     const [contractAddresses, setContractAddresses] = useState<ContractAddresses | undefined>(undefined);
 
     useEffect(() => {
-        async () => {
+        (async function loadContract(): Promise<void> {
             const provider = await connector.getProvider();
             const _contractAddresses = getContractAddressesForChainOrThrow(networkId);
 
@@ -90,7 +86,7 @@ export const useStake = (
                 }),
             );
             setContractAddresses(_contractAddresses);
-        };
+        })();
     }, [account, networkId]);
 
     const executeWithData = useCallback(
@@ -223,7 +219,7 @@ export const useStake = (
                 return;
             }
 
-            const data: string[] = _.flatMap(poolIds, (poolId) => [
+            const data: string[] = _.flatMap(poolIds, poolId => [
                 stakingContract.finalizePool(poolId).getABIEncodedTransactionData(),
                 stakingContract.withdrawDelegatorRewards(poolId).getABIEncodedTransactionData(),
             ]);

@@ -1,14 +1,14 @@
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
-import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import {
     NoEthereumProviderError,
     UserRejectedRequestError as UserRejectedRequestErrorInjected,
 } from '@web3-react/injected-connector';
 import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
@@ -22,7 +22,7 @@ import { utils } from 'ts/utils/utils';
 import { useEdgerConnect, useInactiveListener } from 'ts/hooks/use_web3';
 import { constants } from 'ts/utils/constants';
 
-function getErrorMessage(error: Error) {
+function getErrorMessage(error: Error): string {
     if (error instanceof NoEthereumProviderError) {
         return 'No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.';
     } else if (error instanceof UnsupportedChainIdError) {
@@ -33,7 +33,6 @@ function getErrorMessage(error: Error) {
     ) {
         return 'Please authorize this website to access your Ethereum account.';
     } else {
-        console.error(error);
         return 'An unknown error occurred. Check the console for more details.';
     }
 }
@@ -52,7 +51,7 @@ const StyledDialogOverlay = styled(DialogOverlay)`
 const StyledDialogContent = styled(DialogContent)`
     &[data-reach-dialog-content] {
         width: 571px;
-        background: ${(props) => props.theme.bgColor};
+        background: ${props => props.theme.bgColor};
         border: 1px solid #e5e5e5;
 
         @media (max-width: 768px) {
@@ -72,7 +71,7 @@ const WalletProviderButton = styled(Button).attrs({
     isTransparent: true,
     isConnected: false,
 })`
-    border: ${(props) => props.isConnected && `1px solid #00AE99`}
+    border: ${props => props.isConnected && `1px solid #00AE99`}
     height: 70px;
     width: 100%;
     display: flex;
@@ -99,16 +98,6 @@ const ButtonClose = styled(Button)`
 
     path {
         fill: ${colors.black};
-    }
-`;
-
-const ButtonBack = styled(Button)`
-    width: 22px;
-    height: 17px;
-    border: none;
-
-    path {
-        fill: ${colors.backgroundDark};
     }
 `;
 
@@ -180,57 +169,6 @@ const WalletOption = ({ name, onClick, connector, isConnected }: WalletOptionPro
     );
 };
 
-const IconPlus = styled.div`
-    position: relative;
-    width: 15px;
-    height: 15px;
-    margin: auto;
-
-    &:before,
-    &:after {
-        content: '';
-        position: absolute;
-        background-color: ${colors.black};
-    }
-
-    &:before {
-        top: 0;
-        left: 7px;
-        width: 1px;
-        height: 100%;
-    }
-
-    &:after {
-        top: 7px;
-        left: 0;
-        width: 100%;
-        height: 1px;
-    }
-`;
-
-const Arrow = () => (
-    <svg
-        style={{
-            transform: 'rotate(180deg)',
-        }}
-        color={colors.backgroundDark}
-        width="22"
-        height="17"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path d="M13.066 0l-1.068 1.147 6.232 6.557H0v1.592h18.23l-6.232 6.557L13.066 17l8.08-8.5-8.08-8.5z" />
-    </svg>
-);
-
-const DashboardUrlWrapper = styled.div`
-    height: 70px;
-    background: ${colors.backgroundLight};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    user-select: all;
-`;
-
 const StyledProviderOptions = styled.div`
     display: grid;
     grid-gap: 1rem;
@@ -250,9 +188,9 @@ export const ConnectWalletDialog = () => {
         }
     }, [activatingConnector, connector]);
 
-    const triedEager = useEdgerConnect();
+    const isTriedEager = useEdgerConnect();
 
-    useInactiveListener(!triedEager || !!activatingConnector);
+    useInactiveListener(!isTriedEager || !!activatingConnector);
 
     const dispatch = useDispatch();
     const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
@@ -275,14 +213,14 @@ export const ConnectWalletDialog = () => {
                 </HeadingRow>
                 <StyledProviderOptions>
                     {constants.SUPPORTED_WALLETS ? (
-                        Object.keys(constants.SUPPORTED_WALLETS).map((key) => {
-                            const currentConnector = constants.SUPPORTED_WALLETS[key]['connector'];
+                        Object.keys(constants.SUPPORTED_WALLETS).map(key => {
+                            const currentConnector = constants.SUPPORTED_WALLETS[key].connector;
                             const isConnected = currentConnector === connector;
 
                             return (
                                 <WalletOption
                                     key={`wallet-button-${key}`}
-                                    name={constants.SUPPORTED_WALLETS[key]['name']}
+                                    name={constants.SUPPORTED_WALLETS[key].name}
                                     connector={currentConnector}
                                     isConnected={isConnected}
                                     onClick={() => {

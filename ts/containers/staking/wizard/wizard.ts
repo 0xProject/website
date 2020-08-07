@@ -3,10 +3,7 @@ import { Dispatch } from 'redux';
 
 import { StakingWizard as StakingWizardComponent } from 'ts/pages/staking/wizard/wizard';
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { State } from 'ts/redux/reducer';
-import { Action, Network, ProviderState } from 'ts/types';
-
-interface StakingWizardProps {}
+import { Action } from 'ts/types';
 
 interface ConnectedDispatch {
     onOpenConnectWalletDialog: () => void;

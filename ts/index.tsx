@@ -1,10 +1,10 @@
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import { Web3ReactProvider } from '@web3-react/core';
 import { MuiThemeProvider } from 'material-ui/styles';
 import * as React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
-import { Web3Wrapper } from '@0x/web3-wrapper';
-import { Web3ReactProvider } from '@web3-react/core';
 
 import { MetaTags } from 'ts/components/meta_tags';
 import { NotFound } from 'ts/containers/not_found';
@@ -50,8 +50,6 @@ import { RemoveStake } from 'ts/pages/staking/wizard/remove';
 
 import { TermsOfService } from 'ts/pages/terms';
 import { NextWhy } from 'ts/pages/why';
-
-import { Mesh } from 'ts/pages/mesh';
 
 // Check if we've introduced an update that requires us to clear the tradeHistory local storage entries
 tradeHistoryStorage.clearIfRequired();
