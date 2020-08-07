@@ -63,6 +63,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const [currentEpochStats, setCurrentEpochStats] = useState<Epoch | undefined>(undefined);
     const [nextEpochStats, setNextEpochStats] = useState<Epoch | undefined>(undefined);
     const [allTimeStats, setAllTimeStats] = useState<AllTimeStats | undefined>(undefined);
+    const [zrxBalance, setZrxBalance] = useState<BigNumber | undefined>(undefined);
+    const [zrxBalanceBaseUnitAmount, setZrxBalanceBaseUnitAmount] = useState<BigNumber | undefined>(undefined);
 
     const stake = useStake(chainId, { account, connector });
     const allowance = useAllowance();
@@ -70,12 +72,6 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const allowanceBaseUnits = ({ address: account } as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
 
     const doesNeedTokenApproval = allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);
-
-    const { zrxBalanceBaseUnitAmount } = { address: account } as AccountReady;
-    let zrxBalance: BigNumber | undefined;
-    if (zrxBalanceBaseUnitAmount) {
-        zrxBalance = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
-    }
 
     // Load stakingPools
     useEffect(() => {
@@ -127,6 +123,27 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetStakingStats();
     }, [chainId, apiClient]);
+
+    useEffect(() => {
+        const loadBalances = async () => {
+            // tslint:disable-next-line:no-shadowed-variable
+            const { zrxBalanceBaseUnitAmount } = await asyncDispatcher.fetchAccountBalanceAndDispatchToStoreAsync(
+                account,
+                connector,
+                dispatcher,
+                chainId,
+            );
+
+            // tslint:disable-next-line:no-shadowed-variable
+            const zrxBalance = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
+
+            setZrxBalance(zrxBalance);
+            setZrxBalanceBaseUnitAmount(zrxBalanceBaseUnitAmount);
+        };
+
+        // tslint:disable-next-line:no-floating-promises
+        loadBalances();
+    }, [account, chainId, connector]);
 
     const { currentStep, next } = useStakingWizard();
 

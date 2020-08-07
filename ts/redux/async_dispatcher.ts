@@ -25,10 +25,10 @@ export const asyncDispatcher = {
         let availableAddresses: string[];
         try {
             // TODO(bmillman): Add support at the web3Wrapper level for calling `eth_requestAccounts` instead of calling enable here
-            const isPrivacyModeEnabled = (provider).enable !== undefined;
+            const isPrivacyModeEnabled = provider.enable !== undefined;
             availableAddresses =
                 isPrivacyModeEnabled && shouldAttemptUnlock
-                    ? await (provider).enable()
+                    ? await provider.enable()
                     : await web3Wrapper.getAvailableAddressesAsync();
         } catch (e) {
             dispatcher.setAccountStateLocked();
@@ -49,6 +49,7 @@ export const asyncDispatcher = {
         }
     },
 
+    // Isaac: no longer using this as dispatch. instead I'm returning it to waiver once its retrieved
     fetchAccountBalanceAndDispatchToStoreAsync: async (
         address: string,
         connector: any,
@@ -69,10 +70,11 @@ export const asyncDispatcher = {
             dispatcher.updateAccountEthBalance({ address, ethBalanceInWei });
             dispatcher.updateAccountZrxBalance(zrxBalance);
             dispatcher.updateAccountZrxAllowance(zrxAllowance);
+            return { zrxBalanceBaseUnitAmount: zrxBalance };
         } catch (err) {
             logUtils.warn(err);
             errorReporter.report(err);
-            return;
+            return null;
         }
     },
 };
