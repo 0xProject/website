@@ -69,7 +69,7 @@ export const useStake = (networkId: ChainId, { account, connector }: ProviderSta
     const [contractAddresses, setContractAddresses] = useState<ContractAddresses | undefined>(undefined);
 
     useEffect(() => {
-        (async function loadContract(): Promise<void> {
+        const loadContract = async () => {
             const provider = await connector.getProvider();
             const _contractAddresses = getContractAddressesForChainOrThrow(networkId);
 
@@ -86,7 +86,9 @@ export const useStake = (networkId: ChainId, { account, connector }: ProviderSta
                 }),
             );
             setContractAddresses(_contractAddresses);
-        })();
+        };
+        // tslint:disable-next-line:no-floating-promises
+        loadContract();
     }, [account, networkId]);
 
     const executeWithData = useCallback(
