@@ -36,10 +36,9 @@ interface FormProps {
 }
 
 export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss, onVoted: onVoteInfoReceived }) => {
-    const { account, connector } = useWeb3React<Web3Wrapper>();
-    const networkId = useSelector((state: State) => state.networkId);
+    const { account, connector, chainId } = useWeb3React<Web3Wrapper>();
     const dispatch = useDispatch();
-    const apiClient = useAPIClient(networkId);
+    const apiClient = useAPIClient(chainId);
 
     const [currentVotingPower, setCurrentVotingPower] = React.useState(new BigNumber(0));
     const [isFetchingVotingPowerData, setIsFetchingVotingPowerData] = React.useState<boolean>(false);
@@ -48,7 +47,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
         const fetchDelegatorData = async () => {
             const provider = await connector.getProvider();
             // TODO 10x cleaner if 0x-vote exported this as an API
-            const zrxToken = new ERC20TokenContract(getContractAddressesForChainOrThrow(networkId).zrxToken, provider);
+            const zrxToken = new ERC20TokenContract(getContractAddressesForChainOrThrow(chainId).zrxToken, provider);
             const [delegatorResponse, zrxBalanceBaseUnits, poolsResponse] = await Promise.all([
                 apiClient.getDelegatorAsync(account),
                 zrxToken.balanceOf(account).callAsync(),
@@ -82,7 +81,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
                 logUtils.warn(err);
                 errorReporter.report(err);
             });
-    }, [account, apiClient, networkId, connector]);
+    }, [account, apiClient, chainId, connector]);
 
     const onToggleConnectWalletDialog = React.useCallback(
         (open: boolean) => {
@@ -137,7 +136,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
                     selectedAddress={account}
                     onDismiss={onModalDismiss}
                     zeipId={zeipId}
-                    networkId={networkId}
+                    chainId={chainId}
                     onVoted={onVoted}
                     onError={onVoteError}
                 />
