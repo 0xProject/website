@@ -66,7 +66,7 @@ export interface AddressAndEthBalanceInWei {
 }
 
 export interface AccountReady {
-    state: AccountState.Ready;
+    state?: AccountState.Ready;
     address: string;
     ethBalanceInWei?: BigNumber;
     zrxBalanceBaseUnitAmount?: BigNumber;
@@ -84,12 +84,12 @@ export interface IWallet {
 export type Account = AccountReady | AccountNotReady;
 
 export interface ProviderState {
-    name: string;
-    displayName: string;
-    providerType?: Providers;
-    provider: ZeroExProvider;
-    web3Wrapper: Web3Wrapper;
-    account: Account;
+    // name: string;
+    // displayName: string;
+    // providerType?: Providers;
+    connector?: any;
+    web3Wrapper?: Web3Wrapper;
+    account?: string;
 }
 // End of copy from instant
 

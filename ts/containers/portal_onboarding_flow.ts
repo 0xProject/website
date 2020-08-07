@@ -2,7 +2,7 @@ import { BigNumber } from '@0x/utils';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Blockchain } from 'ts/blockchain';
-import { Action, ActionTypes, ProviderType, ScreenWidths, TokenByAddress, TokenStateByAddress } from 'ts/types';
+import { Action, ActionTypes, ScreenWidths, TokenByAddress, TokenStateByAddress } from 'ts/types';
 
 import { PortalOnboardingFlow as PortalOnboardingFlowComponent } from 'ts/components/onboarding/portal_onboarding_flow';
 import { State } from 'ts/redux/reducer';
@@ -19,8 +19,6 @@ interface ConnectedState {
     isRunning: boolean;
     userAddress: string;
     hasBeenClosed: boolean;
-    providerType: ProviderType;
-    injectedProviderName: string;
     blockchainIsLoaded: boolean;
     userEtherBalanceInWei?: BigNumber;
     tokenByAddress: TokenByAddress;
@@ -37,8 +35,6 @@ const mapStateToProps = (state: State, _ownProps: PortalOnboardingFlowProps): Co
     stepIndex: state.portalOnboardingStep,
     isRunning: state.isPortalOnboardingShowing,
     userAddress: state.userAddress,
-    providerType: state.providerType,
-    injectedProviderName: state.injectedProviderName,
     blockchainIsLoaded: state.blockchainIsLoaded,
     userEtherBalanceInWei: state.userEtherBalanceInWei,
     tokenByAddress: state.tokenByAddress,

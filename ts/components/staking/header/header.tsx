@@ -17,7 +17,6 @@ import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 import { AccountState, WebsitePaths } from 'ts/types';
 
-import { useWallet } from 'ts/hooks/use_wallet';
 import { colors } from 'ts/style/colors';
 
 interface HeaderProps {

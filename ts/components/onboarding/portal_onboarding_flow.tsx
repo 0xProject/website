@@ -22,7 +22,7 @@ import {
     WrapEthOnboardingStep3,
 } from 'ts/components/onboarding/wrap_eth_onboarding_step';
 import { AllowanceStateToggle } from 'ts/containers/inputs/allowance_state_toggle';
-import { BrowserType, ProviderType, ScreenWidths, Token, TokenByAddress, TokenStateByAddress } from 'ts/types';
+import { BrowserType, ScreenWidths, Token, TokenByAddress, TokenStateByAddress } from 'ts/types';
 import { analytics } from 'ts/utils/analytics';
 import { utils } from 'ts/utils/utils';
 
@@ -33,8 +33,6 @@ export interface PortalOnboardingFlowProps extends RouteComponentProps<any> {
     isRunning: boolean;
     userAddress: string;
     hasBeenClosed: boolean;
-    providerType: ProviderType;
-    injectedProviderName: string;
     blockchainIsLoaded: boolean;
     userEtherBalanceInWei?: BigNumber;
     tokenByAddress: TokenByAddress;
@@ -202,16 +200,6 @@ class PlainPortalOnboardingFlow extends React.Component<PortalOnboardingFlowProp
         if (this._isAddressAvailable()) {
             if (stepIndex < 2) {
                 this.props.updateOnboardingStep(2);
-            }
-            return;
-        }
-        const isExternallyInjected = utils.isExternallyInjected(
-            this.props.providerType,
-            this.props.injectedProviderName,
-        );
-        if (isExternallyInjected) {
-            if (stepIndex !== 1) {
-                this.props.updateOnboardingStep(1);
             }
             return;
         }

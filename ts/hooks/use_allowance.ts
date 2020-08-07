@@ -4,10 +4,11 @@ import { logUtils } from '@0x/utils';
 import { addMilliseconds } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useWeb3React } from '@web3-react/core';
 
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
-import { AccountReady, ProviderState, TransactionLoadingState } from 'ts/types';
+import { TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
@@ -21,8 +22,8 @@ export interface UseAllowanceHookResult {
 }
 
 export const useAllowance = (): UseAllowanceHookResult => {
+    const { connector, account } = useWeb3React();
     const networkId: number = useSelector((state: State) => state.networkId);
-    const providerState: ProviderState = useSelector((state: State) => state.providerState);
     const dispatch = useDispatch();
     const dispatcher = new Dispatcher(dispatch);
 
@@ -37,13 +38,15 @@ export const useAllowance = (): UseAllowanceHookResult => {
             return;
         }
 
+        const provider = await connector.getProvider();
+
         setIsStarted(true);
-        const ownerAddress = (providerState.account as AccountReady).address;
+        const ownerAddress = account;
         const gasInfo = await backendClient.getGasInfoAsync();
 
         const contractAddresses = getContractAddressesForChainOrThrow(networkId);
         const erc20ProxyAddress = contractAddresses.erc20Proxy;
-        const zrxTokenContract = new ERC20TokenContract(contractAddresses.zrxToken, providerState.provider);
+        const zrxTokenContract = new ERC20TokenContract(contractAddresses.zrxToken, provider);
 
         const currentAllowance = await zrxTokenContract.allowance(ownerAddress, erc20ProxyAddress).callAsync();
 

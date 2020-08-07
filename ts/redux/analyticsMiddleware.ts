@@ -3,13 +3,13 @@ import { State } from 'ts/redux/reducer';
 import { AccountReady, ActionTypes } from 'ts/types';
 import { analytics } from 'ts/utils/analytics';
 
-export const analyticsMiddleware: Middleware = store => next => action => {
+export const analyticsMiddleware: Middleware = (store) => (next) => (action) => {
     const nextAction = next(action);
     const nextState = store.getState() as State;
     switch (action.type) {
         case ActionTypes.UpdateInjectedProviderName:
             analytics.addEventProperties({
-                injectedProviderName: nextState.injectedProviderName,
+                injectedProviderName: action.injectedProviderName,
             });
             break;
         case ActionTypes.UpdateNetworkId:
@@ -23,7 +23,7 @@ export const analyticsMiddleware: Middleware = store => next => action => {
             });
             break;
         case ActionTypes.SetAccountStateReady:
-            const account = nextState.providerState.account as AccountReady;
+            const account = action.data;
             analytics.addUserProperties({
                 ethAddress: account.address,
             });

@@ -7,15 +7,15 @@ import * as ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
+import { useWeb3React } from '@web3-react/core';
 
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
-import { MetamaskSubprovider } from '@0x/subproviders';
 import { Button } from 'ts/components/button';
 import { Input } from 'ts/components/modals/input';
 import { Heading, Paragraph } from 'ts/components/text';
 import { PreferenceSelecter } from 'ts/pages/governance/preference_selecter';
 import { colors } from 'ts/style/colors';
-import { Providers, ProviderState } from 'ts/types';
+import { Providers } from 'ts/types';
 import { configs } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
@@ -35,7 +35,6 @@ interface Props {
     onError?: (errorMessage: string) => void;
     onVoted?: (userInfo: VoteInfo) => void;
     currentBalance?: BigNumber;
-    providerState: ProviderState;
     selectedAddress: string;
     zeipId: number;
     networkId: number;
@@ -203,7 +202,7 @@ export class VoteForm extends React.Component<Props> {
         try {
             const signedVote = await this._signVoteAsync(selectedAddress, typedData);
             // Store the signed vote
-            this.setState(prevState => ({
+            this.setState((prevState) => ({
                 ...prevState,
                 signedVote,
                 voteHash: voteHashHex,
@@ -251,7 +250,9 @@ export class VoteForm extends React.Component<Props> {
               });
     }
     private async _signVoteAsync(selectedAddress: string, typedData: any): Promise<SignedVote> {
-        const { web3Wrapper, providerType } = this.props.providerState;
+        const { connector } = useWeb3React();
+        const provider = await connector.getProvider();
+        const web3Wrapper = new Web3Wrapper(provider);
         let signatureHex;
 
         try {
@@ -267,17 +268,9 @@ export class VoteForm extends React.Component<Props> {
             }
             // Handle the inconsistency with Metamask and send eth_sign as
             // personal_sign
-            const provider =
-                providerType === Providers.Metamask
-                    ? new MetamaskSubprovider(web3Wrapper.getProvider())
-                    : web3Wrapper.getProvider();
             const voteHashBuffer = signTypedDataUtils.generateTypedDataHash(typedData);
             const voteHashHex = `0x${voteHashBuffer.toString('hex')}`;
-            signatureHex = await signatureUtils.ecSignHashAsync(
-                provider,
-                voteHashHex,
-                selectedAddress,
-            );
+            signatureHex = await signatureUtils.ecSignHashAsync(provider, voteHashHex, selectedAddress);
         }
         const signedVote = { ...typedData.message, signature: signatureHex };
         return signedVote;
@@ -352,15 +345,15 @@ const ButtonRow = styled(InputRow)`
 `;
 
 const ButtonDisabled = styled(Button)<{ isDisabled?: boolean; disabled?: boolean }>`
-    background-color: ${props => props.disabled && '#898990'};
-    opacity: ${props => props.disabled && '0.4'};
+    background-color: ${(props) => props.disabled && '#898990'};
+    opacity: ${(props) => props.disabled && '0.4'};
 `;
 const Form = styled.form<FormProps>`
     position: relative;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 
-    opacity: ${props => props.isSuccessful && `0`};
-    visibility: ${props => props.isSuccessful && `hidden`};
+    opacity: ${(props) => props.isSuccessful && `0`};
+    visibility: ${(props) => props.isSuccessful && `hidden`};
 `;
 const PreferenceWrapper = styled.div`
     margin-bottom: 30px;

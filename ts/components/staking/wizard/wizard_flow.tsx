@@ -3,6 +3,7 @@ import { addDays, formatDistanceStrict } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
+import { useWeb3React } from '@web3-react/core';
 
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
@@ -38,6 +39,7 @@ import { formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { trackEvent } from 'ts/utils/google_analytics';
+import { utils } from 'ts/utils/utils';
 
 const getFormattedTimeLeft = (secondsLeft: number) => {
     if (secondsLeft === 0) {
@@ -85,7 +87,7 @@ const ButtonWithIcon = styled(Button)`
     align-items: center;
 
     &:hover {
-        cursor: ${props => props.isDisabled && 'not-allowed'};
+        cursor: ${(props) => props.isDisabled && 'not-allowed'};
     }
 `;
 
@@ -194,7 +196,7 @@ const NumberRound = styled.span`
     border: 1px solid #f6f6f6;
 `;
 
-const ErrorButton: React.FC<ErrorButtonProps> = props => {
+const ErrorButton: React.FC<ErrorButtonProps> = (props) => {
     const { onSecondaryClick, message, secondaryButtonText } = props;
     return (
         <ErrorButtonContainer>
@@ -339,7 +341,7 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
             )}
             {recommendedPools && (
                 <PoolsContainer>
-                    {recommendedPools.map(rec => {
+                    {recommendedPools.map((rec) => {
                         return (
                             <MarketMaker
                                 poolId={rec.pool.poolId}
@@ -383,7 +385,7 @@ export interface MarketMakerStakeInputPaneProps {
     poolId: string;
 }
 
-export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps> = props => {
+export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps> = (props) => {
     const [stakeAmount, setStakeAmount] = React.useState<string>('');
     const [selectedLabel, setSelectedLabel] = React.useState<string | undefined>(undefined);
 
@@ -396,7 +398,7 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
         return null;
     }
 
-    const marketMakerPool = _.find(stakingPools, p => p.poolId === poolId);
+    const marketMakerPool = _.find(stakingPools, (p) => p.poolId === poolId);
 
     if (!marketMakerPool) {
         // TODO(johnrjj) error state
@@ -511,8 +513,9 @@ export interface StartStakingProps {
 }
 
 // Core
-export const StartStaking: React.FC<StartStakingProps> = props => {
+export const StartStaking: React.FC<StartStakingProps> = (props) => {
     const { selectedStakingPools, stake, nextEpochStats, providerState } = props;
+    const { connector } = useWeb3React();
 
     const timeRemainingForStakingTransaction = useSecondsRemaining(stake.estimatedTransactionFinishTime);
 
@@ -536,7 +539,9 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
         }, new BigNumber(0)),
     ).minimized;
     const stakingStartsFormattedTime = stakingUtils.getTimeToEpochDate(new Date(nextEpochStats.epochStart.timestamp));
-    const unlockTokensMinimumFormattedTime = stakingUtils.getTimeToEpochDate(addDays(new Date(nextEpochStats.epochStart.timestamp), constants.STAKING_EPOCH_LENGTH_IN_DAYS));
+    const unlockTokensMinimumFormattedTime = stakingUtils.getTimeToEpochDate(
+        addDays(new Date(nextEpochStats.epochStart.timestamp), constants.STAKING_EPOCH_LENGTH_IN_DAYS),
+    );
     return (
         <RelativeContainer>
             <>
@@ -546,7 +551,7 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
                 <Inner>
                     <CenteredHeader>
                         {stake.loadingState === TransactionLoadingState.WaitingForSignature ? (
-                            `Please confirm in ${providerState.displayName || 'wallet'}`
+                            `Please confirm in ${utils.getProviderNameFromConnector(connector) || 'wallet'}`
                         ) : stake.loadingState === TransactionLoadingState.WaitingForTransaction ? (
                             `Locking your tokens into staking pool`
                         ) : (
@@ -562,7 +567,9 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
                     <>
                         <DescriptionContainer>
                             <Description>Your tokens will be locked.</Description>
-                            <DescriptionLabel>Unlocking will be available in {unlockTokensMinimumFormattedTime}</DescriptionLabel>
+                            <DescriptionLabel>
+                                Unlocking will be available in {unlockTokensMinimumFormattedTime}
+                            </DescriptionLabel>
                         </DescriptionContainer>
                         <DescriptionContainer>
                             <Description>You give 50% of your voting powers.</Description>
@@ -576,7 +583,7 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
                         <ButtonWithIcon
                             onClick={async () => {
                                 stake.depositAndStake(
-                                    selectedStakingPools.map(recommendation => ({
+                                    selectedStakingPools.map((recommendation) => ({
                                         poolId: recommendation.pool.poolId,
                                         zrxAmount: recommendation.zrxAmount,
                                     })),
@@ -612,7 +619,7 @@ export const StartStaking: React.FC<StartStakingProps> = props => {
                             }}
                             onSecondaryClick={() =>
                                 stake.depositAndStake(
-                                    selectedStakingPools.map(recommendation => ({
+                                    selectedStakingPools.map((recommendation) => ({
                                         poolId: recommendation.pool.poolId,
                                         zrxAmount: recommendation.zrxAmount,
                                     })),
@@ -657,6 +664,7 @@ export interface TokenApprovalPaneProps {
 
 export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
     const { providerState, allowance, onGoToNextStep } = props;
+    const { account } = useWeb3React();
 
     const timeRemainingForAllowanceApproval = useSecondsRemaining(allowance.estimatedTransactionFinishTime);
 
@@ -710,7 +718,7 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
             <ButtonWithIcon
                 onClick={async () => {
                     const allowanceBaseUnits =
-                        (providerState.account as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
+                        ({ address: account } as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
 
                     if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
                         allowance.setAllowance();

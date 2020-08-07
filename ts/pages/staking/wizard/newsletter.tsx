@@ -1,6 +1,6 @@
 import { logUtils } from '@0x/utils';
 import * as React from 'react';
-import { useSelector } from 'react-redux';
+import { useWeb3React } from '@web3-react/core';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -12,8 +12,7 @@ import { Inner } from 'ts/components/staking/wizard/inner';
 
 import { colors } from 'ts/style/colors';
 
-import { State } from 'ts/redux/reducer';
-import { AccountReady, WebsitePaths } from 'ts/types';
+import { WebsitePaths } from 'ts/types';
 
 import { backendClient } from 'ts/utils/backend_client';
 import { configs } from 'ts/utils/configs.ts';
@@ -116,8 +115,8 @@ const CircleThumbsUp = () => (
 );
 
 export const Newsletter = () => {
-    const providerState = useSelector((state: State) => state.providerState);
-    const ethAddress = (providerState.account as AccountReady).address;
+    const { account } = useWeb3React();
+    const ethAddress = account;
 
     const [email, setEmail] = React.useState<string>('');
     const [hasSubmitted, setHasSubmitted] = React.useState<boolean>(false);
@@ -179,7 +178,7 @@ export const Newsletter = () => {
                                 type="email"
                                 value={email}
                                 width="full"
-                                onChange={e => setEmail(e.target.value)}
+                                onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter your e-mail"
                             />
 

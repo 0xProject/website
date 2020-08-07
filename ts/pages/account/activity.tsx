@@ -71,9 +71,7 @@ const csvHeaders = [
 ];
 
 export const AccountActivity: React.FC<ActivityProps> = () => {
-    const { account } = useWeb3React<Web3Wrapper>();
-    const providerState = useSelector((state: State) => state.providerState);
-    const networkId = useSelector((state: State) => state.networkId);
+    const { account, chainId } = useWeb3React<Web3Wrapper>();
     const dispatch = useDispatch();
 
     const dimensions = useWindowDimensions();
@@ -90,7 +88,7 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
     const accountLoaded = account && account;
     const isDataLoaded = delegatorHistory !== undefined;
 
-    const apiClient = useAPIClient(networkId);
+    const apiClient = useAPIClient(chainId);
 
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
@@ -226,7 +224,7 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
                                 </td>
                                 {width > 600 ?
                                 <td>
-                                    <a href={utils.getEtherScanLinkIfExists(row.transactionHash, networkId, EtherscanLinkSuffixes.Tx)} target="_blank" rel="noopener">
+                                    <a href={utils.getEtherScanLinkIfExists(row.transactionHash, chainId, EtherscanLinkSuffixes.Tx)} target="_blank" rel="noopener">
                                         {row.transactionHash === null ? '-' : utils.getAddressBeginAndEnd(row.transactionHash)}
                                     </a>
                                 </td>

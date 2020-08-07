@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import * as zeroExInstant from 'zeroExInstant';
+import { useWeb3React } from '@web3-react/core';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
@@ -25,10 +26,8 @@ import { useStakingWizard, WizardRouterSteps } from 'ts/hooks/use_wizard';
 
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { Dispatcher } from 'ts/redux/dispatcher';
-import { State } from 'ts/redux/reducer';
 import {
     AccountReady,
-    AccountState,
     AllTimeStats,
     Epoch,
     Network,
@@ -42,9 +41,8 @@ import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
 export interface StakingWizardProps {
-    providerState: ProviderState;
-    networkId: Network;
     onOpenConnectWalletDialog: () => void;
+    providerState: ProviderState;
 }
 
 const Container = styled.div`
@@ -53,16 +51,16 @@ const Container = styled.div`
     position: relative;
 `;
 
-export const StakingWizard: React.FC<StakingWizardProps> = props => {
+export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
     // If coming from the market maker page, poolId will be provided
     const { poolId } = useQuery<{ poolId: string | undefined }>();
     const { providerState } = props;
+    const { connector, account, library, chainId } = useWeb3React<Web3Wrapper>();
 
     const dispatch = useDispatch();
     const dispatcher = new Dispatcher(dispatch);
 
-    const networkId = useSelector((state: State) => state.networkId);
-    const apiClient = useAPIClient(networkId);
+    const apiClient = useAPIClient(chainId);
 
     const [stakingPools, setStakingPools] = useState<PoolWithStats[] | undefined>(undefined);
     const [selectedStakingPools, setSelectedStakingPools] = React.useState<UserStakingChoice[] | undefined>(undefined);
@@ -70,14 +68,14 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const [nextEpochStats, setNextEpochStats] = useState<Epoch | undefined>(undefined);
     const [allTimeStats, setAllTimeStats] = useState<AllTimeStats | undefined>(undefined);
 
-    const stake = useStake(networkId, providerState);
+    const stake = useStake(chainId, { account, connector });
     const allowance = useAllowance();
 
-    const allowanceBaseUnits = (providerState.account as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
+    const allowanceBaseUnits = ({ address: account } as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
 
     const doesNeedTokenApproval = allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);
 
-    const { zrxBalanceBaseUnitAmount } = providerState.account as AccountReady;
+    const { zrxBalanceBaseUnitAmount } = { address: account } as AccountReady;
     let zrxBalance: BigNumber | undefined;
     if (zrxBalanceBaseUnitAmount) {
         zrxBalance = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
@@ -98,7 +96,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         };
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPools();
-    }, [networkId, apiClient]);
+    }, [chainId, apiClient]);
 
     // Load current and next epoch
     useEffect(() => {
@@ -116,7 +114,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
         };
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetEpochs();
-    }, [networkId, apiClient]);
+    }, [chainId, apiClient]);
 
     useEffect(() => {
         const fetchAndSetStakingStats = async () => {
@@ -132,7 +130,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
 
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetStakingStats();
-    }, [networkId, apiClient]);
+    }, [chainId, apiClient]);
 
     const { currentStep, next } = useStakingWizard();
 
@@ -154,13 +152,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
 
     const onUpdateAccountBalances = useCallback(() => {
         // tslint:disable-next-line:no-floating-promises
-        asyncDispatcher.fetchAccountBalanceAndDispatchToStoreAsync(
-            (providerState.account as AccountReady).address,
-            providerState.web3Wrapper,
-            dispatcher,
-            networkId,
-        );
-    }, [dispatcher, networkId, providerState.account, providerState.web3Wrapper]);
+        asyncDispatcher.fetchAccountBalanceAndDispatchToStoreAsync(account, connector, dispatcher, chainId);
+    }, [dispatcher, chainId, account, connector]);
 
     return (
         <StakingPageLayout isHome={false} title="Start Staking">
@@ -187,6 +180,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                 <SetupStaking
                                     onOpenConnectWalletDialog={props.onOpenConnectWalletDialog}
                                     poolId={poolId}
+                                    account={account}
+                                    connector={connector}
                                     setSelectedStakingPools={setSelectedStakingPools}
                                     stakingPools={stakingPools}
                                     zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
@@ -230,6 +225,8 @@ export interface SetupStakingProps {
     zrxBalance?: BigNumber;
     poolId?: string;
     onUpdateAccountBalances: () => void;
+    account?: string;
+    connector?: any;
 }
 
 // Substeps of the start step
@@ -243,7 +240,6 @@ export enum WizardSetupSteps {
 }
 
 const SetupStaking: React.FC<SetupStakingProps> = ({
-    providerState,
     setSelectedStakingPools,
     stakingPools,
     onOpenConnectWalletDialog,
@@ -252,34 +248,13 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
     poolId,
     onGoToNextStep,
     onUpdateAccountBalances,
+    account,
+    connector,
 }) => {
-    let wizardFlowStep: WizardSetupSteps = WizardSetupSteps.Empty;
-    if (providerState.account.state !== AccountState.Ready) {
-        wizardFlowStep = WizardSetupSteps.ConnectWallet;
-    } else if (!zrxBalanceBaseUnitAmount) {
-        // TODO(johnrjj) - This should also add a spinner to the ConnectWallet panel
-        // e.g. at this point, the wallet is connected but loading stuff via redux/etc
-        wizardFlowStep = WizardSetupSteps.ConnectWallet;
-    } else if (!zrxBalance || zrxBalance.isLessThan(1)) {
-        // No balance...
-        wizardFlowStep = WizardSetupSteps.NoZrxInWallet;
-    } else {
-        // Otherwise, we're good to show either the MM or Recommendation pane
-        if (poolId) {
-            // Coming from market maker entry
-            wizardFlowStep = WizardSetupSteps.MarketMakerEntry;
-        } else {
-            // Coming from wizard/recommendation entry
-            wizardFlowStep = WizardSetupSteps.RecomendedEntry;
-        }
-    }
-
     return (
         <>
-            {wizardFlowStep === WizardSetupSteps.ConnectWallet && (
-                <ConnectWalletPane onOpenConnectWalletDialog={onOpenConnectWalletDialog} />
-            )}
-            {wizardFlowStep === WizardSetupSteps.NoZrxInWallet && (
+            {!account && <ConnectWalletPane onOpenConnectWalletDialog={onOpenConnectWalletDialog} />}
+            {account && (!zrxBalance || zrxBalance.isLessThan(1)) && (
                 <Status
                     title={
                         <div>
@@ -289,10 +264,11 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
                         </div>
                     }
                     linkText="Go buy some ZRX"
-                    onClick={() =>
-                        zeroExInstant.render(
+                    onClick={async () => {
+                        const provider = await connector.getProvider();
+                        return zeroExInstant.render(
                             {
-                                provider: providerState.provider,
+                                provider: provider,
                                 orderSource: 'https://api.0x.org/sra/',
                                 availableAssetDatas: [
                                     '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
@@ -302,13 +278,13 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
                                 onSuccess: onUpdateAccountBalances,
                             },
                             'body',
-                        )
-                    }
+                        );
+                    }}
                     to={`#`}
                 />
             )}
             {/* TODO(johnrjj) - Conslidate MM and Recommended panels */}
-            {wizardFlowStep === WizardSetupSteps.MarketMakerEntry && (
+            {account && poolId && (
                 <MarketMakerStakeInputPane
                     poolId={poolId}
                     zrxBalance={zrxBalance}
@@ -318,7 +294,7 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
                     onGoToNextStep={onGoToNextStep}
                 />
             )}
-            {wizardFlowStep === WizardSetupSteps.RecomendedEntry && (
+            {/* {account && !poolId && (
                 <RecommendedPoolsStakeInputPane
                     onOpenConnectWalletDialog={onOpenConnectWalletDialog}
                     setSelectedStakingPools={setSelectedStakingPools}
@@ -326,7 +302,7 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
                     zrxBalance={zrxBalance}
                     onGoToNextStep={onGoToNextStep}
                 />
-            )}
+            )} */}
         </>
     );
 };

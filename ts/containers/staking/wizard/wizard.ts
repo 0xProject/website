@@ -12,16 +12,6 @@ interface ConnectedDispatch {
     onOpenConnectWalletDialog: () => void;
 }
 
-interface ConnectedState {
-    providerState: ProviderState;
-    networkId: Network;
-}
-
-const mapStateToProps = (state: State, _ownProps: StakingWizardProps): ConnectedState => ({
-    providerState: state.providerState,
-    networkId: state.networkId,
-});
-
 const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
     const dispatcher = new Dispatcher(dispatch);
 
@@ -32,4 +22,4 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => {
     };
 };
 
-export const StakingWizard = connect(mapStateToProps, mapDispatchToProps)(StakingWizardComponent);
+export const StakingWizard = connect(undefined, mapDispatchToProps)(StakingWizardComponent);

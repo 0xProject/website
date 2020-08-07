@@ -1,12 +1,11 @@
 import { logUtils } from '@0x/utils';
 import * as _ from 'lodash';
 import * as React from 'react';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { useWeb3React } from '@web3-react/core';
 
 import { colors } from 'ts/style/colors';
 
-import { State } from 'ts/redux/reducer';
 
 import { Button } from 'ts/components/button';
 import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
@@ -47,10 +46,9 @@ const HeadingRow = styled.div`
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
-    const networkId = useSelector((state: State) => state.networkId);
-    const providerState = useSelector((state: State) => state.providerState);
-    const apiClient = useAPIClient(networkId);
-    const { currentEpochRewards } = useStake(networkId, providerState);
+    const { chainId, connector, account } = useWeb3React();
+    const apiClient = useAPIClient(chainId);
+    const { currentEpochRewards } = useStake(chainId, { account, connector });
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
 
     const [poolSortingParam, setPoolSortingParam] = React.useState<PoolsListSortingParameter>(
@@ -149,7 +147,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                     />
                 </HeadingRow>
                 {sortedStakingPools &&
-                    sortedStakingPools.map(pool => {
+                    sortedStakingPools.map((pool) => {
                         return (
                             <StakingPoolDetailRow
                                 to={_.replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}

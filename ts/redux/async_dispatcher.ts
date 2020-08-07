@@ -11,15 +11,15 @@ import { errorReporter } from 'ts/utils/error_reporter';
 // NOTE: Copied from Instant
 export const asyncDispatcher = {
     fetchAccountInfoAndDispatchToStoreAsync: async (
-        providerState: ProviderState,
         dispatcher: Dispatcher,
         networkId: Network,
         shouldAttemptUnlock: boolean = false,
         shouldSetToLoading: boolean = false,
+        connector: any,
     ) => {
-        const web3Wrapper = providerState.web3Wrapper;
-        const provider = providerState.provider;
-        if (shouldSetToLoading && providerState.account.state !== AccountState.Loading) {
+        const provider = await connector.getProvider();
+        const web3Wrapper = new Web3Wrapper(provider);
+        if (shouldSetToLoading) {
             dispatcher.setAccountStateLoading();
         }
         let availableAddresses: string[];
@@ -40,7 +40,7 @@ export const asyncDispatcher = {
 
             await asyncDispatcher.fetchAccountBalanceAndDispatchToStoreAsync(
                 activeAddress,
-                providerState.web3Wrapper,
+                web3Wrapper,
                 dispatcher,
                 networkId,
             );
@@ -51,12 +51,13 @@ export const asyncDispatcher = {
 
     fetchAccountBalanceAndDispatchToStoreAsync: async (
         address: string,
-        web3Wrapper: Web3Wrapper,
+        connector: any,
         dispatcher: Dispatcher,
         networkId: Network,
     ) => {
         try {
-            const provider = web3Wrapper.getProvider();
+            const provider = await connector.getProvider();
+            const web3Wrapper = new Web3Wrapper(provider);
             const contractAddresses = getContractAddressesForChainOrThrow(networkId as number);
             const zrxTokenContract = new ERC20TokenContract(contractAddresses.zrxToken, provider);
             const [ethBalanceInWei, zrxBalance, zrxAllowance] = await Promise.all([

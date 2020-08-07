@@ -24,7 +24,7 @@ const toZrxBaseUnits = (zrxAmount: number) =>
     Web3Wrapper.toBaseUnitAmount(new BigNumber(zrxAmount, 10), constants.DECIMAL_PLACES_ZRX);
 
 const normalizeStakePoolData = (stakePoolData: StakePoolData[]) =>
-    stakePoolData.map(pool => ({
+    stakePoolData.map((pool) => ({
         poolId: utils.toPaddedHex(pool.poolId),
         amountBaseUnits: toZrxBaseUnits(pool.zrxAmount),
     }));
@@ -56,8 +56,10 @@ export interface UseStakeHookResult {
     currentEpochRewards?: BigNumber;
 }
 
-export const useStake = (networkId: ChainId, providerState: ProviderState): UseStakeHookResult => {
-    const { account } = useWeb3React<Web3Wrapper>();
+export const useStake = (
+    networkId: ChainId,
+    { account, connector }: ProviderState,
+): UseStakeHookResult => {
     const [loadingState, setLoadingState] = useState<undefined | TransactionLoadingState>(undefined);
     const [error, setError] = useState<Error | undefined>(undefined);
     const [result, setResult] = useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
@@ -71,21 +73,24 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
     const [contractAddresses, setContractAddresses] = useState<ContractAddresses | undefined>(undefined);
 
     useEffect(() => {
-        const _contractAddresses = getContractAddressesForChainOrThrow(networkId);
+        async () => {
+            const provider = await connector.getProvider();
+            const _contractAddresses = getContractAddressesForChainOrThrow(networkId);
 
-        setOwnerAddress(account);
-        // NOTE: staking proxy has state and is a delegate proxy to staking contract, it can be used to initialize both contracts
-        setStakingContract(
-            new StakingContract(_contractAddresses.stakingProxy, providerState.provider, {
-                from: account,
-            }),
-        );
-        setStakingProxyContract(
-            new StakingProxyContract(_contractAddresses.stakingProxy, providerState.provider, {
-                from: account,
-            }),
-        );
-        setContractAddresses(_contractAddresses);
+            setOwnerAddress(account);
+            // NOTE: staking proxy has state and is a delegate proxy to staking contract, it can be used to initialize both contracts
+            setStakingContract(
+                new StakingContract(_contractAddresses.stakingProxy, provider, {
+                    from: account,
+                }),
+            );
+            setStakingProxyContract(
+                new StakingProxyContract(_contractAddresses.stakingProxy, provider, {
+                    from: account,
+                }),
+            );
+            setContractAddresses(_contractAddresses);
+        };
     }, [account, networkId]);
 
     const executeWithData = useCallback(
@@ -218,7 +223,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
                 return;
             }
 
-            const data: string[] = _.flatMap(poolIds, poolId => [
+            const data: string[] = _.flatMap(poolIds, (poolId) => [
                 stakingContract.finalizePool(poolId).getABIEncodedTransactionData(),
                 stakingContract.withdrawDelegatorRewards(poolId).getABIEncodedTransactionData(),
             ]);
@@ -244,15 +249,15 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
     }, [estimatedTimeMs]);
 
     useEffect(() => {
-        if (currentEpochRewards || !contractAddresses || !providerState || !stakingContract) {
+        if (currentEpochRewards || !contractAddresses || !connector || !stakingContract) {
             return;
         }
         const getCurrentEpochRewards = async () => {
-            const { web3Wrapper } = providerState;
-
+            const provider = await connector.getProvider();
             const stakingProxyAddress = contractAddresses.stakingProxy;
             const wethContractAddress = await stakingContract.getWethContract().callAsync();
-            const wethContract = new WETH9Contract(wethContractAddress, providerState.provider);
+            const wethContract = new WETH9Contract(wethContractAddress, provider);
+            const web3Wrapper = new Web3Wrapper(provider);
 
             const [ethBalanceInWei, wethBalanceInWei, currentEpoch, wethReservedForPoolRewards] = await Promise.all([
                 web3Wrapper.getBalanceInWeiAsync(stakingProxyAddress),
@@ -282,7 +287,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
             logUtils.warn(err);
             errorReporter.report(err);
         });
-    }, [contractAddresses, currentEpochRewards, providerState, stakingContract, stakingProxyContract]);
+    }, [contractAddresses, currentEpochRewards, connector, stakingContract, stakingProxyContract]);
 
     return {
         loadingState,

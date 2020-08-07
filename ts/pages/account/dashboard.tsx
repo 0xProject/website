@@ -6,6 +6,7 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useWeb3React } from '@web3-react/core';
 import styled from 'styled-components';
+
 import { Button } from 'ts/components/button';
 import { CallToAction } from 'ts/components/call_to_action';
 import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
@@ -94,9 +95,7 @@ interface ExpectedPoolRewards {
 }
 
 export const Account: React.FC<AccountProps> = () => {
-    const { account } = useWeb3React<Web3Wrapper>();
-    const providerState = useSelector((state: State) => state.providerState);
-    const networkId = useSelector((state: State) => state.networkId);
+    const { account, chainId, connector } = useWeb3React<Web3Wrapper>();
     const dispatch = useDispatch();
 
     const onOpenConnectWalletDialog = React.useCallback(() => {
@@ -128,11 +127,15 @@ export const Account: React.FC<AccountProps> = () => {
     const [pendingActions, setPendingActions] = React.useState<PendingAction[]>([]);
     const [pendingUnstakePoolSet, setPendingUnstakePoolSet] = React.useState<Set<string>>(new Set());
 
-    const apiClient = useAPIClient(networkId);
-    const { stakingContract, unstake, withdrawStake, withdrawRewards, moveStake, currentEpochRewards } = useStake(
-        networkId,
-        providerState,
-    );
+    const apiClient = useAPIClient(chainId);
+    const {
+        stakingContract,
+        unstake,
+        withdrawStake,
+        withdrawRewards,
+        moveStake,
+        currentEpochRewards,
+    } = useStake(chainId, { account, connector });
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
     const hasRewards = () => Boolean(allTimeRewards.isGreaterThan(0) || expectedCurrentEpochRewards.isGreaterThan(0));
@@ -148,12 +151,12 @@ export const Account: React.FC<AccountProps> = () => {
                 // automatically send the rewards to the user's address
                 const withdrawnRewards = availableRewardsMap[fromPoolId] ?? 0;
                 if (withdrawnRewards > 0) {
-                    setTotalAvailableRewards(_totalAvailableRewards =>
+                    setTotalAvailableRewards((_totalAvailableRewards) =>
                         _totalAvailableRewards.minus(withdrawnRewards),
                     );
                 }
 
-                setNextEpochStakeMap(stakeMap => ({
+                setNextEpochStakeMap((stakeMap) => ({
                     ...stakeMap,
                     [fromPoolId]: fromPoolNextEpochStake,
                     [toPoolId]: toPoolNextEpochStake,
@@ -209,16 +212,21 @@ export const Account: React.FC<AccountProps> = () => {
                     _expectedCurrentEpochPoolRewards[pool.poolId] = new BigNumber(0);
                 } else {
                     // account for the case when account belongs to an operator
-                    _expectedCurrentEpochPoolRewards[pool.poolId] = (account.toLowerCase() === _estimatedRewardsMap[pool.poolId].operatorAddress) ?
-                        _estimatedRewardsMap[pool.poolId].expectedOperatorReward :
-                        ((new BigNumber(pool.zrxStaked)).dividedBy(_estimatedRewardsMap[pool.poolId].memberZrxStaked)).multipliedBy(_estimatedRewardsMap[pool.poolId].expectedMemberReward);
+                    _expectedCurrentEpochPoolRewards[pool.poolId] =
+                        account.toLowerCase() === _estimatedRewardsMap[pool.poolId].operatorAddress
+                            ? _estimatedRewardsMap[pool.poolId].expectedOperatorReward
+                            : new BigNumber(pool.zrxStaked)
+                                  .dividedBy(_estimatedRewardsMap[pool.poolId].memberZrxStaked)
+                                  .multipliedBy(_estimatedRewardsMap[pool.poolId].expectedMemberReward);
                 }
-
             }
 
-            const _expectedCurrentEpochRewards = Object.values(_expectedCurrentEpochPoolRewards).reduce<BigNumber>((prevValue, currentValue) => {
-                return prevValue.plus(new BigNumber(currentValue));
-            }, new BigNumber(0));
+            const _expectedCurrentEpochRewards = Object.values(_expectedCurrentEpochPoolRewards).reduce<BigNumber>(
+                (prevValue, currentValue) => {
+                    return prevValue.plus(new BigNumber(currentValue));
+                },
+                new BigNumber(0),
+            );
 
             setDelegatorData(delegatorResponse);
             setStakingPools(poolsResponse.stakingPools);
@@ -230,7 +238,7 @@ export const Account: React.FC<AccountProps> = () => {
             setExpectedCurrentEpochRewards(_expectedCurrentEpochRewards);
         };
 
-        if (!account || isFetchingDelegatorData  || !currentEpochRewards) {
+        if (!account || isFetchingDelegatorData || !currentEpochRewards) {
             return;
         }
 
@@ -250,7 +258,8 @@ export const Account: React.FC<AccountProps> = () => {
 
     React.useEffect(() => {
         const fetchAvailableRewards = async () => {
-            const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter(poolData => poolData.rewardsInEth > 0,
+            const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter(
+                (poolData) => poolData.rewardsInEth > 0,
             );
 
             const undelegatedBalancesBaseUnits = await stakingContract
@@ -266,7 +275,7 @@ export const Account: React.FC<AccountProps> = () => {
             setUndelegatedBalanceBaseUnits(undelegatedInBothEpochsBaseUnits);
 
             const poolRewards: PoolReward[] = await Promise.all(
-                poolsWithAllTimeRewards.map(async poolData => {
+                poolsWithAllTimeRewards.map(async (poolData) => {
                     const paddedHexPoolId = hexUtils.leftPad(hexUtils.toHex(poolData.poolId));
 
                     const availableRewardInEth = await stakingContract
@@ -339,7 +348,7 @@ export const Account: React.FC<AccountProps> = () => {
 
         setPendingActions(_pendingActions);
         setPendingUnstakePoolSet(
-            new Set(_pendingActions.filter(action => action.type === PendingActionType.Unstake).map(p => p.poolId)),
+            new Set(_pendingActions.filter((action) => action.type === PendingActionType.Unstake).map((p) => p.poolId)),
         );
     }, [currentEpochStakeMap, nextEpochStakeMap, delegatorData]);
 
@@ -371,11 +380,7 @@ export const Account: React.FC<AccountProps> = () => {
             <StakingPageLayout title="0x Staking | Account">
                 <SectionWrapper>
                     <Heading />
-                    <CallToAction
-                        icon="wallet"
-                        title="Loading"
-                        description="Grabbing data for your wallet."
-                    />
+                    <CallToAction icon="wallet" title="Loading" description="Grabbing data for your wallet." />
                 </SectionWrapper>
             </StakingPageLayout>
         );
@@ -513,7 +518,7 @@ export const Account: React.FC<AccountProps> = () => {
                         estimatedEpochRewards={formatEther(expectedCurrentEpochRewards).formatted}
                         lifetimeRewards={formatEther(allTimeRewards).formatted}
                         onWithdrawRewards={() => {
-                            const poolsWithRewards = Object.keys(availableRewardsMap).map(poolId =>
+                            const poolsWithRewards = Object.keys(availableRewardsMap).map((poolId) =>
                                 utils.toPaddedHex(poolId),
                             );
                             withdrawRewards(poolsWithRewards, () => {
@@ -561,8 +566,8 @@ export const Account: React.FC<AccountProps> = () => {
                     ) : (
                         delegatorData.forCurrentEpoch.poolData
                             // Don't show pools with pending withdrawals, they are shown in pending section instead
-                            .filter(p => !pendingUnstakePoolSet.has(p.poolId) && p.zrxStaked > 0)
-                            .map(delegatorPoolStats => {
+                            .filter((p) => !pendingUnstakePoolSet.has(p.poolId) && p.zrxStaked > 0)
+                            .map((delegatorPoolStats) => {
                                 const poolId = delegatorPoolStats.poolId;
                                 const pool = poolWithStatsMap[poolId];
 
@@ -659,13 +664,13 @@ export const Account: React.FC<AccountProps> = () => {
                         // automatically send the rewards to the user's address
                         const withdrawnRewards = availableRewardsMap[poolId] ?? 0;
                         if (withdrawnRewards > 0) {
-                            setTotalAvailableRewards(_totalAvailableRewards =>
+                            setTotalAvailableRewards((_totalAvailableRewards) =>
                                 _totalAvailableRewards.minus(withdrawnRewards),
                             );
                         }
 
                         const nextEpochStake = Math.max((nextEpochStakeMap[poolId] || 0) - zrxAmount, 0);
-                        setNextEpochStakeMap(stakeMap => ({
+                        setNextEpochStakeMap((stakeMap) => ({
                             ...stakeMap,
                             [poolId]: nextEpochStake,
                         }));

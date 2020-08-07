@@ -11,8 +11,6 @@ import {
     BlockchainErrs,
     Network,
     PortalOrder,
-    ProviderState,
-    ProviderType,
     ScreenWidths,
     Side,
     SideToAssetToken,
@@ -20,7 +18,6 @@ import {
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
-import { providerStateFactory } from 'ts/utils/providers/provider_state_factory';
 import { Translate } from 'ts/utils/translate';
 import { utils } from 'ts/utils/utils';
 
@@ -59,12 +56,9 @@ export interface State {
 
     // Staking
     isConnectWalletDialogOpen: boolean;
-    providerState: ProviderState;
 
     // Shared
     flashMessage: string | React.ReactNode;
-    providerType: ProviderType;
-    injectedProviderName: string;
     translate: Translate;
 }
 
@@ -100,11 +94,8 @@ export const INITIAL_STATE: State = {
     availableDocVersions: [DEFAULT_DOCS_VERSION],
     // Staking
     isConnectWalletDialogOpen: false,
-    providerState: providerStateFactory.getInitialProviderState(DEFAULT_NETWORK_ID),
     // Shared
     flashMessage: undefined,
-    providerType: ProviderType.Injected,
-    injectedProviderName: '',
     translate: new Translate(),
 };
 
@@ -187,7 +178,7 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
         case ActionTypes.UpdateTokenByAddress: {
             const tokenByAddress = { ...state.tokenByAddress };
             const tokens = action.data;
-            _.each(tokens, token => {
+            _.each(tokens, (token) => {
                 const updatedToken = {
                     ...tokenByAddress[token.address],
                     ...token,
@@ -350,75 +341,6 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
             };
         }
 
-        case ActionTypes.SetAccountStateLoading: {
-            return reduceStateWithAccount(state, constants.LOADING_ACCOUNT);
-        }
-
-        case ActionTypes.SetAccountStateLocked: {
-            return reduceStateWithAccount(state, constants.LOCKED_ACCOUNT);
-        }
-
-        case ActionTypes.SetAccountStateReady: {
-            const address = action.data;
-            let newAccount: AccountReady = {
-                state: AccountState.Ready,
-                address,
-            };
-
-            if (state.providerState) {
-                const currentAccount = state.providerState.account;
-                if (currentAccount.state === AccountState.Ready && currentAccount.address === address) {
-                    newAccount = {
-                        ...newAccount,
-                        ethBalanceInWei: currentAccount.ethBalanceInWei,
-                    };
-                }
-            }
-
-            return reduceStateWithAccount(state, newAccount);
-        }
-
-        case ActionTypes.UpdateAccountEthBalance: {
-            const { address, ethBalanceInWei } = action.data;
-            const currentAccount = state.providerState.account;
-            if (currentAccount.state !== AccountState.Ready || currentAccount.address !== address) {
-                return state;
-            } else {
-                const newAccount: AccountReady = {
-                    ...currentAccount,
-                    ethBalanceInWei,
-                };
-                return reduceStateWithAccount(state, newAccount);
-            }
-        }
-
-        case ActionTypes.UpdateAccountZrxBalance: {
-            const zrxBalanceBaseUnitAmount = action.data;
-            const currentAccount = state.providerState.account;
-            const newAccount = {
-                ...currentAccount,
-                zrxBalanceBaseUnitAmount,
-            };
-            return reduceStateWithAccount(state, newAccount);
-        }
-
-        case ActionTypes.UpdateAccountZrxAllowance: {
-            const zrxAllowanceBaseUnitAmount = action.data;
-            const currentAccount = state.providerState.account;
-            const newAccount = {
-                ...currentAccount,
-                zrxAllowanceBaseUnitAmount,
-            };
-            return reduceStateWithAccount(state, newAccount);
-        }
-
-        case ActionTypes.UpdateProviderState: {
-            return {
-                ...state,
-                providerState: action.data,
-            };
-        }
-
         // Shared
         case ActionTypes.ShowFlashMessage: {
             return {
@@ -434,33 +356,7 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
             };
         }
 
-        case ActionTypes.UpdateProviderType: {
-            return {
-                ...state,
-                providerType: action.data,
-            };
-        }
-
-        case ActionTypes.UpdateInjectedProviderName: {
-            return {
-                ...state,
-                injectedProviderName: action.data,
-            };
-        }
-
         default:
             return state;
     }
 }
-
-const reduceStateWithAccount = (state: State, account: Account) => {
-    const oldProviderState = state.providerState;
-    const newProviderState: ProviderState = {
-        ...oldProviderState,
-        account,
-    };
-    return {
-        ...state,
-        providerState: newProviderState,
-    };
-};

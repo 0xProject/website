@@ -38,9 +38,7 @@ interface FormProps {
 
 export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss, onVoted: onVoteInfoReceived }) => {
     const { account, connector } = useWeb3React<Web3Wrapper>();
-    const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
-    // const account = providerState.account as AccountReady;
     const dispatch = useDispatch();
     const apiClient = useAPIClient(networkId);
 
@@ -138,7 +136,6 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
                 <VoteForm
                     currentBalance={currentVotingPower}
                     selectedAddress={account}
-                    providerState={providerState}
                     onDismiss={onModalDismiss}
                     zeipId={zeipId}
                     networkId={networkId}
