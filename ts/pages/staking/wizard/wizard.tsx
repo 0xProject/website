@@ -65,6 +65,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const [allTimeStats, setAllTimeStats] = useState<AllTimeStats | undefined>(undefined);
     const [zrxBalance, setZrxBalance] = useState<BigNumber | undefined>(undefined);
     const [zrxBalanceBaseUnitAmount, setZrxBalanceBaseUnitAmount] = useState<BigNumber | undefined>(undefined);
+    const [zrxAllowance, setZrxAllowance] = useState<BigNumber | undefined>(undefined);
 
     const stake = useStake(chainId, { account, connector });
     const allowance = useAllowance();
@@ -126,8 +127,10 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
 
     useEffect(() => {
         const loadBalances = async () => {
-            // tslint:disable-next-line:no-shadowed-variable
-            const { zrxBalanceBaseUnitAmount } = await asyncDispatcher.fetchAccountBalanceAndDispatchToStoreAsync(
+            const {
+                // tslint:disable-next-line:no-shadowed-variable
+                zrxBalanceBaseUnitAmount, zrxAllowance,
+            } = await asyncDispatcher.fetchAccountBalanceAndDispatchToStoreAsync(
                 account,
                 connector,
                 dispatcher,
@@ -139,6 +142,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
 
             setZrxBalance(zrxBalance);
             setZrxBalanceBaseUnitAmount(zrxBalanceBaseUnitAmount);
+            setZrxAllowance(zrxAllowance);
         };
 
         // tslint:disable-next-line:no-floating-promises
@@ -204,7 +208,11 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                                 />
                             )}
                             {currentStep === WizardRouterSteps.ApproveTokens && (
-                                <TokenApprovalPane allowance={allowance} onGoToNextStep={handleClickNextStep} />
+                                <TokenApprovalPane
+                                    zrxAllowance={zrxAllowance}
+                                    allowance={allowance}
+                                    onGoToNextStep={handleClickNextStep}
+                                />
                             )}
                             {currentStep === WizardRouterSteps.ReadyToStake && (
                                 <StartStaking

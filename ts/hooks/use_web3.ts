@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { injected } from 'ts/utils/connectors';
 
-export function useEdgerConnect(): boolean {
+export function useEagerConnect(): boolean {
     const { activate, active } = useWeb3React();
 
     const [isTried, setIsTried] = useState(false);

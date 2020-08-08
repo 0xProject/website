@@ -70,7 +70,7 @@ export const asyncDispatcher = {
             dispatcher.updateAccountEthBalance({ address, ethBalanceInWei });
             dispatcher.updateAccountZrxBalance(zrxBalance);
             dispatcher.updateAccountZrxAllowance(zrxAllowance);
-            return { zrxBalanceBaseUnitAmount: zrxBalance };
+            return { zrxBalanceBaseUnitAmount: zrxBalance, zrxAllowance };
         } catch (err) {
             logUtils.warn(err);
             errorReporter.report(err);

@@ -20,7 +20,7 @@ import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
 import { utils } from 'ts/utils/utils';
 
-import { useEdgerConnect, useInactiveListener } from 'ts/hooks/use_web3';
+import { useEagerConnect, useInactiveListener } from 'ts/hooks/use_web3';
 import { constants } from 'ts/utils/constants';
 
 function getErrorMessage(error: Error): string {
@@ -189,7 +189,7 @@ export const ConnectWalletDialog = () => {
         }
     }, [activatingConnector, connector]);
 
-    const isTriedEager = useEdgerConnect();
+    const isTriedEager = useEagerConnect();
 
     useInactiveListener(!isTriedEager || !!activatingConnector);
 

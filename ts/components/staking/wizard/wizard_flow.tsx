@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
 import {
-    AccountReady,
     Epoch,
     Network,
     PoolWithStats,
@@ -656,12 +655,12 @@ const UnlockHeader = styled(CenteredHeader)`
 
 export interface TokenApprovalPaneProps {
     allowance: UseAllowanceHookResult;
+    zrxAllowance: BigNumber | undefined;
     onGoToNextStep: () => void;
 }
 
 export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
-    const { allowance, onGoToNextStep } = props;
-    const { account } = useWeb3React();
+    const { allowance, onGoToNextStep, zrxAllowance } = props;
 
     const timeRemainingForAllowanceApproval = useSecondsRemaining(allowance.estimatedTransactionFinishTime);
 
@@ -714,10 +713,7 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
         ActiveButon = (
             <ButtonWithIcon
                 onClick={async () => {
-                    const allowanceBaseUnits =
-                        ({ address: account } as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
-
-                    if (allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
+                    if (zrxAllowance.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
                         allowance.setAllowance();
                     }
                 }}
