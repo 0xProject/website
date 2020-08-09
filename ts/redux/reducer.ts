@@ -41,6 +41,9 @@ export interface State {
     lastForceTokenStateRefetch: number;
     userAddress: string;
     userEtherBalanceInWei?: BigNumber;
+    ethBalanceInWei: BigNumber;
+    zrxBalanceBaseUnitAmount: BigNumber;
+    zrxAllowanceBaseUnitAmount: BigNumber;
     portalOnboardingStep: number;
     isPortalOnboardingShowing: boolean;
     hasPortalOnboardingBeenClosed: boolean;
@@ -82,6 +85,9 @@ export const INITIAL_STATE: State = {
     lastForceTokenStateRefetch: moment().unix(),
     userAddress: '',
     userEtherBalanceInWei: undefined,
+    ethBalanceInWei: undefined,
+    zrxAllowanceBaseUnitAmount: undefined,
+    zrxBalanceBaseUnitAmount: undefined,
     userSuppliedOrderCache: undefined,
     portalOnboardingStep: 0,
     isPortalOnboardingShowing: false,
@@ -144,6 +150,27 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
             return {
                 ...state,
                 userEtherBalanceInWei: action.data,
+            };
+        }
+
+        case ActionTypes.UpdateAccountEthBalance: {
+            return {
+                ...state,
+                ethBalanceInWei: action.data,
+            };
+        }
+
+        case ActionTypes.UpdateAccountZrxAllowance: {
+            return {
+                ...state,
+                zrxAllowanceBaseUnitAmount: action.data,
+            };
+        }
+
+        case ActionTypes.UpdateAccountZrxBalance: {
+            return {
+                ...state,
+                zrxBalanceBaseUnitAmount: action.data,
             };
         }
 

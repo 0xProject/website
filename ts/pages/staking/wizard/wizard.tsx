@@ -27,7 +27,6 @@ import { useStakingWizard, WizardRouterSteps } from 'ts/hooks/use_wizard';
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import {
-    AccountReady,
     AllTimeStats,
     Epoch,
     PoolWithStats,
@@ -40,6 +39,8 @@ import { stakingUtils } from 'ts/utils/staking_utils';
 
 export interface StakingWizardProps {
     onOpenConnectWalletDialog: () => void;
+    zrxAllowanceBaseUnitAmount: BigNumber | undefined;
+    zrxBalanceBaseUnitAmount: BigNumber | undefined;
 }
 
 const Container = styled.div`
@@ -52,6 +53,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     // If coming from the market maker page, poolId will be provided
     const { poolId } = useQuery<{ poolId: string | undefined }>();
     const { connector, account, chainId } = useWeb3React<Web3Wrapper>();
+    const { zrxAllowanceBaseUnitAmount, zrxBalanceBaseUnitAmount } = props;
 
     const dispatch = useDispatch();
     const dispatcher = new Dispatcher(dispatch);
@@ -63,14 +65,17 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const [currentEpochStats, setCurrentEpochStats] = useState<Epoch | undefined>(undefined);
     const [nextEpochStats, setNextEpochStats] = useState<Epoch | undefined>(undefined);
     const [allTimeStats, setAllTimeStats] = useState<AllTimeStats | undefined>(undefined);
-    const [zrxBalance, setZrxBalance] = useState<BigNumber | undefined>(undefined);
-    const [zrxBalanceBaseUnitAmount, setZrxBalanceBaseUnitAmount] = useState<BigNumber | undefined>(undefined);
-    const [zrxAllowance, setZrxAllowance] = useState<BigNumber | undefined>(undefined);
 
     const stake = useStake(chainId, { account, connector });
     const allowance = useAllowance();
 
-    const allowanceBaseUnits = ({ address: account } as AccountReady).zrxAllowanceBaseUnitAmount || new BigNumber(0);
+    let zrxBalance: BigNumber | undefined;
+
+    if (zrxBalanceBaseUnitAmount) {
+        zrxBalance = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
+    }
+
+    const allowanceBaseUnits = zrxAllowanceBaseUnitAmount || new BigNumber(0);
 
     const doesNeedTokenApproval = allowanceBaseUnits.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS);
 
@@ -127,22 +132,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
 
     useEffect(() => {
         const loadBalances = async () => {
-            const {
-                // tslint:disable-next-line:no-shadowed-variable
-                zrxBalanceBaseUnitAmount, zrxAllowance,
-            } = await asyncDispatcher.fetchAccountBalanceAndDispatchToStoreAsync(
-                account,
-                connector,
-                dispatcher,
-                chainId,
-            );
-
-            // tslint:disable-next-line:no-shadowed-variable
-            const zrxBalance = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
-
-            setZrxBalance(zrxBalance);
-            setZrxBalanceBaseUnitAmount(zrxBalanceBaseUnitAmount);
-            setZrxAllowance(zrxAllowance);
+            await asyncDispatcher.fetchAccountBalanceAndDispatchToStoreAsync(account, connector, dispatcher, chainId);
         };
 
         // tslint:disable-next-line:no-floating-promises
@@ -209,7 +199,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
                             )}
                             {currentStep === WizardRouterSteps.ApproveTokens && (
                                 <TokenApprovalPane
-                                    zrxAllowance={zrxAllowance}
+                                    zrxAllowanceBaseUnitAmount={zrxAllowanceBaseUnitAmount}
                                     allowance={allowance}
                                     onGoToNextStep={handleClickNextStep}
                                 />

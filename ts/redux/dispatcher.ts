@@ -3,7 +3,6 @@ import { Dispatch } from 'redux';
 import {
     Action,
     ActionTypes,
-    AddressAndEthBalanceInWei,
     AssetToken,
     BlockchainErrs,
     Language,
@@ -222,10 +221,10 @@ export class Dispatcher {
         });
     }
 
-    public updateAccountEthBalance(addressAndBalance: AddressAndEthBalanceInWei): void {
+    public updateAccountEthBalance(ethBalanceInWei: BigNumber): void {
         this._dispatch({
             type: ActionTypes.UpdateAccountEthBalance,
-            data: addressAndBalance,
+            data: ethBalanceInWei,
         });
     }
 

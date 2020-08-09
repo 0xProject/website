@@ -655,12 +655,12 @@ const UnlockHeader = styled(CenteredHeader)`
 
 export interface TokenApprovalPaneProps {
     allowance: UseAllowanceHookResult;
-    zrxAllowance: BigNumber | undefined;
+    zrxAllowanceBaseUnitAmount: BigNumber | undefined;
     onGoToNextStep: () => void;
 }
 
 export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
-    const { allowance, onGoToNextStep, zrxAllowance } = props;
+    const { allowance, onGoToNextStep, zrxAllowanceBaseUnitAmount } = props;
 
     const timeRemainingForAllowanceApproval = useSecondsRemaining(allowance.estimatedTransactionFinishTime);
 
@@ -713,7 +713,7 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
         ActiveButon = (
             <ButtonWithIcon
                 onClick={async () => {
-                    if (zrxAllowance.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
+                    if (zrxAllowanceBaseUnitAmount.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
                         allowance.setAllowance();
                     }
                 }}

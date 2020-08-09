@@ -67,14 +67,13 @@ export const asyncDispatcher = {
                 zrxTokenContract.allowance(address, contractAddresses.erc20Proxy).callAsync(),
             ]);
 
-            dispatcher.updateAccountEthBalance({ address, ethBalanceInWei });
+            dispatcher.updateAccountEthBalance(ethBalanceInWei);
             dispatcher.updateAccountZrxBalance(zrxBalance);
             dispatcher.updateAccountZrxAllowance(zrxAllowance);
-            return { zrxBalanceBaseUnitAmount: zrxBalance, zrxAllowance };
         } catch (err) {
             logUtils.warn(err);
             errorReporter.report(err);
-            return null;
+            return;
         }
     },
 };

@@ -84,9 +84,6 @@ export interface IWallet {
 export type Account = AccountReady | AccountNotReady;
 
 export interface ProviderState {
-    // name: string;
-    // displayName: string;
-    // providerType?: Providers;
     connector?: any;
     web3Wrapper?: Web3Wrapper;
     account?: string;
