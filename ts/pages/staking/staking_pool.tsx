@@ -14,12 +14,11 @@ import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { State } from 'ts/redux/reducer';
-import { PoolWithHistoricalStats, WebsitePaths, ScreenWidths } from 'ts/types';
+import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 import { Button } from 'ts/components/button';
-import { colors } from 'ts/style/colors';
 
 export interface ActionProps {
     children: React.ReactNode;
@@ -57,20 +56,34 @@ const TooltipLabel = styled.span`
 `;
 
 const SimulatorWrapper = styled.div`
-    border: 1px solid #d9d9d9;
-    display: flex;
-    padding: 0 20px;
-    height: 80px;
-    justify-content: center;
-
-    @media (max-width: ${ScreenWidths.Lg}rem) {
-        padding: 20px;
-        padding: 20px;
-        margin: 0 10px 40px 10px;
+    @media (min-width: 768px) {
+        padding: 0 80px 40px 80px;
     }
 `;
 
-const SimulatorCTA = styled.h3``;
+const SimulatorInner = styled.div`
+    border: 1px solid #d9d9d9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    line-height: 27px;
+    @media (min-width: 768px) {
+        padding: 20px;
+    }
+`;
+
+const SimulatorText = styled.h3`
+    @media (max-width: 768px) {
+        font-size: 15px;
+    }
+`;
+
+const SimulatorCTA = styled(Button)`
+    @media (max-width: 768px) {
+        font-size: 15px;
+    }
+`;
 
 /*
 const TradingPairContainer = styled.div`
@@ -455,15 +468,17 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                     </Actions>
                 </ActionsInner>
             </ActionsWrapper> */}
-            <Container>
-                <SimulatorWrapper>
-                    <SimulatorCTA>
+            <SimulatorWrapper>
+                <SimulatorInner>
+                    <SimulatorText>
                         Calculate your potential Staking Rewards with the
-                        <Button onClick={e => console.log(e)} isWithArrow={true} isAccentColor={true} to={''}>
+                        <SimulatorCTA onClick={e => console.log(e)} isWithArrow={true} isAccentColor={true} to={''}>
                             Reward Simulator
-                        </Button>
-                    </SimulatorCTA>
-                </SimulatorWrapper>
+                        </SimulatorCTA>
+                    </SimulatorText>
+                </SimulatorInner>
+            </SimulatorWrapper>
+            <Container>
                 <GraphHeading>Historical Details</GraphHeading>
                 <HistoryChart
                     totalRewards={historicalEpochs.map(e => e.totalRewardsPaidInEth)}
