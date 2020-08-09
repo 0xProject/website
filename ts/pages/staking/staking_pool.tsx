@@ -2,7 +2,7 @@ import { BigNumber, logUtils } from '@0x/utils';
 import { format } from 'date-fns';
 import * as _ from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect, RouteChildrenProps, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -19,6 +19,9 @@ import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 import { Button } from 'ts/components/button';
+import { Dispatcher } from 'ts/redux/dispatcher';
+import { useWindowEvent } from 'ts/hooks/use_window_event';
+import { SimulatorDrawer } from 'ts/components/dialogs/simulator_dialog';
 
 export interface ActionProps {
     children: React.ReactNode;
@@ -282,10 +285,20 @@ const tradingPairs = [
 */
 export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = props => {
     const { poolId } = useParams();
+    const nodeRef = React.useRef<HTMLDivElement>(null);
 
+    const dispatch = useDispatch();
+    const dispatcher = new Dispatcher(dispatch);
     const networkId = useSelector((state: State) => state.networkId);
     const apiClient = useAPIClient(networkId);
     const [stakingPool, setStakingPool] = useState<PoolWithHistoricalStats | undefined>(undefined);
+
+    useWindowEvent('click', nodeRef, (e: React.SyntheticEvent<EventTarget>) => {
+        if (nodeRef && nodeRef?.current?.contains(e.target as HTMLInputElement) === true) return;
+        closeDrawer();
+    });
+
+    const closeDrawer = () => dispatcher.UpdateSimulatorDialogOpen(false);
 
     useEffect(() => {
         apiClient
@@ -472,7 +485,12 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 <SimulatorInner>
                     <SimulatorText>
                         Calculate your potential Staking Rewards with the
-                        <SimulatorCTA onClick={e => console.log(e)} isWithArrow={true} isAccentColor={true} to={''}>
+                        <SimulatorCTA
+                            onClick={() => dispatcher.UpdateSimulatorDialogOpen(true)}
+                            isWithArrow={true}
+                            isAccentColor={true}
+                            to={''}
+                        >
                             Reward Simulator
                         </SimulatorCTA>
                     </SimulatorText>
@@ -506,6 +524,12 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                     })}
                 </div> */}
             </Container>
+            <SimulatorDrawer
+                elementRef={nodeRef}
+                onDismiss={() => closeDrawer()}
+                backgroundColor="#F6F6F6"
+                size="400px"
+            />
         </StakingPageLayout>
     );
 };

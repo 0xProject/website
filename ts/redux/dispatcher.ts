@@ -63,6 +63,14 @@ export class Dispatcher {
             type: ActionTypes.UpdateShouldBlockchainErrDialogBeOpen,
         });
     }
+
+    public UpdateSimulatorDialogOpen(isOpen: boolean): void {
+        this._dispatch({
+            data: isOpen,
+            type: ActionTypes.UpdateSimulatorDialogOpen,
+        });
+    }
+
     public updateChosenAssetToken(side: Side, token: AssetToken): void {
         this._dispatch({
             data: {
