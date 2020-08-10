@@ -93,7 +93,7 @@ interface ExpectedPoolRewards {
 }
 
 export const Account: React.FC<AccountProps> = () => {
-    const { account, chainId, connector } = useWeb3React<Web3Wrapper>();
+    const { account, chainId } = useWeb3React();
     const dispatch = useDispatch();
 
     const onOpenConnectWalletDialog = React.useCallback(() => {
@@ -133,7 +133,7 @@ export const Account: React.FC<AccountProps> = () => {
         withdrawRewards,
         moveStake,
         currentEpochRewards,
-    } = useStake(chainId, { account, connector });
+    } = useStake();
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
     const hasRewards = () => Boolean(allTimeRewards.isGreaterThan(0) || expectedCurrentEpochRewards.isGreaterThan(0));

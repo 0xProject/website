@@ -1,13 +1,14 @@
-import { ChainId, ContractAddresses, getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
+import { ContractAddresses, getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { StakingContract, StakingProxyContract, WETH9Contract } from '@0x/contract-wrappers';
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import { useWeb3React } from '@web3-react/core';
 import { addMilliseconds } from 'date-fns';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 
-import { ProviderState, StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
+import { StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
@@ -55,7 +56,8 @@ export interface UseStakeHookResult {
     currentEpochRewards?: BigNumber;
 }
 
-export const useStake = (networkId: ChainId, { account, connector }: ProviderState): UseStakeHookResult => {
+export const useStake = (): UseStakeHookResult => {
+    const { connector, account, chainId } = useWeb3React();
     const [loadingState, setLoadingState] = useState<undefined | TransactionLoadingState>(undefined);
     const [error, setError] = useState<Error | undefined>(undefined);
     const [result, setResult] = useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
@@ -71,7 +73,7 @@ export const useStake = (networkId: ChainId, { account, connector }: ProviderSta
     useEffect(() => {
         const loadContract = async () => {
             const provider = await connector.getProvider();
-            const _contractAddresses = getContractAddressesForChainOrThrow(networkId);
+            const _contractAddresses = getContractAddressesForChainOrThrow(chainId);
 
             setOwnerAddress(account);
             // NOTE: staking proxy has state and is a delegate proxy to staking contract, it can be used to initialize both contracts
@@ -89,7 +91,7 @@ export const useStake = (networkId: ChainId, { account, connector }: ProviderSta
         };
         // tslint:disable-next-line:no-floating-promises
         loadContract();
-    }, [account, networkId]);
+    }, [account, chainId]);
 
     const executeWithData = useCallback(
         async (data: string[]) => {

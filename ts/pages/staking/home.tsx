@@ -45,9 +45,9 @@ const HeadingRow = styled.div`
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
-    const { chainId, connector, account } = useWeb3React();
+    const { chainId } = useWeb3React();
     const apiClient = useAPIClient(chainId);
-    const { currentEpochRewards } = useStake(chainId, { account, connector });
+    const { currentEpochRewards } = useStake();
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
 
     const [poolSortingParam, setPoolSortingParam] = React.useState<PoolsListSortingParameter>(

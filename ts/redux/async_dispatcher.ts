@@ -54,12 +54,12 @@ export const asyncDispatcher = {
         address: string,
         connector: any,
         dispatcher: Dispatcher,
-        networkId: Network,
+        chainId: number,
     ) => {
         try {
             const provider = await connector.getProvider();
             const web3Wrapper = new Web3Wrapper(provider);
-            const contractAddresses = getContractAddressesForChainOrThrow(networkId as number);
+            const contractAddresses = getContractAddressesForChainOrThrow(chainId);
             const zrxTokenContract = new ERC20TokenContract(contractAddresses.zrxToken, provider);
             const [ethBalanceInWei, zrxBalance, zrxAllowance] = await Promise.all([
                 web3Wrapper.getBalanceInWeiAsync(address),

@@ -26,13 +26,7 @@ import { useStakingWizard, WizardRouterSteps } from 'ts/hooks/use_wizard';
 
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { Dispatcher } from 'ts/redux/dispatcher';
-import {
-    AllTimeStats,
-    Epoch,
-    PoolWithStats,
-    StakingPoolRecomendation,
-    UserStakingChoice,
-} from 'ts/types';
+import { AllTimeStats, Epoch, PoolWithStats, StakingPoolRecomendation, UserStakingChoice } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
@@ -52,7 +46,7 @@ const Container = styled.div`
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
     // If coming from the market maker page, poolId will be provided
     const { poolId } = useQuery<{ poolId: string | undefined }>();
-    const { connector, account, chainId } = useWeb3React<Web3Wrapper>();
+    const { connector, account, chainId } = useWeb3React();
     const { zrxAllowanceBaseUnitAmount, zrxBalanceBaseUnitAmount } = props;
 
     const dispatch = useDispatch();
@@ -66,7 +60,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     const [nextEpochStats, setNextEpochStats] = useState<Epoch | undefined>(undefined);
     const [allTimeStats, setAllTimeStats] = useState<AllTimeStats | undefined>(undefined);
 
-    const stake = useStake(chainId, { account, connector });
+    const stake = useStake();
     const allowance = useAllowance();
 
     let zrxBalance: BigNumber | undefined;
