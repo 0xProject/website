@@ -173,9 +173,14 @@ const WalletOption = ({ name, onClick, connector, isConnected }: WalletOptionPro
 const StyledProviderOptions = styled.div`
     display: grid;
     grid-gap: 1rem;
-    grid-template-columns: 1fr 1fr;
     max-width: 30rem;
     margin: auto;
+    @media (max-width: 768px) {
+        grid-template-rows: 1fr;
+    }
+    @media (min-width: 768px) {
+        grid-template-columns: 1fr 1fr;
+    }
 `;
 
 export const ConnectWalletDialog = () => {
