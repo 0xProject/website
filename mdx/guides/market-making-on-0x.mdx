@@ -48,9 +48,13 @@ For a set of scenarios showcasing the above steps, as well as allowance setting,
 
 Note that the `salt` field of an order should be set to the current unix timestamp in milliseconds for full compatibility with the [`cancelOrdersUpTo`](#cancelling-orders) function. For low level details of how an order is created, please reference the [orders](https://0x.org/docs/guides/v3-specification#orders) section of the protocol specification.
 
+# Distributing orders
+
 Once you have a valid 0x order, it can be submitted to a relayer or the Mesh network. You can use the [POST /v3/order](https://github.com/0xProject/standard-relayer-api/blob/master/http/v3.md#post-v3order) endpoint of the Standard Relayer API (see [submitOrderAsync in 0x Connect](https://0x.org/docs/tools/connect#submitorderasync)) or the [mesh_addOrders](https://0x-org.gitbook.io/mesh/getting-started/usage#mesh_addorders) Mesh JSON-RPC method (see [addOrdersAsync in `@0x/mesh-rpc-client`](https://0x-org.gitbook.io/mesh/json-rpc-clients/typescript/reference#addordersasync)).
 
 If you want to be notified whenever the order is filled by a trader, you should also submit the order to a [0x Mesh node](https://0x-org.gitbook.io/mesh/) instance you are running.
+
+Whereas posting orders, to a relayer or to Mesh, represents a "push" distribution model, there is an alternative "pull" model as well, known as Request for Quote (RFQ).  This is a feature of the [0x API](/docs/api), which implements not just the Standard Relayer API, but also additional resources for aggregating liquidity from both 0x and non-0x sources. For RFQ, the 0x API is configured with a list of market makers, and whenever a trader requests a quote for the best available pricing across all sources, the API will contact those market makers, which may respond with a 0x order representing their "quote."  If that order outcompetes pricing from other sources, it will be given to the API client, who may fill it just as they would fill any other 0x order.  For more details, see [RFQ-T in the 0x API](/docs/guides/rfqt-in-the-0x-api).
 
 # Filling orders
 
@@ -84,7 +88,7 @@ A special case exists when filling both a buy and sell order of the same asset p
 
 Note that the process for filling orders differs when interacting with an [open orderbook](https://0x.org/docs/guides/relayer-strategies#open-orderbook) relayer or a [matching](https://0x.org/docs/guides/relayer-strategies#matching) relayer. These orders can be differentiated by looking at an order's [senderAddress](https://0x.org/docs/guides/v3-specification#senderaddress) and [takerAddress](https://0x.org/docs/guides/v3-specification#order-message-format) fields.
 
-When both fields are set to 0 (as in the open orderbook model), the order can be filled directly by calling the desired fill function on the Exchange contract. The taker filling an order in this way benefits from [Ethereum transaction atomicity](#transaction-atomicity) and more granular control over [transaction failures](#transaction-failures). However, the onus of paying gas and choosing which specific orders to be matched with falls on the taker in this scenario.
+When both fields are set to 0 (as in the open orderbook model), or when just the `senderAddress` is 0 (as in the RFQ-T model), the order can be filled directly by calling the desired fill function on the Exchange contract. The taker filling an order in this way benefits from [Ethereum transaction atomicity](#transaction-atomicity) and more granular control over [transaction failures](#transaction-failures). However, the onus of paying gas and choosing which specific orders to be matched with falls on the taker in this scenario.
 
 In the matching model, the taker first submits a signed order to the matcher (where either the order's `senderAddress` or `takerAddress` are set to the address of the matcher). The matcher than chooses which order(s) to match against the taker's signed order and fills the orders simultaneously (usually by calling `batchFillOrKillOrders` or `matchOrders`). In this scenario, the matcher is responsible for paying gas and choosing the specific orders to be matched.
 
