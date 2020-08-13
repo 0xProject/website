@@ -18,6 +18,8 @@ Trading on a CEX (centralized exchange) requires that you deposit your assets in
 
 0x orders can be hosted by anyone, rather than there being a single entity hosting the orders. Any entity that hosts and distributes 0x orders is called a "relayer." Currently most relayers are centralized entities hosting an API from which orders can be retrieved.
 
+In addition to relayer hosting, distribution can also be achieved via Mesh, a peer-to-peer network built specifically for sharing 0x orders. For more information, see [0x.org/mesh](0x.org/mesh).
+
 A 0x order is a data packet that contains an [order's details](https://0x.org/docs/guides/v3-specification#order-message-format) together with a [valid signature](https://0x.org/docs/guides/v3-specification#signature-types) (e.g. a valid elliptic curve signature generated from the traders Ethereum address) of it's contents.
 
 ## 3. Settlement of trades
@@ -28,7 +30,7 @@ In order for the 0x smart contracts to move funds on the behalf of traders, the 
 
 ## What about order matching?
 
-There are two dominant relayer strategies in existence today: [matching](https://0x.org/docs/guides/relayer-strategies#matching) and [open orderbook](https://0x.org/docs/guides/relayer-strategies#open-orderbook). Open orderbook relayers host orders that anyone can fill by directly sending a transaction (with the order details and desired fill amount) to the Ethereum blockchain. Using this model, the order in which transactions are filled is determined by the same algorithm used by miners to decide which transactions to include in the next block (more on this later).
+There are two dominant relayer strategies in existence today: [matching](https://0x.org/docs/guides/relayer-strategies#matching) and [open orderbook](https://0x.org/docs/guides/relayer-strategies#open-orderbook). Open orderbook relayers host orders that anyone can fill by directly sending a transaction (with the order details and desired fill amount) to the Ethereum blockchain. [Mesh](https://0x.org/mesh), despite not being a centralized relayer, also falls into the open orderbook category, as it only distributes orders that can be filled by anyone. Using this model, the order in which transactions are filled is determined by the same algorithm used by miners to decide which transactions to include in the next block (more on this later).
 
 Matching relayers require traders to create the inverse 0x order to the one they wish to fill and submit it back to the matcher. The matching relayer will then fill both orders in one atomic transaction to Ethereum on the trader's behalf.
 
