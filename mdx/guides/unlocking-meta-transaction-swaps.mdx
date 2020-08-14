@@ -31,8 +31,6 @@ import * as qs from 'qs';
     const response = await fetch(
         `https://api.0x.org/meta_transaction/v0/price?${qs.stringify(params)}`
     );
- 
-    await window.web3.eth.sendTransaction(await response.json());
 })();
 ```
 

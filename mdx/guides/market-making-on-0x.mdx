@@ -1,12 +1,12 @@
-This tutorial will attempt to bridge the knowledge-gap between market-making on centralized cryptocurrency exchanges (e.g Binance) and market-making on 0x, a decentralised exchange protocol built on Ethereum (see: [technical protocol specification](https://0x.org/docs/guides/v3-specification)).
+This tutorial will attempt to bridge the knowledge-gap between market-making on centralized cryptocurrency exchanges (e.g Binance) and market-making on 0x, a decentralised exchange protocol built on Ethereum (see [technical protocol specification](https://0x.org/docs/guides/v3-specification)).
 
 # High-level primer
 
 There are three core activities all centralized exchanges perform:
 
-1. Custody user funds
-2. Host and distribute orders
-3. Settle trades
+1. Custody of user funds
+2. Hosting and distributing orders
+3. Settlement of trades
 
 Within the 0x protocol, these tasks are not all undertaken by a single entity nor in the same way.
 
@@ -14,11 +14,13 @@ Within the 0x protocol, these tasks are not all undertaken by a single entity no
 
 Trading on a CEX (centralized exchange) requires that you deposit your assets into an Ethereum addresses the exchange controls. After that point, they have full custody over your funds and must secure them from hackers, rogue employees and other attackers. When trading on 0x, your assets never need to leave your Ethereum address until a trade is settled.
 
-## 2. Host and distribute orders
+## 2. Hosting and distributing orders
 
-0x orders can be hosted by anyone, rather than there being a single entity hosting the orders. Any entity that hosts and distributes 0x orders is called a "relayer". Currently most relayers are centralized entities hosting an API from which orders can be retrieved.
+0x orders can be hosted by anyone, rather than there being a single entity hosting the orders. Any entity that hosts and distributes 0x orders is called a "relayer." Currently most relayers are centralized entities hosting an API from which orders can be retrieved.
 
-A 0x order is any data packet that contains an [order's details](https://0x.org/docs/guides/v3-specification#order-message-format) together with a [valid signature](https://0x.org/docs/guides/v3-specification#signature-types) (e.g. a valid elliptic curve signature generated from the traders Ethereum address) of it's contents.
+In addition to relayer hosting, distribution can also be achieved via Mesh, a peer-to-peer network built specifically for sharing 0x orders. For more information, see [0x.org/mesh](0x.org/mesh).
+
+A 0x order is a data packet that contains an [order's details](https://0x.org/docs/guides/v3-specification#order-message-format) together with a [valid signature](https://0x.org/docs/guides/v3-specification#signature-types) (e.g. a valid elliptic curve signature generated from the traders Ethereum address) of it's contents.
 
 ## 3. Settlement of trades
 
@@ -28,7 +30,7 @@ In order for the 0x smart contracts to move funds on the behalf of traders, the 
 
 ## What about order matching?
 
-There are two dominant relayer strategies in existence today: [matching](https://0x.org/docs/guides/relayer-strategies#matching) and [open orderbook](https://0x.org/docs/guides/relayer-strategies#open-orderbook). Open orderbook relayers host orders that anyone can fill by directly sending a transaction (with the order details and desired fill amount) to the Ethereum blockchain. Using this model, the order in which transactions are filled is determined by the same algorithm used by miners to decide which transactions to include in the next block (more on this later).
+There are two dominant relayer strategies in existence today: [matching](https://0x.org/docs/guides/relayer-strategies#matching) and [open orderbook](https://0x.org/docs/guides/relayer-strategies#open-orderbook). Open orderbook relayers host orders that anyone can fill by directly sending a transaction (with the order details and desired fill amount) to the Ethereum blockchain. [Mesh](https://0x.org/mesh), despite not being a centralized relayer, also falls into the open orderbook category, as it only distributes orders that can be filled by anyone. Using this model, the order in which transactions are filled is determined by the same algorithm used by miners to decide which transactions to include in the next block (more on this later).
 
 Matching relayers require traders to create the inverse 0x order to the one they wish to fill and submit it back to the matcher. The matching relayer will then fill both orders in one atomic transaction to Ethereum on the trader's behalf.
 
@@ -42,13 +44,17 @@ In both models, the relayer never has custody over a trader's assets.
 2. Generating a proper hash for the order contents
 3. Sign the order with your elliptic curve signature
 
-For a set of scenarios show-casing the above steps, as well as allowance setting, take a look at the [0x Starter Project](https://github.com/0xProject/0x-starter-project).
+For a set of scenarios showcasing the above steps, as well as allowance setting, take a look at the [0x Starter Project](https://github.com/0xProject/0x-starter-project).
 
 Note that the `salt` field of an order should be set to the current unix timestamp in milliseconds for full compatibility with the [`cancelOrdersUpTo`](#cancelling-orders) function. For low level details of how an order is created, please reference the [orders](https://0x.org/docs/guides/v3-specification#orders) section of the protocol specification.
 
-Once you have a valid 0x order, it can be submitted to a relayer or the Mesh network. You can use the [POST /v3/order](https://github.com/0xProject/standard-relayer-api/blob/master/http/v3.md#post-v3order) endpoint of the Standard Relayer API (see: [submitOrderAsync in 0x Connect](https://0x.org/docs/tools/connect#submitorderasync)) or the [mesh_addOrders](https://0x-org.gitbook.io/mesh/getting-started/usage#mesh_addorders) Mesh JSON-RPC method (see: [addOrdersAsync in `@0x/mesh-rpc-client`](https://0x-org.gitbook.io/mesh/json-rpc-clients/typescript/reference#addordersasync)) respectively.
+# Distributing orders
+
+Once you have a valid 0x order, it can be submitted to a relayer or the Mesh network. You can use the [POST /v3/order](https://github.com/0xProject/standard-relayer-api/blob/master/http/v3.md#post-v3order) endpoint of the Standard Relayer API (see [submitOrderAsync in 0x Connect](https://0x.org/docs/tools/connect#submitorderasync)) or the [mesh_addOrders](https://0x-org.gitbook.io/mesh/getting-started/usage#mesh_addorders) Mesh JSON-RPC method (see [addOrdersAsync in `@0x/mesh-rpc-client`](https://0x-org.gitbook.io/mesh/json-rpc-clients/typescript/reference#addordersasync)).
 
 If you want to be notified whenever the order is filled by a trader, you should also submit the order to a [0x Mesh node](https://0x-org.gitbook.io/mesh/) instance you are running.
+
+Whereas posting orders, to a relayer or to Mesh, represents a "push" distribution model, there is an alternative "pull" model as well, known as Request for Quote (RFQ).  This is a feature of the [0x API](/docs/api), which implements not just the Standard Relayer API, but also additional resources for aggregating liquidity from both 0x and non-0x sources. For RFQ, the 0x API is configured with a list of market makers, and whenever a trader requests a quote for the best available pricing across all sources, the API will contact those market makers, which may respond with a 0x order representing their "quote."  If that order outcompetes pricing from other sources, it will be given to the API client, who may fill it just as they would fill any other 0x order.  For more details, see [RFQ-T in the 0x API](/docs/guides/rfqt-in-the-0x-api).
 
 # Filling orders
 
@@ -82,7 +88,7 @@ A special case exists when filling both a buy and sell order of the same asset p
 
 Note that the process for filling orders differs when interacting with an [open orderbook](https://0x.org/docs/guides/relayer-strategies#open-orderbook) relayer or a [matching](https://0x.org/docs/guides/relayer-strategies#matching) relayer. These orders can be differentiated by looking at an order's [senderAddress](https://0x.org/docs/guides/v3-specification#senderaddress) and [takerAddress](https://0x.org/docs/guides/v3-specification#order-message-format) fields.
 
-When both fields are set to 0 (as in the open orderbook model), the order can be filled directly by calling the desired fill function on the Exchange contract. The taker filling an order in this way benefits from [Ethereum transaction atomicity](#transaction-atomicity) and more granular control over [transaction failures](#transaction-failures). However, the onus of paying gas and choosing which specific orders to be matched with falls on the taker in this scenario.
+When both fields are set to 0 (as in the open orderbook model), or when just the `senderAddress` is 0 (as in the RFQ-T model), the order can be filled directly by calling the desired fill function on the Exchange contract. The taker filling an order in this way benefits from [Ethereum transaction atomicity](#transaction-atomicity) and more granular control over [transaction failures](#transaction-failures). However, the onus of paying gas and choosing which specific orders to be matched with falls on the taker in this scenario.
 
 In the matching model, the taker first submits a signed order to the matcher (where either the order's `senderAddress` or `takerAddress` are set to the address of the matcher). The matcher than chooses which order(s) to match against the taker's signed order and fills the orders simultaneously (usually by calling `batchFillOrKillOrders` or `matchOrders`). In this scenario, the matcher is responsible for paying gas and choosing the specific orders to be matched.
 
@@ -92,7 +98,7 @@ There are multiple ways to cancel 0x orders by interacting with the [Exchange co
 
 The `cancelOrdersUpTo` approach is perhaps the least straight forward but also the most powerful for a market maker. It allows for the cancellation of an arbitrary number of orders for a fixed amount of gas. By creating orders where the `salt` field is equal to the current unix timestamp in milliseconds, you can cancel all orders that were created at or before a certain time in a single `cancelOrdersUpTo` call (a fixed size transaction). Note that any future orders created with a `salt` that is below the largest `salt` argument of a `cancelOrdersUpTo` call by your address will automatically be invalid.
 
-Explicitly cancelling orders always requires an on-chain transaction. However, you may create short lived orders and replace the expired orders without any on-chain transactions. Due to the variability of transaction inclusion times in blocks, it is not recommended to set extremely aggressive expiration times for orders (empirically, most market makers set order expirations to ~5 minutes). Many relayers using the matching model also offer "soft" cancels. In this case, since the matcher is the only address that can fill the order, the matcher can promise not to fill the order without creating any on-chain transactions. Traders should always be aware that these orders can still technically be filled by the matcher without the trader's permission and should consider periodically "hard" cancelling orders that have previously been cancelled in this way.
+Explicitly cancelling orders always requires an on-chain transaction. However, you may create short lived orders and replace the expired orders without any on-chain transactions. Due to the variability of transaction inclusion times in blocks, it is not recommended to set extremely aggressive expiration times for orders. (Empirically, most market makers set order expirations to about 5 minutes.) Many relayers using the matching model also offer "soft" cancels. In this case, since the matcher is the only address that can fill the order, the matcher can promise not to fill the order without creating any on-chain transactions. Traders should always be aware that these orders can still technically be filled by the matcher without the trader's permission and should consider periodically "hard" cancelling orders that have previously been cancelled in this way.
 
 # Fetching off-chain orders
 

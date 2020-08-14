@@ -311,10 +311,19 @@
             "title": "0x API FAQ",
             "subtitle": "A list of FAQs on how to best utilize 0x API liquidity in your Defi product.",
             "description": "A list of FAQs on how to best utilize 0x API liquidity in your Defi product.",
-            "tags": ["0x API", "0x API"],
-            "topics": ["0x API", "0x API"],
+            "tags": ["0x API"],
+            "topics": ["0x API"],
             "difficulty": "Beginner",
             "path": "guides/0x-api-faq.mdx"
+        },
+        "rfqt-in-the-0x-api": {
+            "title": "RFQ-T in the 0x API",
+            "subtitle": "Learn how the 0x API interacts directly with market makers to supplement open liquidity with exclusive pricing",
+            "description": "Learn how the 0x API interacts directly with market makers to supplement open liquidity with exclusive pricing",
+            "tags": ["0x API"],
+            "topics": ["0x API"],
+            "difficulty": "Advanced",
+            "path": "guides/rfqt-in-the-0x-api.mdx"
         }
     },
     "tools": {

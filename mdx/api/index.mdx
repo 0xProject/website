@@ -107,6 +107,9 @@ Validation error codes:
 | 1005  | Invalid signature or hash |
 | 1006  | Unsupported option        |
 | 1007  | Invalid 0x order          |
+| 1008 | Internal error            |
+| 1009 | Token is not supported    |
+| 1010 | Field is invalid          |
 
 
 ## Common Objects
@@ -171,6 +174,9 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `gasPrice`           | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                       |
 | `takerAddress`       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
 | `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
+| `includedSources`    | (Optional) For now only supports `RFQT`, which should be used when the integrator only wants RFQT liquidity without any other DEX orders. Requires a particular agreement with the 0x integrations team. This parameter cannot be combined with `excludedSources`. |
+| `skipValidation`     | (Optional) Normally, whenever a `takerAddress` is provided, the API will validate the quote for the user. (For more details, see ["How does `takerAddress` help with catching issues?"](/docs/guides/0x-api-faq#how-does-takeraddress-help-with-catching-issues).)  When this parameter is set to `true`, that validation will be skipped. See also [here](/docs/guides/rfqt-in-the-0x-api#quote-validation). |
+| `intentOnFilling`    | (Optional) Used to enable RFQ-T liquidity.  For more details see the guide [Understanding RFQ-T and the 0x API](/docs/guides/rfqt-in-the-0x-api). |
 
 ### Response
 
@@ -682,6 +688,115 @@ Easily wrap and unwrap between ETH and WETH by requesting a swap quote by settin
 ```
 </CodeTabs>
 
+#### Ensure RFQ-T liquidity
+
+RFQ-T liquidity can only be accessed if the request supplies a taker address, a permissioned API key via header `0x-api-key`, and the query parameter `intentOnFilling=true`. For more details see the guide [Understanding RFQ-T and the 0x API](/docs/guides/rfqt-in-the-0x-api).
+
+<HttpCall fontSize="16px" path="/swap/v0/quote?sellToken=WETH&buyToken=DAI&sellAmount=1000000000000000000&takerAddress=0xffffffffffffffffffffffffffffffffffffffff&intentOnFilling=true" />
+
+<CodeTabs tabs={['200 - RFQ-T-enabled']}>
+
+```json
+{
+    "price": "376.7868259",
+    "guaranteedPrice": "375.506208585632606933",
+    "to": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
+    "data": "0xa6c3bf3300000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000007200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002600000000000000000000000006425bb021dabd5d6b443a1ab47b003a1b7a27d4b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000011000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000051b3ded76a61cee0000000000000000000000000000000000000000000000000003782dace9d900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005f2d826000000000000000000000000000000000000000000000000000000173c9bc22f400000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000005e0000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000000000024f47261b00000000000000000000000006b175474e89094c44da98b954eedeac495271d0f00000000000000000000000000000000000000000000000000000000000000000000000000000000c47b7094f378e54347e281aab170e8cca69d880a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000145b320b31045e6ad60000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005f2d9dcb7be1c251ac3d8521ea92398740531b31bd13d1e48c182ebb46dfc2360b9f433400000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000000000000000000000000000000000000000000420000000000000000000000000000000000000000000000000000000000000042000000000000000000000000000000000000000000000000000000000000001c4dc1600f30000000000000000000000006b175474e89094c44da98b954eedeac495271d0f000000000000000000000000c47b7094f378e54347e281aab170e8cca69d880a00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000140000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000036691c4f426eb8f42f150ebde43069a31cb080ad0000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000145b320b31045e6ad600000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000421ca9636d5a84fb4e458816391b3d8860bf4b459f97b8962f8ec1c35d7240cce6d51ad2d55a2dec2562194ec7457d10d73b8f55fcdc144ee21e4211c067251973680200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010400000000000000000000000000000000000000000000000000000000000000869584cd00000000000000000000000010000000000000000000000000000000000000110000000000000000000000000000000000000000000000cef59c5ef35f2d81ac",
+    "value": "12320000000000000",
+    "gas": "540000",
+    "estimatedGas": "450000",
+    "from": "0xffffffffffffffffffffffffffffffffffffffff",
+    "gasPrice": "88000000000",
+    "protocolFee": "12320000000000000",
+    "minimumProtocolFee": "6160000000000000",
+    "buyTokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "sellTokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "buyAmount": "376786825900000000000",
+    "sellAmount": "1000000000000000000",
+    "estimatedGasTokenRefund": "0",
+    "sources": [
+        {
+            "name": "0x",
+            "proportion": "1"
+        },
+        {
+            "name": "Uniswap",
+            "proportion": "0"
+        },
+        {
+            "name": "Uniswap_V2",
+            "proportion": "0"
+        },
+        {
+            "name": "Eth2Dai",
+            "proportion": "0"
+        },
+        {
+            "name": "Kyber",
+            "proportion": "0"
+        },
+        {
+            "name": "Curve",
+            "proportion": "0"
+        },
+        {
+            "name": "LiquidityProvider",
+            "proportion": "0"
+        },
+        {
+            "name": "MultiBridge",
+            "proportion": "0"
+        },
+        {
+            "name": "Balancer",
+            "proportion": "0"
+        }
+    ],
+    "orders": [
+        {
+            "chainId": 1,
+            "exchangeAddress": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
+            "makerAddress": "0x6425bb021dabd5d6b443a1ab47b003a1b7a27d4b",
+            "takerAddress": "0x0000000000000000000000000000000000000000",
+            "feeRecipientAddress": "0x1000000000000000000000000000000000000011",
+            "senderAddress": "0x0000000000000000000000000000000000000000",
+            "makerAssetAmount": "24114356857600000000000",
+            "takerAssetAmount": "64000000000000000000",
+            "makerFee": "0",
+            "takerFee": "0",
+            "expirationTimeSeconds": "1596818016",
+            "salt": "1596817416948",
+            "makerAssetData": "0xf47261b00000000000000000000000006b175474e89094c44da98b954eedeac495271d0f",
+            "takerAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "makerFeeAssetData": "0x",
+            "takerFeeAssetData": "0x",
+            "signature": "0x1ca9636d5a84fb4e458816391b3d8860bf4b459f97b8962f8ec1c35d7240cce6d51ad2d55a2dec2562194ec7457d10d73b8f55fcdc144ee21e4211c0672519736802"
+        },
+        {
+            "chainId": 1,
+            "exchangeAddress": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
+            "makerAddress": "0xc47b7094f378e54347e281aab170e8cca69d880a",
+            "takerAddress": "0x0000000000000000000000000000000000000000",
+            "feeRecipientAddress": "0x1000000000000000000000000000000000000011",
+            "senderAddress": "0x0000000000000000000000000000000000000000",
+            "makerAssetAmount": "375506208585632606934",
+            "takerAssetAmount": "1000000000000000000",
+            "makerFee": "0",
+            "takerFee": "0",
+            "expirationTimeSeconds": "1596825035",
+            "salt": "56033362106002881699798596420091685847004037677734868638158600229099526898484",
+            "makerAssetData": "0xdc1600f30000000000000000000000006b175474e89094c44da98b954eedeac495271d0f000000000000000000000000c47b7094f378e54347e281aab170e8cca69d880a00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000140000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000036691c4f426eb8f42f150ebde43069a31cb080ad0000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000145b320b31045e6ad600000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "takerAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "makerFeeAssetData": "0x",
+            "takerFeeAssetData": "0x",
+            "signature": "0x04"
+        }
+    ],
+    "allowanceTarget": "0x95e6f48254609a6ee006f7d493c8e5fb97094cef"
+}
+```
+</CodeTabs>
+
 ## GET /swap/v0/tokens
 
 Get the tokens with known symbols available for trading in the [`/swap/v0/quote`](#get-swapv0quote) endpoint.
@@ -837,6 +952,84 @@ Response will be an array of token symbols and the respective price in `sellToke
 
 </CodeTabs>
 
+## GET /swap/v0/price
+
+Nearly identical to [`/swap/v0/quote`](#get-swapv0quote), but with a few key differences. Rather than returning a transaction that can be submitted to an Ethereum node, this resource simply indicates the pricing that would be available for an analogous call to `/swap/v0/quote`. Intended for use with RFQ-T; see [Quote Types: Indicative vs Firm](/docs/guides/rfqt-in-the-0x-api#quote-types-indicative-vs-firm) for more details.
+
+### Request
+
+Identical to the request schema for `/swap/v0/quote`, with one exception: the `skipValidation` parameter will always be considered to be `true`, even when a `takerAddress` has been specified.
+
+### Response
+
+Identical to the response schema for `/swap/v0/quote`, with one exception: the `orders` property will always be undefined.
+
+### Examples
+
+#### Get the price available for selling 1 ETH for DAI
+
+<HttpCall path="/swap/v0/price?sellToken=WETH&buyToken=DAI&sellAmount=1000000000000000000" />
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+{
+    "price": "391.1643362",
+    "value": "11340000000000000",
+    "gasPrice": "81000000000",
+    "gas": "605952",
+    "estimatedGas": "504960",
+    "protocolFee": "11340000000000000",
+    "minimumProtocolFee": "5670000000000000",
+    "buyTokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "buyAmount": "391164336200000000000",
+    "sellTokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "sellAmount": "1000000000000000000",
+    "sources": [
+        {
+            "name": "0x",
+            "proportion": "1"
+        },
+        {
+            "name": "Uniswap",
+            "proportion": "0"
+        },
+        {
+            "name": "Uniswap_V2",
+            "proportion": "0"
+        },
+        {
+            "name": "Eth2Dai",
+            "proportion": "0"
+        },
+        {
+            "name": "Kyber",
+            "proportion": "0"
+        },
+        {
+            "name": "Curve",
+            "proportion": "0"
+        },
+        {
+            "name": "LiquidityProvider",
+            "proportion": "0"
+        },
+        {
+            "name": "MultiBridge",
+            "proportion": "0"
+        },
+        {
+            "name": "Balancer",
+            "proportion": "0"
+        }
+    ],
+    "estimatedGasTokenRefund": "252480",
+    "allowanceTarget": "0x95e6f48254609a6ee006f7d493c8e5fb97094cef"
+}
+```
+
+</CodeTabs>
+
 # Meta Transactions
 
 This API makes it easy for integrators to offer their users a meta-transaction trading experience. It provides a superset of the liquidity available via the [Swap API](/docs/api#swap) (additionally including RFQ liquidity), and also allows integrators to submit the transaction on behalf of their users. This allows them to subsidize the gas cost and protocol fees, removing the need for their users to own Ether.
@@ -860,7 +1053,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `sellAmount`         | (Optional) The amount of `sellToken` (in `sellToken` base units) you want to send.                                                                                                                                       |
 | `buyAmount`          | (Optional) The amount of `buyToken` (in `buyToken` base units) you want to receive.                                                                                                                                      |
 | `slippagePercentage` | (Optional) The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. This parameter will change over time with market conditions. |
-| `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
+| `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources, but note that for this parameter `Native` is expressed as `0x` |
 
 ### Response
 
