@@ -37,7 +37,7 @@ For a full list of differences in the protocol refer to the [changelog here](/do
 -   Inform your users of your transition from v2 to v3
 -   Allow your users to cancel v2 orders and create new orders for v3. Orders can be created prior to the protocol being upgraded.
 -   [Protocol Fee](#protocol-fee)s will be paid by takers of 0x liquidity, educate your users on this process. It is roughly equivalent to the gas fee already being paid to the miner. Your users will see an increase in the transaction cost in ETH.
--   Become acquainted with the calculation of the protocol fee, `150,000 * ordersFilled * gasPrice`. If your users **lower** their gas price in the wallet the protocol will return the excess fees. If your users **increase** the gas price it is possible the provided ETH value in the transaction is not enough to cover the Protocol Fee.
+-   Become acquainted with the calculation of the protocol fee, `70,000 * ordersFilled * gasPrice`. If your users **lower** their gas price in the wallet the protocol will return the excess fees. If your users **increase** the gas price it is possible the provided ETH value in the transaction is not enough to cover the Protocol Fee.
 
 # Concepts
 

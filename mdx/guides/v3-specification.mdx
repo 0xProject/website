@@ -122,7 +122,7 @@ A detailed paper explaining the economics of protocol fees in 0x protocol can be
 
 ### Calculating the protocol fee
 
-The protocol fee can be calculated with `tx.gasprice * protocolFeeMultiplier`, where the `protocolFeeMultiplier` is an upgradable value meant to target a percentage of the gas used for filling a single order. The suggested initial value for the `protocolFeeMultiplier` is `150000`, which is roughly equal to the average gas cost of filling a single order (thereby doubling the net average cost).
+The protocol fee can be calculated with `tx.gasprice * protocolFeeMultiplier`, where the `protocolFeeMultiplier` is an upgradable value meant to target a percentage of the gas used for filling a single order. The current value for the `protocolFeeMultiplier` is `70000`.
 
 ### Protocol fee denomination
 
