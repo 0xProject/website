@@ -65,7 +65,7 @@ Ex: 0x API will adjust the price potentially received from Curve Finance by gas 
 
 ## What is the `protocolFee`? 
 
-A protocol fee is paid by takers and ultimately rebated to market makers when their orders are filled. Protocol fees are calculated per order using the gas price multiplied by a constant (currently 150,000). 
+A protocol fee is paid by takers and ultimately rebated to market makers when their orders are filled. Protocol fees are calculated per order using the gas price multiplied by a constant (currently 70,000). 
 
 0x API calculates the required protocol fees to be paid and returns this in the `value` field. Since we recommend using a high gas price, in the event where the taker fills at a lower gas price, the excess is returned. 
 
