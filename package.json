@@ -19,9 +19,10 @@
         "pre_push": "yarn tsc --noEmit && yarn lint && yarn test",
         "update:tools": "aws s3 sync --delete s3://docs-markdown/ mdx/tools/ --profile 0xproject",
         "dev": "npm run update:tools && node --max-old-space-size=16384 ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --mode development --content-base public --https",
-        "deploy_dogfood": "npm run update:tools && yarn index_docs --environment dogfood && npm run build:prod && aws s3 sync ./public/. s3://dogfood.0xproject.com --profile 0xproject --region us-east-1 --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers",
+        "deploy_dogfood": "npm run update:tools && yarn index_docs --environment dogfood && npm run build:prod && aws s3 sync ./public/. s3://dogfood.0xproject.com --profile 0xproject --region us-east-1 --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers && npm run cdn_cache_clear dogfood",
         "deploy_staging": "npm run update:tools && yarn index_docs --environment staging && npm run build:prod && aws s3 sync ./public/. s3://staging-0xproject --profile 0xproject --region us-east-1 --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers",
-        "deploy_live": "npm run update:tools && yarn index_docs --environment production && DEPLOY_ROLLBAR_SOURCEMAPS=true npm run build:prod && aws s3 sync ./public/. s3://0x.org --profile 0xproject --region us-east-1 --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --exclude *.map.js",
+        "deploy_live": "npm run update:tools && yarn index_docs --environment production && DEPLOY_ROLLBAR_SOURCEMAPS=true npm run build:prod && aws s3 sync ./public/. s3://0x.org --profile 0xproject --region us-east-1 --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --exclude *.map.js && npm run cdn_cache_clear live",
+        "cdn_cache_clear": "clearit() { echo Clearing CDN cache...; if [ $1 = dogfood ]; then id=E16OHMBSODHB04; url=https://dogfood.0xproject.com; elif [ $1 = live ]; then id=E1PKJDEJRHTC64; url=https://0x.org; else echo Invalid environment: $1; return 1; fi; aws cloudfront create-invalidation  --distribution-id $id  --paths '/*' --profile 0xproject || return $?; sleep 10; curl -sI $url | grep -q 'cache: Miss' || return $?; curl -sI $url | grep -q 'cache: Hit' || return $?; }; clearit",
         "index_docs": "TS_NODE_PROJECT=./tsconfig-indexing.json node --stack-size=16000 -r ts-node/register scripts/algolia_index.ts"
     },
     "author": "Fabio Berger",
