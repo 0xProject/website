@@ -294,7 +294,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
     const [stakingPool, setStakingPool] = useState<PoolWithHistoricalStats | undefined>(undefined);
 
     useWindowEvent('click', nodeRef, (e: React.SyntheticEvent<EventTarget>) => {
-        if (nodeRef && nodeRef?.current?.contains(e.target as HTMLInputElement) === true) return;
+        if (nodeRef?.current?.contains(e.target as HTMLInputElement) === true) return;
         closeDrawer();
     });
 
