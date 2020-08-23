@@ -529,6 +529,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 onDismiss={() => closeDrawer()}
                 backgroundColor="#F6F6F6"
                 size="400px"
+                data={stakingPool}
             />
         </StakingPageLayout>
     );

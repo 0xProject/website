@@ -143,12 +143,14 @@ interface SimulatorDrawerProps {
     onDismiss?: () => void;
     backgroundColor?: string;
     elementRef: any;
+    data?: any;
 }
 
-export const SimulatorDrawer = ({ open, size, onDismiss, backgroundColor, elementRef }: SimulatorDrawerProps) => {
+export const SimulatorDrawer = ({ open, size, onDismiss, backgroundColor, elementRef, data }: SimulatorDrawerProps) => {
     const isOpen = useSelector((state: State) => state.isSimulationDialogOpen);
     const networkId = useSelector((state: State) => state.networkId);
     const [state, setState] = React.useState<boolean>(false);
+    const [pool, setPool] = React.useState<PoolWithStats>(undefined);
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
     const apiClient = useAPIClient(networkId);
     React.useEffect(() => {
@@ -160,6 +162,14 @@ export const SimulatorDrawer = ({ open, size, onDismiss, backgroundColor, elemen
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPoolsAsync();
     }, [apiClient]);
+
+    const onSelected = (data: any) => {
+        let selectedPool = stakingPools.find(pool => pool.poolId === data.value);
+        setPool(selectedPool);
+    };
+
+    const setDefault = () => {};
+
     return (
         <React.Fragment>
             {isOpen && (
@@ -174,7 +184,12 @@ export const SimulatorDrawer = ({ open, size, onDismiss, backgroundColor, elemen
                                 </StyledButtonClose>
                             </Heading>
                             <Content>
-                                <StakingSimulatorDropdown labelText="Staking Pool" options={stakingPools} />
+                                <StakingSimulatorDropdown
+                                    labelText="Staking Pool"
+                                    onSelected={data => onSelected(data)}
+                                    onReset={() => setDefault()}
+                                    options={stakingPools}
+                                />
                                 <SimulatorNumberInput
                                     heading="Your Stake"
                                     subText="Balance: 2,000,000 ZRX"
@@ -199,19 +214,16 @@ export const SimulatorDrawer = ({ open, size, onDismiss, backgroundColor, elemen
                                         <SimulatorNumberInput
                                             heading="ZRX Staked in Pool"
                                             name="stakedZRX"
-                                            onChange={() => {}}
                                             token="ZRX"
                                         />
                                         <SimulatorNumberInput
                                             heading="ZRX Staked in All Pools"
                                             name="allStakedZRX"
-                                            onChange={() => {}}
                                             token="ZRX"
                                         />
                                         <SimulatorNumberInput
                                             heading="% Rewards Shared"
                                             name="rewardsShared"
-                                            onChange={() => {}}
                                             token="%"
                                         />
                                     </React.Fragment>

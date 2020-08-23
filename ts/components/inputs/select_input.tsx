@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Select, { components } from 'react-select';
+import Select from 'react-select';
 import styled from 'styled-components';
 import { colors } from 'ts/style/colors';
 
@@ -45,31 +45,41 @@ const StyledOption = styled.div`
     }
 `;
 
-const Option = (props: any) => {
-    const { data } = props;
+const formatOptionLabel = (payload: any) => {
     return (
-        <div {...props}>
-            <div>{data.metaData.name}</div>
-        </div>
+        <StyledOption>
+            <img src={payload.image} width={24} height={24} />
+            <div>{payload.label}</div>
+        </StyledOption>
     );
 };
 
 interface SelectProps {
     options: any[];
+    defaultOption?: any;
     labelText?: string;
+    onSelected?: (data: SelectOption) => any;
+    onReset?: () => void;
 }
-export const StakingSimulatorDropdown = ({ options, labelText }: SelectProps) => {
-    const [selectedOption, setSelectedOption] = React.useState<{ label: any; value: any }>({
-        label: undefined,
-        value: undefined,
-    });
 
-    const handleChange = (value: any) => console.log(value);
+interface SelectOption {
+    label?: string;
+    value?: string;
+}
+
+export const StakingSimulatorDropdown = ({ options, labelText, onSelected, onReset }: SelectProps) => {
+    const [selectedOption, setSelectedOption] = React.useState<SelectOption>();
+
+    const handleChange = (option: SelectOption) => {
+        setSelectedOption(option);
+        onSelected(option);
+    };
 
     const selectOptions = options.map(option => {
         return {
-            ...option,
             label: option.metaData.name,
+            value: option.poolId,
+            image: option.metaData.logoUrl,
         };
     });
 
@@ -79,11 +89,11 @@ export const StakingSimulatorDropdown = ({ options, labelText }: SelectProps) =>
             <SelectComponent
                 classNamePrefix="simulator-dropdown"
                 value={selectedOption}
-                components={{ Option }}
+                formatOptionLabel={formatOptionLabel}
                 onChange={(value: any) => handleChange(value)}
                 options={selectOptions}
             />
-            <ResetText>Reset to Current Values</ResetText>
+            <ResetText onClick={onReset}>Reset to Current Values</ResetText>
         </Container>
     );
 };
