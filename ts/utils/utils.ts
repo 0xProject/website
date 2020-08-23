@@ -368,7 +368,7 @@ export const utils = {
         if (connector === injected) {
             return constants.PROVIDER_TYPE_TO_ICON.METAMASK;
         } else if (connector === walletconnect) {
-            return constants.PROVIDER_TYPE_TO_ICON.COINBASE_WALLET;
+            return constants.PROVIDER_TYPE_TO_ICON.WALLET_CONNECT;
         } else if (connector === walletlink) {
             return constants.PROVIDER_TYPE_TO_ICON.WALLET_LINK;
         } else {

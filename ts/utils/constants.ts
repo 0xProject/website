@@ -79,6 +79,7 @@ export const constants = {
         [Providers.Metamask]: 'metamask_icon',
         [Providers.CoinbaseWallet]: 'coinbase_wallet_icon',
         [Providers.WalletLink]: 'coinbase_wallet_icon',
+        [Providers.WalletConnect]: 'walletconnect',
         [Providers.TrustWallet]: 'trust_wallet_icon',
         [Providers.ImToken]: 'im_token_wallet_icon',
         [Providers.Bitpie]: 'bitpie_wallet_logo',
