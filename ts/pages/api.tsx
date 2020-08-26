@@ -74,7 +74,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
     }, [quoteEndpoint]);
 
     return (
-        <SiteWrap theme="dark">
+        <SiteWrap theme="dark" shouldShowDisclaimerInFooter={true}>
             <DocumentTitle {...documentConstants.API} />
             <Hero
                 title="Access all DEX liquidity through one API"
