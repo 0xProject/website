@@ -36,7 +36,7 @@ const descriptionCasesData = [
 export class Mesh extends React.Component {
     public render(): React.ReactNode {
         return (
-            <SiteWrap theme="dark">
+            <SiteWrap theme="dark" shouldShowDisclaimerInFooter={true}>
                 <DocumentTitle {...documentConstants.MESH} />
 
                 <Hero
