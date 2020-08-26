@@ -10,6 +10,7 @@ import { GLOBAL_THEMES } from 'ts/style/theme';
 interface ISiteWrapProps {
     theme?: 'dark' | 'light' | 'gray' | 'staking';
     isDocs?: boolean;
+    shouldShowDisclaimerInFooter?: boolean;
     headerComponent?: any;
     isFullScreen?: boolean;
     children: any;
@@ -21,7 +22,7 @@ interface IMainProps {
 }
 
 export const SiteWrap: React.FC<ISiteWrapProps> = props => {
-    const { children, theme = 'dark', isDocs, isFullScreen, headerComponent } = props;
+    const { children, theme = 'dark', isDocs, isFullScreen, headerComponent, shouldShowDisclaimerInFooter } = props;
     const [isMobileNavOpen, setIsMobileNavOpen] = React.useState<boolean>(false);
 
     React.useEffect(() => {
@@ -44,7 +45,7 @@ export const SiteWrap: React.FC<ISiteWrapProps> = props => {
                     {children}
                 </Main>
 
-                <Footer isDocs={isDocs} />
+                <Footer isDocs={isDocs} shouldShowDisclaimer={shouldShowDisclaimerInFooter} />
             </>
         </ThemeProvider>
     );

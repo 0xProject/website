@@ -74,9 +74,10 @@ const linkRows: LinkRows[] = [
 
 interface IFooterProps {
     isDocs?: boolean;
+    shouldShowDisclaimer?: boolean;
 }
 
-export const Footer: React.FC<IFooterProps> = React.memo(({ isDocs }) => (
+export const Footer: React.FC<IFooterProps> = React.memo(({ isDocs, shouldShowDisclaimer }) => (
     <FooterWrap isDocs={isDocs}>
         <FlexWrap>
             <FooterColumn width="35%">
@@ -99,6 +100,13 @@ export const Footer: React.FC<IFooterProps> = React.memo(({ isDocs }) => (
                 </WrapGrid>
             </FooterColumn>
         </FlexWrap>
+        {
+            shouldShowDisclaimer && (
+                <FlexWrap>
+                    <Text>We provide downloadable software and software services.</Text>
+                </FlexWrap>
+            )
+        }
     </FooterWrap>
 ));
 

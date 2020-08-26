@@ -93,7 +93,7 @@ export class Next0xInstant extends React.Component<Props> {
     }
     public render(): React.ReactNode {
         return (
-            <SiteWrap>
+            <SiteWrap shouldShowDisclaimerInFooter={true}>
                 <DocumentTitle {...documentConstants.INSTANT} />
                 <Hero
                     title="Introducing 0x Instant"
