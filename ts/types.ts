@@ -79,6 +79,7 @@ export interface AccountNotReady {
 export interface IWallet {
     connector: any;
     name: string;
+    type: string;
 }
 
 export type Account = AccountReady | AccountNotReady;

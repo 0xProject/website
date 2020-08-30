@@ -21,6 +21,7 @@ import { utils } from 'ts/utils/utils';
 
 import { logUtils } from '@0x/utils';
 import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useAccount } from 'ts/hooks/use_web3';
 import { useWindowDimensions } from 'ts/hooks/use_window_dimensions';
 import { exportDataToCSVAndDownloadForUser } from 'ts/utils/csv_export_utils';
 import { errorReporter } from 'ts/utils/error_reporter';
@@ -75,7 +76,8 @@ function parseEvent(event: StakingAPIDelegatorHistoryItem): { title: string; sub
 const csvHeaders = ['event_type', 'address', 'block_number', 'event_timestamp', 'transaction_hash', 'event_args'];
 
 export const AccountActivity: React.FC<ActivityProps> = () => {
-    const { account, chainId } = useWeb3React<Web3Wrapper>();
+    const { chainId } = useWeb3React<Web3Wrapper>();
+    const { account } = useAccount();
     const dispatch = useDispatch();
 
     const dimensions = useWindowDimensions();

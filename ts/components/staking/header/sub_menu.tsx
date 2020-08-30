@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
-import { injected } from 'ts/utils/connectors';
+import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
 const SubMenuWrapper = styled.div`
@@ -117,60 +117,8 @@ const MobileMenuWrapper = styled.div`
     }
 `;
 
-const ConnectedWallet = ({ account, connector, openConnectWalletDialogCB, deactivate }: ISubMenuProps) => {
-    const [isExpanded, setIsExpanded] = React.useState(false);
-    const toggleExpanded = () => setIsExpanded(!isExpanded);
-
-    const iconName = utils.getProviderIcon(connector);
-
-    const logout = () => {
-        if (connector !== injected) {
-            (connector).close();
-        } else {
-            deactivate();
-        }
-    };
-
-    // TODO(kimpers): add svgs for all providers
-    return (
-        <SubMenuWrapper onClick={toggleExpanded}>
-            <WalletAddressWrapper>
-                {iconName && <Icon name={iconName} size={30} />}
-                <MediaQuery maxWidth={1199}>
-                    {(isMobile: boolean) => (
-                        <EthAddress>
-                            {utils.getAddressBeginAndEnd(account, isMobile ? 9 : 5, isMobile ? 7 : 4)}
-                        </EthAddress>
-                    )}
-                </MediaQuery>
-                <MediaQuery minWidth={1200}>
-                    <Arrow isExpanded={isExpanded} />
-                </MediaQuery>
-            </WalletAddressWrapper>
-            <MediaQuery maxWidth={1199}>
-                <MobileMenuWrapper>
-                    <MenuItem onClick={openConnectWalletDialogCB}>Switch wallet</MenuItem>
-                    <MenuItem onClick={logout}>Logout</MenuItem>
-                </MobileMenuWrapper>
-            </MediaQuery>
-            <MediaQuery minWidth={1200}>
-                {isExpanded && (
-                    <ExpandedMenu>
-                        <MenuItem onClick={openConnectWalletDialogCB}>Switch wallet</MenuItem>
-                        <MenuItem onClick={logout}>Logout</MenuItem>
-                    </ExpandedMenu>
-                )}
-            </MediaQuery>
-        </SubMenuWrapper>
-    );
-};
-
 interface ISubMenuProps {
     openConnectWalletDialogCB: () => void;
-    deactivate: () => void;
-    active: boolean;
-    account: string;
-    connector: any;
 }
 
 const ConnectButton = styled(Button).attrs({
@@ -186,9 +134,91 @@ const ConnectButton = styled(Button).attrs({
 `;
 
 export const SubMenu = (props: ISubMenuProps) => {
-    if (props.account) {
-        return <ConnectedWallet {...props} />;
-    }
+    const [isExpanded, setIsExpanded] = React.useState(false);
+    const [activeAccount, setActiveAccount] = React.useState('');
+    const [iconName, setIconName] = React.useState('');
+    const toggleExpanded = () => setIsExpanded(!isExpanded);
 
+    React.useEffect(() => {
+        let walletConnector: any;
+        if (typeof window !== 'undefined') {
+            const storage = window.localStorage.getItem('WALLET_CONNECTOR');
+            if (storage) {
+                walletConnector = JSON.parse(storage);
+                if (walletConnector && walletConnector.accounts) {
+                    setActiveAccount(walletConnector.accounts[0]);
+                }
+            }
+        }
+        if (walletConnector && walletConnector.name === 'injected') {
+            setIconName(constants.PROVIDER_TYPE_TO_ICON.METAMASK);
+            utils.metamaskAccountChange((accounts: any) => {
+                if (accounts && accounts.length > 0) {
+                    setActiveAccount(accounts[0]);
+                    if (typeof window !== undefined && accounts[0]) {
+                        const newWalletConnector = JSON.stringify({
+                            ...walletConnector,
+                            accounts,
+                        });
+                        window.localStorage.setItem('WALLET_CONNECTOR', newWalletConnector);
+                    }
+                } else {
+                    window.localStorage.removeItem('WALLET_CONNECTOR');
+                    setActiveAccount(null);
+                }
+            });
+        } else if (walletConnector && walletConnector.name === 'walletlink') {
+            setIconName(constants.PROVIDER_TYPE_TO_ICON.COINBASE_WALLET);
+        } else if (walletConnector && walletConnector.name === 'walletconnect') {
+            setIconName(constants.PROVIDER_TYPE_TO_ICON.WALLET_CONNECT);
+        }
+    }, []);
+
+    const logout = async () => {
+        if (typeof window !== undefined) {
+            window.localStorage.removeItem('__WalletLink__:https://www.walletlink.org:Addresses');
+            window.localStorage.removeItem('__WalletLink__:https://www.walletlink.org:SessionId');
+            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:id');
+            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:secret');
+            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:linked');
+            window.localStorage.removeItem('WALLET_CONNECTOR');
+            window.location.reload();
+        }
+    };
+
+    // TODO(kimpers): add svgs for all providers
+    if (activeAccount) {
+        return (
+            <SubMenuWrapper onClick={toggleExpanded}>
+                <WalletAddressWrapper>
+                    {iconName && <Icon name={iconName} size={30} />}
+                    <MediaQuery maxWidth={1199}>
+                        {(isMobile: boolean) => (
+                            <EthAddress>
+                                {utils.getAddressBeginAndEnd(activeAccount, isMobile ? 9 : 5, isMobile ? 7 : 4)}
+                            </EthAddress>
+                        )}
+                    </MediaQuery>
+                    <MediaQuery minWidth={1200}>
+                        <Arrow isExpanded={isExpanded} />
+                    </MediaQuery>
+                </WalletAddressWrapper>
+                <MediaQuery maxWidth={1199}>
+                    <MobileMenuWrapper>
+                        <MenuItem onClick={props.openConnectWalletDialogCB}>Switch wallet</MenuItem>
+                        <MenuItem onClick={logout}>Logout</MenuItem>
+                    </MobileMenuWrapper>
+                </MediaQuery>
+                <MediaQuery minWidth={1200}>
+                    {isExpanded && (
+                        <ExpandedMenu>
+                            <MenuItem onClick={props.openConnectWalletDialogCB}>Switch wallet</MenuItem>
+                            <MenuItem onClick={logout}>Logout</MenuItem>
+                        </ExpandedMenu>
+                    )}
+                </MediaQuery>
+            </SubMenuWrapper>
+        );
+    }
     return <ConnectButton onClick={props.openConnectWalletDialogCB}>Connect your wallet</ConnectButton>;
 };

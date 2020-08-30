@@ -1,5 +1,4 @@
 import { logUtils } from '@0x/utils';
-import { useWeb3React } from '@web3-react/core';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -14,6 +13,7 @@ import { colors } from 'ts/style/colors';
 
 import { WebsitePaths } from 'ts/types';
 
+import { useAccount } from 'ts/hooks/use_web3';
 import { backendClient } from 'ts/utils/backend_client';
 import { configs } from 'ts/utils/configs.ts';
 import { errorReporter } from 'ts/utils/error_reporter';
@@ -115,7 +115,7 @@ const CircleThumbsUp = () => (
 );
 
 export const Newsletter = () => {
-    const { account } = useWeb3React();
+    const { account } = useAccount();
     const ethAddress = account;
 
     const [email, setEmail] = React.useState<string>('');

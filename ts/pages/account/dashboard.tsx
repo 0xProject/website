@@ -17,6 +17,7 @@ import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useStake } from 'ts/hooks/use_stake';
+import { useAccount } from 'ts/hooks/use_web3';
 import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
 import { AccountApplyModal } from 'ts/pages/account/account_apply_modal';
 import { AccountDetail } from 'ts/pages/account/account_detail';
@@ -93,7 +94,8 @@ interface ExpectedPoolRewards {
 }
 
 export const Account: React.FC<AccountProps> = () => {
-    const { account, chainId } = useWeb3React();
+    const { chainId } = useWeb3React();
+    const { account } = useAccount();
     const dispatch = useDispatch();
 
     const onOpenConnectWalletDialog = React.useCallback(() => {
@@ -126,14 +128,7 @@ export const Account: React.FC<AccountProps> = () => {
     const [pendingUnstakePoolSet, setPendingUnstakePoolSet] = React.useState<Set<string>>(new Set());
 
     const apiClient = useAPIClient(chainId);
-    const {
-        stakingContract,
-        unstake,
-        withdrawStake,
-        withdrawRewards,
-        moveStake,
-        currentEpochRewards,
-    } = useStake();
+    const { stakingContract, unstake, withdrawStake, withdrawRewards, moveStake, currentEpochRewards } = useStake();
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
     const hasRewards = () => Boolean(allTimeRewards.isGreaterThan(0) || expectedCurrentEpochRewards.isGreaterThan(0));
@@ -149,9 +144,7 @@ export const Account: React.FC<AccountProps> = () => {
                 // automatically send the rewards to the user's address
                 const withdrawnRewards = availableRewardsMap[fromPoolId] ?? 0;
                 if (withdrawnRewards > 0) {
-                    setTotalAvailableRewards(_totalAvailableRewards =>
-                        _totalAvailableRewards.minus(withdrawnRewards),
-                    );
+                    setTotalAvailableRewards(_totalAvailableRewards => _totalAvailableRewards.minus(withdrawnRewards));
                 }
 
                 setNextEpochStakeMap(stakeMap => ({
@@ -256,7 +249,8 @@ export const Account: React.FC<AccountProps> = () => {
 
     React.useEffect(() => {
         const fetchAvailableRewards = async () => {
-            const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter(poolData => poolData.rewardsInEth > 0,
+            const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter(
+                poolData => poolData.rewardsInEth > 0,
             );
 
             const undelegatedBalancesBaseUnits = await stakingContract
@@ -389,7 +383,7 @@ export const Account: React.FC<AccountProps> = () => {
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
                 <Inner>
-                    {account && account && <AccountDetail userEthAddress={account} />}
+                    {account && <AccountDetail userEthAddress={account} />}
                     <Figures>
                         <AccountFigure
                             label="Available"

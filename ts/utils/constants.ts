@@ -1,9 +1,8 @@
 import { BigNumber } from '@0x/utils';
+import { injected, walletconnect, walletlink } from 'ts/connectors';
 import { AccountNotReady, AccountState, IWallet, Networks, Providers, WebsitePaths } from 'ts/types';
 
 import { SupportedDocJson } from '../types';
-
-import { injected, walletconnect, walletlink } from './connectors';
 
 const URL_FORUM = 'https://forum.0x.org';
 const URL_ZEROEX_CHAT = 'https://discord.gg/d3FTX3M';
@@ -87,15 +86,23 @@ export const constants = {
     SUPPORTED_WALLETS: {
         Injected: {
             connector: injected,
+            name: 'Injected',
+            type: 'injected',
+        },
+        Metamask: {
+            connector: injected,
             name: 'Metamask',
+            type: 'injected',
         },
         WalletConnect: {
             connector: walletconnect,
             name: 'Wallet Connect',
+            type: 'walletconnect',
         },
         WalletLink: {
             connector: walletlink,
             name: 'Coinbase Wallet',
+            type: 'walletlink',
         },
     } as { [key: string]: IWallet | undefined },
     NO_ACCOUNT: {

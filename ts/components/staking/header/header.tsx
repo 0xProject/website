@@ -1,5 +1,4 @@
 // tslint:disable: boolean-naming
-import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import Headroom from 'react-headroom';
 import { useDispatch } from 'react-redux';
@@ -17,6 +16,7 @@ import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 import { WebsitePaths } from 'ts/types';
 
+import { useAccount } from 'ts/hooks/use_web3';
 import { colors } from 'ts/style/colors';
 
 interface HeaderProps {
@@ -55,10 +55,9 @@ const navItems: NavItems[] = [
 ];
 
 export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav }) => {
-    const { deactivate, active, account, connector } = useWeb3React();
-
     const dispatch = useDispatch();
     const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
+    const { account } = useAccount();
 
     useEffect(() => {
         setDispatcher(new Dispatcher(dispatch));
@@ -75,15 +74,9 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
         dispatcher.updateIsConnectWalletDialogOpen(true);
     }, [dispatcher, onUnpin]);
 
-    const subMenu = (
-        <SubMenu
-            openConnectWalletDialogCB={unpinAndOpenWalletDialog}
-            deactivate={deactivate}
-            account={account}
-            active={active}
-            connector={connector}
-        />
-    );
+    const active = account ? true : false;
+
+    const subMenu = <SubMenu openConnectWalletDialogCB={unpinAndOpenWalletDialog} />;
 
     return (
         <Headroom

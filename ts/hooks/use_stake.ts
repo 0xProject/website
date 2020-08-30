@@ -7,13 +7,14 @@ import { addMilliseconds } from 'date-fns';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
-
 import { StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { trackEvent } from 'ts/utils/google_analytics';
 import { utils } from 'ts/utils/utils';
+
+import { useAccount } from 'ts/hooks/use_web3';
 
 const { TRACKING } = constants.STAKING;
 
@@ -57,7 +58,8 @@ export interface UseStakeHookResult {
 }
 
 export const useStake = (): UseStakeHookResult => {
-    const { connector, account, chainId } = useWeb3React();
+    const { connector, chainId } = useWeb3React();
+    const { account } = useAccount();
     const [loadingState, setLoadingState] = useState<undefined | TransactionLoadingState>(undefined);
     const [error, setError] = useState<Error | undefined>(undefined);
     const [result, setResult] = useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
@@ -72,22 +74,24 @@ export const useStake = (): UseStakeHookResult => {
 
     useEffect(() => {
         const loadContract = async () => {
-            const provider = await connector.getProvider();
-            const _contractAddresses = getContractAddressesForChainOrThrow(chainId);
+            if (account && connector) {
+                const provider = await connector.getProvider();
+                const _contractAddresses = getContractAddressesForChainOrThrow(chainId);
 
-            setOwnerAddress(account);
-            // NOTE: staking proxy has state and is a delegate proxy to staking contract, it can be used to initialize both contracts
-            setStakingContract(
-                new StakingContract(_contractAddresses.stakingProxy, provider, {
-                    from: account,
-                }),
-            );
-            setStakingProxyContract(
-                new StakingProxyContract(_contractAddresses.stakingProxy, provider, {
-                    from: account,
-                }),
-            );
-            setContractAddresses(_contractAddresses);
+                setOwnerAddress(account);
+                // NOTE: staking proxy has state and is a delegate proxy to staking contract, it can be used to initialize both contracts
+                setStakingContract(
+                    new StakingContract(_contractAddresses.stakingProxy, provider, {
+                        from: account,
+                    }),
+                );
+                setStakingProxyContract(
+                    new StakingProxyContract(_contractAddresses.stakingProxy, provider, {
+                        from: account,
+                    }),
+                );
+                setContractAddresses(_contractAddresses);
+            }
         };
         // tslint:disable-next-line:no-floating-promises
         loadContract();

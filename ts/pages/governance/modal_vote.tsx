@@ -14,6 +14,7 @@ import { ButtonClose } from 'ts/components/modals/button_close';
 import { Heading, Paragraph } from 'ts/components/text';
 import { GlobalStyle } from 'ts/constants/globalStyle';
 import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useAccount } from 'ts/hooks/use_web3';
 import { ErrorModal } from 'ts/pages/governance/error_modal';
 import { VoteForm, VoteInfo } from 'ts/pages/governance/vote_form';
 import { Dispatcher } from 'ts/redux/dispatcher';
@@ -35,7 +36,8 @@ interface FormProps {
 }
 
 export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss, onVoted: onVoteInfoReceived }) => {
-    const { account, connector, chainId } = useWeb3React<Web3Wrapper>();
+    const { connector, chainId } = useWeb3React<Web3Wrapper>();
+    const { account } = useAccount();
     const dispatch = useDispatch();
     const apiClient = useAPIClient(chainId);
 

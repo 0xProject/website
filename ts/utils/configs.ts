@@ -12,11 +12,11 @@ export const configs = {
     AMOUNT_DISPLAY_PRECSION: 5,
     BACKEND_BASE_PROD_URL: 'https://website.api.0x.org',
     BACKEND_BASE_STAGING_URL: 'https://staging-website-api.0x.org',
-    BACKEND_BASE_DEV_URL: 'https://localhost:3001',
+    BACKEND_BASE_DEV_URL: 'https://staging-website-api.0x.org',
     API_BASE_PROD_URL: 'https://api.0x.org',
     API_BASE_STAGING_URL: 'https://staging.api.0x.org',
     API_BASE_KOVAN_URL: 'https://kovan.api.0x.org',
-    API_BASE_DEV_URL: 'http://localhost:3000',
+    API_BASE_DEV_URL: 'https://staging.api.0x.org',
     GOOGLE_SHEETS_LEAD_FORMS: {
         CREDITS: 'https://script.google.com/macros/s/AKfycbyN1lJaSGWg2OIzqT8bou4GiqwCmOVjV2v_fiPO/exec',
     } as GoogleSheetLeadUrls,
@@ -63,4 +63,5 @@ export const configs = {
     GENERAL_LIST_ECOSYSTEM_UPDATES_INTEREST_ID: 'dd975da3c5',
     GENERAL_LIST_DEVELOPER_UPDATES_INTEREST_ID: 'f2ae6906e3',
     STAKING_UPDATES_NEWSLETTER_ID: '00c1a72ae8',
+    NETWORK_CONTEXT_NAME: 'NETWORK',
 };

@@ -1,4 +1,6 @@
 // tslint:disable:no-floating-promises
+// tslint:disable:no-await-promise
+// tslint:disable:no-promise-function-async
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
@@ -20,6 +22,8 @@ import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
 import { utils } from 'ts/utils/utils';
 
+import { AbstractConnector } from '@web3-react/abstract-connector';
+import { injected } from 'ts/connectors';
 import { useEagerConnect, useInactiveListener } from 'ts/hooks/use_web3';
 import { constants } from 'ts/utils/constants';
 
@@ -145,11 +149,13 @@ const WalletCategoryStyling = styled.div`
 interface WalletOptionProps {
     name?: string;
     onClick?: () => void;
-    connector: any;
-    isConnected: boolean;
+    connector?: any;
+    isConnected?: boolean;
+    href?: string;
+    type?: string;
 }
-const WalletOption = ({ name, onClick, connector, isConnected }: WalletOptionProps) => {
-    const iconName = utils.getProviderIcon(connector);
+const WalletOption = ({ name, onClick, connector, isConnected, href, type }: WalletOptionProps) => {
+    const iconName = utils.getProviderIcon(type);
 
     return (
         <WalletCategoryStyling>
@@ -185,6 +191,7 @@ const StyledProviderOptions = styled.div`
 
 export const ConnectWalletDialog = () => {
     const isOpen = useSelector((state: State) => state.isConnectWalletDialogOpen);
+    const isMetamask = window.ethereum && window.ethereum.isMetaMask ? true : false;
     const { connector, activate, error } = useWeb3React();
     const [activatingConnector, setActivatingConnector] = useState<any>();
 
@@ -206,6 +213,22 @@ export const ConnectWalletDialog = () => {
 
     const onCloseDialog = useCallback(() => dispatcher.updateIsConnectWalletDialogOpen(false), [dispatcher]);
 
+    const handleAccount = async (currentConnector: AbstractConnector, option: any) => {
+        await activate(currentConnector, undefined, true);
+        setActivatingConnector(currentConnector);
+        onCloseDialog();
+        const provider = await currentConnector.getProvider();
+        const address = provider._addresses ? provider._addresses[0] : provider.selectedAddress;
+        if (typeof window !== undefined && address) {
+            const connectedData = JSON.stringify({
+                name: option.type,
+                accounts: [address],
+            });
+            window.localStorage.setItem('WALLET_CONNECTOR', connectedData);
+        }
+        window.location.reload();
+    };
+
     return (
         <StyledDialogOverlay isOpen={isOpen}>
             <StyledDialogContent>
@@ -220,20 +243,37 @@ export const ConnectWalletDialog = () => {
                 <StyledProviderOptions>
                     {constants.SUPPORTED_WALLETS ? (
                         Object.keys(constants.SUPPORTED_WALLETS).map(key => {
-                            const currentConnector = constants.SUPPORTED_WALLETS[key].connector;
+                            const option = constants.SUPPORTED_WALLETS[key];
+                            const currentConnector = option.connector;
                             const isConnected = currentConnector === connector;
 
+                            if (option.connector === injected) {
+                                if (!(window.web3 || window.ethereum)) {
+                                    if (option.name === 'Metamask') {
+                                        return (
+                                            <WalletOption
+                                                key={`install-wallet-${key}`}
+                                                name="Install Metamask"
+                                                href="https://metamask.io"
+                                            />
+                                        );
+                                    } else {
+                                        return null;
+                                    }
+                                } else if (option.name === 'Metamask' && !isMetamask) {
+                                    return null;
+                                } else if (option.name === 'Injected' && isMetamask) {
+                                    return null;
+                                }
+                            }
                             return (
                                 <WalletOption
                                     key={`wallet-button-${key}`}
-                                    name={constants.SUPPORTED_WALLETS[key].name}
+                                    name={option.name}
                                     connector={currentConnector}
                                     isConnected={isConnected}
-                                    onClick={() => {
-                                        setActivatingConnector(currentConnector);
-                                        activate(currentConnector);
-                                        onCloseDialog();
-                                    }}
+                                    type={option.type}
+                                    onClick={async () => handleAccount(currentConnector, option)}
                                 />
                             );
                         })

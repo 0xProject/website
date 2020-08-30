@@ -24,6 +24,7 @@ import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
 import { useStakingWizard, WizardRouterSteps } from 'ts/hooks/use_wizard';
 
+import { useAccount } from 'ts/hooks/use_web3';
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { AllTimeStats, Epoch, PoolWithStats, StakingPoolRecomendation, UserStakingChoice } from 'ts/types';
@@ -46,7 +47,8 @@ const Container = styled.div`
 export const StakingWizard: React.FC<StakingWizardProps> = props => {
     // If coming from the market maker page, poolId will be provided
     const { poolId } = useQuery<{ poolId: string | undefined }>();
-    const { connector, account, chainId } = useWeb3React();
+    const { connector, chainId } = useWeb3React();
+    const { account } = useAccount();
     const { zrxAllowanceBaseUnitAmount, zrxBalanceBaseUnitAmount } = props;
 
     const dispatch = useDispatch();

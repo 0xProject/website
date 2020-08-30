@@ -38,7 +38,7 @@ import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
 import * as u2f from 'ts/vendor/u2f_api';
 
-import { injected, walletconnect, walletlink } from './connectors';
+import { injected, walletconnect, walletlink } from 'ts/connectors';
 
 export const utils = {
     assert(condition: boolean, message: string): void {
@@ -364,12 +364,12 @@ export const utils = {
             return 'Wallet';
         }
     },
-    getProviderIcon(connector: any): string | undefined {
-        if (connector === injected) {
+    getProviderIcon(type: string): string | undefined {
+        if (type === 'injected') {
             return constants.PROVIDER_TYPE_TO_ICON.METAMASK;
-        } else if (connector === walletconnect) {
+        } else if (type === 'walletconnect') {
             return constants.PROVIDER_TYPE_TO_ICON.WALLET_CONNECT;
-        } else if (connector === walletlink) {
+        } else if (type === 'walletlink') {
             return constants.PROVIDER_TYPE_TO_ICON.WALLET_LINK;
         } else {
             return undefined;
@@ -583,5 +583,31 @@ export const utils = {
         const _n = new BigNumber(n);
 
         return `0x${_n.toString(16).padStart(64, '0')}`;
+    },
+    metamaskAccountChange(callback: any): void {
+        if (typeof window.ethereum !== undefined && window.ethereum !== undefined) {
+            window.ethereum.on('accountsChanged', (accounts: any) => {
+                // tslint:disable-next-line:no-unused-expression
+                callback && callback(accounts);
+            });
+        }
+    },
+    getAddress(): string {
+        let address = null;
+        if (window.ethereum !== undefined) {
+            address = window.ethereum.selectedAddress;
+        } else if (window.web3 !== undefined) {
+            window.web3.listAccounts().then((accounts: any) => (address = accounts[0]));
+        }
+        return address;
+    },
+    getProvider(): any {
+        // tslint:disable-next-line:no-prefer-const
+        let provider;
+        const web3Wrapper: Web3Wrapper;
+        if (typeof window !== undefined) {
+            provider = window.web3.currentProvider ? web3Wrapper.getProvider() : window.web3;
+        }
+        return provider;
     },
 }; // tslint:disable:max-file-line-count
