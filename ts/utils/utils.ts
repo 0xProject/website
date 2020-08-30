@@ -601,13 +601,4 @@ export const utils = {
         }
         return address;
     },
-    getProvider(): any {
-        // tslint:disable-next-line:no-prefer-const
-        let provider;
-        const web3Wrapper: Web3Wrapper;
-        if (typeof window !== undefined) {
-            provider = window.web3.currentProvider ? web3Wrapper.getProvider() : window.web3;
-        }
-        return provider;
-    },
 }; // tslint:disable:max-file-line-count
