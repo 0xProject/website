@@ -1,7 +1,10 @@
 // tslint:disable:no-shadowed-variable
 // tslint:disable:promise-function-async
+// tslint:disable:ordered-imports
 
+import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { signatureUtils } from '@0x/order-utils';
+import { MetamaskSubprovider } from '@0x/subproviders';
 import { ECSignature, SignatureType } from '@0x/types';
 import { BigNumber, signTypedDataUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -12,7 +15,6 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { Button } from 'ts/components/button';
 import { Input } from 'ts/components/modals/input';
 import { Heading, Paragraph } from 'ts/components/text';
@@ -21,6 +23,7 @@ import { colors } from 'ts/style/colors';
 import { configs } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
+import { injected } from 'ts/connectors';
 
 export enum VoteValue {
     Yes = 'Yes',
@@ -217,7 +220,7 @@ export const VoteForm = (props: Props) => {
     };
     const _signVoteAsync = async (selectedAddress: string, typedData: any): Promise<SignedVote> => {
         const provider = await connector.getProvider();
-        const web3Wrapper = new Web3Wrapper(provider);
+        const web3Wrapper = new Web3Wrapper(connector === injected ? new MetamaskSubprovider(provider) : provider);
         let signatureHex;
 
         try {
