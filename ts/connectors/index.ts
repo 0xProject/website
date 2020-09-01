@@ -21,7 +21,7 @@ export const injected = new InjectedConnector({
 });
 
 export const walletconnect = new WalletConnectConnector({
-    rpc: { 1: RPC_URLS[1] },
+    rpc: { 1: 'https://eth-mainnet.alchemyapi.io/v2/8JwI7bMSK8ojsPDbyeHt6NK8w23afo1q' },
     bridge: 'https://bridge.walletconnect.org',
     qrcode: true,
     pollingInterval: POLLING_INTERVAL,
