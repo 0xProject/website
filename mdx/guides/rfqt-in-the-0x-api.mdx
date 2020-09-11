@@ -98,7 +98,7 @@ For reference, 0x has provided a basic implementation of a quote server, which d
 
 | Parameter Name        | Parameter Value                                                                                                            | Required? |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------- | --------- |
-| `takerAddress`        | The address of the Ethereum account that will act as the 0x taker and that will submit the fill transaction to the network | yes       |
+| `takerAddress`        | The address of the Ethereum account that will act as the 0x taker and that will submit the fill transaction to the network. In the case of indicative pricing, this may be the "null address" (`0x0000000000000000000000000000000000000000`), indicating that the end user has not yet connected their wallet. | yes       |
 | `sellTokenAddress`    | The address of the contract controlling the token to be sold by the taker                                                  | yes       |
 | `buyTokenAddress`     | The address of the contract controlling the token to be bought by the taker                                                | yes       |
 | `sellAmountBaseUnits` | The amount of the `sellToken` that the taker intends to sell, specified in that token's native base units                  | \*        |
