@@ -10,7 +10,7 @@ RFQ is an abbreviation of Request for Quote, in that the 0x API requests quotes 
 
 Market makers providing open liquidity are subject to unique risks that impact their bottom-line pricing. If asset prices exhibit great movement in the markets, outstanding orders can flip from profitable to loss-incurring. And cancelling outstanding orders can be expensive and unreliable, subject to gas markets and front-running. Carrying these risks has a real cost, and that cost effectively deteriorates pricing for takers.
 
-In practice, such losses are largely at the hands of one particular class of takers: arb bots. If makers share orders with an unspecified/null taker address, as is typical in Mesh order sharing, then those orders can be filled by anyone, including arb bots. Human traders, on the other hand, are extremely unlikely to be able to take advantage of such arbitrage opportunities. If market makers could somehow serve orders only to those human users, they could afford to offer better prices to them.
+In practice, such losses are largely at the hands of one particular class of takers: arbitrage bots. If makers share orders with an unspecified/null taker address, as is typical in Mesh order sharing, then those orders can be filled by anyone, including arb bots. Human traders, on the other hand, are extremely unlikely to be able to take advantage of such arbitrage opportunities. If market makers could somehow serve orders only to those human users, they could afford to offer better prices to them.
 
 # Trusted Takers
 
