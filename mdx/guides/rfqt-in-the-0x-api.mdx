@@ -44,7 +44,7 @@ In order to retain access to RFQ-T liquidity, it's important for clients of the 
 
 In order to improve capital efficiency, the RFQ-T model introduces a new request/response flow: first request pricing, then request a fillable quote.
 
-When a market maker provides a fillable quote, which can be settled by the taker's submitting it to the 0x protocol, the taker has an expectation that the swap will actually settle, that it won't revert due to a lack of available maker assets. To uphold this expectation, makers will refrain from using those same assets as the basis for any other quotes, until the quote's expiry.
+When a market maker provides a fillable quote, which can be settled by the taker's submitting it to the 0x protocol, the taker has an expectation that the swap will actually settle, that it won't revert due to a lack of available maker assets. To uphold this expectation, makers will likely refrain from using those same assets as the basis for any other quotes, until the quote's expiry.
 
 However, if every price inquiry required the maker to reserve capital, they would quickly end up with all of their capital in reserve. They would then be unable to provide any other quotes until those outstanding quotes were either filled or expired.
 
