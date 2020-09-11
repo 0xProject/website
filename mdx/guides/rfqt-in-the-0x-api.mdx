@@ -129,7 +129,6 @@ To offer a firm quote, a request to GET the endpoint's `/quote` resource must yi
 The 0x API will decline to relay from maker to taker any orders that do not meet the following criteria:
 
 -   `takerAddress` matches what was sent in the request
--   `takerAssetAmount` equal to or less than the `takerAssetAmount` given in the request.
 -   `expirationTimeSeconds` set to a Unix time greater than or equal to 90 seconds in the future. (This number is subject to change as the ecosystem develops.)
 -   `feeRecipientAddress` set to `0x1000000000000000000000000000000000000011`, which will ensure that the fill is attributed to the 0x API.
 
