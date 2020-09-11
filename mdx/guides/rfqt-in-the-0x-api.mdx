@@ -56,7 +56,7 @@ The indicative pricing resource is hosted at [`/swap/v0/price`](/docs/api#get-sw
 
 ## Firm Quotes
 
-The firm quote resource is hosted at [`/swap/v0/quote`](/docs/api#get-swapv0quote) and responds with a full 0x order, which can be submitted to an Ethereum node by the client. Therefore it is expected that the maker has reserved the maker assets required to settle the trade, leaving the order unlikely to revert.
+The firm quote resource is hosted at [`/swap/v0/quote`](/docs/api#get-swapv0quote) and responds with calldata that can be submitted by the client to an Ethereum node, which will execute the 0x smart contracts to settle the swap. Therefore it is expected that the maker has reserved the maker assets required to settle the trade, leaving the order unlikely to revert.
 
 Note that while the [`/price`](/docs/api#get-swapv0price) resource is new and specific to RFQ-T, the [`/quote`](/docs/api#get-swapv0quote) resource is the same one already used to access non-RFQ-T liquidity through the API. In order to qualify for RFQ-T liquidity, the request must include the query parameter `intentOnFilling=true` (in addition to the aforementioned `0x-api-key` and non-null `takerAddress`).
 
