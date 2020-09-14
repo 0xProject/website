@@ -214,11 +214,16 @@ export const ConnectWalletDialog = () => {
     const onCloseDialog = useCallback(() => dispatcher.updateIsConnectWalletDialogOpen(false), [dispatcher]);
 
     const handleAccount = async (currentConnector: AbstractConnector, option: any) => {
+        let address: string = '';
         await activate(currentConnector, undefined, true);
         setActivatingConnector(currentConnector);
         onCloseDialog();
         const provider = await currentConnector.getProvider();
-        const address = provider._addresses ? provider._addresses[0] : provider.selectedAddress;
+        if (option.type === 'walletconnect') {
+            address = provider.accounts[0];
+        } else {
+            address = provider._addresses ? provider._addresses[0] : provider.selectedAddress;
+        }
         if (typeof window !== undefined && address) {
             const connectedData = JSON.stringify({
                 name: option.type,
