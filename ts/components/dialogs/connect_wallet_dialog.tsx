@@ -1,6 +1,8 @@
 // tslint:disable:no-floating-promises
 // tslint:disable:no-await-promise
 // tslint:disable:no-promise-function-async
+// tslint:disable:no-prefer-conditional-expression
+// tslint:disable:no-no-consecutive-blank-lines
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
