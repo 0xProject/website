@@ -176,12 +176,7 @@ export const SubMenu = (props: ISubMenuProps) => {
 
     const logout = async () => {
         if (typeof window !== undefined) {
-            window.localStorage.removeItem('__WalletLink__:https://www.walletlink.org:Addresses');
-            window.localStorage.removeItem('__WalletLink__:https://www.walletlink.org:SessionId');
-            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:id');
-            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:secret');
-            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:linked');
-            window.localStorage.removeItem('WALLET_CONNECTOR');
+            window.localStorage.clear();
             window.location.reload();
         }
     };
