@@ -74,11 +74,6 @@ const team: TeamMember[] = [
         title: 'GM, Matcha',
     },
     {
-        imageUrl: '/images/team/alexb.jpg',
-        name: 'Alex Browne',
-        title: 'Tech Lead',
-    },
-    {
         imageUrl: '/images/team/peterz.jpg',
         name: 'Peter Zeitz',
         title: 'Research Fellow',
@@ -87,11 +82,6 @@ const team: TeamMember[] = [
         imageUrl: '/images/team/clayr.jpg',
         name: 'Clay Robbins',
         title: 'Ecosystem Development Lead',
-    },
-    {
-        imageUrl: '/images/team/mattt.jpg',
-        name: 'Matt Taylor',
-        title: 'Marketing Lead',
     },
     {
         imageUrl: '/images/team/eugenea.jpg',
