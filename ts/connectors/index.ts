@@ -31,5 +31,5 @@ export const walletconnect = new WalletConnectConnector({
 export const walletlink = new WalletLinkConnector({
     url: RPC_URLS[1],
     appName: '0x',
-    appLogoUrl: '',
+    appLogoUrl: 'https://0x.org/images/0x_logo.png',
 });
