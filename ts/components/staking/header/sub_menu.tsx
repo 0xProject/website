@@ -150,8 +150,8 @@ export const SubMenu = (props: ISubMenuProps) => {
                 }
             }
         }
-        if (walletConnector && walletConnector.name === 'injected') {
-            setIconName(constants.PROVIDER_TYPE_TO_ICON.METAMASK);
+        if (walletConnector) {
+            setIconName(constants.PROVIDER_TYPE_TO_ICON[walletConnector.name]);
             utils.metamaskAccountChange((accounts: any) => {
                 if (accounts && accounts.length > 0) {
                     setActiveAccount(accounts[0]);
@@ -167,10 +167,6 @@ export const SubMenu = (props: ISubMenuProps) => {
                     setActiveAccount(null);
                 }
             });
-        } else if (walletConnector && walletConnector.name === 'walletlink') {
-            setIconName(constants.PROVIDER_TYPE_TO_ICON.COINBASE_WALLET);
-        } else if (walletConnector && walletConnector.name === 'walletconnect') {
-            setIconName(constants.PROVIDER_TYPE_TO_ICON.WALLET_CONNECT);
         }
     }, []);
 
@@ -186,7 +182,7 @@ export const SubMenu = (props: ISubMenuProps) => {
         return (
             <SubMenuWrapper onClick={toggleExpanded}>
                 <WalletAddressWrapper>
-                    {iconName && <Icon name={iconName} size={30} />}
+                    <Icon name={iconName} size={30} />
                     <MediaQuery maxWidth={1199}>
                         {(isMobile: boolean) => (
                             <EthAddress>

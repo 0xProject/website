@@ -13,8 +13,8 @@ interface IconProps extends PaddingInterface {
 
 export const Icon: React.FC<IconProps> = React.memo(props => {
     if (props.name && !props.component) {
-        const IconSVG = React.lazy(async () =>
-            import(/* webpackChunkName: "icon" */ `ts/icons/illustrations/${props.name}.svg`),
+        const IconSVG = React.lazy(
+            async () => import(/* webpackChunkName: "icon" */ `ts/icons/illustrations/${props.name}.svg`),
         );
 
         return (

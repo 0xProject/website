@@ -737,18 +737,18 @@ export interface MaterialUIPosition {
 }
 
 export enum Providers {
-    Parity = 'PARITY',
-    Metamask = 'METAMASK',
-    Mist = 'MIST',
-    CoinbaseWallet = 'COINBASE_WALLET',
-    Cipher = 'CIPHER',
-    TrustWallet = 'TRUST_WALLET',
-    WalletConnect = 'WALLET_CONNECT',
-    WalletLink = 'WALLET_LINK',
-    ImToken = 'IM_TOKEN',
-    Opera = 'OPERA',
-    Bitpie = 'BITPIE',
-    Fallback = 'FALLBACK',
+    PARITY = 'PARITY',
+    METAMASK = 'METAMASK',
+    MIST = 'MIST',
+    COINBASE = 'COINBASE',
+    CIPHER = 'CIPHER',
+    TRUST = 'TRUST',
+    WALLETCONNECT = 'WALLETCONNECT',
+    WALLETLINK = 'WALLETLINK',
+    IMTOKEN = 'IMTOKEN',
+    OPERA = 'OPERA',
+    BITPIE = 'BITPIE',
+    FALLBACK = 'FALLBACK',
 }
 
 export interface InjectedProviderUpdate {

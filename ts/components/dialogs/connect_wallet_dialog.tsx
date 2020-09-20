@@ -155,7 +155,7 @@ interface WalletOptionProps {
     href?: string;
     type?: string;
 }
-const WalletOption = ({ name, onClick, connector, isConnected, href, type }: WalletOptionProps) => {
+const WalletOption = ({ name, onClick, isConnected, type }: WalletOptionProps) => {
     const iconName = utils.getProviderIcon(type);
 
     return (
@@ -220,6 +220,8 @@ export const ConnectWalletDialog = () => {
         setActivatingConnector(currentConnector);
         onCloseDialog();
         const provider = await currentConnector.getProvider();
+        const providerName = utils.getProviderName(provider);
+
         if (option.type === 'walletconnect') {
             address = provider.accounts[0];
         } else {
@@ -227,7 +229,9 @@ export const ConnectWalletDialog = () => {
         }
         if (typeof window !== undefined && address) {
             const connectedData = JSON.stringify({
-                name: option.type,
+                name: providerName.includes('Provider')
+                    ? providerName.replace('Provider', '').toUpperCase()
+                    : providerName.toUpperCase(),
                 accounts: [address],
             });
             window.localStorage.setItem('WALLET_CONNECTOR', connectedData);
@@ -256,13 +260,7 @@ export const ConnectWalletDialog = () => {
                             if (option.connector === injected) {
                                 if (!(window.web3 || window.ethereum)) {
                                     if (option.name === 'Metamask') {
-                                        return (
-                                            <WalletOption
-                                                key={`install-wallet-${key}`}
-                                                name="Install Metamask"
-                                                href="https://metamask.io"
-                                            />
-                                        );
+                                        return null;
                                     } else {
                                         return null;
                                     }
