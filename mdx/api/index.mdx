@@ -167,7 +167,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | Query Param          | Description                                                                                                                                                                                                         |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sellToken`          | The ERC20 token address or symbol of the token you want to send. "ETH" can be provided as a valid `sellToken`.                                                                                                      |
-| `buyToken`           | The ERC20 token address or symbol of the token you want to receive. (`/swap/v1/quote` doesn't support `buyToken` as "ETH", unless quote requested is to [unwrap](/docs/api#examples) "WETH".`)                                                                                                                                                 |
+| `buyToken`           | The ERC20 token address or symbol of the token you want to receive. "ETH" can be provided as a valid `buyToken`
 | `sellAmount`         | (Optional) The amount of `sellToken` (in `sellToken` base units) you want to send.                                                                                                                                       |
 | `buyAmount`          | (Optional) The amount of `buyToken` (in `buyToken` base units) you want to receive.                                                                                                                                      |
 | `slippagePercentage` | (Optional) The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. This parameter will change over time with market conditions. |
@@ -309,7 +309,8 @@ Specify a `buyToken`, `sellToken` and either a `sellAmount` to get a simple quot
       "takerFeeAssetData": "0x",
       "signature": "0x04"
     }
-  ]
+  ],
+  "allowanceTarget": "0xf740b67da229f2f10bcbd38a7979992fcc71b8eb"
 }
 ```
 </CodeTabs>
@@ -400,7 +401,8 @@ Supply a comma delimited list of liquidty source names to exclude them from the 
       "takerFeeAssetData": "0x",
       "signature": "0x04"
     }
-  ]
+  ],
+  "allowanceTarget": "0x0000000000000000000000000000000000000000"
 }
 ```
 </CodeTabs>
@@ -512,7 +514,8 @@ Supply a `takerAddress` to use an [`eth_call`](https://github.com/ethereum/wiki/
       "takerFeeAssetData": "0x",
       "signature": "0x04"
     }
-  ]
+  ],
+  "allowanceTarget": "0x0000000000000000000000000000000000000000"
 }
 ```
 </CodeTabs>
@@ -621,7 +624,8 @@ Use "ETH" as the `sellToken` to receive a [Forwarder](/docs/guides/v3-forwarder-
       "takerFeeAssetData": "0x",
       "signature": "0x04"
     }
-  ]
+  ],
+  "allowanceTarget": "0x0000000000000000000000000000000000000000"
 }
 ```
 </CodeTabs>
@@ -654,7 +658,8 @@ Easily wrap and unwrap between ETH and WETH by requesting a swap quote by settin
   "buyAmount": "10000000",
   "sellAmount": "10000000",
   "sources": [],
-  "orders": []
+  "orders": [],
+  "allowanceTarget": "0x0000000000000000000000000000000000000000"
 }
 ```
 </CodeTabs>
@@ -683,7 +688,8 @@ Easily wrap and unwrap between ETH and WETH by requesting a swap quote by settin
   "buyAmount": "10000000",
   "sellAmount": "10000000",
   "sources": [],
-  "orders": []
+  "orders": [],
+  "allowanceTarget": "0x0000000000000000000000000000000000000000"
 }
 ```
 </CodeTabs>
@@ -792,7 +798,7 @@ RFQ-T liquidity can only be accessed if the request supplies a taker address, a 
             "signature": "0x04"
         }
     ],
-    "allowanceTarget": "0x95e6f48254609a6ee006f7d493c8e5fb97094cef"
+    "allowanceTarget": "0xf740b67da229f2f10bcbd38a7979992fcc71b8eb"
 }
 ```
 </CodeTabs>
@@ -1024,7 +1030,7 @@ Identical to the response schema for `/swap/v1/quote`, with one exception: the `
         }
     ],
     "estimatedGasTokenRefund": "252480",
-    "allowanceTarget": "0x95e6f48254609a6ee006f7d493c8e5fb97094cef"
+    "allowanceTarget": "0xf740b67da229f2f10bcbd38a7979992fcc71b8eb"
 }
 ```
 
