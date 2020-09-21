@@ -52,13 +52,13 @@ To alleviate this potential capital inefficiency, the RFQ-T model introduces the
 
 ## Indicative Pricing
 
-The indicative pricing resource is hosted at [`/swap/v0/price`](/docs/api#get-swapv0price) and responds with pricing information, but that response does not contain a full 0x order, so it does not constitute a legitimate transaction that can be submitted to the Ethereum network. Therefore, when a market maker services an indicative request they do not need to reserve any capital for it, leaving their capital available for other quotes to other clients.
+The indicative pricing resource is hosted at [`/swap/v1/price`](/docs/api#get-swapv1price) and responds with pricing information, but that response does not contain a full 0x order, so it does not constitute a legitimate transaction that can be submitted to the Ethereum network. Therefore, when a market maker services an indicative request they do not need to reserve any capital for it, leaving their capital available for other quotes to other clients.
 
 ## Firm Quotes
 
-The firm quote resource is hosted at [`/swap/v0/quote`](/docs/api#get-swapv0quote) and responds with a full 0x order, which can be submitted to an Ethereum node by the client. Therefore it is expected that the maker has reserved the maker assets required to settle the trade, leaving the order unlikely to revert.
+The firm quote resource is hosted at [`/swap/v1/quote`](/docs/api#get-swapv1quote) and responds with a full 0x order, which can be submitted to an Ethereum node by the client. Therefore it is expected that the maker has reserved the maker assets required to settle the trade, leaving the order unlikely to revert.
 
-Note that while the [`/price`](/docs/api#get-swapv0price) resource is new and specific to RFQ-T, the [`/quote`](/docs/api#get-swapv0quote) resource is the same one already used to access non-RFQ-T liquidity through the API. In order to qualify for RFQ-T liquidity, the request must include the query parameter `intentOnFilling=true` (in addition to the aforementioned `0x-api-key` and non-null `takerAddress`).
+Note that while the [`/price`](/docs/api#get-swapv1price) resource is new and specific to RFQ-T, the [`/quote`](/docs/api#get-swapv1quote) resource is the same one already used to access non-RFQ-T liquidity through the API. In order to qualify for RFQ-T liquidity, the request must include the query parameter `intentOnFilling=true` (in addition to the aforementioned `0x-api-key` and non-null `takerAddress`).
 
 ## When to Request Firm Quotes
 
@@ -139,7 +139,7 @@ Important note: A market maker should serve a unique order for each separate req
 
 ## Quote Validation
 
-Whenever a 0x API client specifies a `takerAddress` in their [`/quote`](/docs/api#get-swapv0quote) request, the API will validate the quote before returning it to the client, avoiding a number of possible causes for transaction reverts. (For more details, see ["How does `takerAddress` help with catching issues?"](/docs/guides/0x-api-faq#how-does-takeraddress-help-with-catching-issues).)
+Whenever a 0x API client specifies a `takerAddress` in their [`/quote`](/docs/api#get-swapv1quote) request, the API will validate the quote before returning it to the client, avoiding a number of possible causes for transaction reverts. (For more details, see ["How does `takerAddress` help with catching issues?"](/docs/guides/0x-api-faq#how-does-takeraddress-help-with-catching-issues).)
 
 However, given that a `takerAddress` is required in order to obtain RFQ-T liquidity, and given that this requirement subverts the optionality of the quote validation feature, the implementation of RFQ-T introduced a new query parameter to the `/quote` resource: `skipValidation`. When this parameter is set to `true`, quote validation will be skipped. While validating even RFQ-T quotes is a best-practice recommended default, skipping validation can be useful in certain circumstances, such as when experimenting with a new maker integration deployment.
 

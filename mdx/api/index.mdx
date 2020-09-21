@@ -15,7 +15,7 @@ We offer hosted versions for different Ethereum networks. Requests for more netw
 
 Each 0x HTTP API `path` is versioned independently using URI versioning. The format is: `https://api.0x.org/<path>/<version>/<endpoint>`.
 
-For example, you can request `https://api.0x.org/swap/v0/quote` which represents `v0` of the `quote` endpoint in the `swap` path.
+For example, you can request `https://api.0x.org/swap/v1/quote` which represents `v1` of the `quote` endpoint in the `swap` path.
 URLs not adhering to this format are not supported.
 
 A major version bump occurs whenever a backwards incompatible change occurs to an `endpoint`, in which case every `endpoint` in that `path` will be on the next version.
@@ -153,7 +153,7 @@ This API faciliates consuming the best-priced liquidity from [0x Mesh](https://0
 We use smart order routing to split up your transaction across decentralized exchange networks to be filled with the lowest slippage possible.
 Follow the "[Swap Tokens with 0x API](/docs/guides/swap-tokens-with-0x-api)" guide to see how to use it.
 
-## GET /swap/v0/quote
+## GET /swap/v1/quote
 
 Get an easy-to-consume quote for buying or selling any token.
 The return format is a valid unsigned Ethereum transaction and can be submitted directly to an Ethereum node to complete the swap.
@@ -167,7 +167,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | Query Param          | Description                                                                                                                                                                                                         |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sellToken`          | The ERC20 token address or symbol of the token you want to send. "ETH" can be provided as a valid `sellToken`.                                                                                                      |
-| `buyToken`           | The ERC20 token address or symbol of the token you want to receive. (`/swap/v0/quote` doesn't support `buyToken` as "ETH", unless quote requested is to [unwrap](/docs/api#examples) "WETH".`)                                                                                                                                                 |
+| `buyToken`           | The ERC20 token address or symbol of the token you want to receive. (`/swap/v1/quote` doesn't support `buyToken` as "ETH", unless quote requested is to [unwrap](/docs/api#examples) "WETH".`)                                                                                                                                                 |
 | `sellAmount`         | (Optional) The amount of `sellToken` (in `sellToken` base units) you want to send.                                                                                                                                       |
 | `buyAmount`          | (Optional) The amount of `buyToken` (in `buyToken` base units) you want to receive.                                                                                                                                      |
 | `slippagePercentage` | (Optional) The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. This parameter will change over time with market conditions. |
@@ -206,7 +206,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 
 Specify a `buyToken`, `sellToken` and either a `sellAmount` to get a simple quote of 1 WETH for DAI.
 
-<HttpCall fontSize="15px" path="/swap/v0/quote?buyToken=DAI&sellToken=WETH&sellAmount=100000000000000000" />
+<HttpCall fontSize="15px" path="/swap/v1/quote?buyToken=DAI&sellToken=WETH&sellAmount=100000000000000000" />
 
 
 <CodeTabs tabs={['200 - No Taker Address']}>
@@ -317,7 +317,7 @@ Specify a `buyToken`, `sellToken` and either a `sellAmount` to get a simple quot
 #### Excluding liquidity sources
 Supply a comma delimited list of liquidty source names to exclude them from the aggregator logic. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources.
 
-<HttpCall fontSize="12px" path="/swap/v0/quote?buyToken=DAI&sellToken=ETH&sellAmount=1000000000000000000&excludedSources=0x,Kyber" />
+<HttpCall fontSize="12px" path="/swap/v1/quote?buyToken=DAI&sellToken=ETH&sellAmount=1000000000000000000&excludedSources=0x,Kyber" />
 
 <CodeTabs tabs={['200 - No 0x, Kyber']}>
 
@@ -409,7 +409,7 @@ Supply a comma delimited list of liquidty source names to exclude them from the 
 
 Supply a `takerAddress` to use an [`eth_call`](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call) to validate the taker is able to fill the quote.
 
-<HttpCall fontSize="12px" path="/swap/v0/quote?buyToken=DAI&sellToken=ETH&sellAmount=1000000000000000000&takerAddress=0xab5801a7d398351b8be11c439e05c5b3259aec9b" />
+<HttpCall fontSize="12px" path="/swap/v1/quote?buyToken=DAI&sellToken=ETH&sellAmount=1000000000000000000&takerAddress=0xab5801a7d398351b8be11c439e05c5b3259aec9b" />
 
 <CodeTabs tabs={['200 - Taker Address']}>
 
@@ -538,7 +538,7 @@ If the [`eth_call`](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call) fai
 
 Use "ETH" as the `sellToken` to receive a [Forwarder](/docs/guides/v3-forwarder-specification) transaction, which will allow you to swap without having set allowances on your tokens. Note: The Forwarder contract is updated over time and may have a different address.
 
-<HttpCall fontSize="16px" path="/swap/v0/quote?buyToken=DAI&sellToken=ETH&sellAmount=1000000000000000000" />
+<HttpCall fontSize="16px" path="/swap/v1/quote?buyToken=DAI&sellToken=ETH&sellAmount=1000000000000000000" />
 
 <CodeTabs tabs={['200 - Forwarder Transaction']}>
 
@@ -632,7 +632,7 @@ Easily wrap and unwrap between ETH and WETH by requesting a swap quote by settin
 
 ##### Wrap ETH
 
-<HttpCall fontSize="16px" path="/swap/v0/quote?buyToken=ETH&sellToken=WETH&buyAmount=10000000" />
+<HttpCall fontSize="16px" path="/swap/v1/quote?buyToken=ETH&sellToken=WETH&buyAmount=10000000" />
 
 <CodeTabs tabs={['200 - Wrapping Transaction']}>
 
@@ -661,7 +661,7 @@ Easily wrap and unwrap between ETH and WETH by requesting a swap quote by settin
 
 ##### Unwrap WETH
 
-<HttpCall fontSize="16px" path="/swap/v0/quote?buyToken=WETH&sellToken=ETH&buyAmount=10000000" />
+<HttpCall fontSize="16px" path="/swap/v1/quote?buyToken=WETH&sellToken=ETH&buyAmount=10000000" />
 
 <CodeTabs tabs={['200 - Unwrapping Transaction']}>
 
@@ -692,7 +692,7 @@ Easily wrap and unwrap between ETH and WETH by requesting a swap quote by settin
 
 RFQ-T liquidity can only be accessed if the request supplies a taker address, a permissioned API key via header `0x-api-key`, and the query parameter `intentOnFilling=true`. For more details see the guide [Understanding RFQ-T and the 0x API](/docs/guides/rfqt-in-the-0x-api).
 
-<HttpCall fontSize="16px" path="/swap/v0/quote?sellToken=WETH&buyToken=DAI&sellAmount=1000000000000000000&takerAddress=0xffffffffffffffffffffffffffffffffffffffff&intentOnFilling=true" />
+<HttpCall fontSize="16px" path="/swap/v1/quote?sellToken=WETH&buyToken=DAI&sellAmount=1000000000000000000&takerAddress=0xffffffffffffffffffffffffffffffffffffffff&intentOnFilling=true" />
 
 <CodeTabs tabs={['200 - RFQ-T-enabled']}>
 
@@ -797,9 +797,9 @@ RFQ-T liquidity can only be accessed if the request supplies a taker address, a 
 ```
 </CodeTabs>
 
-## GET /swap/v0/tokens
+## GET /swap/v1/tokens
 
-Get the tokens with known symbols available for trading in the [`/swap/v0/quote`](#get-swapv0quote) endpoint.
+Get the tokens with known symbols available for trading in the [`/swap/v1/quote`](#get-swapv1quote) endpoint.
 If a token is not returned, it may still be available but not queryable by token symbol.
 
 ### Request
@@ -821,7 +821,7 @@ No request params.
 
 #### Get all available tokens
 
-<HttpCall path="/swap/v0/tokens" />
+<HttpCall path="/swap/v1/tokens" />
 
 <CodeTabs tabs={['200 - OK']}>
 
@@ -899,9 +899,9 @@ No request params.
 ```
 </CodeTabs>
 
-## GET /swap/v0/prices
+## GET /swap/v1/prices
 
-Get the amount of `sellToken` to purchase one unit (not base unit, one unit adjusted by number of decimals for asset) for tokens supported by `/swap/v0/*` endpoints.
+Get the amount of `sellToken` to purchase one unit (not base unit, one unit adjusted by number of decimals for asset) for tokens supported by `/swap/v1/*` endpoints.
 If a token is not returned, it may still be available but not queryable by token symbol.
 
 ### Request
@@ -923,7 +923,7 @@ Response will be an array of token symbols and the respective price in `sellToke
 
 #### Get price of tokens in DAI
 
-<HttpCall path="/swap/v0/prices?sellToken=DAI" />
+<HttpCall path="/swap/v1/prices?sellToken=DAI" />
 
 <CodeTabs tabs={['200 - OK']}>
 
@@ -952,23 +952,23 @@ Response will be an array of token symbols and the respective price in `sellToke
 
 </CodeTabs>
 
-## GET /swap/v0/price
+## GET /swap/v1/price
 
-Nearly identical to [`/swap/v0/quote`](#get-swapv0quote), but with a few key differences. Rather than returning a transaction that can be submitted to an Ethereum node, this resource simply indicates the pricing that would be available for an analogous call to `/swap/v0/quote`. Intended for use with RFQ-T; see [Quote Types: Indicative vs Firm](/docs/guides/rfqt-in-the-0x-api#quote-types-indicative-vs-firm) for more details.
+Nearly identical to [`/swap/v1/quote`](#get-swapv1quote), but with a few key differences. Rather than returning a transaction that can be submitted to an Ethereum node, this resource simply indicates the pricing that would be available for an analogous call to `/swap/v1/quote`. Intended for use with RFQ-T; see [Quote Types: Indicative vs Firm](/docs/guides/rfqt-in-the-0x-api#quote-types-indicative-vs-firm) for more details.
 
 ### Request
 
-Identical to the request schema for `/swap/v0/quote`, with one exception: the `skipValidation` parameter will always be considered to be `true`, even when a `takerAddress` has been specified.
+Identical to the request schema for `/swap/v1/quote`, with one exception: the `skipValidation` parameter will always be considered to be `true`, even when a `takerAddress` has been specified.
 
 ### Response
 
-Identical to the response schema for `/swap/v0/quote`, with one exception: the `orders` property will always be undefined.
+Identical to the response schema for `/swap/v1/quote`, with one exception: the `orders` property will always be undefined.
 
 ### Examples
 
 #### Get the price available for selling 1 ETH for DAI
 
-<HttpCall path="/swap/v0/price?sellToken=WETH&buyToken=DAI&sellAmount=1000000000000000000" />
+<HttpCall path="/swap/v1/price?sellToken=WETH&buyToken=DAI&sellAmount=1000000000000000000" />
 
 <CodeTabs tabs={['200 - OK']}>
 
