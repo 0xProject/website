@@ -199,6 +199,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | `sellTokenAddress`        | The ERC20 token address of the token you want to sell with quote.                                                                                                                               |
 | `orders`                  | [Signed orders](/docs/api#signed-order) that data is comprised of.                                                                                                                               |
 | `estimatedGasTokenRefund` | When possible, the 0x smart contracts will burn GST2 [Gas Tokens](https://gastoken.io/) during the transaction, resulting in a (max 50%) ETH refund at the end of the transaction. This field estimates the refund in wei.                  |
+| `allowanceTarget`         | The target contract address for which the user needs to have an allowance in order to be able to complete the swap. For swaps with "ETH" as `sellToken`, wrapping "ETH" to "WETH" or unwrapping "WETH" to "ETH" no allowance is needed, a null address of `0x0000000000000000000000000000000000000000` is then returned instead. |
 
 ### Examples
 
