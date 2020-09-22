@@ -93,7 +93,7 @@ import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
     const approvalTxData = USDCcontract
         .approve(responseJson.allowanceTarget, maxApproval)
         .getABIEncodedTransactionData();
-    await window.web3.eth.sendTransaction(approvalTxData);
+    await window.web3.eth.sendTransaction({ to: USDCaddress, data: approvalTxData });
     
     await web3.eth.sendTransaction(responseJson);
 })();
