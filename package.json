@@ -11,6 +11,7 @@
         "build:prod": "node --max_old_space_size=16384 ./node_modules/webpack/bin/webpack.js --mode production",
         "build:dev": "node --max-old-space-size=16384 ./node_modules/webpack/bin/webpack.js --mode development",
         "clean": "shx rm -rf public/bundle* mdx/tools",
+        "typecheck": "tsc --pretty --noEmit",
         "test": "jest",
         "test:watch": "jest --watch",
         "eslint": "eslint 'ts/**/*.{ts,tsx}'",
