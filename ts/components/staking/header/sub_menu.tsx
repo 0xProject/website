@@ -1,16 +1,17 @@
+// tslint:disable:no-floating-promises
+import { useWeb3React } from '@web3-react/core';
 import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import MediaQuery from 'react-responsive';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
+import { Dispatcher } from 'ts/redux/dispatcher';
+import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
-import { useSelector, useDispatch } from 'react-redux';
-import { State } from 'ts/redux/reducer';
-import { useWeb3React } from '@web3-react/core';
-import { Dispatcher } from 'ts/redux/dispatcher';
 
 const SubMenuWrapper = styled.div`
     display: flex;
@@ -152,15 +153,15 @@ export const SubMenu = (props: ISubMenuProps) => {
     React.useEffect(() => {
         const loadWallet = async () => {
             if (dispatcher) {
-                await dispatcher.updateWalletStateFromStorage();
+                dispatcher.updateWalletStateFromStorage();
             }
         };
         loadWallet();
     }, [dispatcher]);
 
     const logout = async () => {
-        await window.localStorage.removeItem('WALLETCONNECTOR');
-        await dispatcher.clearWalletState();
+        window.localStorage.removeItem('WALLETCONNECTOR');
+        dispatcher.clearWalletState();
         if (account.name === 'METAMASK') {
             deactivate();
         } else if (account.name === 'WALLET_CONNECT') {

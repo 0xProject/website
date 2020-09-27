@@ -4,6 +4,7 @@
 // tslint:disable:prefer-conditional-expression
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
+import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import {
     NoEthereumProviderError,
@@ -23,11 +24,10 @@ import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
 import { utils } from 'ts/utils/utils';
 
-import { AbstractConnector } from '@web3-react/abstract-connector';
 import { injected } from 'ts/connectors';
 import { useEagerConnect, useInactiveListener } from 'ts/hooks/use_web3';
-import { constants } from 'ts/utils/constants';
 import { WalletProvider } from 'ts/types';
+import { constants } from 'ts/utils/constants';
 
 function getErrorMessage(error: Error): string {
     if (error instanceof NoEthereumProviderError) {
@@ -227,7 +227,7 @@ export const ConnectWalletDialog = () => {
         } else {
             address = provider._addresses ? provider._addresses[0] : provider.selectedAddress;
         }
-        let data: WalletProvider = {
+        const data: WalletProvider = {
             name: option.type,
             address,
         };

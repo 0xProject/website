@@ -1,3 +1,4 @@
+import { logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { useWeb3React } from '@web3-react/core';
 import * as _ from 'lodash';
@@ -19,12 +20,11 @@ import { EtherscanLinkSuffixes, StakingAPIDelegatorHistoryItem } from 'ts/types'
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 import { utils } from 'ts/utils/utils';
 
-import { logUtils } from '@0x/utils';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useWindowDimensions } from 'ts/hooks/use_window_dimensions';
+import { State } from 'ts/redux/reducer';
 import { exportDataToCSVAndDownloadForUser } from 'ts/utils/csv_export_utils';
 import { errorReporter } from 'ts/utils/error_reporter';
-import { State } from 'ts/redux/reducer';
 
 export interface ActivityProps {}
 

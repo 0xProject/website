@@ -12,12 +12,12 @@ import { Logo } from 'ts/components/logo';
 import { FlexWrap } from 'ts/components/newLayout';
 import { SubMenu } from 'ts/components/staking/header/sub_menu';
 import { Dispatcher } from 'ts/redux/dispatcher';
+import { State } from 'ts/redux/reducer';
 import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 import { WebsitePaths } from 'ts/types';
 
 import { colors } from 'ts/style/colors';
-import { State } from 'ts/redux/reducer';
 
 interface HeaderProps {
     location?: Location;

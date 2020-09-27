@@ -4,11 +4,11 @@ import { logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as _ from 'lodash';
 
+import { MetamaskSubprovider } from '@0x/subproviders';
+import { injected } from 'ts/connectors';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { Network } from 'ts/types';
 import { errorReporter } from 'ts/utils/error_reporter';
-import { injected } from 'ts/connectors';
-import { MetamaskSubprovider } from '@0x/subproviders';
 
 // NOTE: Copied from Instant
 export const asyncDispatcher = {

@@ -13,11 +13,11 @@ import { colors } from 'ts/style/colors';
 
 import { WebsitePaths } from 'ts/types';
 
+import { useSelector } from 'react-redux';
+import { State } from 'ts/redux/reducer';
 import { backendClient } from 'ts/utils/backend_client';
 import { configs } from 'ts/utils/configs.ts';
 import { errorReporter } from 'ts/utils/error_reporter';
-import { useSelector } from 'react-redux';
-import { State } from 'ts/redux/reducer';
 
 const StyledHeading = styled(Heading)`
     text-align: center;

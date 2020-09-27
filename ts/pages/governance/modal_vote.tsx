@@ -17,10 +17,10 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 import { ErrorModal } from 'ts/pages/governance/error_modal';
 import { VoteForm, VoteInfo } from 'ts/pages/governance/vote_form';
 import { Dispatcher } from 'ts/redux/dispatcher';
+import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
-import { State } from 'ts/redux/reducer';
 
 interface ModalVoteProps {
     theme?: GlobalStyle;

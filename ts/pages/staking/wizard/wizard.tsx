@@ -26,11 +26,11 @@ import { useStakingWizard, WizardRouterSteps } from 'ts/hooks/use_wizard';
 
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { Dispatcher } from 'ts/redux/dispatcher';
+import { State } from 'ts/redux/reducer';
 import { AllTimeStats, Epoch, PoolWithStats, StakingPoolRecomendation, UserStakingChoice } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
-import { State } from 'ts/redux/reducer';
 
 export interface StakingWizardProps {
     onOpenConnectWalletDialog: () => void;

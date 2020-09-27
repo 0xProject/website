@@ -25,6 +25,7 @@ import { AccountRewardsOverview } from 'ts/pages/account/account_rewards_overvie
 import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { Dispatcher } from 'ts/redux/dispatcher';
+import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import {
     EpochWithFees,
@@ -39,7 +40,6 @@ import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 import { utils } from 'ts/utils/utils';
-import { State } from 'ts/redux/reducer';
 
 export interface AccountProps {}
 
