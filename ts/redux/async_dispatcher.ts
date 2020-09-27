@@ -7,6 +7,8 @@ import * as _ from 'lodash';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { Network } from 'ts/types';
 import { errorReporter } from 'ts/utils/error_reporter';
+import { injected } from 'ts/connectors';
+import { MetamaskSubprovider } from '@0x/subproviders';
 
 // NOTE: Copied from Instant
 export const asyncDispatcher = {
@@ -18,7 +20,8 @@ export const asyncDispatcher = {
         connector: any,
     ) => {
         const provider = await connector.getProvider();
-        const web3Wrapper = new Web3Wrapper(provider);
+        const web3Wrapper = new Web3Wrapper(connector === injected ? new MetamaskSubprovider(provider) : provider);
+
         if (shouldSetToLoading) {
             dispatcher.setAccountStateLoading();
         }
@@ -58,7 +61,7 @@ export const asyncDispatcher = {
     ) => {
         try {
             const provider = await connector.getProvider();
-            const web3Wrapper = new Web3Wrapper(provider);
+            const web3Wrapper = new Web3Wrapper(connector === injected ? new MetamaskSubprovider(provider) : provider);
             const contractAddresses = getContractAddressesForChainOrThrow(chainId);
             const zrxTokenContract = new ERC20TokenContract(contractAddresses.zrxToken, provider);
             const [ethBalanceInWei, zrxBalance, zrxAllowance] = await Promise.all([

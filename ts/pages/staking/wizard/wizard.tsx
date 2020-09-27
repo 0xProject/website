@@ -2,7 +2,7 @@ import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import * as zeroExInstant from 'zeroExInstant';
 
@@ -24,13 +24,13 @@ import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
 import { useStakingWizard, WizardRouterSteps } from 'ts/hooks/use_wizard';
 
-import { useAccount } from 'ts/hooks/use_web3';
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { AllTimeStats, Epoch, PoolWithStats, StakingPoolRecomendation, UserStakingChoice } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
+import { State } from 'ts/redux/reducer';
 
 export interface StakingWizardProps {
     onOpenConnectWalletDialog: () => void;
@@ -48,7 +48,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     // If coming from the market maker page, poolId will be provided
     const { poolId } = useQuery<{ poolId: string | undefined }>();
     const { connector, chainId } = useWeb3React();
-    const { account } = useAccount();
+    const { address: account } = useSelector((state: State) => state.accounts);
     const { zrxAllowanceBaseUnitAmount, zrxBalanceBaseUnitAmount } = props;
 
     const dispatch = useDispatch();

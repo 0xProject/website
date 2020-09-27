@@ -13,10 +13,11 @@ import { colors } from 'ts/style/colors';
 
 import { WebsitePaths } from 'ts/types';
 
-import { useAccount } from 'ts/hooks/use_web3';
 import { backendClient } from 'ts/utils/backend_client';
 import { configs } from 'ts/utils/configs.ts';
 import { errorReporter } from 'ts/utils/error_reporter';
+import { useSelector } from 'react-redux';
+import { State } from 'ts/redux/reducer';
 
 const StyledHeading = styled(Heading)`
     text-align: center;
@@ -115,7 +116,7 @@ const CircleThumbsUp = () => (
 );
 
 export const Newsletter = () => {
-    const { account } = useAccount();
+    const { address: account } = useSelector((state: State) => state.accounts);
     const ethAddress = account;
 
     const [email, setEmail] = React.useState<string>('');

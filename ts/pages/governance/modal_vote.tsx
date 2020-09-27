@@ -8,19 +8,19 @@ import styled from 'styled-components';
 
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'ts/components/button';
 import { ButtonClose } from 'ts/components/modals/button_close';
 import { Heading, Paragraph } from 'ts/components/text';
 import { GlobalStyle } from 'ts/constants/globalStyle';
 import { useAPIClient } from 'ts/hooks/use_api_client';
-import { useAccount } from 'ts/hooks/use_web3';
 import { ErrorModal } from 'ts/pages/governance/error_modal';
 import { VoteForm, VoteInfo } from 'ts/pages/governance/vote_form';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { colors } from 'ts/style/colors';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
+import { State } from 'ts/redux/reducer';
 
 interface ModalVoteProps {
     theme?: GlobalStyle;
@@ -37,7 +37,7 @@ interface FormProps {
 
 export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss, onVoted: onVoteInfoReceived }) => {
     const { connector, chainId } = useWeb3React<Web3Wrapper>();
-    const { account } = useAccount();
+    const { address: account } = useSelector((state: State) => state.accounts);
     const dispatch = useDispatch();
     const apiClient = useAPIClient(chainId);
 

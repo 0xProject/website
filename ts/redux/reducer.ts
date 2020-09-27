@@ -12,6 +12,7 @@ import {
     Side,
     SideToAssetToken,
     TokenByAddress,
+    WalletProvider,
 } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
@@ -60,6 +61,7 @@ export interface State {
     // Shared
     flashMessage: string | React.ReactNode;
     translate: Translate;
+    accounts: WalletProvider;
 }
 
 const DEFAULT_NETWORK_ID = environments.isDevelopment() ? Network.Kovan : Network.Mainnet;
@@ -100,6 +102,11 @@ export const INITIAL_STATE: State = {
     // Shared
     flashMessage: undefined,
     translate: new Translate(),
+    accounts: {
+        address: '',
+        icon: '',
+        name: '',
+    },
 };
 
 export function reducer(state: State = INITIAL_STATE, action: Action): State {
@@ -225,6 +232,16 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
                 tokenByAddress: action.data.tokenByAddress,
             };
         }
+
+        case ActionTypes.UpdateWalletState:
+            return {
+                ...state,
+                accounts: {
+                    address: action.data?.address,
+                    icon: action.data?.icon,
+                    name: action.data?.name,
+                },
+            };
 
         case ActionTypes.ForceTokenStateRefetch:
             return {

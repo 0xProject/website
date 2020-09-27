@@ -66,6 +66,12 @@ export interface AddressAndEthBalanceInWei {
     ethBalanceInWei: BigNumber;
 }
 
+export interface WalletProvider {
+    address?: string;
+    name?: string;
+    icon?: string;
+}
+
 export interface AccountReady {
     state?: AccountState.Ready;
     address: string;
@@ -224,6 +230,8 @@ export enum ActionTypes {
     UpdateProviderType = 'UPDATE_PROVIDER_TYPE',
     UpdateInjectedProviderName = 'UPDATE_INJECTED_PROVIDER_NAME',
     UpdateSelectedLanguage = 'UPDATE_SELECTED_LANGUAGE',
+
+    UpdateWalletState = 'UPDATE_WALLET_STATE',
 }
 
 export interface Action {
@@ -738,18 +746,18 @@ export interface MaterialUIPosition {
 }
 
 export enum Providers {
-    PARITY = 'PARITY',
-    METAMASK = 'METAMASK',
-    MIST = 'MIST',
-    COINBASE = 'COINBASE',
-    CIPHER = 'CIPHER',
-    TRUST = 'TRUST',
-    WALLETCONNECT = 'WALLETCONNECT',
-    WALLETLINK = 'WALLETLINK',
-    IMTOKEN = 'IMTOKEN',
-    OPERA = 'OPERA',
-    BITPIE = 'BITPIE',
-    FALLBACK = 'FALLBACK',
+    Parity = 'PARITY',
+    Metamask = 'METAMASK',
+    Mist = 'MIST',
+    CoinbaseWallet = 'COINBASE_WALLET',
+    Cipher = 'CIPHER',
+    TrustWallet = 'TRUST_WALLET',
+    WalletConnect = 'WALLET_CONNECT',
+    WalletLink = 'WALLET_LINK',
+    ImToken = 'IMTOKEN',
+    Opera = 'OPERA',
+    Bitpie = 'BITPIE',
+    Fallback = 'FALLBACK',
 }
 
 export interface InjectedProviderUpdate {

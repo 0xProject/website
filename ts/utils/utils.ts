@@ -316,24 +316,24 @@ export const utils = {
     getProviderType(provider: ZeroExProvider): Providers | undefined {
         const anyProvider = provider as any;
         if (provider.constructor.name === 'EthereumProvider') {
-            return Providers.MIST;
+            return Providers.Mist;
         } else if (_.get(window, 'Bitpie')) {
             // NOTE: Bitpie is TrustWallet based so isTrust is also true
-            return Providers.BITPIE;
+            return Providers.Bitpie;
         } else if (anyProvider.isTrust) {
-            return Providers.TRUST;
+            return Providers.TrustWallet;
         } else if (anyProvider.isParity) {
-            return Providers.PARITY;
+            return Providers.Parity;
         } else if (anyProvider.isMetaMask) {
-            return Providers.METAMASK;
+            return Providers.Metamask;
         } else if (anyProvider.isImToken) {
-            return Providers.IMTOKEN;
+            return Providers.ImToken;
         } else if (_.get(window, 'SOFA') !== undefined) {
-            return Providers.COINBASE;
+            return Providers.CoinbaseWallet;
         } else if (_.get(window, '__CIPHER__') !== undefined) {
-            return Providers.CIPHER;
+            return Providers.Cipher;
         } else if (utils.getBrowserType() === BrowserType.Opera && !anyProvider.isMetaMask) {
-            return Providers.OPERA;
+            return Providers.Opera;
         }
 
         return undefined;
@@ -357,20 +357,20 @@ export const utils = {
         if (connector === injected) {
             return constants.PROVIDER_TYPE_TO_NAME.METAMASK;
         } else if (connector === walletconnect) {
-            return constants.PROVIDER_TYPE_TO_NAME.WALLETCONNECT;
+            return constants.PROVIDER_TYPE_TO_NAME.WALLET_CONNECT;
         } else if (connector === walletlink) {
-            return constants.PROVIDER_TYPE_TO_NAME.WALLETLINK;
+            return constants.PROVIDER_TYPE_TO_NAME.WALLET_LINK;
         } else {
             return 'Wallet';
         }
     },
     getProviderIcon(type: string): string | undefined {
-        if (type === 'injected') {
+        if (type === 'METAMASK') {
             return constants.PROVIDER_TYPE_TO_ICON.METAMASK;
-        } else if (type === 'WALLETCONNECT') {
-            return constants.PROVIDER_TYPE_TO_ICON.WALLETCONNECT;
-        } else if (type === 'WALLETLINK') {
-            return constants.PROVIDER_TYPE_TO_ICON.WALLETLINK;
+        } else if (type === 'WALLET_CONNECT') {
+            return constants.PROVIDER_TYPE_TO_ICON.WALLET_CONNECT;
+        } else if (type === 'WALLET_LINK') {
+            return constants.PROVIDER_TYPE_TO_ICON.WALLET_LINK;
         } else {
             return undefined;
         }

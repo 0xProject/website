@@ -11,7 +11,7 @@ import { Breadcrumb } from 'ts/components/ui/breadcrumb';
 import { Table } from 'ts/components/ui/table';
 import { StakeStatus } from 'ts/components/ui/table_stake_status';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CallToAction } from 'ts/components/call_to_action';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { colors } from 'ts/style/colors';
@@ -21,10 +21,10 @@ import { utils } from 'ts/utils/utils';
 
 import { logUtils } from '@0x/utils';
 import { useAPIClient } from 'ts/hooks/use_api_client';
-import { useAccount } from 'ts/hooks/use_web3';
 import { useWindowDimensions } from 'ts/hooks/use_window_dimensions';
 import { exportDataToCSVAndDownloadForUser } from 'ts/utils/csv_export_utils';
 import { errorReporter } from 'ts/utils/error_reporter';
+import { State } from 'ts/redux/reducer';
 
 export interface ActivityProps {}
 
@@ -77,7 +77,7 @@ const csvHeaders = ['event_type', 'address', 'block_number', 'event_timestamp', 
 
 export const AccountActivity: React.FC<ActivityProps> = () => {
     const { chainId } = useWeb3React<Web3Wrapper>();
-    const { account } = useAccount();
+    const { address: account } = useSelector((state: State) => state.accounts);
     const dispatch = useDispatch();
 
     const dimensions = useWindowDimensions();

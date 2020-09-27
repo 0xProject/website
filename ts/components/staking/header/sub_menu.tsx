@@ -7,6 +7,10 @@ import { Icon } from 'ts/components/icon';
 import { colors } from 'ts/style/colors';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
+import { useSelector, useDispatch } from 'react-redux';
+import { State } from 'ts/redux/reducer';
+import { useWeb3React } from '@web3-react/core';
+import { Dispatcher } from 'ts/redux/dispatcher';
 
 const SubMenuWrapper = styled.div`
     display: flex;
@@ -134,59 +138,52 @@ const ConnectButton = styled(Button).attrs({
 `;
 
 export const SubMenu = (props: ISubMenuProps) => {
+    const { deactivate, connector } = useWeb3React();
+    const account = useSelector((state: State) => state.accounts);
     const [isExpanded, setIsExpanded] = React.useState(false);
-    const [activeAccount, setActiveAccount] = React.useState('');
-    const [iconName, setIconName] = React.useState('');
     const toggleExpanded = () => setIsExpanded(!isExpanded);
 
+    const dispatch = useDispatch();
+    const [dispatcher, setDispatcher] = React.useState<Dispatcher | undefined>(undefined);
     React.useEffect(() => {
-        let walletConnector: any;
-        if (typeof window !== 'undefined') {
-            const storage = window.localStorage.getItem('WALLET_CONNECTOR');
-            if (storage) {
-                walletConnector = JSON.parse(storage);
-                if (walletConnector && walletConnector.accounts) {
-                    setActiveAccount(walletConnector.accounts[0]);
-                }
+        setDispatcher(new Dispatcher(dispatch));
+    }, [dispatch]);
+
+    React.useEffect(() => {
+        const loadWallet = async () => {
+            if (dispatcher) {
+                await dispatcher.updateWalletStateFromStorage();
             }
-        }
-        if (walletConnector) {
-            setIconName(constants.PROVIDER_TYPE_TO_ICON[walletConnector.name]);
-            utils.metamaskAccountChange((accounts: any) => {
-                if (accounts && accounts.length > 0) {
-                    setActiveAccount(accounts[0]);
-                    if (typeof window !== undefined && accounts[0]) {
-                        const newWalletConnector = JSON.stringify({
-                            ...walletConnector,
-                            accounts,
-                        });
-                        window.localStorage.setItem('WALLET_CONNECTOR', newWalletConnector);
-                    }
-                } else {
-                    window.localStorage.removeItem('WALLET_CONNECTOR');
-                    setActiveAccount(null);
-                }
-            });
-        }
-    }, []);
+        };
+        loadWallet();
+    }, [dispatcher]);
 
     const logout = async () => {
-        if (typeof window !== undefined) {
-            window.localStorage.clear();
-            window.location.reload();
+        await window.localStorage.removeItem('WALLETCONNECTOR');
+        await dispatcher.clearWalletState();
+        if (account.name === 'METAMASK') {
+            deactivate();
+        } else if (account.name === 'WALLET_CONNECT') {
+            window.localStorage.removeItem('walletconnect');
+            (connector as any).close();
+        } else if (account.name === 'WALLET_LINK') {
+            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:linked');
+            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:id');
+            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:secret');
+            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:Addresses');
         }
     };
 
     // TODO(kimpers): add svgs for all providers
-    if (activeAccount) {
+    if (account.name) {
         return (
             <SubMenuWrapper onClick={toggleExpanded}>
                 <WalletAddressWrapper>
-                    <Icon name={iconName} size={30} />
+                    <Icon name={constants.PROVIDER_TYPE_TO_ICON[account.icon]} size={30} />
                     <MediaQuery maxWidth={1199}>
                         {(isMobile: boolean) => (
                             <EthAddress>
-                                {utils.getAddressBeginAndEnd(activeAccount, isMobile ? 9 : 5, isMobile ? 7 : 4)}
+                                {utils.getAddressBeginAndEnd(account.address, isMobile ? 9 : 5, isMobile ? 7 : 4)}
                             </EthAddress>
                         )}
                     </MediaQuery>

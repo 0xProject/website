@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { format } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -17,7 +17,6 @@ import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useStake } from 'ts/hooks/use_stake';
-import { useAccount } from 'ts/hooks/use_web3';
 import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
 import { AccountApplyModal } from 'ts/pages/account/account_apply_modal';
 import { AccountDetail } from 'ts/pages/account/account_detail';
@@ -40,6 +39,7 @@ import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 import { utils } from 'ts/utils/utils';
+import { State } from 'ts/redux/reducer';
 
 export interface AccountProps {}
 
@@ -95,7 +95,7 @@ interface ExpectedPoolRewards {
 
 export const Account: React.FC<AccountProps> = () => {
     const { chainId } = useWeb3React();
-    const { account } = useAccount();
+    const { address: account } = useSelector((state: State) => state.accounts);
     const dispatch = useDispatch();
 
     const onOpenConnectWalletDialog = React.useCallback(() => {

@@ -6,7 +6,6 @@ import { addMilliseconds } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useAccount } from 'ts/hooks/use_web3';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { TransactionLoadingState } from 'ts/types';
@@ -24,7 +23,7 @@ export interface UseAllowanceHookResult {
 
 export const useAllowance = (): UseAllowanceHookResult => {
     const { connector } = useWeb3React();
-    const { account } = useAccount();
+    const { address: account } = useSelector((state: State) => state.accounts);
     const networkId: number = useSelector((state: State) => state.networkId);
     const dispatch = useDispatch();
     const dispatcher = new Dispatcher(dispatch);

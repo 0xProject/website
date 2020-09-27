@@ -1,7 +1,7 @@
 // tslint:disable: boolean-naming
 import React, { useCallback, useEffect, useState } from 'react';
 import Headroom from 'react-headroom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import MediaQuery from 'react-responsive';
 import styled, { css } from 'styled-components';
 
@@ -16,8 +16,8 @@ import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 import { WebsitePaths } from 'ts/types';
 
-import { useAccount } from 'ts/hooks/use_web3';
 import { colors } from 'ts/style/colors';
+import { State } from 'ts/redux/reducer';
 
 interface HeaderProps {
     location?: Location;
@@ -57,7 +57,7 @@ const navItems: NavItems[] = [
 export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav }) => {
     const dispatch = useDispatch();
     const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
-    const { account } = useAccount();
+    const { address: account } = useSelector((state: State) => state.accounts);
 
     useEffect(() => {
         setDispatcher(new Dispatcher(dispatch));

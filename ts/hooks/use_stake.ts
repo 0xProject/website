@@ -14,7 +14,8 @@ import { errorReporter } from 'ts/utils/error_reporter';
 import { trackEvent } from 'ts/utils/google_analytics';
 import { utils } from 'ts/utils/utils';
 
-import { useAccount } from 'ts/hooks/use_web3';
+import { useSelector } from 'react-redux';
+import { State } from 'ts/redux/reducer';
 
 const { TRACKING } = constants.STAKING;
 
@@ -59,7 +60,7 @@ export interface UseStakeHookResult {
 
 export const useStake = (): UseStakeHookResult => {
     const { connector, chainId } = useWeb3React();
-    const { account } = useAccount();
+    const { address: account } = useSelector((state: State) => state.accounts);
     const [loadingState, setLoadingState] = useState<undefined | TransactionLoadingState>(undefined);
     const [error, setError] = useState<Error | undefined>(undefined);
     const [result, setResult] = useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);

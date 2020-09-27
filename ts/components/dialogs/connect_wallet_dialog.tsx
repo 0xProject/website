@@ -27,6 +27,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { injected } from 'ts/connectors';
 import { useEagerConnect, useInactiveListener } from 'ts/hooks/use_web3';
 import { constants } from 'ts/utils/constants';
+import { WalletProvider } from 'ts/types';
 
 function getErrorMessage(error: Error): string {
     if (error instanceof NoEthereumProviderError) {
@@ -220,23 +221,27 @@ export const ConnectWalletDialog = () => {
         setActivatingConnector(currentConnector);
         onCloseDialog();
         const provider = await currentConnector.getProvider();
-        const providerName = utils.getProviderName(provider);
 
-        if (option.type === 'walletconnect') {
+        if (option.type === 'WALLET_CONNECT') {
             address = provider.accounts[0];
         } else {
             address = provider._addresses ? provider._addresses[0] : provider.selectedAddress;
         }
-        if (typeof window !== undefined && address) {
-            const connectedData = JSON.stringify({
-                name: providerName.includes('Provider')
-                    ? providerName.replace('Provider', '').toUpperCase()
-                    : providerName.toUpperCase(),
-                accounts: [address],
-            });
-            window.localStorage.setItem('WALLET_CONNECTOR', connectedData);
+        let data: WalletProvider = {
+            name: option.type,
+            address,
+        };
+        if (provider.isMetaMask) {
+            data.icon = 'METAMASK';
+        } else if (provider.isWalletLink) {
+            data.icon = 'WALLET_LINK';
+        } else if (provider.isWalletConnect) {
+            data.icon = provider.walletMeta.name.toUpperCase();
         }
-        window.location.reload();
+        if (typeof window !== undefined) {
+            window.localStorage.setItem('WALLETCONNECTOR', JSON.stringify(data));
+        }
+        dispatcher.updateWalletStateFromStorage();
     };
 
     return (

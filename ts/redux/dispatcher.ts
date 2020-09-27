@@ -13,6 +13,7 @@ import {
     SideToAssetToken,
     Token,
     TokenByAddress,
+    WalletProvider,
 } from 'ts/types';
 
 export class Dispatcher {
@@ -191,6 +192,24 @@ export class Dispatcher {
         this._dispatch({
             data: versions,
             type: ActionTypes.UpdateAvailableLibraryVersions,
+        });
+    }
+
+    public updateWalletStateFromStorage(): void {
+        let data: WalletProvider;
+        if (typeof window !== undefined) {
+            data = JSON.parse(window.localStorage.getItem('WALLETCONNECTOR'));
+        }
+        this._dispatch({
+            data,
+            type: ActionTypes.UpdateWalletState,
+        });
+    }
+
+    public clearWalletState(): void {
+        this._dispatch({
+            data: {},
+            type: ActionTypes.UpdateWalletState,
         });
     }
 
