@@ -71,11 +71,11 @@ const BLOCK_NUMBER_BACK_TRACK = 50;
 const GWEI_IN_WEI = 1000000000;
 
 const providerToName: { [provider: string]: string } = {
-    [Providers.METAMASK]: constants.PROVIDER_NAME_METAMASK,
-    [Providers.PARITY]: constants.PROVIDER_NAME_PARITY_SIGNER,
-    [Providers.MIST]: constants.PROVIDER_NAME_MIST,
-    [Providers.COINBASE]: constants.PROVIDER_NAME_COINBASE_WALLET,
-    [Providers.CIPHER]: constants.PROVIDER_NAME_CIPHER,
+    [Providers.Metamask]: constants.PROVIDER_NAME_METAMASK,
+    [Providers.Parity]: constants.PROVIDER_NAME_PARITY_SIGNER,
+    [Providers.Mist]: constants.PROVIDER_NAME_MIST,
+    [Providers.CoinbaseWallet]: constants.PROVIDER_NAME_COINBASE_WALLET,
+    [Providers.Cipher]: constants.PROVIDER_NAME_CIPHER,
 };
 
 export class Blockchain {
