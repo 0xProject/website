@@ -28,7 +28,7 @@ $ cd 0x-api-starter-guide-code
 $ npm install
 ```
 
-For development, we will be leveraging the Kovan test network and the respective kovan 0x api endpoint: `kovan.api.0x.org/swap/v0/quote`. 
+For development, we will be leveraging the Kovan test network and the respective kovan 0x api endpoint: `kovan.api.0x.org/swap/v1/quote`. 
 
 ### Configure the .env file
 
@@ -62,7 +62,7 @@ const params = {
     sellAmount: sellAmount.toString(),
 }
 
-const res = await fetch(`https://kovan.api.0x.org/swap/v0/quote?${qs.stringify(params)}`);
+const res = await fetch(`https://kovan.api.0x.org/swap/v1/quote?${qs.stringify(params)}`);
 const quote = await res.json();
 
 console.log('Received quote:', quote);

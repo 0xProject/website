@@ -18,6 +18,15 @@
         }
     },
     "guides": {
+        "migrate-0x-api-from-v0-to-v1": {
+            "title": "Migrate 0x API integrations from the v0 to v1 endpoints",
+            "subtitle": "Learn how to migrate your existing 0x API integration to use the v1 endpoints",
+            "description": "Learn how to migrate your existing 0x API integration to use the v1 endpoints",
+            "tags": ["0x API"],
+            "topics": ["0x API"],
+            "difficulty": "Intermediate",
+            "path": "guides/migrate-0x-api-from-v0-to-v1.mdx"
+        },
         "develop-a-margin-trading-smart-contract-with-0x-api": {
             "title": "Develop a margin trading smart contract with 0x API",
             "subtitle": "Develop a contract to leverage Eth with Compound Finance + 0x API",
@@ -29,8 +38,8 @@
         },
         "swap-tokens-with-0x-api": {
             "title": "Swap Tokens With 0x API",
-            "subtitle": "Learn how to complete a token swap with 0x API /swap/v0/* endpoints",
-            "description": "Learn how to complete a token swap with 0x API /swap/v0/* endpoints",
+            "subtitle": "Learn how to complete a token swap with 0x API /swap/v1/* endpoints",
+            "description": "Learn how to complete a token swap with 0x API /swap/v1/* endpoints",
             "tags": ["0x API"],
             "topics": ["0x API"],
             "difficulty": "Beginner",
@@ -335,8 +344,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Protocol Developer"],
             "type": "Typescript Libraries",
-            "path": "tools/@0x/asset-swapper/v4.5.0/reference.mdx",
-            "versions": ["v4.5.0", "v4.4.0"]
+            "path": "tools/@0x/asset-swapper/v4.6.0/reference.mdx",
+            "versions": ["v4.6.0"]
         },
         "0x.js": {
             "title": "0x.js",
@@ -346,8 +355,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Relayer", "Protocol Developer"],
             "type": "Typescript Libraries",
-            "path": "tools/0x.js/v9.1.6/reference.mdx",
-            "versions": ["v9.1.6", "v9.1.5"]
+            "path": "tools/0x.js/v9.2.0/reference.mdx",
+            "versions": ["v9.2.0"]
         },
         "connect": {
             "title": "0x Connect",
@@ -357,8 +366,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Relayer"],
             "type": "Typescript Libraries",
-            "path": "tools/@0x/connect/v6.0.8/reference.mdx",
-            "versions": ["v6.0.8", "v6.0.7"]
+            "path": "tools/@0x/connect/v6.0.9/reference.mdx",
+            "versions": ["v6.0.9"]
         },
         "subproviders": {
             "title": "Subproviders",
@@ -368,8 +377,8 @@
             "isFeatured": false,
             "tags": ["Relayer", "Trader"],
             "type": "Typescript Libraries",
-            "path": "tools/@0x/subproviders/v6.1.0/reference.mdx",
-            "versions": ["v6.1.0", "v6.0.8"]
+            "path": "tools/@0x/subproviders/v6.1.1/reference.mdx",
+            "versions": ["v6.1.1"]
         },
         "contract-wrappers": {
             "title": "0x Contract Wrappers",
@@ -379,8 +388,8 @@
             "isFeatured": false,
             "tags": ["Trader", "Relayer"],
             "type": "Typescript Libraries",
-            "path": "tools/@0x/contract-wrappers/v13.7.0/reference.mdx",
-            "versions": ["v13.7.0", "v13.6.3"]
+            "path": "tools/@0x/contract-wrappers/v13.8.0/reference.mdx",
+            "versions": ["v13.8.0"]
         },
         "json-schemas": {
             "title": "0x JSON Schemas",
@@ -391,8 +400,8 @@
             "tags": ["Trader", "Relayer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/json-schemas/v5.0.8/reference.mdx",
-            "versions": ["v5.0.8", "v5.0.7"]
+            "path": "tools/@0x/json-schemas/v5.1.0/reference.mdx",
+            "versions": ["v5.1.0"]
         },
         "order-utils": {
             "title": "0x Order Utils",
@@ -403,8 +412,8 @@
             "tags": ["Trader", "Relayer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/order-utils/v10.2.5/reference.mdx",
-            "versions": ["v10.2.5", "v10.2.4"]
+            "path": "tools/@0x/order-utils/v10.3.0/reference.mdx",
+            "versions": ["v10.3.0"]
         },
         "sol-compiler": {
             "title": "sol-compiler",
@@ -415,8 +424,8 @@
             "tags": ["Protocol Developer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/sol-compiler/v4.1.0/reference.mdx",
-            "versions": ["v4.1.0", "v4.0.8"]
+            "path": "tools/@0x/sol-compiler/v4.1.1/reference.mdx",
+            "versions": ["v4.1.1"]
         },
         "sol-coverage": {
             "title": "sol-coverage",
@@ -428,8 +437,8 @@
             "tags": ["Protocol Developer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/sol-coverage/v4.0.9/reference.mdx",
-            "versions": ["v4.0.9", "v4.0.8"]
+            "path": "tools/@0x/sol-coverage/v4.0.10/reference.mdx",
+            "versions": ["v4.0.10"]
         },
         "sol-profiler": {
             "title": "sol-profiler",
@@ -441,8 +450,8 @@
             "tags": ["Protocol Developer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/sol-profiler/v4.0.9/reference.mdx",
-            "versions": ["v4.0.9", "v4.0.8"]
+            "path": "tools/@0x/sol-profiler/v4.1.0/reference.mdx",
+            "versions": ["v4.1.0"]
         },
         "sol-trace": {
             "title": "sol-trace",
@@ -454,8 +463,8 @@
             "tags": ["Protocol Developer"],
             "type": "Typescript Libraries",
             "isHidden": true,
-            "path": "tools/@0x/sol-trace/v3.0.9/reference.mdx",
-            "versions": ["v3.0.9", "v3.0.8"]
+            "path": "tools/@0x/sol-trace/v3.0.10/reference.mdx",
+            "versions": ["v3.0.10"]
         },
         "mesh-ts-client": {
             "title": "TS/JS Mesh RPC Client",
@@ -615,8 +624,8 @@
             "isFeatured": false,
             "tags": ["Protocol Developer", "Relayer"],
             "type": "CLI",
-            "path": "tools/@0x/migrations/v6.3.0/reference.mdx",
-            "versions": ["v6.3.0", "v6.2.4"]
+            "path": "tools/@0x/migrations/v6.4.0/reference.mdx",
+            "versions": ["v6.4.0"]
         },
         "launch-kit-wizard": {
             "title": "Launch Kit Wizard",

@@ -1,0 +1,15 @@
+# Migrate 0x API integrations from v0 to v1
+
+Upgrading from using 0x API `v0` to `v1` endpoints has many advantages such as better pricing and lower transaction costs. The new endpoints are mostly compatible with their `v0` equivalents but there are some notable changes to look out for.
+
+## Allowance target
+
+In `v0` ERC20 allowances were always set to the [ERC20Proxy contract](/docs/guides/v3-specification#assetproxy), as long as the user had an allowance set for that contract they were able to trade. In `v1` however, the ERC20 allowance target has changed and a new field `allowanceTarget` is introduced in the `/price` and `/quote` responses. The `allowanceTarget` field is the contract address that the user needs to set an ERC20 allowance for in order to be able to perform the trade. The allowance target address is subject to change in the future so make sure to use the address returned by 0x API rather than hard coding the current address. For any ERC20 -> ERC20 or ERC20 -> ETH trade an allowance must be set for `allowanceTarget`, for ETH -> ERC20, wrapping ETH into WETH, unwrapping WETH into ETH no allowance is required and `allowanceTarget` will be set to the null address `0x0000000000000000000000000000000000000000` in the API response.
+
+### A note regarding SRA endpoints
+
+The `/sra/*` endpoints and limit orders are not part of the `v1` upgrade and should continue to use [ERC20Proxy contract](/docs/guides/v3-specification#assetproxy) as the target contract for ERC20 allowances.
+
+## Support for quotes with buyToken ETH
+
+In `v0` it was not possible to request a quote for ERC20 -> ETH, only WETH was supported. With `v1` it is now fully supported to request quotes with `buyToken` ETH and the user will receive ETH.

@@ -55,7 +55,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
     const formattedTakerAmount = takerAmount.dividedToIntegerBy(1).toString();
 
     const API_BASE = utils.getAPIBaseUrl(networkId || 1);
-    const quoteEndpoint = `${API_BASE}/swap/v0/quote?sellAmount=${formattedTakerAmount}&buyToken=DAI&sellToken=USDC`;
+    const quoteEndpoint = `${API_BASE}/swap/v1/quote?sellAmount=${formattedTakerAmount}&buyToken=DAI&sellToken=USDC`;
     // Surround endpoint in quotes so users can directly curl this (otherwise the ampersands escape out when pasting into terminal)
     const copyableQuoteEndpoint = `"${quoteEndpoint}"`;
 
@@ -237,7 +237,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                         <RequestEndpointRow>
                             <EndpointLabel>
                                 <CurlEndpointLabel>curl </CurlEndpointLabel>
-                                <CurlEndpointText> https://api.0x.org/swap/v0/quote</CurlEndpointText>
+                                <CurlEndpointText> https://api.0x.org/swap/v1/quote</CurlEndpointText>
                             </EndpointLabel>
                         </RequestEndpointRow>
                         <RequestConfigurationRow>
@@ -283,7 +283,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                                     <Button
                                         fontSize={'16px'}
                                         target={'_blank'}
-                                        href="https://codepen.io/fragosti/pen/xxbmgqy"
+                                        href="https://codepen.io/kimpers/pen/zYqMdxE"
                                         isWithArrow={true}
                                         isAccentColor={true}
                                     >
@@ -300,7 +300,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                                 >
                                     {`// Get a quote to sell 1 ETH to buy DAI
 const response = await fetch(
-  'https://api.0x.org/swap/v0/quote?sellToken=ETH&buyToken=DAI&sellAmount=1000000000000000000'
+  'https://api.0x.org/swap/v1/quote?sellToken=ETH&buyToken=DAI&sellAmount=1000000000000000000'
 );
 const quote = await response.json();
 // Send to ethereum with your favorite Web3 Library
@@ -357,9 +357,7 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
                     <ExampleRowContainer>
                         <ExampleLeftContainer>
                             <ExampleLabel>Margin trading with 0x API</ExampleLabel>
-                            <ExampleDescription>
-                                Create a margin trading DeFi product using 0x API
-                            </ExampleDescription>
+                            <ExampleDescription>Create a margin trading DeFi product using 0x API</ExampleDescription>
                         </ExampleLeftContainer>
                         <ExampleLink>
                             <Button

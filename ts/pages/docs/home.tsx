@@ -75,7 +75,7 @@ const usefulLinks = [
 const getStartedLinks = [
     {
         heading: 'Swap Tokens With 0x API',
-        description: 'Learn how to complete a token swap with 0x API /swap/v0/* endpoint.',
+        description: 'Learn how to complete a token swap with 0x API /swap/v1/* endpoint.',
         url: `${WebsitePaths.DocsGuides}/swap-tokens-with-0x-api`,
     },
     {

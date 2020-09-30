@@ -25,7 +25,7 @@ $ cd 0x-api-starter-guide-code
 $ npm install
 ```
 
-For development, we will be leveraging the Kovan test network and the respective kovan 0x api endpoint: `kovan.api.0x.org/swap/v0/quote`. 
+For development, we will be leveraging the Kovan test network and the respective kovan 0x api endpoint: `kovan.api.0x.org/swap/v1/quote`. 
 
 ### Configure the .env file
 
@@ -189,7 +189,7 @@ To swap with 0x, the 0x exchange contracts will need to have access to move DAI 
 ```solidity
     ...
     // 4. approve 0x exchange to move DAI
-    _approve(address(dai), _getZeroExApprovalAddress());
+    _approve(address(dai), quote.allowanceTarget);
     ...
 ```
 
@@ -244,7 +244,7 @@ At this point, the open function should look like this:
         // 3. borrow token
         require(cdai.borrow(quote.sellAmount) == 0, "Failed to borrow cDAI from Compound Finance");
         // 4. approve 0x exchange to move DAI
-        _approve(address(dai), _getZeroExApprovalAddress());
+        _approve(address(dai), quote.allowanceTarget);
         // 5. execute and verify swap
         require(quote.sellToken == address(weth), "Provided quote is not selling WEth");
         require(quote.buyToken == address(dai), "Provided quote is not buying Dai");
@@ -274,9 +274,7 @@ If ETH has risen in price, then you will have more remaining WETH after buying D
 Let’s begin by defining the function signature for `close`:
 
 ```solidity
-function close(
-    ZeroExQuote memory quote
-)
+function close(ZeroExQuote memory quote)
     public
     payable
     onlyOwner
@@ -303,7 +301,7 @@ Similar to swapping from DAI to WETH in `open`, we will need to do a few things 
 ```solidity
     ...
     // 2. approve 0x exchange to move WETH
-    _approve(address(weth), _getZeroExApprovalAddress());
+    _approve(address(weth), quote.allowanceTarget);
     // 3. verify swap amounts are enough to repay balance
     uint256 wethBalance = weth.balanceOf(address(this));
     uint256 daiBorrowBalance = cdai.borrowBalanceCurrent(address(this));
@@ -363,9 +361,7 @@ At this point, the contract holds ETH and WETH (whatever WETH remains not swappe
 At this point `close` function should look something like this:
 
 ```solidity
-    function close(
-       ZeroExQuote memory quote
-    )
+    function close(ZeroExQuote memory quote)
         public
         payable
         onlyOwner
@@ -375,7 +371,7 @@ At this point `close` function should look something like this:
         // 1. wrap extra ETH sent with tx to buy DAI (additional ETH is sent to pay for interest rate)
         weth.deposit.value(msg.value.safeSub(quote.protocolFee))();
         // 2. approve 0x exchange to move WETH
-        _approve(address(weth), _getZeroExApprovalAddress());
+        _approve(address(weth), quote.allowanceTarget);
         // 3. verify swap amounts are enough to repay balance
         uint256 wethBalance = weth.balanceOf(address(this));
         uint256 daiBorrowBalance = cdai.borrowBalanceCurrent(address(this));
@@ -457,7 +453,7 @@ const params = {
     excludedSources: 'Eth2Dai,Uniswap,Kyber',
 }
 
-const res = await fetch(`https://kovan.api.0x.org/swap/v0/quote?${qs.stringify(params)}`);
+const res = await fetch(`https://kovan.api.0x.org/swap/v1/quote?${qs.stringify(params)}`);
 const quote = await res.json();
 ...
 ```
@@ -473,6 +469,7 @@ const onchainPassableQuote = {
     sellAmount: quote.sellAmount,
     protocolFee: quote.protocolFee,
     calldataHex: quote.data,
+    allowanceTarget: quote.allowanceTarget,
 };
 const value = positionSize.plus(quote.protocolFee);
 ```
@@ -549,7 +546,7 @@ const params = {
     buyAmount: daiBorrowBalance.toString(),
 }
 
-const res = await fetch(`https://api.0x.org/swap/v0/quote?${qs.stringify(params)}`);
+const res = await fetch(`https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`);
 const quote = await res.json();
 
 const onchainPassableQuote = {
@@ -559,6 +556,7 @@ const onchainPassableQuote = {
     sellAmount: quote.sellAmount,
     protocolFee: quote.protocolFee,
     calldataHex: quote.data,
+    allowanceTarget: quote.allowanceTarget,
 };
 
 ...
