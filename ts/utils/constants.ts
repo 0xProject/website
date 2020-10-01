@@ -86,7 +86,7 @@ export const constants = {
     SUPPORTED_WALLETS: {
         Injected: {
             connector: injected,
-            name: 'Injected',
+            name: 'Detected',
             type: 'METAMASK',
         },
         Metamask: {
