@@ -168,6 +168,7 @@ export const SubMenu = (props: ISubMenuProps) => {
             window.localStorage.removeItem('walletconnect');
             (connector as any).close();
         } else if (account.name === 'WALLET_LINK') {
+            (connector as any).close();
             window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:linked');
             window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:id');
             window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:secret');
