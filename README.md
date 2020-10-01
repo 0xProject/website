@@ -7,7 +7,7 @@ This repository contains our website and [0x Portal DApp][portal-url] (over-the-
 
 ## Contributing
 
-We strongly recommend that the community help us make improvements and determine the future direction of the protocol. To report bugs within this package, please create an issue in this repository.
+We are strongly recommend that community help us make improvements and determine the future direction of the protocol. To report the bugs within this package, please create an issue in this repository.
 
 Please read our [contribution guidelines](../../CONTRIBUTING.md) before getting started.
 
@@ -23,7 +23,7 @@ Add the following to your `/etc/hosts` file:
 
 You will also need to have the [aws CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) installed locally and your credentials set up.
 
-### Install dependencies:
+### Install dependencies
 
 ```bash
 yarn install
@@ -76,7 +76,7 @@ Running the script updates some of the meta information about the files (relativ
 
 ### Resources
 
-##### Toolkit
+##### Toolkits
 
 -   [Material Design Icon Font](http://zavoloklom.github.io/material-design-iconic-font/icons.html#directional)
 -   [BassCSS toolkit](http://basscss.com/)
