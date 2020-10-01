@@ -21,7 +21,7 @@ Add the following to your `/etc/hosts` file:
 127.0.0.1 0xproject.localhost
 ```
 
-You will also need to have the [aws CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) installed locally and your credentials set up.
+You will also need to have the [aws CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) installed locally and your credentials set up correctly.
 
 ### Install dependencies
 
