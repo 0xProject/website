@@ -4,7 +4,6 @@ import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import * as zeroExInstant from 'zeroExInstant';
 
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
@@ -271,23 +270,7 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
                         </div>
                     }
                     linkText="Go buy some ZRX"
-                    onClick={async () => {
-                        const provider = await connector.getProvider();
-                        return zeroExInstant.render(
-                            {
-                                provider,
-                                orderSource: 'https://api.0x.org/sra/',
-                                availableAssetDatas: [
-                                    '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
-                                ],
-                                defaultSelectedAssetData:
-                                    '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
-                                onSuccess: onUpdateAccountBalances,
-                            },
-                            'body',
-                        );
-                    }}
-                    to={`#`}
+                    linkUrl={`https://matcha.xyz/markets/ZRX`}
                 />
             )}
             {/* TODO(johnrjj) - Conslidate MM and Recommended panels */}
