@@ -312,6 +312,19 @@ export const utils = {
         }
         window.onload = () => resolve();
     }),
+    checkWindowProviderProperty(propertyName: string): boolean {
+        if ((window.ethereum && window.ethereum[propertyName]) || (window.web3 && window.web3[propertyName])) {
+            return true;
+        } else if (_.get(window, propertyName) !== undefined) {
+            return true;
+        } else if (_.get(window, propertyName) !== undefined) {
+            return true;
+        } else if (utils.getBrowserType() === propertyName && !window.ethereum) {
+            return true;
+        } else {
+            return false;
+        }
+    },
     // Copied from Instant
     getProviderType(provider: ZeroExProvider): Providers | undefined {
         const anyProvider = provider as any;
@@ -371,6 +384,18 @@ export const utils = {
             return constants.PROVIDER_TYPE_TO_ICON.WALLET_CONNECT;
         } else if (type === 'WALLET_LINK') {
             return constants.PROVIDER_TYPE_TO_ICON.WALLET_LINK;
+        } else if (type === 'imToken') {
+            return constants.PROVIDER_TYPE_TO_ICON.IMTOKEN;
+        } else if (type === 'isTrust') {
+            return constants.PROVIDER_TYPE_TO_ICON.TRUST_WALLET;
+        } else if (type === 'CIPHER') {
+            return constants.PROVIDER_TYPE_TO_ICON.CIPHER;
+        } else if (type === 'SOFA') {
+            return constants.PROVIDER_TYPE_TO_ICON.COINBASE_WALLET;
+        } else if (type === 'BITPIE') {
+            return constants.PROVIDER_TYPE_TO_ICON.BITPIE;
+        } else if (type === 'OPERA') {
+            return constants.PROVIDER_TYPE_TO_ICON.OPERA;
         } else {
             return undefined;
         }

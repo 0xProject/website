@@ -246,7 +246,7 @@ export const ConnectWalletDialog = () => {
 
     return (
         <StyledDialogOverlay isOpen={isOpen}>
-            <StyledDialogContent>
+            <StyledDialogContent aria-label="Connect a wallet">
                 <HeadingRow>
                     <Heading asElement="h3" marginBottom="0">
                         Connect a wallet
@@ -271,8 +271,88 @@ export const ConnectWalletDialog = () => {
                                     }
                                 } else if (option.name === 'Metamask' && !isMetamask) {
                                     return null;
-                                } else if (option.name === 'Injected' && isMetamask) {
+                                } else if (option.name === 'Detected' && isMetamask) {
                                     return null;
+                                } else if (option.name === 'Detected' && utils.checkWindowProviderProperty('imToken')) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="imToken"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="imToken"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (option.name === 'Detected' && utils.checkWindowProviderProperty('isTrust')) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Trust Wallet"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="isTrust"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (
+                                    option.name === 'Detected' &&
+                                    utils.checkWindowProviderProperty('isStatus')
+                                ) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Status Wallet"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="isStatus"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (option.name === 'Detected' && utils.checkWindowProviderProperty('SOFA')) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Coinbase Wallet"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="SOFA"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (option.name === 'Detected' && utils.checkWindowProviderProperty('CIPHER')) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Cipher Wallet"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="CIPHER"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (option.name === 'Detected' && utils.checkWindowProviderProperty('Opera')) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Opera Wallet"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="Opera"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (option.name === 'Detected' && utils.checkWindowProviderProperty('Bitpie')) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Bitpie"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="BITPIE"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
                                 }
                             }
                             return (
