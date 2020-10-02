@@ -2,9 +2,9 @@
 
 echo Clearing CDN cache...
 
-if [ "$1" = "dogfood" ]; then
+if [ "$1" = "dogsfood" ]; then
     id=E16OHMBSODHB04
-    url=https://dogfood.0xproject.com
+    url=https://dogsfood.0xproject.com
 elif [ "$1" = "live" ]; then
     id=E1PKJDEJRHTC64
     url=https://0x.org
