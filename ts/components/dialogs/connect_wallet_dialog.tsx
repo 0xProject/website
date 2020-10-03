@@ -1,6 +1,7 @@
 // tslint:disable:no-floating-promises
 // tslint:disable:no-await-promise
 // tslint:disable:no-promise-function-async
+// tslint:disable:no-shadowed-variable
 // tslint:disable:prefer-conditional-expression
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
@@ -24,7 +25,7 @@ import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
 import { utils } from 'ts/utils/utils';
 
-import { injected } from 'ts/connectors';
+import { injected, newWalletConnect, newWalletLink } from 'ts/connectors';
 import { useEagerConnect, useInactiveListener } from 'ts/hooks/use_web3';
 import { WalletProvider } from 'ts/types';
 import { constants } from 'ts/utils/constants';
@@ -194,8 +195,10 @@ const StyledProviderOptions = styled.div`
 export const ConnectWalletDialog = () => {
     const isOpen = useSelector((state: State) => state.isConnectWalletDialogOpen);
     const isMetamask = window.ethereum && window.ethereum.isMetaMask ? true : false;
-    const { connector, activate, error } = useWeb3React();
+    const { connector, activate, error, account } = useWeb3React();
     const [activatingConnector, setActivatingConnector] = useState<any>();
+    let walletconnect = newWalletConnect();
+    let walletlink = newWalletLink();
 
     useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
@@ -215,33 +218,50 @@ export const ConnectWalletDialog = () => {
 
     const onCloseDialog = useCallback(() => dispatcher.updateIsConnectWalletDialogOpen(false), [dispatcher]);
 
+    const resetWalletConnect = () => {
+        walletconnect = newWalletConnect();
+    };
+
+    const resetWalletLink = () => {
+        walletlink = newWalletLink();
+    };
+
     const handleAccount = async (currentConnector: AbstractConnector, option: any) => {
         let address: string = '';
-        await activate(currentConnector, undefined, true);
+        await activate(currentConnector, undefined, true).catch(error => {
+            dispatcher.updateIsConnectWalletDialogOpen(true);
+            if (currentConnector === walletconnect) {
+                resetWalletConnect();
+            } else if (currentConnector === walletlink) {
+                resetWalletLink();
+            }
+        });
         setActivatingConnector(currentConnector);
-        onCloseDialog();
-        const provider = await currentConnector.getProvider();
+        if (account) {
+            onCloseDialog();
+            const provider = await currentConnector.getProvider();
 
-        if (option.type === 'WALLET_CONNECT') {
-            address = provider.accounts[0];
-        } else {
-            address = provider._addresses ? provider._addresses[0] : provider.selectedAddress;
+            if (option.type === 'WALLET_CONNECT') {
+                address = provider.accounts[0];
+            } else {
+                address = provider._addresses ? provider._addresses[0] : provider.selectedAddress;
+            }
+            const data: WalletProvider = {
+                name: option.type,
+                address,
+            };
+            if (provider.isMetaMask) {
+                data.icon = 'METAMASK';
+            } else if (provider.isWalletLink) {
+                data.icon = 'WALLET_LINK';
+            } else if (provider.isWalletConnect) {
+                data.icon = 'WALLET_CONNECT';
+            }
+            if (typeof window !== undefined) {
+                window.localStorage.setItem('WALLETCONNECTOR', JSON.stringify(data));
+            }
+            dispatcher.updateWalletStateFromStorage();
         }
-        const data: WalletProvider = {
-            name: option.type,
-            address,
-        };
-        if (provider.isMetaMask) {
-            data.icon = 'METAMASK';
-        } else if (provider.isWalletLink) {
-            data.icon = 'WALLET_LINK';
-        } else if (provider.isWalletConnect) {
-            data.icon = provider.walletMeta.name.toUpperCase();
-        }
-        if (typeof window !== undefined) {
-            window.localStorage.setItem('WALLETCONNECTOR', JSON.stringify(data));
-        }
-        dispatcher.updateWalletStateFromStorage();
     };
 
     return (

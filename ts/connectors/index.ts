@@ -21,15 +21,20 @@ export const injected = new InjectedConnector({
     supportedChainIds: [1, 3, 4, 5, 42],
 });
 
-export const walletconnect = new WalletConnectConnector({
-    rpc: { 1: RPC_URLS[1] },
-    bridge: 'https://bridge.walletconnect.org',
-    qrcode: true,
-    pollingInterval: POLLING_INTERVAL,
-});
+export const newWalletConnect = () =>
+    new WalletConnectConnector({
+        rpc: { 1: RPC_URLS[1] },
+        bridge: 'https://bridge.walletconnect.org',
+        qrcode: true,
+        pollingInterval: POLLING_INTERVAL,
+    });
 
-export const walletlink = new WalletLinkConnector({
-    url: RPC_URLS[1],
-    appName: '0x',
-    appLogoUrl: 'https://0x.org/images/0x_logo.png',
-});
+export const newWalletLink = () =>
+    new WalletLinkConnector({
+        url: RPC_URLS[1],
+        appName: '0x',
+        appLogoUrl: 'https://0x.org/images/0x_logo.png',
+    });
+
+export let walletconnect = newWalletConnect();
+export let walletlink = newWalletLink();
