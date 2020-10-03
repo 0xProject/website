@@ -10,8 +10,18 @@ This repository contains our website and [0x Portal DApp][portal-url] (over-the-
 We strongly recommend that the community help us make improvements and determine the future direction of the protocol. To report bugs within this package, please create an issue in this repository.
 
 Please read our [contribution guidelines](../../CONTRIBUTING.md) before getting started.
+## Local Dev Environment
+It allows us to set up a server  environment on our own machine ,instead of using the server environment provided by your hosting company.
+## Components of Local Dev Environment
+*Version control
+*A local Web Server
+*Package managers
+*Task Runner
+*Testing and Debug Environment
+*Professional IDE
+*Sniffer to sniff out
 
-## Local Dev Setup
+## How to Set up a Local dev Environment
 
 Requires Node version 6.9.5 or higher
 
@@ -19,6 +29,7 @@ Add the following to your `/etc/hosts` file:
 
 ```
 127.0.0.1 0xproject.localhost
+local host:8000
 ```
 
 You will also need to have the [aws CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) installed locally and your credentials set up.
