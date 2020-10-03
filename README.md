@@ -1,3 +1,5 @@
+“We don't just build websites, we build websites that SELLS”
+
 ## Website & 0x Portal DApp
 
 This repository contains our website and [0x Portal DApp][portal-url] (over-the-counter exchange), facilitating trustless over-the-counter trading of Ethereum-based tokens using 0x protocol.
@@ -70,9 +72,9 @@ export ALGOLIA_ADMIN_API_KEY={YOUR_ADMIN_API_KEY}
 yarn index_docs
 ```
 
-The above script will index all the docs found in the `/mdx` folder on [Algolia](https://www.algolia.com/). It's possible to pass in arguments that match the directory names to index only those document types, i.e. `yarn index_docs --indexes 'tools,core-concepts' --environment development` will index tools and core concepts for `development`.
+The above script will index all the docs found in the `/MDX` folder on [Algolia](https://www.algolia.com/). It's possible to pass in arguments that match the directory names to index only those document types, i.e. `yarn index_docs --indexes 'tools,core-concepts' --environment development` will index tools and core concepts for `development`.
 
-Running the script updates some of the meta information about the files (relative paths to files and versions of the doc). For other types of information (i.e. title, subtitle, tags...) you will have to update it yourself.
+Running the script updates some of the meta-information about the files (relative paths to files and versions of the doc). For other types of information (i.e. title, subtitle, tags...) you will have to update it yourself.
 
 ### Resources
 
@@ -86,3 +88,5 @@ Running the script updates some of the meta information about the files (relativ
 
 -   [atom-typescript](https://atom.io/packages/atom-typescript)
 -   [linter-tslint](https://atom.io/packages/linter-tslint)
+
+Thank You! For Visting Our Site.
