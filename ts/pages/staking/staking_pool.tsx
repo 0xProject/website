@@ -16,10 +16,9 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { Button } from 'ts/components/button';
 import { SimulatorDrawer } from 'ts/components/dialogs/simulator_dialog';
-import { useWindowEvent } from 'ts/hooks/use_window_event';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
-import { PoolWithHistoricalStats, PoolWithStats, WebsitePaths } from 'ts/types';
+import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
@@ -286,35 +285,14 @@ const tradingPairs = [
 */
 export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = props => {
     const { poolId } = useParams();
-    const nodeRef = React.useRef<HTMLDivElement>(null);
 
     const dispatch = useDispatch();
     const dispatcher = new Dispatcher(dispatch);
     const networkId = useSelector((state: State) => state.networkId);
-    const isOpen = useSelector((state: State) => state.isSimulationDialogOpen);
     const apiClient = useAPIClient(networkId);
     const [stakingPool, setStakingPool] = useState<PoolWithHistoricalStats | undefined>(undefined);
-    const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
-
-    useWindowEvent('click', nodeRef, (e: React.SyntheticEvent<EventTarget>) => {
-        if (nodeRef?.current?.contains(e.target as HTMLInputElement)) {
-            return;
-        }
-        closeDrawer();
-    });
-
-    console.log('isOpen ', isOpen);
-
-    const closeDrawer = () => dispatcher.updateSimulatorDialogOpen(false);
 
     useEffect(() => {
-        apiClient
-            .getStakingPoolsAsync()
-            .then(res => setStakingPools(res.stakingPools))
-            .catch((error: Error) => {
-                logUtils.warn(error);
-                errorReporter.report(error);
-            });
         apiClient
             .getStakingPoolByIdAsync(poolId)
             .then(res => setStakingPool(res.stakingPool))
@@ -322,11 +300,14 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 logUtils.warn(err);
                 errorReporter.report(err);
             });
-    }, [poolId, setStakingPool, setStakingPools, apiClient]);
+    }, [poolId, setStakingPool, apiClient]);
 
-    const openSimulatorDialog = useCallback(() => {
-        dispatcher.updateSimulatorDialogOpen(true);
-    }, [dispatcher]);
+    const toggleSimulatorDrawer = useCallback(
+        (toggle: boolean) => {
+            dispatcher.updateSimulatorDialogOpen(toggle);
+        },
+        [dispatcher],
+    );
 
     // Ensure poolId exists else redirect back to home page
     if (!poolId) {
@@ -503,7 +484,12 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 <SimulatorInner>
                     <SimulatorText>
                         Calculate your potential Staking Rewards with the
-                        <SimulatorCTA onClick={openSimulatorDialog} isWithArrow={true} isAccentColor={true} to={''}>
+                        <SimulatorCTA
+                            onClick={() => toggleSimulatorDrawer(true)}
+                            isWithArrow={true}
+                            isAccentColor={true}
+                            to={''}
+                        >
                             Reward Simulator
                         </SimulatorCTA>
                     </SimulatorText>
@@ -538,12 +524,10 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 </div> */}
             </Container>
             <SimulatorDrawer
-                elementRef={nodeRef}
-                onDismiss={() => closeDrawer()}
+                onDismiss={() => toggleSimulatorDrawer(false)}
                 backgroundColor="#F6F6F6"
                 size="400px"
                 data={stakingPool}
-                pools={stakingPools}
                 dispatcher={dispatcher}
             />
         </StakingPageLayout>

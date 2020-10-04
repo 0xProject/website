@@ -8,6 +8,8 @@ import { StakingSimulatorDropdown } from 'ts/components/inputs/select_input';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { PoolWithStats } from 'ts/types';
+import { useAPIClient } from 'ts/hooks/use_api_client';
+import { stakingUtils } from 'ts/utils/staking_utils';
 
 const transforms: any = {
     top: 'translateY(-100%)',
@@ -143,31 +145,40 @@ interface SimulatorDrawerProps {
     dispatcher: Dispatcher;
     onDismiss?: () => void;
     backgroundColor?: string;
-    elementRef: any;
     data?: any;
-    pools?: PoolWithStats[];
 }
 
-export const SimulatorDrawer = ({
-    open,
-    size,
-    onDismiss,
-    backgroundColor,
-    elementRef,
-    data,
-    dispatcher,
-    pools,
-}: SimulatorDrawerProps) => {
+export const SimulatorDrawer = ({ open, size, onDismiss, backgroundColor, data, dispatcher }: SimulatorDrawerProps) => {
     const isOpen = useSelector((state: State) => state.isSimulationDialogOpen);
-    const networkId = useSelector((state: State) => state.networkId);
     const activePool = useSelector((state: State) => state.activePool);
+    const networkId = useSelector((state: State) => state.networkId);
+    const apiClient = useAPIClient(networkId);
     const [state, setState] = React.useState<boolean>(false);
     const [selectedOption, setSelectedOption] = React.useState(undefined);
+    const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
+
+    // useWindowEvent('click', nodeRef, (e: React.SyntheticEvent<EventTarget>) => {
+    //     console.log('Outside');
+    //     if (nodeRef?.current?.contains(e.target as HTMLInputElement)) {
+    //         console.log('Inside');
+    //         return;
+    //     }
+    //     toggleSimulatorDrawer(false);
+    // });
 
     React.useEffect(() => {
+        const fetchAndSetPoolsAsync = async () => {
+            const poolsResponse = await apiClient.getStakingPoolsAsync();
+            const activePools = (poolsResponse.stakingPools || [])
+                .filter(stakingUtils.isPoolActive)
+                .filter(pool => pool.metaData.name); // most of the active pools don't have an image, name
+            setStakingPools(activePools);
+        };
+        // tslint:disable-next-line:no-floating-promises
+        fetchAndSetPoolsAsync();
         updateActivePool(data);
         setActive();
-    }, []);
+    }, [apiClient]);
 
     const updateActivePool = useCallback(
         async (data: PoolWithStats) => {
@@ -177,7 +188,7 @@ export const SimulatorDrawer = ({
     );
 
     const onSelected = (data: any) => {
-        const selectedPool = pools.find((pool: PoolWithStats) => pool.poolId === data.value);
+        const selectedPool = stakingPools.find((pool: PoolWithStats) => pool.poolId === data.value);
         setSelectedOption(data);
         updateActivePool(selectedPool);
     };
@@ -204,7 +215,7 @@ export const SimulatorDrawer = ({
     return (
         <React.Fragment>
             {isOpen && (
-                <SimulatorDrawerWrapper ref={elementRef} open={isOpen} size={size}>
+                <SimulatorDrawerWrapper open={isOpen} size={size}>
                     <SimulatorDrawerOverlay open={open} onClick={onDismiss} />
                     <SimulatorDrawerContent open={open} size={size} backgroundColor={backgroundColor}>
                         <Body>
@@ -220,7 +231,7 @@ export const SimulatorDrawer = ({
                                     onSelected={data => onSelected(data)}
                                     selected={selectedOption}
                                     onReset={() => onReset()}
-                                    options={pools}
+                                    options={stakingPools}
                                 />
                                 <SimulatorNumberInput
                                     heading="Your Stake"
