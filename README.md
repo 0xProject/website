@@ -5,7 +5,7 @@ This repository contains our website and [0x Portal DApp][portal-url] (over-the-
 [website-url]: https://0x.org/
 [portal-url]: https://0x.org/portal
 
-## Contributing
+## To  Contribute
 
 We strongly recommend that the community help us make improvements and determine the future direction of the protocol. To report bugs within this package, please create an issue in this repository.
 
