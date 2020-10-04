@@ -1,12 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
-import { State } from 'ts/redux/reducer';
+/* tslint:disable */
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import styled from 'styled-components';
 import { Icon } from 'ts/components/icon';
-import { StakingSimulatorDropdown } from 'ts/components/inputs/select_input';
 import { SimulatorNumberInput } from 'ts/components/inputs/number_input';
-import { useAPIClient } from 'ts/hooks/use_api_client';
-import { stakingUtils } from 'ts/utils/staking_utils';
+import { StakingSimulatorDropdown } from 'ts/components/inputs/select_input';
+import { Dispatcher } from 'ts/redux/dispatcher';
+import { State } from 'ts/redux/reducer';
 import { PoolWithStats } from 'ts/types';
 
 const transforms: any = {
@@ -20,10 +20,10 @@ const SimulatorDrawerWrapper: any = styled.div`
     display: block;
     width: ${(props: SimulatorDrawerProps) => (props.size ? props.size : '300px')};
     height: 100%;
-    transform: ${(props: SimulatorDrawerProps) => (!props.open ? transforms['right'] : null)};
+    transform: ${(props: SimulatorDrawerProps) => (!props.open ? transforms.right : null)};
 `;
 
-//Covers entire view and is used for dismissal
+// Covers entire view and is used for dismissal
 const SimulatorDrawerOverlay: any = styled.div`
     position: fixed;
     top: 0px;
@@ -43,7 +43,7 @@ const SimulatorDrawerContent: any = styled.div`
     height: 100%;
     z-index: 16;
     width: ${(props: SimulatorDrawerProps) => (props.size ? props.size : '300px')};
-    transform: ${(props: SimulatorDrawerProps) => (!props.open ? transforms['right'] : null)};
+    transform: ${(props: SimulatorDrawerProps) => (!props.open ? transforms.right : null)};
     transition: transform 0.2s ease-out;
     overflow-x: hidden;
     overflow-y: auto;
@@ -140,35 +140,66 @@ const Footer = styled.span`
 interface SimulatorDrawerProps {
     open?: boolean;
     size?: string | number;
+    dispatcher: Dispatcher;
     onDismiss?: () => void;
     backgroundColor?: string;
     elementRef: any;
     data?: any;
+    pools?: PoolWithStats[];
 }
 
-export const SimulatorDrawer = ({ open, size, onDismiss, backgroundColor, elementRef, data }: SimulatorDrawerProps) => {
+export const SimulatorDrawer = ({
+    open,
+    size,
+    onDismiss,
+    backgroundColor,
+    elementRef,
+    data,
+    dispatcher,
+    pools,
+}: SimulatorDrawerProps) => {
     const isOpen = useSelector((state: State) => state.isSimulationDialogOpen);
     const networkId = useSelector((state: State) => state.networkId);
+    const activePool = useSelector((state: State) => state.activePool);
     const [state, setState] = React.useState<boolean>(false);
-    const [pool, setPool] = React.useState<PoolWithStats>(undefined);
-    const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
-    const apiClient = useAPIClient(networkId);
+    const [selectedOption, setSelectedOption] = React.useState(undefined);
+
     React.useEffect(() => {
-        const fetchAndSetPoolsAsync = async () => {
-            const poolsResponse = await apiClient.getStakingPoolsAsync();
-            const activePools = (poolsResponse.stakingPools || []).filter(stakingUtils.isPoolActive);
-            setStakingPools(activePools);
-        };
-        // tslint:disable-next-line:no-floating-promises
-        fetchAndSetPoolsAsync();
-    }, [apiClient]);
+        updateActivePool(data);
+        setActive();
+    }, []);
+
+    const updateActivePool = useCallback(
+        async (data: PoolWithStats) => {
+            dispatcher.updateActivePool(data);
+        },
+        [dispatcher],
+    );
 
     const onSelected = (data: any) => {
-        let selectedPool = stakingPools.find(pool => pool.poolId === data.value);
-        setPool(selectedPool);
+        const selectedPool = pools.find((pool: PoolWithStats) => pool.poolId === data.value);
+        setSelectedOption(data);
+        updateActivePool(selectedPool);
     };
 
-    const setDefault = () => {};
+    const onReset = () => {
+        setActive();
+        updateActivePool(data);
+    };
+
+    const setActive = () => {
+        setSelectedOption({
+            label: data.metaData.name,
+            value: data.poolId,
+            image: data.metaData.logoUrl,
+        });
+    };
+
+    const calculateStake = (e: any) => {
+        const stake = e.target.value;
+
+        console.log(stake);
+    };
 
     return (
         <React.Fragment>
@@ -187,20 +218,22 @@ export const SimulatorDrawer = ({ open, size, onDismiss, backgroundColor, elemen
                                 <StakingSimulatorDropdown
                                     labelText="Staking Pool"
                                     onSelected={data => onSelected(data)}
-                                    onReset={() => setDefault()}
-                                    options={stakingPools}
+                                    selected={selectedOption}
+                                    onReset={() => onReset()}
+                                    options={pools}
                                 />
                                 <SimulatorNumberInput
                                     heading="Your Stake"
-                                    subText="Balance: 2,000,000 ZRX"
+                                    subText={`Balance: ${activePool.currentEpochStats.totalProtocolFeesGeneratedInEth} ZRX`}
                                     name="stake"
-                                    onChange={() => {}}
+                                    onChange={e => calculateStake(e)}
                                     token="ZRX"
                                 />
                                 <SimulatorNumberInput
                                     heading="Fees Generated by Pool"
                                     name="feesByPool"
                                     onChange={() => {}}
+                                    value={activePool.currentEpochStats.totalProtocolFeesGeneratedInEth}
                                     token="ETH"
                                 />
                                 {state && (
@@ -215,6 +248,7 @@ export const SimulatorDrawer = ({ open, size, onDismiss, backgroundColor, elemen
                                             heading="ZRX Staked in Pool"
                                             name="stakedZRX"
                                             token="ZRX"
+                                            value={activePool.currentEpochStats.zrxStaked}
                                         />
                                         <SimulatorNumberInput
                                             heading="ZRX Staked in All Pools"
@@ -262,7 +296,7 @@ export const SimulatorDrawer = ({ open, size, onDismiss, backgroundColor, elemen
                                     </DetailRow>
                                     <DetailRow>
                                         <DetailRowText>Stakers Reward (5%)</DetailRowText>
-                                        <DetailRowText></DetailRowText>
+                                        <DetailRowText>{1 - activePool.currentEpochStats.operatorShare}</DetailRowText>
                                     </DetailRow>
                                     <DetailRow>
                                         <DetailRowText>Your Reward</DetailRowText>

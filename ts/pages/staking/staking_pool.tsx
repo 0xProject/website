@@ -1,8 +1,9 @@
+/* tslint:disable */
 import { BigNumber, logUtils } from '@0x/utils';
 import { format } from 'date-fns';
 import * as _ from 'lodash';
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, RouteChildrenProps, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -13,15 +14,15 @@ import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 
 import { useAPIClient } from 'ts/hooks/use_api_client';
 
+import { Button } from 'ts/components/button';
+import { SimulatorDrawer } from 'ts/components/dialogs/simulator_dialog';
+import { useWindowEvent } from 'ts/hooks/use_window_event';
+import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
-import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
+import { PoolWithHistoricalStats, PoolWithStats, WebsitePaths } from 'ts/types';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
-import { Button } from 'ts/components/button';
-import { Dispatcher } from 'ts/redux/dispatcher';
-import { useWindowEvent } from 'ts/hooks/use_window_event';
-import { SimulatorDrawer } from 'ts/components/dialogs/simulator_dialog';
 
 export interface ActionProps {
     children: React.ReactNode;
@@ -290,17 +291,30 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
     const dispatch = useDispatch();
     const dispatcher = new Dispatcher(dispatch);
     const networkId = useSelector((state: State) => state.networkId);
+    const isOpen = useSelector((state: State) => state.isSimulationDialogOpen);
     const apiClient = useAPIClient(networkId);
     const [stakingPool, setStakingPool] = useState<PoolWithHistoricalStats | undefined>(undefined);
+    const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
 
     useWindowEvent('click', nodeRef, (e: React.SyntheticEvent<EventTarget>) => {
-        if (nodeRef?.current?.contains(e.target as HTMLInputElement) === true) return;
+        if (nodeRef?.current?.contains(e.target as HTMLInputElement)) {
+            return;
+        }
         closeDrawer();
     });
 
-    const closeDrawer = () => dispatcher.UpdateSimulatorDialogOpen(false);
+    console.log('isOpen ', isOpen);
+
+    const closeDrawer = () => dispatcher.updateSimulatorDialogOpen(false);
 
     useEffect(() => {
+        apiClient
+            .getStakingPoolsAsync()
+            .then(res => setStakingPools(res.stakingPools))
+            .catch((error: Error) => {
+                logUtils.warn(error);
+                errorReporter.report(error);
+            });
         apiClient
             .getStakingPoolByIdAsync(poolId)
             .then(res => setStakingPool(res.stakingPool))
@@ -308,7 +322,11 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 logUtils.warn(err);
                 errorReporter.report(err);
             });
-    }, [poolId, setStakingPool, apiClient]);
+    }, [poolId, setStakingPool, setStakingPools, apiClient]);
+
+    const openSimulatorDialog = useCallback(() => {
+        dispatcher.updateSimulatorDialogOpen(true);
+    }, [dispatcher]);
 
     // Ensure poolId exists else redirect back to home page
     if (!poolId) {
@@ -485,12 +503,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 <SimulatorInner>
                     <SimulatorText>
                         Calculate your potential Staking Rewards with the
-                        <SimulatorCTA
-                            onClick={() => dispatcher.UpdateSimulatorDialogOpen(true)}
-                            isWithArrow={true}
-                            isAccentColor={true}
-                            to={''}
-                        >
+                        <SimulatorCTA onClick={openSimulatorDialog} isWithArrow={true} isAccentColor={true} to={''}>
                             Reward Simulator
                         </SimulatorCTA>
                     </SimulatorText>
@@ -530,6 +543,8 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 backgroundColor="#F6F6F6"
                 size="400px"
                 data={stakingPool}
+                pools={stakingPools}
+                dispatcher={dispatcher}
             />
         </StakingPageLayout>
     );

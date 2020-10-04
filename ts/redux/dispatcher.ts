@@ -28,6 +28,12 @@ export class Dispatcher {
             type: ActionTypes.ResetState,
         });
     }
+    public updateActivePool(data: any): void {
+        this._dispatch({
+            type: ActionTypes.UpdateActivePool,
+            data,
+        });
+    }
     public updateNodeVersion(nodeVersion: string): void {
         this._dispatch({
             data: nodeVersion,
@@ -64,7 +70,7 @@ export class Dispatcher {
         });
     }
 
-    public UpdateSimulatorDialogOpen(isOpen: boolean): void {
+    public updateSimulatorDialogOpen(isOpen: boolean): void {
         this._dispatch({
             data: isOpen,
             type: ActionTypes.UpdateSimulatorDialogOpen,

@@ -54,41 +54,38 @@ const formatOptionLabel = (payload: any) => {
     );
 };
 
-interface SelectProps {
-    options: any[];
-    defaultOption?: any;
-    labelText?: string;
-    onSelected?: (data: SelectOption) => any;
-    onReset?: () => void;
-}
-
 interface SelectOption {
     label?: string;
     value?: string;
+    image?: string;
 }
 
-export const StakingSimulatorDropdown = ({ options, labelText, onSelected, onReset }: SelectProps) => {
-    const [selectedOption, setSelectedOption] = React.useState<SelectOption>();
+interface SelectProps {
+    options: any[];
+    labelText?: string;
+    onSelected?: (data: SelectOption) => any;
+    selected: SelectOption;
+    onReset?: () => void;
+}
+
+export const StakingSimulatorDropdown = ({ options, labelText, onSelected, onReset, selected }: SelectProps) => {
 
     const handleChange = (option: SelectOption) => {
-        setSelectedOption(option);
         onSelected(option);
     };
 
-    const selectOptions = options.map(option => {
-        return {
-            label: option.metaData.name,
-            value: option.poolId,
-            image: option.metaData.logoUrl,
-        };
-    });
+    const selectOptions = options.map(option => ({
+        label: option.metaData.name,
+        value: option.poolId,
+        image: option.metaData.logoUrl,
+    }));
 
     return (
         <Container>
             <Label>{labelText}</Label>
             <SelectComponent
                 classNamePrefix="simulator-dropdown"
-                value={selectedOption}
+                value={selected}
                 formatOptionLabel={formatOptionLabel}
                 onChange={(value: any) => handleChange(value)}
                 options={selectOptions}

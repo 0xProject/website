@@ -66,8 +66,9 @@ export interface State {
     providerType: ProviderType;
     injectedProviderName: string;
     translate: Translate;
+    activePool: any;
     // Simulator
-    isSimulationDialogOpen: boolean
+    isSimulationDialogOpen: boolean;
 }
 
 const DEFAULT_NETWORK_ID = environments.isDevelopment() ? Network.Kovan : Network.Mainnet;
@@ -108,8 +109,9 @@ export const INITIAL_STATE: State = {
     providerType: ProviderType.Injected,
     injectedProviderName: '',
     translate: new Translate(),
+    activePool: {},
     // Simulator
-    isSimulationDialogOpen: false
+    isSimulationDialogOpen: false,
 };
 
 export function reducer(state: State = INITIAL_STATE, action: Action): State {
@@ -119,6 +121,12 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
             return {
                 ...INITIAL_STATE,
                 translate: state.translate,
+            };
+
+        case ActionTypes.UpdateActivePool:
+            return {
+                ...state,
+                activePool: action.data,
             };
 
         case ActionTypes.UpdateOrderSalt: {
@@ -152,8 +160,8 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
         case ActionTypes.UpdateSimulatorDialogOpen: {
             return {
                 ...state,
-                isSimulationDialogOpen: action.data
-            }
+                isSimulationDialogOpen: action.data,
+            };
         }
 
         case ActionTypes.UpdateShouldBlockchainErrDialogBeOpen: {
