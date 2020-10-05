@@ -1,6 +1,5 @@
 import { BigNumber } from '@0x/utils';
-import { injected, walletconnect, walletlink } from 'ts/connectors';
-import { AccountNotReady, AccountState, IWallet, Networks, Providers, WebsitePaths } from 'ts/types';
+import { AccountNotReady, AccountState, Networks, Providers, Wallet, WebsitePaths } from 'ts/types';
 
 import { SupportedDocJson } from '../types';
 
@@ -85,26 +84,22 @@ export const constants = {
     } as { [key: string]: string | undefined },
     SUPPORTED_WALLETS: {
         Injected: {
-            connector: injected,
             name: 'Detected',
             type: 'METAMASK',
         },
         Metamask: {
-            connector: injected,
             name: 'Metamask',
             type: 'METAMASK',
         },
         WalletConnect: {
-            connector: walletconnect,
             name: 'Wallet Connect',
             type: 'WALLET_CONNECT',
         },
         WalletLink: {
-            connector: walletlink,
             name: 'Coinbase Wallet',
             type: 'WALLET_LINK',
         },
-    } as { [key: string]: IWallet | undefined },
+    } as { [key: string]: Wallet | undefined },
     NO_ACCOUNT: {
         state: AccountState.None,
     } as AccountNotReady,

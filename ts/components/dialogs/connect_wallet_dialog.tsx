@@ -3,15 +3,22 @@
 // tslint:disable:no-promise-function-async
 // tslint:disable:no-shadowed-variable
 // tslint:disable:prefer-conditional-expression
+import { logUtils } from '@0x/utils';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import {
+    InjectedConnector,
     NoEthereumProviderError,
     UserRejectedRequestError as UserRejectedRequestErrorInjected,
 } from '@web3-react/injected-connector';
-import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector';
+import {
+    UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
+    WalletConnectConnector,
+} from '@web3-react/walletconnect-connector';
+import { WalletLinkConnector } from '@web3-react/walletlink-connector';
+
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -25,7 +32,7 @@ import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
 import { utils } from 'ts/utils/utils';
 
-import { injected, newWalletConnect, newWalletLink } from 'ts/connectors';
+import { injected, resetWalletConnect, resetWalletLink, walletconnect, walletlink } from 'ts/connectors';
 import { useEagerConnect, useInactiveListener } from 'ts/hooks/use_web3';
 import { WalletProvider } from 'ts/types';
 import { constants } from 'ts/utils/constants';
@@ -79,7 +86,7 @@ const WalletProviderButton = styled(Button).attrs({
     isTransparent: true,
     isConnected: false,
 })`
-    border: ${props => props.isConnected && `1px solid #00AE99`}
+    border: ${props => props.isConnected && `1px solid #00AE99`};
     height: 70px;
     width: 100%;
     display: flex;
@@ -197,8 +204,6 @@ export const ConnectWalletDialog = () => {
     const isMetamask = window.ethereum && window.ethereum.isMetaMask ? true : false;
     const { connector, activate, error, account } = useWeb3React();
     const [activatingConnector, setActivatingConnector] = useState<any>();
-    let walletconnect = newWalletConnect();
-    let walletlink = newWalletLink();
 
     useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
@@ -218,50 +223,79 @@ export const ConnectWalletDialog = () => {
 
     const onCloseDialog = useCallback(() => dispatcher.updateIsConnectWalletDialogOpen(false), [dispatcher]);
 
-    const resetWalletConnect = () => {
-        walletconnect = newWalletConnect();
-    };
-
-    const resetWalletLink = () => {
-        walletlink = newWalletLink();
-    };
-
     const handleAccount = async (currentConnector: AbstractConnector, option: any) => {
         let address: string = '';
-        await activate(currentConnector, undefined, true).catch(error => {
-            dispatcher.updateIsConnectWalletDialogOpen(true);
+        try {
+            await activate(currentConnector, undefined, true);
+            setActivatingConnector(currentConnector);
+            if (account) {
+                const provider = await currentConnector.getProvider();
+                if (option.type === 'WALLET_CONNECT') {
+                    address = provider.accounts[0];
+                } else {
+                    address = provider._addresses ? provider._addresses[0] : provider.selectedAddress;
+                }
+                const data: WalletProvider = {
+                    name: option.type,
+                    address,
+                };
+                if (provider.isMetaMask) {
+                    data.icon = 'METAMASK';
+                } else if (provider.isWalletLink) {
+                    data.icon = 'WALLET_LINK';
+                } else if (provider.isWalletConnect) {
+                    data.icon = 'WALLET_CONNECT';
+                }
+                if (typeof window !== undefined) {
+                    window.localStorage.setItem('WALLETCONNECTOR', JSON.stringify(data));
+                }
+                dispatcher.updateWalletStateFromStorage();
+                onCloseDialog();
+            }
+        } catch (error) {
+            logUtils.warn(error);
+            setActivatingConnector(undefined);
             if (currentConnector === walletconnect) {
                 resetWalletConnect();
             } else if (currentConnector === walletlink) {
                 resetWalletLink();
             }
-        });
-        setActivatingConnector(currentConnector);
-        if (account) {
             onCloseDialog();
-            const provider = await currentConnector.getProvider();
-
-            if (option.type === 'WALLET_CONNECT') {
-                address = provider.accounts[0];
-            } else {
-                address = provider._addresses ? provider._addresses[0] : provider.selectedAddress;
-            }
-            const data: WalletProvider = {
-                name: option.type,
-                address,
-            };
-            if (provider.isMetaMask) {
-                data.icon = 'METAMASK';
-            } else if (provider.isWalletLink) {
-                data.icon = 'WALLET_LINK';
-            } else if (provider.isWalletConnect) {
-                data.icon = 'WALLET_CONNECT';
-            }
-            if (typeof window !== undefined) {
-                window.localStorage.setItem('WALLETCONNECTOR', JSON.stringify(data));
-            }
-            dispatcher.updateWalletStateFromStorage();
         }
+        // await activate(currentConnector, undefined, true).catch(error => {
+        //     dispatcher.updateIsConnectWalletDialogOpen(true);
+        // if (currentConnector === walletconnect) {
+        //     resetWalletConnect();
+        // } else if (currentConnector === walletlink) {
+        //     resetWalletLink();
+        // }
+        // });
+        // setActivatingConnector(currentConnector);
+        // if (account) {
+        //     onCloseDialog();
+        //     const provider = await currentConnector.getProvider();
+
+        //     if (option.type === 'WALLET_CONNECT') {
+        //         address = provider.accounts[0];
+        //     } else {
+        //         address = provider._addresses ? provider._addresses[0] : provider.selectedAddress;
+        //     }
+        //     const data: WalletProvider = {
+        //         name: option.type,
+        //         address,
+        //     };
+        //     if (provider.isMetaMask) {
+        //         data.icon = 'METAMASK';
+        //     } else if (provider.isWalletLink) {
+        //         data.icon = 'WALLET_LINK';
+        //     } else if (provider.isWalletConnect) {
+        //         data.icon = 'WALLET_CONNECT';
+        //     }
+        //     if (typeof window !== undefined) {
+        //         window.localStorage.setItem('WALLETCONNECTOR', JSON.stringify(data));
+        //     }
+        //     dispatcher.updateWalletStateFromStorage();
+        // }
     };
 
     return (
@@ -279,10 +313,17 @@ export const ConnectWalletDialog = () => {
                     {constants.SUPPORTED_WALLETS ? (
                         Object.keys(constants.SUPPORTED_WALLETS).map(key => {
                             const option = constants.SUPPORTED_WALLETS[key];
-                            const currentConnector = option.connector;
+                            let currentConnector: WalletConnectConnector | WalletLinkConnector | InjectedConnector;
+                            if (option.type === 'WALLET_CONNECT') {
+                                currentConnector = walletconnect;
+                            } else if (option.type === 'WALLET_LINK') {
+                                currentConnector = walletlink;
+                            } else {
+                                currentConnector = injected;
+                            }
                             const isConnected = currentConnector === connector;
 
-                            if (option.connector === injected) {
+                            if (currentConnector === injected) {
                                 if (!(window.web3 || window.ethereum)) {
                                     if (option.name === 'Metamask') {
                                         return null;

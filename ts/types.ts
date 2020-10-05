@@ -83,8 +83,7 @@ export interface AccountNotReady {
     state: AccountState.None | AccountState.Loading | AccountState.Locked;
 }
 
-export interface IWallet {
-    connector: any;
+export interface Wallet {
     name: string;
     type: string;
 }

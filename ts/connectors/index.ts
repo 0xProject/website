@@ -21,7 +21,7 @@ export const injected = new InjectedConnector({
     supportedChainIds: [1, 3, 4, 5, 42],
 });
 
-export const newWalletConnect = () =>
+const newWalletConnect = () =>
     new WalletConnectConnector({
         rpc: { 1: RPC_URLS[1] },
         bridge: 'https://bridge.walletconnect.org',
@@ -29,7 +29,7 @@ export const newWalletConnect = () =>
         pollingInterval: POLLING_INTERVAL,
     });
 
-export const newWalletLink = () =>
+const newWalletLink = () =>
     new WalletLinkConnector({
         url: RPC_URLS[1],
         appName: '0x',
@@ -38,3 +38,11 @@ export const newWalletLink = () =>
 
 export let walletconnect = newWalletConnect();
 export let walletlink = newWalletLink();
+
+export const resetWalletLink = () => {
+    walletlink = newWalletLink();
+};
+
+export const resetWalletConnect = () => {
+    walletconnect = newWalletConnect();
+};
