@@ -51,7 +51,7 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/greg.jpg',
         name: 'Greg Hysen',
-        title: 'Senior Protocol Engineer',
+        title: 'Engineering Manager, Protocol',
     },
     {
         imageUrl: '/images/team/blake.jpg',
@@ -116,7 +116,7 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/lawrencef.jpg',
         name: 'Lawrence Forman',
-        title: 'Protocol Engineer',
+        title: 'Senior Protocol Engineer',
     },
     {
         imageUrl: '/images/team/paulv.jpg',
