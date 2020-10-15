@@ -126,19 +126,9 @@ export const StakingWizard: React.FC<StakingWizardProps> = props => {
     }, [chainId, apiClient]);
 
     useEffect(() => {
-        const loadBalances = async () => {
-            if (account && connector && chainId) {
-                await asyncDispatcher.fetchAccountBalanceAndDispatchToStoreAsync(
-                    account,
-                    connector,
-                    dispatcher,
-                    chainId,
-                );
-            }
-        };
-
         // tslint:disable-next-line:no-floating-promises
-        loadBalances();
+        asyncDispatcher.fetchAccountBalanceAndDispatchToStoreAsync(account, connector, dispatcher, chainId);
+        // tslint:disable-next-line:no-floating-promises
     }, [account, chainId, connector]);
 
     const { currentStep, next } = useStakingWizard();

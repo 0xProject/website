@@ -2,6 +2,7 @@
 // tslint:disable:no-await-promise
 // tslint:disable:no-promise-function-async
 // tslint:disable:no-shadowed-variable
+// tslint:disable:no-unused-variable
 // tslint:disable:prefer-conditional-expression
 import { logUtils } from '@0x/utils';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
@@ -226,9 +227,10 @@ export const ConnectWalletDialog = () => {
     const handleAccount = async (currentConnector: AbstractConnector, option: any) => {
         let address: string = '';
         try {
-            await activate(currentConnector, undefined, true);
             setActivatingConnector(currentConnector);
-            if (account) {
+            await activate(currentConnector, undefined, true);
+            onCloseDialog();
+            if (currentConnector) {
                 const provider = await currentConnector.getProvider();
                 if (option.type === 'WALLET_CONNECT') {
                     address = provider.accounts[0];
@@ -250,7 +252,6 @@ export const ConnectWalletDialog = () => {
                     window.localStorage.setItem('WALLETCONNECTOR', JSON.stringify(data));
                 }
                 dispatcher.updateWalletStateFromStorage();
-                onCloseDialog();
             }
         } catch (error) {
             logUtils.warn(error);
@@ -260,42 +261,8 @@ export const ConnectWalletDialog = () => {
             } else if (currentConnector === walletlink) {
                 resetWalletLink();
             }
-            onCloseDialog();
+            dispatcher.updateIsConnectWalletDialogOpen(true);
         }
-        // await activate(currentConnector, undefined, true).catch(error => {
-        //     dispatcher.updateIsConnectWalletDialogOpen(true);
-        // if (currentConnector === walletconnect) {
-        //     resetWalletConnect();
-        // } else if (currentConnector === walletlink) {
-        //     resetWalletLink();
-        // }
-        // });
-        // setActivatingConnector(currentConnector);
-        // if (account) {
-        //     onCloseDialog();
-        //     const provider = await currentConnector.getProvider();
-
-        //     if (option.type === 'WALLET_CONNECT') {
-        //         address = provider.accounts[0];
-        //     } else {
-        //         address = provider._addresses ? provider._addresses[0] : provider.selectedAddress;
-        //     }
-        //     const data: WalletProvider = {
-        //         name: option.type,
-        //         address,
-        //     };
-        //     if (provider.isMetaMask) {
-        //         data.icon = 'METAMASK';
-        //     } else if (provider.isWalletLink) {
-        //         data.icon = 'WALLET_LINK';
-        //     } else if (provider.isWalletConnect) {
-        //         data.icon = 'WALLET_CONNECT';
-        //     }
-        //     if (typeof window !== undefined) {
-        //         window.localStorage.setItem('WALLETCONNECTOR', JSON.stringify(data));
-        //     }
-        //     dispatcher.updateWalletStateFromStorage();
-        // }
     };
 
     return (

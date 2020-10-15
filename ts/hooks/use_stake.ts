@@ -96,7 +96,7 @@ export const useStake = (): UseStakeHookResult => {
         };
         // tslint:disable-next-line:no-floating-promises
         loadContract();
-    }, [account, chainId]);
+    }, [account, connector, chainId]);
 
     const executeWithData = useCallback(
         async (data: string[]) => {
