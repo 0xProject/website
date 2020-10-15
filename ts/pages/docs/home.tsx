@@ -88,11 +88,6 @@ const getStartedLinks = [
         description: 'A primer on the core concepts to use 0x liquidity in smart contracts.',
         url: `${WebsitePaths.DocsGuides}/introduction-to-using-0x-liquidity-in-smart-contracts`,
     },
-    {
-        heading: 'Develop a margin trading smart contract with 0x API',
-        description: 'Leverage 0x liquidity and Compound finance to create a margin trading smart contract.',
-        url: `${WebsitePaths.DocsGuides}/develop-a-margin-trading-smart-contract-with-0x-api`,
-    },
 ];
 
 const communityLinks = [
