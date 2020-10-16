@@ -220,6 +220,11 @@ export enum ActionTypes {
     UpdateProviderType = 'UPDATE_PROVIDER_TYPE',
     UpdateInjectedProviderName = 'UPDATE_INJECTED_PROVIDER_NAME',
     UpdateSelectedLanguage = 'UPDATE_SELECTED_LANGUAGE',
+
+    UpdateActivePool = 'UPDATE_ACTIVE_POOL',
+
+    // Simulator
+    UpdateSimulatorDialogOpen = 'UPDATE_SIMULATOR_DIALOG_OPEN',
 }
 
 export interface Action {

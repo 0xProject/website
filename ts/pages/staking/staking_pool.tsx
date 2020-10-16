@@ -1,8 +1,9 @@
+/* tslint:disable */
 import { BigNumber, logUtils } from '@0x/utils';
 import { format } from 'date-fns';
 import * as _ from 'lodash';
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, RouteChildrenProps, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -13,6 +14,9 @@ import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 
 import { useAPIClient } from 'ts/hooks/use_api_client';
 
+import { Button } from 'ts/components/button';
+import { SimulatorDrawer } from 'ts/components/dialogs/simulator_dialog';
+import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
 import { errorReporter } from 'ts/utils/error_reporter';
@@ -52,6 +56,36 @@ const GraphHeading = styled(Heading)`
 
 const TooltipLabel = styled.span`
     font-weight: 600;
+`;
+
+const SimulatorWrapper = styled.div`
+    @media (min-width: 768px) {
+        padding: 0 80px 40px 80px;
+    }
+`;
+
+const SimulatorInner = styled.div`
+    border: 1px solid #d9d9d9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    line-height: 27px;
+    @media (min-width: 768px) {
+        padding: 20px;
+    }
+`;
+
+const SimulatorText = styled.h3`
+    @media (max-width: 768px) {
+        font-size: 15px;
+    }
+`;
+
+const SimulatorCTA = styled(Button)`
+    @media (max-width: 768px) {
+        font-size: 15px;
+    }
 `;
 
 /*
@@ -252,6 +286,8 @@ const tradingPairs = [
 export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = props => {
     const { poolId } = useParams();
 
+    const dispatch = useDispatch();
+    const dispatcher = new Dispatcher(dispatch);
     const networkId = useSelector((state: State) => state.networkId);
     const apiClient = useAPIClient(networkId);
     const [stakingPool, setStakingPool] = useState<PoolWithHistoricalStats | undefined>(undefined);
@@ -265,6 +301,13 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                 errorReporter.report(err);
             });
     }, [poolId, setStakingPool, apiClient]);
+
+    const toggleSimulatorDrawer = useCallback(
+        (toggle: boolean) => {
+            dispatcher.updateSimulatorDialogOpen(toggle);
+        },
+        [dispatcher],
+    );
 
     // Ensure poolId exists else redirect back to home page
     if (!poolId) {
@@ -437,6 +480,21 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                     </Actions>
                 </ActionsInner>
             </ActionsWrapper> */}
+            <SimulatorWrapper>
+                <SimulatorInner>
+                    <SimulatorText>
+                        Calculate your potential Staking Rewards with the
+                        <SimulatorCTA
+                            onClick={() => toggleSimulatorDrawer(true)}
+                            isWithArrow={true}
+                            isAccentColor={true}
+                            to={''}
+                        >
+                            Reward Simulator
+                        </SimulatorCTA>
+                    </SimulatorText>
+                </SimulatorInner>
+            </SimulatorWrapper>
             <Container>
                 <GraphHeading>Historical Details</GraphHeading>
                 <HistoryChart
@@ -465,6 +523,13 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
                     })}
                 </div> */}
             </Container>
+            <SimulatorDrawer
+                onDismiss={() => toggleSimulatorDrawer(false)}
+                backgroundColor="#F6F6F6"
+                size="400px"
+                data={stakingPool}
+                dispatcher={dispatcher}
+            />
         </StakingPageLayout>
     );
 };

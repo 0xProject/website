@@ -28,6 +28,12 @@ export class Dispatcher {
             type: ActionTypes.ResetState,
         });
     }
+    public updateActivePool(data: any): void {
+        this._dispatch({
+            type: ActionTypes.UpdateActivePool,
+            data,
+        });
+    }
     public updateNodeVersion(nodeVersion: string): void {
         this._dispatch({
             data: nodeVersion,
@@ -63,6 +69,14 @@ export class Dispatcher {
             type: ActionTypes.UpdateShouldBlockchainErrDialogBeOpen,
         });
     }
+
+    public updateSimulatorDialogOpen(isOpen: boolean): void {
+        this._dispatch({
+            data: isOpen,
+            type: ActionTypes.UpdateSimulatorDialogOpen,
+        });
+    }
+
     public updateChosenAssetToken(side: Side, token: AssetToken): void {
         this._dispatch({
             data: {

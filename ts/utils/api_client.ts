@@ -1,3 +1,4 @@
+import { differenceInMinutes } from 'date-fns';
 import * as _ from 'lodash';
 
 import {
@@ -13,6 +14,13 @@ import {
 } from 'ts/types';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { utils } from 'ts/utils/utils';
+
+interface CacheItem {
+    value: any;
+    createdAt: Date;
+}
+
+const cache = new Map<string, CacheItem>();
 
 const STAKING_POOLS_ENDPOINT = '/staking/pools';
 const DELEGATOR_ENDPOINT = '/staking/delegator';
@@ -31,11 +39,19 @@ export class APIClient {
         this.networkId = networkId;
     }
 
-    public async getStakingPoolsAsync(): Promise<StakingAPIPoolsResponse> {
-        const result = await fetchUtils.requestAsync<StakingAPIPoolsResponse>(
-            utils.getAPIBaseUrl(this.networkId),
-            STAKING_POOLS_ENDPOINT,
-        );
+    public async getStakingPoolsAsync(useCache: boolean = true): Promise<StakingAPIPoolsResponse> {
+        const baseUrl = utils.getAPIBaseUrl(this.networkId);
+        const key = `${this.networkId}:${baseUrl}${STAKING_POOLS_ENDPOINT}`;
+
+        const cachedItem = cache.get(key);
+        if (useCache && cachedItem && differenceInMinutes(new Date(), cachedItem.createdAt) <= 5) {
+            return cachedItem.value;
+        }
+
+        const result = await fetchUtils.requestAsync<StakingAPIPoolsResponse>(baseUrl, STAKING_POOLS_ENDPOINT);
+        const newCacheItem: CacheItem = { value: result, createdAt: new Date() };
+        cache.set(key, newCacheItem);
+
         return result;
     }
 
