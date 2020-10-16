@@ -1,83 +1,64 @@
 import * as React from 'react';
-
+import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { Hero } from 'ts/components/hero';
 import { LandingAnimation } from 'ts/components/heroImage';
 import { Icon } from 'ts/components/icon';
 
+import { AnimatedChatIcon } from 'ts/components/animatedChatIcon';
+import { AnimatedCompassIcon } from 'ts/components/animatedCompassIcon';
+import { AnimationLoader } from 'ts/components/animations/animation_loader';
+
 import { HeroAnimation } from 'ts/components/heroAnimation';
 import { ModalVideo } from 'ts/components/modals/modal_video';
 import { WebsitePaths } from 'ts/types';
-import { constants } from 'ts/utils/constants';
-
-const announcement = {
-    headline: 'Say hello to Matcha!',
-    href: `${constants.MATCHA_PRODUCTION_URL}/blog/say-hello-to-matcha`,
-    shouldOpenInNewTab: true,
-};
 
 export interface SectionlandingHeroProps {}
-export interface SectionLandingHeroState {
-    isVideoOpen: boolean;
-}
 
-export class SectionLandingHero extends React.Component<SectionlandingHeroProps, SectionLandingHeroState> {
-    public state: SectionLandingHeroState = {
-        isVideoOpen: false,
-    };
+export const SectionLandingHero: React.FC<SectionlandingHeroProps> = () => {
+    return (
+        <>
+            <Hero
+                title="Bringing decentralized liquidity, together"
+                isLargeTitle={true}
+                isFullWidth={true}
+                maxWidth={'1280px'}
+                sectionPadding={'120px 0 40px 0'}
+                maxWidthFigure="850px"
+                alignItems={'flex-start'}
+                description="0x is a powerful liquidity aggregation API that allows you to access both on and off-chain DEX liquidity"
+                figure={
+                    <LandingAnimation
+                        image={
+                            <AnimationContainer>
+                                <AnimationLoader name={'depth'} loop={false} />
+                            </AnimationContainer>
+                        }
+                    />
+                }
+                actions={<HeroActions />}
+            />
+        </>
+    );
+};
 
-    public render(): React.ReactNode {
-        const { isVideoOpen } = this.state;
-        return (
-            <>
-                <Hero
-                    title="Powering Decentralized Exchange"
-                    isLargeTitle={true}
-                    isFullWidth={true}
-                    description="0x is an open protocol that enables the peer-to-peer exchange of assets on the Ethereum blockchain."
-                    figure={<LandingAnimation image={<HeroAnimation />} />}
-                    actions={<HeroActions onPlayVideoClick={this._openModalVideo} />}
-                    announcement={announcement}
-                />
-                <ModalVideo
-                    channel="youtube"
-                    isOpen={isVideoOpen}
-                    videoId="c04eIt3FQ5I"
-                    onClose={this._closeModalVideo}
-                    youtube={{
-                        autoplay: 1,
-                        controls: 0,
-                        showinfo: 0,
-                        modestbranding: 1,
-                    }}
-                    ratio="21:9"
-                />
-            </>
-        );
-    }
-
-    private readonly _closeModalVideo = (): void => {
-        this.setState({ isVideoOpen: false });
-    };
-
-    private readonly _openModalVideo = (): void => {
-        this.setState({ isVideoOpen: true });
-    };
-}
-
-interface HeroActionsProps {
-    onPlayVideoClick: () => void;
-}
+interface HeroActionsProps {}
 
 const HeroActions: React.FC<HeroActionsProps> = props => (
     <>
         <Button to={WebsitePaths.ZeroExApi} isInline={true}>
-            Get Started
+            Start Building
         </Button>
 
-        <Button shouldUseAnchorTag={true} onClick={props.onPlayVideoClick} isTransparent={true} isInline={true}>
-            <Icon name="play" size={16} margin={[0, 16, 0, -16]} />
-            Play Video
+        <Button href={'https://matcha.xyz'} target={'_blank'} isTransparent={true} isInline={true}>
+            Try it with Matcha
         </Button>
     </>
 );
+
+const AnimationContainer = styled.div`
+    /* max-height: 375px; */
+    width: 100%;
+
+    margin-bottom: 35px;
+`;

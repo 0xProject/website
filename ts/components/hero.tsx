@@ -6,6 +6,7 @@ import { Announcement, AnnouncementProps } from './announcement';
 
 interface Props {
     title: string;
+    maxWidthContent?: string;
     maxWidth?: string;
     labelText?: string;
     maxWidthHeading?: string;
@@ -19,7 +20,8 @@ interface Props {
     announcement?: AnnouncementProps;
     sectionPadding?: string;
     showFigureBottomMobile?: boolean;
-    figureMaxWidth?: string;
+    maxWidthFigure?: string;
+    alignItems?: string;
 }
 
 interface SectionProps {
@@ -40,16 +42,18 @@ interface WrapProps {
     isFullWidth?: boolean;
     isCenteredMobile?: boolean;
     showFigureBottomMobile?: boolean;
+    maxWidth?: string;
+    alignItems?: string;
 }
 const Wrap = styled.div<WrapProps>`
     width: calc(100% - 60px);
     margin: 0 auto;
 
     @media (min-width: 768px) {
-        max-width: ${props => (!props.isFullWidth ? '895px' : '1136px')};
+        max-width: ${props => (!props.isFullWidth ? '895px' : props.maxWidth ?? '1136px')};
         flex-direction: row-reverse;
         display: flex;
-        align-items: center;
+        align-items: ${props => props.alignItems ?? 'center'};
         text-align: ${props => props.isCentered && 'center'};
         justify-content: ${props => (props.isCentered ? 'center' : 'space-between')};
     }
@@ -67,7 +71,7 @@ interface TitleProps {
     maxWidth?: string;
 }
 const Title = styled.h1<TitleProps>`
-    font-size: ${props => (props.isLarge ? '80px' : '50px')};
+    font-size: ${props => (props.isLarge ? '70px' : '50px')};
     font-weight: 300;
     line-height: 1.2;
     margin-left: auto;
@@ -188,18 +192,20 @@ export class Hero extends React.Component<Props> {
             <Section padding={props.sectionPadding} isAnnouncement={!!props.announcement}>
                 {!!props.background && <BackgroundWrap>{props.background}</BackgroundWrap>}
                 <Wrap
+                    maxWidth={props.maxWidth}
                     isCentered={!props.figure}
                     isFullWidth={props.isFullWidth}
                     isCenteredMobile={props.isCenteredMobile}
                     showFigureBottomMobile={props.showFigureBottomMobile}
+                    alignItems={props.alignItems}
                 >
                     {props.figure && (
-                        <Content isCenteredMobile={props.isCenteredMobile} width={props.figureMaxWidth || '400px'}>
+                        <Content isCenteredMobile={props.isCenteredMobile} width={props.maxWidthFigure || '400px'}>
                             {props.figure}
                         </Content>
                     )}
 
-                    <Content width={props.maxWidth ? props.maxWidth : props.figure ? '546px' : '678px'}>
+                    <Content width={props.maxWidthContent ? props.maxWidthContent : props.figure ? '580px' : '678px'}>
                         {!!props.announcement && <Announcement {...props.announcement} />}
                         {!!props.labelText && <Label>{props.labelText}</Label>}
                         <Title isLarge={props.isLargeTitle} maxWidth={props.maxWidthHeading}>

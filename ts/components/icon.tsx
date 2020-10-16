@@ -9,6 +9,7 @@ interface IconProps extends PaddingInterface {
     name?: string;
     component?: React.ReactNode;
     size?: 'small' | 'medium' | 'large' | 'hero' | 'natural' | number;
+    style?: any;
 }
 
 export const Icon: React.FC<IconProps> = React.memo(props => {

@@ -1,105 +1,103 @@
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
+
+import { Section } from 'ts/components/newLayout';
 import { Heading } from 'ts/components/text';
-
-import { Section, WrapGrid } from 'ts/components/newLayout';
-
-interface ProjectLogo {
-    name: string;
-    imageUrl?: string;
-    persistOnMobile?: boolean;
-}
-
-interface StyledProjectInterface {
-    isOnMobile?: boolean;
-}
-
-const projects: ProjectLogo[] = [
-    {
-        name: 'Radar Relay',
-        imageUrl: 'images/clients/radar-relay.svg',
-        persistOnMobile: true,
-    },
-    {
-        name: 'Paradex',
-        imageUrl: 'images/clients/paradex.svg',
-        persistOnMobile: true,
-    },
-    {
-        name: 'Star Bit Ex',
-        imageUrl: 'images/clients/starbitex.svg',
-    },
-    {
-        name: 'LedgerDex',
-        imageUrl: 'images/clients/ledgerdex.svg',
-    },
-    {
-        name: 'OpenRelay',
-        imageUrl: 'images/clients/openrelay.svg',
-        persistOnMobile: true,
-    },
-    {
-        name: 'Bamboo Relay',
-        imageUrl: 'images/clients/bamboo.svg',
-        persistOnMobile: true,
-    },
-    {
-        name: 'dEX',
-        imageUrl: 'images/clients/ercdex.svg',
-        persistOnMobile: true,
-    },
-    {
-        name: 'emoon',
-        imageUrl: 'images/clients/emoon.svg',
-        persistOnMobile: true,
-    },
-    {
-        name: 'Gods Unchained',
-        imageUrl: 'images/clients/godsUnchained.svg',
-    },
-    {
-        name: 'Instex',
-        imageUrl: 'images/clients/instex.svg',
-    },
-    {
-        name: 'Lake Trade',
-        imageUrl: 'images/clients/laketrade.svg',
-    },
-];
+import { Button } from 'ts/components/button';
 
 export const SectionLandingClients = () => (
     <Section isTextCentered={true}>
-        <Heading size="small">Join the growing number of projects developing on 0x</Heading>
+        <Heading size="medium">Best in class performance</Heading>
+        <Description style={{ maxWidth: 660, textAlign: 'center', margin: '0 auto 60px auto' }}>
+            Better prices, faster response times, and lower revet rates than any other aggregator on the market.{' '}
+            <Button
+                isInline={true}
+                isWithArrow={true}
+                isAccentColor={true}
+                shouldUseAnchorTag={true}
+                to={'https://matcha.xyz'}
+                target={'_blank'}
+                href={'https://matcha.xyz'}
+            >
+                See the data
+            </Button>
+        </Description>
+        <StatsGrid>
+            <StatWrapper>
+                <StatHeader>
+                    99<StatHeaderUnit>%</StatHeaderUnit>
+                </StatHeader>
+                <StatCaption>Uptime</StatCaption>
+                <StatCaptionDescription>20% better than competitors</StatCaptionDescription>
+            </StatWrapper>
 
-        <WrapGrid isWrapped={true}>
-            {_.map(projects, (item: ProjectLogo, index) => (
-                <StyledProject key={`client-${index}`} isOnMobile={item.persistOnMobile}>
-                    <img src={item.imageUrl} alt={item.name} />
-                </StyledProject>
-            ))}
-        </WrapGrid>
+            <StatWrapper>
+                <StatHeader>
+                    1<StatHeaderUnit>%</StatHeaderUnit>
+                </StatHeader>
+                <StatCaption>Revert Rate</StatCaption>
+                <StatCaptionDescription>5% better than competitors</StatCaptionDescription>
+            </StatWrapper>
+
+            <StatWrapper>
+                <StatHeader>
+                    2<StatHeaderUnit>ms</StatHeaderUnit>
+                </StatHeader>
+                <StatCaption>Response Time</StatCaption>
+            </StatWrapper>
+        </StatsGrid>
     </Section>
 );
 
-const StyledProject = styled.div<StyledProjectInterface>`
-    flex-shrink: 0;
+const Description = styled.p`
+    font-size: 22px;
+    line-height: 31px;
+    font-weight: 300;
+    padding: 0;
+    margin-bottom: 50px;
+    color: ${props => props.theme.introTextColor};
+`;
 
-    img {
-        object-fit: contain;
-        height: 100%;
-    }
+const StatWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+    /* width: 180px; */
+`;
 
-    @media (min-width: 768px) {
-        width: auto;
-        height: 50px;
-        margin: 30px;
+const StatsGrid = styled.div`
+    display: flex;
+    justify-content: space-between;
+    @media (max-width: 900px) {
+        flex-direction: column;
+        align-items: center;
+        & ${StatWrapper} {
+            margin-bottom: 16px;
+        }
     }
+`;
 
-    @media (max-width: 768px) {
-        width: auto;
-        height: 42px;
-        margin: 15px;
-        display: ${props => !props.isOnMobile && 'none'};
-    }
+const StatHeader = styled.div`
+    font-size: 114px;
+    line-height: 114px;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+`;
+
+const StatHeaderUnit = styled.span`
+    font-size: 60px;
+`;
+
+const StatCaption = styled.div`
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 23px;
+    margin-bottom: 6px;
+`;
+
+const StatCaptionDescription = styled.div`
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 19px;
+    color: #8f8f8f;
 `;
