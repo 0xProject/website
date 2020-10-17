@@ -35,7 +35,7 @@ $ RPC_URL=ETHEREUM_RPC_URL npm run start-fork
 
 ## The swap contract
 
-The contract that will be directly filling 0x-API quotes is [`SimpleTokenSwap`](https://github.com/0xProject/0x-api-starter-guide-code/blob/contracts/SimpleTokenSwap.sol). It implements a `fillQuote()` function that accepts and executes a 0x-API quote to convert some amount of its ERC20 tokens into another. For simplicity, this contract is not designed for use with plain ETH. However, WETH and ETH pairs are identical markets in 0x-API, so this will not affect pricing.
+The contract that will be directly filling 0x-API quotes is [`SimpleTokenSwap`](https://github.com/0xProject/0x-api-starter-guide-code/blob/master/contracts/SimpleTokenSwap.sol). It implements a `fillQuote()` function that accepts and executes a 0x-API quote to convert some amount of its ERC20 tokens into another. For simplicity, this contract is not designed for use with plain ETH. However, WETH and ETH pairs are identical markets in 0x-API, so this will not affect pricing.
 
 ### The fill function
 The swap is executed when the owner calls the `fillQuote()` function. Prior to calling this function, the `SimpleTokenSwap` contract should be funded with at least `sellAmount` (from the API response) of `sellToken` to complete the swap.
@@ -113,7 +113,7 @@ npm run deploy-fork
 
 ## Using the contract
 
-The complete interaction with the contract is in the [`swap-contract.js`](https://github.com/0xProject/0x-api-starter-guide-code/blob/src/swap-contract.js) script. This script does the following:
+The complete interaction with the contract is in the [`swap-contract.js`](https://github.com/0xProject/0x-api-starter-guide-code/blob/master/src/swap-contract.js) script. This script does the following:
 
 - Fund the deployed `SimpleTokenSwap` contract with WETH.
 - Fetch a swap quote from 0x-API to convert said WETH to DAI.
