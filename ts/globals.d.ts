@@ -58,3 +58,8 @@ interface System {
     import<T>(module: string): Promise<T>;
 }
 declare var System: System;
+
+interface Window {
+    ethereum?: any;
+    web3?: any;
+}

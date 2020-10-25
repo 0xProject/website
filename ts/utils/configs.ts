@@ -11,12 +11,12 @@ const INFURA_API_KEY = environments.isDevelopment()
 export const configs = {
     AMOUNT_DISPLAY_PRECSION: 5,
     BACKEND_BASE_PROD_URL: 'https://website.api.0x.org',
-    BACKEND_BASE_STAGING_URL: 'https://staging-website-api.0x.org',
-    BACKEND_BASE_DEV_URL: 'https://localhost:3001',
+    BACKEND_BASE_STAGING_URL: 'https://website.api.0x.org',
+    BACKEND_BASE_DEV_URL: 'https://website.api.0x.org',
     API_BASE_PROD_URL: 'https://api.0x.org',
     API_BASE_STAGING_URL: 'https://staging.api.0x.org',
     API_BASE_KOVAN_URL: 'https://kovan.api.0x.org',
-    API_BASE_DEV_URL: 'http://localhost:3000',
+    API_BASE_DEV_URL: 'https://staging.api.0x.org',
     GOOGLE_SHEETS_LEAD_FORMS: {
         CREDITS: 'https://script.google.com/macros/s/AKfycbyN1lJaSGWg2OIzqT8bou4GiqwCmOVjV2v_fiPO/exec',
     } as GoogleSheetLeadUrls,
@@ -52,7 +52,7 @@ export const configs = {
     ] as OutdatedWrappedEtherByNetworkId[],
     // The order matters. We first try first node and only then fall back to others.
     PUBLIC_NODE_URLS_BY_NETWORK_ID: {
-        [1]: ['https://eth-mainnet.alchemyapi.io/v2/8JwI7bMSK8ojsPDbyeHt6NK8w23afo1q'], // [`https://mainnet.infura.io/v3/${INFURA_API_KEY}`, 'https://mainnet.0x.org'],
+        [1]: [`https://mainnet.infura.io/v3/${INFURA_API_KEY}`], // ['https://eth-mainnet.alchemyapi.io/v2/8JwI7bMSK8ojsPDbyeHt6NK8w23afo1q'], // [`https://mainnet.infura.io/v3/${INFURA_API_KEY}`, 'https://mainnet.0x.org'],
         [42]: [`https://kovan.infura.io/v3/${INFURA_API_KEY}`, 'https://kovan.0x.org'],
         [3]: [`https://ropsten.infura.io/v3/${INFURA_API_KEY}`],
         [4]: [`https://rinkeby.infura.io/v3/${INFURA_API_KEY}`],

@@ -1,5 +1,5 @@
 import { BigNumber } from '@0x/utils';
-import { AccountNotReady, AccountState, Networks, Providers, WebsitePaths } from 'ts/types';
+import { AccountNotReady, AccountState, Networks, Providers, Wallet, WebsitePaths } from 'ts/types';
 
 import { SupportedDocJson } from '../types';
 
@@ -78,9 +78,28 @@ export const constants = {
         [Providers.CoinbaseWallet]: 'coinbase_wallet_icon',
         [Providers.WalletLink]: 'coinbase_wallet_icon',
         [Providers.TrustWallet]: 'trust_wallet_icon',
+        [Providers.WalletConnect]: 'wallet_connect_icon',
         [Providers.ImToken]: 'im_token_wallet_icon',
         [Providers.Bitpie]: 'bitpie_wallet_logo',
     } as { [key: string]: string | undefined },
+    SUPPORTED_WALLETS: {
+        Injected: {
+            name: 'Detected',
+            type: 'METAMASK',
+        },
+        Metamask: {
+            name: 'Metamask',
+            type: 'METAMASK',
+        },
+        WalletConnect: {
+            name: 'Wallet Connect',
+            type: 'WALLET_CONNECT',
+        },
+        WalletLink: {
+            name: 'Coinbase Wallet',
+            type: 'WALLET_LINK',
+        },
+    } as { [key: string]: Wallet | undefined },
     NO_ACCOUNT: {
         state: AccountState.None,
     } as AccountNotReady,

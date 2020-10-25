@@ -59,14 +59,30 @@ export const providerStateFactory = {
         }
     },
 
-    getInitialProviderStateFromWalletLink: (networkId: Network): ProviderState => {
-        const provider = providerFactory.getWalletLinkProvider(networkId);
+    getInitialProviderStateFromWalletLink: (walletLinkProvider: any): ProviderState => {
+        const provider = providerFactory.getWalletLinkProvider(walletLinkProvider);
         const name = constants.PROVIDER_TYPE_TO_NAME[Providers.WalletLink];
 
         const providerState: ProviderState = {
             name,
             displayName: name,
             providerType: Providers.WalletLink,
+            provider,
+            web3Wrapper: new Web3Wrapper(provider),
+            account: constants.LOADING_ACCOUNT,
+        };
+
+        return providerState;
+    },
+
+    getInitialProviderStateFromWalletConnect: (walletConnectProvider: any): ProviderState => {
+        const provider = providerFactory.getWalletConnectProvider(walletConnectProvider);
+        const name = constants.PROVIDER_TYPE_TO_NAME[Providers.WalletConnect];
+
+        const providerState: ProviderState = {
+            name,
+            displayName: name,
+            providerType: Providers.WalletConnect,
             provider,
             web3Wrapper: new Web3Wrapper(provider),
             account: constants.LOADING_ACCOUNT,

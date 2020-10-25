@@ -56,6 +56,7 @@ const navItems: NavItems[] = [
 
 export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav }) => {
     const providerState = useSelector((state: State) => state.providerState);
+    const { logoutWallet } = useWallet();
 
     const dispatch = useDispatch();
     const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
@@ -64,7 +65,6 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
         setDispatcher(new Dispatcher(dispatch));
     }, [dispatch]);
 
-    const { logoutWallet } = useWallet();
     const onUnpin = useCallback(() => {
         if (isNavToggled) {
             toggleMobileNav();
