@@ -16,6 +16,7 @@ import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
 import { AccountState, WebsitePaths } from 'ts/types';
 
+import { useWeb3React } from '@web3-react/core';
 import { useWallet } from 'ts/hooks/use_wallet';
 import { colors } from 'ts/style/colors';
 
@@ -55,6 +56,7 @@ const navItems: NavItems[] = [
 ];
 
 export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav }) => {
+    const { connector, deactivate } = useWeb3React();
     const providerState = useSelector((state: State) => state.providerState);
     const { logoutWallet } = useWallet();
 
@@ -78,7 +80,7 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
 
     const onLogoutWallet = useCallback(() => {
         onUnpin();
-        logoutWallet();
+        logoutWallet(connector, deactivate);
     }, [logoutWallet, onUnpin]);
 
     const subMenu = (
