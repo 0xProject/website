@@ -117,6 +117,15 @@ export const useWallet = () => {
 
         dispatcher.updateProviderState(providerState);
         dispatcher.setAccountStateLoading();
+        const payload = window.localStorage.getItem('WALLETCONNECTOR');
+        if (JSON.parse(payload).name === 'WALLET_CONNECT') {
+            window.localStorage.removeItem('walletconnect');
+        } else if (JSON.parse(payload).name === 'WALLET_LINK') {
+            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:linked');
+            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:id');
+            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:secret');
+            window.localStorage.removeItem('-walletlink:https://www.walletlink.org:Addresses');
+        }
         window.localStorage.removeItem('WALLETCONNECTOR');
     }, [cleanupCurrentProvider, currentNetworkId, dispatcher]);
 
