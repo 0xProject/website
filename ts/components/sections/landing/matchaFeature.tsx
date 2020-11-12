@@ -1,8 +1,8 @@
 import * as React from 'react';
+import styled from 'styled-components';
 import { useTransition, animated } from 'react-spring';
 import { Section } from 'ts/components/newLayout';
 import { Heading, Paragraph } from 'ts/components/text';
-import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 
 import { Icon } from 'ts/components/icon';
@@ -14,11 +14,6 @@ const Wrap = styled.div`
     padding: 45px 0;
     display: flex;
     flex-direction: column;
-
-    /* justify-content: center;
-    align-items: center; */
-    /* text-align: center; */
-    /* transition: background-color 0.25s; */
     background-color: ${props => props.theme.darkBgColor};
 
     @media (max-width: 900px) {

@@ -38,17 +38,6 @@ interface DropdownWrapInterface {
 }
 
 const navItems: NavItemProps[] = [
-    // {
-    //     id: 'why',
-    //     text: 'Why 0x',
-    //     url: WebsitePaths.Why,
-    // },
-    // {
-    //     id: 'products',
-    //     text: 'Products',
-    //     dropdownComponent: DropdownProducts,
-    //     dropdownWidth: 300,
-    // },
     {
         id: 'docs',
         text: 'Developers',
@@ -59,17 +48,17 @@ const navItems: NavItemProps[] = [
         text: 'ZRX',
         url: WebsitePaths.Staking,
     },
+        {
+        id: 'resources',
+        text: 'Resources',
+        dropdownComponent: DropdownResources,
+        dropdownWidth: 270,
+    },
     {
         id: 'blog',
         text: 'Blog',
         url: 'https://blog.0xproject.com/',
     },
-    // {
-    //     id: 'resources',
-    //     text: 'Resources',
-    //     dropdownComponent: DropdownResources,
-    //     dropdownWidth: 270,
-    // },
     {
         id: 'about',
         text: 'About',
