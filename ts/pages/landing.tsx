@@ -10,8 +10,7 @@ import { SiteWrap } from 'ts/components/siteWrap';
 
 import { ModalContact } from 'ts/components/modals/modal_contact';
 import { documentConstants } from 'ts/utils/document_meta_constants';
-import { SectionMatchaFeature } from 'ts/components/sections/landing/matchaFeature';
-import { SectionLandingLogos } from 'ts/components/sections/landing/logos';
+import { SectionFeatures } from 'ts/components/sections/landing/matchaFeature';
 
 interface Props {
     location: Location;
@@ -39,8 +38,7 @@ export class NextLanding extends React.Component<Props> {
                 <SectionLandingAbout />
                 <SectionLandingClients />
                 <SectionApiQuote />
-                <SectionMatchaFeature />
-                <SectionLandingLogos/>
+                <SectionFeatures />
                 <SectionLandingCta onContactClick={this._onOpenContactModal} />
                 <ModalContact isOpen={this.state.isContactModalOpen} onDismiss={this._onDismissContactModal} />
             </SiteWrap>

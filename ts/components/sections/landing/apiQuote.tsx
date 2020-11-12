@@ -62,7 +62,7 @@ export const SectionApiQuote = () => {
         <Section bgColor="dark" isFlex={true} maxWidth="1170px" marginBottom={'40px'}>
             <FlexColumnContainer>
                 <PadddedFlexColumnContainer>
-                    <SmallerTitle>Swap tokens with a few lines of code</SmallerTitle>
+                    <SmallerTitle style={{ maxWidth: 420 }}>Swap tokens with a few lines of code</SmallerTitle>
                     <Description style={{ marginBottom: 45, maxWidth: 460 }}>
                         Automatically create orders that can be passed directly through your smart contracts to be
                         settled on-chain.
@@ -223,8 +223,8 @@ const FlexColumnWrapped = styled(FlexColumnContainer)`
 
 const SmallerTitle = styled.h3`
     font-weight: 300;
-    font-size: 50px;
-    line-height: 58px;
+    font-size: 34px;
+    line-height: 42px;
     margin-bottom: 30px;
 `;
 

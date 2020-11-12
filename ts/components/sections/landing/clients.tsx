@@ -7,7 +7,7 @@ import { Heading } from 'ts/components/text';
 import { Button } from 'ts/components/button';
 
 export const SectionLandingClients = () => (
-    <Section isTextCentered={true}>
+    <Section maxWidth={'940px'} isTextCentered={true}>
         <Heading size="medium">Best in class performance</Heading>
         <Description style={{ maxWidth: 660, textAlign: 'center', margin: '0 auto 60px auto' }}>
             Better prices, faster response times, and lower revet rates than any other aggregator on the market.{' '}
@@ -26,7 +26,7 @@ export const SectionLandingClients = () => (
         <StatsGrid>
             <StatWrapper>
                 <StatHeader>
-                    99<StatHeaderUnit>%</StatHeaderUnit>
+                    99.9<StatHeaderUnit>%</StatHeaderUnit>
                 </StatHeader>
                 <StatCaption>Uptime</StatCaption>
                 <StatCaptionDescription>20% better than competitors</StatCaptionDescription>
@@ -34,17 +34,18 @@ export const SectionLandingClients = () => (
 
             <StatWrapper>
                 <StatHeader>
-                    1<StatHeaderUnit>%</StatHeaderUnit>
+                    2<StatHeaderUnit>%</StatHeaderUnit>
                 </StatHeader>
                 <StatCaption>Revert Rate</StatCaption>
-                <StatCaptionDescription>5% better than competitors</StatCaptionDescription>
+                <StatCaptionDescription>5% lower than competitors</StatCaptionDescription>
             </StatWrapper>
 
             <StatWrapper>
                 <StatHeader>
-                    2<StatHeaderUnit>ms</StatHeaderUnit>
+                    1.5<StatHeaderUnit>ms</StatHeaderUnit>
                 </StatHeader>
                 <StatCaption>Response Time</StatCaption>
+                <StatCaptionDescription>2.7% faster than 1inch</StatCaptionDescription>
             </StatWrapper>
         </StatsGrid>
     </Section>
@@ -79,8 +80,8 @@ const StatsGrid = styled.div`
 `;
 
 const StatHeader = styled.div`
-    font-size: 114px;
-    line-height: 114px;
+    font-size: 100px;
+    line-height: 100px;
     font-feature-settings: 'tnum' on, 'lnum' on;
 `;
 

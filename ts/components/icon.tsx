@@ -9,6 +9,8 @@ interface IconProps extends PaddingInterface {
     name?: string;
     component?: React.ReactNode;
     size?: 'small' | 'medium' | 'large' | 'hero' | 'natural' | number;
+    width?: string;
+    height?: string;
     style?: any;
 }
 
@@ -62,8 +64,8 @@ const _getSize = (size: string | number = 'small'): string | undefined => {
 
 const StyledIcon = styled.figure<IconProps>`
     color: ${props => props.color && props.color};
-    width: ${props => _getSize(props.size)};
-    height: ${props => _getSize(props.size)};
+    width: ${props => props.width ?? _getSize(props.size)};
+    height: ${props => props.height ?? _getSize(props.size)};
     margin: ${props => getCSSPadding(props.margin)};
     display: inline-block;
     flex-shrink: 0;

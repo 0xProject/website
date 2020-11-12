@@ -17,9 +17,9 @@ interface FigureProps {
 }
 
 const Wrap = styled.div`
-    width: calc(50% - 3px);
+    width: calc(50% - 4px);
     height: 450px;
-    padding: 65px 45px 70px 45px;
+    padding: 65px 45px 35px 45px;
     display: flex;
     flex-direction: column;
     background-color: ${props => props.theme.darkBgColor};
@@ -27,17 +27,18 @@ const Wrap = styled.div`
     @media (max-width: 900px) {
         width: 100%;
         margin-top: 30px;
+        height: 100%;
     }
 `;
 
 export const SectionLandingAbout = () => (
     <Section isPadded={false} isFlex={true} maxWidth="auto" wrapWidth="100%" flexBreakpoint="900px">
-        <Wrap style={{ justifyContent: 'space-between' }}>
+        <Wrap >
             <div>
-                <Heading isCentered={true} asElement={'h3'} size={34}>
+                <Heading marginBottom={'8px'} isCentered={true} asElement={'h3'} size={34}>
                     All the popular DEX networks
                 </Heading>
-                <Paragraph color={'#8F8F8F'} isCentered={true}>
+                <Paragraph color={'#8F8F8F'} isCentered={true} marginBottom={'21px'}>
                     Don’t ever worry about another integration, we have it covered.
                 </Paragraph>
             </div>
@@ -53,16 +54,16 @@ export const SectionLandingAbout = () => (
 
         <MiddleContainerToAnchorPlus>
             <MiddleContainerCircle>
-                <Icon name={'plus-sign'} size={'natural'} />
+                <Icon width={'28px'} name={'plus-sign'} size={'natural'} />
             </MiddleContainerCircle>
         </MiddleContainerToAnchorPlus>
 
-        <Wrap style={{ justifyContent: 'space-between' }}>
+        <Wrap>
             <div>
-                <Heading isCentered={true} asElement={'h3'} size={34} textAlign={'center'}>
+                <Heading marginBottom={'8px'} isCentered={true} asElement={'h3'} size={34} textAlign={'center'}>
                     Plus, exclusive 0x liquidity
                 </Heading>
-                <Paragraph color={'#8F8F8F'} isCentered={true} isMuted={1} marginBottom={'0'}>
+                <Paragraph color={'#8F8F8F'} isCentered={true} isMuted={1} marginBottom={'36px'}>
                     Gain access to liquidity you can’t get anywhere else.
                 </Paragraph>
             </div>
@@ -96,7 +97,7 @@ export const SectionLandingAbout = () => (
                 </CheckboxOptionsGridContainer>
             </div>
 
-            <div style={{ margin: '0 auto' }}>
+            {/* <div style={{ margin: '0 auto' }}>
                 <Button
                     isInline={true}
                     isWithArrow={true}
@@ -108,7 +109,7 @@ export const SectionLandingAbout = () => (
                 >
                     Learn more about 0x Liquidity
                 </Button>
-            </div>
+            </div> */}
         </Wrap>
     </Section>
 );
@@ -121,7 +122,7 @@ const MiddleContainerCircle = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    transform: translateX(-50%);
+    transform: translateX(-30px);
     @media (max-width: 900px) {
         margin: 0 auto;
         transform: none;
@@ -130,10 +131,11 @@ const MiddleContainerCircle = styled.div`
 
 const MiddleContainerToAnchorPlus = styled.div`
     height: 100%;
-    width: 1px;
+    width: 8px;
     position: relative;
     align-self: center;
     @media (max-width: 900px) {
+        transform: none;
         width: 100%;
         margin-top: 30px;
     }
@@ -149,6 +151,10 @@ const CheckboxOptionsGridContainer = styled.div`
     max-width: 550px;
     grid-row-gap: 20px;
     margin: 0 auto;
+    @media (max-width: 900px) {
+        display: flex;
+        flex-direction: column;
+    }
 `;
 
 const CheckmarkOptionContainer = styled.div`
@@ -206,8 +212,8 @@ const projects: ProjectLogo[] = [
         persistOnMobile: true,
     },
     {
-        name: 'Kyber',
-        imageUrl: 'images/clients2/kyber.svg',
+        name: 'more',
+        imageUrl: 'images/clients2/more.svg',
     },
 ];
 
