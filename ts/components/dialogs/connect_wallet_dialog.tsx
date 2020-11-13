@@ -6,16 +6,46 @@ import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
-import { Heading, Paragraph } from 'ts/components/text';
+import { Heading } from 'ts/components/text';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { zIndex } from 'ts/style/z_index';
-import { AccountState, Providers } from 'ts/types';
+import { WalletProvider } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { utils } from 'ts/utils/utils';
 
+import { logUtils } from '@0x/utils';
+import { AbstractConnector } from '@web3-react/abstract-connector';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
+import {
+    InjectedConnector,
+    NoEthereumProviderError,
+    UserRejectedRequestError as UserRejectedRequestErrorInjected,
+} from '@web3-react/injected-connector';
+import {
+    UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
+    WalletConnectConnector,
+} from '@web3-react/walletconnect-connector';
+import { WalletLinkConnector } from '@web3-react/walletlink-connector';
+import { injected, resetWalletConnect, resetWalletLink, walletconnect, walletlink } from 'ts/connectors';
 import { useWallet } from 'ts/hooks/use_wallet';
+import { useEagerConnect, useInactiveListener } from 'ts/hooks/use_web3';
+
+function getErrorMessage(error: Error): string {
+    if (error instanceof NoEthereumProviderError) {
+        return 'No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.';
+    } else if (error instanceof UnsupportedChainIdError) {
+        return "You're connected to an unsupported network.";
+    } else if (
+        error instanceof UserRejectedRequestErrorInjected ||
+        error instanceof UserRejectedRequestErrorWalletConnect
+    ) {
+        return 'Please authorize this website to access your Ethereum account.';
+    } else {
+        return 'An unknown error occurred. Check the console for more details.';
+    }
+}
 
 const StyledDialogOverlay = styled(DialogOverlay)`
     &[data-reach-dialog-overlay] {
@@ -49,7 +79,9 @@ const WalletProviderButton = styled(Button).attrs({
     borderColor: '#d9d9d9',
     borderRadius: '0px',
     isTransparent: true,
+    isConnected: false,
 })`
+    border: ${props => props.isConnected && `1px solid #00AE99`};
     height: 70px;
     width: 100%;
     display: flex;
@@ -76,16 +108,6 @@ const ButtonClose = styled(Button)`
 
     path {
         fill: ${colors.black};
-    }
-`;
-
-const ButtonBack = styled(Button)`
-    width: 22px;
-    height: 17px;
-    border: none;
-
-    path {
-        fill: ${colors.backgroundDark};
     }
 `;
 
@@ -119,7 +141,7 @@ const Divider = styled.div`
 
 const WalletCategoryStyling = styled.div`
     & + & {
-        margin-top: 30px;
+        // margin-top: 30px;
     }
 
     /* Provider buttons wrapper */
@@ -133,260 +155,270 @@ const WalletCategoryStyling = styled.div`
     }
 `;
 
-interface WalletCategoryProps {
-    title: string;
-    providers: ProviderInfo[];
+interface WalletOptionProps {
+    name?: string;
+    onClick?: () => void;
+    connector?: any;
+    isConnected?: boolean;
+    href?: string;
+    type?: string;
 }
 
-const IconIfExists = ({ provider }: { provider: ProviderInfo }) => {
-    if (provider.icon) {
-        return (
-            <>
-                {provider.icon}
-                <Divider />
-            </>
-        );
-    }
+const WalletOption = ({ name, onClick, isConnected, type }: WalletOptionProps) => {
+    const iconName = utils.getProviderIcon(type);
 
-    const iconName = utils.getProviderTypeIcon(provider.providerType);
-
-    if (iconName) {
-        return (
-            <>
-                <Icon name={iconName} size={30} />
-                <Divider />
-            </>
-        );
-    }
-
-    return null;
-};
-
-const WalletCategory = ({ title, providers }: WalletCategoryProps) => {
     return (
         <WalletCategoryStyling>
-            <Heading asElement="h5" color={colors.textDarkSecondary} size={20} marginBottom="15px">
-                {title}
-            </Heading>
-            <div>
-                {providers.map(provider => (
-                    <WalletProviderButton onClick={provider.onClick} key={provider.name}>
-                        <IconIfExists provider={provider} />
-                        <div style={{ textAlign: 'left' }}>
-                            <Heading asElement="h5" size={20} marginBottom="0">
-                                {provider.name}
-                            </Heading>
-                            {provider.description && (
-                                <Paragraph size="small" color="#898990" marginBottom="0">
-                                    {provider.description}
-                                </Paragraph>
-                            )}
-                        </div>
-                    </WalletProviderButton>
-                ))}
-            </div>
+            <WalletProviderButton isConnected={isConnected} onClick={onClick}>
+                {iconName && (
+                    <>
+                        <Icon name={iconName} size={30} />
+                        <Divider />{' '}
+                    </>
+                )}
+                <div style={{ textAlign: 'left' }}>
+                    <Heading asElement="h5" size={20} marginBottom="0">
+                        {name}
+                    </Heading>
+                </div>
+            </WalletProviderButton>
         </WalletCategoryStyling>
     );
 };
 
-const IconPlus = styled.div`
-    position: relative;
-    width: 15px;
-    height: 15px;
+const StyledProviderOptions = styled.div`
+    display: grid;
+    grid-gap: 1rem;
+    max-width: 30rem;
     margin: auto;
-
-    &:before,
-    &:after {
-        content: '';
-        position: absolute;
-        background-color: ${colors.black};
+    @media (max-width: 768px) {
+        grid-template-rows: 1fr;
     }
-
-    &:before {
-        top: 0;
-        left: 7px;
-        width: 1px;
-        height: 100%;
-    }
-
-    &:after {
-        top: 7px;
-        left: 0;
-        width: 100%;
-        height: 1px;
+    @media (min-width: 768px) {
+        grid-template-columns: 1fr 1fr;
     }
 `;
 
-const Arrow = () => (
-    <svg
-        style={{
-            transform: 'rotate(180deg)',
-        }}
-        color={colors.backgroundDark}
-        width="22"
-        height="17"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path d="M13.066 0l-1.068 1.147 6.232 6.557H0v1.592h18.23l-6.232 6.557L13.066 17l8.08-8.5-8.08-8.5z" />
-    </svg>
-);
-
-const DashboardUrlWrapper = styled.div`
-    height: 70px;
-    background: ${colors.backgroundLight};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    user-select: all;
-`;
-
-interface OtherWalletScreenProps {
-    onDismiss: () => void;
-    onGoBack: () => void;
-}
-
-const OtherWalletScreen = ({ onDismiss, onGoBack }: OtherWalletScreenProps) => (
-    <>
-        <HeadingRow>
-            <ButtonBack isTransparent={true} isNoBorder={true} padding="0px" onClick={onGoBack}>
-                <Arrow />
-            </ButtonBack>
-            <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onDismiss}>
-                <Icon name="close-modal" />
-            </ButtonClose>
-        </HeadingRow>
-        <Heading asElement="h5" color={colors.textDarkSecondary} size={20} marginBottom="15px">
-            Other mobile wallets
-        </Heading>
-        <Paragraph size={20} color={colors.textDarkPrimary}>
-            Please open the link in your mobile wallet.
-        </Paragraph>
-        <DashboardUrlWrapper>
-            <Paragraph size={20} color={colors.textDarkPrimary} marginBottom="0">
-                https://0x.org/zrx
-            </Paragraph>
-        </DashboardUrlWrapper>
-    </>
-);
-
-interface ProviderInfo {
-    name: string;
-    providerType?: Providers;
-    description?: string;
-    icon?: React.ReactNode;
-    onClick?: () => void;
-}
-
-interface WalletProviderCategory {
-    title: string;
-    providers: ProviderInfo[];
+interface Option {
+    type: string;
 }
 
 export const ConnectWalletDialog = () => {
     const isOpen = useSelector((state: State) => state.isConnectWalletDialogOpen);
-    const providerState = useSelector((state: State) => state.providerState);
+    const isMetamask = window.ethereum && window.ethereum.isMetamask ? true : false;
+    const { connector, activate, error } = useWeb3React();
+    const [activatingConnector, setActivatingConnector] = useState<any>();
+
+    useEffect(() => {
+        if (activatingConnector && activatingConnector === connector) {
+            setActivatingConnector(undefined);
+        }
+    }, [activatingConnector, connector]);
+
+    const isTriedEager = useEagerConnect();
+    useInactiveListener(!isTriedEager || !!activatingConnector);
 
     const dispatch = useDispatch();
     const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
+
     useEffect(() => {
         setDispatcher(new Dispatcher(dispatch));
     }, [dispatch]);
 
-    const [shouldShowOtherWallets, setShouldShowOtherWallets] = useState<boolean>(false);
-    const [walletProviders, setWalletProviders] = useState<WalletProviderCategory[]>([]);
-
-    const isMobile = utils.isMobileOperatingSystem();
-
-    const onGoBack = useCallback(() => setShouldShowOtherWallets(false), []);
     const onCloseDialog = useCallback(() => dispatcher.updateIsConnectWalletDialogOpen(false), [dispatcher]);
 
     const { connectToWallet } = useWallet();
 
-    useEffect(() => {
-        const _walletProviders: WalletProviderCategory[] = [];
+    const handleAccount = async (currentConnector: AbstractConnector, option: Option) => {
+        let address: string = '';
 
-        if (providerState.account.state !== AccountState.None && providerState.providerType !== Providers.WalletLink) {
-            _walletProviders.push({
-                title: 'Detected wallet',
-                providers: [
-                    {
-                        name: providerState.displayName,
-                        providerType: providerState.providerType,
-                        onClick: () => {
-                            connectToWallet();
-                            onCloseDialog();
-                        },
-                    },
-                ],
-            });
+        try {
+            await activate(currentConnector, undefined, true);
+            setActivatingConnector(currentConnector);
+            onCloseDialog();
+            if (currentConnector) {
+                const provider = await currentConnector.getProvider();
+                address =
+                    option.type === 'WALLET_CONNECT'
+                        ? provider.accounts[0]
+                        : provider._address
+                        ? provider._address[0]
+                        : provider.selectedAddress;
+
+                const data: WalletProvider = {
+                    name: option.type,
+                    address,
+                };
+                if (provider.isMetaMask) {
+                    data.icon = 'METAMASK';
+                } else if (provider.isWalletLink) {
+                    data.icon = 'WALLET_LINK';
+                } else if (provider.isWalletConnect) {
+                    data.icon = 'WALLET_CONNECT';
+                }
+                if (typeof window !== undefined) {
+                    window.localStorage.setItem('WALLETCONNECTOR', JSON.stringify(data));
+                }
+                connectToWallet(provider);
+            }
+        } catch (error) {
+            logUtils.warn(error);
+            setActivatingConnector(undefined);
+            if (currentConnector === walletconnect) {
+                resetWalletConnect();
+            } else if (currentConnector === walletlink) {
+                resetWalletLink();
+            }
+            dispatcher.updateIsConnectWalletDialogOpen(true);
         }
-
-        const mobileProviders: ProviderInfo[] = [
-            {
-                // NOTE: We show WalletLink as Coinbase Wallet for name recognition
-                name: constants.PROVIDER_TYPE_TO_NAME[Providers.WalletLink],
-                providerType: Providers.WalletLink,
-                onClick: () => {
-                    connectToWallet(Providers.WalletLink);
-                    onCloseDialog();
-                },
-            },
-        ];
-
-        if (isMobile) {
-            mobileProviders.push({
-                name: 'Other mobile wallets',
-                icon: (
-                    <div style={{ position: 'relative', height: '30px', width: '30px', display: 'flex' }}>
-                        <IconPlus />
-                    </div>
-                ),
-                onClick: () => setShouldShowOtherWallets(true),
-            });
-        }
-
-        _walletProviders.push({
-            title: 'Mobile wallet',
-            providers: mobileProviders,
-        });
-
-        setWalletProviders(_walletProviders);
-    }, [
-        connectToWallet,
-        isMobile,
-        onCloseDialog,
-        providerState.account.state,
-        providerState.displayName,
-        providerState.provider,
-        providerState.providerType,
-    ]);
+    };
 
     return (
         <StyledDialogOverlay isOpen={isOpen}>
-            <StyledDialogContent>
-                {shouldShowOtherWallets ? (
-                    <OtherWalletScreen onDismiss={onCloseDialog} onGoBack={onGoBack} />
-                ) : (
-                    <>
-                        <HeadingRow>
-                            <Heading asElement="h3" marginBottom="0">
-                                Connect a wallet
-                            </Heading>
-                            <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onCloseDialog}>
-                                <Icon name="close-modal" />
-                            </ButtonClose>
-                        </HeadingRow>
-                        {walletProviders.length ? (
-                            walletProviders.map(({ title, providers }, i) => (
-                                <WalletCategory key={`wallet-category-${i}`} title={title} providers={providers} />
-                            ))
-                        ) : (
-                            <Heading asElement="h5" size={20} marginBottom="0">
-                                No wallet found
-                            </Heading>
-                        )}
-                    </>
-                )}
+            <StyledDialogContent aria-label="Connect a wallet">
+                <HeadingRow>
+                    <Heading asElement="h3" marginBottom="0">
+                        Connect a wallet
+                    </Heading>
+                    <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onCloseDialog}>
+                        <Icon name="close-modal" />
+                    </ButtonClose>
+                </HeadingRow>
+                <StyledProviderOptions>
+                    {constants.SUPPORTED_WALLETS ? (
+                        Object.keys(constants.SUPPORTED_WALLETS).map(key => {
+                            const option = constants.SUPPORTED_WALLETS[key];
+                            let currentConnector: WalletConnectConnector | WalletLinkConnector | InjectedConnector;
+                            if (option.type === 'WALLET_CONNECT') {
+                                currentConnector = walletconnect;
+                            } else if (option.type === 'WALLET_LINK') {
+                                currentConnector = walletlink;
+                            } else {
+                                currentConnector = injected;
+                            }
+                            const isConnected = currentConnector === connector;
+
+                            if (currentConnector === injected) {
+                                if (!(window.web3 || window.ethereum)) {
+                                    if (option.name === 'Metamask') {
+                                        return null;
+                                    } else {
+                                        return null;
+                                    }
+                                } else if (option.name === 'Metamask' && !isMetamask) {
+                                    return null;
+                                } else if (option.name === 'Detected' && isMetamask) {
+                                    return null;
+                                } else if (option.name === 'Detected') {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Metamask"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="METAMASK"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (option.name === 'Detected' && utils.checkWindowProviderProperty('imToken')) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="imToken"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="imToken"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (option.name === 'Detected' && utils.checkWindowProviderProperty('isTrust')) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Trust Wallet"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="isTrust"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (
+                                    option.name === 'Detected' &&
+                                    utils.checkWindowProviderProperty('isStatus')
+                                ) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Status Wallet"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="isStatus"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (option.name === 'Detected' && utils.checkWindowProviderProperty('SOFA')) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Coinbase Wallet"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="SOFA"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (option.name === 'Detected' && utils.checkWindowProviderProperty('CIPHER')) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Cipher Wallet"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="CIPHER"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (option.name === 'Detected' && utils.checkWindowProviderProperty('Opera')) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Opera Wallet"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="Opera"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                } else if (option.name === 'Detected' && utils.checkWindowProviderProperty('Bitpie')) {
+                                    return (
+                                        <WalletOption
+                                            key={`wallet-button-${key}`}
+                                            name="Bitpie"
+                                            connector={currentConnector}
+                                            isConnected={isConnected}
+                                            type="BITPIE"
+                                            onClick={async () => handleAccount(currentConnector, option)}
+                                        />
+                                    );
+                                }
+                            }
+                            return (
+                                <WalletOption
+                                    key={`wallet-button-${key}`}
+                                    name={option.name}
+                                    connector={currentConnector}
+                                    isConnected={isConnected}
+                                    type={option.type}
+                                    onClick={async () => handleAccount(currentConnector, option)}
+                                />
+                            );
+                        })
+                    ) : (
+                        <Heading asElement="h5" size={20} marginBottom="0">
+                            {!!error && getErrorMessage(error)}
+                        </Heading>
+                    )}
+                </StyledProviderOptions>
             </StyledDialogContent>
         </StyledDialogOverlay>
     );
