@@ -84,11 +84,6 @@ const team: TeamMember[] = [
         title: 'Ecosystem Development Lead',
     },
     {
-        imageUrl: '/images/team/eugenea.jpg',
-        name: 'Eugene Aumson',
-        title: 'Senior Engineer',
-    },
-    {
         imageUrl: '/images/team/jasons.jpg',
         name: 'Jason Somensatto',
         title: 'Senior Counsel',
@@ -147,11 +142,6 @@ const team: TeamMember[] = [
         imageUrl: '/images/team/theog.jpg',
         name: 'Theo Gonella',
         title: 'Product Manager',
-    },
-    {
-        imageUrl: '/images/team/alext.jpg',
-        name: 'Alex Towle',
-        title: 'Protocol Engineer',
     },
     {
         imageUrl: '/images/team/oskarp.jpg',
