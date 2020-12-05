@@ -29,7 +29,7 @@ export const SectionLandingClients = () => (
                     99.9<StatHeaderUnit>%</StatHeaderUnit>
                 </StatHeader>
                 <StatCaption>Uptime</StatCaption>
-                <StatCaptionDescription>20% better than competitors</StatCaptionDescription>
+                <StatCaptionDescription> Available when you need it</StatCaptionDescription>
             </StatWrapper>
 
             <StatWrapper>
@@ -37,7 +37,7 @@ export const SectionLandingClients = () => (
                     2<StatHeaderUnit>%</StatHeaderUnit>
                 </StatHeader>
                 <StatCaption>Revert Rate</StatCaption>
-                <StatCaptionDescription>5% lower than competitors</StatCaptionDescription>
+                <StatCaptionDescription>10x lower than Uniswap</StatCaptionDescription>
             </StatWrapper>
 
             <StatWrapper>

@@ -20,6 +20,7 @@ interface Props {
     announcement?: AnnouncementProps;
     sectionPadding?: string;
     showFigureBottomMobile?: boolean;
+    hideFigureOnMobile?: boolean;
     maxWidthFigure?: string;
     alignItems?: string;
 }
@@ -104,25 +105,29 @@ const Description = styled.p`
 interface ContentProps {
     width: string;
     isCenteredMobile?: boolean;
+    hideFigureOnMobile?: boolean;
 }
 
 const Content = styled.div<ContentProps>`
     width: 100%;
-
-    @media (min-width: 768px) {
-        max-width: ${props => props.width};
+    @media (max-width: 768px) {
+        display: ${props => props.hideFigureOnMobile ? 'none' : props.isCenteredMobile ? 'flex' : 'block'};
+        justify-content: ${props => props.isCenteredMobile ? 'center' : 'inherit'}
     }
     @media (min-width: 768px) {
         max-width: ${props => props.width};
     }
-    ${props =>
+    @media (min-width: 768px) {
+        max-width: ${props => props.width};
+    }
+    /* ${props =>
         props.isCenteredMobile &&
         `
         @media (max-width: 768px) {
             display: flex;
             justify-content: center;
         }
-    `};
+    `}; */
 `;
 
 const ButtonWrap = styled.div`
@@ -200,7 +205,11 @@ export class Hero extends React.Component<Props> {
                     alignItems={props.alignItems}
                 >
                     {props.figure && (
-                        <Content isCenteredMobile={props.isCenteredMobile} width={props.maxWidthFigure || '400px'}>
+                        <Content 
+                        hideFigureOnMobile={props.hideFigureOnMobile}
+                        isCenteredMobile={props.isCenteredMobile} 
+                        width={props.maxWidthFigure || '400px'}
+                        >
                             {props.figure}
                         </Content>
                     )}

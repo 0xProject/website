@@ -1,20 +1,13 @@
 import * as React from 'react';
 import styled from 'styled-components';
-
-import { Button } from 'ts/components/button';
-import { Icon, InlineIconWrap } from 'ts/components/icon';
-import { Column, FlexWrap, Section, WrapGrid } from 'ts/components/newLayout';
-import { Paragraph, Heading } from 'ts/components/text';
-import { Checkmark } from 'ts/components/checkmark';
-
-import { WebsitePaths } from 'ts/types';
-import { Header } from 'ts/components/header';
 import _ from 'lodash';
 
-interface FigureProps {
-    value: string;
-    description: string;
-}
+import { Icon } from 'ts/components/icon';
+import { Section, WrapGrid } from 'ts/components/newLayout';
+import { Paragraph, Heading } from 'ts/components/text';
+import { Checkmark } from 'ts/components/checkmark';
+import { Button } from 'ts/components/button';
+import { Link } from 'ts/components/link';
 
 const Wrap = styled.div`
     width: calc(50% - 4px);
@@ -33,7 +26,7 @@ const Wrap = styled.div`
 
 export const SectionLandingAbout = () => (
     <Section isPadded={false} isFlex={true} maxWidth="auto" wrapWidth="100%" flexBreakpoint="900px">
-        <Wrap >
+        <Wrap>
             <div>
                 <Heading marginBottom={'8px'} isCentered={true} asElement={'h3'} size={34}>
                     All the popular DEX networks
@@ -60,40 +53,49 @@ export const SectionLandingAbout = () => (
 
         <Wrap>
             <div>
-                <Heading marginBottom={'8px'} isCentered={true} asElement={'h3'} size={34} textAlign={'center'}>
-                    Plus, exclusive 0x liquidity
+                <Heading marginBottom={'34px'} isCentered={true} asElement={'h3'} size={34} textAlign={'center'}>
+                    Tap into exclusive 0x liquidity
                 </Heading>
-                <Paragraph color={'#8F8F8F'} isCentered={true} isMuted={1} marginBottom={'36px'}>
+                {/* <Paragraph color={'#8F8F8F'} isCentered={true} isMuted={1} marginBottom={'36px'}>
                     Gain access to liquidity you can’t get anywhere else.
-                </Paragraph>
+                </Paragraph> */}
             </div>
 
             <div>
                 <CheckboxOptionsGridContainer>
-                    <CheckmarkOptionContainer>
-                        <CheckmarkContainer>
-                            <Checkmark />
-                        </CheckmarkContainer>
-                        Open Orderbook
-                    </CheckmarkOptionContainer>
-                    <CheckmarkOptionContainer>
-                        <CheckmarkContainer>
-                            <Checkmark />
-                        </CheckmarkContainer>
-                        Private Liquidity Pools
-                    </CheckmarkOptionContainer>
-                    <CheckmarkOptionContainer>
-                        <CheckmarkContainer>
-                            <Checkmark />
-                        </CheckmarkContainer>
-                        Something else
-                    </CheckmarkOptionContainer>
-                    <CheckmarkOptionContainer>
-                        <CheckmarkContainer>
-                            <Checkmark />
-                        </CheckmarkContainer>
-                        Professional Market Makers
-                    </CheckmarkOptionContainer>
+                    <ApiFeatureContainerRow>
+                        <ApiFeatureIconContainer>
+                            <Icon name={'market-maker'} size={'natural'} />
+                        </ApiFeatureIconContainer>
+                        <ApiFeatureDetailsColumn>
+                            <ApiFeaturePrimaryText>Professional Market Makers</ApiFeaturePrimaryText>
+                            <ApiFeatureSecondaryText>
+                                Offer competitive pricing through{' '}<span style={{ color: '#00AE99'}}><Link   href={`/docs/guides/rfqt-in-the-0x-api`} isNoArrow={true} isBlock={false} shouldOpenInNewTab={true} target="_blank">0x's RFQ system </Link></span>
+                            </ApiFeatureSecondaryText>
+                        </ApiFeatureDetailsColumn>
+                    </ApiFeatureContainerRow>
+                    <ApiFeatureContainerRow>
+                        <ApiFeatureIconContainer>
+                            <Icon name={'candles'} size={'natural'} />
+                        </ApiFeatureIconContainer>
+                        <ApiFeatureDetailsColumn>
+                            <ApiFeaturePrimaryText>0x’s Open Orderbook</ApiFeaturePrimaryText>
+                            <ApiFeatureSecondaryText>
+                                Enables free limit orders and true peer to peer liquidity
+                            </ApiFeatureSecondaryText>
+                        </ApiFeatureDetailsColumn>
+                    </ApiFeatureContainerRow>
+                    <ApiFeatureContainerRow>
+                        <ApiFeatureIconContainer>
+                            <Icon name={'liquidity'} size={'natural'} />
+                        </ApiFeatureIconContainer>
+                        <ApiFeatureDetailsColumn>
+                            <ApiFeaturePrimaryText>Private Liquidity Pools</ApiFeaturePrimaryText>
+                            <ApiFeatureSecondaryText>
+                                Access AMM liquidity that you can’t get anywhere else
+                            </ApiFeatureSecondaryText>
+                        </ApiFeatureDetailsColumn>
+                    </ApiFeatureContainerRow>
                 </CheckboxOptionsGridContainer>
             </div>
 
@@ -141,25 +143,64 @@ const MiddleContainerToAnchorPlus = styled.div`
     }
 `;
 
-const CheckmarkContainer = styled.div`
-    margin-right: 18px;
-`;
-
-const CheckboxOptionsGridContainer = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    max-width: 550px;
-    grid-row-gap: 20px;
-    margin: 0 auto;
+const ApiFeatureIconContainer = styled.div`
+    margin-right: 30px;
     @media (max-width: 900px) {
-        display: flex;
-        flex-direction: column;
+        margin-bottom: 14px;
+        margin-right: 0px;
+
     }
 `;
 
-const CheckmarkOptionContainer = styled.div`
+const CheckboxOptionsGridContainer = styled.div`
     display: flex;
+    flex-direction: column;
+    max-width: 550px;
+    margin: 0 auto;
+`;
+
+const ApiFeatureContainerRow = styled.div`
+    display: flex;
+    flex-direction: row;
     align-items: center;
+    margin-bottom: 32px;
+    @media (max-width: 900px) {
+        transform: none;
+        width: 100%;
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+`;
+
+const ApiFeaturePrimaryText = styled.div`
+    font-family: Formular;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 26px;
+    color: #ffffff;
+    @media (max-width: 900px) {
+        margin-bottom: 12px;
+    }
+`;
+
+const ApiFeatureSecondaryText = styled(ApiFeaturePrimaryText as any)`
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 26px;
+    color: #8f8f8f;
+`;
+
+const ApiFeatureDetailsColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    @media (max-width: 900px) {
+        align-items: center;
+        max-width: 250px;
+        text-align: center;
+    }
 `;
 
 interface ProjectLogo {
@@ -230,7 +271,7 @@ const StyledProject = styled.div<StyledProjectInterface>`
         margin: 15px 20px;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
         width: auto;
         margin: 10px 15px;
         display: ${props => !props.isOnMobile && 'none'};

@@ -39,6 +39,57 @@ export interface ApiPageProps {
     translate: Translate;
 }
 
+const OrderSourceViz = () => {
+    return (
+        <OrderExamplesVizContainer>
+            <OrderExampleFrontOrder>
+                <OrderExampleFlexContainer>
+                    <OrderExampleTopRow>
+                        <OrderExampleLabel>Sell 1,500 DAI for ETH</OrderExampleLabel>
+                        <OrderExampleBestPriceLabel>Best price!</OrderExampleBestPriceLabel>
+                    </OrderExampleTopRow>
+                    <OrderExampleRoutingBreakdownRow>
+                        <OrderVizMesh>
+                            <OrderVizLabel>50% Balancer</OrderVizLabel>
+                            <OrderVizBarBalancer />
+                        </OrderVizMesh>
+                        <OrderVizKyber>
+                            <OrderVizLabel>25% 0x Mesh</OrderVizLabel>
+                            <OrderVizBarMesh />
+                        </OrderVizKyber>
+                        <OrderVizUniswap>
+                            <OrderVizLabel>25% Uniswap</OrderVizLabel>
+                            <OrderVizBarUniswap />
+                        </OrderVizUniswap>
+                    </OrderExampleRoutingBreakdownRow>
+                </OrderExampleFlexContainer>
+            </OrderExampleFrontOrder>
+            <OrderExampleBackingOrder />
+        </OrderExamplesVizContainer>
+    );
+};
+
+export const OrderRoutingSection = () => {
+    return (
+        <>
+            <FlexColumnContainerWithMobileMargins>
+                <SmallerTitle>
+                    Focus on your product.
+                    <br />
+                    Let 0x find the best prices.
+                </SmallerTitle>
+                <Description style={{ marginBottom: 0, maxWidth: 524 }}>
+                    Our smart order routing splits up your transaction across decentralized exchange networks to be
+                    filled with the lowest slippage possible.
+                </Description>
+            </FlexColumnContainerWithMobileMargins>
+            <FlexColumnContainer style={{ minHeight: 170 }}>
+                <OrderSourceViz />
+            </FlexColumnContainer>
+        </>
+    );
+};
+
 const ZeroExApi: React.FC<ApiPageProps> = () => {
     return (
         <SiteWrap theme="dark" shouldShowDisclaimerInFooter={true}>
@@ -74,44 +125,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
             {/* First below the fold section (order viz) */}
             {/* marginBottom={'70px'} */}
             <Section bgColor="dark" isFlex={true} maxWidth="1170px">
-                <FlexColumnContainerWithMobileMargins>
-                    <SmallerTitle>
-                        Focus on your product.
-                        <br />
-                        Let 0x find the best prices.
-                    </SmallerTitle>
-                    <Description style={{ marginBottom: 0, maxWidth: 524 }}>
-                        Smart order routing splits up your transaction across decentralized exchange networks to be
-                        filled with the lowest slippage possible.
-                    </Description>
-                </FlexColumnContainerWithMobileMargins>
-                <FlexColumnContainer style={{ minHeight: 170 }}>
-                    <OrderExamplesVizContainer>
-                        <OrderExampleFrontOrder>
-                            <OrderExampleFlexContainer>
-                                <OrderExampleTopRow>
-                                    <OrderExampleLabel>Sell 1,500 DAI for ETH</OrderExampleLabel>
-                                    <OrderExampleBestPriceLabel>Best price!</OrderExampleBestPriceLabel>
-                                </OrderExampleTopRow>
-                                <OrderExampleRoutingBreakdownRow>
-                                    <OrderVizMesh>
-                                        <OrderVizLabel>50% 0x Mesh</OrderVizLabel>
-                                        <OrderVizBarMesh />
-                                    </OrderVizMesh>
-                                    <OrderVizKyber>
-                                        <OrderVizLabel>25% Kyber</OrderVizLabel>
-                                        <OrderVizBarKyber />
-                                    </OrderVizKyber>
-                                    <OrderVizUniswap>
-                                        <OrderVizLabel>25% Uniswap</OrderVizLabel>
-                                        <OrderVizBarUniswap />
-                                    </OrderVizUniswap>
-                                </OrderExampleRoutingBreakdownRow>
-                            </OrderExampleFlexContainer>
-                        </OrderExampleFrontOrder>
-                        <OrderExampleBackingOrder />
-                    </OrderExamplesVizContainer>
-                </FlexColumnContainer>
+                <OrderRoutingSection />
             </Section>
             {/* Partner Logos */}
             <ResponsiveColumnSection
@@ -156,7 +170,7 @@ const ZeroExApi: React.FC<ApiPageProps> = () => {
                 </div>
             </ResponsiveColumnSection>
 
-            <SectionApiQuote/>
+            <SectionApiQuote />
             {/* JavaScript Code Sample Section */}
             <Section bgColor="dark" isFlex={true} maxWidth="1170px">
                 <VerticalFlow>
@@ -372,11 +386,11 @@ const BaseOrderVizBar = styled.div`
 `;
 
 const OrderVizBarMesh = styled(BaseOrderVizBar)`
-    background-color: #ffffff;
+    background-color: #14b094;
 `;
 
-const OrderVizBarKyber = styled(BaseOrderVizBar)`
-    background-color: #60c39d;
+const OrderVizBarBalancer = styled(BaseOrderVizBar)`
+    background-color: #f5aa15;
 `;
 
 const OrderVizBarUniswap = styled(BaseOrderVizBar)`

@@ -43,6 +43,7 @@ enum PossibleFeatures {
     DeFiSaver = 'defisaver_feature',
     Rari = 'rari_feature',
     Prysm = 'prysm_feature',
+    Zapper = 'zapper_feature',
 }
 
 interface FeatureMetadata {
@@ -102,11 +103,19 @@ const featureMetadatas: { [s in PossibleFeatures]: FeatureMetadata } = {
     },
     prysm_feature: {
         title: 'Prysm',
-        description: 'Need copy',
+        description: 'Prysm is a next generation social trading network. Prysm helps traders discover and execute their next trade while helping Creators monetize trade ideas and other products.',
         url: 'https://prysm.xyz',
         buttonText: 'Visit Prysm',
         iconName: 'integrators/prysm',
         feature: PossibleFeatures.Prysm,
+    },
+    zapper_feature: {
+        title: 'Zapper',
+        description: 'Zapper is an asset management platform that allows users to deploy capital across multiple DeFi protocols with one click.',
+        url: 'https://zapper.com',
+        buttonText: 'Visit Zapper',
+        iconName: 'integrators/zapper',
+        feature: PossibleFeatures.Zapper,
     },
 };
 
@@ -128,7 +137,7 @@ const LogosUsingZeroExApiContainer = styled.div`
 `;
 
 const LogoIconContainer = styled.div<{ active: boolean }>`
-    padding: 27px 38px;
+    padding: 27px 28px;
     @media (max-width: 900px) {
         padding: 10px 20px;
     }
@@ -230,7 +239,7 @@ const SectionFeatures = () => {
                 justifyContent={'center'}
                 bgColor="black"
                 isFlex={true}
-                maxWidth="1386px"
+                maxWidth="1420px"
                 padding={'0px 0px 66px 0px'}
                 marginBottom={'20px'}
                 paddingMobile={'64px 0 40px 0'}

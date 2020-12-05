@@ -15,6 +15,7 @@ interface LinkInterface {
     };
     shouldOpenInNewTab?: boolean;
     target?: string;
+    style?: any;
 }
 
 export const Link = (props: LinkInterface) => {

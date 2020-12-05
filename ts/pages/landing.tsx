@@ -11,6 +11,8 @@ import { SiteWrap } from 'ts/components/siteWrap';
 import { ModalContact } from 'ts/components/modals/modal_contact';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { SectionFeatures } from 'ts/components/sections/landing/matchaFeature';
+import { Section } from 'ts/components/newLayout';
+import { OrderRoutingSection } from './api';
 
 interface Props {
     location: Location;
@@ -35,6 +37,9 @@ export class NextLanding extends React.Component<Props> {
             <SiteWrap theme="dark">
                 <DocumentTitle {...documentConstants.LANDING} />
                 <SectionLandingHero />
+                <Section bgColor="dark" isFlex={true} maxWidth="1170px" marginBottom={'8px'}>
+                    <OrderRoutingSection/>
+                </Section>
                 <SectionLandingAbout />
                 <SectionLandingClients />
                 <SectionApiQuote />
