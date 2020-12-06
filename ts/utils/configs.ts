@@ -8,6 +8,8 @@ const INFURA_API_KEY = environments.isDevelopment()
     ? '3cd49e08510e484aaf1253fc1fa58f0c'
     : 'dbb71566cad444979f59c42b11b4f603';
 
+export const ALCHEMY_API_KEY = '8JwI7bMSK8ojsPDbyeHt6NK8w23afo1q';
+
 export const configs = {
     AMOUNT_DISPLAY_PRECSION: 5,
     BACKEND_BASE_PROD_URL: 'https://website.api.0x.org',
