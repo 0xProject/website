@@ -33,7 +33,6 @@ import { ZeroExApi } from 'ts/pages/api';
 import { CFL } from 'ts/pages/cfl';
 import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
-import { Governance } from 'ts/pages/governance/governance';
 import { VoteIndex } from 'ts/pages/governance/vote_index';
 import { Next0xInstant } from 'ts/pages/instant';
 import { NextLanding } from 'ts/pages/landing';
@@ -106,8 +105,7 @@ render(
                                 path={WebsitePaths.StakingPoolActivity}
                                 component={StakingPoolActivity}
                             />
-                            <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex} />
-                            <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance} />
+                            <Route exact={true} path={`${WebsitePaths.Vote}/:zeip?`} component={VoteIndex} />
 
                             <Route exact={true} path={WebsitePaths.Extensions} component={Extensions} />
                             <Route exact={true} path={WebsitePaths.AssetSwapperPage} component={CFL} />
