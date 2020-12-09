@@ -34,10 +34,15 @@ import {
     TokenByAddress,
     TokenState,
 } from 'ts/types';
-import { configs } from 'ts/utils/configs';
+import { configs, ALCHEMY_API_KEY } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
 import * as u2f from 'ts/vendor/u2f_api';
+import { providers } from 'ethers';
+
+const provider = providers.getDefaultProvider(null, {
+    alchemy: ALCHEMY_API_KEY,
+});
 
 export const utils = {
     assert(condition: boolean, message: string): void {
@@ -596,5 +601,41 @@ export const utils = {
         const _n = new BigNumber(n);
 
         return `0x${_n.toString(16).padStart(64, '0')}`;
+    },
+    _avgBlockTime: !!0,
+    _currentBlock: !!0,
+    async getCurrentBlock() {
+        if (!this._currentBlock) {
+            this._currentBlock = await provider.getBlockNumber();
+        }
+        return this._currentBlock;
+    },
+    async getAvgBlockTime() {
+        if (!this._avgBlockTime) {
+            if (!this._currentBlock) {
+                await this.getCurrentBlock();
+            }
+            const blockTimestamps = await Promise.all([
+                provider.getBlock(this._currentBlock),
+                provider.getBlock(this._currentBlock - 10000),
+            ]);
+
+            this._avgBlockTime =
+                moment(blockTimestamps[0].timestamp).diff(moment(blockTimestamps[1].timestamp)) / 10000;
+        }
+
+        return this._avgBlockTime;
+    },
+    async getFutureBlockTimestamp(blockNumber: number) {
+        if (!this._currentBlock) {
+            await this.getCurrentBlock();
+        }
+
+        if (blockNumber > this._currentBlock) {
+            const avgBlockTime = this._avgBlockTime || (await this.getAvgBlockTime());
+
+            return parseInt((Date.now() / 1000 + (blockNumber - this._currentBlock) * avgBlockTime).toFixed(0));
+        }
+        return 0;
     },
 }; // tslint:disable:max-file-line-count
