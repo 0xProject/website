@@ -34,6 +34,7 @@ import { CFL } from 'ts/pages/cfl';
 import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
 import { VoteIndex } from 'ts/pages/governance/vote_index';
+import { Governance } from 'ts/pages/governance/governance';
 import { Next0xInstant } from 'ts/pages/instant';
 import { NextLanding } from 'ts/pages/landing';
 import { NextLaunchKit } from 'ts/pages/launch_kit';
@@ -105,7 +106,9 @@ render(
                                 path={WebsitePaths.StakingPoolActivity}
                                 component={StakingPoolActivity}
                             />
-                            <Route exact={true} path={`${WebsitePaths.Vote}/:zeip?`} component={VoteIndex} />
+                            <Route exact={true} path={`${WebsitePaths.Vote}/treasury/:id`} component={VoteIndex} />
+                            <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance} />
+                            <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex} />
 
                             <Route exact={true} path={WebsitePaths.Extensions} component={Extensions} />
                             <Route exact={true} path={WebsitePaths.AssetSwapperPage} component={CFL} />

@@ -24,9 +24,10 @@ import { utils } from 'ts/utils/utils';
 import { Switch, Route } from 'react-router';
 import { Governance } from './governance';
 import { colors } from 'ts/style/colors';
+import { Treasury } from './treasury';
 
 type ProposalWithOrder = Proposal & {
-    order: number;
+    order?: number;
 };
 
 const PROPOSALS = environments.isProduction() ? proposals : stagingProposals;
@@ -134,6 +135,10 @@ const fetchTallysAsync: () => Promise<ZeipTallyMap> = async () => {
     return tallys;
 };
 
+export const TreasuryContext = React.createContext({
+    proposals: [],
+});
+
 export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
     const [proposals, setProposals] = React.useState(undefined);
@@ -188,11 +193,12 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     }, [proposals]);
 
     return (
-        // <GovernanceContext.Provider>
-
-        // </GovernanceContext.Provider>
         <Switch>
-            <Route exact path={`${path}/:zeip`} component={Governance} />
+            <Route exact path={`${WebsitePaths.Vote}/treasury/:proposalId`}>
+                <TreasuryContext.Provider value={{ proposals }}>
+                    <Treasury />
+                </TreasuryContext.Provider>
+            </Route>
             <Route path={path}>
                 <StakingPageLayout isHome={false} title="0x Governance">
                     <DocumentTitle {...documentConstants.VOTE} />

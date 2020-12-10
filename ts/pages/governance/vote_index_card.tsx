@@ -17,7 +17,7 @@ type ZEIPCardProps = {
     summary: string[];
     voteStartDate: moment.Moment;
     voteEndDate: moment.Moment;
-    order: number;
+    order?: number;
     // Non-static properties
     tally?: TallyInterface;
 };
@@ -107,7 +107,6 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                         hasHover={true}
                         margin="30px auto"
                         maxWidth="100%"
-                        order={order}
                     >
                         <FlexWrap>
                             <Column width="60%" padding="0px 20px 0px 0px">
@@ -148,7 +147,6 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                         hasHover={true}
                         margin="30px auto"
                         maxWidth="100%"
-                        order={order}
                     >
                         <FlexWrap>
                             <Column width="60%" padding="0px 20px 0px 0px">
