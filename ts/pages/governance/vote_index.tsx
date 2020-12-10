@@ -1,36 +1,34 @@
 import { BigNumber } from '@0x/utils';
+import { Contract, providers } from 'ethers';
 import * as _ from 'lodash';
-import * as React from 'react';
-import styled from 'styled-components';
-import { providers, Contract } from 'ethers';
-import { useRouteMatch } from 'react-router-dom';
-import moment from 'moment';
 import CircularProgress from 'material-ui/CircularProgress';
+import moment from 'moment';
+import * as React from 'react';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { DocumentTitle } from 'ts/components/document_title';
 import { Column, Section } from 'ts/components/newLayout';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading, Paragraph } from 'ts/components/text';
-import { Proposal, proposals, stagingProposals } from 'ts/pages/governance/data';
+import { Proposal, proposals as prodProposals, stagingProposals } from 'ts/pages/governance/data';
 import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
-import { TallyInterface, WebsitePaths, VotingCardType } from 'ts/types';
-import { configs } from 'ts/utils/configs';
+import { colors } from 'ts/style/colors';
+import { TallyInterface, VotingCardType, WebsitePaths } from 'ts/types';
+import { ALCHEMY_API_KEY, configs } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
-import { ALCHEMY_API_KEY } from 'ts/utils/configs';
 import { utils } from 'ts/utils/utils';
-import { Switch, Route } from 'react-router';
-import { Governance } from './governance';
-import { colors } from 'ts/style/colors';
+
 import { Treasury } from './treasury';
 
 type ProposalWithOrder = Proposal & {
     order?: number;
 };
 
-const PROPOSALS = environments.isProduction() ? proposals : stagingProposals;
+const PROPOSALS = environments.isProduction() ? prodProposals : stagingProposals;
 const ZEIP_IDS = Object.keys(PROPOSALS).map(idString => parseInt(idString, 10));
 const ZEIP_PROPOSALS: ProposalWithOrder[] = ZEIP_IDS.map(id => PROPOSALS[id]).sort(
     (a, b) => b.voteStartDate.unix() - a.voteStartDate.unix(),
@@ -56,25 +54,27 @@ const getOnChainProposals = async () => {
 
     const filter = contract.filters.ProposalCreated();
     const proposalsOnChain = await contract.queryFilter(filter, startingBlockNumber);
-    const proposals = [];
-    const currentBlock = await utils.getCurrentBlock();
+    const proposalsArray = [];
+    const currentBlock = await utils.getCurrentBlockAsync();
+
+    // tslint:disable-next-line:prefer-const
     for (let proposal of proposalsOnChain) {
         const { id, description } = proposal.args;
         const proposalData = await contract.proposals(id);
         const { eta, startBlock, endBlock, canceled, executed, forVotes, againstVotes } = proposalData;
         let blockTimestamp: number = eta.toNumber();
         if (currentBlock < endBlock) {
-            blockTimestamp = await utils.getFutureBlockTimestamp(endBlock.toNumber());
+            blockTimestamp = await utils.getFutureBlockTimestampAsync(endBlock.toNumber());
         }
         if (startBlock > currentBlock) {
-            blockTimestamp = await utils.getFutureBlockTimestamp(startBlock.toNumber());
+            blockTimestamp = await utils.getFutureBlockTimestampAsync(startBlock.toNumber());
         }
         if (canceled) {
             const blockEndTime = await provider.getBlock(endBlock.toNumber());
             blockTimestamp = blockEndTime.timestamp;
         }
 
-        proposals.push({
+        proposalsArray.push({
             id: id.toNumber(),
             timestamp: moment(blockTimestamp, 'X'),
             description,
@@ -87,7 +87,7 @@ const getOnChainProposals = async () => {
         });
     }
 
-    return proposals.reverse();
+    return proposalsArray.reverse();
 };
 
 const fetchVoteStatusAsync: (zeipId: number) => Promise<TallyInterface> = async zeipId => {
@@ -142,15 +142,15 @@ export const TreasuryContext = React.createContext({
 export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
     const [proposals, setProposals] = React.useState(undefined);
-    const [loading, setLoading] = React.useState<boolean>(true);
+    const [isLoading, setLoading] = React.useState<boolean>(true);
 
     React.useEffect(() => {
         // tslint:disable:no-floating-promises
         (async () => {
             const tallyMap: ZeipTallyMap = await fetchTallysAsync();
             setTallys(tallyMap);
-            const proposals = await getOnChainProposals();
-            setProposals(proposals);
+            const onChainProposals = await getOnChainProposals();
+            setProposals(onChainProposals);
             setLoading(false);
         })();
     }, []);
@@ -163,8 +163,8 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
         }
         let index = 0;
 
-        let zeipLength = ZEIP_PROPOSALS.length - 1;
-        let proposalsLength = proposals.length - 1;
+        const zeipLength = ZEIP_PROPOSALS.length - 1;
+        const proposalsLength = proposals.length - 1;
 
         let zeipIndex = 0;
         let proposalIndex = 0;
@@ -194,7 +194,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
 
     return (
         <Switch>
-            <Route exact path={`${WebsitePaths.Vote}/treasury/:proposalId`}>
+            <Route exact={true} path={`${WebsitePaths.Vote}/treasury/:proposalId`}>
                 <TreasuryContext.Provider value={{ proposals }}>
                     <Treasury />
                 </TreasuryContext.Provider>
@@ -225,7 +225,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                             </SubtitleContentWrap>
                         </Column>
                     </Section>
-                    {loading ? (
+                    {isLoading ? (
                         <LoaderWrapper>
                             <CircularProgress size={40} thickness={2} color={colors.brandLight} />
                         </LoaderWrapper>
@@ -235,7 +235,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                                 const tally = tallys && tallys[proposal.zeipId];
                                 return (
                                     <VoteIndexCard
-                                        type={VotingCardType.ZEIP}
+                                        type={VotingCardType.Zeip}
                                         key={proposal.zeipId}
                                         tally={tally}
                                         {...proposal}
@@ -251,7 +251,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                                     };
                                     return (
                                         <VoteIndexCard
-                                            type={VotingCardType.TREASURY}
+                                            type={VotingCardType.Treasury}
                                             key={proposal.id}
                                             tally={tally}
                                             {...proposal}

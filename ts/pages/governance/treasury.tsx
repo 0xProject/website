@@ -1,53 +1,28 @@
 import { BigNumber } from '@0x/utils';
-import ReactMarkdown, { ReactMarkdownProps } from 'react-markdown';
 import * as _ from 'lodash';
+import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 import * as React from 'react';
-import { useParams, Redirect } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import { Redirect, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Banner } from 'ts/components/banner';
 import { Button } from 'ts/components/button';
 import { DocumentTitle } from 'ts/components/document_title';
-import { Column, FlexWrap, Section } from 'ts/components/newLayout';
+import { Column, Section } from 'ts/components/newLayout';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading, Paragraph } from 'ts/components/text';
 import { Countdown } from 'ts/pages/governance/countdown';
-import { TreasuryProposal, proposals, stagingProposals } from 'ts/pages/governance/data';
+import { TreasuryProposal } from 'ts/pages/governance/data';
 import { ModalVote } from 'ts/pages/governance/modal_vote';
-import { RatingBar } from 'ts/pages/governance/rating_bar';
-import { VoteInfo, VoteValue } from 'ts/pages/governance/vote_form';
+import { VoteInfo } from 'ts/pages/governance/vote_form';
+import { TreasuryContext } from 'ts/pages/governance/vote_index';
 import { VoteStats } from 'ts/pages/governance/vote_stats';
 import { colors } from 'ts/style/colors';
-import { TallyInterface, WebsitePaths } from 'ts/types';
+import { WebsitePaths } from 'ts/types';
 import { configs } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
-import { environments } from 'ts/utils/environments';
-import { TreasuryContext } from './vote_index';
-import CircularProgress from 'material-ui/CircularProgress';
-
-interface LabelInterface {
-    [key: number]: string;
-}
-
-interface State {
-    isVoteModalOpen: boolean;
-    isVoteReceived: boolean;
-    providerName?: string;
-    tally?: TallyInterface;
-}
-
-const benefitLabels: LabelInterface = {
-    1: 'Little Benefit',
-    2: 'Medium Benefit',
-    3: 'High Benefit',
-};
-
-const riskLabels: LabelInterface = {
-    1: 'Low Risk',
-    2: 'Medium Risk',
-    3: 'High Risk',
-};
 
 export const Treasury: React.FC<{}> = () => {
     // public state: State = {
@@ -57,22 +32,22 @@ export const Treasury: React.FC<{}> = () => {
     // };
     // const _proposalData: Proposal;
     const [proposal, setProposal] = React.useState<TreasuryProposal>();
-    const [proposalsLoaded, setProposalsLoaded] = React.useState<boolean>(false);
-    const [isVoteReceived, setIsVoteReceived] = React.useState<boolean>(false);
-    const [isVoteModalOpen, setIsVoteModalOpen] = React.useState<boolean>(false);
+    const [isProposalsLoaded, setProposalsLoaded] = React.useState<boolean>(false);
+    const [isVoteReceived] = React.useState<boolean>(false);
+    const [isVoteModalOpen] = React.useState<boolean>(false);
     const { proposalId } = useParams();
     const { proposals } = React.useContext(TreasuryContext);
 
     React.useEffect(() => {
         if (proposals) {
-            const currentProposal = proposals.find(proposal => proposal.id == proposalId);
-            console.log(proposals, proposalId, currentProposal);
+            const currentProposal = proposals.find(p => p.id === parseInt(proposalId, 10));
             setProposal(currentProposal);
             setProposalsLoaded(true);
         }
+        // tslint:disable:no-shadowed-variable
     }, [proposals]);
 
-    if (!proposal && proposalsLoaded) {
+    if (!proposal && isProposalsLoaded) {
         return <Redirect to={`${WebsitePaths.Vote}`} />;
     }
 
@@ -84,21 +59,19 @@ export const Treasury: React.FC<{}> = () => {
         );
     }
 
-    console.log(proposal);
     // const { isVoteReceived, tally } = this.state;
-    const { forVotes, againstVotes, timestamp, happening, canceled, executed, description, id } = proposal;
+    const { forVotes, againstVotes, timestamp, happening: isHappening, description, id } = proposal;
     const tally = {
         no: new BigNumber(againstVotes.toString()),
         yes: new BigNumber(forVotes.toString()),
     };
 
-    const now = moment();
     const pstOffset = '-0800';
     const deadlineToVote = moment(timestamp)?.utcOffset(pstOffset);
     //     const voteStartDate = proposalData?.voteStartDate?.utcOffset(pstOffset);
-    const hasVoteEnded = canceled || executed;
-    const hasVoteStarted = happening;
-    const isVoteActive = happening;
+    // const hasVoteEnded = canceled || executed;
+    // const hasVoteStarted = happening;
+    const isVoteActive = isHappening;
 
     return (
         <StakingPageLayout isHome={false} title="0x Treasury">
@@ -124,7 +97,7 @@ export const Treasury: React.FC<{}> = () => {
                 <Column width="30%" maxWidth="300px">
                     <VoteStats tally={tally} />
                     {isVoteActive && (
-                        <VoteButton onClick={onOpenVoteModal.bind(this)} isWithArrow={false}>
+                        <VoteButton onClick={() => onOpenVoteModal()} isWithArrow={false}>
                             {isVoteReceived ? 'Vote Received' : 'Vote'}
                         </VoteButton>
                     )}
@@ -200,15 +173,15 @@ export const Treasury: React.FC<{}> = () => {
                 <Banner
                     heading={`Vote with ZRX Proposal ${id}`}
                     subline="Use 0x Instant to quickly purchase ZRX for voting"
-                    mainCta={{ text: 'Get ZRX', onClick: onLaunchInstantClick.bind(this) }}
-                    secondaryCta={{ text: 'Vote', onClick: onOpenVoteModal.bind(this) }}
+                    mainCta={{ text: 'Get ZRX', onClick: () => onLaunchInstantClick() }}
+                    secondaryCta={{ text: 'Vote', onClick: () => onOpenVoteModal() }}
                 />
             )}
             <ModalVote
                 zeipId={id}
                 isOpen={isVoteModalOpen}
                 onDismiss={onDismissVoteModal}
-                onVoted={onVoteReceived.bind(this)}
+                onVoted={voteInfo => onVoteReceived(voteInfo)}
             />
         </StakingPageLayout>
     );
@@ -252,11 +225,11 @@ const LoaderWrapper = styled.div`
     justify-content: center;
 `;
 
-const SectionWrap = styled.div`
-    & + & {
-        padding-top: 50px;
-    }
-`;
+// const SectionWrap = styled.div`
+//     & + & {
+//         padding-top: 50px;
+//     }
+// `;
 
 const StyledMarkdown = styled.div`
     & a {
@@ -273,8 +246,8 @@ const VoteButton = styled(Button)`
     color: white;
 `;
 
-const MoreLink = styled(Button)`
-    & + & {
-        margin-left: 30px;
-    }
-`;
+// const MoreLink = styled(Button)`
+//     & + & {
+//         margin-left: 30px;
+//     }
+// `;

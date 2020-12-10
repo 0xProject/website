@@ -9,6 +9,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as bowser from 'bowser';
 import * as changeCase from 'change-case';
 import deepEqual from 'deep-equal';
+import { providers } from 'ethers';
 import isMobile from 'is-mobile';
 import * as _ from 'lodash';
 import * as moment from 'moment';
@@ -34,13 +35,12 @@ import {
     TokenByAddress,
     TokenState,
 } from 'ts/types';
-import { configs, ALCHEMY_API_KEY } from 'ts/utils/configs';
+import { ALCHEMY_API_KEY, configs } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
 import * as u2f from 'ts/vendor/u2f_api';
-import { providers } from 'ethers';
 
-const provider = providers.getDefaultProvider(null, {
+const ethersProvider = providers.getDefaultProvider(null, {
     alchemy: ALCHEMY_API_KEY,
 });
 
@@ -602,39 +602,39 @@ export const utils = {
 
         return `0x${_n.toString(16).padStart(64, '0')}`;
     },
-    _avgBlockTime: !!0,
-    _currentBlock: !!0,
-    async getCurrentBlock() {
-        if (!this._currentBlock) {
-            this._currentBlock = await provider.getBlockNumber();
+    _avgBlockTime: 0,
+    _currentBlock: 0,
+    async getCurrentBlockAsync(): Promise<number> {
+        if (!utils._currentBlock) {
+            utils._currentBlock = await ethersProvider.getBlockNumber();
         }
-        return this._currentBlock;
+        return utils._currentBlock;
     },
-    async getAvgBlockTime() {
-        if (!this._avgBlockTime) {
-            if (!this._currentBlock) {
-                await this.getCurrentBlock();
+    async getAvgBlockTimeAsync(): Promise<number> {
+        if (!utils._avgBlockTime) {
+            if (!utils._currentBlock) {
+                await utils.getCurrentBlockAsync();
             }
             const blockTimestamps = await Promise.all([
-                provider.getBlock(this._currentBlock),
-                provider.getBlock(this._currentBlock - 10000),
+                ethersProvider.getBlock(utils._currentBlock),
+                ethersProvider.getBlock(utils._currentBlock - 10000),
             ]);
 
-            this._avgBlockTime =
+            utils._avgBlockTime =
                 moment(blockTimestamps[0].timestamp).diff(moment(blockTimestamps[1].timestamp)) / 10000;
         }
 
-        return this._avgBlockTime;
+        return utils._avgBlockTime;
     },
-    async getFutureBlockTimestamp(blockNumber: number) {
-        if (!this._currentBlock) {
-            await this.getCurrentBlock();
+    async getFutureBlockTimestampAsync(blockNumber: number): Promise<number> {
+        if (!utils._currentBlock) {
+            await utils.getCurrentBlockAsync();
         }
 
-        if (blockNumber > this._currentBlock) {
-            const avgBlockTime = this._avgBlockTime || (await this.getAvgBlockTime());
+        if (blockNumber > utils._currentBlock) {
+            const avgBlockTime = utils._avgBlockTime || (await utils.getAvgBlockTimeAsync());
 
-            return parseInt((Date.now() / 1000 + (blockNumber - this._currentBlock) * avgBlockTime).toFixed(0));
+            return parseInt((Date.now() / 1000 + (blockNumber - utils._currentBlock) * avgBlockTime).toFixed(0), 10);
         }
         return 0;
     },

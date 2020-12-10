@@ -8,10 +8,10 @@ import { Column, FlexWrap, Section } from 'ts/components/newLayout';
 import { Heading, Paragraph } from 'ts/components/text';
 import { getTotalBalancesString } from 'ts/pages/governance/vote_stats';
 import { VoteStatusText } from 'ts/pages/governance/vote_status_text';
-import { TallyInterface, VoteOutcome, VoteTime, WebsitePaths, VotingCardType } from 'ts/types';
+import { TallyInterface, VoteOutcome, VoteTime, VotingCardType, WebsitePaths } from 'ts/types';
 
-type ZEIPCardProps = {
-    type: VotingCardType.ZEIP;
+interface ZEIPCardProps {
+    type: VotingCardType.Zeip;
     title: string;
     zeipId: number;
     summary: string[];
@@ -20,11 +20,11 @@ type ZEIPCardProps = {
     order?: number;
     // Non-static properties
     tally?: TallyInterface;
-};
+}
 
-type TreasuryCardProps = {
+interface TreasuryCardProps {
     id: number;
-    type: VotingCardType.TREASURY;
+    type: VotingCardType.Treasury;
     canceled: boolean;
     executed: boolean;
     upcoming: boolean;
@@ -33,7 +33,8 @@ type TreasuryCardProps = {
     order: number;
     description: string;
     tally?: TallyInterface;
-};
+}
+
 type VoteIndexCardProps = ZEIPCardProps | TreasuryCardProps;
 
 // export interface VoteIndexCardProps {
@@ -96,8 +97,16 @@ const getStatus = (
 export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props => {
     const { order, tally } = props;
     switch (props.type) {
-        case VotingCardType.TREASURY:
-            const { id, description, canceled, executed, upcoming, happening, timestamp } = props;
+        case VotingCardType.Treasury:
+            const {
+                id,
+                description,
+                canceled: isCanceled,
+                executed: isExecuted,
+                upcoming: isUpcoming,
+                happening: isHappening,
+                timestamp,
+            } = props;
             return (
                 <ReactRouterLink style={{ order }} to={`${WebsitePaths.Vote}/treasury/${id}`}>
                     <Section
@@ -116,14 +125,14 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                             </Column>
                             <Column>
                                 <div className="flex flex-column items-end">
-                                    <VoteStatusText status={getStatus(canceled, executed, upcoming)} />
+                                    <VoteStatusText status={getStatus(isCanceled, isExecuted, isUpcoming)} />
                                     <Paragraph marginBottom="12px" isMuted={1}>{`${tally.yes.plus(
                                         tally.no,
                                     )} ZRX Total Vote`}</Paragraph>
                                     <Paragraph marginBottom="12px">
-                                        {executed || canceled
+                                        {isExecuted || isCanceled
                                             ? `Ended ${timestamp.format('MMM DD, YYYY')}`
-                                            : happening
+                                            : isHappening
                                             ? `Ends in ${timestamp.diff(moment(), 'days')} days`
                                             : `Upcoming in ${timestamp.diff(moment(), 'days')} days`}
                                     </Paragraph>
@@ -133,7 +142,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                     </Section>
                 </ReactRouterLink>
             );
-        case VotingCardType.ZEIP:
+        case VotingCardType.Zeip:
             const { title, zeipId, summary, voteStartDate, voteEndDate } = props;
             const voteTime = getVoteTime(voteStartDate, voteEndDate);
             const voteStatus = voteTime || getVoteOutcome(tally);
@@ -160,10 +169,9 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                             <Column>
                                 <div className="flex flex-column items-end">
                                     <VoteStatusText status={voteStatus} />
-                                    <Paragraph
-                                        marginBottom="12px"
-                                        isMuted={1}
-                                    >{`${totalBalances} ZRX Total Vote`}</Paragraph>
+                                    <Paragraph marginBottom="12px" isMuted={1}>
+                                        {`${totalBalances} ZRX Total Vote`}
+                                    </Paragraph>
                                     <Paragraph marginBottom="12px">
                                         {getDateString(voteStartDate, voteEndDate)}
                                     </Paragraph>
