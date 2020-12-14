@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { useWindowSize } from 'react-use';
 import { Button } from 'ts/components/button';
 import { Hero } from 'ts/components/hero';
 import { LandingAnimation } from 'ts/components/heroImage';
@@ -41,9 +42,12 @@ export const SectionLandingHero: React.FC<SectionlandingHeroProps> = () => {
 
 interface HeroActionsProps {}
 
-const HeroActions: React.FC<HeroActionsProps> = () => (
+const HeroActions: React.FC<HeroActionsProps> = () => {
+    const { width } = useWindowSize();
+    const isMobile = width < 500;
+    return (
     <>
-        <Button to={WebsitePaths.ZeroExApi} isInline={true}>
+        <Button to={WebsitePaths.ZeroExApiDocs} isInline={true}>
             Start Building
         </Button>
 
@@ -52,10 +56,10 @@ const HeroActions: React.FC<HeroActionsProps> = () => (
         </Button>
     </>
 );
+}
 
 const AnimationContainer = styled.div`
     /* max-height: 375px; */
     width: 100%;
-
     margin-bottom: 35px;
 `;

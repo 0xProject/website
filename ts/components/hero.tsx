@@ -34,7 +34,7 @@ const Section = styled.section<SectionProps>`
     padding: ${props => props.padding || (props.isAnnouncement ? '50px 0 120px 0' : '120px 0')};
     position: relative;
     @media (max-width: 768px) {
-        padding: 60px 0;
+        padding: 30px 0 60px 0;
     }
 `;
 

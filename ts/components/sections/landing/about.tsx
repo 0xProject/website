@@ -1,12 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
+import { useWindowSize } from 'react-use';
 
 import { Icon } from 'ts/components/icon';
 import { Section, WrapGrid } from 'ts/components/newLayout';
 import { Paragraph, Heading } from 'ts/components/text';
-import { Checkmark } from 'ts/components/checkmark';
-import { Button } from 'ts/components/button';
 import { Link } from 'ts/components/link';
 
 const Wrap = styled.div`
@@ -16,90 +15,108 @@ const Wrap = styled.div`
     display: flex;
     flex-direction: column;
     background-color: ${props => props.theme.darkBgColor};
-
-    @media (max-width: 900px) {
+    /* HACK(johnrjj) - Add a little more height to not overflow from 900 - 1400px */
+    @media (max-width: 1400px) {
+        height: 550px;
+    }
+    @media (max-width: 768px) {
         width: 100%;
-        margin-top: 30px;
         height: 100%;
+        margin-top: 8px;
     }
 `;
 
-export const SectionLandingAbout = () => (
-    <Section isPadded={false} isFlex={true} maxWidth="auto" wrapWidth="100%" flexBreakpoint="900px">
-        <Wrap>
-            <div>
-                <Heading marginBottom={'8px'} isCentered={true} asElement={'h3'} size={34}>
-                    All the popular DEX networks
-                </Heading>
-                <Paragraph color={'#8F8F8F'} isCentered={true} marginBottom={'21px'}>
-                    Don’t ever worry about another integration, we have it covered.
-                </Paragraph>
-            </div>
+export const SectionLandingAbout = () => {
+    const { width } = useWindowSize()
+    const isMobile = width <= 769;
 
-            <WrapGrid bgColor={'#8F8F8F'} isWrapped={true}>
-                {_.map(projects, (item: ProjectLogo, index) => (
-                    <StyledProject key={`client-${index}`} isOnMobile={item.persistOnMobile}>
-                        <img src={item.imageUrl} alt={item.name} />
-                    </StyledProject>
-                ))}
-            </WrapGrid>
-        </Wrap>
+    return (
+        <Section isPadded={false} isFlex={true} maxWidth="auto" wrapWidth="100%" flexBreakpoint="768px">
+            <Wrap>
+                <div>
+                    <Heading marginBottom={'8px'} isCentered={true} asElement={'h3'} size={34}>
+                        All the popular DEX networks
+                    </Heading>
+                    <Paragraph color={'#8F8F8F'} isCentered={true} marginBottom={'21px'}>
+                        Don’t ever worry about another integration, we have it covered.
+                    </Paragraph>
+                </div>
 
-        <MiddleContainerToAnchorPlus>
-            <MiddleContainerCircle>
-                <Icon width={'28px'} name={'plus-sign'} size={'natural'} />
-            </MiddleContainerCircle>
-        </MiddleContainerToAnchorPlus>
+                <WrapGrid bgColor={'#8F8F8F'} isWrapped={true}>
+                    {_.map(projects, (item: ProjectLogo, index) => (
+                        <StyledProject key={`client-${index}`} isOnMobile={item.persistOnMobile}>
+                            <img src={item.imageUrl} alt={item.name} />
+                        </StyledProject>
+                    ))}
+                </WrapGrid>
+            </Wrap>
 
-        <Wrap>
-            <div>
-                <Heading marginBottom={'34px'} isCentered={true} asElement={'h3'} size={34} textAlign={'center'}>
-                    Tap into exclusive 0x liquidity
-                </Heading>
-                {/* <Paragraph color={'#8F8F8F'} isCentered={true} isMuted={1} marginBottom={'36px'}>
+            {!isMobile && <MiddleContainerToAnchorPlus>
+                <MiddleContainerCircle>
+                    <Icon width={'28px'} name={'plus-sign'} size={'natural'} />
+                </MiddleContainerCircle>
+            </MiddleContainerToAnchorPlus>}
+
+            <Wrap>
+                <div>
+                    <Heading marginBottom={'34px'} isCentered={true} asElement={'h3'} size={34} textAlign={'center'}>
+                        Tap into exclusive 0x liquidity
+                    </Heading>
+                    {/* <Paragraph color={'#8F8F8F'} isCentered={true} isMuted={1} marginBottom={'36px'}>
                     Gain access to liquidity you can’t get anywhere else.
                 </Paragraph> */}
-            </div>
+                </div>
 
-            <div>
-                <CheckboxOptionsGridContainer>
-                    <ApiFeatureContainerRow>
-                        <ApiFeatureIconContainer>
-                            <Icon name={'market-maker'} size={'natural'} />
-                        </ApiFeatureIconContainer>
-                        <ApiFeatureDetailsColumn>
-                            <ApiFeaturePrimaryText>Professional Market Makers</ApiFeaturePrimaryText>
-                            <ApiFeatureSecondaryText>
-                                Offer competitive pricing through{' '}<span style={{ color: '#00AE99'}}><Link   href={`/docs/guides/rfqt-in-the-0x-api`} isNoArrow={true} isBlock={false} shouldOpenInNewTab={true} target="_blank">0x's RFQ system </Link></span>
-                            </ApiFeatureSecondaryText>
-                        </ApiFeatureDetailsColumn>
-                    </ApiFeatureContainerRow>
-                    <ApiFeatureContainerRow>
-                        <ApiFeatureIconContainer>
-                            <Icon name={'candles'} size={'natural'} />
-                        </ApiFeatureIconContainer>
-                        <ApiFeatureDetailsColumn>
-                            <ApiFeaturePrimaryText>0x’s Open Orderbook</ApiFeaturePrimaryText>
-                            <ApiFeatureSecondaryText>
-                                Enables free limit orders and true peer to peer liquidity
-                            </ApiFeatureSecondaryText>
-                        </ApiFeatureDetailsColumn>
-                    </ApiFeatureContainerRow>
-                    <ApiFeatureContainerRow>
-                        <ApiFeatureIconContainer>
-                            <Icon name={'liquidity'} size={'natural'} />
-                        </ApiFeatureIconContainer>
-                        <ApiFeatureDetailsColumn>
-                            <ApiFeaturePrimaryText>Private Liquidity Pools</ApiFeaturePrimaryText>
-                            <ApiFeatureSecondaryText>
-                                Access AMM liquidity that you can’t get anywhere else
-                            </ApiFeatureSecondaryText>
-                        </ApiFeatureDetailsColumn>
-                    </ApiFeatureContainerRow>
-                </CheckboxOptionsGridContainer>
-            </div>
+                <div>
+                    <CheckboxOptionsGridContainer>
+                        <ApiFeatureContainerRow>
+                            <ApiFeatureIconContainer>
+                                <Icon name={'market-maker'} size={'natural'} />
+                            </ApiFeatureIconContainer>
+                            <ApiFeatureDetailsColumn>
+                                <ApiFeaturePrimaryText>Professional Market Makers</ApiFeaturePrimaryText>
+                                <ApiFeatureSecondaryText>
+                                    Offer competitive pricing through{' '}
+                                    <span style={{ color: '#00AE99' }}>
+                                        <Link
+                                            href={`/docs/guides/rfqt-in-the-0x-api`}
+                                            isNoArrow={true}
+                                            isBlock={false}
+                                            shouldOpenInNewTab={true}
+                                            target="_blank"
+                                        >
+                                            0x's RFQ system{' '}
+                                        </Link>
+                                    </span>
+                                </ApiFeatureSecondaryText>
+                            </ApiFeatureDetailsColumn>
+                        </ApiFeatureContainerRow>
+                        <ApiFeatureContainerRow>
+                            <ApiFeatureIconContainer>
+                                <Icon name={'candles'} size={'natural'} />
+                            </ApiFeatureIconContainer>
+                            <ApiFeatureDetailsColumn>
+                                <ApiFeaturePrimaryText>0x’s Open Orderbook</ApiFeaturePrimaryText>
+                                <ApiFeatureSecondaryText>
+                                    Enables free limit orders and true peer to peer liquidity
+                                </ApiFeatureSecondaryText>
+                            </ApiFeatureDetailsColumn>
+                        </ApiFeatureContainerRow>
+                        <ApiFeatureContainerRow>
+                            <ApiFeatureIconContainer>
+                                <Icon name={'liquidity'} size={'natural'} />
+                            </ApiFeatureIconContainer>
+                            <ApiFeatureDetailsColumn>
+                                <ApiFeaturePrimaryText>Private Liquidity Pools</ApiFeaturePrimaryText>
+                                <ApiFeatureSecondaryText>
+                                    Access AMM liquidity that you can’t get anywhere else
+                                </ApiFeatureSecondaryText>
+                            </ApiFeatureDetailsColumn>
+                        </ApiFeatureContainerRow>
+                    </CheckboxOptionsGridContainer>
+                </div>
 
-            {/* <div style={{ margin: '0 auto' }}>
+                {/* <div style={{ margin: '0 auto' }}>
                 <Button
                     isInline={true}
                     isWithArrow={true}
@@ -112,9 +129,10 @@ export const SectionLandingAbout = () => (
                     Learn more about 0x Liquidity
                 </Button>
             </div> */}
-        </Wrap>
-    </Section>
-);
+            </Wrap>
+        </Section>
+    );
+};
 
 const MiddleContainerCircle = styled.div`
     height: 68px;
@@ -125,7 +143,7 @@ const MiddleContainerCircle = styled.div`
     align-items: center;
     justify-content: center;
     transform: translateX(-30px);
-    @media (max-width: 900px) {
+    @media (max-width: 768px) {
         margin: 0 auto;
         transform: none;
     }
@@ -136,7 +154,7 @@ const MiddleContainerToAnchorPlus = styled.div`
     width: 8px;
     position: relative;
     align-self: center;
-    @media (max-width: 900px) {
+    @media (max-width: 768px) {
         transform: none;
         width: 100%;
         margin-top: 30px;
@@ -145,10 +163,9 @@ const MiddleContainerToAnchorPlus = styled.div`
 
 const ApiFeatureIconContainer = styled.div`
     margin-right: 30px;
-    @media (max-width: 900px) {
+    @media (max-width: 768px) {
         margin-bottom: 14px;
         margin-right: 0px;
-
     }
 `;
 
@@ -164,13 +181,15 @@ const ApiFeatureContainerRow = styled.div`
     flex-direction: row;
     align-items: center;
     margin-bottom: 32px;
-    @media (max-width: 900px) {
+    @media (max-width: 768px) {
         transform: none;
         width: 100%;
-        margin-top: 30px;
+        margin-top: 16px;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        margin-bottom: 16px;
+
     }
 `;
 
@@ -181,7 +200,7 @@ const ApiFeaturePrimaryText = styled.div`
     font-size: 18px;
     line-height: 26px;
     color: #ffffff;
-    @media (max-width: 900px) {
+    @media (max-width: 768px) {
         margin-bottom: 12px;
     }
 `;
@@ -196,7 +215,7 @@ const ApiFeatureSecondaryText = styled(ApiFeaturePrimaryText as any)`
 const ApiFeatureDetailsColumn = styled.div`
     display: flex;
     flex-direction: column;
-    @media (max-width: 900px) {
+    @media (max-width: 768px) {
         align-items: center;
         max-width: 250px;
         text-align: center;
@@ -255,11 +274,12 @@ const projects: ProjectLogo[] = [
     {
         name: 'more',
         imageUrl: 'images/clients2/more.svg',
+        persistOnMobile: true,
     },
 ];
 
 const StyledProject = styled.div<StyledProjectInterface>`
-    flex-shrink: 0;
+    flex-shrink: 1;
 
     img {
         object-fit: contain;
@@ -271,9 +291,11 @@ const StyledProject = styled.div<StyledProjectInterface>`
         margin: 15px 20px;
     }
 
-    @media (max-width: 900px) {
-        width: auto;
-        margin: 10px 15px;
+    @media (max-width: 1200px) {
+        /* width: auto; */
+        max-width: 38%;
+        height: auto;
+        margin: 10px 12px;
         display: ${props => !props.isOnMobile && 'none'};
     }
 `;

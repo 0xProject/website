@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useWindowSize } from 'react-use';
 
 import { DocumentTitle } from 'ts/components/document_title';
 import { SectionLandingAbout } from 'ts/components/sections/landing/about';
@@ -13,6 +14,7 @@ import { documentConstants } from 'ts/utils/document_meta_constants';
 import { SectionFeatures } from 'ts/components/sections/landing/matchaFeature';
 import { Section } from 'ts/components/newLayout';
 import { OrderRoutingSection } from './api';
+import { useCallback, useState } from 'react';
 
 interface Props {
     location: Location;
@@ -23,39 +25,40 @@ interface Props {
     };
 }
 
-export class NextLanding extends React.Component<Props> {
-    public state = {
-        isContactModalOpen: false,
-    };
-    public componentDidMount(): void {
-        if (this.props.location.hash.includes('contact')) {
-            this._onOpenContactModal();
-        }
-    }
-    public render(): React.ReactNode {
-        return (
-            <SiteWrap theme="dark">
-                <DocumentTitle {...documentConstants.LANDING} />
-                <SectionLandingHero />
-                <Section bgColor="dark" isFlex={true} maxWidth="1170px" marginBottom={'8px'}>
-                    <OrderRoutingSection/>
-                </Section>
-                <SectionLandingAbout />
-                <SectionLandingClients />
-                <SectionApiQuote />
-                <SectionFeatures />
-                <SectionLandingCta onContactClick={this._onOpenContactModal} />
-                <ModalContact isOpen={this.state.isContactModalOpen} onDismiss={this._onDismissContactModal} />
-            </SiteWrap>
-        );
-    }
-    private readonly _onOpenContactModal = (): void => {
+const NextLanding: React.FC<Props> = props => {
+    const [isContactModalOpen, setisContactModalOpen] = useState<boolean>(false);
+    const _onOpenContactModal = useCallback((): void => {
         window.history.replaceState(null, null, `${window.location.pathname}${window.location.search}#contact`);
-        this.setState({ isContactModalOpen: true });
-    };
+        setisContactModalOpen(true);
+    }, []);
 
-    private readonly _onDismissContactModal = (): void => {
+    const _onDismissContactModal = useCallback((): void => {
         window.history.replaceState(null, null, window.location.pathname + window.location.search);
-        this.setState({ isContactModalOpen: false });
-    };
-}
+        setisContactModalOpen(false);
+    }, []);
+
+    const { width: windowWidth } = useWindowSize();
+    const isSmallScreen = windowWidth < 700;
+
+    return (
+        <SiteWrap theme="dark">
+            <DocumentTitle {...documentConstants.LANDING} />
+            <SectionLandingHero />
+            {!isSmallScreen && (
+                <Section bgColor="dark" isFlex={true} maxWidth="1170px" marginBottom={'8px'}>
+                    <OrderRoutingSection />
+                </Section>
+            )}
+            <SectionLandingAbout />
+            <SectionLandingClients />
+            <SectionApiQuote />
+            {!isSmallScreen && <SectionFeatures />}
+            <SectionLandingCta onContactClick={_onOpenContactModal} />
+            <ModalContact isOpen={isContactModalOpen} onDismiss={_onDismissContactModal} />
+        </SiteWrap>
+    );
+};
+
+export {
+NextLanding,
+} 

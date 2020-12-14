@@ -186,7 +186,7 @@ const SectionFeatures = () => {
                                     display: 'flex',
                                     flexDirection: 'column',
                                     justifyContent: 'space-between',
-                                    padding: '40px 0 10px 0',
+                                    padding: '20px 0 10px 0',
                                     ...props,
                                 }}
                             >
