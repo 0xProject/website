@@ -51,15 +51,15 @@ export const SectionLandingClients = () => {
                             2<StatHeaderUnit>%</StatHeaderUnit>
                         </StatHeader>
                         <StatCaption>Revert Rate</StatCaption>
-                        <StatCaptionDescription>10x lower than Uniswap</StatCaptionDescription>
+                        <StatCaptionDescription>10x lower than competitors</StatCaptionDescription>
                     </StatWrapper>
 
                     <StatWrapper>
                         <StatHeader>
-                            1.5<StatHeaderUnit>ms</StatHeaderUnit>
+                            1.5<StatHeaderUnit>s</StatHeaderUnit>
                         </StatHeader>
                         <StatCaption>Response Time</StatCaption>
-                        <StatCaptionDescription>2.7% faster than 1inch</StatCaptionDescription>
+                        <StatCaptionDescription>2.7% faster than competitors</StatCaptionDescription>
                     </StatWrapper>
                 </StatsGrid>
             </StatsGridContainer>

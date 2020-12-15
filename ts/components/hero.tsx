@@ -5,7 +5,7 @@ import { addFadeInAnimation } from 'ts/constants/animations';
 import { Announcement, AnnouncementProps } from './announcement';
 
 interface Props {
-    title: string;
+    title: string | React.ReactNode;
     maxWidthContent?: string;
     maxWidth?: string;
     labelText?: string;
