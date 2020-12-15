@@ -84,13 +84,11 @@ const StatWrapper = styled.div`
 `;
 
 const StatsGridContainer = styled.div`
-
-@media (max-width: 900px) {
-    flex-direction: column;
-    align-items: center;
-    display: flex;
+    @media (max-width: 900px) {
+        flex-direction: column;
+        align-items: center;
+        display: flex;
     }
-
 `;
 
 const StatsGrid = styled.div`
@@ -100,7 +98,7 @@ const StatsGrid = styled.div`
         flex-direction: column;
         align-items: flex-start;
         & ${StatWrapper} {
-            margin-bottom: 16px;
+            margin-bottom: 42px;
         }
     }
 `;
