@@ -51,6 +51,7 @@ const baseColors = {
     orange: '#E69D00',
     amber800: '#FF8F00',
     darkYellow: '#caca03',
+    yellow500: '#e8a200',
 };
 
 export const colors = {

@@ -8,6 +8,7 @@ import { Column, FlexWrap, Section } from 'ts/components/newLayout';
 import { Heading, Paragraph } from 'ts/components/text';
 import { getTotalBalancesString } from 'ts/pages/governance/vote_stats';
 import { VoteStatusText } from 'ts/pages/governance/vote_status_text';
+import { colors } from 'ts/style/colors';
 import { TallyInterface, VoteOutcome, VoteTime, VotingCardType, WebsitePaths } from 'ts/types';
 
 interface ZEIPCardProps {
@@ -119,6 +120,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                     >
                         <FlexWrap>
                             <Column width="60%" padding="0px 20px 0px 0px">
+                                <Tag>Treasury</Tag>
                                 <Heading>{`${description.slice(0, 20)}...`}</Heading>
 
                                 <Paragraph>{description}</Paragraph>
@@ -159,6 +161,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                     >
                         <FlexWrap>
                             <Column width="60%" padding="0px 20px 0px 0px">
+                                <Tag className="zeip">ZEIP</Tag>
                                 <Heading>
                                     {`${title} `}
                                     <Muted>{`(ZEIP-${zeipId})`}</Muted>
@@ -188,4 +191,20 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
 
 const Muted = styled.span`
     opacity: 0.6;
+`;
+
+const Tag = styled.div`
+    padding: 3px 2px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: ${() => colors.brandLight};
+    color: ${() => colors.white};
+    width: 60px;
+    font-size: 12px;
+
+    &.zeip {
+        width: 40px;
+        background-color: ${() => colors.yellow500};
+    }
 `;
