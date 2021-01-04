@@ -16,7 +16,7 @@ import { Proposal, proposals as prodProposals, stagingProposals } from 'ts/pages
 import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
 import { colors } from 'ts/style/colors';
 import { TallyInterface, VotingCardType, WebsitePaths } from 'ts/types';
-import { ALCHEMY_API_KEY, configs } from 'ts/utils/configs';
+import { ALCHEMY_API_KEY, configs, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
@@ -50,7 +50,7 @@ const getOnChainProposals = async () => {
         'function proposals(uint id) view returns (uint256 id, address proposer, uint256 eta, uint256 startBlock, uint256 endBlock, uint256 forVotes, uint256 againstVotes, bool canceled, bool executed)',
     ];
 
-    const contract = new Contract('0xc0dA01a04C3f3E0be433606045bB7017A7323E38', abi, provider);
+    const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.UNISWAP, abi, provider);
 
     const filter = contract.filters.ProposalCreated();
     const proposalsOnChain = await contract.queryFilter(filter, startingBlockNumber);
