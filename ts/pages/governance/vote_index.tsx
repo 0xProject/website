@@ -28,6 +28,17 @@ type ProposalWithOrder = Proposal & {
     order?: number;
 };
 
+enum ProposalState {
+    Pending,
+    Active,
+    Canceled,
+    Defeated,
+    Succeeded,
+    Queued,
+    Expired,
+    Executed,
+}
+
 const PROPOSALS = environments.isProduction() ? prodProposals : stagingProposals;
 const ZEIP_IDS = Object.keys(PROPOSALS).map(idString => parseInt(idString, 10));
 const ZEIP_PROPOSALS: ProposalWithOrder[] = ZEIP_IDS.map(id => PROPOSALS[id]).sort(
@@ -55,35 +66,15 @@ const getOnChainProposals = async () => {
     const filter = contract.filters.ProposalCreated();
     const proposalsOnChain = await contract.queryFilter(filter, startingBlockNumber);
     const proposalsArray = [];
-    const currentBlock = await utils.getCurrentBlockAsync();
 
     // tslint:disable-next-line:prefer-const
     for (let proposal of proposalsOnChain) {
-        const { id, description } = proposal.args;
-        const proposalData = await contract.proposals(id);
-        const { eta, startBlock, endBlock, canceled, executed, forVotes, againstVotes } = proposalData;
-        let blockTimestamp: number = eta.toNumber();
-        if (currentBlock < endBlock) {
-            blockTimestamp = await utils.getFutureBlockTimestampAsync(endBlock.toNumber());
-        }
-        if (startBlock > currentBlock) {
-            blockTimestamp = await utils.getFutureBlockTimestampAsync(startBlock.toNumber());
-        }
-        if (canceled) {
-            const blockEndTime = await provider.getBlock(endBlock.toNumber());
-            blockTimestamp = blockEndTime.timestamp;
-        }
+        const { id, proposer, description } = proposal.args;
 
         proposalsArray.push({
-            id: id.toNumber(),
-            timestamp: moment(blockTimestamp, 'X'),
+            id,
+            proposer,
             description,
-            canceled,
-            executed,
-            forVotes,
-            againstVotes,
-            upcoming: startBlock > currentBlock,
-            happening: startBlock < currentBlock && currentBlock < endBlock,
         });
     }
 
@@ -135,62 +126,117 @@ const fetchTallysAsync: () => Promise<ZeipTallyMap> = async () => {
     return tallys;
 };
 
-export const TreasuryContext = React.createContext({
-    proposals: [],
+interface Proposals {
+    [index: string]: any;
+}
+
+interface TreasureContextType {
+    proposals: Proposals;
+}
+
+export const TreasuryContext = React.createContext<TreasureContextType>({
+    proposals: {},
 });
 
 export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
-    const [proposals, setProposals] = React.useState(undefined);
+    const [proposals, setProposals] = React.useState<Proposals>({});
     const [isLoading, setLoading] = React.useState<boolean>(true);
+
+    const abi = [
+        'event ProposalCreated (uint256 id, address proposer, address[] targets, uint256[] values, string[] signatures, bytes[] calldatas, uint256 startBlock, uint256 endBlock, string description)',
+        'function proposals(uint id) view returns (uint256 id, address proposer, uint256 eta, uint256 startBlock, uint256 endBlock, uint256 forVotes, uint256 againstVotes, bool canceled, bool executed)',
+        'function state(uint proposalId) public view returns (uint state)',
+        'function proposalCount() public view returns (uint)',
+    ];
+
+    const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.UNISWAP, abi, provider);
+
+    const { path } = useRouteMatch();
+
+    const getProposalData = (id: number) => {
+        return Promise.all([contract.proposals(id), contract.state(id)]);
+    };
+
+    const getProposals = async () => {
+        const proposalCount = await contract.proposalCount();
+        let numOfProposals = proposalCount.toNumber();
+        let proposalPromises = [];
+        for (let i = 1; i <= numOfProposals; i++) {
+            proposalPromises.push(getProposalData(i));
+        }
+
+        const promises = await proposalPromises;
+        Promise.all(
+            promises.map(async promise => {
+                const [fetchProposalDataPromise, fetchStatePromise] = await promise;
+                const proposalData = await fetchProposalDataPromise;
+                const state = await fetchStatePromise;
+                const status = ProposalState[state.toNumber()];
+                const proposalId = proposalData.id.toNumber();
+                let timestamp = proposalData.eta.toNumber();
+                if (Object.is(timestamp, 0)) {
+                    const { endBlock, startBlock, canceled } = proposalData;
+                    const currentBlock = await utils.getCurrentBlockAsync();
+
+                    if (currentBlock < endBlock) {
+                        timestamp = await utils.getFutureBlockTimestampAsync(endBlock.toNumber());
+                    } else if (startBlock > currentBlock) {
+                        timestamp = await utils.getFutureBlockTimestampAsync(startBlock.toNumber());
+                    } else if (canceled) {
+                        const blockEndTime = await provider.getBlock(endBlock.toNumber());
+                        timestamp = blockEndTime.timestamp;
+                    }
+
+                    if (['Defeated', 'Expired', 'Canceled'].includes(status)) {
+                        const blockEndTime = await provider.getBlock(endBlock.toNumber());
+                        timestamp = blockEndTime.timestamp;
+                    }
+                }
+
+                setProposals(allProposals => ({
+                    ...allProposals,
+                    [proposalId]: {
+                        ...allProposals[proposalId],
+                        ...proposalData,
+                        id: proposalId,
+                        status,
+                        timestamp: moment(timestamp, 'X'),
+                    },
+                }));
+
+                return Promise.resolve();
+            }),
+        ).then(() => {
+            console.log("remove loader")
+            setLoading(false);
+        });
+    };
 
     React.useEffect(() => {
         // tslint:disable:no-floating-promises
         (async () => {
+            getProposals();
+            getOnChainProposals().then(logs => {
+                setProposals(allProposals => {
+                    const newProposalsObj = { ...allProposals };
+                    logs.forEach(eventLog => {
+                        const { id, proposer, description } = eventLog;
+                        const proposalId = id.toNumber();
+                        newProposalsObj[proposalId] = {
+                            ...newProposalsObj[proposalId],
+                            proposer,
+                            description,
+                        };
+                    });
+
+                    return newProposalsObj;
+                });
+            });
             const tallyMap: ZeipTallyMap = await fetchTallysAsync();
             setTallys(tallyMap);
-            const onChainProposals = await getOnChainProposals();
-            setProposals(onChainProposals);
-            setLoading(false);
         })();
     }, []);
-
-    const { path } = useRouteMatch();
-
-    React.useEffect(() => {
-        if (!proposals) {
-            return;
-        }
-        let index = 0;
-
-        const zeipLength = ZEIP_PROPOSALS.length - 1;
-        const proposalsLength = proposals.length - 1;
-
-        let zeipIndex = 0;
-        let proposalIndex = 0;
-
-        while (zeipIndex <= zeipLength && proposalIndex <= proposalsLength) {
-            if (ZEIP_PROPOSALS[zeipIndex].voteEndDate.isAfter(proposals[proposalIndex].timestamp)) {
-                ZEIP_PROPOSALS[zeipIndex].order = index;
-                zeipIndex++;
-            } else {
-                proposals[proposalIndex].order = index;
-                proposalIndex++;
-            }
-            index++;
-        }
-
-        while (zeipIndex <= zeipLength) {
-            ZEIP_PROPOSALS[zeipIndex].order = index;
-            index++;
-            zeipIndex++;
-        }
-        while (proposalIndex <= proposalsLength) {
-            proposals[proposalIndex].order = index;
-            proposalIndex++;
-            index++;
-        }
-    }, [proposals]);
 
     return (
         <Switch>
@@ -243,7 +289,8 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                                 );
                             })}
                             {proposals &&
-                                proposals.map((proposal: any) => {
+                                Object.keys(proposals).map((proposalId: string) => {
+                                    const proposal = proposals[proposalId];
                                     const tally = {
                                         no: new BigNumber(proposal.againstVotes.toString()),
                                         yes: new BigNumber(proposal.forVotes.toString()),
