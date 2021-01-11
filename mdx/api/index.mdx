@@ -157,6 +157,16 @@ A structured object containing the signature data for the order. For more info s
 *   All addresses are sent as lower-case (non-checksummed) Ethereum addresses with the `0x` prefix.
 *   All parameters should use **lowerCamelCase**.
 
+## Fees
+There are two ways to capture affiliate fees from a trade.
+*   Capture a percentage of the trade using `feeType=buy-token-percentage` and `buyTokenPercentageFee`, will send a percentage of the amount of the trade to the `feeRecipient` address as fees.
+*   Capture the positive slippage of a trade, this correspond to the difference between the quoted price and realized price when realized price is better. Set `feeType=positive-slippage` and the `feeRecipient` address.
+
+### Fees Misc.
+*   Adding a fee will result in an increased of gas for the taker.
+*   When setting `feeType=positive-slippage` 0xAPI will deduct the cost of gas for that operation from the positive slippage funds so the taker doesn't pay for extra gas when sending the positive slippage to `feeRecipient`.
+*   When using fees (`feeType=buyTokenPercentageFee` or `feeType=`positive-slippage`), 0xAPI won't be able to use highly optimized UniswapV2 Router (https://0xprotocol.readthedocs.io/en/latest/advanced/uniswap.html).
+
 # Swap
 
 This API faciliates consuming the best-priced liquidity from [0x Mesh](https://0x-org.gitbook.io/mesh/) and the greater DEX ecosystem.
