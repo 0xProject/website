@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import * as React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import { Column, FlexWrap, Section } from 'ts/components/newLayout';
 import { Heading, Paragraph } from 'ts/components/text';
@@ -34,6 +34,7 @@ interface TreasuryCardProps {
     order: number;
     description: string;
     tally?: TallyInterface;
+    status?: string;
 }
 
 type VoteIndexCardProps = ZEIPCardProps | TreasuryCardProps;
@@ -106,6 +107,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                 executed: isExecuted,
                 upcoming: isUpcoming,
                 happening: isHappening,
+                status,
                 timestamp,
             } = props;
             return (
@@ -121,18 +123,38 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                         <FlexWrap>
                             <Column width="60%" padding="0px 20px 0px 0px">
                                 <Tag>Treasury</Tag>
-                                <Heading>{`${description.slice(0, 20)}...`}</Heading>
+                                {description ? (
+                                    <>
+                                        <Heading marginBottom="20px">{`${description.slice(0, 20)}...`}</Heading>
 
-                                <Paragraph>{description}</Paragraph>
+                                        <Paragraph>{`${description.slice(0, 200)}...`}</Paragraph>
+                                    </>
+                                ) : (
+                                    <VoteCardShimmer>
+                                        <div className="title shimmer" />
+                                        <div className="description">
+                                            <div className="line shimmer"></div>
+                                            <div className="line shimmer"></div>
+                                            <div className="line shimmer"></div>
+                                        </div>
+
+                                    </VoteCardShimmer>
+                                )}
                             </Column>
                             <Column>
                                 <div className="flex flex-column items-end">
-                                    <VoteStatusText status={getStatus(isCanceled, isExecuted, isUpcoming)} />
+                                    <VoteStatusText
+                                        status={getStatus(
+                                            isCanceled || ['Defeated', 'Expired', 'Canceled'].includes(status),
+                                            isExecuted,
+                                            isUpcoming,
+                                        )}
+                                    />
                                     <Paragraph marginBottom="12px" isMuted={1}>{`${tally.yes.plus(
                                         tally.no,
                                     )} ZRX Total Vote`}</Paragraph>
                                     <Paragraph marginBottom="12px">
-                                        {isExecuted || isCanceled
+                                        {timestamp && (isExecuted || isCanceled || status === 'Defeated')
                                             ? `Ended ${timestamp.format('MMM DD, YYYY')}`
                                             : isHappening
                                             ? `Ends in ${timestamp.diff(moment(), 'days')} days`
@@ -206,5 +228,47 @@ const Tag = styled.div`
     &.zeip {
         width: 40px;
         background-color: ${() => colors.yellow500};
+    }
+`;
+
+const shimmer = keyframes`
+  to {
+    background-position:
+     150% 0;
+  }
+`;
+
+const VoteCardShimmer = styled.div`
+    padding-top: 16px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .shimmer {
+        background-repeat: no-repeat;
+        background: linear-gradient(90deg, ${() => colors.grey50} 0, ${() => colors.grey300} 50%, ${() => colors.grey50} 100%) no-repeat, ${() => colors.grey50};
+        background-size: 300% auto;
+        background-position: -150% 0;
+        animation: ${shimmer} 2.5s infinite ease-out;
+        animation-direction: reverse;
+    }
+
+    .title {
+        height: 20px;
+        width: 100%;
+    }
+
+    .description {
+        flex: 1;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .line {
+            height: 10px;
+            width: 100%;
+        }
     }
 `;
