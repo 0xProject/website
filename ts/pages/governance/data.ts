@@ -384,12 +384,12 @@ export const proposals: Proposals = {
                 {
                     text: 'Consensys Diligence Security audit',
                     url:
-                        'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
+                        'https://consensys.net/diligence/audits/2020/12/0x-exchange-v4/',
                 },
                 {
                     text: '0x v4 Bug Bounty',
                     url:
-                        'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
+                        'https://blog.0xproject.com/0x-protocol-v4-bug-bounty-fd0c1942b9a',
                 },
             ],
         },
