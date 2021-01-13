@@ -382,7 +382,7 @@ export const proposals: Proposals = {
             rating: 1,
             links: [
                 {
-                    text: 'Consensys Diligence Security audit',
+                    text: 'Consensys Diligence Security Audit',
                     url:
                         'https://consensys.net/diligence/audits/2020/12/0x-exchange-v4/',
                 },
