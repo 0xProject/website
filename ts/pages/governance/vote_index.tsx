@@ -139,6 +139,7 @@ export const TreasuryContext = React.createContext<TreasureContextType>({
 });
 
 export const VoteIndex: React.FC<VoteIndexProps> = () => {
+    const [filter, setFilter ] = React.useState<string>('all');
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
     const [proposals, setProposals] = React.useState<Proposals>({});
     const [isLoading, setLoading] = React.useState<boolean>(true);
@@ -238,6 +239,14 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
         })();
     }, []);
 
+    const applyFilter: React.ChangeEventHandler = (event: React.ChangeEvent) => {
+        const { value } = event.target as HTMLSelectElement;
+        setFilter(value);
+    }
+
+    const showZEIP = ['all', 'zeip'];
+    const showTreasury = ['all', 'treasury'];
+
     return (
         <Switch>
             <Route exact={true} path={`${WebsitePaths.Vote}/treasury/:proposalId`}>
@@ -277,7 +286,12 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                         </LoaderWrapper>
                     ) : (
                         <VoteIndexCardWrapper>
-                            {ZEIP_PROPOSALS.map(proposal => {
+                            <Filter onChange={applyFilter}>
+                                <option value="all" selected>Showing All</option>
+                                <option value="zeip">ZEIP</option>
+                                <option value="treasury">Treasury</option>
+                            </Filter>
+                            {showZEIP.includes(filter) && ZEIP_PROPOSALS.map(proposal => {
                                 const tally = tallys && tallys[proposal.zeipId];
                                 return (
                                     <VoteIndexCard
@@ -288,7 +302,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                                     />
                                 );
                             })}
-                            {proposals &&
+                            {showTreasury.includes(filter) && proposals &&
                                 Object.keys(proposals).map((proposalId: string) => {
                                     const proposal = proposals[proposalId];
                                     const tally = {
@@ -335,4 +349,13 @@ const LoaderWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+`;
+
+const Filter = styled.select`
+    border: none;
+    background-color: transparent;
+    outline: none;
+    width: 100px;
+    align-self: flex-end;
+    margin-right: 40px;
 `;
