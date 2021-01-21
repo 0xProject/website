@@ -56,9 +56,9 @@ const SectionLandingLogos = () => {
                                 <Icon name={'integrators/metamask'} size={'natural'} />
                             </LogoIconContainer>
                         </LogoExternalLink>
-                        <LogoExternalLink href={'https://zerion.io'} target="_blank" rel="noopener">
+                        <LogoExternalLink href={'https://shapeshift.com/'} target="_blank" rel="noopener">
                             <LogoIconContainer>
-                                <Icon name={'integrators/zerion'} size={'natural'} />
+                                <Icon name={'integrators/shapeshift'} size={'natural'} />
                             </LogoIconContainer>
                         </LogoExternalLink>
                         <LogoExternalLink href={'https://defisaver.com'} target="_blank" rel="noopener">

@@ -15,7 +15,7 @@ export const SectionLandingHero: React.FC<SectionlandingHeroProps> = () => {
     return (
         <>
             <Hero
-                title={<span>Liquidity Infrastructure<br/>for DeFi</span>}
+                title={<span>The single endpoint for all DeFi liquidity</span>}
                 isLargeTitle={true}
                 isFullWidth={true}
                 maxWidth={'1280px'}
@@ -24,7 +24,7 @@ export const SectionLandingHero: React.FC<SectionlandingHeroProps> = () => {
                 alignItems={'flex-start'}
                 hideFigureOnMobile={true}
                 showFigureBottomMobile={false}
-                description="0x is a powerful liquidity aggregation API that allows you to access both on and off-chain DEX liquidity"
+                description="0x API is a professional grade liquidity aggregator enabling the future of DeFi applications"
                 figure={
                     <LandingAnimation
                         image={

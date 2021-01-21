@@ -39,7 +39,7 @@ const MatchaCupCopntainer = styled.div`
 enum PossibleFeatures {
     Matcha = 'matcha_feature',
     Metamask = 'metamask_feature',
-    Zerion = 'zerion_feature',
+    Shapeshift = 'shapeshift_feature',
     DeFiSaver = 'defisaver_feature',
     Rari = 'rari_feature',
     Prysm = 'prysm_feature',
@@ -70,25 +70,25 @@ const featureMetadatas: { [s in PossibleFeatures]: FeatureMetadata } = {
         description:
             'MetaMask is your gateway to Web3. Buy, send and swap tokens globally and interact with dapps at lightning speed. Trusted by over 1MM users worldwide.',
         url: 'https://metamask.io/',
-        buttonText: 'Go to MetaMask',
+        buttonText: 'Visit MetaMask',
         iconName: 'integrators/metamask',
         feature: PossibleFeatures.Metamask,
     },
-    zerion_feature: {
-        title: 'Zerion',
+    shapeshift_feature: {
+        title: 'ShapeShift',
         description:
-            'Zerion is a leading investment interface for decentralized finance, providing users with a single place to manage their entire DeFi portfolio in a non-custodial way.',
-        url: 'https://zerion.io',
-        buttonText: 'Check out Zerion',
-        iconName: 'integrators/zerion',
-        feature: PossibleFeatures.Zerion,
+            `Since 2014, ShapeShift has been pioneering self-custody for digital asset trading. The company's new web and mobile platform allows users to safely buy, hold, and trade digital assets.`,
+        url: 'https://shapeshift.com/',
+        buttonText: 'Visit ShapeShift',
+        iconName: 'integrators/shapeshift',
+        feature: PossibleFeatures.Shapeshift,
     },
     defisaver_feature: {
         title: 'DeFi Saver',
         description:
             'DeFi Saver is a portfolio management app for lending protocols such as MakerDAO, Compound and Aave with advanced and automated leverage management features.',
         url: 'https://defisaver.com',
-        buttonText: 'View DeFi Saver',
+        buttonText: 'Visit DeFi Saver',
         iconName: 'integrators/defi-saver',
         feature: PossibleFeatures.DeFiSaver,
     },

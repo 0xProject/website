@@ -38,7 +38,7 @@ export const SectionLandingAbout = () => {
                         All the popular DEX networks
                     </Heading>
                     <Paragraph color={'#8F8F8F'} isCentered={true} marginBottom={'21px'}>
-                        Don’t ever worry about another integration, we have it covered.
+                        Don't ever worry about adding new sources, we have it covered.
                     </Paragraph>
                 </div>
 
@@ -60,7 +60,7 @@ export const SectionLandingAbout = () => {
             <Wrap>
                 <div>
                     <Heading marginBottom={'34px'} isCentered={true} asElement={'h3'} size={34} textAlign={'center'}>
-                        Tap into exclusive 0x liquidity
+                        ...Plus exclusive 0x liquidity
                     </Heading>
                     {/* <Paragraph color={'#8F8F8F'} isCentered={true} isMuted={1} marginBottom={'36px'}>
                     Gain access to liquidity you can’t get anywhere else.
