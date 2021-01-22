@@ -5,8 +5,8 @@ import styled, { css, withTheme } from 'styled-components';
 import { Link } from 'ts/components/documentation/shared/link';
 
 import { Button } from 'ts/components/button';
-import { DropdownProducts } from 'ts/components/dropdowns/dropdown_products';
-import { DropdownResources } from 'ts/components/dropdowns/dropdown_resources';
+// import { DropdownProducts } from 'ts/components/dropdowns/dropdown_products';
+// import { DropdownResources } from 'ts/components/dropdowns/dropdown_resources';
 import { Hamburger } from 'ts/components/hamburger';
 import { Logo } from 'ts/components/logo';
 import { MobileNav } from 'ts/components/mobile_nav';
@@ -48,12 +48,12 @@ const navItems: NavItemProps[] = [
         text: 'ZRX',
         url: WebsitePaths.Staking,
     },
-        {
-        id: 'resources',
-        text: 'Resources',
-        dropdownComponent: DropdownResources,
-        dropdownWidth: 270,
-    },
+    //     {
+    //     id: 'resources',
+    //     text: 'Resources',
+    //     dropdownComponent: DropdownResources,
+    //     dropdownWidth: 270,
+    // },
     {
         id: 'blog',
         text: 'Blog',

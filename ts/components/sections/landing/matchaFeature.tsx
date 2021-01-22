@@ -112,7 +112,7 @@ const featureMetadatas: { [s in PossibleFeatures]: FeatureMetadata } = {
     zapper_feature: {
         title: 'Zapper',
         description: 'Zapper is an asset management platform that allows users to deploy capital across multiple DeFi protocols with one click.',
-        url: 'https://zapper.com',
+        url: 'https://zapper.fi',
         buttonText: 'Visit Zapper',
         iconName: 'integrators/zapper',
         feature: PossibleFeatures.Zapper,
