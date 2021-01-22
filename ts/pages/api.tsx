@@ -259,22 +259,6 @@ window.web3.eth.sendTransaction(quote, (err, txId) => {
                             </Button>
                         </ExampleLink>
                     </ExampleRowContainer>
-                    <ExampleRowContainer>
-                        <ExampleLeftContainer>
-                            <ExampleLabel>Margin trading with 0x API</ExampleLabel>
-                            <ExampleDescription>Create a margin trading DeFi product using 0x API</ExampleDescription>
-                        </ExampleLeftContainer>
-                        <ExampleLink>
-                            <Button
-                                onClick={() => trackZeroExApiAdConversion()}
-                                href="/docs/guides/develop-a-margin-trading-smart-contract-with-0x-api"
-                                isWithArrow={true}
-                                isAccentColor={true}
-                            >
-                                View Guide
-                            </Button>
-                        </ExampleLink>
-                    </ExampleRowContainer>
                 </FlexColumnWrapped>
             </ResponsiveFlexSection>
             {/* More info/CTA section  */}

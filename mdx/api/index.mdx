@@ -149,8 +149,8 @@ A [0x order](/docs/core-concepts#the-0x-order-message-format) with additional fi
 
 # Swap
 
-This API faciliates consuming the best-priced liquidity from [0x Mesh](https://0x-org.gitbook.io/mesh/) and the greater DEX ecosystem through the [ERC20BridgeProxy](https://github.com/0xProject/ZEIPs/issues/47).
-We use smart order routing to split up your transaction across decentralized exchange networks to be filled with the lowest slippage possible.
+This API faciliates consuming the best-priced liquidity from [0x Mesh](https://0x-org.gitbook.io/mesh/) and the greater DEX ecosystem.
+We use smart order routing to split up your transaction across decentralized exchange networks to be filled with the lowest slippage possible while minimizing transaction costs.
 Follow the "[Swap Tokens with 0x API](/docs/guides/swap-tokens-with-0x-api)" guide to see how to use it.
 
 ## GET /swap/v1/quote
@@ -164,19 +164,22 @@ For transactions where the `sellToken` is not ETH, you will have to [set your al
 Either a `sellAmount` or `buyAmount` is required.
 When both are provided, `sellAmount` takes precedence over `buyAmount`.
 
-| Query Param          | Description                                                                                                                                                                                                         |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sellToken`          | The ERC20 token address or symbol of the token you want to send. "ETH" can be provided as a valid `sellToken`.                                                                                                      |
-| `buyToken`           | The ERC20 token address or symbol of the token you want to receive. "ETH" can be provided as a valid `buyToken`
-| `sellAmount`         | (Optional) The amount of `sellToken` (in `sellToken` base units) you want to send.                                                                                                                                       |
-| `buyAmount`          | (Optional) The amount of `buyToken` (in `buyToken` base units) you want to receive.                                                                                                                                      |
-| `slippagePercentage` | (Optional) The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. This parameter will change over time with market conditions. |
-| `gasPrice`           | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                       |
-| `takerAddress`       | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.          |
-| `excludedSources`    | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources  |
-| `includedSources`    | (Optional) For now only supports `RFQT`, which should be used when the integrator only wants RFQT liquidity without any other DEX orders. Requires a particular agreement with the 0x integrations team. This parameter cannot be combined with `excludedSources`. |
-| `skipValidation`     | (Optional) Normally, whenever a `takerAddress` is provided, the API will validate the quote for the user. (For more details, see ["How does `takerAddress` help with catching issues?"](/docs/guides/0x-api-faq#how-does-takeraddress-help-with-catching-issues).)  When this parameter is set to `true`, that validation will be skipped. See also [here](/docs/guides/rfqt-in-the-0x-api#quote-validation). |
-| `intentOnFilling`    | (Optional) Used to enable RFQ-T liquidity.  For more details see the guide [Understanding RFQ-T and the 0x API](/docs/guides/rfqt-in-the-0x-api). |
+| Query Param             | Description                                                                                                                                                                                                                                                                                                                                                                                                   |
+| --------------------    | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                                                                                                                                                                           |
+| `sellToken`             | The ERC20 token address or symbol of the token you want to send. "ETH" can be provided as a valid `sellToken`.                                                                                                                                                                                                                                                                                                |
+| `buyToken`              | The ERC20 token address or symbol of the token you want to receive. "ETH" can be provided as a valid `buyToken`                                                                                                                                                                                                                                                                                               |
+| `sellAmount`            | (Optional) The amount of `sellToken` (in `sellToken` base units) you want to send.                                                                                                                                                                                                                                                                                                                            |
+| `buyAmount`             | (Optional) The amount of `buyToken` (in `buyToken` base units) you want to receive.                                                                                                                                                                                                                                                                                                                           |
+| `slippagePercentage`    | (Optional) The maximum acceptable slippage in % of the `buyToken` amount if `sellAmount` is provided, the maximum acceptable slippage in % of the `sellAmount` amount if `buyAmount` is provided. This parameter will change over time with market conditions.                                                                                                                                                |
+| `gasPrice`              | (Optional, defaults to ethgasstation "fast") The target gas price (in wei) for the swap transaction. If the price is too low to achieve the quote, an error will be returned.                                                                                                                                                                                                                                 |
+| `takerAddress`          | (Optional) The address which will fill the quote. When provided the gas will be estimated and returned. An eth_call will also be performed. If this fails a Revert Error will be returned in the response.                                                                                                                                                                                                    |
+| `excludedSources`       | (Optional) Liquidity sources (`Eth2Dai`, `Uniswap`, `Kyber`, `0x`, `LiquidityProvider` etc) that will not be included in the provided quote. Ex: `excludedSources=Uniswap,Kyber,Eth2Dai`. See [here](https://github.com/0xProject/0x-monorepo/blob/development/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L27) for a full list of sources                                               |
+| `includedSources`       | (Optional) For now only supports `RFQT`, which should be used when the integrator only wants RFQT liquidity without any other DEX orders. Requires a particular agreement with the 0x integrations team. This parameter cannot be combined with `excludedSources`.                                                                                                                                            |
+| `skipValidation`        | (Optional) Normally, whenever a `takerAddress` is provided, the API will validate the quote for the user. (For more details, see ["How does `takerAddress` help with catching issues?"](/docs/guides/0x-api-faq#how-does-takeraddress-help-with-catching-issues).)  When this parameter is set to `true`, that validation will be skipped. See also [here](/docs/guides/rfqt-in-the-0x-api#quote-validation). |
+| `intentOnFilling`       | (Optional) Used to enable RFQ-T liquidity.  For more details see the guide [Understanding RFQ-T and the 0x API](/docs/guides/rfqt-in-the-0x-api).                                                                                                                                                                                                                                                             |
+| `feeRecipient`          | (Optional) The ETH address that should receive affiliate fees specified with `buyTokenPercentageFee`.                                                                                                                                                                                                                                                                                                         |
+| `buyTokenPercentageFee` | (Optional) The percentage (between 0 - 1.0) of the buyAmount that should be attributed to `feeRecipient` as affiliate fees. Note that this requires that the `feeRecipient` parameter is also specified in the request.                                                                                                                                                                                       |
+| `affiliateAddress`      | (Optional) An ETH address for which to attribute the trade for tracking and analytics purposes. Note `affiliateAddress` is only for tracking trades and has no impact on affiliate fees, for affiliate fees use `feeRecipient`.                                                                                                                                                                               |
 
 ### Response
 
@@ -534,99 +537,6 @@ If the [`eth_call`](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call) fai
     "expectedAssetFillAmount": "10000000",
     "actualAssetFillAmount": "0"
   }
-}
-```
-</CodeTabs>
-
-#### Forwarder Transactions
-
-Use "ETH" as the `sellToken` to receive a [Forwarder](/docs/guides/v3-forwarder-specification) transaction, which will allow you to swap without having set allowances on your tokens. Note: The Forwarder contract is updated over time and may have a different address.
-
-<HttpCall fontSize="16px" path="/swap/v1/quote?buyToken=DAI&sellToken=ETH&sellAmount=1000000000000000000" />
-
-<CodeTabs tabs={['200 - Forwarder Transaction']}>
-
-```json
-{
-  "price": "197.793959158652651898",
-  "guaranteedPrice": "191.860140383893072341",
-  "to": "0x6958f5e95332d93d21af0d7b9ca85b8212fee0a5",
-  "data": "0x939ce6ba00000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000005800000000000000000000000000000000000000000000000000000000000000580000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000005591360f8c7640fea5771c9682d6b5ecb776e1f800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a669825291a8629d50000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005ecd5e3b3abb9bf56bb95d42e8d0cbf6ec74ff2a3cf7214b986ca0034d0164270a96c68300000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000003c000000000000000000000000000000000000000000000000000000000000004c000000000000000000000000000000000000000000000000000000000000004c000000000000000000000000000000000000000000000000000000000000001c4dc1600f30000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000005591360f8c7640fea5771c9682d6b5ecb776e1f800000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000140000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000ae3641dffb712e917b9dc3e6c271b6657ff398180000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000a669825291a8629d500000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000869584cd0000000000000000000000001000000000000000000000000000000000000011000000000000000000000000000000000000000000000000000000005ecd421b",
-  "value": "1005400000000000000",
-  "gas": "425952",
-  "estimatedGas": "354960",
-  "gasPrice": "36000000000",
-  "protocolFee": "5400000000000000",
-  "minimumProtocolFee": "5400000000000000",
-  "buyTokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
-  "sellTokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-  "buyAmount": "197793959158652651898",
-  "sellAmount": "1000000000000000000",
-  "estimatedGasTokenRefund": "192000",
-  "sources": [
-    {
-      "name": "0x",
-      "proportion": "0"
-    },
-    {
-      "name": "Uniswap",
-      "proportion": "0"
-    },
-    {
-      "name": "Eth2Dai",
-      "proportion": "0"
-    },
-    {
-      "name": "Kyber",
-      "proportion": "0"
-    },
-    {
-      "name": "Curve_USDC_DAI",
-      "proportion": "0"
-    },
-    {
-      "name": "Curve_USDC_DAI_USDT",
-      "proportion": "0"
-    },
-    {
-      "name": "Curve_USDC_DAI_USDT_TUSD",
-      "proportion": "0"
-    },
-    {
-      "name": "Curve_USDC_DAI_USDT_BUSD",
-      "proportion": "0"
-    },
-    {
-      "name": "Curve_USDC_DAI_USDT_SUSD",
-      "proportion": "0"
-    },
-    {
-      "name": "LiquidityProvider",
-      "proportion": "1"
-    }
-  ],
-  "orders": [
-    {
-      "chainId": 1,
-      "exchangeAddress": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
-      "makerAddress": "0x5591360f8c7640fea5771c9682d6b5ecb776e1f8",
-      "takerAddress": "0x0000000000000000000000000000000000000000",
-      "feeRecipientAddress": "0x1000000000000000000000000000000000000011",
-      "senderAddress": "0x0000000000000000000000000000000000000000",
-      "makerAssetAmount": "191860140383893072341",
-      "takerAssetAmount": "1000000000000000000",
-      "makerFee": "0",
-      "takerFee": "0",
-      "expirationTimeSeconds": "1590517307",
-      "salt": "26565622006158364044125857583912439776216647036581708552004609141045045151363",
-      "makerAssetData": "0xdc1600f30000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000005591360f8c7640fea5771c9682d6b5ecb776e1f800000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000140000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000ae3641dffb712e917b9dc3e6c271b6657ff398180000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000a669825291a8629d500000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-      "takerAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-      "makerFeeAssetData": "0x",
-      "takerFeeAssetData": "0x",
-      "signature": "0x04"
-    }
-  ],
-  "allowanceTarget": "0x0000000000000000000000000000000000000000"
 }
 ```
 </CodeTabs>
@@ -1075,7 +985,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 
 ## GET /meta_transaction/v0/quote
 
-When a trader has shown an intent to complete a trade, calling this `/quote` endpoint will return the hash of a [0x transaction](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions) for them to sign. In signing the 0x transaction, they are agreeing to the details of the trade. 0x transactions are a 0x-native feature that enables meta-transactions by separating the taker of a trade, from the party submitting the Ethereum transaction. Once the trader has signed the 0x transaction hash, the integrator should send it to the `/submit` endpoint. 
+When a trader has shown an intent to complete a trade, calling this `/quote` endpoint will return the hash of a [0x transaction](https://github.com/0xProject/0x-protocol-specification/blob/master/v3/v3-specification.md#transactions) for them to sign. In signing the 0x transaction, they are agreeing to the details of the trade. 0x transactions are a 0x-native feature that enables meta-transactions by separating the taker of a trade, from the party submitting the Ethereum transaction. Once the trader has signed the 0x transaction hash, the integrator should send it to the `/submit` endpoint.
 
 ### Request
 
@@ -1098,7 +1008,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `price`             | If `buyAmount` was specified in the request it provides the price of `buyToken` in `sellToken` and vice versa. This price does not include the `slippage` provided in the request above, and therefore represents the best possible price. |
 | `buyAmount`         | The amount of `buyToken` (in `buyToken` units) that would be bought in this swap. Certain on-chain sources do not allow specifying `buyAmount`, when using `buyAmount` these sources are excluded. |
-| `sellAmount`        | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.  Specifying `sellAmount` is the recommended way to interact with 0xAPI as it covers all on-chain sources.   
+| `sellAmount`        | The amount of `sellToken` (in `sellToken` units) that would be sold in this swap.  Specifying `sellAmount` is the recommended way to interact with 0xAPI as it covers all on-chain sources.
 | `buyTokenAddress`   | The ERC20 token address of the token you want to receive in quote.                                                                                                                               |
 | `sellTokenAddress`  | The ERC20 token address of the token you want to sell with quote.                                                                                                                               |                                                                                                          |
 | `zeroExTransactionHash`           | The 0x transaction hash that must be signed by the trader.                   |
@@ -1108,7 +1018,7 @@ When both are provided, `sellAmount` takes precedence over `buyAmount`.
 
 ## POST /meta_transaction/v0/submit
 
-This endpoint accepts a signed 0x transaction hash and will do one of two things: (1) submit the Ethereum transaction executing the trade encoded in the 0x transaction OR (2) return an unsigned Ethereum transaction that executes the 0x transaction. (1) occurs if the request is sent with a whitelisted `0x-api-key` header or if a liquidity provider is willing to submit trades their involved in on the taker's behalf. If neither of these is true, it returns the unsigned Ethereum transaction for either the end user or integrator/dApp to sign and broadcast. 
+This endpoint accepts a signed 0x transaction hash and will do one of two things: (1) submit the Ethereum transaction executing the trade encoded in the 0x transaction OR (2) return an unsigned Ethereum transaction that executes the 0x transaction. (1) occurs if the request is sent with a whitelisted `0x-api-key` header or if a liquidity provider is willing to submit trades their involved in on the taker's behalf. If neither of these is true, it returns the unsigned Ethereum transaction for either the end user or integrator/dApp to sign and broadcast.
 
 ### Request
 

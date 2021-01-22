@@ -51,7 +51,7 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/greg.jpg',
         name: 'Greg Hysen',
-        title: 'Senior Protocol Engineer',
+        title: 'Engineering Manager, Protocol',
     },
     {
         imageUrl: '/images/team/blake.jpg',
@@ -84,11 +84,6 @@ const team: TeamMember[] = [
         title: 'Ecosystem Development Lead',
     },
     {
-        imageUrl: '/images/team/eugenea.jpg',
-        name: 'Eugene Aumson',
-        title: 'Senior Engineer',
-    },
-    {
         imageUrl: '/images/team/jasons.jpg',
         name: 'Jason Somensatto',
         title: 'Senior Counsel',
@@ -116,7 +111,7 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/lawrencef.jpg',
         name: 'Lawrence Forman',
-        title: 'Protocol Engineer',
+        title: 'Senior Protocol Engineer',
     },
     {
         imageUrl: '/images/team/paulv.jpg',
@@ -147,11 +142,6 @@ const team: TeamMember[] = [
         imageUrl: '/images/team/theog.jpg',
         name: 'Theo Gonella',
         title: 'Product Manager',
-    },
-    {
-        imageUrl: '/images/team/alext.jpg',
-        name: 'Alex Towle',
-        title: 'Protocol Engineer',
     },
     {
         imageUrl: '/images/team/oskarp.jpg',

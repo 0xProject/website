@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
-import { Providers, ProviderState } from 'ts/types';
+import { ProviderState } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { trackEvent } from 'ts/utils/google_analytics';
@@ -65,12 +65,24 @@ export const useWallet = () => {
     }, [currentProviderState.provider]);
 
     const connectToWallet = useCallback(
-        async (providerOverride?: Providers) => {
+        async provider => {
             cleanupCurrentProvider();
-            const providerState: ProviderState =
-                providerOverride === Providers.WalletLink
-                    ? providerStateFactory.getInitialProviderStateFromWalletLink(currentNetworkId)
-                    : providerStateFactory.getInitialProviderState(currentNetworkId);
+            const payload = window.localStorage.getItem('WALLETCONNECTOR');
+            let providerState: ProviderState;
+
+            switch (JSON.parse(payload).name) {
+                case 'METAMASK':
+                    providerState = providerStateFactory.getInitialProviderStateFromWindowIfExists('METAMASK');
+                    break;
+                case 'WALLET_LINK':
+                    providerState = providerStateFactory.getInitialProviderStateFromWalletLink(provider);
+                    break;
+                case 'WALLET_CONNECT':
+                    providerState = providerStateFactory.getInitialProviderStateFromWalletConnect(provider);
+                    break;
+                default:
+                    providerState = providerStateFactory.getInitialProviderState(1);
+            }
 
             dispatcher.updateProviderState(providerState);
 
@@ -99,18 +111,35 @@ export const useWallet = () => {
         [cleanupCurrentProvider, currentNetworkId, dispatcher, handleAccountsChange, handleNetworksChange],
     );
 
-    const logoutWallet = useCallback(() => {
-        cleanupCurrentProvider();
-        const providerState: ProviderState = providerStateFactory.getInitialProviderState(currentNetworkId);
+    const logoutWallet = useCallback(
+        (connector, deactivate) => {
+            cleanupCurrentProvider();
+            const providerState: ProviderState = providerStateFactory.getInitialProviderState(currentNetworkId);
 
-        dispatcher.updateProviderState(providerState);
-        dispatcher.setAccountStateLoading();
-    }, [cleanupCurrentProvider, currentNetworkId, dispatcher]);
+            dispatcher.updateProviderState(providerState);
+            dispatcher.setAccountStateLoading();
+            const payload = window.localStorage.getItem('WALLETCONNECTOR');
+            if (JSON.parse(payload).name === 'WALLET_CONNECT') {
+                (connector).close();
+                window.localStorage.removeItem('walletconnect');
+            } else if (JSON.parse(payload).name === 'WALLET_LINK') {
+                (connector).close();
+                window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:linked');
+                window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:id');
+                window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:secret');
+                window.localStorage.removeItem('-walletlink:https://www.walletlink.org:Addresses');
+            } else {
+                deactivate();
+            }
+            window.localStorage.removeItem('WALLETCONNECTOR');
+        },
+        [cleanupCurrentProvider, currentNetworkId, dispatcher],
+    );
 
     return {
         connectToWallet: useCallback(
-            (providerOverride?: Providers) => {
-                connectToWallet(providerOverride).catch((err: Error) => {
+            provider => {
+                connectToWallet(provider).catch((err: Error) => {
                     logUtils.warn(`Failed to connect wallet ${err}`);
                     errorReporter.report(err);
                 });

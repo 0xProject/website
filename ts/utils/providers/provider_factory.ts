@@ -2,19 +2,11 @@ import { EmptyWalletSubprovider, RPCSubprovider, Web3ProviderEngine } from '@0x/
 import { providerUtils } from '@0x/utils';
 import { ZeroExProvider } from 'ethereum-types';
 import _ from 'lodash';
-import WalletLink from 'walletlink';
 
 import { Maybe, Network } from 'ts/types';
 import { configs } from 'ts/utils/configs';
 
 const { PUBLIC_NODE_URLS_BY_NETWORK_ID } = configs;
-
-const LOGO_URL_0x = 'https://0x.org/images/0x_logo.png';
-
-const walletLink = new WalletLink({
-    appName: '0x Portal',
-    appLogoUrl: LOGO_URL_0x,
-});
 
 // TODO(kimpers): Copied from instant, migrate to a package that can be shared
 export const providerFactory = {
@@ -34,10 +26,8 @@ export const providerFactory = {
         return undefined;
     },
 
-    getWalletLinkProvider: (network: Network): ZeroExProvider => {
+    getWalletLinkProvider: (walletLinkProvider: any): ZeroExProvider => {
         // NOTE: chainId will not update depending on the user's setting in the Coinbase Wallet app like with MetaMask
-        const rpcUrl = PUBLIC_NODE_URLS_BY_NETWORK_ID[network][0];
-        const walletLinkProvider = walletLink.makeWeb3Provider(rpcUrl, network);
 
         if (!walletLinkProvider || !walletLinkProvider.enable) {
             throw new Error('Failed to connect to WalletLink');
@@ -50,10 +40,25 @@ export const providerFactory = {
             isMetaMask: false,
             isParity: false,
             stop: _.noop.bind(_),
-            enable: (walletLinkProvider.enable as any).bind(walletLinkProvider),
-            sendAsync: (walletLinkProvider.sendAsync as any).bind(walletLinkProvider),
+            enable: (walletLinkProvider.enable).bind(walletLinkProvider),
+            sendAsync: (walletLinkProvider.sendAsync).bind(walletLinkProvider),
         };
 
+        return standardizedProvider;
+    },
+
+    getWalletConnectProvider: (walletConnectProvider: any): ZeroExProvider => {
+        if (!walletConnectProvider || !walletConnectProvider.enable) {
+            throw new Error('Failed to connect to WalletConnect');
+        }
+
+        const standardizedProvider: ZeroExProvider = {
+            isMetaMask: false,
+            isParity: false,
+            stop: _.noop.bind(_),
+            enable: (walletConnectProvider.enable).bind(walletConnectProvider),
+            sendAsync: (walletConnectProvider.send).bind(walletConnectProvider),
+        };
         return standardizedProvider;
     },
 

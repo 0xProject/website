@@ -65,6 +65,12 @@ export interface AddressAndEthBalanceInWei {
     ethBalanceInWei: BigNumber;
 }
 
+export interface WalletProvider {
+    address?: string;
+    name?: string;
+    icon?: string;
+}
+
 export interface AccountReady {
     state: AccountState.Ready;
     address: string;
@@ -74,6 +80,11 @@ export interface AccountReady {
 }
 export interface AccountNotReady {
     state: AccountState.None | AccountState.Loading | AccountState.Locked;
+}
+
+export interface Wallet {
+    name: string;
+    type: string;
 }
 
 export type Account = AccountReady | AccountNotReady;
