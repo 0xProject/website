@@ -15,7 +15,7 @@ export const SectionLandingHero: React.FC<SectionlandingHeroProps> = () => {
     return (
         <>
             <Hero
-                title={<span>The single endpoint for all DeFi liquidity</span>}
+                title={<span>The liquidity endpoint for DeFi</span>}
                 isLargeTitle={true}
                 isFullWidth={true}
                 maxWidth={'1280px'}
