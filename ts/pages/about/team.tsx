@@ -84,16 +84,6 @@ const team: TeamMember[] = [
         title: 'Ecosystem Development Lead',
     },
     {
-        imageUrl: '/images/team/jasons.jpg',
-        name: 'Jason Somensatto',
-        title: 'Senior Counsel',
-    },
-    {
-        imageUrl: '/images/team/steve.jpg',
-        name: 'Steve Klebanoff',
-        title: 'Senior Engineer',
-    },
-    {
         imageUrl: '/images/team/xiannyn.jpg',
         name: 'Xianny Ng',
         title: 'Engineer',
@@ -112,11 +102,6 @@ const team: TeamMember[] = [
         imageUrl: '/images/team/lawrencef.jpg',
         name: 'Lawrence Forman',
         title: 'Senior Protocol Engineer',
-    },
-    {
-        imageUrl: '/images/team/paulv.jpg',
-        name: 'Paul Vienhage',
-        title: 'Research Engineer',
     },
     {
         imageUrl: '/images/team/ruiz.jpg',
@@ -177,6 +162,21 @@ const team: TeamMember[] = [
         imageUrl: '/images/team/maxt.jpg',
         name: 'Max Torres',
         title: 'Finance Lead',
+    },
+    {
+        imageUrl: '/images/team/romainb.jpg',
+        name: 'Romain Butteuad',
+        title: 'Engineer',
+    },
+    {
+        imageUrl: '/images/team/dannings.jpg',
+        name: 'Danning Sui',
+        title: 'Data Scientist',
+    },
+    {
+        imageUrl: '/images/team/davids.jpg',
+        name: 'David Sun',
+        title: 'Engineer',
     },
 ];
 
