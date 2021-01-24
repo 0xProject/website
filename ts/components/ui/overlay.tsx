@@ -18,7 +18,7 @@ const style: React.CSSProperties = {
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
 };
 
-export const Overlay: React.StatelessComponent<OverlayProps> = props => (
+export const Overlay: React.StatelessComponent<OverlayProps> = (props) => (
     <div style={{ ...style, ...props.style }} onClick={props.onClick}>
         {props.children}
     </div>

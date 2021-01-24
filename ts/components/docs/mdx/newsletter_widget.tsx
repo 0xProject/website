@@ -13,7 +13,7 @@ export interface INewsletterWidgetProps {
     url?: string;
 }
 
-export const NewsletterWidget: React.FC<INewsletterWidgetProps> = props => {
+export const NewsletterWidget: React.FC<INewsletterWidgetProps> = (props) => {
     return (
         <NewsletterSignupWrapper href={props.url}>
             <Heading marginBottom="8px">{props.heading}</Heading>

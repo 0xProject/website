@@ -14,7 +14,7 @@ interface ICollapse {
     height?: number;
 }
 
-export const Collapse: React.FC<ICollapseProps> = props => {
+export const Collapse: React.FC<ICollapseProps> = (props) => {
     const [isActive, setIsActive] = React.useState<boolean>(true);
     // @ts-ignore
     const [contentRef, { height }] = useDimensions();
@@ -41,8 +41,8 @@ export const Collapse: React.FC<ICollapseProps> = props => {
 };
 
 const CollapseWrapper = styled.div<ICollapse>`
-    min-height: ${props => (props.isActive ? props.height : 0)}px;
-    height: ${props => !props.isActive && '0px'};
+    min-height: ${(props) => (props.isActive ? props.height : 0)}px;
+    height: ${(props) => !props.isActive && '0px'};
     display: flex;
     flex-direction: column;
 `;
@@ -56,11 +56,11 @@ const CollapseToggle = styled.button<ICollapse>`
     color: ${colors.brandDark};
     padding: 0;
     font-size: 0.89rem;
-    margin-bottom: ${props => (props.isActive ? 1 : 0)}rem;
+    margin-bottom: ${(props) => (props.isActive ? 1 : 0)}rem;
 
     svg {
         margin-left: 10px;
-        transform: rotate(${props => (props.isActive ? 0 : 180)}deg);
+        transform: rotate(${(props) => (props.isActive ? 0 : 180)}deg);
         transition: transform 300ms ease-out;
     }
 `;
@@ -68,5 +68,5 @@ const CollapseToggle = styled.button<ICollapse>`
 const CollapseContent = styled.div<ICollapse>`
     overflow: hidden;
     transition: flex 300ms ease-out;
-    flex: ${props => (props.isActive ? 1 : 0)};
+    flex: ${(props) => (props.isActive ? 1 : 0)};
 `;

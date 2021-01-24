@@ -303,21 +303,22 @@ export class ModalContact extends React.Component<Props> {
                         label="Does your project support instant?"
                         errors={errors}
                     >
-                        {[{ label: 'Yes', name: 'yes' }, { label: 'No', name: 'no' }].map(
-                            (metadata: OptionMetadata) => {
-                                return (
-                                    <CheckBoxInput
-                                        onClick={this._handleCheckBoxInput.bind(this, metadata.name)}
-                                        key={`checkbox-${metadata.name}`}
-                                        isSelected={
-                                            (this.state.exploreSupportInstant && metadata.name === 'yes') ||
-                                            (!this.state.exploreSupportInstant && metadata.name === 'no')
-                                        }
-                                        label={metadata.label}
-                                    />
-                                );
-                            },
-                        )}
+                        {[
+                            { label: 'Yes', name: 'yes' },
+                            { label: 'No', name: 'no' },
+                        ].map((metadata: OptionMetadata) => {
+                            return (
+                                <CheckBoxInput
+                                    onClick={this._handleCheckBoxInput.bind(this, metadata.name)}
+                                    key={`checkbox-${metadata.name}`}
+                                    isSelected={
+                                        (this.state.exploreSupportInstant && metadata.name === 'yes') ||
+                                        (!this.state.exploreSupportInstant && metadata.name === 'no')
+                                    }
+                                    label={metadata.label}
+                                />
+                            );
+                        })}
                     </OptionSelector>
                 </InputRow>
             </>
@@ -611,8 +612,8 @@ const Form = styled.form<FormProps>`
     position: relative;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 
-    opacity: ${props => props.isSuccessful && `0`};
-    visibility: ${props => props.isSuccessful && `hidden`};
+    opacity: ${(props) => props.isSuccessful && `0`};
+    visibility: ${(props) => props.isSuccessful && `hidden`};
 `;
 
 const Confirmation = styled.div<FormProps>`
@@ -625,8 +626,8 @@ const Confirmation = styled.div<FormProps>`
     transition-delay: 0.4s;
     padding: 60px 60px;
     transform: translateY(-50%);
-    opacity: ${props => (props.isSuccessful ? `1` : `0`)};
-    visibility: ${props => (props.isSuccessful ? 'visible' : `hidden`)};
+    opacity: ${(props) => (props.isSuccessful ? `1` : `0`)};
+    visibility: ${(props) => (props.isSuccessful ? 'visible' : `hidden`)};
 
     p {
         max-width: 492px;

@@ -112,7 +112,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
             case LinkType.ReactScroll:
                 return (
                     <span
-                        ref={input => (this._outerReactScrollSpan = input)}
+                        ref={(input) => (this._outerReactScrollSpan = input)}
                         onMouseOver={this.props.onMouseOver}
                         onMouseEnter={this.props.onMouseEnter}
                         onMouseLeave={this.props.onMouseLeave}

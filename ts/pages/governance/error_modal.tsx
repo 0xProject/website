@@ -56,7 +56,7 @@ const Wrapper = styled.div<ErrorModalProps>`
     opacity: 0;
     visibility: hidden;
 
-    ${props =>
+    ${(props) =>
         props.isOpen &&
         `
         opacity: 1;

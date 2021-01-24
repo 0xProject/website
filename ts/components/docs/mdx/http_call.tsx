@@ -12,15 +12,13 @@ export interface HttpCallProps {
     fontSize?: string;
 }
 
-export const HttpCall: React.FC<HttpCallProps> = props => (
+export const HttpCall: React.FC<HttpCallProps> = (props) => (
     <HttpCallWrapper>
         <VerbPathWrapper>
             <HttpVerb {...props}>{props.verb}</HttpVerb>
             <PathText {...props}>{props.path}</PathText>
         </VerbPathWrapper>
-        <ChildContainer>
-            {props.children}
-        </ChildContainer>
+        <ChildContainer>{props.children}</ChildContainer>
     </HttpCallWrapper>
 );
 
@@ -31,21 +29,21 @@ HttpCall.defaultProps = {
 };
 
 const verbTextToColor = {
-    'GET': colors.brandLight,
-    'POST': colors.brandDark,
-    'PUT': colors.brandDark,
-    'PATCH': colors.brandDark,
-    'DELETE': `#AE0000`,
+    GET: colors.brandLight,
+    POST: colors.brandDark,
+    PUT: colors.brandDark,
+    PATCH: colors.brandDark,
+    DELETE: `#AE0000`,
 };
 
 const PathText = styled.p<HttpCallProps>`
-    font-size: ${props => props.fontSize};
+    font-size: ${(props) => props.fontSize};
     font-family: 'Formular Mono', monospace;
     color: black;
 `;
 
 const HttpVerb = styled.div<HttpCallProps>`
-    background-color: ${props => verbTextToColor[props.verb]};
+    background-color: ${(props) => verbTextToColor[props.verb]};
     font-size: 18px;
     padding: 10px 20px 8px;
     color: white;

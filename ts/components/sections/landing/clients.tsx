@@ -30,7 +30,9 @@ export const SectionLandingClients = () => {
                     shouldUseAnchorTag={true}
                     // to={'https://blog.0xproject.com/a-comprehensive-analysis-on-dex-liquidity-aggregators-performance-dfb9654b0723'}
                     target={'_blank'}
-                    href={'https://blog.0xproject.com/a-comprehensive-analysis-on-dex-liquidity-aggregators-performance-dfb9654b0723'}
+                    href={
+                        'https://blog.0xproject.com/a-comprehensive-analysis-on-dex-liquidity-aggregators-performance-dfb9654b0723'
+                    }
                 >
                     See the data
                 </Button>
@@ -73,7 +75,7 @@ const Description = styled.p`
     font-weight: 300;
     padding: 0;
     margin-bottom: 50px;
-    color: ${props => props.theme.introTextColor};
+    color: ${(props) => props.theme.introTextColor};
 `;
 
 const StatWrapper = styled.div`

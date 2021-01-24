@@ -41,9 +41,9 @@ Animation.defaultProps = {
 
 const AnimationWrapper = styled.div<IAnimationWrapperProps>`
     margin: 0 auto;
-    height: ${props => props.height};
-    max-width: ${props => props.width};
-    padding: ${props => props.padding};
-    margin: ${props => props.margin};
-    margin-bottom: ${props => props.marginBottom};
+    height: ${(props) => props.height};
+    max-width: ${(props) => props.width};
+    padding: ${(props) => props.padding};
+    margin: ${(props) => props.margin};
+    margin-bottom: ${(props) => props.marginBottom};
 `;

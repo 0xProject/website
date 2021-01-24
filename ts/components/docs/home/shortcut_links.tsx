@@ -26,7 +26,7 @@ export const ShortcutLinks: React.FC<IShortcutLinksProps> = ({ links }) => (
     </ShortcutsWrapper>
 );
 
-export const ShortcutLink: React.FC<IShortcutLinkProps> = props => (
+export const ShortcutLink: React.FC<IShortcutLinkProps> = (props) => (
     <ShortcutLinkWrapper to={props.url}>
         <ShortcutIcon color={colors.brandLight} name={props.icon} />
         <div>

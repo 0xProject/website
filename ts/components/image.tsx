@@ -14,5 +14,5 @@ const ImageClass: React.FunctionComponent<Props> = (props: Props) => {
 };
 
 export const Image = styled(withFilteredProps(ImageClass, ['alt', 'src']))<Props>`
-    margin: ${props => props.isCentered && `0 auto`};
+    margin: ${(props) => props.isCentered && `0 auto`};
 `;

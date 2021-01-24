@@ -234,7 +234,7 @@ const Description = styled.p`
     font-weight: 300;
     padding: 0;
     margin-bottom: 50px;
-    color: ${props => props.theme.introTextColor};
+    color: ${(props) => props.theme.introTextColor};
 `;
 
 const Label = styled.div`

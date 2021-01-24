@@ -383,6 +383,6 @@ export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
         label: 'Alphabetical',
         ordering: ExploreTilesOrdering.Alphabetical,
         type: ExploreTilesOrderingType.DynamicBySortFunction,
-        sort: (tiles: ExploreTile[]) => _.sortBy(tiles, t => t.name),
+        sort: (tiles: ExploreTile[]) => _.sortBy(tiles, (t) => t.name),
     },
 };

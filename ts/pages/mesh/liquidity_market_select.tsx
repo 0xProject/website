@@ -25,13 +25,12 @@ export const LiquidityMarketSelect: React.FC<LiquidityMarketSelectProps> = ({ it
             </Toggle>
             {isOpen && (
                 <Menu>
-                    {items.map(
-                        (item, index) =>
-                            index === selectedItem ? null : (
-                                <MenuItem key={`${index}_${item.title}`} onClick={() => handleItemClick(index)}>
-                                    <MarketBlock title={item.title} subtitle={item.subtitle} />
-                                </MenuItem>
-                            ),
+                    {items.map((item, index) =>
+                        index === selectedItem ? null : (
+                            <MenuItem key={`${index}_${item.title}`} onClick={() => handleItemClick(index)}>
+                                <MarketBlock title={item.title} subtitle={item.subtitle} />
+                            </MenuItem>
+                        ),
                     )}
                 </Menu>
             )}
@@ -128,13 +127,13 @@ interface LabelProps {
 }
 
 const Label = styled.span<LabelProps>`
-    font-size: ${props => (props.size === 'default' ? '26px' : '18px')};
-    line-height: ${props => (props.size === 'default' ? '32px' : '25px')};
-    opacity: ${props => (props.isMuted ? 0.7 : 1)};
+    font-size: ${(props) => (props.size === 'default' ? '26px' : '18px')};
+    line-height: ${(props) => (props.size === 'default' ? '32px' : '25px')};
+    opacity: ${(props) => (props.isMuted ? 0.7 : 1)};
 
     @media (min-width: 768px) {
-        font-size: ${props => (props.size === 'default' ? '30px' : '20px')};
-        line-height: ${props => (props.size === 'default' ? '42px' : '27px')};
+        font-size: ${(props) => (props.size === 'default' ? '30px' : '20px')};
+        line-height: ${(props) => (props.size === 'default' ? '42px' : '27px')};
     }
 `;
 

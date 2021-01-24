@@ -220,7 +220,7 @@ export class ModalVideo extends React.Component<ModalVideoProps, ModalVideoState
                             role="dialog"
                             aria-label={this.props.aria.openMessage}
                             onClick={this.closeModal}
-                            ref={node => {
+                            ref={(node) => {
                                 this.modal = node;
                             }}
                             onKeyDown={this.updateFocus}
@@ -231,7 +231,7 @@ export class ModalVideo extends React.Component<ModalVideoProps, ModalVideoState
                                         <button
                                             className={this.props.classNames.modalVideoCloseBtn}
                                             aria-label={this.props.aria.dismissBtnMessage}
-                                            ref={node => {
+                                            ref={(node) => {
                                                 this.modalbtn = node;
                                             }}
                                             onKeyDown={this.updateFocus}

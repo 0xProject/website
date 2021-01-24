@@ -31,11 +31,12 @@ const StyledDefinition = styled(Definition)`
         margin-top: 0;
     }
 
-    button, a {
-        color: #00AE99;
+    button,
+    a {
+        color: #00ae99;
 
         path {
-            fill: #00AE99;
+            fill: #00ae99;
         }
     }
 
@@ -50,7 +51,8 @@ const StyledDefinition = styled(Definition)`
             max-width: 100%;
         }
 
-        button, a {
+        button,
+        a {
             margin-left: auto;
             margin-right: auto;
         }

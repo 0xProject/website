@@ -185,14 +185,14 @@
 
 .rc-slider-tooltip-zoom-down-enter,
 .rc-slider-tooltip-zoom-down-appear {
-    animation-duration: .3s;
+    animation-duration: 0.3s;
     animation-fill-mode: both;
     display: block !important;
     animation-play-state: paused;
 }
 
 .rc-slider-tooltip-zoom-down-leave {
-    animation-duration: .3s;
+    animation-duration: 0.3s;
     animation-fill-mode: both;
     display: block !important;
     animation-play-state: paused;

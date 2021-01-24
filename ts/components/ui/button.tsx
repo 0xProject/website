@@ -26,30 +26,30 @@ const PlainButton: React.StatelessComponent<ButtonProps> = ({ children, isDisabl
 );
 
 export const Button = styled(PlainButton)`
-    cursor: ${props => (props.isDisabled ? 'default' : 'pointer')};
-    font-size: ${props => props.fontSize};
-    color: ${props => props.fontColor};
+    cursor: ${(props) => (props.isDisabled ? 'default' : 'pointer')};
+    font-size: ${(props) => props.fontSize};
+    color: ${(props) => props.fontColor};
     transition: background-color, opacity 0.5s ease;
-    padding: ${props => props.padding};
-    border-radius: ${props => props.borderRadius};
+    padding: ${(props) => props.padding};
+    border-radius: ${(props) => props.borderRadius};
     font-weight: 500;
     outline: none;
-    font-family: ${props => props.fontFamily};
-    width: ${props => props.width};
-    text-align: ${props => props.textAlign};
-    background-color: ${props => props.backgroundColor};
-    border: ${props => (props.borderColor ? `1px solid ${props.borderColor}` : 'none')};
+    font-family: ${(props) => props.fontFamily};
+    width: ${(props) => props.width};
+    text-align: ${(props) => props.textAlign};
+    background-color: ${(props) => props.backgroundColor};
+    border: ${(props) => (props.borderColor ? `1px solid ${props.borderColor}` : 'none')};
     &:hover {
-        background-color: ${props => (!props.isDisabled ? darken(0.1, props.backgroundColor) : '')} !important;
+        background-color: ${(props) => (!props.isDisabled ? darken(0.1, props.backgroundColor) : '')} !important;
     }
     &:active {
-        background-color: ${props => (!props.isDisabled ? darken(0.2, props.backgroundColor) : '')};
+        background-color: ${(props) => (!props.isDisabled ? darken(0.2, props.backgroundColor) : '')};
     }
     &:disabled {
         opacity: 0.5;
     }
     &:focus {
-        background-color: ${props => saturate(0.2, props.backgroundColor)};
+        background-color: ${(props) => saturate(0.2, props.backgroundColor)};
     }
 `;
 

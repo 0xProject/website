@@ -21,7 +21,7 @@ const MarqueeWrap = styled.div<MarqueeWrapProps>`
     width: 130%;
     margin-left: -15%;
     margin-right: -15%;
-    height: ${props => props.height || '100%'};
+    height: ${(props) => props.height || '100%'};
     overflow: hidden;
     position: relative;
 
@@ -29,7 +29,7 @@ const MarqueeWrap = styled.div<MarqueeWrapProps>`
         content: '';
         position: absolute;
         width: 100%;
-        height: ${props => props.height || '100%'};
+        height: ${(props) => props.height || '100%'};
         left: 0;
         top: 0;
         background: linear-gradient(180.18deg, #000000 11.09%, rgba(0, 0, 0, 0.8) 62.74%, rgba(0, 0, 0, 0) 103.8%);
@@ -56,20 +56,20 @@ const MarqueeWrap = styled.div<MarqueeWrapProps>`
         display: flex;
         flex-direction: column;
         will-change: transform;
-        transform: translate3d(0, -${props => props.imgHeightInPx}px, 0);
+        transform: translate3d(0, -${(props) => props.imgHeightInPx}px, 0);
     }
 
     @media (min-width: 768px) {
         > div {
-            height: ${props => props.imgHeightInPx * props.imgRepeatCt}px;
-            animation: ${props => scrollFactory(props.imgHeightInPx, props.imgRepeatCt)} 140s linear infinite;
+            height: ${(props) => props.imgHeightInPx * props.imgRepeatCt}px;
+            animation: ${(props) => scrollFactory(props.imgHeightInPx, props.imgRepeatCt)} 140s linear infinite;
         }
     }
 
     @media (max-width: 768px) {
         > div {
-            height: ${props => props.imgHeightInPx * props.imgRepeatCt}px;
-            animation: ${props => scrollMobileFactory(props.imgHeightInPx, props.imgRepeatCt)} 140s linear infinite;
+            height: ${(props) => props.imgHeightInPx * props.imgRepeatCt}px;
+            animation: ${(props) => scrollMobileFactory(props.imgHeightInPx, props.imgRepeatCt)} 140s linear infinite;
         }
     }
 `;
@@ -131,7 +131,7 @@ export class BackgroundMarquee extends React.Component<BackgroundMarqueeProps> {
                         <Card key={`card-${index}`}>
                             <MarqueeImg
                                 onLoad={index === 0 ? this._onImageUpdate : null}
-                                ref={ref => (index === 0 ? (this._imageRef = ref) : null)}
+                                ref={(ref) => (index === 0 ? (this._imageRef = ref) : null)}
                                 src={this.props.imgSrcUrl}
                                 alt=""
                             />

@@ -31,6 +31,4 @@ const mapStateToProps = (state: State, _ownProps: EthAmountInputProps): Connecte
     balance: Web3Wrapper.toUnitAmount(state.userEtherBalanceInWei, constants.DECIMAL_PLACES_ETH),
 });
 
-export const EthAmountInput = connect(mapStateToProps)(
-    EthAmountInputComponent,
-);
+export const EthAmountInput = connect(mapStateToProps)(EthAmountInputComponent);

@@ -132,7 +132,7 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
 
         if (!_.isEqual(nextProps.trackedTokens, this.props.trackedTokens)) {
             const newTokens = _.difference(nextProps.trackedTokens, this.props.trackedTokens);
-            const newTokenAddresses = _.map(newTokens, token => token.address);
+            const newTokenAddresses = _.map(newTokens, (token) => token.address);
             // Add placeholder entry for this token to the state, since fetching the
             // balance/allowance is asynchronous
             const trackedTokenStateByAddress = this.state.trackedTokenStateByAddress;
@@ -532,7 +532,7 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
     }
     private _getInitialTrackedTokenStateByAddress(trackedTokens: Token[]): TokenStateByAddress {
         const trackedTokenStateByAddress: TokenStateByAddress = {};
-        _.each(trackedTokens, token => {
+        _.each(trackedTokens, (token) => {
             trackedTokenStateByAddress[token.address] = {
                 balance: new BigNumber(0),
                 allowance: new BigNumber(0),

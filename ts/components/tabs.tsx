@@ -18,7 +18,7 @@ interface ContainerProps {
 
 const Container = styled.div<ContainerProps>`
     display: flex;
-    border: ${props => `1px solid ${props.isLight ? '#D7D7D7' : props.theme.lightBgColor}`};
+    border: ${(props) => `1px solid ${props.isLight ? '#D7D7D7' : props.theme.lightBgColor}`};
     padding-right: 5px;
 `;
 
@@ -27,18 +27,19 @@ export const Tab = styled.label<TabProps>`
     white-space: nowrap;
     flex: 1;
     text-align: center;
-    background-color: ${props => props.isSelected ? (props.isLight ? '#F6F6F6' : props.theme.lightBgColor) : ''};
-    opacity: ${props => (props.isSelected ? 1 : 0.5)};
+    background-color: ${(props) => (props.isSelected ? (props.isLight ? '#F6F6F6' : props.theme.lightBgColor) : '')};
+    opacity: ${(props) => (props.isSelected ? 1 : 0.5)};
     margin: 5px 0px 5px 5px;
     &:hover {
-        background-color: ${props => props.isLight ? '#F6F6F6' : props.theme.lightBgColor};
+        background-color: ${(props) => (props.isLight ? '#F6F6F6' : props.theme.lightBgColor)};
     }
     padding: 10px 17px;
     font-size: 12px;
     @media (min-width: 768px) {
-        background-color: ${props => props.isSelected ? (props.isLight ? colors.white : props.theme.lightBgColor) : ''};
+        background-color: ${(props) =>
+            props.isSelected ? (props.isLight ? colors.white : props.theme.lightBgColor) : ''};
         &:hover {
-            background-color: ${props => props.isLight ? colors.white : props.theme.lightBgColor};
+            background-color: ${(props) => (props.isLight ? colors.white : props.theme.lightBgColor)};
         }
     }
     @media (min-width: 1024px) {
@@ -48,9 +49,5 @@ export const Tab = styled.label<TabProps>`
 `;
 
 export const Tabs: React.FC<TabsProps> = ({ children, isLight }) => {
-    return (
-        <Container isLight={isLight}>
-            {children}
-        </Container>
-    );
+    return <Container isLight={isLight}>{children}</Container>;
 };

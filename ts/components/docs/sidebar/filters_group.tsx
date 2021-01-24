@@ -44,7 +44,7 @@ const FiltersList: React.FC<IFilterListProps> = ({ attribute, items, currentRefi
 
             for (const filter of updatedFilters) {
                 // Look for item corresponding to the filter we already have
-                const currentItem = items.find(item => item.label === filter.label);
+                const currentItem = items.find((item) => item.label === filter.label);
                 if (currentItem) {
                     // If there is a matching item and it is in the current refinement, we update our list of filters so that the filter is checked
                     const isRefined = currentRefinement.includes(filter.label);

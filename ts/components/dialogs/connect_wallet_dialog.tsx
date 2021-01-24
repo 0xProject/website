@@ -61,7 +61,7 @@ const StyledDialogOverlay = styled(DialogOverlay)`
 const StyledDialogContent = styled(DialogContent)`
     &[data-reach-dialog-content] {
         width: 571px;
-        background: ${props => props.theme.bgColor};
+        background: ${(props) => props.theme.bgColor};
         border: 1px solid #e5e5e5;
 
         @media (max-width: 768px) {
@@ -81,7 +81,7 @@ const WalletProviderButton = styled(Button).attrs({
     isTransparent: true,
     isConnected: false,
 })`
-    border: ${props => props.isConnected && `1px solid #00AE99`};
+    border: ${(props) => props.isConnected && `1px solid #00AE99`};
     height: 70px;
     width: 100%;
     display: flex;
@@ -286,7 +286,7 @@ export const ConnectWalletDialog = () => {
                 </HeadingRow>
                 <StyledProviderOptions>
                     {constants.SUPPORTED_WALLETS ? (
-                        Object.keys(constants.SUPPORTED_WALLETS).map(key => {
+                        Object.keys(constants.SUPPORTED_WALLETS).map((key) => {
                             const option = constants.SUPPORTED_WALLETS[key];
                             let currentConnector: WalletConnectConnector | WalletLinkConnector | InjectedConnector;
                             if (option.type === 'WALLET_CONNECT') {

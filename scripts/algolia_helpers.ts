@@ -40,7 +40,7 @@ const sharedSettings = {
 };
 
 const settings: ObjectMap<IAlgoliaSettings> = {
-    'api': sharedSettings,
+    api: sharedSettings,
     'core-concepts': sharedSettings,
     guides: {
         ...sharedSettings,

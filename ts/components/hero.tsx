@@ -31,7 +31,7 @@ interface SectionProps {
 }
 
 const Section = styled.section<SectionProps>`
-    padding: ${props => props.padding || (props.isAnnouncement ? '50px 0 120px 0' : '120px 0')};
+    padding: ${(props) => props.padding || (props.isAnnouncement ? '50px 0 120px 0' : '120px 0')};
     position: relative;
     @media (max-width: 768px) {
         padding: 30px 0 60px 0;
@@ -51,17 +51,17 @@ const Wrap = styled.div<WrapProps>`
     margin: 0 auto;
 
     @media (min-width: 768px) {
-        max-width: ${props => (!props.isFullWidth ? '895px' : props.maxWidth ?? '1136px')};
+        max-width: ${(props) => (!props.isFullWidth ? '895px' : props.maxWidth ?? '1136px')};
         flex-direction: row-reverse;
         display: flex;
-        align-items: ${props => props.alignItems ?? 'center'};
-        text-align: ${props => props.isCentered && 'center'};
-        justify-content: ${props => (props.isCentered ? 'center' : 'space-between')};
+        align-items: ${(props) => props.alignItems ?? 'center'};
+        text-align: ${(props) => props.isCentered && 'center'};
+        justify-content: ${(props) => (props.isCentered ? 'center' : 'space-between')};
     }
 
     @media (max-width: 768px) {
-        text-align: ${props => (props.isCenteredMobile ? `center` : 'left')};
-        flex-direction: ${props => (props.showFigureBottomMobile ? 'column-reverse' : 'column')};
+        text-align: ${(props) => (props.isCenteredMobile ? `center` : 'left')};
+        flex-direction: ${(props) => (props.showFigureBottomMobile ? 'column-reverse' : 'column')};
         display: flex;
         align-items: center;
     }
@@ -72,13 +72,13 @@ interface TitleProps {
     maxWidth?: string;
 }
 const Title = styled.h1<TitleProps>`
-    font-size: ${props => (props.isLarge ? '70px' : '50px')};
+    font-size: ${(props) => (props.isLarge ? '70px' : '50px')};
     font-weight: 300;
     line-height: 1.2;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 30px;
-    max-width: ${props => props.maxWidth};
+    max-width: ${(props) => props.maxWidth};
     ${addFadeInAnimation('0.5s', '0.05s')}
 
     @media (max-width: 1024px) {
@@ -96,7 +96,7 @@ const Description = styled.p`
     font-weight: 300;
     padding: 0;
     margin-bottom: 50px;
-    color: ${props => props.theme.introTextColor};
+    color: ${(props) => props.theme.introTextColor};
     ${addFadeInAnimation('0.5s', '0.15s')} @media (max-width: 1024px) {
         margin-bottom: 30px;
     }
@@ -111,16 +111,16 @@ interface ContentProps {
 const Content = styled.div<ContentProps>`
     width: 100%;
     @media (max-width: 768px) {
-        display: ${props => props.hideFigureOnMobile ? 'none' : props.isCenteredMobile ? 'flex' : 'block'};
-        justify-content: ${props => props.isCenteredMobile ? 'center' : 'inherit'}
+        display: ${(props) => (props.hideFigureOnMobile ? 'none' : props.isCenteredMobile ? 'flex' : 'block')};
+        justify-content: ${(props) => (props.isCenteredMobile ? 'center' : 'inherit')};
     }
     @media (min-width: 768px) {
-        max-width: ${props => props.width};
+        max-width: ${(props) => props.width};
     }
     @media (min-width: 768px) {
-        max-width: ${props => props.width};
+        max-width: ${(props) => props.width};
     }
-    /* ${props =>
+    /* ${(props) =>
         props.isCenteredMobile &&
         `
         @media (max-width: 768px) {

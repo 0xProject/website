@@ -86,13 +86,13 @@ const TimelineContent = styled.div<TimelineContentProps>`
         position: absolute;
         width: 15px;
         height: 15px;
-        background-color: ${props => (props.isActive ? colors.black : '#E6E6E6')};
+        background-color: ${(props) => (props.isActive ? colors.black : '#E6E6E6')};
         top: 0;
         left: -8px;
     }
 `;
 
-export const Timeline: React.FC<TimelineProps> = props => {
+export const Timeline: React.FC<TimelineProps> = (props) => {
     const { items, activeItemIndex } = props;
     return (
         <ol>

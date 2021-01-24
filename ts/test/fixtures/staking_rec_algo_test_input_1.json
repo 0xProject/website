@@ -134,9 +134,7 @@
                 "zrxStaked": 1,
                 "operatorShare": 1,
                 "approximateStakeRatio": 0,
-                "makerAddresses": [
-                    "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19"
-                ],
+                "makerAddresses": ["0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19"],
                 "totalProtocolFeesGeneratedInEth": 0
             },
             "nextEpochStats": {
@@ -144,10 +142,9 @@
                 "zrxStaked": 316,
                 "operatorShare": 1,
                 "approximateStakeRatio": 0,
-                "makerAddresses": [
-                    "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19"
-                ],
+                "makerAddresses": ["0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19"],
                 "totalProtocolFeesGeneratedInEth": 0
             }
-        }]
+        }
+    ]
 }

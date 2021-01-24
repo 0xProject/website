@@ -36,13 +36,11 @@ const WalletDetailIcon = styled.img`
     }
 `;
 
-export const WalletDetail: React.FC<WalletDetailProps> = ({ url, iconUrl, name}) => {
+export const WalletDetail: React.FC<WalletDetailProps> = ({ url, iconUrl, name }) => {
     return (
         <Container href={url}>
-          <WalletDetailIcon src={iconUrl} alt={iconUrl} />
-          <Paragraph color={colors.textDarkPrimary}>
-            {name}
-          </Paragraph>
+            <WalletDetailIcon src={iconUrl} alt={iconUrl} />
+            <Paragraph color={colors.textDarkPrimary}>{name}</Paragraph>
         </Container>
     );
 };

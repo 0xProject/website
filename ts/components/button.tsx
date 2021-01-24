@@ -83,31 +83,33 @@ const ButtonBase = styled.button<ButtonInterface>`
     appearance: none;
     border: 1px solid transparent;
     display: inline-block;
-    background-color: ${props => props.bgColor || colors.brandLight};
-    background-color: ${props =>
+    background-color: ${(props) => props.bgColor || colors.brandLight};
+    background-color: ${(props) =>
         (props.isTransparent || props.isWithArrow) && (props.transparentBgColor || 'transparent')};
-    border-color: ${props => props.borderColor || (props.isTransparent && !props.isWithArrow && 'rgba(255, 255, 255, 0.4)')};
-    color: ${props => (props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor)};
-    padding: ${props =>
-        !props.isNoPadding && !props.isWithArrow && ((!!props.padding && props.padding) || (props.isLarge ? '22px 30px' : '18px 30px'))};
-    white-space: ${props => props.isWithArrow && 'nowrap'};
-    text-align: ${props => props.textAlign};
-    font-size: ${props => (props.fontSize ? props.fontSize : props.isWithArrow ? '20px' : '18px')};
-    font-weight: ${props => props.fontWeight ? props.fontWeight : 'normal'};
+    border-color: ${(props) =>
+        props.borderColor || (props.isTransparent && !props.isWithArrow && 'rgba(255, 255, 255, 0.4)')};
+    color: ${(props) => (props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor)};
+    padding: ${(props) =>
+        !props.isNoPadding &&
+        !props.isWithArrow &&
+        ((!!props.padding && props.padding) || (props.isLarge ? '22px 30px' : '18px 30px'))};
+    white-space: ${(props) => props.isWithArrow && 'nowrap'};
+    text-align: ${(props) => props.textAlign};
+    font-size: ${(props) => (props.fontSize ? props.fontSize : props.isWithArrow ? '20px' : '18px')};
+    font-weight: ${(props) => (props.fontWeight ? props.fontWeight : 'normal')};
     text-decoration: none;
     cursor: pointer;
     outline: none;
     transition: background-color 0.35s, border-color 0.35s;
-    width: ${props => props.isFullWidth ? '100%' : props.width ? props.width : 'auto'};
+    width: ${(props) => (props.isFullWidth ? '100%' : props.width ? props.width : 'auto')};
 
     // @todo Refactor to use theme props
-    ${props =>
+    ${(props) =>
         props.bgColor === 'dark' &&
         `
         background-color: ${colors.brandDark};
         color: ${colors.white};
     `}
-
 
     > svg {
         margin-left: 9px;
@@ -115,12 +117,12 @@ const ButtonBase = styled.button<ButtonInterface>`
         transform: translate3d(-2px, 2px, 0);
 
         path {
-            fill: ${props => (props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor)};
+            fill: ${(props) => (props.isAccentColor ? props.theme.linkColor : props.color || props.theme.textColor)};
         }
     }
 
     /* Only apply SVG styling if it's an arrow button */
-    ${props =>
+    ${(props) =>
         props.isWithArrow &&
         css`
             svg {
@@ -141,7 +143,8 @@ const ButtonBase = styled.button<ButtonInterface>`
         `}
 
     &:hover {
-        background-color: ${props => !props.isTransparent && !props.isWithArrow && (darken(0.05, props.bgColor || colors.brandLight))};
-        border-color: ${props => props.isTransparent && !props.isNoBorder && !props.isWithArrow && '#00AE99'};
+        background-color: ${(props) =>
+            !props.isTransparent && !props.isWithArrow && darken(0.05, props.bgColor || colors.brandLight)};
+        border-color: ${(props) => props.isTransparent && !props.isNoBorder && !props.isWithArrow && '#00AE99'};
     }
 `;

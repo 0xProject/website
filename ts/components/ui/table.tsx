@@ -9,25 +9,16 @@ interface TableProps {
     children: any;
 }
 
-export const Table: React.StatelessComponent<TableProps> = ({
-    columns,
-    children,
-}) => {
+export const Table: React.StatelessComponent<TableProps> = ({ columns, children }) => {
     return (
         <StyledTable>
             <thead>
-                {_.map(columns, label => {
-                    return (
-                        <th key={label}>
-                            {label}
-                        </th>
-                    );
+                {_.map(columns, (label) => {
+                    return <th key={label}>{label}</th>;
                 })}
             </thead>
 
-            <tbody>
-               {children}
-            </tbody>
+            <tbody>{children}</tbody>
         </StyledTable>
     );
 };

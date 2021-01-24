@@ -139,7 +139,7 @@ export class Wallet extends React.Component<WalletProps, WalletState> {
         const loadingRowsRange = _.range(LOADING_ROWS_COUNT);
         return (
             <div key={BODY_ITEM_KEY} className="flex flex-column" style={bodyStyle}>
-                {_.map(loadingRowsRange, index => {
+                {_.map(loadingRowsRange, (index) => {
                     return <NullTokenRow key={index} iconDimension={ICON_DIMENSION} fillColor={PLACEHOLDER_COLOR} />;
                 })}
                 <Container

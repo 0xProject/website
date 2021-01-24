@@ -29,7 +29,7 @@ interface Props {
     };
 }
 
-const NextLanding: React.FC<Props> = props => {
+const NextLanding: React.FC<Props> = (props) => {
     const [isContactModalOpen, setisContactModalOpen] = useState<boolean>(false);
     const _onOpenContactModal = useCallback((): void => {
         window.history.replaceState(null, null, `${window.location.pathname}${window.location.search}#contact`);
@@ -63,6 +63,4 @@ const NextLanding: React.FC<Props> = props => {
     );
 };
 
-export {
-    NextLanding,
-};
+export { NextLanding };

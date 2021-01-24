@@ -14,7 +14,7 @@ export interface IHelpCalloutProps {
     url?: string;
 }
 
-export const HelpCallout: React.FC<IHelpCalloutProps> = props => (
+export const HelpCallout: React.FC<IHelpCalloutProps> = (props) => (
     <HelpCalloutWrapper>
         <Icon color={colors.brandDark} name="help" size={38} margin={[0, 30, 0, 0]} />
         <div>

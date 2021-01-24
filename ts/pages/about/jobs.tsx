@@ -86,7 +86,7 @@ export class NextAboutJobs extends React.Component<NextAboutJobsProps, NextAbout
         this._isUnmounted = true;
     }
     public render(): React.ReactNode {
-        const positions = this.state.jobInfos.map(jobInfo => NextAboutJobs._convertJobInfoToPositionProps(jobInfo));
+        const positions = this.state.jobInfos.map((jobInfo) => NextAboutJobs._convertJobInfoToPositionProps(jobInfo));
         return (
             <AboutPageLayout
                 title="Join Us in Our Mission"

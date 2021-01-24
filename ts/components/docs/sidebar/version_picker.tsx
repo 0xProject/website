@@ -26,7 +26,7 @@ const VersionSelect: React.FC<IVersionPickerProps> = ({ history, location, match
         const version = e.target.value;
         let url = `/docs/${type}/${page}/${version}`;
         if (version === OTHER_VERSION) {
-           url = `/docs/guides/${constants.GUIDE_OLDER_VERSIONS}`;
+            url = `/docs/guides/${constants.GUIDE_OLDER_VERSIONS}`;
         }
         history.push(url);
         window.scrollTo(0, 0);
@@ -52,7 +52,7 @@ const VersionSelect: React.FC<IVersionPickerProps> = ({ history, location, match
                         </option>
                     ))}
                     <option key={OTHER_VERSION} value={OTHER_VERSION}>
-                            Older versions
+                        Older versions
                     </option>
                 </StyledSelect>
                 <svg width="12" height="8" fill="none" xmlns="http://www.w3.org/2000/svg">

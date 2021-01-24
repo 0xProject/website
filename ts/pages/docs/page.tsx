@@ -45,7 +45,7 @@ interface IDocsPageState {
     wasNotFound: boolean;
 }
 
-export const DocsPage: React.FC<IDocsPageProps> = props => {
+export const DocsPage: React.FC<IDocsPageProps> = (props) => {
     const { page, type, version } = props.match.params;
     const { hash } = props.location;
     // For api explorer / core-concepts the url does not include the page, i.e. it's only 'docs/core-concepts'
@@ -158,7 +158,7 @@ const waitForImages = async () => {
             _.map(images, (img: HTMLImageElement) => {
                 if (!img.complete) {
                     // tslint:disable-next-line:no-inferred-empty-object-type
-                    return new Promise(resolve => {
+                    return new Promise((resolve) => {
                         img.addEventListener('load', () => resolve());
                     });
                 }

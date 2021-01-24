@@ -52,7 +52,7 @@ PreferenceSelecter.defaultProps = {
 
 const Wrapper = styled.div<MarkerProps>`
     border: 2px solid #7a7a7a;
-    border-color: ${props => props.isActive && colors.brandLight};
+    border-color: ${(props) => props.isActive && colors.brandLight};
     width: 100%;
     margin-bottom: 30px;
 `;
@@ -65,7 +65,7 @@ const Label = styled.label`
 `;
 
 const LabelText = styled.span<MarkerProps>`
-    color: ${props => (props.isActive ? colors.brandLight : '#7A7A7A')};
+    color: ${(props) => (props.isActive ? colors.brandLight : '#7A7A7A')};
     font-size: 20px;
     line-height: 1;
     margin-left: 30px;
@@ -74,14 +74,14 @@ const LabelText = styled.span<MarkerProps>`
 
 const Marker = styled.span<MarkerProps>`
     border: 2px solid #7a7a7a;
-    border-color: ${props => props.isActive && colors.brandLight};
+    border-color: ${(props) => props.isActive && colors.brandLight};
     display: flex;
     width: 30px;
     height: 30px;
     border-radius: 50%;
     position: relative;
 
-    ${props =>
+    ${(props) =>
         props.isActive &&
         `
         &:after {

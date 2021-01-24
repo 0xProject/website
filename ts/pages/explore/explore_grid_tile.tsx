@@ -50,7 +50,7 @@ interface ExploreGridHeroWellProps {
 }
 
 const ExploreGridHeroWell = styled.div<ExploreGridHeroWellProps>`
-    background-color: ${props => props.color};
+    background-color: ${(props) => props.color};
     height: 14rem;
     display: flex;
     align-items: center;

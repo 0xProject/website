@@ -44,7 +44,7 @@ const StyledIcon = styled(Icon)`
 
 const Status = styled.div<StatusProps>`
     font-size: 20px;
-    color: ${props => props.color};
+    color: ${(props) => props.color};
     text-transform: capitalize;
     margin-bottom: 12px;
     display: flex;
@@ -57,27 +57,18 @@ export const AccountVote: React.StatelessComponent<AccountVoteProps> = ({
     zeipId = '00',
     summary = 'Test summary',
 }) => {
- return (
-    <Wrap>
-         <Status color={vote === 'yes' ? colors.brandLight : '#E71D36'}>
-             {vote === 'yes' ? (
-                <StyledIcon name="checkmark" size={16} />
-                ) : (
-                <StyledIcon name="cross" size={16} />
-             )}
+    return (
+        <Wrap>
+            <Status color={vote === 'yes' ? colors.brandLight : '#E71D36'}>
+                {vote === 'yes' ? <StyledIcon name="checkmark" size={16} /> : <StyledIcon name="cross" size={16} />}
+                Voted {vote}
+            </Status>
 
-             Voted {vote}
-        </Status>
+            <Heading marginBottom="15px">
+                {title} (ZEIP-{zeipId})
+            </Heading>
 
-        <Heading
-            marginBottom="15px"
-        >
-            {title} (ZEIP-{zeipId})
-        </Heading>
-
-        <Paragraph isNoMargin={true}>
-            {summary}
-        </Paragraph>
-    </Wrap>
- );
+            <Paragraph isNoMargin={true}>{summary}</Paragraph>
+        </Wrap>
+    );
 };

@@ -54,7 +54,7 @@ export class EthWrappers extends React.Component<EthWrappersProps, EthWrappersSt
         this._isUnmounted = false;
         const outdatedWETHAddresses = this._getOutdatedWETHAddresses();
         const outdatedWETHStateByAddress: TokenStateByAddress = {};
-        _.each(outdatedWETHAddresses, outdatedWETHAddress => {
+        _.each(outdatedWETHAddresses, (outdatedWETHAddress) => {
             outdatedWETHStateByAddress[outdatedWETHAddress] = {
                 balance: new BigNumber(0),
                 allowance: new BigNumber(0),
@@ -383,7 +383,7 @@ export class EthWrappers extends React.Component<EthWrappersProps, EthWrappersSt
     }
     private async _fetchWETHStateAsync(): Promise<void> {
         const tokens = _.values(this.props.tokenByAddress);
-        const wethToken = _.find(tokens, token => token.symbol === 'WETH');
+        const wethToken = _.find(tokens, (token) => token.symbol === 'WETH');
         const userAddressIfExists = _.isEmpty(this.props.userAddress) ? undefined : this.props.userAddress;
         const [wethBalance, wethAllowance] = await this.props.blockchain.getTokenBalanceAndAllowanceAsync(
             userAddressIfExists,
@@ -416,7 +416,7 @@ export class EthWrappers extends React.Component<EthWrappersProps, EthWrappersSt
     }
     private _getOutdatedWETHAddresses(): string[] {
         const outdatedWETHAddresses = _.compact(
-            _.map(configs.OUTDATED_WRAPPED_ETHERS, outdatedWrappedEtherByNetwork => {
+            _.map(configs.OUTDATED_WRAPPED_ETHERS, (outdatedWrappedEtherByNetwork) => {
                 const outdatedWrappedEtherIfExists = outdatedWrappedEtherByNetwork[this.props.networkId];
                 if (outdatedWrappedEtherIfExists === undefined) {
                     return undefined;

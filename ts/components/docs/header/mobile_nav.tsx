@@ -30,7 +30,7 @@ interface INavItems {
     dropdownComponent?: React.FunctionComponent<any>;
 }
 
-export const MobileNav: React.FC<IMobileNavProps> = props => {
+export const MobileNav: React.FC<IMobileNavProps> = (props) => {
     const { navItems, isToggled, toggleMobileNav, children, hasSearch, hasBackButton, navHeight } = props;
 
     return (
@@ -40,7 +40,7 @@ export const MobileNav: React.FC<IMobileNavProps> = props => {
                     {hasSearch && <SearchInput isHome={false} />}
 
                     <ul>
-                        {navItems.map(link => (
+                        {navItems.map((link) => (
                             <li key={link.id}>
                                 <MobileNavLink to={link.url}>{link.text}</MobileNavLink>
                             </li>
@@ -78,12 +78,13 @@ const BackButton = styled(Button)`
 
 const Wrap = styled.nav<{ isToggled: boolean; navHeight: number }>`
     width: 100%;
-    height: ${props => props.navHeight}px;
-    background-color: ${props => props.theme.mobileNavBgUpper};
-    color: ${props => props.theme.mobileNavColor};
-    transition: ${props => (props.isToggled ? 'visibility 0s, transform 0.5s' : 'visibility 0s 0.5s, transform 0.5s')};
-    transform: translate3d(0, ${props => (props.isToggled ? 0 : '-100%')}, 0);
-    visibility: ${props => !props.isToggled && 'hidden'};
+    height: ${(props) => props.navHeight}px;
+    background-color: ${(props) => props.theme.mobileNavBgUpper};
+    color: ${(props) => props.theme.mobileNavColor};
+    transition: ${(props) =>
+        props.isToggled ? 'visibility 0s, transform 0.5s' : 'visibility 0s 0.5s, transform 0.5s'};
+    transform: translate3d(0, ${(props) => (props.isToggled ? 0 : '-100%')}, 0);
+    visibility: ${(props) => !props.isToggled && 'hidden'};
     position: fixed;
     display: flex;
     flex-direction: column;

@@ -23,7 +23,7 @@ export class NetworkDropDown extends React.Component<NetworkDropDownProps, Netwo
         );
     }
     private _renderDropDownItems(): React.ReactNode {
-        const items = _.map(this.props.avialableNetworkIds, networkId => {
+        const items = _.map(this.props.avialableNetworkIds, (networkId) => {
             const networkName = constants.NETWORK_NAME_BY_ID[networkId];
             const primaryText = (
                 <div className="flex">

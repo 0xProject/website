@@ -65,7 +65,7 @@ export const useWallet = () => {
     }, [currentProviderState.provider]);
 
     const connectToWallet = useCallback(
-        async provider => {
+        async (provider) => {
             cleanupCurrentProvider();
             const payload = window.localStorage.getItem('WALLETCONNECTOR');
             let providerState: ProviderState;
@@ -120,10 +120,10 @@ export const useWallet = () => {
             dispatcher.setAccountStateLoading();
             const payload = window.localStorage.getItem('WALLETCONNECTOR');
             if (JSON.parse(payload).name === 'WALLET_CONNECT') {
-                (connector).close();
+                connector.close();
                 window.localStorage.removeItem('walletconnect');
             } else if (JSON.parse(payload).name === 'WALLET_LINK') {
-                (connector).close();
+                connector.close();
                 window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:linked');
                 window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:id');
                 window.localStorage.removeItem('-walletlink:https://www.walletlink.org:session:secret');
@@ -138,7 +138,7 @@ export const useWallet = () => {
 
     return {
         connectToWallet: useCallback(
-            provider => {
+            (provider) => {
                 connectToWallet(provider).catch((err: Error) => {
                     logUtils.warn(`Failed to connect wallet ${err}`);
                     errorReporter.report(err);

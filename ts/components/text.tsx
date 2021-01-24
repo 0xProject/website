@@ -33,25 +33,25 @@ interface ParagraphProps extends BaseTextInterface {
 }
 
 const StyledHeading = styled.h1<HeadingProps>`
-    max-width: ${props => props.maxWidth};
-    color: ${props => props.color || props.theme.textColor};
-    display: ${props => (props.isFlex ? `inline-flex` : props.isInline ? 'inline' : undefined)};
+    max-width: ${(props) => props.maxWidth};
+    color: ${(props) => props.color || props.theme.textColor};
+    display: ${(props) => (props.isFlex ? `inline-flex` : props.isInline ? 'inline' : undefined)};
     align-items: center;
-    justify-content: ${props => props.isFlex && `space-between`};
-    font-size: ${props =>
+    justify-content: ${(props) => props.isFlex && `space-between`};
+    font-size: ${(props) =>
         typeof props.size === 'string' ? `var(--${props.size || 'default'}Heading)` : `${props.size}px`};
-    line-height: ${props => `var(--${props.size || 'default'}HeadingHeight)`};
-    text-align: ${props => props.isCentered && 'center'};
-    padding: ${props => props.padding && getCSSPadding(props.padding)};
-    margin-left: ${props => props.isCentered && 'auto'};
-    margin-right: ${props => props.isCentered && 'auto'};
-    margin-bottom: ${props => !props.isNoMargin && (props.marginBottom || '30px')};
-    opacity: ${props => (typeof props.isMuted === 'boolean' ? 0.75 : props.isMuted)};
-    font-weight: ${props => (props.fontWeight ? props.fontWeight : ['h4'].includes(props.asElement) ? 400 : 300)};
-    width: ${props => props.isFlex && `100%`};
+    line-height: ${(props) => `var(--${props.size || 'default'}HeadingHeight)`};
+    text-align: ${(props) => props.isCentered && 'center'};
+    padding: ${(props) => props.padding && getCSSPadding(props.padding)};
+    margin-left: ${(props) => props.isCentered && 'auto'};
+    margin-right: ${(props) => props.isCentered && 'auto'};
+    margin-bottom: ${(props) => !props.isNoMargin && (props.marginBottom || '30px')};
+    opacity: ${(props) => (typeof props.isMuted === 'boolean' ? 0.75 : props.isMuted)};
+    font-weight: ${(props) => (props.fontWeight ? props.fontWeight : ['h4'].includes(props.asElement) ? 400 : 300)};
+    width: ${(props) => props.isFlex && `100%`};
 `;
 
-export const Heading: React.StatelessComponent<HeadingProps> = props => {
+export const Heading: React.StatelessComponent<HeadingProps> = (props) => {
     const { asElement = 'h1', children } = props;
     const Component = StyledHeading.withComponent(asElement);
 
@@ -67,14 +67,14 @@ Heading.defaultProps = {
 // and be more generic. e.g. <Text /> with a props asElement so we can use it
 // for literally anything =
 export const Paragraph = styled.p<ParagraphProps>`
-    font-size: ${props => props.fontSize || `var(--${props.size || 'default'}Paragraph)`};
-    font-weight: ${props => props.fontWeight || 300};
-    margin-bottom: ${props => !props.isNoMargin && (props.marginBottom || '30px')};
-    padding: ${props => props.padding && getCSSPadding(props.padding)};
-    color: ${props => props.color || props.theme.paragraphColor};
-    opacity: ${props => (typeof props.isMuted === 'boolean' ? 0.75 : props.isMuted)};
-    text-align: ${props => (props.textAlign ? props.textAlign : props.isCentered && 'center')};
-    line-height: ${props => props.lineHeight};
+    font-size: ${(props) => props.fontSize || `var(--${props.size || 'default'}Paragraph)`};
+    font-weight: ${(props) => props.fontWeight || 300};
+    margin-bottom: ${(props) => !props.isNoMargin && (props.marginBottom || '30px')};
+    padding: ${(props) => props.padding && getCSSPadding(props.padding)};
+    color: ${(props) => props.color || props.theme.paragraphColor};
+    opacity: ${(props) => (typeof props.isMuted === 'boolean' ? 0.75 : props.isMuted)};
+    text-align: ${(props) => (props.textAlign ? props.textAlign : props.isCentered && 'center')};
+    line-height: ${(props) => props.lineHeight};
 `;
 
 Paragraph.defaultProps = {

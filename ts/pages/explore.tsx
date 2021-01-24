@@ -137,7 +137,7 @@ export class Explore extends React.Component<ExploreProps> {
                 },
             ];
         }
-        if (_.isEmpty(this.state.tiles.filter(t => t.visibility !== ExploreTileVisibility.Hidden))) {
+        if (_.isEmpty(this.state.tiles.filter((t) => t.visibility !== ExploreTileVisibility.Hidden))) {
             return [
                 {
                     name: 'empty',
@@ -159,7 +159,7 @@ export class Explore extends React.Component<ExploreProps> {
         this._onAnalytics({ query }, ExploreAnalyticAction.QuerySearched);
         const searchedTiles = await this._generateTilesWithModifier(this.state.tiles, ExploreTilesModifiers.Search, {
             query,
-            filter: this.state.filters.find(f => f.active),
+            filter: this.state.filters.find((f) => f.active),
         });
         this.setState({ tiles: searchedTiles });
     };
@@ -169,20 +169,20 @@ export class Explore extends React.Component<ExploreProps> {
             this._onAnalytics({ filterName }, ExploreAnalyticAction.FilterClick);
         }
         let updatedFilters: ExploreFilterMetadata[];
-        updatedFilters = this.state.filters.map(f => {
+        updatedFilters = this.state.filters.map((f) => {
             const newFilter = _.assign({}, f);
             newFilter.active = newFilter.name === filterName ? active : false;
             return newFilter;
         });
         // If no filters are enabled, default to all
-        if (_.filter(updatedFilters, f => f.active).length === 0) {
+        if (_.filter(updatedFilters, (f) => f.active).length === 0) {
             await this._setFilter('all');
         } else {
             const newTiles = await this._generateTilesWithModifier(
                 this.state.tiles,
                 _.isEmpty(this.state.query) ? ExploreTilesModifiers.Filter : ExploreTilesModifiers.Search,
                 {
-                    filter: updatedFilters.find(f => f.active),
+                    filter: updatedFilters.find((f) => f.active),
                     query: this.state.query,
                 },
             );
@@ -221,14 +221,14 @@ export class Explore extends React.Component<ExploreProps> {
         if (modifier === ExploreTilesModifiers.Ordering) {
             switch (ORDERINGS[options.tilesOrdering].type) {
                 case ExploreTilesOrderingType.HardCodedByName:
-                    return _.sortBy(tiles, t => _.indexOf(ORDERINGS[options.tilesOrdering].hardCoded, t.name));
+                    return _.sortBy(tiles, (t) => _.indexOf(ORDERINGS[options.tilesOrdering].hardCoded, t.name));
                 case ExploreTilesOrderingType.DynamicBySortFunction:
                     return ORDERINGS[options.tilesOrdering].sort(tiles);
                 default:
                     return tiles;
             }
         }
-        return _.concat([], tiles).map(t => {
+        return _.concat([], tiles).map((t) => {
             const newTile = _.assign({}, t);
             if (modifier === ExploreTilesModifiers.Filter || modifier === ExploreTilesModifiers.Search) {
                 newTile.visibility =
@@ -355,9 +355,9 @@ const ExploreToolBarContentWrapper = styled.div`
     margin-bottom: 1.6rem;
     overflow-x: auto;
     @media (max-width: 64rem) {
-       & > * {
+        & > * {
             display: none;
-       }
+        }
     }
     & > * {
         margin: 0 0.3rem;
@@ -385,7 +385,7 @@ const ExploreToolBar = (props: ExploreToolBarProps) => {
         <ExploreToolBarWrapper>
             <ExploreToolBarContentWrapper>
                 {!!props.filters &&
-                    props.filters.map(f => {
+                    props.filters.map((f) => {
                         const onClick = () => {
                             props.onFilterClick(f.name, !f.active);
                         };

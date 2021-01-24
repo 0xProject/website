@@ -40,8 +40,8 @@ export const providerFactory = {
             isMetaMask: false,
             isParity: false,
             stop: _.noop.bind(_),
-            enable: (walletLinkProvider.enable).bind(walletLinkProvider),
-            sendAsync: (walletLinkProvider.sendAsync).bind(walletLinkProvider),
+            enable: walletLinkProvider.enable.bind(walletLinkProvider),
+            sendAsync: walletLinkProvider.sendAsync.bind(walletLinkProvider),
         };
 
         return standardizedProvider;
@@ -56,8 +56,8 @@ export const providerFactory = {
             isMetaMask: false,
             isParity: false,
             stop: _.noop.bind(_),
-            enable: (walletConnectProvider.enable).bind(walletConnectProvider),
-            sendAsync: (walletConnectProvider.send).bind(walletConnectProvider),
+            enable: walletConnectProvider.enable.bind(walletConnectProvider),
+            sendAsync: walletConnectProvider.send.bind(walletConnectProvider),
         };
         return standardizedProvider;
     },

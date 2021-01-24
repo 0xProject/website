@@ -35,7 +35,4 @@ const mapDispatchTopProps = (dispatch: Dispatch<Action>): ConnectedDispatch => (
     dispatcher: new Dispatcher(dispatch),
 });
 
-export const AllowanceStateToggle = connect(
-    mapStateToProps,
-    mapDispatchTopProps,
-)(AllowanceStateToggleComponent);
+export const AllowanceStateToggle = connect(mapStateToProps, mapDispatchTopProps)(AllowanceStateToggleComponent);

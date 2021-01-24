@@ -12,7 +12,7 @@ export const orderParser = {
             return undefined;
         }
         const queryParams = queryString.substring(1).split('&');
-        const orderQueryParam = _.find(queryParams, queryParam => {
+        const orderQueryParam = _.find(queryParams, (queryParam) => {
             const queryPair = queryParam.split('=');
             return queryPair[0] === 'order';
         });

@@ -243,7 +243,7 @@ const Card = styled.div<{ index: number }>`
     flex-shrink: 0;
     transform: translateY(10px);
     will-change: opacity, transform;
-    animation: ${fadeUp} 0.75s ${props => `${props.index * 0.05}s`} forwards;
+    animation: ${fadeUp} 0.75s ${(props) => `${props.index * 0.05}s`} forwards;
 
     img {
         height: auto;

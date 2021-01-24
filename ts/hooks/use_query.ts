@@ -7,6 +7,4 @@ function useQuery<T = any>(): T {
     return params;
 }
 
-export {
-    useQuery,
-};
+export { useQuery };

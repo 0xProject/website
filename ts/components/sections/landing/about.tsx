@@ -14,7 +14,7 @@ const Wrap = styled.div`
     padding: 65px 45px 35px 45px;
     display: flex;
     flex-direction: column;
-    background-color: ${props => props.theme.darkBgColor};
+    background-color: ${(props) => props.theme.darkBgColor};
     /* HACK(johnrjj) - Add a little more height to not overflow from 900 - 1400px */
     @media (max-width: 1400px) {
         height: 550px;
@@ -51,11 +51,13 @@ export const SectionLandingAbout = () => {
                 </WrapGrid>
             </Wrap>
 
-            {!isMobile && <MiddleContainerToAnchorPlus>
-                <MiddleContainerCircle>
-                    <Icon width={'28px'} name={'plus-sign'} size={'natural'} />
-                </MiddleContainerCircle>
-            </MiddleContainerToAnchorPlus>}
+            {!isMobile && (
+                <MiddleContainerToAnchorPlus>
+                    <MiddleContainerCircle>
+                        <Icon width={'28px'} name={'plus-sign'} size={'natural'} />
+                    </MiddleContainerCircle>
+                </MiddleContainerToAnchorPlus>
+            )}
 
             <Wrap>
                 <div>
@@ -189,7 +191,6 @@ const ApiFeatureContainerRow = styled.div`
         flex-direction: column;
         justify-content: center;
         margin-bottom: 16px;
-
     }
 `;
 
@@ -296,6 +297,6 @@ const StyledProject = styled.div<StyledProjectInterface>`
         max-width: 38%;
         height: auto;
         margin: 10px 12px;
-        display: ${props => !props.isOnMobile && 'none'};
+        display: ${(props) => !props.isOnMobile && 'none'};
     }
 `;

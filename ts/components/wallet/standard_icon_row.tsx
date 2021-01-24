@@ -26,11 +26,11 @@ const PlainStandardIconRow: React.StatelessComponent<StandardIconRowProps> = ({ 
 };
 
 export const StandardIconRow = styled(PlainStandardIconRow)`
-    min-height: ${props => props.minHeight};
-    border-bottom-color: ${props => props.borderBottomColor};
-    border-bottom-style: ${props => props.borderBottomStyle};
-    border-width: ${props => props.borderWidth};
-    background-color: ${props => props.backgroundColor};
+    min-height: ${(props) => props.minHeight};
+    border-bottom-color: ${(props) => props.borderBottomColor};
+    border-bottom-style: ${(props) => props.borderBottomStyle};
+    border-width: ${(props) => props.borderWidth};
+    background-color: ${(props) => props.backgroundColor};
 `;
 
 StandardIconRow.defaultProps = {

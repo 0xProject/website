@@ -32,18 +32,18 @@ export const TabbedWrapper = styled.div`
 `;
 
 const Tab = styled.div<TabProps>`
-    background-color: ${props => props.theme.lightBgColor};
-    opacity: ${props => (props.isActive ? '1' : '0.5')};
+    background-color: ${(props) => props.theme.lightBgColor};
+    opacity: ${(props) => (props.isActive ? '1' : '0.5')};
     display: inline-block;
     padding: 20px 40px;
     font-size: 16px;
     cursor: pointer;
     &:hover {
-        opacity: ${props => (props.isActive ? '1' : '0.75')};
+        opacity: ${(props) => (props.isActive ? '1' : '0.75')};
     }
 `;
 
-export const TabbedCodeDemo: React.FC<TabbedCodeDemoProps> = props => {
+export const TabbedCodeDemo: React.FC<TabbedCodeDemoProps> = (props) => {
     const { activeIndex, tabs, onTabClick } = props;
     const { code, language } = tabs[activeIndex];
     return (

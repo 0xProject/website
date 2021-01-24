@@ -18,10 +18,10 @@ interface OrderingListItemProps {
 export const OrderingListItem = styled.li<OrderingListItemProps>`
     margin-bottom: 12px;
     cursor: pointer;
-    color: ${props => (props.active ? colors.brandLight : colors.grey)};
+    color: ${(props) => (props.active ? colors.brandLight : colors.grey)};
     transition: color 200ms ease-in-out;
     &:hover {
-        color: ${props => (props.active ? colors.brandLight : colors.brandDark)};
+        color: ${(props) => (props.active ? colors.brandLight : colors.brandDark)};
     }
 `;
 
@@ -67,13 +67,13 @@ interface DropdownWrapInterface {
 }
 
 export const DropdownWrap = styled.div<DropdownWrapInterface>`
-    width: ${props => props.width || 280}px;
+    width: ${(props) => props.width || 280}px;
     margin-top: calc(16px - 2rem);
     padding: 16px 24px;
     border: 1px solid transparent;
-    border-color: ${props => props.theme.dropdownBorderColor};
-    background-color: ${props => props.theme.dropdownBg};
-    color: ${props => props.theme.dropdownColor};
+    border-color: ${(props) => props.theme.dropdownBorderColor};
+    background-color: ${(props) => props.theme.dropdownBg};
+    color: ${(props) => props.theme.dropdownColor};
     position: absolute;
     top: 100%;
     right: 0%;
@@ -96,13 +96,13 @@ export const DropdownWrap = styled.div<DropdownWrapInterface>`
     }
     &:after {
         border-color: rgba(255, 255, 255, 0);
-        border-bottom-color: ${props => props.theme.dropdownBg};
+        border-bottom-color: ${(props) => props.theme.dropdownBg};
         border-width: 10px;
         margin-left: -10px;
     }
     &:before {
         border-color: rgba(255, 0, 0, 0);
-        border-bottom-color: ${props => props.theme.dropdownBorderColor};
+        border-bottom-color: ${(props) => props.theme.dropdownBorderColor};
         border-width: 11px;
         margin-left: -11px;
     }
@@ -148,7 +148,7 @@ const ExploreSettingsFullDropdown = (props: ExploreSettingsDropdownProps) => {
                     )}
                     <OrderingWrapper>
                         <OrderingListWrapper>
-                            {props.orderings.map(o => {
+                            {props.orderings.map((o) => {
                                 const onClick = () => props.onOrdering(o.ordering);
                                 return (
                                     <OrderingListItem
@@ -216,7 +216,7 @@ export const ExploreMobileSettingsDropdown = (props: ExploreMobileSettingsDropdo
                             Filter
                         </Heading>
                         <OrderingListWrapper>
-                            {props.filters.map(f => {
+                            {props.filters.map((f) => {
                                 const onClick = () => props.onFilterClick(f.name, !f.active);
                                 return (
                                     <OrderingListItem onClick={onClick} active={f.active} key={f.name}>
@@ -231,7 +231,7 @@ export const ExploreMobileSettingsDropdown = (props: ExploreMobileSettingsDropdo
                             Sort
                         </Heading>
                         <OrderingListWrapper>
-                            {props.orderings.map(o => {
+                            {props.orderings.map((o) => {
                                 const onClick = () => props.onOrdering(o.ordering);
                                 return (
                                     <OrderingListItem
@@ -258,7 +258,7 @@ const BottomOrderingWrapper = styled(OrderingWrapper)`
         content: '';
         width: 100%;
         height: 1px;
-        background-color: ${props => props.theme.dropdownColor};
+        background-color: ${(props) => props.theme.dropdownColor};
         opacity: 0.15;
         position: absolute;
         top: 0;
