@@ -178,6 +178,21 @@ const team: TeamMember[] = [
         name: 'Max Torres',
         title: 'Finance Lead',
     },
+    {
+        imageUrl: '/images/team/romainb.jpg',
+        name: 'Romain Butteuad',
+        title: 'Engineer',
+    },
+    {
+        imageUrl: '/images/team/dannings.jpg',
+        name: 'Danning Sui',
+        title: 'Data Scientist',
+    },
+    {
+        imageUrl: '/images/team/davids.jpg',
+        name: 'David Sun',
+        title: 'Engineer',
+    },
 ];
 
 const advisors: TeamMember[] = [
