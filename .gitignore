@@ -10,3 +10,5 @@ mdx/tools/*
 .awcache
 
 .env
+.vercel
+

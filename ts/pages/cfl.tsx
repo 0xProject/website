@@ -113,8 +113,8 @@ export class CFL extends React.Component<Props> {
                     showFigureBottomMobile={true}
                     isCenteredMobile={true}
                     figure={<CFLMetrics />}
-                    figureMaxWidth="600px"
-                    maxWidth="500px"
+                    maxWidthFigure="600px"
+                    maxWidthContent="500px"
                     actions={
                         <Button href={constants.CFL_DOCS} isInline={true}>
                             Get Started

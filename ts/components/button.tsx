@@ -36,6 +36,7 @@ export interface ButtonInterface {
     isFullWidth?: boolean;
     isLarge?: boolean;
     fontWeight?: string;
+    width?: string;
 }
 
 export const Button: React.StatelessComponent<ButtonInterface> = React.memo((props: ButtonInterface) => {
@@ -97,7 +98,7 @@ const ButtonBase = styled.button<ButtonInterface>`
     cursor: pointer;
     outline: none;
     transition: background-color 0.35s, border-color 0.35s;
-    width: ${props => props.isFullWidth ? '100%' : 'auto'};
+    width: ${props => props.isFullWidth ? '100%' : props.width ? props.width : 'auto'};
 
     // @todo Refactor to use theme props
     ${props =>

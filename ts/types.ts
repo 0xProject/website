@@ -565,6 +565,7 @@ export enum WebsitePaths {
     Ecosystem = '/eap',
     MarketMaker = '/market-maker',
     ZeroExApi = '/api',
+    ZeroExApiDocs = '/docs/api',
     StakingShortLink = '/zrx',
     Staking = '/zrx/staking',
     StakingWizard = '/zrx/staking/wizard',

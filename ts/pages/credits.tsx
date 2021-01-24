@@ -34,7 +34,7 @@ export class Credits extends React.Component<CreditsProps> {
             <SiteWrap theme="light">
                 <DocumentTitle {...documentConstants.INFRASTRUCTURE_CREDITS} />
                 <Hero
-                    maxWidth="865px"
+                    maxWidthContent="865px"
                     maxWidthHeading="765px"
                     isLargeTitle={false}
                     isFullWidth={false}
