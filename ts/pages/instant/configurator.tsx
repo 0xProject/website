@@ -84,7 +84,7 @@ export class Configurator extends React.Component {
 </html>`;
     };
     private readonly _renderAvailableAssetDatasString = (availableAssetDatas: string[]): string => {
-        const stringAvailableAssetDatas = availableAssetDatas.map(assetData => `'${assetData}'`);
+        const stringAvailableAssetDatas = availableAssetDatas.map((assetData) => `'${assetData}'`);
         if (availableAssetDatas.length < 2) {
             return `[${stringAvailableAssetDatas.join(', ')}]`;
         }

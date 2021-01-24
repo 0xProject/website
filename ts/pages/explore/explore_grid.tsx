@@ -46,7 +46,7 @@ export class ExploreGrid extends React.Component<ExptoreGridProps> {
     public render(): React.ReactNode {
         return (
             <ExploreGridList>
-                {this._prepareTiles().map(t => {
+                {this._prepareTiles().map((t) => {
                     if (!!t.exploreProject) {
                         return (
                             <ExploreGridTileWrapper key={t.name} tilePositions={t.tilePositions}>
@@ -66,7 +66,7 @@ export class ExploreGrid extends React.Component<ExptoreGridProps> {
     }
 
     private readonly _prepareTiles = (): RicherExploreGridListTile[] => {
-        const visibleTiles = this.props.tiles.filter(t => t.visibility !== ExploreTileVisibility.Hidden);
+        const visibleTiles = this.props.tiles.filter((t) => t.visibility !== ExploreTileVisibility.Hidden);
         return this._generateGridValues(visibleTiles);
     };
 
@@ -75,7 +75,7 @@ export class ExploreGrid extends React.Component<ExptoreGridProps> {
         width: ExploreTileGridWidth,
     ): RicherExploreGridListTile[] => {
         let gridEndCounter = 1;
-        const newTiles = tiles.map(t => {
+        const newTiles = tiles.map((t) => {
             if (gridEndCounter + EXPLORE_TILE_COL_WIDTH[t.width][width] > width + 1) {
                 gridEndCounter = 1;
             }
@@ -90,7 +90,7 @@ export class ExploreGrid extends React.Component<ExptoreGridProps> {
     };
 
     private readonly _generateGridValues = (tiles: ExploreTile[]): RicherExploreGridListTile[] => {
-        let richerTiles = tiles.map(t => {
+        let richerTiles = tiles.map((t) => {
             return _.assign({ tilePositions: {} }, t) as RicherExploreGridListTile;
         });
         richerTiles = this._generateGridPositions(richerTiles, ExploreTileGridWidth.ThreeColumn);
@@ -107,15 +107,15 @@ interface ExploreGridTileWrapperProps {
 }
 
 const ExploreGridTileWrapper = styled.div<ExploreGridTileWrapperProps>`
-    grid-column-start: ${props => props.tilePositions[ExploreTileGridWidth.ThreeColumn].gridStart};
-    grid-column-end: ${props => props.tilePositions[ExploreTileGridWidth.ThreeColumn].gridEnd};
+    grid-column-start: ${(props) => props.tilePositions[ExploreTileGridWidth.ThreeColumn].gridStart};
+    grid-column-end: ${(props) => props.tilePositions[ExploreTileGridWidth.ThreeColumn].gridEnd};
     @media (max-width: 56rem) {
-        grid-column-start: ${props => props.tilePositions[ExploreTileGridWidth.TwoColumn].gridStart};
-        grid-column-end: ${props => props.tilePositions[ExploreTileGridWidth.TwoColumn].gridEnd};
+        grid-column-start: ${(props) => props.tilePositions[ExploreTileGridWidth.TwoColumn].gridStart};
+        grid-column-end: ${(props) => props.tilePositions[ExploreTileGridWidth.TwoColumn].gridEnd};
     }
     @media (max-width: 36rem) {
-        grid-column-start: ${props => props.tilePositions[ExploreTileGridWidth.OneColumn].gridStart};
-        grid-column-end: ${props => props.tilePositions[ExploreTileGridWidth.OneColumn].gridEnd};
+        grid-column-start: ${(props) => props.tilePositions[ExploreTileGridWidth.OneColumn].gridStart};
+        grid-column-end: ${(props) => props.tilePositions[ExploreTileGridWidth.OneColumn].gridEnd};
     }
 `;
 

@@ -42,7 +42,7 @@ export const RemoveStakeDialog: FC<RemoveStakeDialogProps> = ({
 
     const { poolId, zrxAmount } = poolDetails;
 
-    const pool = stakingPools.find(p => p.poolId === poolId);
+    const pool = stakingPools.find((p) => p.poolId === poolId);
     const formattedAmount = formatZrx(zrxAmount).minimized;
 
     return (
@@ -107,11 +107,11 @@ const StyledHeading = styled(Heading)`
 `;
 
 const ConfirmButton = styled(Button)`
-    background-color: ${props => props.isDisabled && '#898990'};
-    cursor: ${props => (props.isDisabled ? 'not-allowed' : 'pointer')};
+    background-color: ${(props) => props.isDisabled && '#898990'};
+    cursor: ${(props) => (props.isDisabled ? 'not-allowed' : 'pointer')};
     color: #fff;
     &:hover {
-        background-color: ${props => props.isDisabled && '#898990'};
+        background-color: ${(props) => props.isDisabled && '#898990'};
     }
 `;
 
@@ -148,7 +148,7 @@ const StyledDialogContent = styled(DialogContent)`
     &[data-reach-dialog-content] {
         position: relative;
         width: 600px;
-        background: ${props => props.theme.lightBgColor};
+        background: ${(props) => props.theme.lightBgColor};
         border: 1px solid #e5e5e5;
 
         @media (max-width: 768px) {

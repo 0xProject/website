@@ -47,9 +47,9 @@ interface SectionProps {
 
 const Section = styled.section<SectionProps>`
     position: relative;
-    padding: ${props => props.sectionPadding || '0 0'};
+    padding: ${(props) => props.sectionPadding || '0 0'};
     @media (max-width: 768px) {
-        padding: ${props => props.paddingMobile || '40px 0'};
+        padding: ${(props) => props.paddingMobile || '40px 0'};
     }
     margin: 0 auto;
 `;
@@ -64,8 +64,8 @@ const Wrap = styled.div<WrapProps>`
     align-self: center;
     width: calc(100% - 60px);
     margin: 0 auto;
-    padding: ${props => props.padding || '120px 0'};
-    max-width: ${props => props.maxWidth || '100%'};
+    padding: ${(props) => props.padding || '120px 0'};
+    max-width: ${(props) => props.maxWidth || '100%'};
     @media (min-width: 1800px) {
         max-width: 1500px;
     }

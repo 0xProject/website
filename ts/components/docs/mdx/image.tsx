@@ -37,7 +37,7 @@ const ImageWrapper = styled.span<IImageWrapperProps>`
     display: flex;
     align-items: center;
     justify-content: ${({ align, justify }) => alignImage({ align, justify })};
-    padding: ${props => props.padding};
-    margin: ${props => props.margin};
-    margin-bottom: ${props => props.marginBottom};
+    padding: ${(props) => props.padding};
+    margin: ${(props) => props.margin};
+    margin-bottom: ${(props) => props.marginBottom};
 `;

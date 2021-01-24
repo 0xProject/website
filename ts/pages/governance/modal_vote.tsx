@@ -60,7 +60,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
             const { zrxStaked, zrxDeposited } = delegatorResponse.forCurrentEpoch;
             const undelegated = zrxDeposited - zrxStaked;
             const stakedVotingPower = zrxStaked / 2 + undelegated;
-            const operatedPools = poolsResponse.stakingPools.filter(p => p.operatorAddress === account.address);
+            const operatedPools = poolsResponse.stakingPools.filter((p) => p.operatorAddress === account.address);
             // Voting Power for the operator of the pool is 0.5 * total staked
             const totalDelegatedToAccount = operatedPools
                 .reduce((acc, p) => acc.plus(p.currentEpochStats.zrxStaked), new BigNumber(0))
@@ -80,7 +80,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
         setIsFetchingVotingPowerData(true);
         fetchDelegatorData()
             .then(() => setIsFetchingVotingPowerData(false))
-            .catch(err => {
+            .catch((err) => {
                 setIsFetchingVotingPowerData(false);
                 logUtils.warn(err);
                 errorReporter.report(err);
@@ -96,10 +96,13 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
     );
 
     const [isSuccessful, setSuccess] = React.useState(false);
-    const onVoted = React.useCallback((voteInfo: VoteInfo) => {
-        setSuccess(true);
-        onVoteInfoReceived(voteInfo);
-    }, [onVoteInfoReceived]);
+    const onVoted = React.useCallback(
+        (voteInfo: VoteInfo) => {
+            setSuccess(true);
+            onVoteInfoReceived(voteInfo);
+        },
+        [onVoteInfoReceived],
+    );
     const [errorMessage, setErrorMessage] = React.useState<string | undefined>(undefined);
     const [isErrorModalOpen, setErrorModalOpen] = React.useState(false);
     const onVoteError = React.useCallback((message: string) => {
@@ -211,8 +214,8 @@ const Confirmation = styled.div<FormProps>`
     transition-delay: 0.4s;
     padding: 60px 60px;
     transform: translateY(-50%);
-    opacity: ${props => (props.isSuccessful ? `1` : `0`)};
-    visibility: ${props => (props.isSuccessful ? 'visible' : `hidden`)};
+    opacity: ${(props) => (props.isSuccessful ? `1` : `0`)};
+    visibility: ${(props) => (props.isSuccessful ? 'visible' : `hidden`)};
 
     p {
         max-width: 492px;

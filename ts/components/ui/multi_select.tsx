@@ -31,7 +31,7 @@ export class MultiSelect extends React.Component<MultiSelectProps> {
                 height={height}
                 overflowY="scroll"
             >
-                {_.map(items, item => (
+                {_.map(items, (item) => (
                     <MultiSelectItem
                         key={item.value}
                         renderItemContent={item.renderItemContent}

@@ -146,14 +146,14 @@ const ButtonWrap = styled.div`
 // to pass props down into the styled icon?
 const Border = styled.div<BorderProps>`
     position: absolute;
-    background-image: ${props =>
+    background-image: ${(props) =>
         props.isBottom ? 'url(/images/banner/bottomofcta.png);' : 'url(/images/banner/topofcta.png);'};
-    background-position: ${props => (props.isBottom ? 'left top' : 'left bottom')};
+    background-position: ${(props) => (props.isBottom ? 'left top' : 'left bottom')};
     left: 0;
     width: calc(100% + 214px);
     height: 40px;
-    top: ${props => !props.isBottom && 0};
-    bottom: ${props => props.isBottom && 0};
+    top: ${(props) => !props.isBottom && 0};
+    bottom: ${(props) => props.isBottom && 0};
     transform: translate(-112px);
 
     @media (max-width: 768px) {

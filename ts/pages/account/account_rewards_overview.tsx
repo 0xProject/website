@@ -29,38 +29,29 @@ export const AccountRewardsOverview: React.StatelessComponent<RewardOverviewProp
     return (
         <Wrap>
             <Flex>
-                <Action
-                    percentWidth={25}
-                    percentWidthMobile={50}
-                >
+                <Action percentWidth={25} percentWidthMobile={50}>
                     <div>
                         <Heading marginBottom="12px">
                             <FlexHeader>
                                 Estimated for this epoch
                                 <InfoTooltip id="epoch-estimated-rewards">
-                                    This estimate is expected to fluctuate at the beginning of an epoch, and progressively converge on the final value.
+                                    This estimate is expected to fluctuate at the beginning of an epoch, and
+                                    progressively converge on the final value.
                                 </InfoTooltip>
                             </FlexHeader>
                         </Heading>
                         {estimatedEpochRewards} ETH
                     </div>
                 </Action>
-                <Action
-                    percentWidth={25}
-                    percentWidthMobile={50}
-                >
+                <Action percentWidth={25} percentWidthMobile={50}>
                     <div>
-                        <Heading marginBottom="12px">
-                            Lifetime Rewards
-                        </Heading>
+                        <Heading marginBottom="12px">Lifetime Rewards</Heading>
                         {lifetimeRewards} ETH
                     </div>
                 </Action>
                 <CollapsibleAction>
                     <div>
-                        <Heading marginBottom="12px">
-                            Accumulated Rewards
-                        </Heading>
+                        <Heading marginBottom="12px">Accumulated Rewards</Heading>
                         {totalAvailableRewards} ETH
                     </div>
                     <div>
@@ -155,8 +146,8 @@ const Action = styled(FlexBase)<ActionProps>`
     > div {
         text-align: left;
         flex: 1;
-        padding: 0.5em;/* add some padding ?*/
-        border-right: 1px solid #D9D9D9;
+        padding: 0.5em; /* add some padding ?*/
+        border-right: 1px solid #d9d9d9;
     }
 
     > div:last-child {
@@ -165,7 +156,7 @@ const Action = styled(FlexBase)<ActionProps>`
 
     @media (min-width: 768px) {
         height: 7em;
-        width: calc(${props => props.percentWidth ? props.percentWidth : 100}% - 10px);
+        width: calc(${(props) => (props.percentWidth ? props.percentWidth : 100)}% - 10px);
         padding: 20px;
         font-size: 20px;
 
@@ -176,7 +167,7 @@ const Action = styled(FlexBase)<ActionProps>`
 
     @media (max-width: 768px) {
         height: 5.5em;
-        width: calc(${props => props.percentWidthMobile ? props.percentWidthMobile : 100}% - 5px);
+        width: calc(${(props) => (props.percentWidthMobile ? props.percentWidthMobile : 100)}% - 5px);
         padding: 12px;
         margin-top: 20px;
         font-size: 17px;
@@ -195,7 +186,7 @@ const CollapsibleAction = styled(FlexBase)`
     > div {
         text-align: left;
         flex: 1;
-        padding: 0.5em;/* add some padding ?*/
+        padding: 0.5em; /* add some padding ?*/
     }
 
     > div:last-child {

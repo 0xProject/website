@@ -136,7 +136,7 @@ const CustomSection = styled(Section)<CustomSectionProps>`
     max-width: 100%;
     width: inherit;
     transition: 300ms transform ease-in-out;
-    transform: translateY(-${props => (props.dismissed ? '100%' : '0')});
+    transform: translateY(-${(props) => (props.dismissed ? '100%' : '0')});
     font-family: Formular, sans-serif;
     @media (max-width: 900px) {
         align-items: center;
@@ -196,14 +196,14 @@ const ButtonWrap = styled.div`
 // to pass props down into the styled icon?
 const Border = styled.div<BorderProps>`
     position: absolute;
-    background-image: ${props =>
+    background-image: ${(props) =>
         props.isBottom ? 'url(/images/banner/bottomofcta.png);' : 'url(/images/banner/topofcta.png);'};
-    background-position: ${props => (props.isBottom ? 'left top' : 'left bottom')};
+    background-position: ${(props) => (props.isBottom ? 'left top' : 'left bottom')};
     left: 0;
     width: calc(100% + 214px);
     height: 40px;
-    top: ${props => !props.isBottom && 0};
-    bottom: ${props => props.isBottom && 0};
+    top: ${(props) => !props.isBottom && 0};
+    bottom: ${(props) => props.isBottom && 0};
     transform: translate(-112px);
     z-index: 0;
     pointer-events: none;

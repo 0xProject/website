@@ -32,7 +32,7 @@ const SECTION_WIDTH = '1150px';
 
 const { description, keywords, title } = documentConstants.DOCS;
 
-export const DocsPageLayout: React.FC<IDocsPageLayoutProps> = props => {
+export const DocsPageLayout: React.FC<IDocsPageLayoutProps> = (props) => {
     return (
         <SiteWrap isDocs={true} theme="light" headerComponent={Header}>
             <DocumentTitle

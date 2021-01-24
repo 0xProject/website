@@ -24,8 +24,8 @@ const animations = css`
 `;
 
 export const EaseUpFromBottomAnimation = styled.div`
-    ${props => animations};
-    ${props => stylesForAnimation};
+    ${(props) => animations};
+    ${(props) => stylesForAnimation};
 `;
 
 EaseUpFromBottomAnimation.displayName = 'EaseUpFromBottomAnimation';

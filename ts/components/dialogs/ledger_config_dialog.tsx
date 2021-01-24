@@ -95,7 +95,7 @@ export class LedgerConfigDialog extends React.Component<LedgerConfigDialogProps,
                     <li className="pb1">
                         If no Browser Support is found in settings, verify that you have{' '}
                         <a href="https://www.ledgerwallet.com/apps/manager" target="_blank">
-                            Firmware >1.2
+                            {`Firmware >1.2`}
                         </a>
                     </li>
                     <li>Choose your desired network:</li>

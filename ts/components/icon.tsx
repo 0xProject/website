@@ -14,10 +14,10 @@ interface IconProps extends PaddingInterface {
     style?: any;
 }
 
-export const Icon: React.FC<IconProps> = React.memo(props => {
+export const Icon: React.FC<IconProps> = React.memo((props) => {
     if (props.name && !props.component) {
-        const IconSVG = React.lazy(async () =>
-            import(/* webpackChunkName: "icon" */ `ts/icons/illustrations/${props.name}.svg`),
+        const IconSVG = React.lazy(
+            async () => import(/* webpackChunkName: "icon" */ `ts/icons/illustrations/${props.name}.svg`),
         );
 
         return (
@@ -41,7 +41,7 @@ Icon.defaultProps = {
 };
 
 export const InlineIconWrap = styled.div<PaddingInterface>`
-    margin: ${props => getCSSPadding(props.margin)};
+    margin: ${(props) => getCSSPadding(props.margin)};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -63,18 +63,18 @@ const _getSize = (size: string | number = 'small'): string | undefined => {
 };
 
 const StyledIcon = styled.figure<IconProps>`
-    color: ${props => props.color && props.color};
-    width: ${props => props.width ?? _getSize(props.size)};
-    height: ${props => props.height ?? _getSize(props.size)};
-    margin: ${props => getCSSPadding(props.margin)};
+    color: ${(props) => props.color && props.color};
+    width: ${(props) => props.width ?? _getSize(props.size)};
+    height: ${(props) => props.height ?? _getSize(props.size)};
+    margin: ${(props) => getCSSPadding(props.margin)};
     display: inline-block;
     flex-shrink: 0;
     max-height: 100%;
     max-width: 100%;
 
     svg {
-        width: ${props => (props.size === 'natural' ? '' : (props.size && `${props.size}px`) || '100%')};
-        height: ${props => (props.size === 'natural' ? '' : (props.size && `${props.size}px`) || '100%')};
+        width: ${(props) => (props.size === 'natural' ? '' : (props.size && `${props.size}px`) || '100%')};
+        height: ${(props) => (props.size === 'natural' ? '' : (props.size && `${props.size}px`) || '100%')};
         object-fit: cover;
     }
 `;

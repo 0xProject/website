@@ -17,8 +17,8 @@ interface InteractiveDefinitionProps extends DefinitionProps {
 const InteractiveDefinition = styled(Definition)<InteractiveDefinitionProps>`
     @media (min-width: 1216px) {
         padding: 20px;
-        background-color: ${props => (props.isSelected ? '#0D1413' : '')};
-        border-left: ${props => (props.isSelected ? '3px solid #00AE99' : '3px solid rgba(0,0,0,0)')};
+        background-color: ${(props) => (props.isSelected ? '#0D1413' : '')};
+        border-left: ${(props) => (props.isSelected ? '3px solid #00AE99' : '3px solid rgba(0,0,0,0)')};
         width: 500px;
         p {
             margin-bottom: 0px;

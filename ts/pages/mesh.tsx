@@ -78,7 +78,7 @@ export class Mesh extends React.Component {
                     </Column>
 
                     <Column width="46%" maxWidth="490px">
-                        {descriptionCasesData.map(item => (
+                        {descriptionCasesData.map((item) => (
                             <Definition
                                 key={item.title}
                                 title={item.title}

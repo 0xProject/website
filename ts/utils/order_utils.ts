@@ -12,7 +12,7 @@ import * as _ from 'lodash';
 export const orderParsingUtils = {
     convertStringsFieldsToBigNumbers(obj: any, fields: string[]): any {
         const result = _.assign({}, obj);
-        _.each(fields, field => {
+        _.each(fields, (field) => {
             _.update(result, field, (value: string) => {
                 if (value === undefined) {
                     throw new Error(`Could not find field '${field}' while converting string fields to BigNumber.`);

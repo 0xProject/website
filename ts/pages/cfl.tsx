@@ -143,7 +143,7 @@ export class CFL extends React.Component<Props> {
                 </Section>
                 <Section>
                     <DeFiHeading size="medium">Use Cases in DeFi</DeFiHeading>
-                    {useCasesData.map(useCase => (
+                    {useCasesData.map((useCase) => (
                         <Definition
                             key={useCase.title}
                             icon={useCase.icon}

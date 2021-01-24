@@ -108,7 +108,7 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
 );
 
 const desktopOnlyStyle = css<{ cutOffRem?: number }>`
-    @media (max-width: ${props => `${props.cutOffRem || ScreenWidths.Lg}rem`}) {
+    @media (max-width: ${(props) => `${props.cutOffRem || ScreenWidths.Lg}rem`}) {
         display: none;
     }
 `;
@@ -138,7 +138,7 @@ const StakingPoolDetailRowWrapper = styled.div<{ to?: string }>`
     }
     :hover,
     :active {
-        border: ${props => (props.to ? '1px solid #B4B4B4' : 'inherit')};
+        border: ${(props) => (props.to ? '1px solid #B4B4B4' : 'inherit')};
     }
 `;
 
@@ -153,7 +153,7 @@ const BaseLogoContainer = styled.div`
 const JazziconContainer = styled(BaseLogoContainer)``;
 
 const Logo = styled(BaseLogoContainer)<{ isFullSizeThumbnail?: boolean }>`
-    padding: ${props => (props.isFullSizeThumbnail ? 0 : 15)}px;
+    padding: ${(props) => (props.isFullSizeThumbnail ? 0 : 15)}px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -178,10 +178,10 @@ const Heading = styled.span<{ hasHoverEffect?: boolean }>`
         line-height: 27px;
     }
     ${StakingPoolDetailRowWrapper}:hover & {
-        color: ${props => (props.hasHoverEffect ? '#00AE99' : 'inherit')};
+        color: ${(props) => (props.hasHoverEffect ? '#00AE99' : 'inherit')};
     }
     ${StakingPoolDetailRowWrapper}:active & {
-        color: ${props => (props.hasHoverEffect ? '#00AE99' : 'inherit')};
+        color: ${(props) => (props.hasHoverEffect ? '#00AE99' : 'inherit')};
     }
 `;
 
@@ -223,7 +223,7 @@ const PoolPerformanceItem = styled.div<{ cutOffRem?: number }>`
         }
     }
 
-    ${props => props.cutOffRem && desktopOnlyStyle}
+    ${(props) => props.cutOffRem && desktopOnlyStyle}
 
     // Border
     & + & {
@@ -268,7 +268,7 @@ const GreenPercentageWidth = styled.div<{ percentage: number }>`
     position: absolute;
     top: 0;
     left: 0;
-    width: ${props => props.percentage}%;
+    width: ${(props) => props.percentage}%;
     bottom: 0;
     background-color: #00ae99;
 `;

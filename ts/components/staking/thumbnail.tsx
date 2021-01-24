@@ -24,14 +24,14 @@ export const Thumbnail: FC<ThumbnailProps> = ({ thumbnailUrl, size, poolId, addr
 
 const BaseLogoContainer = styled.div<{ cutOffRem?: number; size: number }>`
     border: 1px solid #d9d9d9;
-    height: ${props => props.size}px;
-    width: ${props => props.size}px;
+    height: ${(props) => props.size}px;
+    width: ${(props) => props.size}px;
 `;
 
 const JazziconContainer = styled(BaseLogoContainer)``;
 
 const Logo = styled(BaseLogoContainer)<{ logoPadding?: number }>`
-    padding: ${props => props.logoPadding && `${props.logoPadding}px`};
+    padding: ${(props) => props.logoPadding && `${props.logoPadding}px`};
     display: flex;
     align-items: center;
     justify-content: center;

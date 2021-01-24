@@ -233,8 +233,7 @@ export const proposals: Proposals = {
                 },
                 {
                     text: '0x Forum',
-                    url:
-                        'https://forum.0x.org/',
+                    url: 'https://forum.0x.org/',
                 },
             ],
         },
@@ -244,8 +243,7 @@ export const proposals: Proposals = {
                 `Actively managing the process will constitue an overhead cost for the designated ZEIP committee. This latter will consists initially of members of the 0x Core team, but overtime it will have to be open to other members of the community. `,
             ],
             rating: 1,
-            links: [
-            ],
+            links: [],
         },
     },
     77: {
@@ -268,8 +266,7 @@ export const proposals: Proposals = {
             links: [
                 {
                     text: 'Initial set of staking parameters',
-                    url:
-                        'https://github.com/0xProject/ZEIPs/issues/61',
+                    url: 'https://github.com/0xProject/ZEIPs/issues/61',
                 },
             ],
         },
@@ -288,8 +285,7 @@ export const proposals: Proposals = {
                 },
                 {
                     text: 'Staking security audit',
-                    url:
-                        'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
+                    url: 'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
                 },
             ],
         },
@@ -315,8 +311,7 @@ export const proposals: Proposals = {
             links: [
                 {
                     text: 'Initial set of staking parameters',
-                    url:
-                        'https://github.com/0xProject/ZEIPs/issues/61',
+                    url: 'https://github.com/0xProject/ZEIPs/issues/61',
                 },
             ],
         },
@@ -326,7 +321,6 @@ export const proposals: Proposals = {
                 `Staking contracts were designed to safely allow updates of a specific set of parameters via a SetParams function.`,
                 `This functionality does not trigger security-critical operations, and was considered safe by external security auditors.`,
                 `There is a risk that decreasing the fee multiplier will impact the liquidity rewards in the immediate short term.`,
-
             ],
             rating: 1,
             links: [
@@ -337,8 +331,7 @@ export const proposals: Proposals = {
                 },
                 {
                     text: 'Staking security audit',
-                    url:
-                        'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
+                    url: 'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
                 },
             ],
         },
@@ -367,8 +360,7 @@ export const proposals: Proposals = {
             links: [
                 {
                     text: 'Protocol specifications',
-                    url:
-                        'https://0xprotocol.readthedocs.io/en/latest/index.html',
+                    url: 'https://0xprotocol.readthedocs.io/en/latest/index.html',
                 },
             ],
         },
@@ -377,19 +369,16 @@ export const proposals: Proposals = {
             summary: [
                 `While the 0x v4 contracts architecture is relatively new compared to the previous versions of the protocol, it has been used in production applications in the second half of 2020. Contracts were thoroughly reviewed internally, and audited by Consensys Diligence. No major vulnerabilities were found.`,
                 `Moreover, the new architecture comes with the ability to modify or rollback specific features, without halting the entire pipeline of smart contracts. This means that if a vulnerability is found (0x Labs offers generous bug bounties), it is possible to rollback the functionality that exposes the risk.`,
-
             ],
             rating: 1,
             links: [
                 {
                     text: 'Consensys Diligence Security Audit',
-                    url:
-                        'https://consensys.net/diligence/audits/2020/12/0x-exchange-v4/',
+                    url: 'https://consensys.net/diligence/audits/2020/12/0x-exchange-v4/',
                 },
                 {
                     text: '0x v4 Bug Bounty',
-                    url:
-                        'https://blog.0xproject.com/0x-protocol-v4-bug-bounty-fd0c1942b9a',
+                    url: 'https://blog.0xproject.com/0x-protocol-v4-bug-bounty-fd0c1942b9a',
                 },
             ],
         },

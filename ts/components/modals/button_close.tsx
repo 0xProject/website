@@ -39,6 +39,6 @@ const StyledButtonClose = styled.button.attrs({
     }
 
     path {
-        fill: ${props => props.theme.textColor};
+        fill: ${(props) => props.theme.textColor};
     }
 `;

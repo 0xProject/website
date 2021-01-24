@@ -108,21 +108,21 @@ const StyledInput = styled.input`
     padding: 16px 15px 14px;
     outline: none;
     width: 100%;
-    min-height: ${props => props.type === 'textarea' && `120px`};
+    min-height: ${(props) => props.type === 'textarea' && `120px`};
 
     background-color: ${(props: InputProps) => props.isErrors && `#FDEDED`};
     border-color: ${(props: InputProps) => props.isErrors && `#FD0000`};
 
     &::placeholder {
-        color: #C3C3C3;
+        color: #c3c3c3;
         font-family: 'Formular';
     }
 `;
 
 const InputWrapper = styled.div<InputProps>`
     position: relative;
-    flex-grow: ${props => props.width === InputWidth.Full && 1};
-    width: ${props => props.width === InputWidth.Half && `calc(50% - 15px)`};
+    flex-grow: ${(props) => props.width === InputWidth.Full && 1};
+    width: ${(props) => props.width === InputWidth.Half && `calc(50% - 15px)`};
 
     @media (max-width: 768px) {
         width: 100%;

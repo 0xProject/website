@@ -23,7 +23,7 @@ const toZrxBaseUnits = (zrxAmount: number) =>
     Web3Wrapper.toBaseUnitAmount(new BigNumber(zrxAmount, 10), constants.DECIMAL_PLACES_ZRX);
 
 const normalizeStakePoolData = (stakePoolData: StakePoolData[]) =>
-    stakePoolData.map(pool => ({
+    stakePoolData.map((pool) => ({
         poolId: utils.toPaddedHex(pool.poolId),
         amountBaseUnits: toZrxBaseUnits(pool.zrxAmount),
     }));
@@ -217,7 +217,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
                 return;
             }
 
-            const data: string[] = _.flatMap(poolIds, poolId => [
+            const data: string[] = _.flatMap(poolIds, (poolId) => [
                 stakingContract.finalizePool(poolId).getABIEncodedTransactionData(),
                 stakingContract.withdrawDelegatorRewards(poolId).getABIEncodedTransactionData(),
             ]);

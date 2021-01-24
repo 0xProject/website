@@ -49,7 +49,7 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
 }) => {
     const stakingPoolsWithName: PoolWithDisplayName[] = useMemo(
         () =>
-            stakingPools.sort(stakingUtils.sortByProtocolFeesDesc).map(pool => ({
+            stakingPools.sort(stakingUtils.sortByProtocolFeesDesc).map((pool) => ({
                 ...pool,
                 displayName: stakingUtils.getPoolDisplayName(pool),
             })),
@@ -62,8 +62,8 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
     const [selectedPoolId, setSelectedPoolId] = useState<string | undefined>(undefined);
     const [isConfirmSceen, setIsConfirmScreen] = useState<boolean>(false);
 
-    const fromPool = stakingPools.find(p => p.poolId === fromPoolId);
-    const toPool = stakingPools.find(p => p.poolId === selectedPoolId);
+    const fromPool = stakingPools.find((p) => p.poolId === fromPoolId);
+    const toPool = stakingPools.find((p) => p.poolId === selectedPoolId);
     const formattedAmount = formatZrx(zrxAmount).minimized;
 
     const clearAndDismiss = () => {
@@ -118,12 +118,12 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                             <StyledInput
                                 width="full"
                                 placeholder="Search Pools"
-                                onChange={e => setSearchTerm(e.target.value)}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </InputWrapper>
 
                         <PoolsListWrapper>
-                            {(searchResults.length ? searchResults : stakingPools).map(pool => (
+                            {(searchResults.length ? searchResults : stakingPools).map((pool) => (
                                 <Pool
                                     key={pool.poolId}
                                     onClick={() => setSelectedPoolId(pool.poolId)}
@@ -179,10 +179,10 @@ const StyledHeading = styled(Heading)`
 const StyledInput = styled(Input)`
     input {
         ::placeholder {
-            color: ${props => props.theme.textDarkSecondary};
+            color: ${(props) => props.theme.textDarkSecondary};
         }
 
-        background-color: ${props => props.theme.lightBgColor};
+        background-color: ${(props) => props.theme.lightBgColor};
         border: none;
     }
 `;
@@ -206,11 +206,11 @@ const PoolsListWrapper = styled.div`
 `;
 
 const ConfirmButton = styled(Button)`
-    background-color: ${props => props.isDisabled && '#898990'};
-    cursor: ${props => (props.isDisabled ? 'not-allowed' : 'pointer')};
+    background-color: ${(props) => props.isDisabled && '#898990'};
+    cursor: ${(props) => (props.isDisabled ? 'not-allowed' : 'pointer')};
     color: #fff;
     &:hover {
-        background-color: ${props => props.isDisabled && '#898990'};
+        background-color: ${(props) => props.isDisabled && '#898990'};
     }
 `;
 
@@ -235,7 +235,7 @@ const ButtonClose = styled(Button)`
 const Pool = styled.div<{ isSelected?: boolean }>`
     height: 87px;
     background: #fff;
-    border: 1px solid ${props => (props.isSelected ? '#00AE99' : '#ddd')};
+    border: 1px solid ${(props) => (props.isSelected ? '#00AE99' : '#ddd')};
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -261,7 +261,7 @@ const StyledDialogContent = styled(DialogContent)`
     &[data-reach-dialog-content] {
         position: relative;
         width: 600px;
-        background: ${props => props.theme.lightBgColor};
+        background: ${(props) => props.theme.lightBgColor};
         border: 1px solid #e5e5e5;
 
         @media (max-width: 768px) {

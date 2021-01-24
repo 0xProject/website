@@ -15,7 +15,7 @@ export const PADDING_SIZES: PaddingSizes = {
 
 export const getCSSPadding = (value: number | Array<string | number> = 0): string => {
     if (Array.isArray(value)) {
-        return value.map(val => PADDING_SIZES[val] || `${val}px`).join(' ');
+        return value.map((val) => PADDING_SIZES[val] || `${val}px`).join(' ');
     } else {
         return `${value}px`;
     }

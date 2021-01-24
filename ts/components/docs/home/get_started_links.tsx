@@ -28,7 +28,7 @@ export const GetStartedLinks: React.FC<IGetStartedLinksProps> = ({ heading, link
     </div>
 );
 
-export const GetStartedLink: React.FC<IGetStartedLinkProps> = props => (
+export const GetStartedLink: React.FC<IGetStartedLinkProps> = (props) => (
     <>
         <GetStartedButton
             color={colors.brandDark}

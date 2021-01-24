@@ -19,7 +19,7 @@ const PlainPlaceHolder: React.StatelessComponent<PlaceHolderProps> = ({ classNam
 };
 
 export const PlaceHolder = styled(PlainPlaceHolder)`
-    background-color: ${props => (props.hideChildren ? props.fillColor : 'transparent')};
+    background-color: ${(props) => (props.hideChildren ? props.fillColor : 'transparent')};
     display: inline-block;
     border-radius: 2px;
 `;

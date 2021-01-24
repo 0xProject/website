@@ -11,20 +11,20 @@ interface SpinnerSvgProps {
     viewBox?: string;
 }
 
-const SpinnerSvg: React.StatelessComponent<SpinnerSvgProps> = props => <svg {...props} />;
+const SpinnerSvg: React.StatelessComponent<SpinnerSvgProps> = (props) => <svg {...props} />;
 
 const StyledSpinner = styled(SpinnerSvg)`
     animation: ${rotate} 3s linear infinite;
-    // margin: ${props => `-${props.size / 2}px 0 0 -${props.size / 2}px`};
-    // margin-top: ${props => `-${props.size / 2}px`};
-    // margin-left: ${props => `-${props.size / 2}px`};
+    // margin: ${(props) => `-${props.size / 2}px 0 0 -${props.size / 2}px`};
+    // margin-top: ${(props) => `-${props.size / 2}px`};
+    // margin-left: ${(props) => `-${props.size / 2}px`};
     // margin-bottom: 0px;
     // margin-right: 0px;
-    size: ${props => `${props.size}px`};
-    height: ${props => `${ props.height || props.size}px`};
+    size: ${(props) => `${props.size}px`};
+    height: ${(props) => `${props.height || props.size}px`};
 
     & .path {
-        stroke: ${props => props.color};
+        stroke: ${(props) => props.color};
         stroke-linecap: round;
         animation: ${dash} 2.5s ease-in-out infinite;
     }

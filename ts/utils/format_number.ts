@@ -133,7 +133,7 @@ function optionsBlank(): FormattedNumberOptions {
     return {
         decimals: 0,
         decimalsRounded: 0,
-        denomination: v => '',
+        denomination: (v) => '',
         roundUp: false,
         roundDown: false,
         positiveSign: false,
@@ -181,7 +181,7 @@ export function formatNumber(num: NumStrBigNumber, opts: FormattedNumberOptions 
 
     decimals = decimals || 0;
     decimalsRounded = decimalsRounded || 0;
-    denomination = denomination || (_ => '');
+    denomination = denomination || ((_) => '');
     positiveSign = !!positiveSign;
     roundUp = !!roundUp;
     roundDown = !!roundDown;
@@ -218,10 +218,7 @@ export function formatNumber(num: NumStrBigNumber, opts: FormattedNumberOptions 
         o.fullPrecision = '0';
     } else {
         const useSignificantFiguresThreshold = TEN.exponentiatedBy(
-            new BigNumber(decimals, 10)
-                .minus(1)
-                .negated()
-                .toNumber(),
+            new BigNumber(decimals, 10).minus(1).negated().toNumber(),
         );
         const roundToZeroThreshold = ZERO;
         o.value = value.toNumber();
@@ -339,7 +336,7 @@ export function formatEther(num: NumStrBigNumber, opts: FormattedCryptoOptions =
     return formatNumber(normalizedNum, {
         decimals: ETHER_NUMBER_OF_DECIMALS,
         decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
-        denomination: v => `${v} ETH`,
+        denomination: (v) => `${v} ETH`,
         positiveSign: false,
         zeroStyled: false,
         blankZero: false,
@@ -359,7 +356,7 @@ export function formatZrx(num: NumStrBigNumber, opts: FormattedCryptoOptions = {
         decimals: ZRX_NUMBER_OF_DECIMALS,
         decimalsRounded: ZRX_NUMBER_OF_DECIMALS,
         roundDown: true, // round down to be safe and avoid ui mismatches
-        denomination: v => `${v} ZRX`,
+        denomination: (v) => `${v} ZRX`,
         positiveSign: false,
         zeroStyled: false,
         blankZero: false,
@@ -378,7 +375,7 @@ export function formatDai(num: NumStrBigNumber, opts: FormattedCryptoOptions = {
         decimals: ZRX_NUMBER_OF_DECIMALS,
         decimalsRounded: ZRX_NUMBER_OF_DECIMALS,
         roundDown: true, // round down to be safe and avoid ui mismatches
-        denomination: v => `${v} DAI`,
+        denomination: (v) => `${v} DAI`,
         positiveSign: false,
         zeroStyled: false,
         blankZero: false,

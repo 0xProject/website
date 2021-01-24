@@ -140,7 +140,7 @@ export class AssetPicker extends React.Component<AssetPickerProps, AssetPickerSt
         const filteredTokens =
             this.props.tokenVisibility === TokenVisibility.All
                 ? allTokens
-                : _.filter(allTokens, token => {
+                : _.filter(allTokens, (token) => {
                       return (
                           token.symbol !== constants.ZRX_TOKEN_SYMBOL &&
                           token.symbol !== constants.ETHER_TOKEN_SYMBOL &&
@@ -155,7 +155,7 @@ export class AssetPicker extends React.Component<AssetPickerProps, AssetPickerSt
         if (_.isEmpty(sortedTokens)) {
             return <div className="mx-auto p4 h2">No tokens to remove.</div>;
         }
-        const gridTiles = _.map(sortedTokens, token => {
+        const gridTiles = _.map(sortedTokens, (token) => {
             const address = token.address;
             isHovered = this.state.hoveredAddress === address;
             tileStyles = {

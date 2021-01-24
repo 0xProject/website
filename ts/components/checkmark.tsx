@@ -6,6 +6,4 @@ const Checkmark = () => (
     </svg>
 );
 
-export {
-    Checkmark,
-};
+export { Checkmark };

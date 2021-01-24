@@ -134,13 +134,13 @@ export class CFLMetrics extends React.Component<CFLMetricsProps, CFLMetricsState
             ];
         }
         const zeroExSlippage = data.exchangeAverageSlippagePercentage.find(
-            exchangeSlippage => exchangeSlippage.exchange === 'Bamboo Relay',
+            (exchangeSlippage) => exchangeSlippage.exchange === 'Bamboo Relay',
         );
         const kyberSlippage = data.exchangeAverageSlippagePercentage.find(
-            exchangeSlippage => exchangeSlippage.exchange === 'Kyber',
+            (exchangeSlippage) => exchangeSlippage.exchange === 'Kyber',
         );
         const uniswapSlippage = data.exchangeAverageSlippagePercentage.find(
-            exchangeSlippage => exchangeSlippage.exchange === 'Uniswap',
+            (exchangeSlippage) => exchangeSlippage.exchange === 'Uniswap',
         );
         const formatSlippage = (num: string) => numeral(num).format('0.00%');
         return [

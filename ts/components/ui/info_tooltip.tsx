@@ -12,7 +12,7 @@ interface InfoTooltipProps {
     id?: string;
 }
 
-export const InfoTooltip: React.FC<InfoTooltipProps> = props => {
+export const InfoTooltip: React.FC<InfoTooltipProps> = (props) => {
     return (
         <Wrap className={props.className}>
             <div data-tip={true} data-for={props.id} data-type="light" data-border="true">
@@ -74,7 +74,7 @@ const StyledTooltip = styled(ReactTooltip)`
             }
         }
 
-       &.place-top {
+        &.place-top {
             &:before {
                 border-top-color: ${colors.border};
             }

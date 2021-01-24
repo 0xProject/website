@@ -84,26 +84,26 @@ Definition.defaultProps = {
 };
 
 const Wrap = styled.div<DefinitionProps>`
-    max-width: ${props => props.isInline && '354px'};
+    max-width: ${(props) => props.isInline && '354px'};
 
     & + & {
-        margin-top: ${props => props.isInlineIcon && '120px'};
-        margin-top: ${props => props.isWithMargin && '60px'};
+        margin-top: ${(props) => props.isInlineIcon && '120px'};
+        margin-top: ${(props) => props.isWithMargin && '60px'};
     }
 
     @media (min-width: 768px) {
-        width: ${props => (props.isInline ? 'calc(33.3333% - 30px)' : '100%')};
-        display: ${props => props.isInlineIcon && 'flex'};
-        justify-content: ${props => props.isInlineIcon && 'space-between'};
-        align-items: ${props => props.isInlineIcon && 'center'};
-        text-align: ${props => (props.isInlineIcon || !props.isCentered) && 'left'};
+        width: ${(props) => (props.isInline ? 'calc(33.3333% - 30px)' : '100%')};
+        display: ${(props) => props.isInlineIcon && 'flex'};
+        justify-content: ${(props) => props.isInlineIcon && 'space-between'};
+        align-items: ${(props) => props.isInlineIcon && 'center'};
+        text-align: ${(props) => (props.isInlineIcon || !props.isCentered) && 'left'};
     }
 
     @media (max-width: 768px) {
         margin: 0 auto;
 
         & + & {
-            margin-top: ${props => props.isInline && '60px'};
+            margin-top: ${(props) => props.isInline && '60px'};
         }
     }
 `;
@@ -118,8 +118,8 @@ const TextWrap = styled.div<DefinitionProps>`
     }
 
     li {
-        color: ${props => props.theme.paragraphColor};
-        font-size: ${props => `var(--${props.fontSize || 'default'}Paragraph)`};
+        color: ${(props) => props.theme.paragraphColor};
+        font-size: ${(props) => `var(--${props.fontSize || 'default'}Paragraph)`};
         font-weight: 300;
         list-style: disc;
         opacity: 0.75;
@@ -128,7 +128,7 @@ const TextWrap = styled.div<DefinitionProps>`
     }
 
     @media (min-width: 768px) {
-        margin-left: ${props => props.isInlineIcon && props.inlineIconSpacing};
+        margin-left: ${(props) => props.isInlineIcon && props.inlineIconSpacing};
     }
 `;
 

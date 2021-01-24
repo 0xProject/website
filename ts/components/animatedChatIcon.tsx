@@ -91,5 +91,5 @@ const Rays = styled.g`
 `;
 
 const Dot = styled.circle<{ delay: number }>`
-    animation: ${fadeInOut} 4s ${props => `${props.delay}s`} infinite;
+    animation: ${fadeInOut} 4s ${(props) => `${props.delay}s`} infinite;
 `;

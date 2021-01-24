@@ -68,9 +68,7 @@ export class ExpirationInput extends React.Component<ExpirationInputProps, Expir
         );
     }
     private _shouldDisableDate(date: Date): boolean {
-        return moment(date)
-            .startOf('day')
-            .isBefore(this._earliestPickableMoment);
+        return moment(date).startOf('day').isBefore(this._earliestPickableMoment);
     }
     private _clearDates(): void {
         this.setState({

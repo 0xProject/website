@@ -57,7 +57,7 @@ export interface ContainerProps {
     shouldAddBoxShadowOnHover?: boolean;
 }
 
-export const PlainContainer: React.StatelessComponent<ContainerProps> = props => {
+export const PlainContainer: React.StatelessComponent<ContainerProps> = (props) => {
     const {
         children,
         className,
@@ -83,13 +83,13 @@ const BOX_SHADOW = '0px 3px 10px rgba(0, 0, 0, 0.3)';
 
 export const Container = styled(PlainContainer)`
     box-sizing: border-box;
-    ${props => (props.hasBoxShadow ? `box-shadow: ${BOX_SHADOW}` : '')};
+    ${(props) => (props.hasBoxShadow ? `box-shadow: ${BOX_SHADOW}` : '')};
     &:hover {
-        ${props =>
+        ${(props) =>
             props.shouldDarkenOnHover
                 ? `background-color: ${props.backgroundColor ? darken(0.05, props.backgroundColor) : 'none'} !important`
                 : ''};
-        ${props => (props.shouldAddBoxShadowOnHover ? `box-shadow: ${BOX_SHADOW}` : '')};
+        ${(props) => (props.shouldAddBoxShadowOnHover ? `box-shadow: ${BOX_SHADOW}` : '')};
     }
 `;
 

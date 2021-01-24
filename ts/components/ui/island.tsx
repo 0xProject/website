@@ -15,7 +15,7 @@ const PlainIsland: React.StatelessComponent<IslandProps> = ({ Component, style, 
 
 export const Island = styled(PlainIsland)`
     background-color: ${colors.white};
-    border-radius: ${props => props.borderRadius};
+    border-radius: ${(props) => props.borderRadius};
     box-shadow: 0px 4px 6px ${colors.walletBoxShadow};
     overflow: hidden;
 `;

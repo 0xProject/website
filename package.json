@@ -23,8 +23,7 @@
         "deploy_staging": "npm run update:tools && yarn index_docs --environment staging && npm run build:prod && aws s3 sync ./public/. s3://staging-0xproject --profile $(npm config get awscli_profile) --region us-east-1 --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers",
         "deploy_live": "npm run update:tools && yarn index_docs --environment production && DEPLOY_ROLLBAR_SOURCEMAPS=true npm run build:prod && aws s3 sync ./public/. s3://0x.org --profile $(npm config get awscli_profile) --region us-east-1 --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --exclude *.map.js && ./cdn-cache-clear.sh live",
         "index_docs": "TS_NODE_PROJECT=./tsconfig-indexing.json node --stack-size=16000 -r ts-node/register scripts/algolia_index.ts",
-        "prettier": "prettier --write ${npm_package_config_prettier_target} --config .prettierrc",
-        "prettier:ci": "prettier --list-different ${npm_package_config_prettier_target} --config .prettierrc"
+        "prettier": "prettier --write '**/*.{ts,tsx}' --ignore-path .gitignore"
     },
     "author": "Fabio Berger",
     "license": "Apache-2.0",

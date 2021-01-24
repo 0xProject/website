@@ -56,7 +56,7 @@ const FeaturedTools: React.FC<IHitsProps> = ({ hits }) => {
     if (featuredTools.length === 0) {
         return null;
     } else {
-        const sortedFeaturedTools = _.orderBy(featuredTools, [hit => hit.title.toLowerCase()], ['asc']);
+        const sortedFeaturedTools = _.orderBy(featuredTools, [(hit) => hit.title.toLowerCase()], ['asc']);
 
         return (
             <FeaturedToolsWrapper>
@@ -76,7 +76,7 @@ const GroupedTools: React.FC<IHitsProps> = ({ hits }) => {
 
     return (
         <>
-            {contentTypes.map(type => {
+            {contentTypes.map((type) => {
                 const filteredByType = hits.filter((hit: any) => hit.type === type && !hit.isHidden);
 
                 return (
@@ -85,9 +85,9 @@ const GroupedTools: React.FC<IHitsProps> = ({ hits }) => {
                             {type}
                         </Heading>
 
-                        {difficultyOrder.map(difficulty => {
+                        {difficultyOrder.map((difficulty) => {
                             const filteredHits = filteredByType.filter((hit: any) => hit.difficulty === difficulty);
-                            const sortedHits = _.orderBy(filteredHits, [hit => hit.title.toLowerCase()], ['asc']);
+                            const sortedHits = _.orderBy(filteredHits, [(hit) => hit.title.toLowerCase()], ['asc']);
 
                             return sortedHits.map((hit: any, index: number) => (
                                 <Resource key={`resource-${index}`} hit={hit} />

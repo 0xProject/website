@@ -40,8 +40,8 @@ export const ToggleBase = styled.span<ToggleProps>`
     box-sizing: border-box;
     display: inline-grid;
     align-items: center;
-    width: ${p => p.width || DEFAULT_TOGGLE_STYLES.WIDTH};
-    height: ${p => p.height || DEFAULT_TOGGLE_STYLES.HEIGHT};
+    width: ${(p) => p.width || DEFAULT_TOGGLE_STYLES.WIDTH};
+    height: ${(p) => p.height || DEFAULT_TOGGLE_STYLES.HEIGHT};
     vertical-align: text-top;
     margin: 0 4px;
     input[type='checkbox'] {
@@ -55,52 +55,52 @@ export const ToggleBase = styled.span<ToggleProps>`
             align-items: center;
             outline: none;
             user-select: none;
-            width: ${p => p.width || DEFAULT_TOGGLE_STYLES.WIDTH};
-            height: ${p => p.height || DEFAULT_TOGGLE_STYLES.HEIGHT};
-            background-color: ${p => p.knobColor || '#EAEAEA'};
-            border-radius: ${p => p.radius || '256px'};
+            width: ${(p) => p.width || DEFAULT_TOGGLE_STYLES.WIDTH};
+            height: ${(p) => p.height || DEFAULT_TOGGLE_STYLES.HEIGHT};
+            background-color: ${(p) => p.knobColor || '#EAEAEA'};
+            border-radius: ${(p) => p.radius || '256px'};
             cursor: pointer;
             transition: background ease-out 0.3s;
             &:before {
                 content: '';
                 display: block;
                 position: absolute;
-                border-radius: ${p => p.radiusBackground || '256px'};
-                width: calc(${p => p.width || DEFAULT_TOGGLE_STYLES.WIDTH} - 2 * ${p => p.borderWidth || '2px'});
-                height: calc(${p => p.height || DEFAULT_TOGGLE_STYLES.HEIGHT} - 2 * ${p => p.borderWidth || '2px'});
-                background-color: ${p => p.backgroundColor || colors.white};
-                left: ${p => p.borderWidth || '2px'};
+                border-radius: ${(p) => p.radiusBackground || '256px'};
+                width: calc(${(p) => p.width || DEFAULT_TOGGLE_STYLES.WIDTH} - 2 * ${(p) => p.borderWidth || '2px'});
+                height: calc(${(p) => p.height || DEFAULT_TOGGLE_STYLES.HEIGHT} - 2 * ${(p) => p.borderWidth || '2px'});
+                background-color: ${(p) => p.backgroundColor || colors.white};
+                left: ${(p) => p.borderWidth || '2px'};
             }
             &:after {
                 display: block;
                 position: absolute;
                 content: '';
-                width: ${p => p.knobWidth || DEFAULT_TOGGLE_STYLES.KNOB_WIDTH};
-                height: ${p => p.knobHeight || DEFAULT_TOGGLE_STYLES.KNOB_HEIGHT};
-                border-radius: ${p => p.knobRadius || '100%'};
-                background-color: ${p => p.knobColor || '#EAEAEA'};
+                width: ${(p) => p.knobWidth || DEFAULT_TOGGLE_STYLES.KNOB_WIDTH};
+                height: ${(p) => p.knobHeight || DEFAULT_TOGGLE_STYLES.KNOB_HEIGHT};
+                border-radius: ${(p) => p.knobRadius || '100%'};
+                background-color: ${(p) => p.knobColor || '#EAEAEA'};
                 transition: all ease-out 0.4s;
-                margin-left: ${p => p.knobGap || '4px'};
+                margin-left: ${(p) => p.knobGap || '4px'};
             }
         }
         // on state
         &:checked {
             & + label {
-                background-color: ${p => p.borderColor || colors.brandLight};
+                background-color: ${(p) => p.borderColor || colors.brandLight};
                 &:before {
-                    background-color: ${p => p.backgroundColor || colors.white};
+                    background-color: ${(p) => p.backgroundColor || colors.white};
                 }
                 &:after {
                     margin-left: calc(
-                        100% - ${p => p.knobWidth || DEFAULT_TOGGLE_STYLES.KNOB_WIDTH} - ${p => p.knobGap || '4px'}
+                        100% - ${(p) => p.knobWidth || DEFAULT_TOGGLE_STYLES.KNOB_WIDTH} - ${(p) => p.knobGap || '4px'}
                     );
                     transition: all ease-out 0.2s;
-                    background-color: ${p => p.knobColor || colors.brandLight};
+                    background-color: ${(p) => p.knobColor || colors.brandLight};
                 }
             }
             &:disabled {
                 & + label {
-                    background-color: ${p => p.backgroundColorDisabled || '#eee'};
+                    background-color: ${(p) => p.backgroundColorDisabled || '#eee'};
                     &:after {
                         box-shadow: none;
                     }
@@ -110,11 +110,11 @@ export const ToggleBase = styled.span<ToggleProps>`
         // disabled
         &:disabled {
             & + label {
-                background-color: ${p => p.backgroundColorDisabled || '#eee'};
+                background-color: ${(p) => p.backgroundColorDisabled || '#eee'};
                 cursor: default;
                 &:after {
                     box-shadow: none;
-                    background-color: ${p => p.backgroundColorDisabled || '#eee'};
+                    background-color: ${(p) => p.backgroundColorDisabled || '#eee'};
                 }
             }
         }

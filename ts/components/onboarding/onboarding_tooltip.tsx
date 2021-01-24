@@ -11,7 +11,7 @@ export interface OnboardingTooltipProps extends OnboardingCardProps {
     pointerDisplay?: TooltipPointerDisplay;
 }
 
-export const OnboardingTooltip: React.StatelessComponent<OnboardingTooltipProps> = props => {
+export const OnboardingTooltip: React.StatelessComponent<OnboardingTooltipProps> = (props) => {
     const { pointerDisplay, className, ...cardProps } = props;
     const card = <OnboardingCard {...cardProps} />;
     if (pointerDisplay === 'none') {

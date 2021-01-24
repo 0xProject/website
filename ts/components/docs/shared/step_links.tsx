@@ -29,7 +29,7 @@ export const StepLinks: React.FC<IStepLinksProps> = ({ heading, links }) => (
     </div>
 );
 
-export const StepLink: React.FC<IStepLinkProps> = props => {
+export const StepLink: React.FC<IStepLinkProps> = (props) => {
     const shouldOpenInNewTab = validUrl.isWebUri(props.url) ? true : false;
 
     return (

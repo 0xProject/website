@@ -8,7 +8,7 @@ export interface FullscreenMessageProps {
     headerTextColor?: string;
 }
 
-export const FullscreenMessage: React.FC<FullscreenMessageProps> = props => {
+export const FullscreenMessage: React.FC<FullscreenMessageProps> = (props) => {
     return (
         <div className="mx-auto max-width-4 py4">
             <div className="center py4">

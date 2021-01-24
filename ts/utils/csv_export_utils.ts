@@ -1,13 +1,13 @@
-function convertToCSV(
-    headers: string[],
-    objArray: Array<{[key: string]: any}>): string {
+function convertToCSV(headers: string[], objArray: Array<{ [key: string]: any }>): string {
     let str = `${headers.join('\t')}\r\n`;
 
     for (const element of objArray) {
         let line = '';
         for (const field of Object.keys(element)) {
-            if (line !== '') { line += '\t'; }
-            if (typeof(element[field] === 'object')) {
+            if (line !== '') {
+                line += '\t';
+            }
+            if (typeof (element[field] === 'object')) {
                 line += JSON.stringify(element[field]);
             } else {
                 line += element[field];
@@ -22,19 +22,21 @@ function convertToCSV(
 
 export function exportDataToCSVAndDownloadForUser(
     headers: string[],
-    objArray: Array<{[key: string]: any}>,
-    fileTitle?: string): any {
-
+    objArray: Array<{ [key: string]: any }>,
+    fileTitle?: string,
+): any {
     const csv = convertToCSV(headers, objArray);
 
     const exportedFilename = `${fileTitle}.csv` || 'export.csv';
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    if (navigator.msSaveBlob) { // IE 10+
+    if (navigator.msSaveBlob) {
+        // IE 10+
         navigator.msSaveBlob(blob, exportedFilename);
     } else {
         const link = document.createElement('a');
-        if (link.download !== undefined) { // feature detection
+        if (link.download !== undefined) {
+            // feature detection
             // Browsers that support HTML5 download attribute
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);

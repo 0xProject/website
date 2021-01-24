@@ -13,21 +13,18 @@ export interface AccountDetailProps {
     userImageSrc?: string;
 }
 
-export const AccountDetail: React.StatelessComponent<AccountDetailProps> = ({
-    userEthAddress,
-    userImageSrc,
-}) => {
+export const AccountDetail: React.StatelessComponent<AccountDetailProps> = ({ userEthAddress, userImageSrc }) => {
     const truncatedAddress = utils.getAddressBeginAndEnd(userEthAddress, 7, 5);
 
     return (
         <Wrap>
             <HorizontalDiv>
                 <Avatar>
-                    {
-                        userImageSrc
-                        ? <img src={userImageSrc} />
-                        : <Jazzicon seed={generateUniqueId(userEthAddress)} diameter={60} isSquare={true} />
-                    }
+                    {userImageSrc ? (
+                        <img src={userImageSrc} />
+                    ) : (
+                        <Jazzicon seed={generateUniqueId(userEthAddress)} diameter={60} isSquare={true} />
+                    )}
                 </Avatar>
                 <ButtonWrapper>
                     <Button

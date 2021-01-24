@@ -42,8 +42,8 @@ export const VoteBar: React.StatelessComponent<VoteBarProps> = ({ percentage, co
 };
 
 const VoteColumn = styled.div<VoteColumnProps>`
-    background-color: ${props => props.color};
-    width: calc(${props => props.width}% - 45px);
+    background-color: ${(props) => props.color};
+    width: calc(${(props) => props.width}% - 45px);
     height: 13px;
     margin-right: 15px;
     min-width: 10px;
@@ -52,7 +52,7 @@ const VoteColumn = styled.div<VoteColumnProps>`
 const Wrapper = styled.div<{ marginBottom?: string }>`
     display: flex;
     align-items: center;
-    margin-bottom: ${props => props.marginBottom || '12px'};
+    margin-bottom: ${(props) => props.marginBottom || '12px'};
 `;
 
 const VoteColumnPrefix = styled.span`

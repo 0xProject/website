@@ -159,7 +159,7 @@ const Website = styled.a`
 
 const TitleContainer = styled.div``;
 
-export const MarketMaker: React.FC<MarketMakerProps> = props => {
+export const MarketMaker: React.FC<MarketMakerProps> = (props) => {
     const { name, collectedFees, rewardsShared, staked, difference, iconUrl, website } = props;
 
     return (

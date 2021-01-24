@@ -187,7 +187,7 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
         case ActionTypes.UpdateTokenByAddress: {
             const tokenByAddress = { ...state.tokenByAddress };
             const tokens = action.data;
-            _.each(tokens, token => {
+            _.each(tokens, (token) => {
                 const updatedToken = {
                     ...tokenByAddress[token.address],
                     ...token,

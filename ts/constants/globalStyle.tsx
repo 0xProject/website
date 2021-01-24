@@ -16,7 +16,7 @@ const GlobalStyles = withTheme(
 
     html {
         font-size: 18px;
-        background-color: ${props => props.theme.bgColor};
+        background-color: ${(props) => props.theme.bgColor};
         overflow-x: hidden;
         width: 100vw; // Fixes content jumping when locking body scroll
     }
@@ -71,7 +71,7 @@ const GlobalStyles = withTheme(
     body {
         font-family: 'Formular', sans-serif !important;
         -webkit-font-smoothing: antialiased;
-        color: ${props => props.theme.textColor};
+        color: ${(props) => props.theme.textColor};
         font-feature-settings: "zero";
         scroll-behavior: smooth;
     }

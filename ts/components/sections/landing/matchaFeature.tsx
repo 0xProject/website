@@ -15,7 +15,7 @@ const Wrap = styled.div`
     padding: 45px 0;
     display: flex;
     flex-direction: column;
-    background-color: ${props => props.theme.darkBgColor};
+    background-color: ${(props) => props.theme.darkBgColor};
 
     @media (max-width: 900px) {
         width: 100%;
@@ -77,8 +77,7 @@ const featureMetadatas: { [s in PossibleFeatures]: FeatureMetadata } = {
     },
     shapeshift_feature: {
         title: 'ShapeShift',
-        description:
-            `Since 2014, ShapeShift has been pioneering self-custody for digital asset trading. The company's new web and mobile platform allows users to safely buy, hold, and trade digital assets.`,
+        description: `Since 2014, ShapeShift has been pioneering self-custody for digital asset trading. The company's new web and mobile platform allows users to safely buy, hold, and trade digital assets.`,
         url: 'https://shapeshift.com/',
         buttonText: 'Visit ShapeShift',
         iconName: 'integrators/shapeshift',
@@ -104,7 +103,8 @@ const featureMetadatas: { [s in PossibleFeatures]: FeatureMetadata } = {
     },
     prysm_feature: {
         title: 'Prysm',
-        description: 'Prysm is a next generation social trading network. Prysm helps traders discover and execute their next trade while helping Creators monetize trade ideas and other products.',
+        description:
+            'Prysm is a next generation social trading network. Prysm helps traders discover and execute their next trade while helping Creators monetize trade ideas and other products.',
         url: 'https://prysm.xyz',
         buttonText: 'Visit Prysm',
         iconName: 'integrators/prysm',
@@ -112,7 +112,8 @@ const featureMetadatas: { [s in PossibleFeatures]: FeatureMetadata } = {
     },
     zapper_feature: {
         title: 'Zapper',
-        description: 'Zapper is an asset management platform that allows users to deploy capital across multiple DeFi protocols with one click.',
+        description:
+            'Zapper is an asset management platform that allows users to deploy capital across multiple DeFi protocols with one click.',
         url: 'https://zapper.fi',
         buttonText: 'Visit Zapper',
         iconName: 'integrators/zapper',
@@ -144,9 +145,9 @@ const LogoIconContainer = styled.div<{ active: boolean }>`
     }
     cursor: pointer;
     transition: opacity 0.15s ease-in-out;
-    opacity: ${props => (props.active ? 1 : 0.4)};
+    opacity: ${(props) => (props.active ? 1 : 0.4)};
     :hover {
-        opacity: ${props => (props.active ? 1 : 0.8)};
+        opacity: ${(props) => (props.active ? 1 : 0.8)};
     }
 `;
 
@@ -162,7 +163,7 @@ const LogoSectionColumnContainer = styled.div`
 const SectionFeatures = () => {
     const [activeFeature, setactiveFeature] = React.useState<PossibleFeatures>(PossibleFeatures.Matcha);
 
-    const transitions = useTransition(activeFeature, i => i, {
+    const transitions = useTransition(activeFeature, (i) => i, {
         from: {
             transform: 'translate3d(0,8px,0)',
             opacity: 0,
@@ -248,7 +249,7 @@ const SectionFeatures = () => {
                 <div>
                     <LogoSectionColumnContainer>
                         <LogosUsingZeroExApiContainer>
-                            {Object.values(featureMetadatas).map(feature => {
+                            {Object.values(featureMetadatas).map((feature) => {
                                 return (
                                     <LogoExternalLink
                                         key={feature.feature}

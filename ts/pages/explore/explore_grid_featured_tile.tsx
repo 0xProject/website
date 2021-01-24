@@ -25,7 +25,7 @@ const ExploreGridFeaturedTileRightWrapper = styled.div`
 const ExploreGridFeaturedTileLeftWrapper = styled.div``;
 
 const ExploreGridFeaturedTileWrapper = styled(ExploreGridTileWrapper)<ExploreGridFeaturedTileWrapperProps>`
-    background-color: ${props => props.themeColor};
+    background-color: ${(props) => props.themeColor};
     display: flex;
     justify-content: space-between;
 `;

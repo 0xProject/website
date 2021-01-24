@@ -17,20 +17,12 @@ interface StatusTextProps {
     status: string;
 }
 
-export const StakeStatus: React.StatelessComponent<StakeStatus> = ({
-    subtitle,
-    title,
-    className,
-}) => {
+export const StakeStatus: React.StatelessComponent<StakeStatus> = ({ subtitle, title, className }) => {
     return (
         <div className={className}>
-            <StatusText status={title}>
-                {title}
-            </StatusText>
+            <StatusText status={title}>{title}</StatusText>
 
-            <StatusId>
-                {subtitle}
-            </StatusId>
+            <StatusId>{subtitle}</StatusId>
         </div>
     );
 };
@@ -45,7 +37,7 @@ const StatusText = styled.strong<StatusTextProps>`
     margin-bottom: 10px;
     display: block;
     text-transform: capitalize;
-    color: ${props => statusColors[props.status]};
+    color: ${(props) => statusColors[props.status]};
 `;
 
 const StatusId = styled.span`

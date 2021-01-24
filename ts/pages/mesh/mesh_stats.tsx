@@ -54,7 +54,7 @@ export const MeshStats: React.FC = () => {
             return { numActiveNodes: 0, numEdges: 0 };
         }
 
-        const numActiveNodes = meshSnapshot.meshNodes.filter(node => Object.keys(node.peers).length > 0).length;
+        const numActiveNodes = meshSnapshot.meshNodes.filter((node) => Object.keys(node.peers).length > 0).length;
         const numEdges = (numActiveNodes * (numActiveNodes - 1)) / 2;
 
         return {

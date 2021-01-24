@@ -149,7 +149,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                     />
                 </HeadingRow>
                 {sortedStakingPools &&
-                    sortedStakingPools.map(pool => {
+                    sortedStakingPools.map((pool) => {
                         return (
                             <StakingPoolDetailRow
                                 to={_.replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}
