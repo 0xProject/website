@@ -1,6 +1,4 @@
-import { BigNumber, logUtils } from '@0x/utils';
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import * as React from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import dark from 'react-syntax-highlighter/dist/cjs/styles/hljs/vs2015';
 import styled from 'styled-components';
@@ -22,11 +20,8 @@ import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { trackEvent } from 'ts/utils/google_analytics';
 import { Translate } from 'ts/utils/translate';
-import { utils } from 'ts/utils/utils';
 
 import { WebsitePaths } from 'ts/types';
-
-import { State } from 'ts/redux/reducer';
 
 const trackZeroExApiAdConversion = () => {
     trackEvent('conversion', {

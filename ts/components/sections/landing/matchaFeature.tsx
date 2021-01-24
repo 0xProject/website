@@ -1,9 +1,10 @@
 import * as React from 'react';
+import { animated, useTransition } from 'react-spring';
 import styled from 'styled-components';
-import { useTransition, animated } from 'react-spring';
+
+import { Button } from 'ts/components/button';
 import { Section } from 'ts/components/newLayout';
 import { Heading, Paragraph } from 'ts/components/text';
-import { Button } from 'ts/components/button';
 
 import { Icon } from 'ts/components/icon';
 

@@ -205,10 +205,10 @@ export class Hero extends React.Component<Props> {
                     alignItems={props.alignItems}
                 >
                     {props.figure && (
-                        <Content 
-                        hideFigureOnMobile={props.hideFigureOnMobile}
-                        isCenteredMobile={props.isCenteredMobile} 
-                        width={props.maxWidthFigure || '400px'}
+                        <Content
+                            hideFigureOnMobile={props.hideFigureOnMobile}
+                            isCenteredMobile={props.isCenteredMobile}
+                            width={props.maxWidthFigure || '400px'}
                         >
                             {props.figure}
                         </Content>

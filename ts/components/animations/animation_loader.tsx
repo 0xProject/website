@@ -3,12 +3,11 @@ import React, { useCallback } from 'react';
 
 interface IAnimationLoaderProps {
     name: string;
-    loop?: boolean;
+    shouldLoop?: boolean;
 }
 
-export const AnimationLoader: React.FC<IAnimationLoaderProps> = ({ name, loop }) => {
+export const AnimationLoader: React.FC<IAnimationLoaderProps> = ({ name, shouldLoop }) => {
     const container = React.useRef(null);
-
 
     const loadAnimationAsync = useCallback(async (_name: string) => {
         try {
@@ -17,7 +16,7 @@ export const AnimationLoader: React.FC<IAnimationLoaderProps> = ({ name, loop })
             lottie.loadAnimation({
                 container: container.current, // the dom element that will contain the animation
                 renderer: 'svg',
-                loop: loop ?? true,
+                loop: shouldLoop ?? true,
                 autoplay: true,
                 animationData,
             });
@@ -25,12 +24,11 @@ export const AnimationLoader: React.FC<IAnimationLoaderProps> = ({ name, loop })
             // tslint:disable-next-line:no-console
             console.error('Error loading animation');
         }
-    }, [loop]);
+    }, [shouldLoop]);
 
     React.useEffect(() => {
         void loadAnimationAsync(name);
     }, [loadAnimationAsync, name]);
-
 
     return <div ref={container} />;
 };

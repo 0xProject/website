@@ -6,8 +6,8 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
-import { Section } from 'ts/components/newLayout';
 import { Checkmark } from 'ts/components/checkmark';
+import { Section } from 'ts/components/newLayout';
 
 import { colors } from 'ts/utils/colors';
 import { constants } from 'ts/utils/constants';
@@ -235,11 +235,6 @@ const Description = styled.p`
     padding: 0;
     margin-bottom: 50px;
     color: ${props => props.theme.introTextColor};
-`;
-
-const BaseOrderVizBar = styled.div`
-    height: 15px;
-    width: 100%;
 `;
 
 const Label = styled.div`

@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
 import * as React from 'react';
-import styled from 'styled-components';
 import { useWindowSize } from 'react-use';
+import styled from 'styled-components';
 
+import { Button } from 'ts/components/button';
 import { Section } from 'ts/components/newLayout';
 import { Heading } from 'ts/components/text';
-import { Button } from 'ts/components/button';
 
 const useIsMobile = () => {
     const { width } = useWindowSize();

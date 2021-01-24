@@ -68,7 +68,7 @@ const navItems: NavItemProps[] = [
         id: 'analytics',
         text: 'Analytics',
         url: 'https://0xtracker.com/',
-    }
+    },
 ];
 
 export const HeaderBase: React.FC<HeaderProps> = React.memo(props => {

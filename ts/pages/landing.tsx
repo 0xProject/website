@@ -1,4 +1,6 @@
 import * as React from 'react';
+// tslint:disable-next-line: no-duplicate-imports
+import { useCallback, useState } from 'react';
 import { useWindowSize } from 'react-use';
 
 import { DocumentTitle } from 'ts/components/document_title';
@@ -7,14 +9,16 @@ import { SectionApiQuote } from 'ts/components/sections/landing/apiQuote';
 import { SectionLandingClients } from 'ts/components/sections/landing/clients';
 import { SectionLandingCta } from 'ts/components/sections/landing/cta';
 import { SectionLandingHero } from 'ts/components/sections/landing/hero';
+import { SectionFeatures } from 'ts/components/sections/landing/matchaFeature';
+
 import { SiteWrap } from 'ts/components/siteWrap';
 
 import { ModalContact } from 'ts/components/modals/modal_contact';
-import { documentConstants } from 'ts/utils/document_meta_constants';
-import { SectionFeatures } from 'ts/components/sections/landing/matchaFeature';
 import { Section } from 'ts/components/newLayout';
+
+import { documentConstants } from 'ts/utils/document_meta_constants';
+
 import { OrderRoutingSection } from './api';
-import { useCallback, useState } from 'react';
 
 interface Props {
     location: Location;
@@ -60,5 +64,5 @@ const NextLanding: React.FC<Props> = props => {
 };
 
 export {
-NextLanding,
-} 
+    NextLanding,
+};

@@ -1,12 +1,12 @@
-import * as React from 'react';
-import styled from 'styled-components';
 import _ from 'lodash';
+import * as React from 'react';
 import { useWindowSize } from 'react-use';
+import styled from 'styled-components';
 
 import { Icon } from 'ts/components/icon';
-import { Section, WrapGrid } from 'ts/components/newLayout';
-import { Paragraph, Heading } from 'ts/components/text';
 import { Link } from 'ts/components/link';
+import { Section, WrapGrid } from 'ts/components/newLayout';
+import { Heading, Paragraph } from 'ts/components/text';
 
 const Wrap = styled.div`
     width: calc(50% - 4px);
@@ -27,7 +27,7 @@ const Wrap = styled.div`
 `;
 
 export const SectionLandingAbout = () => {
-    const { width } = useWindowSize()
+    const { width } = useWindowSize();
     const isMobile = width <= 769;
 
     return (
