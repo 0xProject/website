@@ -13,6 +13,7 @@ import { WebsitePaths } from 'ts/types';
 // Each of these steps can have their own internal state, which allows flexible transitions.
 export enum WizardRouterSteps {
     SetupWizard = 'start',
+    VotingPower = 'voting',
     ApproveTokens = 'approve',
     ReadyToStake = 'stake',
 }

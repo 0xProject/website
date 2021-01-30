@@ -38,6 +38,7 @@ import { formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { trackEvent } from 'ts/utils/google_analytics';
+import { Jazzicon, generateUniqueId } from 'ts/components/ui/jazzicon';
 
 const getFormattedTimeLeft = (secondsLeft: number) => {
     if (secondsLeft === 0) {
@@ -72,6 +73,13 @@ interface ErrorButtonProps {
     secondaryButtonText: string;
     onClose: () => void;
     onSecondaryClick: () => void;
+}
+
+interface VotingPowerConfirmationProps {
+    stake: UseStakeHookResult;
+    selectedStakingPools: UserStakingChoice[] | undefined;
+    onGoToNextStep: () => void;
+    providerState: ProviderState
 }
 
 const ConnectWalletButton = styled(Button)`
@@ -745,3 +753,129 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
     );
     // tslint:disable-next-line: max-file-line-count
 };
+
+export const VotingPowerConfirmation: React.FC<VotingPowerConfirmationProps> = (props) => {
+    const { selectedStakingPools, providerState } = props;
+
+    if(!props.selectedStakingPools) {
+        return null;
+    }
+    const name = stakingUtils.getPoolDisplayName(props.selectedStakingPools && props.selectedStakingPools.length > 0 && props.selectedStakingPools[0].pool);
+    console.log(stakingUtils);
+    return (
+        <RelativeContainer>
+            <InfoHeader>
+                Your voting power
+            </InfoHeader>
+            <Container>
+                <Heading>
+                    <JazzIconContainer>
+                        <Jazzicon diameter={40} seed={providerState.account && generateUniqueId((providerState.account as AccountReady).address)} />
+                    </JazzIconContainer>
+                    <Title>
+                        You
+                    </Title>
+                    <ZRXAmount>{formatZrx(selectedStakingPools[0].zrxAmount / 2).formatted} ZRX</ZRXAmount>
+                    <Difference>({50 / selectedStakingPools.length}%)</Difference>
+                </Heading>
+            </Container>
+            <Separator />
+            
+            <InfoHeader>
+                Voting power delegated to pool owner
+            </InfoHeader>
+
+            {
+                selectedStakingPools && selectedStakingPools.length > 0 && selectedStakingPools.map((selectedPool: UserStakingChoice) => {
+                    const { pool, zrxAmount } = selectedPool;
+                    const name = stakingUtils.getPoolDisplayName(pool);
+
+                    return (
+                        <Container>
+                            <Heading>
+                                {pool.metaData.logoUrl && <MarketMakerIcon src={pool.metaData.logoUrl} alt={name} />}
+                                <Title>
+                                    {name}
+                                </Title>
+                                <ZRXAmount>{formatZrx(zrxAmount / 2).formatted} ZRX</ZRXAmount>
+                                <Difference>({50 / selectedStakingPools.length}%)</Difference>
+                            </Heading>
+                        </Container>
+                    )
+                })
+            }
+
+            <ButtonWithIcon
+                onClick={() => {
+                    props.onGoToNextStep();
+                }}
+                color={colors.white}
+            >
+                Next
+            </ButtonWithIcon>
+        </RelativeContainer>       
+    )
+};
+
+const Container = styled.div`
+    margin-bottom: 60px;
+    border: 1px solid #dddddd;
+    padding: 10px 20px;
+    display: flex;
+    height: 80px;
+`;
+
+const Heading = styled.div`
+    display: flex;
+    flex: 1;
+    align-items: center;
+`;
+
+const MarketMakerIcon = styled.img`
+    display: block;
+    margin-right: 20px;
+    height: 40px;
+    width: 40px;
+    border: 1px solid #dddddd;
+`;
+
+const Title = styled.h3`
+    font-size: 18px;
+    line-height: 1.34;
+    margin-right: 5px;
+    flex: 1;
+
+    @media (min-width: 768px) {
+        font-size: 22px;
+    }
+`;
+
+const Difference = styled.span`
+    color: ${colors.brandLight};
+    font-size: 14px;
+    font-weight: bold;
+
+    display: none;
+
+    @media (min-width: 768px) {
+        display: block;
+    }
+`;
+
+const ZRXAmount = styled.span`
+    color: ${colors.textDarkSecondary};
+    font-size: 16px;
+    margin-right: 15px;
+    position: relative;
+    top: 2px;
+`;
+
+const Separator = styled.div`
+  margin: 70px 0;
+`;
+
+const JazzIconContainer = styled.div`
+    height: 40px;
+    width: 40px;
+    margin-right: 20px;
+`;

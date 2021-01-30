@@ -2,13 +2,13 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 interface ListItemProps {
-    children: string;
+    children: string | React.ReactNode;
 }
 
 interface OrderedListProps {
     marginBottom?: string;
 }
-interface UnorderedListProps {
+export interface UnorderedListProps {
     marginBottom?: string;
 }
 

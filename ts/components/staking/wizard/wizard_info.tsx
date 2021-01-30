@@ -2,13 +2,15 @@ import { addDays, format, formatDistanceStrict } from 'date-fns';
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { Button } from 'ts/components/button';
 import { Timeline } from 'ts/components/staking/wizard/timeline';
+import { UnorderedList, ListItem } from 'ts/components/textList';
 
 import { colors } from 'ts/style/colors';
 import { constants } from 'ts/utils/constants';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 
-import { AllTimeStats, Epoch } from 'ts/types';
+import { AllTimeStats, Epoch, WebsitePaths } from 'ts/types';
 
 const PLACEHOLDER = '—';
 
@@ -112,6 +114,13 @@ const IntroMetric = styled.li`
     }
 `;
 
+// https://github.com/DefinitelyTyped/DefinitelyTyped/pull/42619/files
+const StyledUnorderedList = styled(UnorderedList as any)`
+    width: 60%;
+`;
+
+
+
 export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ nextEpochStats, allTimeStats }) => {
     return (
         <>
@@ -146,6 +155,26 @@ export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ nextEpochStats, all
                     <p>Total ZRX Staked</p>
                 </IntroMetric>
             </IntroMetrics>
+        </>
+    );
+};
+
+export const VotingPowerWizardInfo: React.FC<{}> = () => {
+    return (
+        <>
+            <>
+                <IntroHeader>Your Voting Power</IntroHeader>
+                <IntroDescription>Delegation allows you to use ZRX to vote on treasury proposals.</IntroDescription>
+            </>
+            <StyledUnorderedList>
+                <ListItem>50% of your voting power must go to the owner the staking pool.</ListItem>
+                <ListItem>
+                    Change your delegation or vote for proposals at {' '}
+                    <Button to={WebsitePaths.Vote} isInline={true} isTransparent={true} isNoBorder={true} isNoPadding={true} color={colors.brandLight}>
+                        https://0x.org/zrx/vote
+                    </Button>
+                </ListItem>
+            </StyledUnorderedList>
         </>
     );
 };
