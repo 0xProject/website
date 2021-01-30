@@ -1,10 +1,13 @@
 import { BigNumber } from '@0x/utils';
+import { Web3Wrapper } from '@0x/web3-wrapper';
 import { Contract, providers } from 'ethers';
 import * as _ from 'lodash';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 import * as React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import MediaQuery  from 'react-responsive';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -12,14 +15,17 @@ import { DocumentTitle } from 'ts/components/document_title';
 import { Column, Section } from 'ts/components/newLayout';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading, Paragraph } from 'ts/components/text';
+import { Text } from 'ts/components/ui/text';
 import { Proposal, proposals as prodProposals, stagingProposals } from 'ts/pages/governance/data';
 import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
+import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { TallyInterface, VotingCardType, WebsitePaths } from 'ts/types';
+import { AccountReady, ProviderState, TallyInterface, VotingCardType, WebsitePaths } from 'ts/types';
 import { ALCHEMY_API_KEY, configs, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
+import { formatZrx } from 'ts/utils/format_number';
 import { utils } from 'ts/utils/utils';
 
 import { Treasury } from './treasury';
@@ -143,6 +149,24 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
     const [proposals, setProposals] = React.useState<Proposals>({});
     const [isLoading, setLoading] = React.useState<boolean>(true);
+    const [userZRXBalance, setZRXBalance] = React.useState<number>();
+
+    const providerState = useSelector((state: State) => state.providerState);
+    React.useEffect(() => {
+        if(providerState) {
+            const { zrxBalanceBaseUnitAmount } = providerState.account as AccountReady;
+            let zrxBalance: BigNumber | undefined;
+            if (zrxBalanceBaseUnitAmount) {
+                zrxBalance = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
+            }
+
+            if(zrxBalance) {
+                const roundedZrxBalance = formatZrx(zrxBalance).roundedValue;
+                setZRXBalance(roundedZrxBalance);
+            }
+        }
+    }, [providerState])
+    console.log(userZRXBalance);
 
     const abi = [
         'event ProposalCreated (uint256 id, address proposer, address[] targets, uint256[] values, string[] signatures, bytes[] calldatas, uint256 startBlock, uint256 endBlock, string description)',
@@ -256,6 +280,35 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
             </Route>
             <Route path={path}>
                 <StakingPageLayout isHome={false} title="0x Governance">
+                    {
+                        userZRXBalance && userZRXBalance > 0 &&
+                        <RegisterBanner>
+                            <BannerImage src="/images/governance/register_banner.svg" />
+                                <MediaQuery minWidth={768}>
+                                    <TextContent>
+                                            <Text noWrap={true} fontColor={colors.textDarkPrimary} Tag='h1' fontSize='28px'>
+                                                Register to vote with your ZRX!
+                                            </Text>
+                                            <Text noWrap={true} fontColor={colors.textDarkSecondary} fontSize='22px'>
+                                                Register to vote on upcoming treasury proposals
+                                            </Text>
+                                    </TextContent>
+                                </MediaQuery>
+                                <MediaQuery maxWidth={768}>
+                                    <TextContent>
+                                        <Text noWrap={true} fontColor={colors.textDarkPrimary} Tag='h1' fontSize='22px'>
+                                            Register to vote with your ZRX!
+                                        </Text>
+                                        <Text noWrap={true} fontColor={colors.textDarkSecondary} fontSize='14px'>
+                                            Register to vote on upcoming treasury proposals
+                                        </Text>
+                                    </TextContent>
+                                </MediaQuery>
+                            <Button href={WebsitePaths.Register} color={colors.white}>
+                                Register your ZRX
+                            </Button>
+                        </RegisterBanner>
+                    }
                     <DocumentTitle {...documentConstants.VOTE} />
                     <Section isTextCentered={true} isPadded={true} padding="80px 0 80px">
                         <Column>
@@ -358,4 +411,44 @@ const Filter = styled.select`
     width: 100px;
     align-self: flex-end;
     margin-right: 40px;
+`;
+
+const RegisterBanner = styled.div`
+    background-color: ${({ theme }) => theme.lightBgColor};
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 20px;
+
+    @media (min-width: 768px) {
+        height: 120px;
+        flex-direction: row;
+        padding-right: 50px;
+        padding-bottom: 0px;
+        width: 90%;
+        margin: auto;
+    }
+`;
+
+const BannerImage = styled.img`
+    height: 100%;
+`;
+
+const TextContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+    margin: 20px 0;
+
+    @media (min-width: 768px) {
+        margin: 0;
+        padding: 0 50px;
+        white-space: nowrap;
+        text-align: left;
+    }
 `;
