@@ -20,7 +20,7 @@ import { Proposal, proposals as prodProposals, stagingProposals } from 'ts/pages
 import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { AccountReady, ProviderState, TallyInterface, VotingCardType, WebsitePaths } from 'ts/types';
+import { AccountReady, TallyInterface, VotingCardType, WebsitePaths } from 'ts/types';
 import { ALCHEMY_API_KEY, configs, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';

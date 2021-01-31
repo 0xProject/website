@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { MetaTags } from 'ts/components/meta_tags';
 import { NotFound } from 'ts/containers/not_found';
+import { RegisterWizard } from 'ts/containers/governance/register/wizard';
 import { StakingWizard } from 'ts/containers/staking/wizard/wizard';
 // import { createLazyComponent } from 'ts/lazy_component';
 import { trackedTokenStorage } from 'ts/local_storage/tracked_token_storage';
@@ -106,6 +107,7 @@ render(
                                 path={WebsitePaths.StakingPoolActivity}
                                 component={StakingPoolActivity}
                             />
+                            <Route exact={true} path={`${WebsitePaths.Register}`} component={RegisterWizard} />
                             <Route exact={true} path={`${WebsitePaths.Vote}/treasury/:id`} component={VoteIndex} />
                             <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance} />
                             <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex} />
