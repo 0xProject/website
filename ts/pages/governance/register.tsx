@@ -52,6 +52,7 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
       const epochStart = epochsResponse.nextEpoch && new Date(epochsResponse.nextEpoch.epochStart.timestamp);
       setNextEpochStart(epochStart);
     }
+    fetchDelegatorData();
   }, []);
 
   return (

@@ -1,4 +1,4 @@
-import { Address } from '@0x/utils/lib/src/abi_encoder';
+import moment from 'moment';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -209,7 +209,10 @@ const MessageList = styled.ul`
 `;
 
 export const RegistrationSuccess: React.FC<IRegistrationSuccess> = ({ nextEpochStart }) => {
-
+  console.log(nextEpochStart);
+  const nextEpochMoment = moment(nextEpochStart);
+  const todayMoment = moment();
+  const daysToNextEpoch = nextEpochMoment.diff(todayMoment, 'days');
   return (
     <SuccessContainer>
       <Header>
@@ -223,12 +226,11 @@ export const RegistrationSuccess: React.FC<IRegistrationSuccess> = ({ nextEpochS
     <MessageList>
       <li>
         <strong>Your tokens are now locked.</strong>
-        Unlocking will be available in 11 days
-        {nextEpochStart}
+        Unlocking will be available in {daysToNextEpoch} days
       </li>
       <li>
         <strong>Additional tip</strong>
-        Unlocking will be available in 11 days
+        Unlocking will be available in {daysToNextEpoch} days
       </li>
     </MessageList>
     </SuccessContainer>
