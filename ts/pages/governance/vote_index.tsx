@@ -286,10 +286,10 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                             <BannerImage src="/images/governance/register_banner.svg" />
                                 <MediaQuery minWidth={768}>
                                     <TextContent>
-                                            <Text noWrap={true} fontColor={colors.textDarkPrimary} Tag='h1' fontSize='28px'>
+                                            <Text noWrap={true} fontColor={colors.textDarkPrimary} Tag='h1' fontSize='28px' fontFamily='Formular'>
                                                 Register to vote with your ZRX!
                                             </Text>
-                                            <Text noWrap={true} fontColor={colors.textDarkSecondary} fontSize='22px'>
+                                            <Text noWrap={true} fontColor={colors.textDarkSecondary} fontSize='22px' fontFamily='Formular' fontWeight={300}>
                                                 Register to vote on upcoming treasury proposals
                                             </Text>
                                     </TextContent>
