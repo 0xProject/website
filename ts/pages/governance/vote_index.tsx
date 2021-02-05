@@ -304,7 +304,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                                         </Text>
                                     </TextContent>
                                 </MediaQuery>
-                            <Button href={WebsitePaths.Register} color={colors.white}>
+                            <Button to={WebsitePaths.Register} color={colors.white}>
                                 Register your ZRX
                             </Button>
                         </RegisterBanner>
