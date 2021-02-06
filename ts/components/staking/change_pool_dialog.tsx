@@ -28,6 +28,7 @@ interface ChangePoolDialogProps {
     nextEpochStart: Date;
     availableRewardsMap?: { [key: string]: BigNumber };
     onChangePool: (fromPoolId: string, toPoolId: string, zrxAmount: number) => void;
+    askForConfirmation?: boolean;
 }
 
 interface PoolWithDisplayName extends PoolWithStats {
@@ -46,6 +47,7 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
     nextEpochStart,
     availableRewardsMap,
     currentPoolDetails = {},
+    askForConfirmation = true,
 }) => {
     const stakingPoolsWithName: PoolWithDisplayName[] = useMemo(
         () =>
@@ -79,7 +81,7 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                 <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={clearAndDismiss}>
                     <Icon name="close-modal" />
                 </ButtonClose>
-                {isConfirmSceen ? (
+                {isConfirmSceen && askForConfirmation ? (
                     <>
                         <StyledHeading as="h3">Move stake confirmation</StyledHeading>
                         <StyledParagraph>
@@ -140,7 +142,15 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                             ))}
                         </PoolsListWrapper>
                         <ButtonWrapper>
-                            <ConfirmButton isDisabled={!selectedPoolId} onClick={() => setIsConfirmScreen(true)}>
+                            <ConfirmButton isDisabled={!selectedPoolId} onClick={
+                                askForConfirmation ? 
+                                    () => setIsConfirmScreen(true) : 
+                                    () => { 
+                                        onChangePool(fromPool.poolId, toPool.poolId, zrxAmount); 
+                                        clearAndDismiss();
+                                    }
+                                }
+                            >
                                 Choose this new pool
                             </ConfirmButton>
                         </ButtonWrapper>
