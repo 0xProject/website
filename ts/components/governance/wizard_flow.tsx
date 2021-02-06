@@ -3,16 +3,20 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
+import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
 import { Jazzicon, generateUniqueId } from 'ts/components/ui/jazzicon';
-import { UnorderedList, ListItem } from 'ts/components/textList';
 import { colors } from 'ts/style/colors';
-import { WebsitePaths } from 'ts/types';
+import { Pool, PoolWithStats } from 'ts/types';
+import { formatZrx } from 'ts/utils/format_number';
+import { stakingUtils } from 'ts/utils/staking_utils';
 
 interface IVotingPowerInputProps {
   userZRXBalance: number;
   onOpenConnectWalletDialog: () => void;
-  onNextButtonClick: () => void;
-  address: string
+  onNextButtonClick: (isDelegationFlow: boolean, selectedPool: PoolWithStats, zrxAmount: number) => void;
+  address: string;
+  stakingPools: PoolWithStats[];
+  nextEpochStart: Date;
 }
 
 interface IRegistrationSuccess {
@@ -49,7 +53,7 @@ const InfoHeader = styled.div`
 `;
 
 const Container = styled.div`
-    margin-bottom: 60px;
+    margin-bottom: 8px;
     border: 1px solid #dddddd;
     background-color: ${() => colors.white};
     padding: 10px 20px;
@@ -136,7 +140,57 @@ const ConfirmButton = styled(Button)`
   color: ${() => colors.white};
 `;
 
-export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({ userZRXBalance, onOpenConnectWalletDialog, address, onNextButtonClick }) => {
+const DelegateButton = styled.button`
+  border: none;
+  background: none;
+  color: ${() => colors.textDarkSecondary};
+  text-align: right;
+  margin-bottom: 60px;
+`;
+
+const Difference = styled.span`
+    color: ${colors.brandLight};
+    font-size: 14px;
+    font-weight: bold;
+
+    display: none;
+
+    @media (min-width: 768px) {
+        display: block;
+    }
+`;
+
+const MarketMakerIcon = styled.img`
+    display: block;
+    margin-right: 20px;
+    height: 40px;
+    width: 40px;
+    border: 1px solid #dddddd;
+`;
+
+export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({ userZRXBalance, onOpenConnectWalletDialog, address, onNextButtonClick, stakingPools, nextEpochStart }) => {
+  const [openPoolsDialog, setOpenPoolsDialog ] = React.useState<boolean>(false);
+  const [selectedPool, setSelectedPool] = React.useState<PoolWithStats>();
+  const [isDelegationFlow, setIsDelegationFlow ] = React.useState<boolean>(false);
+  const [ zrxAmount, setZRXAmount] = React.useState<number>(userZRXBalance);
+
+  React.useEffect(() => {
+    setZRXAmount(userZRXBalance);
+  }, [userZRXBalance])
+  
+  const onInput: React.ChangeEventHandler = (event: React.ChangeEvent) => {
+    setZRXAmount(parseInt((event.target as HTMLInputElement).value));
+  }
+  const onChangePool = (fromPoolId: string, toPoolId: string) => {
+    const selectedPoolObj = stakingPools.find(s => s.poolId === toPoolId);
+    setSelectedPool(selectedPoolObj);
+    setIsDelegationFlow(true);
+  }
+
+  let name;
+  if(isDelegationFlow)
+    name = stakingUtils.getPoolDisplayName(selectedPool);
+
   return (
     <>
     {
@@ -146,23 +200,52 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({ userZRXBala
             Your voting power
         </InfoHeader>
         <Container>
-            <Heading>
-                <JazzIconContainer>
-                    <Jazzicon isSquare={true} diameter={28}  seed={address && generateUniqueId(address)} />
-                </JazzIconContainer>
-                <Title>
-                    You
-                </Title>
-                <ZRXAmount><Input type="number" defaultValue={userZRXBalance} /> ZRX</ZRXAmount>
-            </Heading>
-          </Container>
+          <Heading>
+              <JazzIconContainer>
+                  <Jazzicon isSquare={true} diameter={28}  seed={address && generateUniqueId(address)} />
+              </JazzIconContainer>
+              <Title>
+                  You
+              </Title>
+              {/* <ZRXAmount><Input type="number" defaultValue={userZRXBalance} onChange={onInput} value={isDelegationFlow ? formatZrx(zrxAmount / 2).formatted : zrxAmount} /> ZRX</ZRXAmount> */}
+              <ZRXAmount><Input type="number" defaultValue={userZRXBalance} onChange={onInput} value={zrxAmount} /> ZRX</ZRXAmount>
+          </Heading>
+        </Container>
+          {
+            !isDelegationFlow &&
+            <DelegateButton onClick={() => setOpenPoolsDialog(true)}>Delegate to someone else</DelegateButton>
+          }
+          {/* {
+            isDelegationFlow &&
+              <Container>
+                  <Heading>
+                      {selectedPool.metaData.logoUrl && <MarketMakerIcon src={selectedPool.metaData.logoUrl} alt={name} />}
+                      <Title>
+                          {name}
+                      </Title>
+                      <ZRXAmount><Input type="number" defaultValue={formatZrx(zrxAmount / 2).formatted} disabled /> ZRX</ZRXAmount>
+                  </Heading>
+              </Container>
+          } */}
           <Notice>
             <Bullet />
             <span><strong>Your ZRX will be locked for 1-2 weeks</strong>, depending amount of time remaining in the current epoch</span>
           </Notice>
-          <ConfirmButton onClick={onNextButtonClick}>
+          <ConfirmButton onClick={() => onNextButtonClick(isDelegationFlow, selectedPool, zrxAmount)}>
             Confirm Registration
           </ConfirmButton>
+          <ChangePoolDialog
+              stakingPools={stakingPools || []}
+              onChangePool={onChangePool}
+              isOpen={openPoolsDialog}
+              nextEpochStart={nextEpochStart}
+              onDismiss={() => setOpenPoolsDialog(false)}
+              currentPoolDetails={{
+                poolId: '43',
+                zrxAmount: userZRXBalance,
+              }}
+              askForConfirmation={false}
+          />
       </>
       :
       <ConnectWalletButton color={colors.white} onClick={onOpenConnectWalletDialog}>

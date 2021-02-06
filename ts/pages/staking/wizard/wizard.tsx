@@ -206,7 +206,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                             )}
                             {currentStep === WizardRouterSteps.VotingPower && 
                                 <VotingPowerConfirmation
-                                    selectedStakingPools={selectedStakingPools} stake={stake}
+                                    selectedStakingPools={selectedStakingPools}
                                     onGoToNextStep={handleClickNextStep}
                                     providerState={providerState}
                                 />

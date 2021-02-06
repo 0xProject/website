@@ -8,11 +8,13 @@ import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_lay
 import { Splitview } from 'ts/components/staking/wizard/splitview';
 import { StartRegistrationInfo, RegistrationSuccessInfo } from 'ts/components/governance/wizard_info';
 import { VotingPowerInput, RegistrationSuccess } from 'ts/components/governance/wizard_flow';
+import { VotingPowerWizardInfo } from 'ts/components/staking/wizard/wizard_info';
+import { VotingPowerConfirmation } from 'ts/components/staking/wizard/wizard_flow';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { useStake } from 'ts/hooks/use_stake';
 import { useRegisterWizard, RegisterRouterSteps } from 'ts/hooks/use_register_wizard';
 import { State } from 'ts/redux/reducer';
-import { AccountReady, EpochWithFees, ProviderState } from 'ts/types';
+import { AccountReady, EpochWithFees, Pool, PoolWithStats, ProviderState, StakingPoolRecomendation } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { formatZrx } from 'ts/utils/format_number';
 
@@ -34,6 +36,8 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
   const apiClient = useAPIClient(networkId);
   const { currentStep, next } = useRegisterWizard();
   const [nextEpochStart, setNextEpochStart] = React.useState<Date | undefined>(undefined);
+  const [stakingPools, setStakingPools] = React.useState<PoolWithStats[]>(undefined);
+  const [selectedPool, setSelectedPool] = React.useState<StakingPoolRecomendation>();
 
   const { zrxBalanceBaseUnitAmount, address } = providerState.account as AccountReady;
   let zrxBalance: BigNumber | undefined;
@@ -48,12 +52,29 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
 
   React.useEffect(() => {
     const fetchDelegatorData = async () => {
-      const epochsResponse = await apiClient.getStakingEpochsWithFeesAsync();
+      const [epochsResponse, poolsResponse] = await Promise.all([
+        apiClient.getStakingEpochsWithFeesAsync(),
+        apiClient.getStakingPoolsAsync()
+      ]);
+
       const epochStart = epochsResponse.nextEpoch && new Date(epochsResponse.nextEpoch.epochStart.timestamp);
       setNextEpochStart(epochStart);
+      setStakingPools(poolsResponse.stakingPools);
     }
     fetchDelegatorData();
   }, []);
+
+  const onNextButtonClick = (isDelegationFlow: boolean, selectedPool: PoolWithStats, zrxAmount: number) => {
+    if(isDelegationFlow) {
+      setSelectedPool({
+        pool: selectedPool,
+        zrxAmount,
+      });
+      next(RegisterRouterSteps.VotingPower)
+    } else {
+      next(RegisterRouterSteps.Success)
+    }
+  }
 
   return (
     <StakingPageLayout isHome={false} title="Register to Vote">
@@ -64,6 +85,10 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
                 {
                   currentStep === RegisterRouterSteps.Start &&
                   <StartRegistrationInfo />
+                }
+                {
+                  currentStep === RegisterRouterSteps.VotingPower &&
+                  <VotingPowerWizardInfo />
                 }
                 {
                   currentStep === RegisterRouterSteps.Success &&
@@ -79,7 +104,16 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
                     userZRXBalance={roundedZrxBalance}
                     onOpenConnectWalletDialog={onOpenConnectWalletDialog}
                     address={address}
-                    onNextButtonClick={() => next(RegisterRouterSteps.Success)}
+                    onNextButtonClick={onNextButtonClick}
+                    stakingPools={stakingPools}
+                    nextEpochStart={nextEpochStart}
+                  />
+                }
+                {
+                  currentStep === RegisterRouterSteps.VotingPower &&
+                  <VotingPowerConfirmation selectedStakingPools={selectedPool ? [selectedPool] : []}
+                    providerState={providerState}
+                    onGoToNextStep={() => next(RegisterRouterSteps.Success)}
                   />
                 }
                 {

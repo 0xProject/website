@@ -76,7 +76,6 @@ interface ErrorButtonProps {
 }
 
 interface VotingPowerConfirmationProps {
-    stake: UseStakeHookResult;
     selectedStakingPools: UserStakingChoice[] | undefined;
     onGoToNextStep: () => void;
     providerState: ProviderState
@@ -757,11 +756,11 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
 export const VotingPowerConfirmation: React.FC<VotingPowerConfirmationProps> = (props) => {
     const { selectedStakingPools, providerState } = props;
 
-    if(!props.selectedStakingPools) {
+    if(!selectedStakingPools || selectedStakingPools.length === 0) {
         return null;
     }
     const name = stakingUtils.getPoolDisplayName(props.selectedStakingPools && props.selectedStakingPools.length > 0 && props.selectedStakingPools[0].pool);
-    console.log(stakingUtils);
+
     return (
         <RelativeContainer>
             <InfoHeader>
