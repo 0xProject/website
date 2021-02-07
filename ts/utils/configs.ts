@@ -12,7 +12,10 @@ export const ALCHEMY_API_KEY = '8JwI7bMSK8ojsPDbyeHt6NK8w23afo1q';
 export const GOVERNOR_CONTRACT_ADDRESS = {
     COMPOUND: '0xc0dA01a04C3f3E0be433606045bB7017A7323E38',
     UNISWAP: '0x5e4be8Bc9637f0EAA1A755019e06A68ce081D58F',
+    ZRX: '0x5d8C9Ba74607D2cbc4176882A42D4ACE891c1c00'
 };
+
+export const GOVERNANCE_THEGRAPH_ENDPOINT = 'https://api.thegraph.com/subgraphs/name/mzhu25/zeroex-staking';
 
 export const configs = {
     AMOUNT_DISPLAY_PRECSION: 5,

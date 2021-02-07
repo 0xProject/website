@@ -1,12 +1,16 @@
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { Contract, providers } from 'ethers';
+import { request, gql } from 'graphql-request';
 import * as _ from 'lodash';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 import * as React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import {
+    useQuery,
+} from 'react-query';
 import MediaQuery  from 'react-responsive';
 import styled from 'styled-components';
 
@@ -21,14 +25,37 @@ import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { AccountReady, TallyInterface, VotingCardType, WebsitePaths } from 'ts/types';
-import { ALCHEMY_API_KEY, configs, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
+import { ALCHEMY_API_KEY, configs, GOVERNOR_CONTRACT_ADDRESS, GOVERNANCE_THEGRAPH_ENDPOINT } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
 import { formatZrx } from 'ts/utils/format_number';
-import { utils } from 'ts/utils/utils';
+import { OnChainProposal, TreasuryProposal } from 'ts/types';
 
 import { Treasury } from './treasury';
+
+const FETCH_PROPOSALS = gql`
+  query proposals {
+      proposals {
+        id
+        proposer
+        description
+        votesFor
+        votesAgainst
+        createdTimestamp
+        voteEpoch {
+          id
+          startTimestamp
+          endTimestamp
+        }
+        executionEpoch {
+          startTimestamp
+          endTimestamp
+        }
+        executionTimestamp
+      }
+    }
+`
 
 type ProposalWithOrder = Proposal & {
     order?: number;
@@ -60,32 +87,6 @@ export interface VoteIndexProps {}
 interface ZeipTallyMap {
     [id: number]: TallyInterface;
 }
-
-const getOnChainProposals = async () => {
-    const abi = [
-        'event ProposalCreated (uint256 id, address proposer, address[] targets, uint256[] values, string[] signatures, bytes[] calldatas, uint256 startBlock, uint256 endBlock, string description)',
-        'function proposals(uint id) view returns (uint256 id, address proposer, uint256 eta, uint256 startBlock, uint256 endBlock, uint256 forVotes, uint256 againstVotes, bool canceled, bool executed)',
-    ];
-
-    const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.UNISWAP, abi, provider);
-
-    const filter = contract.filters.ProposalCreated();
-    const proposalsOnChain = await contract.queryFilter(filter, startingBlockNumber);
-    const proposalsArray = [];
-
-    // tslint:disable-next-line:prefer-const
-    for (let proposal of proposalsOnChain) {
-        const { id, proposer, description } = proposal.args;
-
-        proposalsArray.push({
-            id,
-            proposer,
-            description,
-        });
-    }
-
-    return proposalsArray.reverse();
-};
 
 const fetchVoteStatusAsync: (zeipId: number) => Promise<TallyInterface> = async zeipId => {
     try {
@@ -147,9 +148,15 @@ export const TreasuryContext = React.createContext<TreasureContextType>({
 export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [filter, setFilter ] = React.useState<string>('all');
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
-    const [proposals, setProposals] = React.useState<Proposals>({});
+    const [proposals, setProposals] = React.useState<Proposals>([]);
     const [isLoading, setLoading] = React.useState<boolean>(true);
     const [userZRXBalance, setZRXBalance] = React.useState<number>();
+    const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
+
+    const { data, isLoading: isQueryLoading } = useQuery('proposals', async () => {
+        const { proposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS)
+        return proposals;
+    });
 
     const providerState = useSelector((state: State) => state.providerState);
     React.useEffect(() => {
@@ -166,102 +173,49 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
             }
         }
     }, [providerState])
-    console.log(userZRXBalance);
 
     const abi = [
-        'event ProposalCreated (uint256 id, address proposer, address[] targets, uint256[] values, string[] signatures, bytes[] calldatas, uint256 startBlock, uint256 endBlock, string description)',
-        'function proposals(uint id) view returns (uint256 id, address proposer, uint256 eta, uint256 startBlock, uint256 endBlock, uint256 forVotes, uint256 againstVotes, bool canceled, bool executed)',
-        'function state(uint proposalId) public view returns (uint state)',
-        'function proposalCount() public view returns (uint)',
+        'function quorumThreshold() public view returns (uint)',
     ];
 
-    const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.UNISWAP, abi, provider);
+    const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.ZRX, abi, provider);
 
     const { path } = useRouteMatch();
 
-    const getProposalData = (id: number) => {
-        return Promise.all([contract.proposals(id), contract.state(id)]);
-    };
-
-    const getProposals = async () => {
-        const proposalCount = await contract.proposalCount();
-        let numOfProposals = proposalCount.toNumber();
-        let proposalPromises = [];
-        for (let i = 1; i <= numOfProposals; i++) {
-            proposalPromises.push(getProposalData(i));
-        }
-
-        const promises = await proposalPromises;
-        Promise.all(
-            promises.map(async promise => {
-                const [fetchProposalDataPromise, fetchStatePromise] = await promise;
-                const proposalData = await fetchProposalDataPromise;
-                const state = await fetchStatePromise;
-                const status = ProposalState[state.toNumber()];
-                const proposalId = proposalData.id.toNumber();
-                let timestamp = proposalData.eta.toNumber();
-                if (Object.is(timestamp, 0)) {
-                    const { endBlock, startBlock, canceled } = proposalData;
-                    const currentBlock = await utils.getCurrentBlockAsync();
-
-                    if (currentBlock < endBlock) {
-                        timestamp = await utils.getFutureBlockTimestampAsync(endBlock.toNumber());
-                    } else if (startBlock > currentBlock) {
-                        timestamp = await utils.getFutureBlockTimestampAsync(startBlock.toNumber());
-                    } else if (canceled) {
-                        const blockEndTime = await provider.getBlock(endBlock.toNumber());
-                        timestamp = blockEndTime.timestamp;
-                    }
-
-                    if (['Defeated', 'Expired', 'Canceled'].includes(status)) {
-                        const blockEndTime = await provider.getBlock(endBlock.toNumber());
-                        timestamp = blockEndTime.timestamp;
-                    }
-                }
-
-                setProposals(allProposals => ({
-                    ...allProposals,
-                    [proposalId]: {
-                        ...allProposals[proposalId],
-                        ...proposalData,
-                        id: proposalId,
-                        status,
-                        timestamp: moment(timestamp, 'X'),
-                    },
-                }));
-
-                return Promise.resolve();
-            }),
-        ).then(() => {
-            console.log("remove loader")
-            setLoading(false);
-        });
-    };
-
     React.useEffect(() => {
-        // tslint:disable:no-floating-promises
         (async () => {
-            getProposals();
-            getOnChainProposals().then(logs => {
-                setProposals(allProposals => {
-                    const newProposalsObj = { ...allProposals };
-                    logs.forEach(eventLog => {
-                        const { id, proposer, description } = eventLog;
-                        const proposalId = id.toNumber();
-                        newProposalsObj[proposalId] = {
-                            ...newProposalsObj[proposalId],
-                            proposer,
-                            description,
-                        };
-                    });
-
-                    return newProposalsObj;
-                });
-            });
+            const qThreshold = await contract.quorumThreshold();
+            setQuorumThreshold(qThreshold);
             const tallyMap: ZeipTallyMap = await fetchTallysAsync();
             setTallys(tallyMap);
         })();
-    }, []);
+
+        if(data) {
+            const onChainProposals = data.map((proposal: OnChainProposal) => {
+                const { id, votesAgainst, votesFor, description, executionTimestamp, voteEpoch } = proposal;
+                const startDate = moment.unix(voteEpoch.startTimestamp, 'x');
+                const endDate = moment.unix(voteEpoch.endTimestamp, 'x');
+                const now = moment();
+                const isUpcoming = now.isBefore(startDate);
+                const isHappening = now.isAfter(startDate) && now.isBefore(endDate);
+                
+                return {
+                    id,
+                    againstVotes: votesAgainst,
+                    forVotes: votesFor,
+                    description,
+                    canceled: votesAgainst > votesFor || votesFor < quorumThreshold,
+                    executed: !!executionTimestamp,
+                    upcoming: isUpcoming,
+                    happening: isHappening,
+                    timestamp: endDate,
+                }
+            });
+            console.log(onChainProposals);
+            setLoading(isQueryLoading);
+            setProposals(onChainProposals)
+        }
+    }, [data]);
 
     const applyFilter: React.ChangeEventHandler = (event: React.ChangeEvent) => {
         const { value } = event.target as HTMLSelectElement;
@@ -355,9 +309,8 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                                     />
                                 );
                             })}
-                            {showTreasury.includes(filter) && proposals &&
-                                Object.keys(proposals).map((proposalId: string) => {
-                                    const proposal = proposals[proposalId];
+                            {showTreasury.includes(filter) && proposals.length > 0 &&
+                                proposals.map((proposal: TreasuryProposal) => {
                                     const tally = {
                                         no: new BigNumber(proposal.againstVotes.toString()),
                                         yes: new BigNumber(proposal.forVotes.toString()),

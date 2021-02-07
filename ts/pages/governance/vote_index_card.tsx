@@ -107,7 +107,6 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                 executed: isExecuted,
                 upcoming: isUpcoming,
                 happening: isHappening,
-                status,
                 timestamp,
             } = props;
             return (
@@ -145,7 +144,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                 <div className="flex flex-column items-end">
                                     <VoteStatusText
                                         status={getStatus(
-                                            isCanceled || ['Defeated', 'Expired', 'Canceled'].includes(status),
+                                            isCanceled,
                                             isExecuted,
                                             isUpcoming,
                                         )}
@@ -154,7 +153,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                         tally.no,
                                     )} ZRX Total Vote`}</Paragraph>
                                     <Paragraph marginBottom="12px">
-                                        {timestamp && (isExecuted || isCanceled || status === 'Defeated')
+                                        {timestamp && (isExecuted || isCanceled)
                                             ? `Ended ${timestamp.format('MMM DD, YYYY')}`
                                             : isHappening
                                             ? `Ends in ${timestamp.diff(moment(), 'days')} days`

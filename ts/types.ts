@@ -1303,3 +1303,21 @@ export enum VotingCardType {
     Treasury = 'TREASURY',
     Zeip = 'ZEIP',
 }
+
+export interface OnChainProposal {
+    id: string;
+    proposer: string;
+    description: string;
+    votesFor: BigNumber;
+    votesAgainst: BigNumber;
+    createdTimestamp: BigNumber;
+    voteEpoch: {
+      startTimestamp: BigNumber
+      endTimestamp: BigNumber
+    }
+    executionEpoch: {
+      startTimestamp: BigNumber
+      endTimestamp: BigNumber
+    }
+    executionTimestamp: BigNumber
+}
