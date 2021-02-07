@@ -1,6 +1,10 @@
 import { MuiThemeProvider } from 'material-ui/styles';
 import * as React from 'react';
 import { render } from 'react-dom';
+import {
+    QueryClient,
+    QueryClientProvider,
+} from 'react-query'
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { MetaTags } from 'ts/components/meta_tags';
@@ -76,10 +80,15 @@ function getLibrary(provider: any): Web3Wrapper {
     const library = new Web3Wrapper(provider, {});
     return library;
 }
+
+  // Create a client
+ const queryClient = new QueryClient();
+ 
 render(
     <>
         <MetaTags title={DOCUMENT_TITLE} description={DOCUMENT_DESCRIPTION} />
         <Web3ReactProvider getLibrary={getLibrary}>
+            <QueryClientProvider client={queryClient}>
             <Router>
                 <MuiThemeProvider muiTheme={muiTheme}>
                     <Provider store={store}>
@@ -199,6 +208,7 @@ render(
                     </Provider>
                 </MuiThemeProvider>
             </Router>
+            </QueryClientProvider>
         </Web3ReactProvider>
     </>,
     document.getElementById('app'),
