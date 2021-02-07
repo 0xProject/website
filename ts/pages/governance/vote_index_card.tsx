@@ -1,3 +1,4 @@
+import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import * as React from 'react';
@@ -69,10 +70,13 @@ const getVoteOutcome = (tally?: TallyInterface): VoteOutcome | undefined => {
 const getDateString = (voteStartDate: moment.Moment, voteEndDate: moment.Moment): string => {
     const voteTime = getVoteTime(voteStartDate, voteEndDate);
     const pstOffset = '-0800';
+    const now = moment();
     const endDate = voteEndDate.utcOffset(pstOffset);
     const startDate = voteStartDate.utcOffset(pstOffset);
+    const timeToEndInDays = endDate.diff(now, 'days');
+    const timeToEndInHours = endDate.diff(now, 'hours');
     if (voteTime === 'happening') {
-        return `Ends ${endDate.format('MMMM Do YYYY, h:mm a')} PST`;
+        return `Voting ends in ${timeToEndInDays > 1 ? timeToEndInDays + ' days' : timeToEndInHours + ' hours' }`;
     }
     if (voteTime === 'upcoming') {
         return `Starting ${startDate.format('MMMM Do YYYY, h:mm a')} PST`;
@@ -96,8 +100,31 @@ const getStatus = (
     }
 };
 
+const getVotesPercentage = (votes: BigNumber, totalVotes: BigNumber): number => {
+    if(votes.isLessThanOrEqualTo(0) || totalVotes.isLessThanOrEqualTo(0)) {
+        return 0;
+    }
+
+    const percentage = votes.dividedBy(totalVotes).toFixed(2);
+    return parseFloat(percentage) * 100;
+}
+
 export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props => {
     const { order, tally } = props;
+
+    let totalBalances;
+    let totalVotes;
+    let noVotesPercentage;
+    let yesVotesPercentage;
+
+    if(tally) {
+        totalBalances = getTotalBalancesString(tally);
+        totalVotes = tally.yes.plus(tally.no);
+        noVotesPercentage = getVotesPercentage(tally.no, totalVotes);
+        yesVotesPercentage = getVotesPercentage(tally.yes, totalVotes);
+        console.log(totalVotes.toNumber(), noVotesPercentage);
+    }
+
     switch (props.type) {
         case VotingCardType.Treasury:
             const {
@@ -124,9 +151,9 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                 <Tag>Treasury</Tag>
                                 {description ? (
                                     <>
-                                        <Heading marginBottom="20px">{`${description.slice(0, 20)}...`}</Heading>
+                                        <Heading marginBottom="20px">{`${description.length < 200 ? description : description.slice(0, 200) + '...'}`}</Heading>
 
-                                        <Paragraph>{`${description.slice(0, 200)}...`}</Paragraph>
+                                        <Paragraph>{`${description.length < 200 ? description : description.slice(0, 200) + '...'}`}</Paragraph>
                                     </>
                                 ) : (
                                     <VoteCardShimmer>
@@ -140,7 +167,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                     </VoteCardShimmer>
                                 )}
                             </Column>
-                            <Column>
+                            <Column width='25%'>
                                 <div className="flex flex-column items-end">
                                     <VoteStatusText
                                         status={getStatus(
@@ -149,14 +176,37 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                             isUpcoming,
                                         )}
                                     />
-                                    <Paragraph marginBottom="12px" isMuted={1}>{`${tally.yes.plus(
-                                        tally.no,
-                                    )} ZRX Total Vote`}</Paragraph>
+                                    {
+                                        isHappening ? (
+                                            <>
+                                                <StyledParagraph color={colors.textDarkPrimary} marginBottom='12px'>
+                                                    <CountTitle>Yes</CountTitle>
+                                                    <PercentageContainer>
+                                                        <VotePercentage value={yesVotesPercentage} color={colors.brandLight} />
+                                                    </PercentageContainer>
+                                                    {yesVotesPercentage}%
+                                                </StyledParagraph>
+                                                <StyledParagraph color={colors.textDarkPrimary}>
+                                                    <CountTitle>No</CountTitle>
+                                                    <PercentageContainer>
+                                                        <VotePercentage value={noVotesPercentage} color={colors.brandDark} />
+                                                    </PercentageContainer>
+                                                    {noVotesPercentage}%
+                                                </StyledParagraph>
+                                            </>
+                                        ) :
+                                            (
+
+                                                <Paragraph marginBottom="12px" color={colors.textDarkPrimary}>
+                                                    {`${totalBalances} ZRX Total Vote`}
+                                                </Paragraph>
+                                            )
+                                    }
                                     <Paragraph marginBottom="12px">
                                         {timestamp && (isExecuted || isCanceled)
                                             ? `Ended ${timestamp.format('MMM DD, YYYY')}`
                                             : isHappening
-                                            ? `Ends in ${timestamp.diff(moment(), 'days')} days`
+                                            ? `Voting ends in ${timestamp.diff(moment(), 'days')} days`
                                             : `Upcoming in ${timestamp.diff(moment(), 'days')} days`}
                                     </Paragraph>
                                 </div>
@@ -169,7 +219,6 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
             const { title, zeipId, summary, voteStartDate, voteEndDate } = props;
             const voteTime = getVoteTime(voteStartDate, voteEndDate);
             const voteStatus = voteTime || getVoteOutcome(tally);
-            const totalBalances = getTotalBalancesString(tally);
             return (
                 <ReactRouterLink style={{ order }} to={`${WebsitePaths.Vote}/zeip-${zeipId}`}>
                     <Section
@@ -190,12 +239,32 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
 
                                 <Paragraph>{summary[0]}</Paragraph>
                             </Column>
-                            <Column>
+                            <Column width='25%'>
                                 <div className="flex flex-column items-end">
                                     <VoteStatusText status={voteStatus} />
-                                    <Paragraph marginBottom="12px" isMuted={1}>
-                                        {`${totalBalances} ZRX Total Vote`}
-                                    </Paragraph>
+                                    {
+                                        voteStatus === 'happening' ? (
+                                            <>
+                                                <StyledParagraph color={colors.textDarkPrimary} marginBottom='12px'>
+                                                    <CountTitle>Yes</CountTitle>
+                                                    <PercentageContainer>
+                                                        <VotePercentage value={yesVotesPercentage} color={colors.brandLight} />
+                                                    </PercentageContainer>
+                                                    {yesVotesPercentage}%
+                                                </StyledParagraph>
+                                                <StyledParagraph color={colors.textDarkPrimary}>
+                                                    <CountTitle>No</CountTitle>
+                                                    <PercentageContainer>
+                                                        <VotePercentage value={noVotesPercentage} color={colors.brandDark} />
+                                                    </PercentageContainer>
+                                                    {noVotesPercentage}%
+                                                </StyledParagraph>
+                                            </>
+                                        ) :
+                                        <Paragraph marginBottom="12px" color={colors.textDarkPrimary}>
+                                            {`${totalBalances} ZRX Total Vote`}
+                                        </Paragraph>
+                                    }
                                     <Paragraph marginBottom="12px">
                                         {getDateString(voteStartDate, voteEndDate)}
                                     </Paragraph>
@@ -270,4 +339,29 @@ const VoteCardShimmer = styled.div`
             width: 100%;
         }
     }
+`;
+
+const VoteCounts = styled.div`
+`;
+
+const StyledParagraph = styled<any>(Paragraph)`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+`;
+
+const CountTitle = styled.div`
+    width: 30px;
+`
+
+const PercentageContainer = styled.div`
+    flex: 1;
+`;
+
+const VotePercentage = styled.div<{value: number, color: string}>`
+    height: 15px;
+    width: ${({value}) => value || 1}%;
+    background-color: ${({ color }) => color};
+    margin: 0 8px;
 `;

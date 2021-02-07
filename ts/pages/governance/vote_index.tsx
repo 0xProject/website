@@ -61,17 +61,6 @@ type ProposalWithOrder = Proposal & {
     order?: number;
 };
 
-enum ProposalState {
-    Pending,
-    Active,
-    Canceled,
-    Defeated,
-    Succeeded,
-    Queued,
-    Expired,
-    Executed,
-}
-
 const PROPOSALS = environments.isProduction() ? prodProposals : stagingProposals;
 const ZEIP_IDS = Object.keys(PROPOSALS).map(idString => parseInt(idString, 10));
 const ZEIP_PROPOSALS: ProposalWithOrder[] = ZEIP_IDS.map(id => PROPOSALS[id]).sort(
@@ -193,22 +182,27 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
         if(data) {
             const onChainProposals = data.map((proposal: OnChainProposal) => {
                 const { id, votesAgainst, votesFor, description, executionTimestamp, voteEpoch } = proposal;
-                const startDate = moment.unix(voteEpoch.startTimestamp, 'x');
-                const endDate = moment.unix(voteEpoch.endTimestamp, 'x');
+                const againstVotes = new BigNumber(votesAgainst);
+                const forVotes = new BigNumber(votesFor);
+                const bigNumStartTimestamp = new BigNumber(voteEpoch.startTimestamp);
+                const bigNumEndTimestamp = new BigNumber(voteEpoch.endTimestamp);
+                const startDate = moment.unix(bigNumStartTimestamp.toNumber());
+                const endDate = moment.unix(bigNumEndTimestamp.toNumber());
                 const now = moment();
                 const isUpcoming = now.isBefore(startDate);
                 const isHappening = now.isAfter(startDate) && now.isBefore(endDate);
+                const timestamp = isHappening ? endDate : isUpcoming ? startDate : executionTimestamp ? executionTimestamp : endDate;
                 
                 return {
                     id,
-                    againstVotes: votesAgainst,
-                    forVotes: votesFor,
+                    againstVotes,
+                    forVotes,
                     description,
-                    canceled: votesAgainst > votesFor || votesFor < quorumThreshold,
+                    canceled: !(isHappening || isUpcoming) && againstVotes > forVotes || forVotes < quorumThreshold,
                     executed: !!executionTimestamp,
                     upcoming: isUpcoming,
                     happening: isHappening,
-                    timestamp: endDate,
+                    timestamp,
                 }
             });
             console.log(onChainProposals);
