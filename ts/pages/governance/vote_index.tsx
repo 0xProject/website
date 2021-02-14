@@ -170,6 +170,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [isLoading, setLoading] = React.useState<boolean>(true);
     const [userZRXBalance, setZRXBalance] = React.useState<number>();
     const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
+    const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
 
     const { data, isLoading: isQueryLoading } = useQuery('proposals', async () => {
         const { proposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS)
@@ -242,9 +243,21 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
         }
     }, [data]);
 
-    const applyFilter: React.ChangeEventHandler = (event: React.ChangeEvent) => {
-        const { value } = event.target as HTMLSelectElement;
+    const applyFilter = (value: string) => {
         setFilter(value);
+    }
+
+    const getFilterName = (name: string): string => {
+        switch(name) {
+            case 'all':
+                return 'Showing All';
+            case 'zeip':
+                return 'ZEIP';
+            case 'treasury':
+                return 'Treasury';
+            default:
+                return '';
+        }
     }
 
     const showZEIP = ['all', 'zeip'];
@@ -318,11 +331,25 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                         </LoaderWrapper>
                     ) : (
                         <VoteIndexCardWrapper>
-                            <Filter onChange={applyFilter}>
-                                <option value="all" selected>Showing All</option>
-                                <option value="zeip">ZEIP</option>
-                                <option value="treasury">Treasury</option>
-                            </Filter>
+                            <Wrapper onClick={() => setIsExpanded(_isExpanded => !_isExpanded)}>
+                                <ToggleRow>
+                                    <StyledText fontColor={colors.textDarkSecondary}>{getFilterName(filter)}</StyledText>
+                                    <Arrow isExpanded={isExpanded} />
+                                </ToggleRow>
+                                {isExpanded && (
+                                    <ExpandedMenu>
+                                        <MenuItem onClick={() => applyFilter('all')}>
+                                            <StyledText>Showing All</StyledText>
+                                        </MenuItem>
+                                        <MenuItem onClick={() => applyFilter('zeip')}>
+                                            <StyledText>ZEIP</StyledText>
+                                        </MenuItem>
+                                        <MenuItem onClick={() => applyFilter('treasury')}>
+                                            <StyledText>Treasury</StyledText>
+                                        </MenuItem>
+                                    </ExpandedMenu>
+                                )}
+                            </Wrapper>
                             {showZEIP.includes(filter) && ZEIP_PROPOSALS.map(proposal => {
                                 const tally = tallys && tallys[proposal.zeipId];
                                 return (
@@ -382,15 +409,6 @@ const LoaderWrapper = styled.div`
     justify-content: center;
 `;
 
-const Filter = styled.select`
-    border: none;
-    background-color: transparent;
-    outline: none;
-    width: 100px;
-    align-self: flex-end;
-    margin-right: 40px;
-`;
-
 const RegisterBanner = styled.div`
     background-color: ${({ theme }) => theme.lightBgColor};
     display: flex;
@@ -428,5 +446,74 @@ const TextContent = styled.div`
         padding: 0 50px;
         white-space: nowrap;
         text-align: left;
+    }
+`;
+
+const Wrapper = styled.div`
+    border: none;
+    background-color: transparent;
+    outline: none;
+    width: 150px;
+    align-self: flex-end;
+    margin-right: 40px;
+`;
+
+const Arrow = ({ isExpanded }: { isExpanded?: boolean }) => (
+    <svg
+        style={{ transform: isExpanded ? 'rotate(180deg)' : null }}
+        width="13"
+        height="6"
+        viewBox="0 0 13 6"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path d="M1 1L6.5 5L12 1" stroke="black" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+);
+
+const ExpandedMenu = styled.div`
+    background: ${colors.backgroundLightGrey};
+    border: 1px solid rgba(92, 92, 92, 0.15);
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    padding: 30px;
+    right: 40px;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        left: 0;
+    }
+`;
+
+const ToggleRow = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+
+    * + * {
+        margin-left: 8px;
+    }
+`;
+
+const MenuItem = styled.div`
+    cursor: pointer;
+
+    & + & {
+        margin-top: 30px;
+    }
+`;
+
+const StyledText = styled(Text)`
+    font-family: 'Formular', monospace;
+    font-size: 20px;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
     }
 `;
