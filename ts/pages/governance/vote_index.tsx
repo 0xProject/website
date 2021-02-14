@@ -124,7 +124,6 @@ const sortProposals = (onChainProposals: Proposals[], zeipProposals: Proposal[])
         const zeip = zeipProposals[j];
         const treasuryStartDate = moment(treasury.startDate);
         const zeipStartDate = moment(zeip.voteStartDate);
-        console.log(treasuryStartDate, zeipStartDate);
         if(treasuryStartDate.isAfter(zeipStartDate)) {
             onChainProposals[i].order = order++;
             i++;

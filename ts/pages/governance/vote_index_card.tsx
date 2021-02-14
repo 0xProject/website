@@ -5,6 +5,7 @@ import * as React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
+import { TreasurySummary } from 'ts/components/governance/treasury_summary';
 import { Column, FlexWrap, Section } from 'ts/components/newLayout';
 import { Heading, Paragraph } from 'ts/components/text';
 import { getTotalBalancesString } from 'ts/pages/governance/vote_stats';
@@ -122,7 +123,6 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
         totalVotes = tally.yes.plus(tally.no);
         noVotesPercentage = getVotesPercentage(tally.no, totalVotes);
         yesVotesPercentage = getVotesPercentage(tally.yes, totalVotes);
-        console.log(totalVotes.toNumber(), noVotesPercentage);
     }
 
     switch (props.type) {
@@ -151,9 +151,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                 <Tag>Treasury</Tag>
                                 {description ? (
                                     <>
-                                        <Heading marginBottom="20px">{`${description.length < 200 ? description : description.slice(0, 200) + '...'}`}</Heading>
-
-                                        <Paragraph>{`${description.length < 200 ? description : description.slice(0, 200) + '...'}`}</Paragraph>
+                                        <TreasurySummary description={description} />
                                     </>
                                 ) : (
                                     <VoteCardShimmer>
