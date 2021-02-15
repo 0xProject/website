@@ -6,7 +6,6 @@ import * as _ from 'lodash';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 import * as React from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
     useQuery,
@@ -32,8 +31,6 @@ import { environments } from 'ts/utils/environments';
 import { formatZrx } from 'ts/utils/format_number';
 import { OnChainProposal } from 'ts/types';
 
-import { Treasury } from './treasury';
-
 const FETCH_PROPOSALS = gql`
   query proposals {
       proposals(orderDirection:desc) {
@@ -55,7 +52,7 @@ const FETCH_PROPOSALS = gql`
         executionTimestamp
       }
     }
-`
+`;
 
 type ProposalWithOrder = Proposal & {
     order?: number;
@@ -159,10 +156,6 @@ interface TreasureContextType {
     proposals: Proposals;
 }
 
-export const TreasuryContext = React.createContext<TreasureContextType>({
-    proposals: {},
-});
-
 export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [filter, setFilter ] = React.useState<string>('all');
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
@@ -198,8 +191,6 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     ];
 
     const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.ZRX, abi, provider);
-
-    const { path } = useRouteMatch();
 
     React.useEffect(() => {
         (async () => {
@@ -264,124 +255,115 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const showTreasury = ['all', 'treasury'];
 
     return (
-        <Switch>
-            <Route exact={true} path={`${WebsitePaths.Vote}/treasury/:proposalId`}>
-                <TreasuryContext.Provider value={{ proposals }}>
-                    <Treasury />
-                </TreasuryContext.Provider>
-            </Route>
-            <Route path={path}>
-                <StakingPageLayout isHome={false} title="0x Governance">
-                    {
-                        userZRXBalance && userZRXBalance > 0 &&
-                        <RegisterBanner>
-                            <BannerImage src="/images/governance/register_banner.svg" />
-                                <MediaQuery minWidth={768}>
-                                    <TextContent>
-                                            <Text noWrap={true} fontColor={colors.textDarkPrimary} Tag='h1' fontSize='28px' fontFamily='Formular'>
-                                                Register to vote with your ZRX!
-                                            </Text>
-                                            <Text noWrap={true} fontColor={colors.textDarkSecondary} fontSize='22px' fontFamily='Formular' fontWeight={300}>
-                                                Register to vote on upcoming treasury proposals
-                                            </Text>
-                                    </TextContent>
-                                </MediaQuery>
-                                <MediaQuery maxWidth={768}>
-                                    <TextContent>
-                                        <Text noWrap={true} fontColor={colors.textDarkPrimary} Tag='h1' fontSize='22px'>
-                                            Register to vote with your ZRX!
-                                        </Text>
-                                        <Text noWrap={true} fontColor={colors.textDarkSecondary} fontSize='14px'>
-                                            Register to vote on upcoming treasury proposals
-                                        </Text>
-                                    </TextContent>
-                                </MediaQuery>
-                            <Button to={WebsitePaths.Register} color={colors.white}>
-                                Register your ZRX
+        <StakingPageLayout isHome={false} title="0x Governance">
+            {
+                userZRXBalance && userZRXBalance > 0 &&
+                <RegisterBanner>
+                    <BannerImage src="/images/governance/register_banner.svg" />
+                        <MediaQuery minWidth={768}>
+                            <TextContent>
+                                    <Text noWrap={true} fontColor={colors.textDarkPrimary} Tag='h1' fontSize='28px' fontFamily='Formular'>
+                                        Register to vote with your ZRX!
+                                    </Text>
+                                    <Text noWrap={true} fontColor={colors.textDarkSecondary} fontSize='22px' fontFamily='Formular' fontWeight={300}>
+                                        Register to vote on upcoming treasury proposals
+                                    </Text>
+                            </TextContent>
+                        </MediaQuery>
+                        <MediaQuery maxWidth={768}>
+                            <TextContent>
+                                <Text noWrap={true} fontColor={colors.textDarkPrimary} Tag='h1' fontSize='22px'>
+                                    Register to vote with your ZRX!
+                                </Text>
+                                <Text noWrap={true} fontColor={colors.textDarkSecondary} fontSize='14px'>
+                                    Register to vote on upcoming treasury proposals
+                                </Text>
+                            </TextContent>
+                        </MediaQuery>
+                    <Button to={WebsitePaths.Register} color={colors.white}>
+                        Register your ZRX
+                    </Button>
+                </RegisterBanner>
+            }
+            <DocumentTitle {...documentConstants.VOTE} />
+            <Section isTextCentered={true} isPadded={true} padding="80px 0 80px">
+                <Column>
+                    <Heading size="medium" isCentered={true}>
+                        Govern 0x Protocol
+                    </Heading>
+                    <SubtitleContentWrap>
+                        <Paragraph size="medium" isCentered={true} isMuted={true} marginBottom="0">
+                            Vote on 0x Improvement Proposals (ZEIPs) using ZRX tokens.
+                        </Paragraph>
+                        <ButtonWrapper>
+                            <Button
+                                href={constants.URL_VOTE_FAQ}
+                                isWithArrow={true}
+                                isAccentColor={true}
+                                shouldUseAnchorTag={true}
+                                target="_blank"
+                            >
+                                FAQ
                             </Button>
-                        </RegisterBanner>
-                    }
-                    <DocumentTitle {...documentConstants.VOTE} />
-                    <Section isTextCentered={true} isPadded={true} padding="80px 0 80px">
-                        <Column>
-                            <Heading size="medium" isCentered={true}>
-                                Govern 0x Protocol
-                            </Heading>
-                            <SubtitleContentWrap>
-                                <Paragraph size="medium" isCentered={true} isMuted={true} marginBottom="0">
-                                    Vote on 0x Improvement Proposals (ZEIPs) using ZRX tokens.
-                                </Paragraph>
-                                <ButtonWrapper>
-                                    <Button
-                                        href={constants.URL_VOTE_FAQ}
-                                        isWithArrow={true}
-                                        isAccentColor={true}
-                                        shouldUseAnchorTag={true}
-                                        target="_blank"
-                                    >
-                                        FAQ
-                                    </Button>
-                                </ButtonWrapper>
-                            </SubtitleContentWrap>
-                        </Column>
-                    </Section>
-                    {isLoading ? (
-                        <LoaderWrapper>
-                            <CircularProgress size={40} thickness={2} color={colors.brandLight} />
-                        </LoaderWrapper>
-                    ) : (
-                        <VoteIndexCardWrapper>
-                            <Wrapper onClick={() => setIsExpanded(_isExpanded => !_isExpanded)}>
-                                <ToggleRow>
-                                    <StyledText fontColor={colors.textDarkSecondary}>{getFilterName(filter)}</StyledText>
-                                    <Arrow isExpanded={isExpanded} />
-                                </ToggleRow>
-                                {isExpanded && (
-                                    <ExpandedMenu>
-                                        <MenuItem onClick={() => applyFilter('all')}>
-                                            <StyledText>Showing All</StyledText>
-                                        </MenuItem>
-                                        <MenuItem onClick={() => applyFilter('zeip')}>
-                                            <StyledText>ZEIP</StyledText>
-                                        </MenuItem>
-                                        <MenuItem onClick={() => applyFilter('treasury')}>
-                                            <StyledText>Treasury</StyledText>
-                                        </MenuItem>
-                                    </ExpandedMenu>
-                                )}
-                            </Wrapper>
-                            {showZEIP.includes(filter) && ZEIP_PROPOSALS.map(proposal => {
-                                const tally = tallys && tallys[proposal.zeipId];
-                                return (
-                                    <VoteIndexCard
-                                        type={VotingCardType.Zeip}
-                                        key={proposal.zeipId}
-                                        tally={tally}
-                                        {...proposal}
-                                    />
-                                );
-                            })}
-                            {showTreasury.includes(filter) && proposals.length > 0 &&
-                                proposals.map((proposal: TreasuryProposal) => {
-                                    const tally = {
-                                        no: new BigNumber(proposal.againstVotes.toString()),
-                                        yes: new BigNumber(proposal.forVotes.toString()),
-                                        zeip: proposal.id,
-                                    };
-                                    return (
-                                        <VoteIndexCard
-                                            type={VotingCardType.Treasury}
-                                            key={proposal.id}
-                                            tally={tally}
-                                            {...proposal}
-                                        />
-                                    );
-                                })}
-                        </VoteIndexCardWrapper>
-                    )}
-                </StakingPageLayout>
-            </Route>
-        </Switch>
+                        </ButtonWrapper>
+                    </SubtitleContentWrap>
+                </Column>
+            </Section>
+            {isLoading ? (
+                <LoaderWrapper>
+                    <CircularProgress size={40} thickness={2} color={colors.brandLight} />
+                </LoaderWrapper>
+            ) : (
+                <VoteIndexCardWrapper>
+                    <Wrapper onClick={() => setIsExpanded(_isExpanded => !_isExpanded)}>
+                        <ToggleRow>
+                            <StyledText fontColor={colors.textDarkSecondary}>{getFilterName(filter)}</StyledText>
+                            <Arrow isExpanded={isExpanded} />
+                        </ToggleRow>
+                        {isExpanded && (
+                            <ExpandedMenu>
+                                <MenuItem onClick={() => applyFilter('all')}>
+                                    <StyledText>Showing All</StyledText>
+                                </MenuItem>
+                                <MenuItem onClick={() => applyFilter('zeip')}>
+                                    <StyledText>ZEIP</StyledText>
+                                </MenuItem>
+                                <MenuItem onClick={() => applyFilter('treasury')}>
+                                    <StyledText>Treasury</StyledText>
+                                </MenuItem>
+                            </ExpandedMenu>
+                        )}
+                    </Wrapper>
+                    {showZEIP.includes(filter) && ZEIP_PROPOSALS.map(proposal => {
+                        const tally = tallys && tallys[proposal.zeipId];
+                        return (
+                            <VoteIndexCard
+                                type={VotingCardType.Zeip}
+                                key={proposal.zeipId}
+                                tally={tally}
+                                {...proposal}
+                            />
+                        );
+                    })}
+                    {showTreasury.includes(filter) && proposals.length > 0 &&
+                        proposals.map((proposal: TreasuryProposal) => {
+                            const tally = {
+                                no: new BigNumber(proposal.againstVotes.toString()),
+                                yes: new BigNumber(proposal.forVotes.toString()),
+                                zeip: proposal.id,
+                            };
+                            return (
+                                <VoteIndexCard
+                                    type={VotingCardType.Treasury}
+                                    key={proposal.id}
+                                    tally={tally}
+                                    {...proposal}
+                                />
+                            );
+                        })}
+                </VoteIndexCardWrapper>
+            )}
+        </StakingPageLayout>
     );
 };
 

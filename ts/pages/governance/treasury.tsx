@@ -1,9 +1,14 @@
 import { BigNumber } from '@0x/utils';
+import { Contract, providers } from 'ethers';
 import * as _ from 'lodash';
+import { request, gql } from 'graphql-request';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
+import {
+    useQuery,
+} from 'react-query';
 import { Redirect, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -17,35 +22,96 @@ import { Countdown } from 'ts/pages/governance/countdown';
 import { TreasuryProposal } from 'ts/pages/governance/data';
 import { ModalVote } from 'ts/pages/governance/modal_vote';
 import { VoteInfo } from 'ts/pages/governance/vote_form';
-import { TreasuryContext } from 'ts/pages/governance/vote_index';
 import { VoteStats } from 'ts/pages/governance/vote_stats';
 import { colors } from 'ts/style/colors';
 import { WebsitePaths } from 'ts/types';
-import { configs } from 'ts/utils/configs';
+import { ALCHEMY_API_KEY, configs, GOVERNOR_CONTRACT_ADDRESS, GOVERNANCE_THEGRAPH_ENDPOINT } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 
+const provider = providers.getDefaultProvider(null, {
+    alchemy: ALCHEMY_API_KEY,
+});
+
+const FETCH_PROPOSAL = gql`
+  query proposal($id: ID!) {
+      proposal(id: $id) {
+        id
+        proposer
+        description
+        forVotes: votesFor
+        againstVotes: votesAgainst
+        createdTimestamp
+        voteEpoch {
+          id
+          startTimestamp
+          endTimestamp
+        }
+        executionEpoch {
+          startTimestamp
+          endTimestamp
+        }
+        executionTimestamp
+      }
+    }
+`
+
 export const Treasury: React.FC<{}> = () => {
-    // public state: State = {
-    //     isVoteModalOpen: false,
-    //     isVoteReceived: false,
-    //     providerName: 'Metamask',
-    // };
-    // const _proposalData: Proposal;
     const [proposal, setProposal] = React.useState<TreasuryProposal>();
     const [isProposalsLoaded, setProposalsLoaded] = React.useState<boolean>(false);
     const [isVoteReceived] = React.useState<boolean>(false);
     const [isVoteModalOpen] = React.useState<boolean>(false);
-    const { proposalId } = useParams();
-    const { proposals } = React.useContext(TreasuryContext);
+    const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
+    const { id: proposalId } = useParams();
+
+    const { data } = useQuery('proposal', async () => {
+        const { proposal } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSAL, {
+            id: proposalId,
+        })
+        return proposal;
+    });
+
+    const abi = [
+        'function quorumThreshold() public view returns (uint)',
+    ];
+
+    const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.ZRX, abi, provider);
 
     React.useEffect(() => {
-        if (proposals) {
-            const currentProposal = proposals.find(p => p.id === parseInt(proposalId, 10));
-            setProposal(currentProposal);
+        (async () => {
+            const qThreshold = await contract.quorumThreshold();
+            setQuorumThreshold(qThreshold);
+        })();
+
+        if(data) {
+            console.log(data);
+            const { id, votesAgainst, votesFor, description, executionTimestamp, voteEpoch } = data;
+            const againstVotes = new BigNumber(votesAgainst);
+            const forVotes = new BigNumber(votesFor);
+            const bigNumStartTimestamp = new BigNumber(voteEpoch.startTimestamp);
+            const bigNumEndTimestamp = new BigNumber(voteEpoch.endTimestamp);
+            const startDate = moment.unix(bigNumStartTimestamp.toNumber());
+            const endDate = moment.unix(bigNumEndTimestamp.toNumber());
+            const now = moment();
+            const isUpcoming = now.isBefore(startDate);
+            const isHappening = now.isAfter(startDate) && now.isBefore(endDate);
+            const timestamp = isHappening ? endDate : isUpcoming ? startDate : executionTimestamp ? executionTimestamp : endDate;
+
+            setProposal({
+                id,
+                againstVotes,
+                forVotes,
+                description,
+                canceled: !(isHappening || isUpcoming) && againstVotes > forVotes || forVotes < quorumThreshold,
+                executed: !!executionTimestamp,
+                upcoming: isUpcoming,
+                happening: isHappening,
+                timestamp,
+                startDate,
+                endDate,
+            });
             setProposalsLoaded(true);
         }
-        // tslint:disable:no-shadowed-variable
-    }, [proposals]);
+    }, [data]);
 
     if (!proposal && isProposalsLoaded) {
         return <Redirect to={`${WebsitePaths.Vote}`} />;
@@ -59,7 +125,6 @@ export const Treasury: React.FC<{}> = () => {
         );
     }
 
-    // const { isVoteReceived, tally } = this.state;
     const { forVotes, againstVotes, timestamp, happening: isHappening, description, id } = proposal;
     const tally = {
         no: new BigNumber(againstVotes.toString()),
@@ -68,121 +133,53 @@ export const Treasury: React.FC<{}> = () => {
 
     const pstOffset = '-0800';
     const deadlineToVote = moment(timestamp)?.utcOffset(pstOffset);
-    //     const voteStartDate = proposalData?.voteStartDate?.utcOffset(pstOffset);
-    // const hasVoteEnded = canceled || executed;
-    // const hasVoteStarted = happening;
     const isVoteActive = isHappening;
 
     return (
         <StakingPageLayout isHome={false} title="0x Treasury">
             <DocumentTitle {...documentConstants.VOTE} />
-            <Section maxWidth="1170px" isFlex={true}>
-                <Column width="55%" maxWidth="560px">
-                    <Countdown deadline={deadlineToVote} />
-                    <Heading size="medium">{description.slice(0, 20)}...</Heading>
-                    <Paragraph>
-                        <StyledMarkdown>
-                            <ReactMarkdown children={description} />
-                        </StyledMarkdown>
-                    </Paragraph>
-                    {/* <Button
-                            href={proposalData.url}
-                            target={proposalData.url !== undefined ? '_blank' : undefined}
-                            isWithArrow={true}
-                            isAccentColor={true}
-                        >
-                            Learn More
-                        </Button> */}
-                </Column>
-                <Column width="30%" maxWidth="300px">
-                    <VoteStats tally={tally} />
-                    {isVoteActive && (
-                        <VoteButton onClick={() => onOpenVoteModal()} isWithArrow={false}>
-                            {isVoteReceived ? 'Vote Received' : 'Vote'}
-                        </VoteButton>
-                    )}
-                </Column>
-            </Section>
+             <Section maxWidth="1170px" isFlex={true}>
+                 <Column width="55%" maxWidth="560px">
+                     <Countdown deadline={deadlineToVote} />
+                     <Heading size="medium">{description.slice(0, 20)}...</Heading>
+                     <Paragraph>
+                         <StyledMarkdown>
+                             <ReactMarkdown children={description} />
+                         </StyledMarkdown>
+                     </Paragraph>
+                     {/* <Button
+                             href={proposalData.url}
+                             target={proposalData.url !== undefined ? '_blank' : undefined}
+                             isWithArrow={true}
+                             isAccentColor={true}
+                         >
+                             Learn More
+                         </Button> */}
+                 </Column>
+                 <Column width="30%" maxWidth="300px">
+                     {/* <VoteStats tally={tally} /> */}
+                     {isVoteActive && (
+                         <VoteButton onClick={() => onOpenVoteModal()} isWithArrow={false}>
+                             {isVoteReceived ? 'Vote Received' : 'Vote'}
+                         </VoteButton>
+                     )}
+                 </Column>
+             </Section>
 
-            <Section bgColor="light" maxWidth="1170px">
-                {/* <SectionWrap>
-                        <Heading>{proposalData.benefit.title}</Heading>
-                        <FlexWrap>
-                            <Column width="55%" maxWidth="560px">
-                                {_.map(proposalData.benefit.summary, (link, index) => (
-                                    <Paragraph key={`benefittext-${index}`}>
-                                        {proposalData.benefit.summary[index]}
-                                    </Paragraph>
-                                ))}
-                                {_.map(proposalData.benefit.links, (link, index) => (
-                                    <MoreLink
-                                        href={link.url}
-                                        target={link.url !== undefined ? '_blank' : undefined}
-                                        isWithArrow={true}
-                                        isAccentColor={true}
-                                        key={`benefitlink-${index}`}
-                                    >
-                                        {link.text}
-                                    </MoreLink>
-                                ))}
-                            </Column>
-                            <Column width="30%" maxWidth="360px">
-                                <RatingBar
-                                    color={colors.brandLight}
-                                    labels={benefitLabels}
-                                    rating={proposalData.benefit.rating}
-                                />
-                            </Column>
-                        </FlexWrap>
-                    </SectionWrap>
-                    <SectionWrap>
-                        <Heading>{proposalData.risks.title}</Heading>
-                        <FlexWrap>
-                            <Column width="55%" maxWidth="560px">
-                                {_.map(proposalData.risks.summary, (link, index) => (
-                                    <Paragraph key={`risktext-${index}`}>
-                                        {proposalData.risks.summary[index]}
-                                    </Paragraph>
-                                ))}
-                                {_.map(proposalData.risks.links, (link, index) => (
-                                    <div key={`risklink-${index}`}>
-                                        <MoreLink
-                                            href={link.url}
-                                            target={link.url !== undefined ? '_blank' : undefined}
-                                            isWithArrow={true}
-                                            isAccentColor={true}
-                                        >
-                                            {link.text}
-                                        </MoreLink>
-                                        <br />
-                                    </div>
-                                ))}
-                            </Column>
-                            <Column width="30%" maxWidth="360px">
-                                <RatingBar
-                                    color="#AE5400"
-                                    labels={riskLabels}
-                                    rating={proposalData.risks.rating}
-                                />
-                            </Column>
-                        </FlexWrap>
-                    </SectionWrap> */}
-            </Section>
-
-            {isVoteActive && (
-                <Banner
-                    heading={`Vote with ZRX Proposal ${id}`}
-                    subline="Use 0x Instant to quickly purchase ZRX for voting"
-                    mainCta={{ text: 'Get ZRX', onClick: () => onLaunchInstantClick() }}
-                    secondaryCta={{ text: 'Vote', onClick: () => onOpenVoteModal() }}
-                />
-            )}
-            <ModalVote
-                zeipId={id}
-                isOpen={isVoteModalOpen}
-                onDismiss={onDismissVoteModal}
-                onVoted={voteInfo => onVoteReceived(voteInfo)}
-            />
+        {/* //     {isVoteActive && (
+        //         <Banner
+        //             heading={`Vote with ZRX Proposal ${id}`}
+        //             subline="Use 0x Instant to quickly purchase ZRX for voting"
+        //             mainCta={{ text: 'Get ZRX', onClick: () => onLaunchInstantClick() }}
+        //             secondaryCta={{ text: 'Vote', onClick: () => onOpenVoteModal() }}
+        //         />
+        //     )}
+        //     <ModalVote
+        //         zeipId={id}
+        //         isOpen={isVoteModalOpen}
+        //         onDismiss={onDismissVoteModal}
+        //         onVoted={voteInfo => onVoteReceived(voteInfo)}
+        //     /> */}
         </StakingPageLayout>
     );
 };
