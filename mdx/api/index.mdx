@@ -164,8 +164,8 @@ There are two ways to capture affiliate fees from a trade.
 
 ### Fees Misc.
 *   Adding a fee will result in an increased of gas for the taker.
-*   When setting `feeType=positive-slippage` and when the trade benefit positive slippage, 0x API will only send the positive slippage funds to `feeRecipient` only if the positive slippage funds are higher than the gas cost to do that operation.
-*   When using fees (`feeType=buyTokenPercentageFee` or `feeType=`positive-slippage`), 0x API won't be able to use our highly gas optimized UniswapV2 Router (https://0xprotocol.readthedocs.io/en/latest/advanced/uniswap.html).
+*   When setting `feeType=positive-slippage` and when the trade benefit positive slippage, 0x API will only send the positive slippage funds to `feeRecipient` if the amount is higher than the gas cost to do that operation.
+*   When using fees (`feeType=buy-token-percentage` or `feeType=`positive-slippage`), 0x API won't be able to use our highly gas optimized UniswapV2 Router (https://0xprotocol.readthedocs.io/en/latest/advanced/uniswap.html).
 
 # Swap
 
