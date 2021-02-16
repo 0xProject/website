@@ -28,7 +28,7 @@ export interface Proposal {
 
 export interface TreasuryProposal {
     id: number;
-    timestamp: number;
+    timestamp: moment.Moment;
     description: string;
     canceled: boolean;
     executed: boolean;
@@ -38,6 +38,7 @@ export interface TreasuryProposal {
     happening: boolean;
     startDate: moment.Moment,
     endDate: moment.Moment,
+    proposer?: string
 }
 
 export interface Proposals {
