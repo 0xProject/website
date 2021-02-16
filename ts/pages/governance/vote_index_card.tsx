@@ -8,7 +8,7 @@ import styled, { keyframes } from 'styled-components';
 import { TreasurySummary } from 'ts/components/governance/treasury_summary';
 import { Column, FlexWrap, Section } from 'ts/components/newLayout';
 import { Heading, Paragraph } from 'ts/components/text';
-import { getTotalBalancesString } from 'ts/pages/governance/vote_stats';
+import { getTotalBalancesString, VoteStats } from 'ts/pages/governance/vote_stats';
 import { VoteStatusText } from 'ts/pages/governance/vote_status_text';
 import { colors } from 'ts/style/colors';
 import { TallyInterface, VoteOutcome, VoteTime, VotingCardType, WebsitePaths } from 'ts/types';
@@ -101,15 +101,6 @@ const getStatus = (
     }
 };
 
-const getVotesPercentage = (votes: BigNumber, totalVotes: BigNumber): number => {
-    if(votes.isLessThanOrEqualTo(0) || totalVotes.isLessThanOrEqualTo(0)) {
-        return 0;
-    }
-
-    const percentage = votes.dividedBy(totalVotes).toFixed(2);
-    return parseFloat(percentage) * 100;
-}
-
 export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props => {
     const { order, tally } = props;
 
@@ -121,8 +112,9 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
     if(tally) {
         totalBalances = getTotalBalancesString(tally);
         totalVotes = tally.yes.plus(tally.no);
-        noVotesPercentage = getVotesPercentage(tally.no, totalVotes);
-        yesVotesPercentage = getVotesPercentage(tally.yes, totalVotes);
+        const oneHundred = new BigNumber(100);
+        yesVotesPercentage = oneHundred.times(tally.yes.dividedBy(totalVotes));
+        noVotesPercentage = oneHundred.minus(yesVotesPercentage);
     }
 
     switch (props.type) {
@@ -166,7 +158,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                 )}
                             </Column>
                             <Column width='25%'>
-                                <div className="flex flex-column items-end">
+                                <div className="flex flex-column sm-col-12">
                                     <VoteStatusText
                                         status={getStatus(
                                             isCanceled,
@@ -176,22 +168,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                     />
                                     {
                                         isHappening ? (
-                                            <>
-                                                <StyledParagraph color={colors.textDarkPrimary} marginBottom='12px'>
-                                                    <CountTitle>Yes</CountTitle>
-                                                    <PercentageContainer>
-                                                        <VotePercentage value={yesVotesPercentage} color={colors.brandLight} />
-                                                    </PercentageContainer>
-                                                    {yesVotesPercentage}%
-                                                </StyledParagraph>
-                                                <StyledParagraph color={colors.textDarkPrimary}>
-                                                    <CountTitle>No</CountTitle>
-                                                    <PercentageContainer>
-                                                        <VotePercentage value={noVotesPercentage} color={colors.brandDark} />
-                                                    </PercentageContainer>
-                                                    {noVotesPercentage}%
-                                                </StyledParagraph>
-                                            </>
+                                            <VoteStats tally={tally} isVoteCard={true} />
                                         ) :
                                             (
 
@@ -238,26 +215,11 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                 <Paragraph>{summary[0]}</Paragraph>
                             </Column>
                             <Column width='25%'>
-                                <div className="flex flex-column items-end">
+                                <div className="flex flex-column sm-col-12">
                                     <VoteStatusText status={voteStatus} />
                                     {
                                         voteStatus === 'happening' ? (
-                                            <>
-                                                <StyledParagraph color={colors.textDarkPrimary} marginBottom='12px'>
-                                                    <CountTitle>Yes</CountTitle>
-                                                    <PercentageContainer>
-                                                        <VotePercentage value={yesVotesPercentage} color={colors.brandLight} />
-                                                    </PercentageContainer>
-                                                    {yesVotesPercentage}%
-                                                </StyledParagraph>
-                                                <StyledParagraph color={colors.textDarkPrimary}>
-                                                    <CountTitle>No</CountTitle>
-                                                    <PercentageContainer>
-                                                        <VotePercentage value={noVotesPercentage} color={colors.brandDark} />
-                                                    </PercentageContainer>
-                                                    {noVotesPercentage}%
-                                                </StyledParagraph>
-                                            </>
+                                            <VoteStats tally={tally} isVoteCard={true} />
                                         ) :
                                         <Paragraph marginBottom="12px" color={colors.textDarkPrimary}>
                                             {`${totalBalances} ZRX Total Vote`}
@@ -337,29 +299,4 @@ const VoteCardShimmer = styled.div`
             width: 100%;
         }
     }
-`;
-
-const VoteCounts = styled.div`
-`;
-
-const StyledParagraph = styled<any>(Paragraph)`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-`;
-
-const CountTitle = styled.div`
-    width: 30px;
-`
-
-const PercentageContainer = styled.div`
-    flex: 1;
-`;
-
-const VotePercentage = styled.div<{value: number, color: string}>`
-    height: 15px;
-    width: ${({value}) => value || 1}%;
-    background-color: ${({ color }) => color};
-    margin: 0 8px;
 `;
