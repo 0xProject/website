@@ -39,6 +39,9 @@ export interface TreasuryProposal {
     startDate: moment.Moment,
     endDate: moment.Moment,
     proposer?: string
+    createdTimestamp?: moment.Moment,
+    executionStartDate: moment.Moment,
+    executionEndDate: moment.Moment,
 }
 
 export interface Proposals {

@@ -2,6 +2,7 @@ import { BigNumber } from '@0x/utils';
 import { Contract, providers } from 'ethers';
 import * as _ from 'lodash';
 import { request, gql } from 'graphql-request';
+import marked, { Token, Tokens } from 'marked';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 import * as React from 'react';
@@ -12,12 +13,13 @@ import {
 import { Redirect, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Banner } from 'ts/components/banner';
 import { Button } from 'ts/components/button';
 import { DocumentTitle } from 'ts/components/document_title';
+import { RegisterBanner } from 'ts/components/governance/register_banner';
 import { Column, Section } from 'ts/components/newLayout';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading, Paragraph } from 'ts/components/text';
+import { Text } from 'ts/components/ui/text';
 import { Countdown } from 'ts/pages/governance/countdown';
 import { TreasuryProposal } from 'ts/pages/governance/data';
 import { ModalVote } from 'ts/pages/governance/modal_vote';
@@ -25,6 +27,7 @@ import { VoteInfo } from 'ts/pages/governance/vote_form';
 import { VoteStats } from 'ts/pages/governance/vote_stats';
 import { colors } from 'ts/style/colors';
 import { WebsitePaths } from 'ts/types';
+import { utils } from 'ts/utils/utils';
 import { ALCHEMY_API_KEY, configs, GOVERNOR_CONTRACT_ADDRESS, GOVERNANCE_THEGRAPH_ENDPOINT } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 
@@ -38,8 +41,8 @@ const FETCH_PROPOSAL = gql`
         id
         proposer
         description
-        forVotes: votesFor
-        againstVotes: votesAgainst
+        votesFor
+        votesAgainst
         createdTimestamp
         voteEpoch {
           id
@@ -53,7 +56,9 @@ const FETCH_PROPOSAL = gql`
         executionTimestamp
       }
     }
-`
+`;
+
+type ProposalState = 'created' |'active' |'succeeded' |'failed' |'queued' |'executed';
 
 export const Treasury: React.FC<{}> = () => {
     const [proposal, setProposal] = React.useState<TreasuryProposal>();
@@ -83,31 +88,41 @@ export const Treasury: React.FC<{}> = () => {
         })();
 
         if(data) {
-            console.log(data);
-            const { id, votesAgainst, votesFor, description, executionTimestamp, voteEpoch } = data;
+            const { id, votesAgainst, votesFor, description, executionTimestamp, voteEpoch, createdTimestamp, executionEpoch } = data;
             const againstVotes = new BigNumber(votesAgainst);
             const forVotes = new BigNumber(votesFor);
+
             const bigNumStartTimestamp = new BigNumber(voteEpoch.startTimestamp);
             const bigNumEndTimestamp = new BigNumber(voteEpoch.endTimestamp);
             const startDate = moment.unix(bigNumStartTimestamp.toNumber());
             const endDate = moment.unix(bigNumEndTimestamp.toNumber());
+
+            const bigNumExecutionStartTimestamp = new BigNumber(executionEpoch.startTimestamp);
+            const bigNumExecutionEndTimestamp = new BigNumber(executionEpoch.endTimestamp);
+            const executionStartDate = moment.unix(bigNumExecutionStartTimestamp.toNumber());
+            const executionEndDate = moment.unix(bigNumExecutionEndTimestamp.toNumber());
+
             const now = moment();
             const isUpcoming = now.isBefore(startDate);
             const isHappening = now.isAfter(startDate) && now.isBefore(endDate);
             const timestamp = isHappening ? endDate : isUpcoming ? startDate : executionTimestamp ? executionTimestamp : endDate;
 
             setProposal({
+                proposer: data.proposer,
                 id,
                 againstVotes,
                 forVotes,
                 description,
-                canceled: !(isHappening || isUpcoming) && againstVotes > forVotes || forVotes < quorumThreshold,
+                canceled: !(isHappening || isUpcoming) && againstVotes >= forVotes || forVotes < quorumThreshold,
                 executed: !!executionTimestamp,
                 upcoming: isUpcoming,
                 happening: isHappening,
                 timestamp,
                 startDate,
                 endDate,
+                createdTimestamp: moment.unix(createdTimestamp),
+                executionStartDate,
+                executionEndDate
             });
             setProposalsLoaded(true);
         }
@@ -125,7 +140,8 @@ export const Treasury: React.FC<{}> = () => {
         );
     }
 
-    const { forVotes, againstVotes, timestamp, happening: isHappening, description, id } = proposal;
+    const { forVotes, againstVotes, timestamp, happening: isHappening, description, id, canceled: isCanceled, executed: isExecuted, upcoming: isUpcoming, executionStartDate, executionEndDate } = proposal;
+
     const tally = {
         no: new BigNumber(againstVotes.toString()),
         yes: new BigNumber(forVotes.toString()),
@@ -135,13 +151,63 @@ export const Treasury: React.FC<{}> = () => {
     const deadlineToVote = moment(timestamp)?.utcOffset(pstOffset);
     const isVoteActive = isHappening;
 
+    const tokens = marked.lexer(`# Add UNI Support
+  ## This proposal adds [Uniswap](https://etherscan.io/token/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984) as a supported asset, and implements an updated [Open Price Feed](https://compound.finance/docs/prices) view contract that supports cUNI.
+  ### Market Parameters Uniswap is a widely distributed token, with significant on-chain and off-chain liquidity. However, as a new market, it is being introduced with conservative parameters; a *Collateral Factor* equal to ZRX and BAT (which are both less liquid, smaller market cap tokens), a lower *Reserve Factor* of 20%, and a *Borrowing Cap* of 2,000,000 UNI. The UNI market uses the same interest rate model as USDT, with an upper bound of 30% APY at 100% utilization. ### Contracts cUNI is an upgradable cToken contract that has been modified with a single new function; the ability to *Delegate* the UNI held inside the contract to an address specified by Governance. This will allow Compound Governance to participate in Uniswap Governance. Initially, UNI will be undelegated. The cUNI contract has been peer-reviewed by Compound Labs and community developers, but given the limited scope of the modifications, has not been audited by third-party professional auditors. A new Open Price Feed view contract has been deployed, which adds support for cUNI. No changes were otherwise made to the view contract. The contracts were [developed in the open](https://www.comp.xyz/t/adding-new-markets-to-compound/392), and can serve as a template for the community to launch additional markets.`);
+
+    const heading = tokens.find((token: Token) => (token as Tokens.Heading).type === 'heading' && (token as Tokens.Heading).depth === 1);
+
+    const now = moment();
+
+    const proposalHistoryState = {
+        created: {
+            done: true,
+            timestamp: proposal.createdTimestamp,
+            show: true,
+            highlightTick: !isCanceled,
+        }, 
+        active: {
+            done: now.isAfter(proposal.startDate),
+            timestamp: proposal.startDate
+            show: true,
+            highlightTick: !isCanceled,
+        },
+        succeeded: {
+            done: !(isCanceled || isHappening || isUpcoming || isExecuted),
+            timestamp: proposal.endDate,
+            show: !(isCanceled || isHappening || isUpcoming || isExecuted),
+            highlightTick: !isCanceled,
+        },
+        failed: {
+            done: isCanceled,
+            timestamp: proposal.endDate,
+            show: isCanceled,
+            highlightTick: false,
+        },
+        queued: {
+            done: !(isCanceled || isHappening || isUpcoming),
+            timestamp: executionStartDate,
+            show: !(isCanceled || isHappening || isUpcoming || isExecuted),
+            highlightTick: true,
+        },
+        executed: {
+            done: isExecuted,
+            timestamp: executionEndDate,
+            show: !(isCanceled || isHappening || isUpcoming || isExecuted),
+            highlightTick: true,
+        }
+    }
+
     return (
         <StakingPageLayout isHome={false} title="0x Treasury">
+            <RegisterBanner />
             <DocumentTitle {...documentConstants.VOTE} />
              <Section maxWidth="1170px" isFlex={true}>
                  <Column width="55%" maxWidth="560px">
                      <Countdown deadline={deadlineToVote} />
-                     <Heading size="medium">{description.slice(0, 20)}...</Heading>
+                     <Tag>Treasury</Tag>
+                     <Heading size="medium" marginBottom="0px">{(heading as Tokens.Heading).text}</Heading>
+                     <StyledText fontColor={colors.textDarkSecondary} fontSize="18px" fontWeight={300} fontFamily='Formular'>Submitted by: {utils.getAddressBeginAndEnd(proposal.proposer)}</StyledText>
                      <Paragraph>
                          <StyledMarkdown>
                              <ReactMarkdown children={description} />
@@ -157,12 +223,60 @@ export const Treasury: React.FC<{}> = () => {
                          </Button> */}
                  </Column>
                  <Column width="30%" maxWidth="300px">
-                     {/* <VoteStats tally={tally} /> */}
+                    <Text fontColor={colors.textDarkSecondary} fontSize='18px' fontWeight={300} fontFamily='Formular'>
+                        {timestamp && (isExecuted || isCanceled)
+                            ? `Ended ${timestamp.format('MMM DD, YYYY')}`
+                            : isHappening
+                            ? `Voting ends in ${timestamp.diff(moment(), 'days')} days`
+                            : `Upcoming in ${timestamp.diff(moment(), 'days')} days`}
+                    </Text>
+                     { tally && <VoteStats tally={tally} /> }
                      {isVoteActive && (
                          <VoteButton onClick={() => onOpenVoteModal()} isWithArrow={false}>
                              {isVoteReceived ? 'Vote Received' : 'Vote'}
                          </VoteButton>
                      )}
+
+                    <Heading>
+                        Proposal History
+                    </Heading>
+                    <ProposalHistory>
+                        <Ticks>
+                            {
+                                Object.keys(proposalHistoryState).map((state: string) => {
+                                    const historyState = proposalHistoryState[state as ProposalState];
+                                    if(!historyState.show) {
+                                        return null;
+                                    }
+                                    return (
+                                        <>
+                                            <Tick isActive={historyState.done && historyState.highlightTick}><img src="/images/governance/tick_mark.svg" /></Tick>
+                                            {
+                                                !['executed', 'failed'].includes(state) &&
+                                                <Connector className={state === 'queued' ? 'small' : ''} />
+                                            }
+                                        </>
+                                    );
+                                })
+                            }
+                        </Ticks>
+                        <HistoryCells>
+                            {
+                                Object.keys(proposalHistoryState).map((state: string) => {
+                                    const historyState = proposalHistoryState[state as ProposalState];
+                                    if(!historyState.show) {
+                                        return null;
+                                    }
+                                    return (
+                                        <CellContent>
+                                            <StateTitle fontColor={colors.textDarkSecondary} fontFamily='Formular' fontSize='18px' fontWeight={400}>{state}</StateTitle>
+                                            <Text fontColor={colors.textDarkSecondary} fontFamily='Formular' fontSize='17px' fontWeight={300}>{historyState.done ? historyState.timestamp.format("MMMM Do, YYYY - hh:mm a") : 'TBD'}</Text>
+                                        </CellContent>
+                                    )
+                                })
+                            }
+                        </HistoryCells>
+                    </ProposalHistory>
                  </Column>
              </Section>
 
@@ -248,3 +362,74 @@ const VoteButton = styled(Button)`
 //         margin-left: 30px;
 //     }
 // `;
+
+const Tag = styled.div`
+    padding: 5px 2px 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: ${() => colors.yellow500};
+    color: ${() => colors.white};
+    width: 60px;
+    font-size: 12px;
+    margin-bottom: 12px;
+`;
+
+const StyledText = styled(Text)`
+    margin-bottom: 36px;
+`;
+
+const ProposalHistory = styled.div`
+    display: flex;
+`;
+
+const HistoryCells = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+const Ticks = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`;
+
+const Tick = styled.div<{ isActive: boolean}>`
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: ${({ isActive}) => isActive === true ? colors.brandLight : '#c4c4c4'};
+
+    & img {
+        height: 16px;
+        width: 16px;
+    }
+`;
+
+const Connector = styled.div`
+    height: 30px;
+    width: 1px;
+    background-color: ${() => colors.border};
+
+    &.small {
+        height: 25px;
+        margin-bottom: 5px;
+    }
+`;
+
+const CellContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 16px;
+    height: 65px;
+`;
+
+const StateTitle = styled(Text)`
+    text-transform: capitalize;
+`;
