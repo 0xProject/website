@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
 import { Jazzicon, generateUniqueId } from 'ts/components/ui/jazzicon';
+import { RegisterRouterSteps } from 'ts/hooks/use_register_wizard';
 import { colors } from 'ts/style/colors';
 import { Pool, PoolWithStats } from 'ts/types';
 import { formatZrx } from 'ts/utils/format_number';
@@ -146,26 +147,11 @@ const DelegateButton = styled.button`
   color: ${() => colors.textDarkSecondary};
   text-align: right;
   margin-bottom: 60px;
-`;
+  cursor: pointer;
 
-const Difference = styled.span`
-    color: ${colors.brandLight};
-    font-size: 14px;
-    font-weight: bold;
-
-    display: none;
-
-    @media (min-width: 768px) {
-        display: block;
-    }
-`;
-
-const MarketMakerIcon = styled.img`
-    display: block;
-    margin-right: 20px;
-    height: 40px;
-    width: 40px;
-    border: 1px solid #dddddd;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({ userZRXBalance, onOpenConnectWalletDialog, address, onNextButtonClick, stakingPools, nextEpochStart }) => {
@@ -185,6 +171,7 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({ userZRXBala
     const selectedPoolObj = stakingPools.find(s => s.poolId === toPoolId);
     setSelectedPool(selectedPoolObj);
     setIsDelegationFlow(true);
+    onNextButtonClick(true, selectedPoolObj, zrxAmount);
   }
 
   let name;
@@ -207,7 +194,6 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({ userZRXBala
               <Title>
                   You
               </Title>
-              {/* <ZRXAmount><Input type="number" defaultValue={userZRXBalance} onChange={onInput} value={isDelegationFlow ? formatZrx(zrxAmount / 2).formatted : zrxAmount} /> ZRX</ZRXAmount> */}
               <ZRXAmount><Input type="number" defaultValue={userZRXBalance} onChange={onInput} value={zrxAmount} /> ZRX</ZRXAmount>
           </Heading>
         </Container>
@@ -215,18 +201,6 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({ userZRXBala
             !isDelegationFlow &&
             <DelegateButton onClick={() => setOpenPoolsDialog(true)}>Delegate to someone else</DelegateButton>
           }
-          {/* {
-            isDelegationFlow &&
-              <Container>
-                  <Heading>
-                      {selectedPool.metaData.logoUrl && <MarketMakerIcon src={selectedPool.metaData.logoUrl} alt={name} />}
-                      <Title>
-                          {name}
-                      </Title>
-                      <ZRXAmount><Input type="number" defaultValue={formatZrx(zrxAmount / 2).formatted} disabled /> ZRX</ZRXAmount>
-                  </Heading>
-              </Container>
-          } */}
           <Notice>
             <Bullet />
             <span><strong>Your ZRX will be locked for 1-2 weeks</strong>, depending amount of time remaining in the current epoch</span>
