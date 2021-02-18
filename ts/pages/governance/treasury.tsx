@@ -422,6 +422,7 @@ const CellContent = styled.div`
     justify-content: center;
     margin-left: 16px;
     height: 65px;
+    width: 100%;
 `;
 
 const StateTitle = styled(Text)`

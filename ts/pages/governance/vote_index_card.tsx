@@ -56,7 +56,7 @@ const getVoteTime = (voteStartDate: moment.Moment, voteEndDate: moment.Moment): 
     return undefined;
 };
 
-const getVoteOutcome = (tally?: TallyInterface): VoteOutcome | undefined => {
+export const getVoteOutcome = (tally?: TallyInterface): VoteOutcome | undefined => {
     if (!tally) {
         return undefined;
     }

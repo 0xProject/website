@@ -11,11 +11,13 @@ import { DocumentTitle } from 'ts/components/document_title';
 import { Column, FlexWrap, Section } from 'ts/components/newLayout';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Heading, Paragraph } from 'ts/components/text';
+import { Text } from 'ts/components/ui/text';
 import { Countdown } from 'ts/pages/governance/countdown';
 import { Proposal, proposals, stagingProposals } from 'ts/pages/governance/data';
 import { ModalVote } from 'ts/pages/governance/modal_vote';
 import { RatingBar } from 'ts/pages/governance/rating_bar';
 import { VoteInfo, VoteValue } from 'ts/pages/governance/vote_form';
+import { getVoteOutcome } from 'ts/pages/governance/vote_index_card';
 import { VoteStats } from 'ts/pages/governance/vote_stats';
 import { colors } from 'ts/style/colors';
 import { TallyInterface } from 'ts/types';
@@ -46,6 +48,8 @@ const riskLabels: LabelInterface = {
     3: 'High Risk',
 };
 
+type ProposalState = 'created' | 'active' | 'failed' | 'accepted';
+
 export class Governance extends React.Component<RouteComponentProps<any>> {
     public state: State = {
         isVoteModalOpen: false,
@@ -73,6 +77,31 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
         const hasVoteStarted = voteStartDate ? now.isAfter(voteStartDate) : false;
         const isVoteActive = hasVoteStarted && !hasVoteEnded;
 
+        const outcome = getVoteOutcome(tally);
+
+        const proposalHistoryState = {
+            created: {
+                done: true,
+                timestamp: voteStartDate,
+                show: true,
+            }, 
+            active: {
+                done: now.isAfter(voteStartDate),
+                timestamp: voteStartDate,
+                show: true,
+            },
+            failed: {
+                done: hasVoteEnded && outcome === 'rejected',
+                timestamp: this._proposalData?.voteEndDate,
+                show: hasVoteEnded && outcome === 'rejected',
+            },
+            accepted: {
+                done: hasVoteEnded && outcome === 'accepted',
+                timestamp: this._proposalData?.voteEndDate,
+                show: (hasVoteStarted && !hasVoteEnded) || (hasVoteEnded && outcome === 'accepted'),
+            }
+        }
+
         return (
             <StakingPageLayout isHome={false} title="0x Governance">
                 <DocumentTitle {...documentConstants.VOTE} />
@@ -99,6 +128,47 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                                 {isVoteReceived ? 'Vote Received' : 'Vote'}
                             </VoteButton>
                         )}
+
+<Heading>
+                        Proposal History
+                    </Heading>
+                    <ProposalHistory>
+                        <Ticks>
+                            {
+                                Object.keys(proposalHistoryState).map((state: string) => {
+                                    const historyState = proposalHistoryState[state as ProposalState];
+                                    if(!historyState.show) {
+                                        return null;
+                                    }
+                                    return (
+                                        <>
+                                            <Tick isActive={historyState.done} isFailed={state === 'failed'}><img src={ state === 'failed' ? "/images/governance/cross.svg" : "/images/governance/tick_mark.svg"} /></Tick>
+                                            {
+                                                !['accepted', 'failed'].includes(state) &&
+                                                <Connector className={state === 'active' ? 'small' : ''} />
+                                            }
+                                        </>
+                                    );
+                                })
+                            }
+                        </Ticks>
+                        <HistoryCells>
+                            {
+                                Object.keys(proposalHistoryState).map((state: string) => {
+                                    const historyState = proposalHistoryState[state as ProposalState];
+                                    if(!historyState.show) {
+                                        return null;
+                                    }
+                                    return (
+                                        <CellContent>
+                                            <StateTitle fontColor={colors.textDarkSecondary} fontFamily='Formular' fontSize='18px' fontWeight={400}>{state}</StateTitle>
+                                            <Text fontColor={colors.textDarkSecondary} fontFamily='Formular' fontSize='17px' fontWeight={300}>{historyState.done ? historyState.timestamp.format("MMMM Do, YYYY - hh:mm a") : 'TBD'}</Text>
+                                        </CellContent>
+                                    )
+                                })
+                            }
+                        </HistoryCells>
+                    </ProposalHistory>
                     </Column>
                 </Section>
 
@@ -272,4 +342,60 @@ const MoreLink = styled(Button)`
     & + & {
         margin-left: 30px;
     }
+`;
+
+const ProposalHistory = styled.div`
+    display: flex;
+`;
+
+const HistoryCells = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+const Ticks = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`;
+
+const Tick = styled.div<{ isActive: boolean, isFailed: boolean}>`
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: ${({ isActive, isFailed }) => isActive === true ? isFailed ? colors.error : colors.brandLight : '#c4c4c4'};
+
+    & img {
+        height: 16px;
+        width: 16px;
+    }
+`;
+
+const Connector = styled.div`
+    height: 30px;
+    width: 1px;
+    background-color: ${() => colors.border};
+
+    &.small {
+        height: 25px;
+        margin-bottom: 5px;
+    }
+`;
+
+const CellContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 16px;
+    height: 65px;
+    width: 100%;
+`;
+
+const StateTitle = styled(Text)`
+    text-transform: capitalize;
 `;
