@@ -164,37 +164,31 @@ export const Treasury: React.FC<{}> = () => {
             done: true,
             timestamp: proposal.createdTimestamp,
             show: true,
-            highlightTick: !isCanceled,
         }, 
         active: {
             done: now.isAfter(proposal.startDate),
-            timestamp: proposal.startDate
+            timestamp: proposal.startDate,
             show: true,
-            highlightTick: !isCanceled,
         },
         succeeded: {
             done: !(isCanceled || isHappening || isUpcoming || isExecuted),
             timestamp: proposal.endDate,
             show: !(isCanceled || isHappening || isUpcoming || isExecuted),
-            highlightTick: !isCanceled,
         },
         failed: {
             done: isCanceled,
             timestamp: proposal.endDate,
             show: isCanceled,
-            highlightTick: false,
         },
         queued: {
             done: !(isCanceled || isHappening || isUpcoming),
             timestamp: executionStartDate,
             show: !(isCanceled || isHappening || isUpcoming || isExecuted),
-            highlightTick: true,
         },
         executed: {
             done: isExecuted,
             timestamp: executionEndDate,
             show: !(isCanceled || isHappening || isUpcoming || isExecuted),
-            highlightTick: true,
         }
     }
 
@@ -250,7 +244,7 @@ export const Treasury: React.FC<{}> = () => {
                                     }
                                     return (
                                         <>
-                                            <Tick isActive={historyState.done && historyState.highlightTick}><img src="/images/governance/tick_mark.svg" /></Tick>
+                                            <Tick isActive={historyState.done} isFailed={state === 'failed'}><img src={ state === 'failed' ? "/images/governance/cross.svg" : "/images/governance/tick_mark.svg"} /></Tick>
                                             {
                                                 !['executed', 'failed'].includes(state) &&
                                                 <Connector className={state === 'queued' ? 'small' : ''} />
@@ -396,14 +390,14 @@ const Ticks = styled.div`
     justify-content: center;
 `;
 
-const Tick = styled.div<{ isActive: boolean}>`
+const Tick = styled.div<{ isActive: boolean, isFailed: boolean}>`
     height: 35px;
     width: 35px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ${({ isActive}) => isActive === true ? colors.brandLight : '#c4c4c4'};
+    background-color: ${({ isActive, isFailed }) => isActive === true ? isFailed ? colors.error : colors.brandLight : '#c4c4c4'};
 
     & img {
         height: 16px;
