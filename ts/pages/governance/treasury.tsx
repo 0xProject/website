@@ -219,7 +219,7 @@ export const Treasury: React.FC<{}> = () => {
                  <Column width="30%" maxWidth="300px">
                     <Text fontColor={colors.textDarkSecondary} fontSize='18px' fontWeight={300} fontFamily='Formular'>
                         {timestamp && (isExecuted || isCanceled)
-                            ? `Ended ${timestamp.format('MMM DD, YYYY')}`
+                            ? `Ended ${timestamp.format('MMM DD, YYYY - HH:mm a')}`
                             : isHappening
                             ? `Voting ends in ${timestamp.diff(moment(), 'days')} days`
                             : `Upcoming in ${timestamp.diff(moment(), 'days')} days`}
