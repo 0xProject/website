@@ -144,8 +144,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                 return next(WizardRouterSteps.VotingPower);
             }
         }
-        if(currentStep === WizardRouterSteps.VotingPower) {
-            return next(WizardRouterSteps.ReadyToStake)
+        if (currentStep === WizardRouterSteps.VotingPower) {
+            return next(WizardRouterSteps.ReadyToStake);
         }
         if (currentStep === WizardRouterSteps.ApproveTokens) {
             // We block users to go back to ApproveToken panel once they've already approved.
@@ -204,7 +204,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                                     onUpdateAccountBalances={onUpdateAccountBalances}
                                 />
                             )}
-                            {currentStep === WizardRouterSteps.VotingPower && 
+                            {currentStep === WizardRouterSteps.VotingPower &&
                                 <VotingPowerConfirmation
                                     selectedStakingPools={selectedStakingPools}
                                     onGoToNextStep={handleClickNextStep}

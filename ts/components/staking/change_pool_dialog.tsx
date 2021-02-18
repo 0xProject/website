@@ -28,7 +28,7 @@ interface ChangePoolDialogProps {
     nextEpochStart: Date;
     availableRewardsMap?: { [key: string]: BigNumber };
     onChangePool: (fromPoolId: string, toPoolId: string, zrxAmount: number) => void;
-    askForConfirmation?: boolean;
+    shouldAskForConfirmation?: boolean;
 }
 
 interface PoolWithDisplayName extends PoolWithStats {
@@ -47,7 +47,7 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
     nextEpochStart,
     availableRewardsMap,
     currentPoolDetails = {},
-    askForConfirmation = true,
+    shouldAskForConfirmation = true,
 }) => {
     const stakingPoolsWithName: PoolWithDisplayName[] = useMemo(
         () =>
@@ -81,7 +81,7 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                 <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={clearAndDismiss}>
                     <Icon name="close-modal" />
                 </ButtonClose>
-                {isConfirmSceen && askForConfirmation ? (
+                {isConfirmSceen && shouldAskForConfirmation ? (
                     <>
                         <StyledHeading as="h3">Move stake confirmation</StyledHeading>
                         <StyledParagraph>
@@ -142,11 +142,13 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                             ))}
                         </PoolsListWrapper>
                         <ButtonWrapper>
-                            <ConfirmButton isDisabled={!selectedPoolId} onClick={
-                                askForConfirmation ? 
-                                    () => setIsConfirmScreen(true) : 
-                                    () => { 
-                                        onChangePool(fromPool.poolId, toPool.poolId, zrxAmount); 
+                            <ConfirmButton
+                                isDisabled={!selectedPoolId}
+                                onClick={
+                                shouldAskForConfirmation ?
+                                    () => setIsConfirmScreen(true) :
+                                    () => {
+                                        onChangePool(fromPool.poolId, toPool.poolId, zrxAmount);
                                         clearAndDismiss();
                                     }
                                 }
@@ -286,5 +288,5 @@ const StyledDialogContent = styled(DialogContent)`
 `;
 
 const StyledThumbnail = styled(Thumbnail)`
-    margin 0 20px;
+    margin: 0 20px;
 `;

@@ -1,7 +1,7 @@
 import { BigNumber } from '@0x/utils';
 import { Contract, providers } from 'ethers';
 import * as _ from 'lodash';
-import { request, gql } from 'graphql-request';
+import { gql, request } from 'graphql-request';
 import marked, { Token, Tokens } from 'marked';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
@@ -87,7 +87,7 @@ export const Treasury: React.FC<{}> = () => {
             setQuorumThreshold(qThreshold);
         })();
 
-        if(data) {
+        if (data) {
             const { id, votesAgainst, votesFor, description, executionTimestamp, voteEpoch, createdTimestamp, executionEpoch } = data;
             const againstVotes = new BigNumber(votesAgainst);
             const forVotes = new BigNumber(votesFor);
@@ -239,7 +239,7 @@ export const Treasury: React.FC<{}> = () => {
                             {
                                 Object.keys(proposalHistoryState).map((state: string) => {
                                     const historyState = proposalHistoryState[state as ProposalState];
-                                    if(!historyState.show) {
+                                    if (!historyState.show) {
                                         return null;
                                     }
                                     return (
@@ -258,7 +258,7 @@ export const Treasury: React.FC<{}> = () => {
                             {
                                 Object.keys(proposalHistoryState).map((state: string) => {
                                     const historyState = proposalHistoryState[state as ProposalState];
-                                    if(!historyState.show) {
+                                    if (!historyState.show) {
                                         return null;
                                     }
                                     return (
@@ -390,14 +390,14 @@ const Ticks = styled.div`
     justify-content: center;
 `;
 
-const Tick = styled.div<{ isActive: boolean, isFailed: boolean}>`
+const Tick = styled.div<{ isActive: boolean; isFailed: boolean}>`
     height: 35px;
     width: 35px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ${({ isActive, isFailed }) => isActive === true ? isFailed ? colors.error : colors.brandLight : '#c4c4c4'};
+    background-color: ${({ isActive, isFailed }) => isActive ? isFailed ? colors.error : colors.brandLight : '#c4c4c4'};
 
     & img {
         height: 16px;

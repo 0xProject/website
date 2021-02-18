@@ -1,6 +1,6 @@
 import { BigNumber } from '@0x/utils';
 import { Contract, providers } from 'ethers';
-import { request, gql } from 'graphql-request';
+import { gql, request } from 'graphql-request';
 import * as _ from 'lodash';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
@@ -20,12 +20,11 @@ import { Text } from 'ts/components/ui/text';
 import { Proposal, proposals as prodProposals, stagingProposals, TreasuryProposal } from 'ts/pages/governance/data';
 import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
 import { colors } from 'ts/style/colors';
-import { TallyInterface, VotingCardType } from 'ts/types';
-import { ALCHEMY_API_KEY, configs, GOVERNOR_CONTRACT_ADDRESS, GOVERNANCE_THEGRAPH_ENDPOINT } from 'ts/utils/configs';
+import { OnChainProposal, TallyInterface, VotingCardType } from 'ts/types';
+import { ALCHEMY_API_KEY, configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
-import { OnChainProposal } from 'ts/types';
 
 const FETCH_PROPOSALS = gql`
   query proposals {
@@ -62,7 +61,6 @@ const ZEIP_PROPOSALS: ProposalWithOrder[] = ZEIP_IDS.map(id => PROPOSALS[id]).so
 const provider = providers.getDefaultProvider(null, {
     alchemy: ALCHEMY_API_KEY,
 });
-const startingBlockNumber = 9951900;
 
 export interface VoteIndexProps {}
 
@@ -112,12 +110,12 @@ const sortProposals = (onChainProposals: Proposals[], zeipProposals: Proposal[])
     let i = 0;
     let j = 0;
     let order = 0;
-    while(i < onChainProposals.length && j < zeipProposals.length) {
+    while (i < onChainProposals.length && j < zeipProposals.length) {
         const treasury = onChainProposals[i];
         const zeip = zeipProposals[j];
         const treasuryStartDate = moment(treasury.startDate);
         const zeipStartDate = moment(zeip.voteStartDate);
-        if(treasuryStartDate.isAfter(zeipStartDate)) {
+        if (treasuryStartDate.isAfter(zeipStartDate)) {
             onChainProposals[i].order = order++;
             i++;
         } else {
@@ -126,16 +124,16 @@ const sortProposals = (onChainProposals: Proposals[], zeipProposals: Proposal[])
         }
     }
 
-    while(i < onChainProposals.length) {
+    while (i < onChainProposals.length) {
         onChainProposals[i].order = order++;
         i++;
     }
 
-    while(j < zeipProposals.length) {
+    while (j < zeipProposals.length) {
         ZEIP_PROPOSALS[j].order = order++;
         j++;
     }
-}
+};
 
 const fetchTallysAsync: () => Promise<ZeipTallyMap> = async () => {
     const tallyResponses = await Promise.all(ZEIP_IDS.map(async zeipId => fetchVoteStatusAsync(zeipId)));
@@ -153,13 +151,12 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
     const [proposals, setProposals] = React.useState<ProposalWithOrder[]>([]);
     const [isLoading, setLoading] = React.useState<boolean>(true);
-    const [userZRXBalance, setZRXBalance] = React.useState<number>();
     const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
     const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
 
     const { data, isLoading: isQueryLoading } = useQuery('proposals', async () => {
-        const { proposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS)
-        return proposals;
+        const { proposals: treasuryProposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS);
+        return treasuryProposals;
     });
 
     const abi = [
@@ -169,6 +166,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.ZRX, abi, provider);
 
     React.useEffect(() => {
+        // @ts-ignore: no-floating-promises
         (async () => {
             const qThreshold = await contract.quorumThreshold();
             setQuorumThreshold(qThreshold);
@@ -176,7 +174,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
             setTallys(tallyMap);
         })();
 
-        if(data) {
+        if (data) {
             const onChainProposals = data.map((proposal: OnChainProposal) => {
                 const { id, votesAgainst, votesFor, description, executionTimestamp, voteEpoch } = proposal;
                 const againstVotes = new BigNumber(votesAgainst);
@@ -189,7 +187,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                 const isUpcoming = now.isBefore(startDate);
                 const isHappening = now.isAfter(startDate) && now.isBefore(endDate);
                 const timestamp = isHappening ? endDate : isUpcoming ? startDate : executionTimestamp ? executionTimestamp : endDate;
-                
+
                 return {
                     id,
                     againstVotes,
@@ -202,7 +200,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     timestamp,
                     startDate,
                     endDate,
-                }
+                };
             });
             setLoading(isQueryLoading);
             sortProposals(onChainProposals, ZEIP_PROPOSALS);
@@ -212,10 +210,10 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
 
     const applyFilter = (value: string) => {
         setFilter(value);
-    }
+    };
 
     const getFilterName = (name: string): string => {
-        switch(name) {
+        switch (name) {
             case 'all':
                 return 'Showing All';
             case 'zeip':
@@ -225,7 +223,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
             default:
                 return '';
         }
-    }
+    };
 
     const showZEIP = ['all', 'zeip'];
     const showTreasury = ['all', 'treasury'];

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Separator } from 'ts/components/docs/shared/separator';
-import { UnorderedList, ListItem } from 'ts/components/textList';
+import { ListItem, UnorderedList } from 'ts/components/textList';
 import { colors } from 'ts/style/colors';
 import { WebsitePaths } from 'ts/types';
 
@@ -52,7 +52,7 @@ export const StartRegistrationInfo = () => {
         <IntroHeader>Register your Vote</IntroHeader>
         <IntroDescription>Registering allows you to use ZRX to vote on treasury proposals.</IntroDescription>
       </>
-      <Separator margin='0 120px 60px 0' />
+      <Separator margin="0 120px 60px 0" />
       <StyledUnorderedList>
           <ListItem>50% of your voting power must go to the owner the staking pool.</ListItem>
           <ListItem>
@@ -64,7 +64,7 @@ export const StartRegistrationInfo = () => {
       </StyledUnorderedList>
     </>
   );
-}
+};
 
 export const RegistrationSuccessInfo = () => {
   return (
@@ -73,7 +73,7 @@ export const RegistrationSuccessInfo = () => {
         <IntroHeader>Success</IntroHeader>
         <IntroDescription>Delegation allows you to use ZRX to vote on treasury proposals. </IntroDescription>
       </>
-      <Separator margin='0 120px 60px 0' />
+      <Separator margin="0 120px 60px 0" />
       <StyledUnorderedList>
           <ListItem>50% of your voting power must go to the owner the staking pool.</ListItem>
           <ListItem>
@@ -85,4 +85,4 @@ export const RegistrationSuccessInfo = () => {
       </StyledUnorderedList>
     </>
   );
-}
+};

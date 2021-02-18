@@ -4,12 +4,12 @@ import { render } from 'react-dom';
 import {
     QueryClient,
     QueryClientProvider,
-} from 'react-query'
+} from 'react-query';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { MetaTags } from 'ts/components/meta_tags';
-import { NotFound } from 'ts/containers/not_found';
 import { RegisterWizard } from 'ts/containers/governance/register/wizard';
+import { NotFound } from 'ts/containers/not_found';
 import { StakingWizard } from 'ts/containers/staking/wizard/wizard';
 // import { createLazyComponent } from 'ts/lazy_component';
 import { trackedTokenStorage } from 'ts/local_storage/tracked_token_storage';
@@ -83,8 +83,8 @@ function getLibrary(provider: any): Web3Wrapper {
 }
 
   // Create a client
- const queryClient = new QueryClient();
- 
+const queryClient = new QueryClient();
+
 render(
     <>
         <MetaTags title={DOCUMENT_TITLE} description={DOCUMENT_DESCRIPTION} />

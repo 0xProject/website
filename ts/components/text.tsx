@@ -30,7 +30,7 @@ interface ParagraphProps extends BaseTextInterface {
     isMuted?: boolean | number;
     fontSize?: string;
     fontWeight?: string | number;
-    wordBreak?: string
+    wordBreak?: string;
 }
 
 const StyledHeading = styled.h1<HeadingProps>`

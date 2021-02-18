@@ -1,4 +1,3 @@
-import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import * as React from 'react';
@@ -77,7 +76,7 @@ const getDateString = (voteStartDate: moment.Moment, voteEndDate: moment.Moment)
     const timeToEndInDays = endDate.diff(now, 'days');
     const timeToEndInHours = endDate.diff(now, 'hours');
     if (voteTime === 'happening') {
-        return `Voting ends in ${timeToEndInDays > 1 ? timeToEndInDays + ' days' : timeToEndInHours + ' hours' }`;
+        return `Voting ends in ${timeToEndInDays > 1 ? timeToEndInDays : timeToEndInHours} ${timeToEndInDays > 1 ? 'days' : 'hours' }`;
     }
     if (voteTime === 'upcoming') {
         return `Starting ${startDate.format('MMMM Do YYYY, h:mm a')} PST`;
@@ -105,16 +104,9 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
     const { order, tally } = props;
 
     let totalBalances;
-    let totalVotes;
-    let noVotesPercentage;
-    let yesVotesPercentage;
 
-    if(tally) {
+    if (tally) {
         totalBalances = getTotalBalancesString(tally);
-        totalVotes = tally.yes.plus(tally.no);
-        const oneHundred = new BigNumber(100);
-        yesVotesPercentage = oneHundred.times(tally.yes.dividedBy(totalVotes));
-        noVotesPercentage = oneHundred.minus(yesVotesPercentage);
     }
 
     switch (props.type) {
@@ -149,15 +141,15 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                     <VoteCardShimmer>
                                         <div className="title shimmer" />
                                         <div className="description">
-                                            <div className="line shimmer"></div>
-                                            <div className="line shimmer"></div>
-                                            <div className="line shimmer"></div>
+                                            <div className="line shimmer" />
+                                            <div className="line shimmer" />
+                                            <div className="line shimmer" />
                                         </div>
 
                                     </VoteCardShimmer>
                                 )}
                             </Column>
-                            <Column width='25%'>
+                            <Column width="25%">
                                 <div className="flex flex-column sm-col-12">
                                     <VoteStatusText
                                         status={getStatus(
@@ -214,7 +206,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
 
                                 <Paragraph>{summary[0]}</Paragraph>
                             </Column>
-                            <Column width='25%'>
+                            <Column width="25%">
                                 <div className="flex flex-column sm-col-12">
                                     <VoteStatusText status={voteStatus} />
                                     {

@@ -4,12 +4,9 @@ import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
-import { Jazzicon, generateUniqueId } from 'ts/components/ui/jazzicon';
-import { RegisterRouterSteps } from 'ts/hooks/use_register_wizard';
+import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
 import { colors } from 'ts/style/colors';
-import { Pool, PoolWithStats } from 'ts/types';
-import { formatZrx } from 'ts/utils/format_number';
-import { stakingUtils } from 'ts/utils/staking_utils';
+import { PoolWithStats } from 'ts/types';
 
 interface IVotingPowerInputProps {
   userZRXBalance: number;
@@ -155,28 +152,24 @@ const DelegateButton = styled.button`
 `;
 
 export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({ userZRXBalance, onOpenConnectWalletDialog, address, onNextButtonClick, stakingPools, nextEpochStart }) => {
-  const [openPoolsDialog, setOpenPoolsDialog ] = React.useState<boolean>(false);
+  const [shouldOpenPoolsDialog, setOpenPoolsDialog ] = React.useState<boolean>(false);
   const [selectedPool, setSelectedPool] = React.useState<PoolWithStats>();
   const [isDelegationFlow, setIsDelegationFlow ] = React.useState<boolean>(false);
   const [ zrxAmount, setZRXAmount] = React.useState<number>(userZRXBalance);
 
   React.useEffect(() => {
     setZRXAmount(userZRXBalance);
-  }, [userZRXBalance])
-  
+  }, [userZRXBalance]);
+
   const onInput: React.ChangeEventHandler = (event: React.ChangeEvent) => {
-    setZRXAmount(parseInt((event.target as HTMLInputElement).value));
-  }
+    setZRXAmount(parseInt((event.target as HTMLInputElement).value, 10));
+  };
   const onChangePool = (fromPoolId: string, toPoolId: string) => {
     const selectedPoolObj = stakingPools.find(s => s.poolId === toPoolId);
     setSelectedPool(selectedPoolObj);
     setIsDelegationFlow(true);
     onNextButtonClick(true, selectedPoolObj, zrxAmount);
-  }
-
-  let name;
-  if(isDelegationFlow)
-    name = stakingUtils.getPoolDisplayName(selectedPool);
+  };
 
   return (
     <>
@@ -211,14 +204,14 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({ userZRXBala
           <ChangePoolDialog
               stakingPools={stakingPools || []}
               onChangePool={onChangePool}
-              isOpen={openPoolsDialog}
+              isOpen={shouldOpenPoolsDialog}
               nextEpochStart={nextEpochStart}
               onDismiss={() => setOpenPoolsDialog(false)}
               currentPoolDetails={{
                 poolId: '43',
                 zrxAmount: userZRXBalance,
               }}
-              askForConfirmation={false}
+              shouldAskForConfirmation={false}
           />
       </>
       :
@@ -256,7 +249,7 @@ const MessageList = styled.ul`
     line-height: 20px;
     color: ${() => colors.textDarkSecondary};
     font-size: 12px;
-    
+
     strong {
       color: #000000;
       font-weight: bold;
@@ -266,7 +259,6 @@ const MessageList = styled.ul`
 `;
 
 export const RegistrationSuccess: React.FC<IRegistrationSuccess> = ({ nextEpochStart }) => {
-  console.log(nextEpochStart);
   const nextEpochMoment = moment(nextEpochStart);
   const todayMoment = moment();
   const daysToNextEpoch = nextEpochMoment.diff(todayMoment, 'days');
@@ -291,5 +283,5 @@ export const RegistrationSuccess: React.FC<IRegistrationSuccess> = ({ nextEpochS
       </li>
     </MessageList>
     </SuccessContainer>
-  )
+  );
 };

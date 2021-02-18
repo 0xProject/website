@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Timeline } from 'ts/components/staking/wizard/timeline';
-import { UnorderedList, ListItem } from 'ts/components/textList';
+import { ListItem, UnorderedList } from 'ts/components/textList';
 
 import { colors } from 'ts/style/colors';
 import { constants } from 'ts/utils/constants';
@@ -118,8 +118,6 @@ const IntroMetric = styled.li`
 const StyledUnorderedList = styled(UnorderedList as any)`
     width: 60%;
 `;
-
-
 
 export const IntroWizardInfo: React.FC<WizardInfoProps> = ({ nextEpochStats, allTimeStats }) => {
     return (

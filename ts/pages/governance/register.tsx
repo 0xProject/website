@@ -4,17 +4,16 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import { RegistrationSuccess, VotingPowerInput } from 'ts/components/governance/wizard_flow';
+import { RegistrationSuccessInfo, StartRegistrationInfo } from 'ts/components/governance/wizard_info';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
-import { StartRegistrationInfo, RegistrationSuccessInfo } from 'ts/components/governance/wizard_info';
-import { VotingPowerInput, RegistrationSuccess } from 'ts/components/governance/wizard_flow';
-import { VotingPowerWizardInfo } from 'ts/components/staking/wizard/wizard_info';
 import { VotingPowerConfirmation } from 'ts/components/staking/wizard/wizard_flow';
+import { VotingPowerWizardInfo } from 'ts/components/staking/wizard/wizard_info';
 import { useAPIClient } from 'ts/hooks/use_api_client';
-import { useStake } from 'ts/hooks/use_stake';
-import { useRegisterWizard, RegisterRouterSteps } from 'ts/hooks/use_register_wizard';
+import { RegisterRouterSteps, useRegisterWizard } from 'ts/hooks/use_register_wizard';
 import { State } from 'ts/redux/reducer';
-import { AccountReady, EpochWithFees, Pool, PoolWithStats, ProviderState, StakingPoolRecomendation } from 'ts/types';
+import { AccountReady, PoolWithStats, ProviderState, StakingPoolRecomendation } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { formatZrx } from 'ts/utils/format_number';
 
@@ -29,10 +28,9 @@ const Container = styled.div`
     position: relative;
 `;
 
-export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
+export const RegisterWizard: React.FC<IRegisterWizardProps> = props => {
   const { providerState, onOpenConnectWalletDialog } = props;
   const networkId = useSelector((state: State) => state.networkId);
-  const stake = useStake(networkId, providerState);
   const apiClient = useAPIClient(networkId);
   const { currentStep, next } = useRegisterWizard();
   const [nextEpochStart, setNextEpochStart] = React.useState<Date | undefined>(undefined);
@@ -46,35 +44,35 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
   }
 
   let roundedZrxBalance;
-  if(zrxBalance) {
+  if (zrxBalance) {
       roundedZrxBalance = formatZrx(zrxBalance).roundedValue;
   }
 
   React.useEffect(() => {
-    const fetchDelegatorData = async () => {
+    // @ts-ignore: no-floating-promises
+    (async () => {
       const [epochsResponse, poolsResponse] = await Promise.all([
         apiClient.getStakingEpochsWithFeesAsync(),
-        apiClient.getStakingPoolsAsync()
+        apiClient.getStakingPoolsAsync(),
       ]);
 
       const epochStart = epochsResponse.nextEpoch && new Date(epochsResponse.nextEpoch.epochStart.timestamp);
       setNextEpochStart(epochStart);
       setStakingPools(poolsResponse.stakingPools);
-    }
-    fetchDelegatorData();
+    })();
   }, []);
 
-  const onNextButtonClick = (isDelegationFlow: boolean, selectedPool: PoolWithStats, zrxAmount: number) => {
-    if(isDelegationFlow) {
+  const onNextButtonClick = (isDelegationFlow: boolean, pool: PoolWithStats, zrxAmount: number) => {
+    if (isDelegationFlow) {
       setSelectedPool({
-        pool: selectedPool,
+        pool,
         zrxAmount,
       });
-      next(RegisterRouterSteps.VotingPower)
+      next(RegisterRouterSteps.VotingPower);
     } else {
-      next(RegisterRouterSteps.Success)
+      next(RegisterRouterSteps.Success);
     }
-  }
+  };
 
   return (
     <StakingPageLayout isHome={false} title="Register to Vote">
@@ -111,7 +109,8 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
                 }
                 {
                   currentStep === RegisterRouterSteps.VotingPower &&
-                  <VotingPowerConfirmation selectedStakingPools={selectedPool ? [selectedPool] : []}
+                  <VotingPowerConfirmation
+                    selectedStakingPools={selectedPool ? [selectedPool] : []}
                     providerState={providerState}
                     onGoToNextStep={() => next(RegisterRouterSteps.Success)}
                   />
@@ -125,5 +124,5 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
           />
         </Container>
     </StakingPageLayout>
-  )
-}
+  );
+};

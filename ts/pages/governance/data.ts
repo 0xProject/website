@@ -36,12 +36,12 @@ export interface TreasuryProposal {
     againstVotes: BigNumber;
     upcoming: boolean;
     happening: boolean;
-    startDate: moment.Moment,
-    endDate: moment.Moment,
-    proposer?: string
-    createdTimestamp?: moment.Moment,
-    executionStartDate: moment.Moment,
-    executionEndDate: moment.Moment,
+    startDate: moment.Moment;
+    endDate: moment.Moment;
+    proposer?: string;
+    createdTimestamp?: moment.Moment;
+    executionStartDate: moment.Moment;
+    executionEndDate: moment.Moment;
 }
 
 export interface Proposals {

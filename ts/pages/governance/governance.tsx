@@ -84,7 +84,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                 done: true,
                 timestamp: voteStartDate,
                 show: true,
-            }, 
+            },
             active: {
                 done: now.isAfter(voteStartDate),
                 timestamp: voteStartDate,
@@ -99,8 +99,8 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                 done: hasVoteEnded && outcome === 'accepted',
                 timestamp: this._proposalData?.voteEndDate,
                 show: (hasVoteStarted && !hasVoteEnded) || (hasVoteEnded && outcome === 'accepted'),
-            }
-        }
+            },
+        };
 
         return (
             <StakingPageLayout isHome={false} title="0x Governance">
@@ -137,12 +137,12 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                             {
                                 Object.keys(proposalHistoryState).map((state: string) => {
                                     const historyState = proposalHistoryState[state as ProposalState];
-                                    if(!historyState.show) {
+                                    if (!historyState.show) {
                                         return null;
                                     }
                                     return (
                                         <>
-                                            <Tick isActive={historyState.done} isFailed={state === 'failed'}><img src={ state === 'failed' ? "/images/governance/cross.svg" : "/images/governance/tick_mark.svg"} /></Tick>
+                                            <Tick isActive={historyState.done} isFailed={state === 'failed'}><img src={state === 'failed' ? '/images/governance/cross.svg' : '/images/governance/tick_mark.svg'} /></Tick>
                                             {
                                                 !['accepted', 'failed'].includes(state) &&
                                                 <Connector className={state === 'active' ? 'small' : ''} />
@@ -156,15 +156,15 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                             {
                                 Object.keys(proposalHistoryState).map((state: string) => {
                                     const historyState = proposalHistoryState[state as ProposalState];
-                                    if(!historyState.show) {
+                                    if (!historyState.show) {
                                         return null;
                                     }
                                     return (
-                                        <CellContent>
-                                            <StateTitle fontColor={colors.textDarkSecondary} fontFamily='Formular' fontSize='18px' fontWeight={400}>{state}</StateTitle>
-                                            <Text fontColor={colors.textDarkSecondary} fontFamily='Formular' fontSize='17px' fontWeight={300}>{historyState.done ? historyState.timestamp.format("MMMM Do, YYYY - hh:mm a") : 'TBD'}</Text>
+                                        <CellContent key={state}>
+                                            <StateTitle fontColor={colors.textDarkSecondary} fontFamily="Formular" fontSize="18px" fontWeight={400}>{state}</StateTitle>
+                                            <Text fontColor={colors.textDarkSecondary} fontFamily="Formular" fontSize="17px" fontWeight={300}>{historyState.done ? historyState.timestamp.format('MMMM Do, YYYY - hh:mm a') : 'TBD'}</Text>
                                         </CellContent>
-                                    )
+                                    );
                                 })
                             }
                         </HistoryCells>
@@ -361,14 +361,14 @@ const Ticks = styled.div`
     justify-content: center;
 `;
 
-const Tick = styled.div<{ isActive: boolean, isFailed: boolean}>`
+const Tick = styled.div<{ isActive: boolean; isFailed: boolean}>`
     height: 35px;
     width: 35px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ${({ isActive, isFailed }) => isActive === true ? isFailed ? colors.error : colors.brandLight : '#c4c4c4'};
+    background-color: ${({ isActive, isFailed }) => isActive ? isFailed ? colors.error : colors.brandLight : '#c4c4c4'};
 
     & img {
         height: 16px;
