@@ -129,7 +129,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                 timestamp,
             } = props;
             return (
-                <ReactRouterLink style={{ order }} to={`${WebsitePaths.Vote}/treasury/${id}`}>
+                <ReactRouterLink style={{ order }} to={`${WebsitePaths.Vote}/proposal/${id}`}>
                     <Section
                         hasBorder={true}
                         bgColor="none"

@@ -118,7 +118,7 @@ render(
                                 component={StakingPoolActivity}
                             />
                             <Route exact={true} path={`${WebsitePaths.Register}`} component={RegisterWizard} />
-                            <Route exact={true} path={`${WebsitePaths.Vote}/treasury/:id`} component={Treasury} />
+                            <Route exact={true} path={`${WebsitePaths.Vote}/proposal/:id`} component={Treasury} />
                             <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance} />
                             <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex} />
 
