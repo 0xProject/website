@@ -49,7 +49,7 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = props => {
   }
 
   React.useEffect(() => {
-    // @ts-ignore: no-floating-promises
+    // tslint:disable-next-line: no-floating-promises
     (async () => {
       const [epochsResponse, poolsResponse] = await Promise.all([
         apiClient.getStakingEpochsWithFeesAsync(),

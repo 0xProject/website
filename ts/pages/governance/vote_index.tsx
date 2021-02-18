@@ -166,7 +166,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.ZRX, abi, provider);
 
     React.useEffect(() => {
-        // @ts-ignore: no-floating-promises
+        // tslint:disable-next-line: no-floating-promises
         (async () => {
             const qThreshold = await contract.quorumThreshold();
             setQuorumThreshold(qThreshold);
