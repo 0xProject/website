@@ -383,6 +383,46 @@ export const proposals: Proposals = {
             ],
         },
     },
+    83: {
+        zeipId: 83,
+        title: 'MultiplexFeature, BatchFillNativeOrdersFeature',
+        summary: [
+            `This ZEIP proposes to integrate MultiplexFeature, which enables an optimized 0x API routing strategy for RFQ orders. Jointly to this feature, it is proposed to introduce a complete batchFill/marketSell/marketBuy functions suite for both rfqOrder and limitOrder.`,
+            `The first feature will make it possible for RFQ orders to be served to 0x API applications without risking reverts, while making the most of the gas savings introduced with 0x V4. This should result in more competitive, exclusive liquidity served to applications connected to 0x API.`,
+            `BatchFillNativeOrdersFeature contains a a wide range of batch fill functionalities, which were requested by Market Makers to fill multiple limit orders as part of their arbitration strategies. `,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/83',
+        voteStartDate: moment(1614790800, 'X'),
+        voteEndDate: moment(1615050000, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `Introducing MultiplexFeature will allow RFQ orders to make the most of 0x V4 gas savings (~70% VS 0x V3), as they will not be required to go through the FQT aggregation contracts in order to provide reverts protections for users. This will result in more competitive RFQ quotes. `,
+                `BatchFillNativeOrdersFeature brings 0x v4 on par with 0x v3 batch fill functionalities. This feature allows Market Makers and other arbitrageurs to fill limit and RFQ orders in batch. In practice, this should improve the execution of smaller limit orders created from Matcha and other 0x limit orders integrators.`,
+            ],
+            rating: 3,
+            links: [
+                {
+                    text: 'Features specifications',
+                    url: 'https://protocol.0x.org/',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Contracts were thoroughly reviewed internally, and spot-checked by Consensys Diligence. No vulnerabilities were found. `,
+                `0x V4 architecture comes with the ability to modify or rollback specific features, without halting the entire pipeline of smart contracts. This means that if a vulnerability is found (0x Labs offers generous bug bounties), it is possible to rollback the functionality that exposes the risk.`,
+            ],
+            rating: 1,
+            links: [
+                {
+                    text: '0x v4 Bug Bounty',
+                    url: 'https://blog.0xproject.com/0x-protocol-v4-bug-bounty-fd0c1942b9a',
+                },
+            ],
+        },
+    },
 };
 
 export const stagingProposals: Proposals = {
@@ -397,6 +437,12 @@ export const stagingProposals: Proposals = {
         title: '0x Protocol V4',
         voteStartDate: moment(1610827244, 'X'),
         voteEndDate: moment(1611414044, 'X'),
+    },
+    83: {
+        ...proposals[83],
+        title: 'MultiplexFeature, BatchFillNativeOrdersFeature',
+        voteStartDate: moment(1614790800, 'X'),
+        voteEndDate: moment(1615050000, 'X'),
     },
 };
 
