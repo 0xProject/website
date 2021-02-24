@@ -3,26 +3,34 @@ import { ECSignature, SignatureType } from '@0x/types';
 import { BigNumber, signTypedDataUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import '@reach/dialog/styles.css';
+import { Contract, providers, Provider } from 'ethers';
 import * as ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import * as React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
+import { State as ReduxState } from 'ts/redux/reducer';
 import { MetamaskSubprovider } from '@0x/subproviders';
 import { Button } from 'ts/components/button';
 import { Input } from 'ts/components/modals/input';
 import { Heading, Paragraph } from 'ts/components/text';
 import { PreferenceSelecter } from 'ts/pages/governance/preference_selecter';
 import { colors } from 'ts/style/colors';
-import { Providers, ProviderState } from 'ts/types';
-import { configs } from 'ts/utils/configs';
+import { PoolWithStats, Providers, ProviderState } from 'ts/types';
+import { ALCHEMY_API_KEY, configs, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
 
 export enum VoteValue {
     Yes = 'Yes',
     No = 'No',
+}
+
+interface ConnectedState {
+    providerState: ProviderState;
+    networkId: Network;
 }
 
 export interface VoteInfo {
@@ -39,6 +47,8 @@ interface Props {
     selectedAddress: string;
     zeipId: number;
     networkId: number;
+    isTreasuryProposal?: boolean;
+    operatedPools?: PoolWithStats[];
 }
 
 interface State {
@@ -70,7 +80,7 @@ interface ErrorProps {
 
 // This is a copy of the generic form and includes a number of extra fields
 // TODO remove the extraneous fields
-export class VoteForm extends React.Component<Props> {
+class VoteFormComponent extends React.Component<Props> {
     public static defaultProps = {
         currentBalance: new BigNumber(0),
         isSuccessful: false,
@@ -89,7 +99,7 @@ export class VoteForm extends React.Component<Props> {
     }
     public render(): React.ReactNode {
         const { votePreference, errors, isSuccessful } = this.state;
-        const { currentBalance, selectedAddress, zeipId } = this.props;
+        const { currentBalance, selectedAddress, zeipId, isTreasuryProposal = false } = this.props;
         const bigNumberFormat = {
             decimalSeparator: '.',
             groupSeparator: ',',
@@ -104,7 +114,7 @@ export class VoteForm extends React.Component<Props> {
             bigNumberFormat,
         );
         return (
-            <Form onSubmit={this._createAndSubmitVoteAsync.bind(this)} isSuccessful={isSuccessful}>
+            <Form onSubmit={isTreasuryProposal ? this._castVote.bind(this) : this._createAndSubmitVoteAsync.bind(this)} isSuccessful={isSuccessful}>
                 <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
                     ZEIP-{zeipId} Vote
                 </Heading>
@@ -239,6 +249,25 @@ export class VoteForm extends React.Component<Props> {
             this._handleError(err.message);
         }
     };
+    private readonly _castVote = async (e: React.FormEvent): Promise<void> => {
+        e.preventDefault();
+        const { zeipId: proposalId, operatedPools, providerState } = this.props;
+        const abi = [
+            'function castVote(uint256 proposalId, bool support, bytes32[] memory operatedPoolIds) public',
+        ];
+    
+        const provider = providers.getDefaultProvider(null, {
+            alchemy: ALCHEMY_API_KEY,
+        });
+
+        const web3Provider = new providers.Web3Provider(providerState.provider as any);
+    
+        const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.ZRX, abi, web3Provider.getSigner());
+
+        const { votePreference } = this.state;
+
+        await contract.castVote(proposalId, votePreference === VoteValue.Yes, operatedPools ? operatedPools.map((pool) => pool.poolId) : []);
+    };
     private _handleError(errorMessage: string): void {
         const { onError } = this.props;
         onError
@@ -361,3 +390,10 @@ const Form = styled.form<FormProps>`
 const PreferenceWrapper = styled.div`
     margin-bottom: 30px;
 `;
+
+const mapStateToProps = (state: ReduxState, _ownProps: Props): ConnectedState => ({
+    providerState: state.providerState,
+    networkId: state.networkId,
+});
+
+export const VoteForm = connect(mapStateToProps, null)(VoteFormComponent);

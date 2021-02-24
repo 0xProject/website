@@ -1,7 +1,8 @@
-import { BigNumber, logUtils } from '@0x/utils';
+import { BigNumber, logUtils } from '@0x/utils'
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
+import { Contract, providers } from 'ethers';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -18,7 +19,8 @@ import { VoteForm, VoteInfo } from 'ts/pages/governance/vote_form';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { AccountReady } from 'ts/types';
+import { AccountReady,PoolWithStats } from 'ts/types';
+import { ALCHEMY_API_KEY, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 
@@ -190,6 +192,154 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
         </>
     );
 };
+
+export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss, onVoted: onVoteInfoReceived }) => {
+    const providerState = useSelector((state: State) => state.providerState);
+    const networkId = useSelector((state: State) => state.networkId);
+    const account = providerState.account as AccountReady;
+    const dispatch = useDispatch();
+
+    const abi = [
+        'function getVotingPower(address account, bytes32[] memory operatedPoolIds) public view returns (uint256 votingPower)',
+    ];
+
+    const provider = providers.getDefaultProvider(null, {
+        alchemy: ALCHEMY_API_KEY,
+    });
+
+    const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.ZRX, abi, provider);
+
+    const [currentVotingPower, setCurrentVotingPower] = React.useState(new BigNumber(0));
+    const [isFetchingVotingPowerData, setIsFetchingVotingPowerData] = React.useState<boolean>(false);
+    const [operatedPools, setOperatedPools] = React.useState<PoolWithStats[]>();
+    const apiClient = useAPIClient(networkId);
+
+    React.useEffect(() => {
+        const fetchVotingPower = async () => {
+            const poolsResponse = await apiClient.getStakingPoolsAsync();
+            const operatedPools = poolsResponse.stakingPools.filter(p => p.operatorAddress === account.address);
+            setOperatedPools(operatedPools);
+
+            const votingPower = await contract.getVotingPower(account.address, operatedPools);
+            const votingPowerBigNumber = new BigNumber(votingPower.toNumber());
+            setCurrentVotingPower(votingPowerBigNumber);
+        };
+
+        if (!account.address || isFetchingVotingPowerData) {
+            return;
+        }
+
+        fetchVotingPower()
+            .then(() => setIsFetchingVotingPowerData(false))
+            .catch(err => {
+                setIsFetchingVotingPowerData(false);
+                logUtils.warn(err);
+                errorReporter.report(err);
+            });
+    }, [account.address]);
+
+    const onToggleConnectWalletDialog = React.useCallback(
+        (open: boolean) => {
+            const dispatcher = new Dispatcher(dispatch);
+            dispatcher.updateIsConnectWalletDialogOpen(open);
+        },
+        [dispatch],
+    );
+
+    const [isSuccessful, setSuccess] = React.useState(false);
+    const onVoted = React.useCallback((voteInfo: VoteInfo) => {
+        setSuccess(true);
+        onVoteInfoReceived(voteInfo);
+    }, [onVoteInfoReceived]);
+    const [errorMessage, setErrorMessage] = React.useState<string | undefined>(undefined);
+    const [isErrorModalOpen, setErrorModalOpen] = React.useState(false);
+    const onVoteError = React.useCallback((message: string) => {
+        setSuccess(false);
+        setErrorMessage(message);
+        setErrorModalOpen(true);
+    }, []);
+
+    const onModalDismiss = React.useCallback(() => {
+        setSuccess(false);
+        setErrorMessage(undefined);
+        setErrorModalOpen(false);
+        onDismiss();
+    }, [onDismiss]);
+
+    const bigNumberFormat = {
+        decimalSeparator: '.',
+        groupSeparator: ',',
+        groupSize: 3,
+        secondaryGroupSize: 0,
+        fractionGroupSeparator: ' ',
+        fractionGroupSize: 0,
+    };
+    const formattedBalance = Web3Wrapper.toUnitAmount(currentVotingPower, constants.DECIMAL_PLACES_ZRX).toFormat(
+        2,
+        BigNumber.ROUND_FLOOR,
+        bigNumberFormat,
+    );
+
+    const _renderVoteFormContent = (): React.ReactNode => {
+        return (
+            <>
+                <VoteForm
+                    currentBalance={currentVotingPower}
+                    selectedAddress={account.address}
+                    providerState={providerState}
+                    onDismiss={onModalDismiss}
+                    zeipId={zeipId}
+                    networkId={networkId}
+                    onVoted={onVoted}
+                    onError={onVoteError}
+                    isTreasuryProposal={true}
+                    operatedPools={operatedPools}
+                />
+            </>
+        );
+    };
+    const _shareViaTwitterAsync = (): void => {
+        const tweetText = encodeURIComponent(`I voted on ZEIP-${zeipId}! 🗳️#VoteWithZRX https://0x.org/zrx/vote`);
+        window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, 'Share your vote', 'width=500,height=400');
+    };
+
+    if (!account.address && isOpen) {
+        onToggleConnectWalletDialog(true);
+        return <div />;
+    }
+    onToggleConnectWalletDialog(false);
+    return (
+        <>
+            <DialogOverlay
+                style={{ background: 'rgba(0, 0, 0, 0.75)', zIndex: 30 }}
+                isOpen={isOpen}
+                onDismiss={onModalDismiss}
+            >
+                <StyledDialogContent>
+                    {!isErrorModalOpen && _renderVoteFormContent()}
+                    <Confirmation isSuccessful={isSuccessful}>
+                        <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
+                            Vote Received!
+                        </Heading>
+                        <Paragraph isMuted={true} color={colors.textDarkPrimary}>
+                            You voted from {account.address} with {formattedBalance} ZRX
+                        </Paragraph>
+                        <ButtonWrap>
+                            <Button type="button" onClick={_shareViaTwitterAsync}>
+                                Tweet
+                            </Button>
+                            <Button type="button" onClick={onModalDismiss}>
+                                Done
+                            </Button>
+                        </ButtonWrap>
+                    </Confirmation>
+                    <ButtonClose onClick={onModalDismiss} />
+                    <ErrorModal isOpen={isErrorModalOpen} text={errorMessage} onClose={onModalDismiss} />
+                </StyledDialogContent>
+            </DialogOverlay>
+        </>
+    );
+}
 
 const StyledDialogContent = styled(DialogContent)`
     position: relative;

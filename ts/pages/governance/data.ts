@@ -42,6 +42,7 @@ export interface TreasuryProposal {
     createdTimestamp?: moment.Moment;
     executionStartDate: moment.Moment;
     executionEndDate: moment.Moment;
+    tally?: TallyInterface
 }
 
 export interface Proposals {
