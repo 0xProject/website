@@ -387,9 +387,10 @@ export const proposals: Proposals = {
         zeipId: 83,
         title: 'MultiplexFeature, BatchFillNativeOrdersFeature',
         summary: [
-            `This ZEIP proposes to integrate MultiplexFeature, which enables an optimized 0x API routing strategy for RFQ orders. Jointly to this feature, it is proposed to introduce a complete batchFill/marketSell/marketBuy functions suite for both rfqOrder and limitOrder.`,
-            `The first feature will make it possible for RFQ orders to be served to 0x API applications without risking reverts, while making the most of the gas savings introduced with 0x V4. This should result in more competitive, exclusive liquidity served to applications connected to 0x API.`,
-            `BatchFillNativeOrdersFeature contains a a wide range of batch fill functionalities, which were requested by Market Makers to fill multiple limit orders as part of their arbitration strategies. `,
+            `This ZEIP proposes to integrate MultiplexFeature and BatchFillNativeOrdersFeature. The former is designed to more efficiently perform swaps that use multiple liquidity sources.`,
+            `In particular, it enables RFQ orders to be served to 0x API applications without risking reverts, while making the most of the gas savings introduced with 0x V4.`,
+            `This should result in more competitive, exclusive liquidity served to applications connected to 0x API.`,
+            `The latter introduces batchFill functions for 0x V4 limit and RFQ orders. This functionality was requested by market makers to easily fill multiple orders as part of their arbitrage strategies.`,
         ],
         url: 'https://github.com/0xProject/ZEIPs/issues/83',
         voteStartDate: moment(1614790800, 'X'),
@@ -397,8 +398,8 @@ export const proposals: Proposals = {
         benefit: {
             title: 'Benefit',
             summary: [
-                `Introducing MultiplexFeature will allow RFQ orders to make the most of 0x V4 gas savings (~70% VS 0x V3), as they will not be required to go through the FQT aggregation contracts in order to provide reverts protections for users. This will result in more competitive RFQ quotes. `,
-                `BatchFillNativeOrdersFeature brings 0x v4 on par with 0x v3 batch fill functionalities. This feature allows Market Makers and other arbitrageurs to fill limit and RFQ orders in batch. In practice, this should improve the execution of smaller limit orders created from Matcha and other 0x limit orders integrators.`,
+                `Introducing MultiplexFeature will allow RFQ orders to make the most of 0x V4 gas savings (~70% VS 0x V3), as they will not be required to go through the more costly contract pipeline for liquidity aggregation. This will result in more competitive RFQ prices.`,
+                `BatchFillNativeOrdersFeature allows multiple 0x V4 orders to be filled in a single function call. In practice, this should improve the execution of smaller limit orders created from Matcha and other 0x limit order integrators.`,
             ],
             rating: 3,
             links: [
