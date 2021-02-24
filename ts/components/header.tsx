@@ -57,7 +57,7 @@ const navItems: NavItemProps[] = [
     {
         id: 'blog',
         text: 'Blog',
-        url: 'https://blog.0xproject.com/',
+        url: 'https://medium.com/0x-project',
     },
     {
         id: 'about',
