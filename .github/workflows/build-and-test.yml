@@ -53,6 +53,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+        # HACK(johnrjj) - Rebuild node-sass in case build step runs on a separate machine than the dependency install
+      - run: npm rebuild node-sass
       - run: yarn build:prod
       - uses: actions/cache@v1
         id: cache-build
