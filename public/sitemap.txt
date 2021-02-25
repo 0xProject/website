@@ -11,7 +11,6 @@ https://0x.org/docs/guides/v3-coordinator-specification
 https://0x.org/docs/guides/0x-cheat-sheet
 https://0x.org/docs/guides/abcs-of-contract-fillable-liquidity
 https://0x.org/docs/guides/swap-tokens-with-0x-api
-https://0x.org/docs/guides/unlocking-meta-transaction-swaps
 https://0x.org/docs/guides/integrate-instant
 https://0x.org/docs/guides/ganache-setup
 https://0x.org/docs/guides/using-the-standard-relayer-api
