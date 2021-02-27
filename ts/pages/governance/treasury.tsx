@@ -1,5 +1,5 @@
+import { ZrxTreasuryContract } from '@0x/contracts-treasury';
 import { BigNumber } from '@0x/utils';
-import { Contract, providers } from 'ethers';
 import * as _ from 'lodash';
 import { gql, request } from 'graphql-request';
 import marked, { Token, Tokens } from 'marked';
@@ -7,6 +7,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
+import { useSelector } from 'react-redux';
 import {
     useQuery,
 } from 'react-query';
@@ -26,15 +27,12 @@ import { TreasuryProposal } from 'ts/pages/governance/data';
 import { ModalTreasuryVote } from 'ts/pages/governance/modal_vote';
 import { VoteInfo, VoteValue } from 'ts/pages/governance/vote_form';
 import { VoteStats } from 'ts/pages/governance/vote_stats';
+import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { WebsitePaths } from 'ts/types';
 import { utils } from 'ts/utils/utils';
 import { ALCHEMY_API_KEY, configs, GOVERNOR_CONTRACT_ADDRESS, GOVERNANCE_THEGRAPH_ENDPOINT } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
-
-const provider = providers.getDefaultProvider(null, {
-    alchemy: ALCHEMY_API_KEY,
-});
 
 const FETCH_PROPOSAL = gql`
   query proposal($id: ID!) {
@@ -68,6 +66,7 @@ export const Treasury: React.FC<{}> = () => {
     const [isVoteModalOpen, setIsVoteModalOpen] = React.useState<boolean>(false);
     const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
     const { id: proposalId } = useParams();
+    const providerState = useSelector((state: State) => state.providerState);
 
     const { data } = useQuery('proposal', async () => {
         const { proposal } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSAL, {
@@ -76,15 +75,13 @@ export const Treasury: React.FC<{}> = () => {
         return proposal;
     });
 
-    const abi = [
-        'function quorumThreshold() public view returns (uint)',
-    ];
 
-    const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.ZRX, abi, provider);
+
+    const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
 
     React.useEffect(() => {
         (async () => {
-            const qThreshold = await contract.quorumThreshold();
+            const qThreshold = await contract.quorumThreshold().callAsync();
             setQuorumThreshold(qThreshold);
         })();
 

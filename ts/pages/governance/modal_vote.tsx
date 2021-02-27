@@ -1,3 +1,4 @@
+import { ZrxTreasuryContract } from '@0x/contracts-treasury';
 import { BigNumber, logUtils } from '@0x/utils'
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
@@ -199,15 +200,7 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
     const account = providerState.account as AccountReady;
     const dispatch = useDispatch();
 
-    const abi = [
-        'function getVotingPower(address account, bytes32[] memory operatedPoolIds) public view returns (uint256 votingPower)',
-    ];
-
-    const provider = providers.getDefaultProvider(null, {
-        alchemy: ALCHEMY_API_KEY,
-    });
-
-    const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.ZRX, abi, provider);
+    const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
 
     const [currentVotingPower, setCurrentVotingPower] = React.useState(new BigNumber(0));
     const [isFetchingVotingPowerData, setIsFetchingVotingPowerData] = React.useState<boolean>(false);
@@ -220,7 +213,7 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
             const operatedPools = poolsResponse.stakingPools.filter(p => p.operatorAddress === account.address);
             setOperatedPools(operatedPools);
 
-            const votingPower = await contract.getVotingPower(account.address, operatedPools);
+            const votingPower = await contract.getVotingPower(account.address, operatedPools ? operatedPools.map((pool) => pool.poolId) : []).callAsync();
             const votingPowerBigNumber = new BigNumber(votingPower.toNumber());
             setCurrentVotingPower(votingPowerBigNumber);
         };

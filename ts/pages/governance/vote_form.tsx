@@ -1,9 +1,9 @@
+import { ZrxTreasuryContract } from '@0x/contracts-treasury'
 import { signatureUtils } from '@0x/order-utils';
 import { ECSignature, SignatureType } from '@0x/types';
 import { BigNumber, signTypedDataUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import '@reach/dialog/styles.css';
-import { Contract, providers, Provider } from 'ethers';
 import * as ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import * as React from 'react';
@@ -19,7 +19,7 @@ import { Heading, Paragraph } from 'ts/components/text';
 import { PreferenceSelecter } from 'ts/pages/governance/preference_selecter';
 import { colors } from 'ts/style/colors';
 import { PoolWithStats, Providers, ProviderState } from 'ts/types';
-import { ALCHEMY_API_KEY, configs, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
+import { configs, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
 
@@ -252,21 +252,13 @@ class VoteFormComponent extends React.Component<Props> {
     private readonly _castVote = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
         const { zeipId: proposalId, operatedPools, providerState } = this.props;
-        const abi = [
-            'function castVote(uint256 proposalId, bool support, bytes32[] memory operatedPoolIds) public',
-        ];
-    
-        const provider = providers.getDefaultProvider(null, {
-            alchemy: ALCHEMY_API_KEY,
-        });
+        const  proposalIdBigNumber = new BigNumber(proposalId);
 
-        const web3Provider = new providers.Web3Provider(providerState.provider as any);
-    
-        const contract = new Contract(GOVERNOR_CONTRACT_ADDRESS.ZRX, abi, web3Provider.getSigner());
+        const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
 
         const { votePreference } = this.state;
 
-        await contract.castVote(proposalId, votePreference === VoteValue.Yes, operatedPools ? operatedPools.map((pool) => pool.poolId) : []);
+        await contract.castVote(proposalIdBigNumber, votePreference === VoteValue.Yes, operatedPools ? operatedPools.map((pool) => pool.poolId) : []).callAsync();
     };
     private _handleError(errorMessage: string): void {
         const { onError } = this.props;
