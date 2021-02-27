@@ -520,7 +520,6 @@ export interface StartStakingProps {
 // Core
 export const StartStaking: React.FC<StartStakingProps> = (props) => {
     const { selectedStakingPools, stake, nextEpochStats, providerState } = props;
-
     const timeRemainingForStakingTransaction = useSecondsRemaining(stake.estimatedTransactionFinishTime);
 
     trackStartStakingScreenViewed();
@@ -531,7 +530,7 @@ export const StartStaking: React.FC<StartStakingProps> = (props) => {
         return <Newsletter />;
     }
 
-    if (!selectedStakingPools) {
+    if (!selectedStakingPools || !nextEpochStats) {
         // TODO(johnrjj) - Error state
         return null;
     }

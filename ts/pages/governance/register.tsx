@@ -8,12 +8,14 @@ import { RegistrationSuccess, VotingPowerInput } from 'ts/components/governance/
 import { RegistrationSuccessInfo, StartRegistrationInfo } from 'ts/components/governance/wizard_info';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { Splitview } from 'ts/components/staking/wizard/splitview';
-import { VotingPowerConfirmation } from 'ts/components/staking/wizard/wizard_flow';
-import { VotingPowerWizardInfo } from 'ts/components/staking/wizard/wizard_info';
+import { StartStaking, VotingPowerConfirmation } from 'ts/components/staking/wizard/wizard_flow';
+import { ConfirmationWizardInfo, VotingPowerWizardInfo } from 'ts/components/staking/wizard/wizard_info';
 import { useAPIClient } from 'ts/hooks/use_api_client';
+import { useStake } from 'ts/hooks/use_stake';
 import { RegisterRouterSteps, useRegisterWizard } from 'ts/hooks/use_register_wizard';
 import { State } from 'ts/redux/reducer';
-import { AccountReady, PoolWithStats, ProviderState, StakingPoolRecomendation } from 'ts/types';
+import { AccountReady, Epoch, PoolWithStats, ProviderState, StakingPoolRecomendation } from 'ts/types';
+import { DEFAULT_POOL_ID } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { formatZrx } from 'ts/utils/format_number';
 
@@ -35,7 +37,9 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = props => {
   const { currentStep, next } = useRegisterWizard();
   const [nextEpochStart, setNextEpochStart] = React.useState<Date | undefined>(undefined);
   const [stakingPools, setStakingPools] = React.useState<PoolWithStats[]>(undefined);
-  const [selectedPool, setSelectedPool] = React.useState<StakingPoolRecomendation>();
+  const [selectedPool, setSelectedPool] = React.useState<StakingPoolRecomendation>({ pool: undefined, zrxAmount: undefined});
+  const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
+  const stake = useStake(networkId, providerState);
 
   const { zrxBalanceBaseUnitAmount, address } = providerState.account as AccountReady;
   let zrxBalance: BigNumber | undefined;
@@ -57,12 +61,13 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = props => {
       ]);
 
       const epochStart = epochsResponse.nextEpoch && new Date(epochsResponse.nextEpoch.epochStart.timestamp);
+      setNextEpochStats(epochsResponse.nextEpoch);
       setNextEpochStart(epochStart);
       setStakingPools(poolsResponse.stakingPools);
     })();
   }, []);
 
-  const onNextButtonClick = (isDelegationFlow: boolean, pool: PoolWithStats, zrxAmount: number) => {
+  const onNextButtonClick = async (isDelegationFlow: boolean, pool: PoolWithStats, zrxAmount: number) => {
     if (isDelegationFlow) {
       setSelectedPool({
         pool,
@@ -70,7 +75,17 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = props => {
       });
       next(RegisterRouterSteps.VotingPower);
     } else {
-      next(RegisterRouterSteps.Success);
+      try {
+        await stake.depositAndStake(
+          [{
+            poolId: DEFAULT_POOL_ID,
+            zrxAmount,
+          }],
+        );
+        next(RegisterRouterSteps.Success);
+      } catch(error) {
+        console.log(error);
+      }
     }
   };
 
@@ -88,6 +103,9 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = props => {
                   currentStep === RegisterRouterSteps.VotingPower &&
                   <VotingPowerWizardInfo />
                 }
+                {currentStep === RegisterRouterSteps.ReadyToStake && (
+                  <ConfirmationWizardInfo nextEpochStats={nextEpochStats} />
+                )}
                 {
                   currentStep === RegisterRouterSteps.Success &&
                   <RegistrationSuccessInfo />
@@ -112,9 +130,17 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = props => {
                   <VotingPowerConfirmation
                     selectedStakingPools={selectedPool ? [selectedPool] : []}
                     providerState={providerState}
-                    onGoToNextStep={() => next(RegisterRouterSteps.Success)}
+                    onGoToNextStep={() => next(RegisterRouterSteps.ReadyToStake)}
                   />
                 }
+                {currentStep === RegisterRouterSteps.ReadyToStake && (
+                  <StartStaking
+                      stake={stake}
+                      nextEpochStats={nextEpochStats}
+                      providerState={providerState}
+                      selectedStakingPools={[selectedPool]}
+                  />
+                )}
                 {
                   currentStep === RegisterRouterSteps.Success &&
                   <RegistrationSuccess nextEpochStart={nextEpochStart} />

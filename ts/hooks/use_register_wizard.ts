@@ -14,6 +14,7 @@ import { WebsitePaths } from 'ts/types';
 export enum RegisterRouterSteps {
     Start = 'start',
     VotingPower = 'voting',
+    ReadyToStake = 'stake',
     Success = 'success',
 }
 
