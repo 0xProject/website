@@ -158,17 +158,14 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
         return treasuryProposals;
     });
 
-    const abi = [
-        'function quorumThreshold() public view returns (uint)',
-    ];
-
     const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
 
     React.useEffect(() => {
         // tslint:disable-next-line: no-floating-promises
         (async () => {
-            const qThreshold = await contract.quorumThreshold().callAsync();
-            setQuorumThreshold(qThreshold);
+            // const qThreshold = await contract.quorumThreshold().callAsync();
+            const hardCodeQuorumThreshold = new BigNumber('10000000');
+            setQuorumThreshold(hardCodeQuorumThreshold);
             const tallyMap: ZeipTallyMap = await fetchTallysAsync();
             setTallys(tallyMap);
         })();

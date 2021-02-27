@@ -81,8 +81,10 @@ export const Treasury: React.FC<{}> = () => {
 
     React.useEffect(() => {
         (async () => {
-            const qThreshold = await contract.quorumThreshold().callAsync();
-            setQuorumThreshold(qThreshold);
+            // const qThreshold = await contract.quorumThreshold().callAsync();
+            // setQuorumThreshold(qThreshold);
+            const hardCodeQuorumThreshold = new BigNumber('10000000');
+            setQuorumThreshold(hardCodeQuorumThreshold);
         })();
 
         if (data) {
