@@ -21,6 +21,7 @@ import { AccountDetail } from 'ts/pages/account/account_detail';
 import { AccountFigure } from 'ts/pages/account/account_figure';
 import { AccountRewardsOverview } from 'ts/pages/account/account_rewards_overview';
 import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
+import { AccountVotingPowerOverview, AccountSelfVotingPowerOverview } from 'ts/pages/account/account_voting_power_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
@@ -34,6 +35,7 @@ import {
     VoteHistory,
     WebsitePaths,
 } from 'ts/types';
+import { DEFAULT_POOL_ID } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
@@ -69,6 +71,10 @@ interface PoolWithStatsMap {
 }
 
 interface PoolToDelegatorStakeMap {
+    [key: string]: number;
+}
+
+interface PoolToVotingPowerMap {
     [key: string]: number;
 }
 
@@ -120,6 +126,8 @@ export const Account: React.FC<AccountProps> = () => {
     const [currentEpochStakeMap, setCurrentEpochStakeMap] = React.useState<PoolToDelegatorStakeMap>({});
     const [nextEpochStakeMap, setNextEpochStakeMap] = React.useState<PoolToDelegatorStakeMap>({});
     const [allTimeRewards, setAllTimeRewards] = React.useState<BigNumber>(new BigNumber(0));
+    const [votingPowerMap, setVotingPowerMap] = React.useState<PoolToVotingPowerMap>({});
+    const [hasVotingPower, setHasVotingPower] = React.useState<boolean>(false);
     // keeping in case we want to make use of by-pool estimated rewards
     // const [expectedCurrentEpochPoolRewards, setExpectedCurrentEpochPoolRewards] = React.useState<ExpectedPoolRewards>(undefined);
     const [expectedCurrentEpochRewards, setExpectedCurrentEpochRewards] = React.useState<BigNumber>(new BigNumber(0));
@@ -224,6 +232,25 @@ export const Account: React.FC<AccountProps> = () => {
                 new BigNumber(0),
             );
 
+            const votingPowerPools =  delegatorResponse.forCurrentEpoch.poolData
+            // Don't show pools with pending withdrawals, they are shown in pending section instead
+            .filter(p => !pendingUnstakePoolSet.has(p.poolId) && p.zrxStaked > 0);
+
+            const _votingPowerMap = votingPowerPools.reduce<{ [key: string]: number }>(
+                (memo, poolData) => {
+                    if(poolData.poolId !== DEFAULT_POOL_ID) {
+                        memo[poolData.poolId] = (poolData.zrxStaked / 2) || 0;
+                        memo.self += (poolData.zrxStaked / 2) || 0;
+                    } else {
+                        memo.selfDelegated += poolData.zrxStaked || 0;
+                    }
+                    return memo;
+                },
+                {self: 0, selfDelegated: 0},
+            );
+
+            let hasVotingPower = Object.keys(_votingPowerMap).filter(key => _votingPowerMap[key] > 0).length > 0;
+
             setDelegatorData(delegatorResponse);
             setStakingPools(poolsResponse.stakingPools);
             setPoolWithStatsMap(_poolWithStatsMap);
@@ -232,6 +259,8 @@ export const Account: React.FC<AccountProps> = () => {
             setNextEpochStakeMap(_nextEpochStakeMap);
             setAllTimeRewards(_allTimeRewards);
             setExpectedCurrentEpochRewards(_expectedCurrentEpochRewards);
+            setVotingPowerMap(_votingPowerMap);
+            setHasVotingPower(hasVotingPower);
         };
 
         if (!account.address || isFetchingDelegatorData || !currentEpochRewards) {
@@ -531,7 +560,7 @@ export const Account: React.FC<AccountProps> = () => {
                 <SectionWrapper>
                     <SectionHeader>
                         <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
-                            Your staking pools
+                            Your Staking Pools
                         </Heading>
 
                         {/* <Button
@@ -607,6 +636,49 @@ export const Account: React.FC<AccountProps> = () => {
                                 );
                             })
                     )}
+                </SectionWrapper>
+            )}
+            {hasDataLoaded() && hasVotingPower && (
+                <SectionWrapper>
+                    <SectionHeader>
+                        <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                            Your Voting Power
+                        </Heading>
+                    </SectionHeader>
+                    {Object.keys(votingPowerMap).map((key) => {
+                        const zrxAmount = votingPowerMap[key];
+                            if(['self', 'selfDelegated'].includes(key)) {
+                                return (
+                                    <AccountSelfVotingPowerOverview
+                                        delegation={zrxAmount}
+                                        isSelfDelegated={key === 'selfDelegated'}
+                                        onMoveStake={() => {
+                                            setChangePoolDetails({ poolId: DEFAULT_POOL_ID, zrxAmount });
+                                        }} 
+                                    />
+                                );
+                            }
+
+                            const poolId = key;
+                            const pool = poolWithStatsMap[poolId];
+                            if (!pool) {
+                                return null;
+                            }
+
+                            return (
+                                <AccountVotingPowerOverview
+                                    key={`voting-power-${pool.poolId}`}
+                                    poolId={pool.poolId}
+                                    name={stakingUtils.getPoolDisplayName(pool)}
+                                    websiteUrl={pool.metaData.websiteUrl}
+                                    operatorAddress={pool.operatorAddress}
+                                    logoUrl={pool.metaData.logoUrl}
+                                    isVerified={pool.metaData.isVerified}
+                                    delegation={zrxAmount}
+                                />
+                            );
+                        })
+                    }
                 </SectionWrapper>
             )}
 
