@@ -1356,8 +1356,8 @@ The Standard Relayer API also exposes a websocket server at the root endpoint.
 
 | Network | Endpoint                      |
 | ------- | ----------------------------- |
-| Mainnet | wss://api.0x.org/sra/v3       |
-| Kovan   | wss://kovan.api.0x.org/sra/v3 |
+| Mainnet | wss://api.0x.org/sra/v4       |
+| Kovan   | wss://kovan.api.0x.org/sra/v4 |
 
 The server will allow you to subscribe to 0x order updates in [0x Mesh](https://0x-org.gitbook.io/mesh/),
 and will push updates whenever the "fillability" of an order changes.
@@ -1375,15 +1375,10 @@ All messages (both request, and response) adhere to the format below:
 
 ### Request
 
-| Field                   | Description                                                                                                                                                                                                                                                                                                                                       |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `makerAssetProxyId`     | (Optional) The asset proxy ID part of the maker [asset data](/docs/guides/v3-specification#assetdata). Example: `0xf47261b0` for ERC20, `0x02571792` for ERC721.                                                                                                                                                                                  |
-| `takerAssetProxyId`     | (Optional) The asset proxy ID ID part of the taker [asset data](/docs/guides/v3-specification#assetdata). Example: `0xf47261b0` for ERC20, `0x02571792` for ERC721.                                                                                                                                                                               |
-| `makerAssetAddress`     | (Optional) The contract address part of the maker [asset data](/docs/guides/v3-specification#assetdata).                                                                                                                                                                                                                                          |
-| `takerAssetAddress`     | (Optional) The contract address part of the taker [asset data](/docs/guides/v3-specification#assetdata).                                                                                                                                                                                                                                          |
-| `makerAssetData`        | (Optional) Contains all the identifying information about the asset(s) the order maker is trying to sell.                                                                                                                                                                                                                                         |
-| `takerAssetData`        | (Optional) Identifying information of the asset(s) the taker must trade in exchange for the maker's asset(s).                                                                                                                                                                                                                                     |
-| `traderAssetData`       | (Optional) Filters for either the `takerAssetData` or the `makerAssetData`.                                                                                                                                                                                                                                                                       |
+| Field                   | Description                                                                                                                                                                                                                                                                                                                                        |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `makerToken`            | (Optional) The address of the ERC20 token the maker is selling and the maker is selling to the taker. Example `0xe41d2489571d322189246dafa5ebde1f4699f498`
+| `takerToken`            | (Optional) The address of the ERC20 token the taker is selling and the taker is selling to the maker. Example `0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2`
 
 ### Response
 
@@ -1420,30 +1415,34 @@ A list consisting of signed orders with metaData.
     {
       "order": {
         "chainId": 1,
-        "exchangeAddress": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef",
-        "makerAddress": "0x6924a03bb710eaf199ab6ac9f2bb148215ae9b5d",
-        "makerAssetData": "0xf47261b000000000000000000000000089d24a6b4ccb1b6faa2625fe562bdd9a23260359",
-        "makerFeeAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-        "makerAssetAmount": "9801000000000000000000",
-        "makerFee": "0",
-        "takerAddress": "0x0000000000000000000000000000000000000000",
-        "takerAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-        "takerFeeAssetData": "0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-        "takerAssetAmount": "57528575831456142732",
-        "takerFee": "0",
-        "senderAddress": "0x0000000000000000000000000000000000000000",
-        "feeRecipientAddress": "0xa258b39954cef5cb142fd567a46cddb31a670124",
-        "expirationTimeSeconds": "1579315756",
-        "salt": "1579315576818",
-        "signature": "0x1c193301e31de7ce08e38c99854b620060506b7a685f9c65852c230623a6fb3df97373cf84c63112274fc09f95f657a9e55b9ab9771303693168dd07df0c9d56c503"
+        "verifyingContract": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
+        "makerToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "takerToken": "0xe41d2489571d322189246dafa5ebde1f4699f498",
+        "makerAmount": "1",
+        "takerAmount": "1000000000000000",
+        "takerTokenFeeAmount": "0",
+        "maker": "0x56eb0ad2dc746540fab5c02478b31e2aa9ddc38c",
+        "taker": "0x0000000000000000000000000000000000000000",
+        "sender": "0x0000000000000000000000000000000000000000",
+        "feeRecipient": "0x0000000000000000000000000000000000000000",
+        "pool": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "expiry": "1614962196",
+        "salt": "12213086377898595950156985364849399280012820680806192474044093697918905947103",
+        "signature": {
+          "signatureType": 3,
+          "v": 28,
+          "r": "0x828110c66e0b5435ad2b2a4479f2ca5ea6afaf2846a7d5218aeb4e7f2519ce7b",
+          "s": "0x06360f6d55d86006c090855f5467925707788bdfb4bfb7aae7304f0504c93ba0"
+        }
       },
       "metaData": {
-        "orderHash": "0x35d09c7e163da5c94d8ee2ac311190051a8dfdc10cfd497fd79dc422d3fb8b43",
-        "remainingFillableTakerAssetAmount": "57528575831456142732"
+        "orderHash": "0xa3aeb3b1aed8438c0398ba070bf4f365378ef74e4fc966f09df87854484b0012",
+        "remainingFillableTakerAssetAmount": "1000000000000000",
+        "state": "ADDED"
       }
     }
   ],
-  "requestId": "123"
+  "requestId": "123e4567-e89b-12d3-a456-426655440000"
 }
 ```
 </CodeTabs>
