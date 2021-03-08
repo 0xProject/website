@@ -138,6 +138,17 @@ A [0x Limit Order](https://protocol.0x.org/en/latest/basics/orders.html#limit-or
 | `chainId`                | The ID of the Ethereum chain where the `verifyingContract` is located.                                                                                                                                                                                                                                                                 |
 | `signature`              | A [JSON object structure](https://protocol.0x.org/en/latest/basics/orders.html#how-to-sign) with the signature of the fields above using the private key of `maker`.                                                                                                                                                                   |
 
+#### Signature
+A structured object containing the signature data for the order. For more info see [How to sign](https://protocol.0x.org/en/latest/basics/orders.html#how-to-sign).
+
+| Field                    | Description                                                                                                                                                                                                                                                                                                                            |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `signatureType`          | A number representing the signature method used for signing the order, EIP712 (2) and EthSign (3) are supported.                                                                                                                                                                                                                       |
+| `r`                      | A hexadecimal string with signature data.                                                                                                                                                                                                                                                                                              |
+| `s`                      | A hexadecimal string with signature data.                                                                                                                                                                                                                                                                                              |
+| `v`                      | An integer number with signature data.                                                                                                                                                                                                                                                                                                 |
+
+
 ## Misc.
 
 *   All requests and responses should be of "application/json" content type.
