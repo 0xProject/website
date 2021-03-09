@@ -647,7 +647,7 @@ export const Account: React.FC<AccountProps> = () => {
                     </SectionHeader>
                     {Object.keys(votingPowerMap).map((key) => {
                         const zrxAmount = votingPowerMap[key];
-                            if(['self', 'selfDelegated'].includes(key)) {
+                            if(['self', 'selfDelegated'].includes(key) && zrxAmount > 0) {
                                 return (
                                     <AccountSelfVotingPowerOverview
                                         delegation={zrxAmount}
