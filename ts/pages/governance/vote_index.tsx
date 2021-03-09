@@ -189,7 +189,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     againstVotes,
                     forVotes,
                     description,
-                    canceled: !(isHappening || isUpcoming) && againstVotes >= forVotes || forVotes < quorumThreshold,
+                    canceled: !isHappening && !isUpcoming && (againstVotes >= forVotes || forVotes < quorumThreshold),
                     executed: !!executionTimestamp,
                     upcoming: isUpcoming,
                     happening: isHappening,
@@ -199,7 +199,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                 };
             });
             setLoading(isQueryLoading);
-            sortProposals(onChainProposals, ZEIP_PROPOSALS);
+            sortProposals(onChainProposals.reverse(), ZEIP_PROPOSALS);
             setProposals(onChainProposals);
         }
     }, [data]);

@@ -117,7 +117,7 @@ export const Treasury: React.FC<{}> = () => {
                 againstVotes,
                 forVotes,
                 description,
-                canceled: !(isHappening || isUpcoming) && againstVotes >= forVotes || forVotes < quorumThreshold,
+                canceled: !isHappening && !isUpcoming && (againstVotes >= forVotes || forVotes < quorumThreshold),
                 executed: !!executionTimestamp,
                 upcoming: isUpcoming,
                 happening: isHappening,
@@ -178,12 +178,12 @@ export const Treasury: React.FC<{}> = () => {
             show: true,
         }, 
         active: {
-            done: now.isAfter(proposal.startDate),
+            done: now.isAfter(proposal.startDate) && now.isBefore(proposal.endDate),
             timestamp: proposal.startDate,
             show: true,
         },
         succeeded: {
-            done: !(isCanceled || isHappening || isUpcoming || isExecuted),
+            done: !isCanceled && !isHappening && !isUpcoming && !isExecuted,
             timestamp: proposal.endDate,
             show: !(isCanceled || isHappening || isUpcoming || isExecuted),
         },
@@ -193,7 +193,7 @@ export const Treasury: React.FC<{}> = () => {
             show: isCanceled,
         },
         queued: {
-            done: !(isCanceled || isHappening || isUpcoming),
+            done: !isCanceled && !isHappening && !isUpcoming,
             timestamp: executionStartDate,
             show: !(isCanceled || isHappening || isUpcoming || isExecuted),
         },
