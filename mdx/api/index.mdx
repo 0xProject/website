@@ -849,7 +849,7 @@ All the fields below are filter fields on the [signed orders](/docs/api#signed-o
 | Field         | Description                                                                                                        |
 | ------------- | -------------------------------------------------------------------------------------------------------------------|
 | `order`       | Raw [signed order](/docs/api#signed-order).                                                                        |
-| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |
+| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAmount`. |
 
 ### Examples
 
@@ -869,7 +869,7 @@ All the fields below are filter fields on the [signed orders](/docs/api#signed-o
       "metaData": {
         "createdAt": "2021-03-05T14:19:58.745Z",
         "orderHash": "0x9cecbbb001b2ddcb23cee4de97b46ef014621050ce04099ace24d25ad7022d99",
-        "remainingFillableTakerAssetAmount": "2000000000000000000000"
+        "remainingFillableTakerAmount": "2000000000000000000000"
       },
       "order": {
         "chainId": 1,
@@ -1045,7 +1045,7 @@ Retrieves a specific order by orderHash.
 | Field         | Description                                                                                                        |
 | ------------- | -------------------------------------------------------------------------------------------------------------------|
 | `order`       | Raw [signed orders](/docs/api#signed-order).                                                                       |
-| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |
+| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAmount`. |
 
 ### Examples
 
@@ -1081,7 +1081,7 @@ Retrieves a specific order by orderHash.
   },
   "metaData": {
     "orderHash": "0xd56098f729763f53b338c723be01ffdb8a1ff9dd8d323c9021ff1d8e29635fca",
-    "remainingFillableTakerAssetAmount": "2000000000000000000000",
+    "remainingFillableTakerAmount": "2000000000000000000000",
     "createdAt": "2021-03-05T15:09:28.611Z"
   }
 }
@@ -1118,7 +1118,7 @@ After taker fee price, orders are sorted by expiration in ascending order.
 | Field         | Description                                                                                                        |
 | ------------- | -------------------------------------------------------------------------------------------------------------------|
 | `order`       | Raw [signed order](/docs/api#signed-order).                                                                        |
-| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |
+| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAmount`. |
 
 ### Examples
 
@@ -1160,7 +1160,7 @@ After taker fee price, orders are sorted by expiration in ascending order.
         },
         "metaData": {
           "orderHash": "0xe4b47eb16a24c7e2de185e64ad9234b13052f1f60a0a7c108f3ec0feec3cf8ac",
-          "remainingFillableTakerAssetAmount": "10000000",
+          "remainingFillableTakerAmount": "10000000",
           "createdAt": "2021-03-05T15:32:18.473Z"
         }
       },
@@ -1189,7 +1189,7 @@ After taker fee price, orders are sorted by expiration in ascending order.
         },
         "metaData": {
           "orderHash": "0x0ffda2f9d9f41144bb063100403f926efa2ee5bacd9af00716175f00b030ff36",
-          "remainingFillableTakerAssetAmount": "10000000",
+          "remainingFillableTakerAmount": "10000000",
           "createdAt": "2021-03-05T15:32:18.473Z"
         }
       }
@@ -1225,7 +1225,7 @@ After taker fee price, orders are sorted by expiration in ascending order.
         },
         "metaData": {
           "orderHash": "0x349cd45199ca3aa0a0041ab7490d0cebd63347f8a3ebdbcdf7419090e7aaef91",
-          "remainingFillableTakerAssetAmount": "2000000000000000000000",
+          "remainingFillableTakerAmount": "2000000000000000000000",
           "createdAt": "2021-03-05T15:30:17.127Z"
         }
       },
@@ -1254,7 +1254,7 @@ After taker fee price, orders are sorted by expiration in ascending order.
         },
         "metaData": {
           "orderHash": "0xf8b4d85e98d7dc41bb6b9b200aafe7a2b479f59d6ca5288fa990124a23f2056a",
-          "remainingFillableTakerAssetAmount": "2000000000000000000000",
+          "remainingFillableTakerAmount": "2000000000000000000000",
           "createdAt": "2021-03-05T15:30:17.127Z"
         }
       }
@@ -1395,7 +1395,7 @@ A list consisting of signed orders with metaData.
 | Field         | Description                                                                                                        |
 | ------------- | -------------------------------------------------------------------------------------------------------------------|
 | `order`       | Raw [signed orders](/docs/api#signed-order).                                                                       |
-| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAssetAmount`. |
+| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAmount`. |
 
 ### Examples
 
@@ -1445,7 +1445,7 @@ A list consisting of signed orders with metaData.
       },
       "metaData": {
         "orderHash": "0xa3aeb3b1aed8438c0398ba070bf4f365378ef74e4fc966f09df87854484b0012",
-        "remainingFillableTakerAssetAmount": "1000000000000000",
+        "remainingFillableTakerAmount": "1000000000000000",
         "state": "ADDED"
       }
     }
