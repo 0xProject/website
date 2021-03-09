@@ -117,7 +117,7 @@ class VoteFormComponent extends React.Component<Props> {
         return (
             <Form onSubmit={isTreasuryProposal ? this._castVote.bind(this) : this._createAndSubmitVoteAsync.bind(this)} isSuccessful={isSuccessful}>
                 <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
-                    ZEIP-{zeipId} Vote
+                    {isTreasuryProposal ? 'Vote' :`ZEIP-{zeipId} Vote` }
                 </Heading>
                 <Paragraph isMuted={true} color={colors.textDarkPrimary}>
                     Make sure you are informed to the best of your ability before casting your vote. It will have
@@ -252,7 +252,8 @@ class VoteFormComponent extends React.Component<Props> {
     };
     private readonly _castVote = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
-        const { zeipId: proposalId, operatedPools, providerState, selectedAddress } = this.props;
+        try {
+        const { zeipId: proposalId, operatedPools, providerState, selectedAddress, currentBalance } = this.props;
         const  proposalIdBigNumber = new BigNumber(proposalId);
 
         const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
@@ -261,7 +262,20 @@ class VoteFormComponent extends React.Component<Props> {
 
         const gasInfo = await backendClient.getGasInfoAsync();
 
-        await contract.castVote(proposalIdBigNumber, votePreference === VoteValue.Yes, operatedPools ? operatedPools.map((pool) => pool.poolId) : []).awaitTransactionSuccessAsync({ from: selectedAddress, gasPrice: gasInfo.gasPriceInWei});
+
+            await contract.castVote(proposalIdBigNumber, votePreference === VoteValue.Yes, operatedPools ? operatedPools.map((pool) => pool.poolId) : []).awaitTransactionSuccessAsync({ from: selectedAddress, gasPrice: gasInfo.gasPriceInWei});
+            if (this.props.onVoted) {
+                this.setState({
+                    isSuccessful: true,
+                });
+                this.props.onVoted({
+                    userBalance: currentBalance,
+                    voteValue: this._getVoteValueFromString(votePreference),
+                });
+            }
+        } catch(error) {
+            this._handleError(error.message);
+        }
     };
     private _handleError(errorMessage: string): void {
         const { onError } = this.props;
