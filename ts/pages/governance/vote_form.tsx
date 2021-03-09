@@ -19,6 +19,7 @@ import { Heading, Paragraph } from 'ts/components/text';
 import { PreferenceSelecter } from 'ts/pages/governance/preference_selecter';
 import { colors } from 'ts/style/colors';
 import { PoolWithStats, Providers, ProviderState } from 'ts/types';
+import { backendClient } from 'ts/utils/backend_client';
 import { configs, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
@@ -251,14 +252,16 @@ class VoteFormComponent extends React.Component<Props> {
     };
     private readonly _castVote = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
-        const { zeipId: proposalId, operatedPools, providerState } = this.props;
+        const { zeipId: proposalId, operatedPools, providerState, selectedAddress } = this.props;
         const  proposalIdBigNumber = new BigNumber(proposalId);
 
         const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
 
         const { votePreference } = this.state;
 
-        await contract.castVote(proposalIdBigNumber, votePreference === VoteValue.Yes, operatedPools ? operatedPools.map((pool) => pool.poolId) : []).callAsync();
+        const gasInfo = await backendClient.getGasInfoAsync();
+
+        await contract.castVote(proposalIdBigNumber, votePreference === VoteValue.Yes, operatedPools ? operatedPools.map((pool) => pool.poolId) : []).awaitTransactionSuccessAsync({ from: selectedAddress, gasPrice: gasInfo.gasPriceInWei});
     };
     private _handleError(errorMessage: string): void {
         const { onError } = this.props;
