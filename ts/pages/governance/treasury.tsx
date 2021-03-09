@@ -26,6 +26,7 @@ import { Countdown } from 'ts/pages/governance/countdown';
 import { TreasuryProposal } from 'ts/pages/governance/data';
 import { ModalTreasuryVote } from 'ts/pages/governance/modal_vote';
 import { VoteInfo, VoteValue } from 'ts/pages/governance/vote_form';
+import { getDateString } from 'ts/pages/governance/vote_index_card';
 import { VoteStats } from 'ts/pages/governance/vote_stats';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
@@ -97,9 +98,9 @@ export const Treasury: React.FC<{}> = () => {
             };
 
             const bigNumStartTimestamp = new BigNumber(voteEpoch.startTimestamp);
-            const bigNumEndTimestamp = new BigNumber(voteEpoch.endTimestamp);
             const startDate = moment.unix(bigNumStartTimestamp.toNumber());
-            const endDate = moment.unix(bigNumEndTimestamp.toNumber());
+            const endDate = startDate.clone();
+            endDate.add(3, 'd');
 
             const bigNumExecutionStartTimestamp = new BigNumber(executionEpoch.startTimestamp);
             const bigNumExecutionEndTimestamp = new BigNumber(executionEpoch.endTimestamp);
@@ -222,11 +223,7 @@ export const Treasury: React.FC<{}> = () => {
                  </Column>
                  <Column width="30%" maxWidth="300px">
                     <Text fontColor={colors.textDarkSecondary} fontSize='18px' fontWeight={300} fontFamily='Formular'>
-                        {timestamp && (isExecuted || isCanceled)
-                            ? `Ended ${timestamp.format('MMM DD, YYYY - HH:mm a')}`
-                            : isHappening
-                            ? `Voting ends in ${timestamp.diff(moment(), 'days')} days`
-                            : `Upcoming in ${timestamp.diff(moment(), 'days')} days`}
+                    {getDateString(proposal.startDate, proposal.endDate)}
                     </Text>
                      { tally && <VoteStats tally={tally} /> }
                      {isVoteActive && (

@@ -176,9 +176,9 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                 const againstVotes = new BigNumber(votesAgainst);
                 const forVotes = new BigNumber(votesFor);
                 const bigNumStartTimestamp = new BigNumber(voteEpoch.startTimestamp);
-                const bigNumEndTimestamp = new BigNumber(voteEpoch.endTimestamp);
                 const startDate = moment.unix(bigNumStartTimestamp.toNumber());
-                const endDate = moment.unix(bigNumEndTimestamp.toNumber());
+                const endDate = startDate.clone();
+                endDate.add(3, 'd');
                 const now = moment();
                 const isUpcoming = now.isBefore(startDate);
                 const isHappening = now.isAfter(startDate) && now.isBefore(endDate);

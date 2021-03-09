@@ -67,7 +67,7 @@ export const getVoteOutcome = (tally?: TallyInterface): VoteOutcome | undefined 
     return undefined;
 };
 
-const getDateString = (voteStartDate: moment.Moment, voteEndDate: moment.Moment): string => {
+export const getDateString = (voteStartDate: moment.Moment, voteEndDate: moment.Moment): string => {
     const voteTime = getVoteTime(voteStartDate, voteEndDate);
     const pstOffset = '-0800';
     const now = moment();
@@ -119,6 +119,8 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                 upcoming: isUpcoming,
                 happening: isHappening,
                 timestamp,
+                startDate,
+                endDate,
             } = props;
             return (
                 <ReactRouterLink style={{ order }} to={`${WebsitePaths.Vote}/proposal/${id}`}>
@@ -170,11 +172,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                             )
                                     }
                                     <Paragraph marginBottom="12px">
-                                        {timestamp && (isExecuted || isCanceled)
-                                            ? `Ended ${timestamp.format('MMM DD, YYYY')}`
-                                            : isHappening
-                                            ? `Voting ends in ${timestamp.diff(moment(), 'days')} days`
-                                            : `Upcoming in ${timestamp.diff(moment(), 'days')} days`}
+                                        {getDateString(startDate, endDate)}
                                     </Paragraph>
                                 </div>
                             </Column>
