@@ -154,14 +154,6 @@
             "difficulty": "Beginner",
             "path": "guides/legal-guide.mdx"
         },
-        "using-the-standard-relayer-api": {
-            "title": "How to use the Standard Relayer API",
-            "description": "This guide will show you how to use the @0x/connect package to connect to a Relayer adhering to the Standard Relayer API",
-            "tags": ["Relayer", "Trader"],
-            "topics": ["Relayer", "Trader"],
-            "difficulty": "Intermediate",
-            "path": "guides/using-the-standard-relayer-api.mdx"
-        },
         "v2-coordinator-specification": {
             "title": "0x Coordinator Specification (v2)",
             "description": "A comprehensive technical spec of the first coordinator model developer by the 0x core team (soft-cancel variant)",

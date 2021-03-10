@@ -104,7 +104,7 @@ Explicitly cancelling orders always requires an on-chain transaction. However, y
 
 Since 0x orders live off-chain, they must be fetched from somewhere. Currently, there are two places to fetch orders from:
 
-1. Directly from Relayers via their API endpoints. In order to make life easier for traders, many implement the [Standard Relayer API](https://github.com/0xProject/standard-relayer-api/), allowing you to use a single client to fetch orders from multiple relayers. Standard Relayer API clients exist in [Python](https://pypi.org/project/0x-sra-client/) and [TypeScript/Javascript](https://0x.org/docs/tools/connect). To learn more about fetching orders from relayers, check out our [How to use the Standard Relayer API tutorial](https://0x.org/docs/guides/using-the-standard-relayer-api).
+1. Directly from Relayers via their API endpoints. In order to make life easier for traders, many implement the [Standard Relayer API](https://github.com/0xProject/standard-relayer-api/), allowing you to use a single client to fetch orders from multiple relayers. Standard Relayer API clients exist in [Python](https://pypi.org/project/0x-sra-client/) and [TypeScript/Javascript](https://0x.org/docs/tools/connect).
 
 2. Indirectly via the [0x Mesh](https://0x-org.gitbook.io/mesh/) p2p network. Many relayers share liquidity via the Mesh p2p network meaning that all their 0x orders are available to anyone running a Mesh node. Instead of pulling orders from multiple Relayer API's, you can spin up a Mesh node and connect to an aggregated stream of orders.
 
