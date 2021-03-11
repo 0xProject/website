@@ -54,7 +54,6 @@ export const StartRegistrationInfo = () => {
       </>
       <Separator margin="0 120px 60px 0" />
       <StyledUnorderedList>
-          <ListItem>50% of your voting power must go to the owner the staking pool.</ListItem>
           <ListItem>
               Change your delegation or vote for proposals at {' '}
               <Button to={WebsitePaths.Vote} isInline={true} isTransparent={true} isNoBorder={true} isNoPadding={true} color={colors.brandLight}>
