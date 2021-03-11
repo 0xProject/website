@@ -7,11 +7,16 @@ export const TreasurySummary: React.FC<{description: string}> = ({ description }
   const tokens = marked.lexer(description);
   const heading = tokens.find((token: Token) => (token as Tokens.Heading).type === 'heading' && (token as Tokens.Heading).depth === 1);
   const paragraph = tokens.find((token: Token) => (token as Tokens.Paragraph).type === 'paragraph');
-
+  let summary = '';
+  // @ts-ignore
+  paragraph.tokens.forEach((token) => {
+    summary += token.text;
+  });
+  
   return <>
     <Heading marginBottom="20px">
       {(heading as Tokens.Heading).text}
     </Heading>
-    <Paragraph>{(paragraph as Tokens.Paragraph).text}</Paragraph>
+    <Paragraph>{summary}</Paragraph>
   </>;
 };
