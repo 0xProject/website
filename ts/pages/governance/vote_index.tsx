@@ -300,6 +300,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                                     key={proposal.id}
                                     tally={tally}
                                     {...proposal}
+                                    quorumThreshold={quorumThreshold}
                                 />
                             );
                         })}

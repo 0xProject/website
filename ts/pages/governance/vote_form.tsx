@@ -117,7 +117,7 @@ class VoteFormComponent extends React.Component<Props> {
         return (
             <Form onSubmit={isTreasuryProposal ? this._castVote.bind(this) : this._createAndSubmitVoteAsync.bind(this)} isSuccessful={isSuccessful}>
                 <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
-                    {isTreasuryProposal ? 'Vote' :`ZEIP-{zeipId} Vote` }
+                    {isTreasuryProposal ? 'Vote' :`ZEIP-${zeipId} Vote` }
                 </Heading>
                 <Paragraph isMuted={true} color={colors.textDarkPrimary}>
                     Make sure you are informed to the best of your ability before casting your vote. It will have

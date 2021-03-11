@@ -36,6 +36,7 @@ interface TreasuryCardProps {
     description: string;
     tally?: TallyInterface;
     status?: string;
+    quorumThreshold: BigNumber,
 }
 
 type VoteIndexCardProps = ZEIPCardProps | TreasuryCardProps;
@@ -121,6 +122,9 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                 timestamp,
                 startDate,
                 endDate,
+                againstVotes,
+                forVotes,
+                quorumThreshold
             } = props;
             return (
                 <ReactRouterLink style={{ order }} to={`${WebsitePaths.Vote}/proposal/${id}`}>
@@ -156,7 +160,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                     <VoteStatusText
                                         status={getStatus(
                                             isCanceled,
-                                            isExecuted,
+                                            (againstVotes < forVotes && forVotes > quorumThreshold),
                                             isUpcoming,
                                         )}
                                     />
