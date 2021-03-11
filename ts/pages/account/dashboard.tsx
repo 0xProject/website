@@ -1,5 +1,7 @@
 import { BigNumber, hexUtils, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import { DialogContent, DialogOverlay } from '@reach/dialog';
+import '@reach/dialog/styles.css';
 import { format } from 'date-fns';
 import * as _ from 'lodash';
 import * as React from 'react';
@@ -10,7 +12,7 @@ import { CallToAction } from 'ts/components/call_to_action';
 import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { RemoveStakeDialog } from 'ts/components/staking/remove_stake_dialog';
-import { Heading } from 'ts/components/text';
+import { Heading, Paragraph } from 'ts/components/text';
 import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { useAPIClient } from 'ts/hooks/use_api_client';
@@ -109,6 +111,11 @@ export const Account: React.FC<AccountProps> = () => {
     }, [dispatch]);
 
     const account = providerState.account as AccountReady;
+    const { zrxBalanceBaseUnitAmount } = account as AccountReady;
+    let zrxBalance: BigNumber | undefined;
+    if (zrxBalanceBaseUnitAmount) {
+        zrxBalance = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
+    }
     // NOTE: not yet implemented but left in for future reference
     const voteHistory: VoteHistory[] = [];
 
@@ -128,6 +135,7 @@ export const Account: React.FC<AccountProps> = () => {
     const [allTimeRewards, setAllTimeRewards] = React.useState<BigNumber>(new BigNumber(0));
     const [votingPowerMap, setVotingPowerMap] = React.useState<PoolToVotingPowerMap>({});
     const [hasVotingPower, setHasVotingPower] = React.useState<boolean>(false);
+    const [openStakeDecisionModal, setOpenStakeDecisionModal] = React.useState<boolean>(false);
     // keeping in case we want to make use of by-pool estimated rewards
     // const [expectedCurrentEpochPoolRewards, setExpectedCurrentEpochPoolRewards] = React.useState<ExpectedPoolRewards>(undefined);
     const [expectedCurrentEpochRewards, setExpectedCurrentEpochRewards] = React.useState<BigNumber>(new BigNumber(0));
@@ -576,7 +584,19 @@ export const Account: React.FC<AccountProps> = () => {
                     {/* TODO(johnrjj) - Need to fix api response to not return a null pool  */}
                     {delegatorData.forCurrentEpoch.poolData.length === 0 ||
                     (delegatorData.forCurrentEpoch.poolData.length === 1 &&
-                        delegatorData.forCurrentEpoch.poolData[0].poolId === null) ? (
+                        delegatorData.forCurrentEpoch.poolData[0].poolId === null) ? hasVotingPower ? (
+                            <CallToAction
+                                icon="revenue"
+                                title="Earn with your ZRX"
+                                description="Register your ZRX to vote on upcoming treasury proposals"
+                                actions={[
+                                    {
+                                        label: 'Stake',
+                                        onClick: () => setOpenStakeDecisionModal(true),
+                                    },
+                                ]}
+                            />
+                        ) : (
                         <CallToAction
                             icon="revenue"
                             title="You haven't staked ZRX"
@@ -745,6 +765,41 @@ export const Account: React.FC<AccountProps> = () => {
                     });
                 }}
             />
+            <DialogOverlay
+                style={{ background: 'rgba(0, 0, 0, 0.75)', zIndex: 30 }}
+                isOpen={openStakeDecisionModal}
+                onDismiss={() => setOpenStakeDecisionModal(false)}
+            >
+                <StyledDialogContent>
+                    <Heading color={colors.textDarkPrimary} size={28} asElement="h4">
+                        You are already self delegated
+                    </Heading>
+
+                    {   zrxBalance.isGreaterThan(0) ?
+                        <>
+                            <Paragraph color={colors.textDarkSecondary}>
+                                If you want to stake your self-delegated ZRX, click the “change” button in the voting power section of your account page and choose a staking pool. Otherwise continue to stake your available ZRX.
+                            </Paragraph>
+                            <StyledParagraph color={colors.textDarkSecondary}>
+                                Available Balance: {formatZrx(zrxBalance).minimized} ZRX
+                            </StyledParagraph>
+                            <Button color={colors.white} isFullWidth={true} to={WebsitePaths.StakingWizard}>Stake Available ZRX</Button>
+                        </> :
+                        <>
+                            <Paragraph color={colors.textDarkSecondary}>
+                                If you want to stake your self-delegated ZRX. Choose a staking pool from this list
+                            </Paragraph>
+                            <StyledParagraph color={colors.textDarkSecondary}>
+                                Delegated Balance: {formatZrx(votingPowerMap['selfDelegated']).minimized} ZRX
+                            </StyledParagraph>
+                            <Button color={colors.white} isFullWidth={true} onClick={() => {
+                                setChangePoolDetails({ poolId: DEFAULT_POOL_ID, zrxAmount: zrxBalance.toNumber() });
+                            }}>Stake Delegated ZRX</Button>
+                        </>
+                    }
+                </StyledDialogContent>
+            </DialogOverlay>
+            
         </StakingPageLayout>
     );
 };
@@ -818,3 +873,11 @@ const Grid = styled.div`
     justify-content: space-between;
 `;
 // tslint:disable:max-file-line-count
+
+const StyledDialogContent = styled(DialogContent)`
+    max-width: 500px;
+`;
+
+const StyledParagraph = styled(Paragraph)`
+    margin-top: 50px;
+`;

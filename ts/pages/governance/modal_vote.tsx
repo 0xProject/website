@@ -3,7 +3,6 @@ import { BigNumber, logUtils } from '@0x/utils'
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
-import { Contract, providers } from 'ethers';
 import * as React from 'react';
 import styled from 'styled-components';
 
