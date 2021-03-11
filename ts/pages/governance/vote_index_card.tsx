@@ -204,7 +204,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
 
                                 <Paragraph>{summary[0]}</Paragraph>
                             </Column>
-                            <Column width="25%">
+                            <Column width="25%" className="flex flex-column justify-center">
                                 <div className="flex flex-column sm-col-12">
                                     <VoteStatusText status={voteStatus} />
                                     {
@@ -241,7 +241,7 @@ const Tag = styled.div`
     background-color: ${() => colors.brandLight};
     color: ${() => colors.white};
     width: 60px;
-    font-size: 12px;
+    font-size: 14px;
 
     &.zeip {
         width: 40px;
