@@ -171,7 +171,7 @@ export const Treasury: React.FC<{}> = () => {
     const heading = tokens.find((token: Token) => (token as Tokens.Heading).type === 'heading' && (token as Tokens.Heading).depth === 1);
 
     const now = moment();
-
+    console.log(proposal.endDate);
     const proposalHistoryState = {
         created: {
             done: true,
@@ -179,7 +179,7 @@ export const Treasury: React.FC<{}> = () => {
             show: true,
         }, 
         active: {
-            done: now.isAfter(proposal.startDate) && now.isBefore(proposal.endDate),
+            done: (now.isAfter(proposal.startDate) && now.isBefore(proposal.endDate)) || (!isCanceled && !isHappening && !isUpcoming && !isExecuted),
             timestamp: proposal.startDate,
             show: true,
         },
@@ -195,7 +195,7 @@ export const Treasury: React.FC<{}> = () => {
         },
         queued: {
             done: !isCanceled && !isHappening && !isUpcoming,
-            timestamp: executionStartDate,
+            timestamp: proposal.endDate,
             show: !(isCanceled || isHappening || isUpcoming || isExecuted),
         },
         executed: {
