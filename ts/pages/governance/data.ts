@@ -40,8 +40,9 @@ export interface TreasuryProposal {
     endDate: moment.Moment;
     proposer?: string;
     createdTimestamp?: moment.Moment;
-    executionStartDate: moment.Moment;
-    executionEndDate: moment.Moment;
+    executionEpochStartDate: moment.Moment;
+    executionEpochEndDate: moment.Moment;
+    executionTimestamp: moment.Moment;
     tally?: TallyInterface
 }
 
