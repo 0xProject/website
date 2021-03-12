@@ -13,7 +13,6 @@ https://0x.org/docs/guides/abcs-of-contract-fillable-liquidity
 https://0x.org/docs/guides/swap-tokens-with-0x-api
 https://0x.org/docs/guides/integrate-instant
 https://0x.org/docs/guides/ganache-setup
-https://0x.org/docs/guides/using-the-standard-relayer-api
 https://0x.org/docs/guides/web3-provider-explained
 https://0x.org/docs/guides/rfqt-in-the-0x-api
 https://0x.org/docs
