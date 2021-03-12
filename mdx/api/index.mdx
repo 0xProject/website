@@ -118,14 +118,14 @@ This section outlines API JSON objects that are common to many endpoints.
 
 ### Signed Order
 
-A [0x Limit Order](https://protocol.0x.org/en/latest/basics/orders.html#limit-orders) with additional fields and ready to be consumed by our tooling and sent to the 0x [exchange proxy contract](https://protocol.0x.org/en/latest/architecture/proxy.html).
+A [0x Limit Order](https://protocol.0x.org/en/latest/basics/orders.html#limit-orders) with additional fields and ready to be consumed by our tooling and sent to the [0x exchange proxy contract](https://protocol.0x.org/en/latest/architecture/proxy.html).
 
 | Field                    | Description                                                                                                                                                                                                                                                                                                                            |
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `maker`                  | The address of the party that creates the order. The maker is also one of the two parties that will be involved in the trade if the order gets filled.                                                                                                                                                                                 |
 | `taker`                  | The address of the party that is allowed to fill the order. If set to a specific party, the order cannot be filled by anyone else. If left unspecified, anyone can fill the order.                                                                                                                                                     |
-| `makerToken`             | The address of the ERC20 token the maker is selling and the maker is selling to the taker.                                                                                                                                                                                                                                             |
-| `takerToken`             | The address of the ERC20 token the taker is selling and the taker is selling to the maker.                                                                                                                                                                                                                                             |
+| `makerToken`             | The address of the ERC20 token the maker is selling to the taker.                                                                                                                                                                                                                                                                      |
+| `takerToken`             | The address of the ERC20 token the taker is selling to the maker.                                                                                                                                                                                                                                                                      |
 | `makerAmount`            | The amount of makerToken being sold by the maker                                                                                                                                                                                                                                                                                       |
 | `takerAmount`            | The amount of takerToken being sold by the taker.                                                                                                                                                                                                                                                                                      |
 | `expiry`                 | Timestamp in seconds of when the order expires. Expired orders cannot be filled.                                                                                                                                                                                                                                                       |
@@ -134,7 +134,7 @@ A [0x Limit Order](https://protocol.0x.org/en/latest/basics/orders.html#limit-or
 | `pool`                   | The staking pool to attribute the 0x protocol fee from this order. Set to zero to attribute to the default pool, not owned by anyone.                                                                                                                                                                                                  |
 | `takerTokenFeeAmount`    | Amount of takerToken paid by the taker to the feeRecipient.                                                                                                                                                                                                                                                                            |
 | `sender`                 | An advanced field that doesn't need to be set. It allows the maker to enforce that the order flow through some additional logic before it can be filled (e.g., a KYC whitelist) -- more on the ability to extend 0x later.                                                                                                             |
-| `verifyingContract`      | Address of the contract where the transaction should be sent.                                                                                                                                                                                                                                                                          |
+| `verifyingContract`      | Address of the contract where the transaction should be sent, usually this is the [0x exchange proxy contract](https://protocol.0x.org/en/latest/architecture/proxy.html).                                                                                                                                                             |
 | `chainId`                | The ID of the Ethereum chain where the `verifyingContract` is located.                                                                                                                                                                                                                                                                 |
 | `signature`              | A JSON object with the signature of the fields above using the private key of `maker`. The fields of the signature object are documented in the table below.                                                                                                                                                                           |
 
@@ -815,7 +815,7 @@ Identical to the response schema for `/swap/v1/quote`, with one exception: the `
 
 The Standard Relayer API is an API specification that is implemented by several 0x relayers (exchanges), including [Radar Relay](https://developers.radarrelay.com/api/0x-sra) and [Bamboo Relay](https://sra.bamboorelay.com/zrx.html).
 It allows you to interact with the liquidity of a certain relayer, including querying and posting to their orderbook.
-In the 0x API case, it allows you to query and post to [0x Mesh](https://0x-org.gitbook.io/mesh/).
+0x API SRA uses [0x Mesh](https://0x-org.gitbook.io/mesh/) as the underlying orderbook.
 The 0x API provides a superset of the SRA, and contains functionality that is not strictly part of the spec.
 
 
@@ -827,19 +827,11 @@ Retrieves a list of orders given query parameters.
 
 ### Request
 
-All the fields below are filter fields on the [signed orders](/docs/api#signed-order) that could be returned in the response.
+Any [Signed Order](/docs/api#signed-order) field can be use as a query parameter. Additional query parameters are listed below.
 
 | Field                   | Description                                                                                                                                                                                                                                                                                                                                        |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `makerToken`            | (Optional) The address of the ERC20 token the maker is selling and the maker is selling to the taker. Example `0xe41d2489571d322189246dafa5ebde1f4699f498`
-| `takerToken`            | (Optional) The address of the ERC20 token the taker is selling and the taker is selling to the maker. Example `0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2`
-| `makerAmount`           | (Optional) The amount of makerToken being sold by the maker.
-| `takerAmount`           | (Optional) The amount of takerToken being sold by the taker.
-| `maker`                 | (Optional) The address of the maker, and signer
-| `taker`                 | (Optional) Allowed taker address
-| `pool`                  | (Optional) The staking pool to attribute the 0x protocol fee from this order. Set to a padded hexadecimal zero (`0x0000000000000000000000000000000000000000000000000000000000000000`) to  filter for orders attributed to the default pool, not owned by anyone.
-| `feeRecipient`          | (Optional) The address of the recipient of taker token fee.
-| `trader`                | (Optional) The address of either the maker or the taker
+| `trader`                | (Optional) The address of either the maker or the taker                                                                                                                                                                                                                                                                                            |
 
 ### Response
 
@@ -1285,7 +1277,7 @@ This response is currently static.
 
 | Field                     | Description                                                                                                                                                                                                                                                                                                                            |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `feeRecipient`            | The entity that will receive any fees stipulated by the order. This is typically used to incentivize off-chain order relay.                                                                                                                                                                                                            |
+| `feeRecipient`            | The entity that will receive any fees stipulated by the order. This is typically used to incentivize off-chain order relay. Note that 0x API charges no fees and therefore has no `feeRecipient`.                                                                                                                                      |
 | `sender`                  | An advanced field that doesn't need to be set. It allows the maker to enforce that the order flow through some additional logic before it can be filled (e.g., a KYC whitelist) -- more on the ability to extend 0x later.                                                                                                             |
 | `takerTokenFeeAmount`     | The amount of takerToken to be paid by the taker to the `feeRecipient` in the event of an order fill.                                                                                                                                                                                                                                  |
 
