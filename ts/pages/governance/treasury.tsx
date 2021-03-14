@@ -158,7 +158,7 @@ export const Treasury: React.FC<{}> = () => {
         );
     }
 
-    const { timestamp, happening: isHappening, description, id, canceled: isCanceled, executed: isExecuted, upcoming: isUpcoming, tally, executionTimestamp } = proposal;
+    const { timestamp, happening: isHappening, description, id, canceled: isCanceled, executed: isExecuted, upcoming: isUpcoming, tally, executionTimestamp, executionEpochEndDate } = proposal;
 
     const pstOffset = '-0800';
     const deadlineToVote = moment(timestamp)?.utcOffset(pstOffset);
@@ -181,24 +181,24 @@ export const Treasury: React.FC<{}> = () => {
             show: true,
         },
         succeeded: {
-            done: !isCanceled && !isHappening && !isUpcoming && !isExecuted  || isExecuted,
+            done: (!isCanceled && !isHappening && !isUpcoming && !isExecuted  || isExecuted) && !(!executionTimestamp && now.isAfter(executionEpochEndDate)) ,
             timestamp: proposal.endDate,
-            show: !(isCanceled || isHappening || isUpcoming || isExecuted)  || isExecuted,
+            show: (!(isCanceled || isHappening || isUpcoming || isExecuted)  || isExecuted) && !(!executionTimestamp && now.isAfter(executionEpochEndDate)),
         },
         failed: {
-            done: isCanceled,
+            done: isCanceled || (!executionTimestamp && now.isAfter(executionEpochEndDate)),
             timestamp: proposal.endDate,
-            show: isCanceled,
+            show: isCanceled || (!executionTimestamp && now.isAfter(executionEpochEndDate)),
         },
         queued: {
-            done: !isCanceled && !isHappening && !isUpcoming  || isExecuted,
+            done: (!isCanceled && !isHappening && !isUpcoming  || isExecuted) && !(!proposal.executionTimestamp && now.isAfter(executionEpochEndDate)),
             timestamp: proposal.endDate,
-            show: !(isCanceled || isHappening || isUpcoming || isExecuted) || isExecuted,
+            show: !(isCanceled || isHappening || isUpcoming || isExecuted) || isExecuted && !(!executionTimestamp && now.isAfter(executionEpochEndDate)),
         },
         executed: {
-            done: isExecuted,
+            done: isExecuted && !(!proposal.executionTimestamp && now.isAfter(executionEpochEndDate)),
             timestamp: executionTimestamp,
-            show: !(isCanceled || isHappening || isUpcoming || isExecuted)  || isExecuted,
+            show: (!(isCanceled || isHappening || isUpcoming || isExecuted)  || isExecuted) && !(!executionTimestamp && now.isAfter(executionEpochEndDate)),
         },
     };
 
