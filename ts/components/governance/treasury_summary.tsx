@@ -9,10 +9,10 @@ export const TreasurySummary: React.FC<{description: string}> = ({ description }
   const paragraph = tokens.find((token: Token) => (token as Tokens.Paragraph).type === 'paragraph');
   let summary = '';
   // @ts-ignore
-  paragraph.tokens.forEach((token) => {
+  paragraph.tokens.forEach(token => {
     summary += token.text;
   });
-  
+
   return <>
     <Heading marginBottom="15px">
       {(heading as Tokens.Heading).text}

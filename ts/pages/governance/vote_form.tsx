@@ -1,5 +1,7 @@
-import { ZrxTreasuryContract } from '@0x/contracts-treasury'
+import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
+import { ZrxTreasuryContract } from '@0x/contracts-treasury';
 import { signatureUtils } from '@0x/order-utils';
+import { MetamaskSubprovider } from '@0x/subproviders';
 import { ECSignature, SignatureType } from '@0x/types';
 import { BigNumber, signTypedDataUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -10,13 +12,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
-import { State as ReduxState } from 'ts/redux/reducer';
-import { MetamaskSubprovider } from '@0x/subproviders';
 import { Button } from 'ts/components/button';
 import { Input } from 'ts/components/modals/input';
 import { Heading, Paragraph } from 'ts/components/text';
 import { PreferenceSelecter } from 'ts/pages/governance/preference_selecter';
+import { State as ReduxState } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { PoolWithStats, Providers, ProviderState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
@@ -118,7 +118,7 @@ class VoteFormComponent extends React.Component<Props> {
         return (
             <Form onSubmit={isTreasuryProposal ? this._castVote.bind(this) : this._createAndSubmitVoteAsync.bind(this)} isSuccessful={isSuccessful}>
                 <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
-                    {isTreasuryProposal ? 'Vote' :`ZEIP-${zeipId} Vote` }
+                    {isTreasuryProposal ? 'Vote' : `ZEIP-${zeipId} Vote`}
                 </Heading>
                 <Paragraph isMuted={true} color={colors.textDarkPrimary}>
                     Make sure you are informed to the best of your ability before casting your vote. It will have
@@ -254,17 +254,16 @@ class VoteFormComponent extends React.Component<Props> {
     private readonly _castVote = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
         try {
-        const { zeipId: proposalId, operatedPools, providerState, selectedAddress, currentBalance, onVoted, onTransactionSuccess } = this.props;
-        const  proposalIdBigNumber = new BigNumber(proposalId);
+            const { zeipId: proposalId, operatedPools, providerState, selectedAddress, currentBalance, onVoted, onTransactionSuccess } = this.props;
+            const  proposalIdBigNumber = new BigNumber(proposalId);
 
-        const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
+            const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
 
-        const { votePreference } = this.state;
+            const { votePreference } = this.state;
 
-        const gasInfo = await backendClient.getGasInfoAsync();
+            const gasInfo = await backendClient.getGasInfoAsync();
 
-
-            const txPromise = contract.castVote(proposalIdBigNumber, votePreference === VoteValue.Yes, operatedPools ? operatedPools.map((pool) => pool.poolId) : []).awaitTransactionSuccessAsync({ from: selectedAddress, gasPrice: gasInfo.gasPriceInWei});
+            const txPromise = contract.castVote(proposalIdBigNumber, votePreference === VoteValue.Yes, operatedPools ? operatedPools.map(pool => pool.poolId) : []).awaitTransactionSuccessAsync({ from: selectedAddress, gasPrice: gasInfo.gasPriceInWei});
             const txHash = await txPromise.txHashPromise;
             if (onVoted) {
                 this.setState({
@@ -276,13 +275,12 @@ class VoteFormComponent extends React.Component<Props> {
                     voteValue: this._getVoteValueFromString(votePreference),
                 }, txHash);
             }
-            
+
             await txPromise;
-            if(onTransactionSuccess) {
+            if (onTransactionSuccess) {
                 onTransactionSuccess();
             }
-            
-        } catch(error) {
+        } catch (error) {
             this._handleError(error.message);
         }
     };

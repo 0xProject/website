@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
-import { Heading } from 'ts/components/text';
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
 import { PanelHeader } from 'ts/components/ui/panel_header';
@@ -14,11 +13,6 @@ import { AccountReady } from 'ts/types';
 
 import { colors } from 'ts/style/colors';
 import { formatZrx } from 'ts/utils/format_number';
-
-interface UserData {
-    zrxStakedFormatted: string;
-    rewardsReceivedFormatted: string;
-}
 
 interface VotingPowerOverviewProps {
     name: string;
@@ -62,7 +56,7 @@ export const AccountVotingPowerOverview: React.StatelessComponent<VotingPowerOve
                 </PanelHeader>
 
                 <Stats>
-                    <StatFigure label="Your Delegation" value={formatZrx(delegation).formatted} isNoBorder={true} showZrxLabel={true} />
+                    <StatFigure label="Your Delegation" value={formatZrx(delegation).formatted} isNoBorder={true} shouldShowZrxLabel={true} />
                 </Stats>
             </Flex>
         </Wrap>
@@ -72,40 +66,40 @@ export const AccountVotingPowerOverview: React.StatelessComponent<VotingPowerOve
 export const AccountSelfVotingPowerOverview: React.StatelessComponent<SelfVotingPowerOverviewProps> = ({
     delegation,
     isSelfDelegated,
-    onMoveStake
+    onMoveStake,
 }) => {
-  const providerState = useSelector((state: State) => state.providerState);
+    const providerState = useSelector((state: State) => state.providerState);
 
     return (
         <Wrap>
             <Flex>
-              <Header>
-                <JazzIconContainer>
-                    <Jazzicon diameter={80} isSquare={true} seed={providerState.account && generateUniqueId((providerState.account as AccountReady).address)} />
-                </JazzIconContainer>
-                <Title>
-                    { isSelfDelegated ? 'You (self delegated)' : 'You' }
-                </Title>
-              </Header>
+                <Header>
+                    <JazzIconContainer>
+                        <Jazzicon diameter={80} isSquare={true} seed={providerState.account && generateUniqueId((providerState.account as AccountReady).address)} />
+                    </JazzIconContainer>
+                    <Title>
+                        {isSelfDelegated ? 'You (self delegated)' : 'You'}
+                    </Title>
+                </Header>
 
-              <Stats>
-                  <StatFigure label="Your Delegation" value={formatZrx(delegation).formatted} isNoBorder={true} showZrxLabel={true} />
-                  {isSelfDelegated && <ButtonWrapper>
-                      <Button
-                          color={colors.brandLight}
-                          borderColor={colors.border}
-                          bgColor={colors.white}
-                          fontSize="17px"
-                          fontWeight="400"
-                          isNoBorder={true}
-                          padding="15px 35px"
-                          onClick={onMoveStake}
-                      >
-                          Change
-                      </Button>
-                    </ButtonWrapper>
-                  }
-              </Stats>
+                <Stats>
+                    <StatFigure label="Your Delegation" value={formatZrx(delegation).formatted} isNoBorder={true} shouldShowZrxLabel={true} />
+                    {isSelfDelegated && <ButtonWrapper>
+                            <Button
+                                color={colors.brandLight}
+                                borderColor={colors.border}
+                                bgColor={colors.white}
+                                fontSize="17px"
+                                fontWeight="400"
+                                isNoBorder={true}
+                                padding="15px 35px"
+                                onClick={onMoveStake}
+                            >
+                                Change
+                            </Button>
+                        </ButtonWrapper>
+                    }
+                </Stats>
 
             </Flex>
         </Wrap>
@@ -172,64 +166,6 @@ const Title = styled.div`
 
     svg {
         margin-left: 8px;
-    }
-`;
-
-const Action = styled(FlexBase)`
-    width: calc(50% - 10px);
-    background-color: ${colors.backgroundLightGrey};
-
-    > div {
-        font-size: 18px;
-        flex-shrink: 0;
-    }
-
-    @media (min-width: 768px) {
-        padding: 20px;
-    }
-
-    @media (max-width: 768px) {
-        margin: 20px 0;
-
-        & + & {
-            border-left: 1px solid ${colors.border};
-            padding-left: 30px;
-        }
-
-        button,
-        a {
-            display: none;
-        }
-    }
-`;
-
-const InlineStats = styled(FlexBase)`
-    padding-right: 30px;
-
-    div + div {
-        margin-left: 45px;
-    }
-
-    @media (max-width: 768px) {
-        div:nth-child(2) {
-            display: none;
-        }
-    }
-`;
-
-const MobileActions = styled.div`
-    button {
-        display: block;
-        width: 100%;
-    }
-
-    a + button,
-    a + a {
-        margin-top: 16px;
-    }
-
-    @media (min-width: 768px) {
-        display: none;
     }
 `;
 

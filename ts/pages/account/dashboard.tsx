@@ -23,8 +23,8 @@ import { AccountDetail } from 'ts/pages/account/account_detail';
 import { AccountFigure } from 'ts/pages/account/account_figure';
 import { AccountRewardsOverview } from 'ts/pages/account/account_rewards_overview';
 import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
-import { AccountVotingPowerOverview, AccountSelfVotingPowerOverview } from 'ts/pages/account/account_voting_power_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
+import { AccountSelfVotingPowerOverview, AccountVotingPowerOverview } from 'ts/pages/account/account_voting_power_overview';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
@@ -111,7 +111,7 @@ export const Account: React.FC<AccountProps> = () => {
     }, [dispatch]);
 
     const account = providerState.account as AccountReady;
-    const { zrxBalanceBaseUnitAmount } = account as AccountReady;
+    const { zrxBalanceBaseUnitAmount } = account;
     let zrxBalance: BigNumber | undefined;
     if (zrxBalanceBaseUnitAmount) {
         zrxBalance = Web3Wrapper.toUnitAmount(zrxBalanceBaseUnitAmount, constants.DECIMAL_PLACES_ZRX);
@@ -135,7 +135,7 @@ export const Account: React.FC<AccountProps> = () => {
     const [allTimeRewards, setAllTimeRewards] = React.useState<BigNumber>(new BigNumber(0));
     const [votingPowerMap, setVotingPowerMap] = React.useState<PoolToVotingPowerMap>({});
     const [hasVotingPower, setHasVotingPower] = React.useState<boolean>(false);
-    const [openStakeDecisionModal, setOpenStakeDecisionModal] = React.useState<boolean>(false);
+    const [shouldOpenStakeDecisionModal, setOpenStakeDecisionModal] = React.useState<boolean>(false);
     // keeping in case we want to make use of by-pool estimated rewards
     // const [expectedCurrentEpochPoolRewards, setExpectedCurrentEpochPoolRewards] = React.useState<ExpectedPoolRewards>(undefined);
     const [expectedCurrentEpochRewards, setExpectedCurrentEpochRewards] = React.useState<BigNumber>(new BigNumber(0));
@@ -246,7 +246,7 @@ export const Account: React.FC<AccountProps> = () => {
 
             const _votingPowerMap = votingPowerPools.reduce<{ [key: string]: number }>(
                 (memo, poolData) => {
-                    if(poolData.poolId !== DEFAULT_POOL_ID) {
+                    if (poolData.poolId !== DEFAULT_POOL_ID) {
                         memo[poolData.poolId] = (poolData.zrxStaked / 2) || 0;
                         memo.self += (poolData.zrxStaked / 2) || 0;
                     } else {
@@ -257,7 +257,7 @@ export const Account: React.FC<AccountProps> = () => {
                 {self: 0, selfDelegated: 0},
             );
 
-            let hasVotingPower = Object.keys(_votingPowerMap).filter(key => _votingPowerMap[key] > 0).length > 0;
+            const doesUserHaveVotingPower = Object.keys(_votingPowerMap).filter(key => _votingPowerMap[key] > 0).length > 0;
 
             setDelegatorData(delegatorResponse);
             setStakingPools(poolsResponse.stakingPools);
@@ -268,7 +268,7 @@ export const Account: React.FC<AccountProps> = () => {
             setAllTimeRewards(_allTimeRewards);
             setExpectedCurrentEpochRewards(_expectedCurrentEpochRewards);
             setVotingPowerMap(_votingPowerMap);
-            setHasVotingPower(hasVotingPower);
+            setHasVotingPower(doesUserHaveVotingPower);
         };
 
         if (!account.address || isFetchingDelegatorData || !currentEpochRewards) {
@@ -665,16 +665,17 @@ export const Account: React.FC<AccountProps> = () => {
                             Your Voting Power
                         </Heading>
                     </SectionHeader>
-                    {Object.keys(votingPowerMap).map((key) => {
-                        const zrxAmount = votingPowerMap[key];
-                            if(['self', 'selfDelegated'].includes(key) && zrxAmount > 0) {
+                    {
+                        Object.keys(votingPowerMap).map(key => {
+                            const zrxAmount = votingPowerMap[key];
+                            if (['self', 'selfDelegated'].includes(key) && zrxAmount > 0) {
                                 return (
                                     <AccountSelfVotingPowerOverview
                                         delegation={zrxAmount}
                                         isSelfDelegated={key === 'selfDelegated'}
                                         onMoveStake={() => {
                                             setChangePoolDetails({ poolId: DEFAULT_POOL_ID, zrxAmount });
-                                        }} 
+                                        }}
                                     />
                                 );
                             }
@@ -767,7 +768,7 @@ export const Account: React.FC<AccountProps> = () => {
             />
             <DialogOverlay
                 style={{ background: 'rgba(0, 0, 0, 0.75)', zIndex: 30 }}
-                isOpen={openStakeDecisionModal}
+                isOpen={shouldOpenStakeDecisionModal}
                 onDismiss={() => setOpenStakeDecisionModal(false)}
             >
                 <StyledDialogContent>
@@ -790,16 +791,22 @@ export const Account: React.FC<AccountProps> = () => {
                                 If you want to stake your self-delegated ZRX. Choose a staking pool from this list
                             </Paragraph>
                             <StyledParagraph color={colors.textDarkSecondary}>
-                                Delegated Balance: {formatZrx(votingPowerMap['selfDelegated']).minimized} ZRX
+                                Delegated Balance: {formatZrx(votingPowerMap.selfDelegated).minimized} ZRX
                             </StyledParagraph>
-                            <Button color={colors.white} isFullWidth={true} onClick={() => {
-                                setChangePoolDetails({ poolId: DEFAULT_POOL_ID, zrxAmount: zrxBalance.toNumber() });
-                            }}>Stake Delegated ZRX</Button>
+                            <Button
+                                color={colors.white}
+                                isFullWidth={true}
+                                onClick={() => {
+                                    setChangePoolDetails({ poolId: DEFAULT_POOL_ID, zrxAmount: zrxBalance.toNumber() });
+                                }}
+                            >
+                                Stake Delegated ZRX
+                            </Button>
                         </>
                     }
                 </StyledDialogContent>
             </DialogOverlay>
-            
+
         </StakingPageLayout>
     );
 };

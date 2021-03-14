@@ -1,13 +1,12 @@
-import { ZrxTreasuryContract } from '@0x/contracts-treasury';
+// import { ZrxTreasuryContract } from '@0x/contracts-treasury';
 import { BigNumber } from '@0x/utils';
-import { Contract, providers } from 'ethers';
 import { gql, request } from 'graphql-request';
 import * as _ from 'lodash';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 import * as React from 'react';
 import { useQuery } from 'react-query';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
@@ -19,10 +18,10 @@ import { Heading, Paragraph } from 'ts/components/text';
 import { Text } from 'ts/components/ui/text';
 import { Proposal, proposals as prodProposals, stagingProposals, TreasuryProposal } from 'ts/pages/governance/data';
 import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
-import { State } from 'ts/redux/reducer';
+// import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { OnChainProposal, TallyInterface, VotingCardType } from 'ts/types';
-import { ALCHEMY_API_KEY, configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
+import { configs, GOVERNANCE_THEGRAPH_ENDPOINT } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
@@ -151,14 +150,14 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [isLoading, setLoading] = React.useState<boolean>(true);
     const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
     const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
-    const providerState = useSelector((state: State) => state.providerState);
+    // const providerState = useSelector((state: State) => state.providerState);
 
     const { data, isLoading: isQueryLoading } = useQuery('proposals', async () => {
         const { proposals: treasuryProposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS);
         return treasuryProposals;
     });
 
-    const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
+    // const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
 
     React.useEffect(() => {
         // tslint:disable-next-line: no-floating-promises

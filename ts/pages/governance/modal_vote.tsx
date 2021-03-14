@@ -1,5 +1,5 @@
 import { ZrxTreasuryContract } from '@0x/contracts-treasury';
-import { BigNumber, logUtils } from '@0x/utils'
+import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
@@ -20,8 +20,8 @@ import { VoteForm, VoteInfo } from 'ts/pages/governance/vote_form';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { AccountReady,EtherscanLinkSuffixes,PoolWithStats } from 'ts/types';
-import { ALCHEMY_API_KEY, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
+import { AccountReady, EtherscanLinkSuffixes, PoolWithStats } from 'ts/types';
+import { GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { utils } from 'ts/utils/utils';
@@ -211,10 +211,10 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
     React.useEffect(() => {
         const fetchVotingPower = async () => {
             const poolsResponse = await apiClient.getStakingPoolsAsync();
-            const operatedPools = poolsResponse.stakingPools.filter(p => p.operatorAddress === account.address);
-            setOperatedPools(operatedPools);
+            const userOperatedPools = poolsResponse.stakingPools.filter(p => p.operatorAddress === account.address);
+            setOperatedPools(userOperatedPools);
 
-            const votingPower = await contract.getVotingPower(account.address, operatedPools ? operatedPools.map((pool) => pool.poolId) : []).callAsync();
+            const votingPower = await contract.getVotingPower(account.address, userOperatedPools ? userOperatedPools.map(pool => pool.poolId) : []).callAsync();
             const votingPowerBigNumber = new BigNumber(votingPower.toNumber());
             setCurrentVotingPower(votingPowerBigNumber);
         };
@@ -243,15 +243,16 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
     const [isSuccessful, setSuccess] = React.useState(false);
     const [ isWaitingForConfirmation, setWaitingForConfirmation] = React.useState<boolean>(false);
     const [ txHash, setTxHash] = React.useState<string>(null);
-    const onVoted = React.useCallback((voteInfo: VoteInfo, txHash?: string) => {
+    const onVoted = React.useCallback((voteInfo: VoteInfo, hash?: string) => {
         setWaitingForConfirmation(true);
-        setTxHash(txHash);
+        setTxHash(hash);
         onVoteInfoReceived(voteInfo);
     }, [onVoteInfoReceived]);
 
     const onTransactionSuccess = () => {
         setSuccess(true);
-    }
+    };
+
     const [errorMessage, setErrorMessage] = React.useState<string | undefined>(undefined);
     const [isErrorModalOpen, setErrorModalOpen] = React.useState(false);
     const onVoteError = React.useCallback((message: string) => {
@@ -309,8 +310,11 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
         onToggleConnectWalletDialog(true);
         return <div />;
     }
+
     onToggleConnectWalletDialog(false);
-    const etherscanUrl = utils.getEtherScanLinkIfExists(txHash, networkId, EtherscanLinkSuffixes.Tx)
+
+    const etherscanUrl = utils.getEtherScanLinkIfExists(txHash, networkId, EtherscanLinkSuffixes.Tx);
+
     return (
         <>
             <DialogOverlay
@@ -359,7 +363,7 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
             </DialogOverlay>
         </>
     );
-}
+};
 
 const StyledDialogContent = styled(DialogContent)`
     position: relative;

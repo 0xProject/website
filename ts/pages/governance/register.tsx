@@ -13,17 +13,16 @@ import { Splitview } from 'ts/components/staking/wizard/splitview';
 import { StartStaking, VotingPowerConfirmation } from 'ts/components/staking/wizard/wizard_flow';
 import { ConfirmationWizardInfo, VotingPowerWizardInfo } from 'ts/components/staking/wizard/wizard_info';
 import { Heading } from 'ts/components/text';
+import { Text } from 'ts/components/ui/text';
 import { useAPIClient } from 'ts/hooks/use_api_client';
-import { useStake } from 'ts/hooks/use_stake';
 import { RegisterRouterSteps, useRegisterWizard } from 'ts/hooks/use_register_wizard';
+import { useStake } from 'ts/hooks/use_stake';
 import { State } from 'ts/redux/reducer';
+import { colors } from 'ts/style/colors';
 import { AccountReady, Epoch, PoolWithStats, ProviderState, StakingPoolRecomendation, WebsitePaths } from 'ts/types';
 import { DEFAULT_POOL_ID } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { formatZrx } from 'ts/utils/format_number';
-import { colors } from 'ts/style/colors';
-import { Text } from 'ts/components/ui/text';
-import { WizardRouterSteps } from 'ts/hooks/use_wizard';
 
 interface IRegisterWizardProps {
   providerState: ProviderState;
@@ -46,7 +45,7 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = props => {
   const [selectedPool, setSelectedPool] = React.useState<StakingPoolRecomendation>({ pool: undefined, zrxAmount: undefined});
   const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
   const stake = useStake(networkId, providerState);
-  const [showDecisionScreen, setShowDecisionScreen] = React.useState<boolean>(true);
+  const [shouldShowDecisionScreen, setShowDecisionScreen] = React.useState<boolean>(true);
 
   const { zrxBalanceBaseUnitAmount, address } = providerState.account as AccountReady;
   let zrxBalance: BigNumber | undefined;
@@ -82,80 +81,76 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = props => {
       });
       next(RegisterRouterSteps.VotingPower);
     } else {
-      try {
-        await stake.depositAndStake(
+        stake.depositAndStake(
           [{
             poolId: DEFAULT_POOL_ID,
             zrxAmount,
           }],
         );
         next(RegisterRouterSteps.Success);
-      } catch(error) {
-        console.log(error);
-      }
     }
   };
 
   return (
     <StakingPageLayout isHome={false} title="Register to Vote">
-        <Container>
-          {
-            showDecisionScreen ? 
-            <FlowSelector onClose={() => setShowDecisionScreen(false)} /> :
-            <Splitview
-              leftComponent={
-                <>
-                  {
-                    currentStep === RegisterRouterSteps.Start &&
-                    <StartRegistrationInfo />
-                  }
-                  {
-                    currentStep === RegisterRouterSteps.VotingPower &&
-                    <VotingPowerWizardInfo />
-                  }
-                  {currentStep === RegisterRouterSteps.ReadyToStake && (
-                    <ConfirmationWizardInfo nextEpochStats={nextEpochStats} />
-                  )}
-                  {
-                    currentStep === RegisterRouterSteps.Success &&
-                    <RegistrationSuccessInfo />
-                  }
-                </>
-              }
-              rightComponent={
-                <>
-                  {
-                    currentStep === RegisterRouterSteps.Start &&
-                    <VotingPowerInput
-                      userZRXBalance={roundedZrxBalance}
-                      onOpenConnectWalletDialog={onOpenConnectWalletDialog}
-                      address={address}
-                      onNextButtonClick={onNextButtonClick}
-                      stakingPools={stakingPools}
-                      nextEpochStart={nextEpochStart}
-                    />
-                  }
-                  {
-                    currentStep === RegisterRouterSteps.VotingPower &&
-                    <VotingPowerConfirmation
-                      selectedStakingPools={selectedPool ? [selectedPool] : []}
+      <Container>
+        {
+          shouldShowDecisionScreen ?
+          <FlowSelector onClose={() => setShowDecisionScreen(false)} /> :
+          <Splitview
+            leftComponent={
+              <>
+                {
+                  currentStep === RegisterRouterSteps.Start &&
+                  <StartRegistrationInfo />
+                }
+                {
+                  currentStep === RegisterRouterSteps.VotingPower &&
+                  <VotingPowerWizardInfo />
+                }
+                {currentStep === RegisterRouterSteps.ReadyToStake && (
+                  <ConfirmationWizardInfo nextEpochStats={nextEpochStats} />
+                )}
+                {
+                  currentStep === RegisterRouterSteps.Success &&
+                  <RegistrationSuccessInfo />
+                }
+              </>
+            }
+            rightComponent={
+              <>
+                {
+                  currentStep === RegisterRouterSteps.Start &&
+                  <VotingPowerInput
+                    userZRXBalance={roundedZrxBalance}
+                    onOpenConnectWalletDialog={onOpenConnectWalletDialog}
+                    address={address}
+                    onNextButtonClick={onNextButtonClick}
+                    stakingPools={stakingPools}
+                    nextEpochStart={nextEpochStart}
+                  />
+                }
+                {
+                  currentStep === RegisterRouterSteps.VotingPower &&
+                  <VotingPowerConfirmation
+                    selectedStakingPools={selectedPool ? [selectedPool] : []}
+                    providerState={providerState}
+                    onGoToNextStep={() => next(RegisterRouterSteps.ReadyToStake)}
+                  />
+                }
+                {currentStep === RegisterRouterSteps.ReadyToStake && (
+                  <StartStaking
+                      stake={stake}
+                      nextEpochStats={nextEpochStats}
                       providerState={providerState}
-                      onGoToNextStep={() => next(RegisterRouterSteps.ReadyToStake)}
-                    />
-                  }
-                  {currentStep === RegisterRouterSteps.ReadyToStake && (
-                    <StartStaking
-                        stake={stake}
-                        nextEpochStats={nextEpochStats}
-                        providerState={providerState}
-                        selectedStakingPools={[selectedPool]}
-                    />
-                  )}
-                  {
-                    currentStep === RegisterRouterSteps.Success &&
-                    <RegistrationSuccess nextEpochStart={nextEpochStart} />
-                  }
-                </>
+                      selectedStakingPools={[selectedPool]}
+                  />
+                )}
+                {
+                  currentStep === RegisterRouterSteps.Success &&
+                  <RegistrationSuccess nextEpochStart={nextEpochStart} />
+                }
+              </>
             }
           />
         }
@@ -174,9 +169,9 @@ const FlowSelector: React.FC<{onClose: () => void}> = ({ onClose }) => {
               </Heading>
           </Column>
           <Flex>
-            <Section maxWidth="auto" wrapWidth="100%" flexBreakpoint="900px" bgColor='#FBFBFB' minHeight='410px' margin='0 10px' padding='60px 20px 0' isFlex={true}>
+            <Section maxWidth="auto" wrapWidth="100%" flexBreakpoint="900px" bgColor="#FBFBFB" minHeight="410px" margin="0 10px" padding="60px 20px 0" isFlex={true}>
               <Column>
-                <Text fontColor={colors.black} fontFamily='Formular' fontSize='28px' textAlign='center'>Register</Text>
+                <Text fontColor={colors.black} fontFamily="Formular" fontSize="28px" textAlign="center">Register</Text>
                 <List>
                   <Item>
                   <ListIcon src="/images/governance/list_icon.svg" />
@@ -184,15 +179,15 @@ const FlowSelector: React.FC<{onClose: () => void}> = ({ onClose }) => {
                   </Item>
                   <Item>
                   <ListIcon src="/images/governance/list_icon.svg" />
-                  You can still opt in to staking later. Staking takes effect at the beginning of an epoch. 
+                    You can still opt in to staking later. Staking takes effect at the beginning of an epoch.
                   </Item>
                 </List>
                 <Button isFullWidth={true} onClick={onClose} color={colors.white}>Register your ZRX</Button>
               </Column>
             </Section>
-            <Section maxWidth="auto" wrapWidth="100%" flexBreakpoint="900px" bgColor='#FBFBFB' minHeight='410px' margin='0 10px' padding='60px 20px 0' isFlex={true}>
+            <Section maxWidth="auto" wrapWidth="100%" flexBreakpoint="900px" bgColor="#FBFBFB" minHeight="410px" margin="0 10px" padding="60px 20px 0" isFlex={true}>
               <Column>
-                <Text fontColor={colors.black} fontFamily='Formular' fontSize='28px' textAlign='center'>Stake + Register</Text>
+                <Text fontColor={colors.black} fontFamily="Formular" fontSize="28px" textAlign="center">Stake + Register</Text>
                 <List>
                   <Item>
                   <ListIcon src="/images/governance/list_icon.svg" />
@@ -200,7 +195,7 @@ const FlowSelector: React.FC<{onClose: () => void}> = ({ onClose }) => {
                   </Item>
                   <Item>
                   <ListIcon src="/images/governance/list_icon.svg" />
-                  You will earn a proportion of the rewards generated by the staking pool of your choice. 
+                    You will earn a proportion of the rewards generated by the staking pool of your choice.
                   </Item>
                 </List>
                 <Button isFullWidth={true} to={WebsitePaths.StakingWizard} color={colors.white}>Stake and Register your ZRX</Button>
@@ -208,9 +203,8 @@ const FlowSelector: React.FC<{onClose: () => void}> = ({ onClose }) => {
             </Section>
           </Flex>
         </Section>
-  )
-
-}
+  );
+};
 
 const Flex = styled.div`
   display: flex;

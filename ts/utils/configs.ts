@@ -15,7 +15,7 @@ export const GOVERNOR_CONTRACT_ADDRESS = {
     ZRX: '0x5d8C9Ba74607D2cbc4176882A42D4ACE891c1c00',
 };
 
-export const DEFAULT_POOL_ID = "46";
+export const DEFAULT_POOL_ID = '46';
 
 export const GOVERNANCE_THEGRAPH_ENDPOINT = 'https://api.thegraph.com/subgraphs/name/mzhu25/zeroex-staking';
 

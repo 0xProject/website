@@ -8,7 +8,7 @@ interface StatFigureProps {
     label: string;
     value: string;
     isNoBorder?: boolean;
-    showZrxLabel?: boolean;
+    shouldShowZrxLabel?: boolean;
 }
 
 const Wrap = styled.div`
@@ -28,7 +28,7 @@ export const StatFigure: React.StatelessComponent<StatFigureProps> = ({
     label,
     value,
     isNoBorder,
-    showZrxLabel,
+    shouldShowZrxLabel,
 }) => {
     return (
         <Wrap>
@@ -36,7 +36,7 @@ export const StatFigure: React.StatelessComponent<StatFigureProps> = ({
                 {label}
             </Heading>
 
-            {value} {showZrxLabel ? 'ZRX': ''}
+            {value} {shouldShowZrxLabel ? 'ZRX' : ''}
         </Wrap>
     );
 };

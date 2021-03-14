@@ -1,16 +1,12 @@
-import { ZrxTreasuryContract } from '@0x/contracts-treasury';
 import { BigNumber } from '@0x/utils';
-import * as _ from 'lodash';
 import { gql, request } from 'graphql-request';
+import * as _ from 'lodash';
 import marked, { Token, Tokens } from 'marked';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
-import { useSelector } from 'react-redux';
-import {
-    useQuery,
-} from 'react-query';
+import { useQuery } from 'react-query';
 import { Redirect, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -26,14 +22,12 @@ import { Countdown } from 'ts/pages/governance/countdown';
 import { TreasuryProposal } from 'ts/pages/governance/data';
 import { ModalTreasuryVote } from 'ts/pages/governance/modal_vote';
 import { VoteInfo, VoteValue } from 'ts/pages/governance/vote_form';
-import { getDateString } from 'ts/pages/governance/vote_index_card';
 import { VoteStats } from 'ts/pages/governance/vote_stats';
-import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { WebsitePaths } from 'ts/types';
-import { utils } from 'ts/utils/utils';
-import { ALCHEMY_API_KEY, configs, GOVERNOR_CONTRACT_ADDRESS, GOVERNANCE_THEGRAPH_ENDPOINT } from 'ts/utils/configs';
+import { configs, GOVERNANCE_THEGRAPH_ENDPOINT } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
+import { utils } from 'ts/utils/utils';
 
 const FETCH_PROPOSAL = gql`
   query proposal($id: ID!) {
@@ -68,20 +62,17 @@ export const Treasury: React.FC<{}> = () => {
     const [isVoteModalOpen, setIsVoteModalOpen] = React.useState<boolean>(false);
     const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
     const { id: proposalId } = useParams();
-    const providerState = useSelector((state: State) => state.providerState);
 
     const { data } = useQuery('proposal', async () => {
-        const { proposal } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSAL, {
+        const { proposal: proposalFromGraph } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSAL, {
             id: proposalId,
-        })
-        return proposal;
+        });
+
+        return proposalFromGraph;
     });
 
-
-
-    const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
-
     React.useEffect(() => {
+        // tslint:disable-next-line:no-floating-promises
         (async () => {
             // const qThreshold = await contract.quorumThreshold().callAsync();
             // setQuorumThreshold(qThreshold);
@@ -90,6 +81,8 @@ export const Treasury: React.FC<{}> = () => {
         })();
 
         if (data) {
+            // Disabling linter to allow for shadowed variables
+            // tslint:disable no-shadowed-variable
             const { id, votesAgainst, votesFor, description, executionTimestamp, voteEpoch, createdTimestamp, executionEpoch } = data;
             const againstVotes = new BigNumber(votesAgainst);
             const forVotes = new BigNumber(votesFor);
@@ -113,7 +106,8 @@ export const Treasury: React.FC<{}> = () => {
             const isUpcoming = now.isBefore(startDate);
             const isHappening = now.isAfter(startDate) && now.isBefore(endDate);
             const timestamp = isHappening ? endDate : isUpcoming ? startDate : endDate;
-            console.log(timestamp);
+            // tslint:enable no-shadowed-variable
+
             setProposal({
                 proposer: data.proposer,
                 id,
@@ -139,15 +133,15 @@ export const Treasury: React.FC<{}> = () => {
 
     const onVoteReceived = (voteInfo: VoteInfo): void => {
         const { userBalance, voteValue } = voteInfo;
-        const tally = { ...proposal.tally };
+        const voteTally = { ...proposal.tally };
         if (voteValue === VoteValue.Yes) {
-            tally.yes = tally.yes.plus(userBalance);
+            voteTally.yes = voteTally.yes.plus(userBalance);
         } else {
-            tally.no = tally.no.plus(userBalance);
+            voteTally.no = voteTally.no.plus(userBalance);
         }
         setProposal({
             ...proposal,
-            tally
+            tally: voteTally,
         });
         setIsVoteReceived(true);
     };
@@ -164,7 +158,7 @@ export const Treasury: React.FC<{}> = () => {
         );
     }
 
-    const { forVotes, againstVotes, timestamp, happening: isHappening, description, id, canceled: isCanceled, executed: isExecuted, upcoming: isUpcoming, executionEpochStartDate, executionEpochEndDate, tally, executionTimestamp } = proposal;
+    const { timestamp, happening: isHappening, description, id, canceled: isCanceled, executed: isExecuted, upcoming: isUpcoming, tally, executionTimestamp } = proposal;
 
     const pstOffset = '-0800';
     const deadlineToVote = moment(timestamp)?.utcOffset(pstOffset);
@@ -180,7 +174,7 @@ export const Treasury: React.FC<{}> = () => {
             done: true,
             timestamp: proposal.createdTimestamp,
             show: true,
-        }, 
+        },
         active: {
             done: (now.isAfter(proposal.startDate) && now.isBefore(proposal.endDate)) || (!isCanceled && !isHappening && !isUpcoming && !isExecuted) || isExecuted,
             timestamp: proposal.startDate,
@@ -205,8 +199,8 @@ export const Treasury: React.FC<{}> = () => {
             done: isExecuted,
             timestamp: executionTimestamp,
             show: !(isCanceled || isHappening || isUpcoming || isExecuted)  || isExecuted,
-        }
-    }
+        },
+    };
 
     return (
         <StakingPageLayout isHome={false} title="0x Treasury">
@@ -217,7 +211,7 @@ export const Treasury: React.FC<{}> = () => {
                      <Countdown deadline={deadlineToVote} />
                      <Tag>Treasury</Tag>
                      <Heading size="medium" marginBottom="0px">{(heading as Tokens.Heading).text}</Heading>
-                     <StyledText fontColor={colors.textDarkSecondary} fontSize="18px" fontWeight={300} fontFamily='Formular'>Submitted by: {utils.getAddressBeginAndEnd(proposal.proposer)}</StyledText>
+                     <StyledText fontColor={colors.textDarkSecondary} fontSize="18px" fontWeight={300} fontFamily="Formular">Submitted by: {utils.getAddressBeginAndEnd(proposal.proposer)}</StyledText>
                      <Paragraph>
                          <StyledMarkdown>
                              <ReactMarkdown children={description.replace(heading.raw, '')} />
@@ -225,9 +219,8 @@ export const Treasury: React.FC<{}> = () => {
                      </Paragraph>
                  </Column>
                  <Column width="30%" maxWidth="300px">
-                    <Text fontColor={colors.textDarkSecondary} fontSize='18px' fontWeight={300} fontFamily='Formular'>
-                    </Text>
-                     { tally && <VoteStats tally={tally} /> }
+                    <Text fontColor={colors.textDarkSecondary} fontSize="18px" fontWeight={300} fontFamily="Formular" />
+                     {tally && <VoteStats tally={tally} />}
                      {isVoteActive && (
                          <VoteButton onClick={() => setIsVoteModalOpen(true)} isWithArrow={false}>
                              {isVoteReceived ? 'Vote Received' : 'Vote'}
@@ -247,7 +240,7 @@ export const Treasury: React.FC<{}> = () => {
                                     }
                                     return (
                                         <>
-                                            <Tick isActive={historyState.done} isFailed={state === 'failed'}><img src={ state === 'failed' ? "/images/governance/cross.svg" : "/images/governance/tick_mark.svg"} /></Tick>
+                                            <Tick isActive={historyState.done} isFailed={state === 'failed'}><img src={state === 'failed' ? '/images/governance/cross.svg' : '/images/governance/tick_mark.svg'} /></Tick>
                                             {
                                                 !['executed', 'failed'].includes(state) &&
                                                 <Connector className={state === 'queued' ? 'small' : ''} />
@@ -265,11 +258,11 @@ export const Treasury: React.FC<{}> = () => {
                                         return null;
                                     }
                                     return (
-                                        <CellContent>
-                                            <StateTitle fontColor={colors.textDarkSecondary} fontFamily='Formular' fontSize='18px' fontWeight={400}>{state}</StateTitle>
-                                            <Text fontColor={colors.textDarkSecondary} fontFamily='Formular' fontSize='17px' fontWeight={300}>{historyState.done ? historyState.timestamp.format("MMMM Do, YYYY - hh:mm a") : 'TBD'}</Text>
+                                        <CellContent key={state}>
+                                            <StateTitle fontColor={colors.textDarkSecondary} fontFamily="Formular" fontSize="18px" fontWeight={400}>{state}</StateTitle>
+                                            <Text fontColor={colors.textDarkSecondary} fontFamily="Formular" fontSize="17px" fontWeight={300}>{historyState.done ? historyState.timestamp.format('MMMM Do, YYYY - hh:mm a') : 'TBD'}</Text>
                                         </CellContent>
-                                    )
+                                    );
                                 })
                             }
                         </HistoryCells>

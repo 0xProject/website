@@ -1,3 +1,4 @@
+import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import * as React from 'react';
@@ -36,14 +37,14 @@ interface TreasuryCardProps {
     description: string;
     tally?: TallyInterface;
     status?: string;
-    quorumThreshold: BigNumber,
+    quorumThreshold: BigNumber;
+    startDate: moment.Moment;
+    endDate: moment.Moment;
+    forVotes: BigNumber;
+    againstVotes: BigNumber;
 }
 
 type VoteIndexCardProps = ZEIPCardProps | TreasuryCardProps;
-
-// export interface VoteIndexCardProps {
-
-// }
 
 const getVoteTime = (voteStartDate: moment.Moment, voteEndDate: moment.Moment): VoteTime | undefined => {
     const now = moment();
@@ -116,15 +117,13 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                 id,
                 description,
                 canceled: isCanceled,
-                executed: isExecuted,
                 upcoming: isUpcoming,
                 happening: isHappening,
-                timestamp,
                 startDate,
                 endDate,
                 againstVotes,
                 forVotes,
-                quorumThreshold
+                quorumThreshold,
             } = props;
             return (
                 <ReactRouterLink style={{ order }} to={`${WebsitePaths.Vote}/proposal/${id}`}>
