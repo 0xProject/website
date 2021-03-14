@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'ts/components/button';
 import { ButtonClose } from 'ts/components/modals/button_close';
 import { Heading, Paragraph } from 'ts/components/text';
+import { Spinner } from 'ts/components/ui/spinner';
 import { GlobalStyle } from 'ts/constants/globalStyle';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 import { ErrorModal } from 'ts/pages/governance/error_modal';
@@ -19,10 +20,11 @@ import { VoteForm, VoteInfo } from 'ts/pages/governance/vote_form';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { AccountReady,PoolWithStats } from 'ts/types';
+import { AccountReady,EtherscanLinkSuffixes,PoolWithStats } from 'ts/types';
 import { ALCHEMY_API_KEY, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
+import { utils } from 'ts/utils/utils';
 
 interface ModalVoteProps {
     theme?: GlobalStyle;
@@ -239,10 +241,17 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
     );
 
     const [isSuccessful, setSuccess] = React.useState(false);
-    const onVoted = React.useCallback((voteInfo: VoteInfo) => {
-        setSuccess(true);
+    const [ isWaitingForConfirmation, setWaitingForConfirmation] = React.useState<boolean>(false);
+    const [ txHash, setTxHash] = React.useState<string>(null);
+    const onVoted = React.useCallback((voteInfo: VoteInfo, txHash?: string) => {
+        setWaitingForConfirmation(true);
+        setTxHash(txHash);
         onVoteInfoReceived(voteInfo);
     }, [onVoteInfoReceived]);
+
+    const onTransactionSuccess = () => {
+        setSuccess(true);
+    }
     const [errorMessage, setErrorMessage] = React.useState<string | undefined>(undefined);
     const [isErrorModalOpen, setErrorModalOpen] = React.useState(false);
     const onVoteError = React.useCallback((message: string) => {
@@ -286,6 +295,7 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
                     onError={onVoteError}
                     isTreasuryProposal={true}
                     operatedPools={operatedPools}
+                    onTransactionSuccess={onTransactionSuccess}
                 />
             </>
         );
@@ -300,6 +310,7 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
         return <div />;
     }
     onToggleConnectWalletDialog(false);
+    const etherscanUrl = utils.getEtherScanLinkIfExists(txHash, networkId, EtherscanLinkSuffixes.Tx)
     return (
         <>
             <DialogOverlay
@@ -309,6 +320,23 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
             >
                 <StyledDialogContent>
                     {!isErrorModalOpen && _renderVoteFormContent()}
+                    <Confirmation isSuccessful={isWaitingForConfirmation && !isSuccessful}>
+                        <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
+                            Waiting for transaction confirmation!
+                        </Heading>
+                        <Paragraph isMuted={true} color={colors.textDarkPrimary}>
+                            <SpinnerContainer>
+                                <Spinner height={100} color={colors.brandLight} />
+                            </SpinnerContainer>
+                            Your transaction hash is:<br />
+                            {txHash}
+                        </Paragraph>
+                        <ButtonWrap>
+                            <Button type="button" href={etherscanUrl} target="_blank">
+                                View Transaction
+                            </Button>
+                        </ButtonWrap>
+                    </Confirmation>
                     <Confirmation isSuccessful={isSuccessful}>
                         <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
                             Vote Received!
@@ -386,4 +414,9 @@ const ButtonWrap = styled.div`
             margin-top: 15px;
         }
     }
+`;
+
+const SpinnerContainer = styled.div`
+    height: 100px;
+    margin-bottom: 20px;
 `;

@@ -42,7 +42,8 @@ export interface VoteInfo {
 interface Props {
     onDismiss?: () => void;
     onError?: (errorMessage: string) => void;
-    onVoted?: (userInfo: VoteInfo) => void;
+    onVoted?: (userInfo: VoteInfo, txHash?: string) => void;
+    onTransactionSuccess?: () => void;
     currentBalance?: BigNumber;
     providerState: ProviderState;
     selectedAddress: string;
@@ -253,7 +254,7 @@ class VoteFormComponent extends React.Component<Props> {
     private readonly _castVote = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
         try {
-        const { zeipId: proposalId, operatedPools, providerState, selectedAddress, currentBalance } = this.props;
+        const { zeipId: proposalId, operatedPools, providerState, selectedAddress, currentBalance, onVoted, onTransactionSuccess } = this.props;
         const  proposalIdBigNumber = new BigNumber(proposalId);
 
         const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
@@ -263,16 +264,24 @@ class VoteFormComponent extends React.Component<Props> {
         const gasInfo = await backendClient.getGasInfoAsync();
 
 
-            await contract.castVote(proposalIdBigNumber, votePreference === VoteValue.Yes, operatedPools ? operatedPools.map((pool) => pool.poolId) : []).awaitTransactionSuccessAsync({ from: selectedAddress, gasPrice: gasInfo.gasPriceInWei});
-            if (this.props.onVoted) {
+            const txPromise = contract.castVote(proposalIdBigNumber, votePreference === VoteValue.Yes, operatedPools ? operatedPools.map((pool) => pool.poolId) : []).awaitTransactionSuccessAsync({ from: selectedAddress, gasPrice: gasInfo.gasPriceInWei});
+            const txHash = await txPromise.txHashPromise;
+            if (onVoted) {
                 this.setState({
                     isSuccessful: true,
+                    voteHash: txHash,
                 });
-                this.props.onVoted({
+                onVoted({
                     userBalance: currentBalance,
                     voteValue: this._getVoteValueFromString(votePreference),
-                });
+                }, txHash);
             }
+            
+            await txPromise;
+            if(onTransactionSuccess) {
+                onTransactionSuccess();
+            }
+            
         } catch(error) {
             this._handleError(error.message);
         }
