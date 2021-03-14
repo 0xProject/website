@@ -78,8 +78,8 @@ const Container = styled.div`
         flex-direction: row;
         padding-right: 50px;
         padding-bottom: 0px;
-        width: 90%;
-        margin: auto;
+        width: auto;
+        margin: auto 30px;
     }
 `;
 

@@ -50,6 +50,7 @@ const FETCH_PROPOSAL = gql`
           endTimestamp
         }
         executionEpoch {
+          id
           startTimestamp
           endTimestamp
         }
@@ -111,8 +112,8 @@ export const Treasury: React.FC<{}> = () => {
             const now = moment();
             const isUpcoming = now.isBefore(startDate);
             const isHappening = now.isAfter(startDate) && now.isBefore(endDate);
-            const timestamp = isHappening ? endDate : isUpcoming ? startDate : executionTimestamp ? executionTimestampMoment : endDate;
-
+            const timestamp = isHappening ? endDate : isUpcoming ? startDate : endDate;
+            console.log(timestamp);
             setProposal({
                 proposer: data.proposer,
                 id,
@@ -225,7 +226,6 @@ export const Treasury: React.FC<{}> = () => {
                  </Column>
                  <Column width="30%" maxWidth="300px">
                     <Text fontColor={colors.textDarkSecondary} fontSize='18px' fontWeight={300} fontFamily='Formular'>
-                    {getDateString(proposal.startDate, proposal.endDate)}
                     </Text>
                      { tally && <VoteStats tally={tally} /> }
                      {isVoteActive && (
@@ -336,8 +336,8 @@ const Tag = styled.div`
     justify-content: center;
     background-color: ${() => colors.yellow500};
     color: ${() => colors.white};
-    width: 60px;
-    font-size: 12px;
+    width: 80px;
+    font-size: 17px;
     margin-bottom: 12px;
 `;
 
@@ -363,8 +363,8 @@ const Ticks = styled.div`
 `;
 
 const Tick = styled.div<{ isActive: boolean; isFailed: boolean}>`
-    height: 35px;
-    width: 35px;
+    height: 29px;
+    width: 29px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -378,12 +378,12 @@ const Tick = styled.div<{ isActive: boolean; isFailed: boolean}>`
 `;
 
 const Connector = styled.div`
-    height: 30px;
+    height: 36px;
     width: 1px;
     background-color: ${() => colors.border};
 
     &.small {
-        height: 25px;
+        height: 31px;
         margin-bottom: 5px;
     }
 `;

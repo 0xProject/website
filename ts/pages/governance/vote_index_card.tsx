@@ -201,12 +201,12 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                         <FlexWrap>
                             <Column width="60%" padding="0px 20px 0px 0px">
                                 <Tag className="zeip">ZEIP</Tag>
-                                <Heading>
+                                <Heading marginBottom="15px">
                                     {`${title} `}
                                     <Muted>{`(ZEIP-${zeipId})`}</Muted>
                                 </Heading>
 
-                                <Paragraph>{summary[0]}</Paragraph>
+                                <Paragraph marginBottom="20px">{summary[0]}</Paragraph>
                             </Column>
                             <Column width="25%" className="flex flex-column justify-center">
                                 <div className="flex flex-column sm-col-12">
@@ -244,11 +244,12 @@ const Tag = styled.div`
     justify-content: center;
     background-color: ${() => colors.brandLight};
     color: ${() => colors.white};
-    width: 60px;
-    font-size: 14px;
+    width: 80px;
+    font-size: 17px;
+    margin-bottom: 10px;
 
     &.zeip {
-        width: 40px;
+        width: 50px;
         background-color: ${() => colors.yellow500};
     }
 `;

@@ -14,9 +14,9 @@ export const TreasurySummary: React.FC<{description: string}> = ({ description }
   });
   
   return <>
-    <Heading marginBottom="20px">
+    <Heading marginBottom="15px">
       {(heading as Tokens.Heading).text}
     </Heading>
-    <Paragraph>{summary}</Paragraph>
+    <Paragraph marginBottom="20px">{summary}</Paragraph>
   </>;
 };
