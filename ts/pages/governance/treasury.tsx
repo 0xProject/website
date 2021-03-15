@@ -158,7 +158,7 @@ export const Treasury: React.FC<{}> = () => {
         );
     }
 
-    const { timestamp, happening: isHappening, description, id, canceled: isCanceled, executed: isExecuted, upcoming: isUpcoming, tally, executionTimestamp, executionEpochEndDate } = proposal;
+    const { timestamp, happening: isHappening, description, id, canceled: isCanceled, executed: isExecuted, tally, executionTimestamp, executionEpochEndDate } = proposal;
 
     const pstOffset = '-0800';
     const deadlineToVote = moment(timestamp)?.utcOffset(pstOffset);
