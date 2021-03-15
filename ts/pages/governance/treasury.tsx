@@ -100,7 +100,7 @@ export const Treasury: React.FC<{}> = () => {
             const bigNumExecutionEndTimestamp = new BigNumber(executionEpoch.endTimestamp);
             const executionEpochStartDate = moment.unix(bigNumExecutionStartTimestamp.toNumber());
             const executionEpochEndDate = moment.unix(bigNumExecutionEndTimestamp.toNumber());
-            const executionTimestampMoment = moment.unix(executionTimestamp);
+            const executionTimestampMoment = executionTimestamp ? moment.unix(executionTimestamp) : null;
 
             const now = moment();
             const isUpcoming = now.isBefore(startDate);
@@ -168,7 +168,7 @@ export const Treasury: React.FC<{}> = () => {
     const heading = tokens.find((token: Token) => (token as Tokens.Heading).type === 'heading' && (token as Tokens.Heading).depth === 1);
 
     const now = moment();
-
+    const isNotExecutedTillEpochEnd = !executionTimestamp && now.isAfter(executionEpochEndDate);
     const proposalHistoryState = {
         created: {
             done: true,
@@ -176,29 +176,29 @@ export const Treasury: React.FC<{}> = () => {
             show: true,
         },
         active: {
-            done: (now.isAfter(proposal.startDate) && now.isBefore(proposal.endDate)) || (!isCanceled && !isHappening && !isUpcoming && !isExecuted) || isExecuted,
+            done: now.isAfter(proposal.startDate),
             timestamp: proposal.startDate,
             show: true,
         },
         succeeded: {
-            done: (!isCanceled && !isHappening && !isUpcoming && !isExecuted  || isExecuted) && !(!executionTimestamp && now.isAfter(executionEpochEndDate)) ,
+            done: now.isAfter(proposal.endDate) && !isCanceled && !(isNotExecutedTillEpochEnd),
             timestamp: proposal.endDate,
-            show: (!(isCanceled || isHappening || isUpcoming || isExecuted)  || isExecuted) && !(!executionTimestamp && now.isAfter(executionEpochEndDate)),
+            show: !isCanceled && !isNotExecutedTillEpochEnd,
         },
         failed: {
-            done: isCanceled || (!executionTimestamp && now.isAfter(executionEpochEndDate)),
+            done: isCanceled || isNotExecutedTillEpochEnd,
             timestamp: proposal.endDate,
-            show: isCanceled || (!executionTimestamp && now.isAfter(executionEpochEndDate)),
+            show: isCanceled || isNotExecutedTillEpochEnd,
         },
         queued: {
-            done: (!isCanceled && !isHappening && !isUpcoming  || isExecuted) && !(!proposal.executionTimestamp && now.isAfter(executionEpochEndDate)),
+            done: now.isAfter(proposal.endDate) && now.isAfter(proposal.executionEpochStartDate) && !isCanceled && !isNotExecutedTillEpochEnd,
             timestamp: proposal.endDate,
-            show: !(isCanceled || isHappening || isUpcoming || isExecuted) || isExecuted && !(!executionTimestamp && now.isAfter(executionEpochEndDate)),
+            show: !isCanceled && !isNotExecutedTillEpochEnd,
         },
         executed: {
-            done: isExecuted && !(!proposal.executionTimestamp && now.isAfter(executionEpochEndDate)),
+            done: isExecuted,
             timestamp: executionTimestamp,
-            show: (!(isCanceled || isHappening || isUpcoming || isExecuted)  || isExecuted) && !(!executionTimestamp && now.isAfter(executionEpochEndDate)),
+            show: !isCanceled && !isNotExecutedTillEpochEnd,
         },
     };
 
