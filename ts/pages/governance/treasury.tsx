@@ -212,10 +212,10 @@ export const Treasury: React.FC<{}> = () => {
                      <Tag>Treasury</Tag>
                      <Heading size="medium" marginBottom="0px">{(heading as Tokens.Heading).text}</Heading>
                      <StyledText fontColor={colors.textDarkSecondary} fontSize="18px" fontWeight={300} fontFamily="Formular">Submitted by: {utils.getAddressBeginAndEnd(proposal.proposer)}</StyledText>
-                     <Paragraph>
-                         <StyledMarkdown>
-                             <ReactMarkdown children={description.replace(heading.raw, '')} />
-                         </StyledMarkdown>
+                     <Paragraph as="div">
+                        <StyledMarkdown>
+                            <ReactMarkdown children={description.replace(heading.raw, '')} />
+                        </StyledMarkdown>
                      </Paragraph>
                  </Column>
                  <Column width="30%" maxWidth="300px">
@@ -239,13 +239,13 @@ export const Treasury: React.FC<{}> = () => {
                                         return null;
                                     }
                                     return (
-                                        <>
+                                        <React.Fragment key={state}>
                                             <Tick isActive={historyState.done} isFailed={state === 'failed'}><img src={state === 'failed' ? '/images/governance/cross.svg' : '/images/governance/tick_mark.svg'} /></Tick>
                                             {
                                                 !['executed', 'failed'].includes(state) &&
                                                 <Connector className={state === 'queued' ? 'small' : ''} />
                                             }
-                                        </>
+                                        </React.Fragment>
                                     );
                                 })
                             }
