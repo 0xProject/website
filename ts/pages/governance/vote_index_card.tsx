@@ -241,7 +241,7 @@ const Tag = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ${() => colors.brandLight};
+    background-color: ${() => colors.yellow500};
     color: ${() => colors.white};
     width: 80px;
     font-size: 17px;
@@ -249,7 +249,7 @@ const Tag = styled.div`
 
     &.zeip {
         width: 50px;
-        background-color: ${() => colors.yellow500};
+        background-color: ${() => colors.brandLight};
     }
 `;
 
