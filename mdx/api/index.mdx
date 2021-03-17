@@ -9,6 +9,7 @@ We offer hosted versions for different Ethereum networks. Requests for more netw
 | Network | Endpoint                  |
 | ------- | ------------------------- |
 | Mainnet | https://api.0x.org/       |
+| Binance Smart Chain   | https://bsc.api.0x.org/ |
 | Kovan   | https://kovan.api.0x.org/ |
 
 ## Versioning
@@ -359,7 +360,7 @@ Supply a comma delimited list of liquidty source names to exclude them from the 
 
 #### Supplying a Taker Address
 
-Supply a `takerAddress` to use an [`eth_call`](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call) to validate the taker is able to fill the quote.
+Supply a `takerAddress` to use an [`eth_call`](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call) to perform additional validation, and an accurate gas estimate.
 
 <HttpCall fontSize="12px" path="/swap/v1/quote?buyToken=DAI&sellToken=ETH&sellAmount=1000000000000000000&takerAddress=0xab5801a7d398351b8be11c439e05c5b3259aec9b" />
 
@@ -513,7 +514,7 @@ Easily wrap and unwrap between ETH and WETH by requesting a swap quote by settin
 
 RFQ-T liquidity can only be accessed if the request supplies a taker address, a permissioned API key via header `0x-api-key`, and the query parameter `intentOnFilling=true`. For more details see the guide [Understanding RFQ-T and the 0x API](/docs/guides/rfqt-in-the-0x-api).
 
-<HttpCall fontSize="16px" path="/swap/v1/quote?sellToken=WETH&buyToken=DAI&sellAmount=1000000000000000000&takerAddress=0xffffffffffffffffffffffffffffffffffffffff&intentOnFilling=true" />
+<HttpCall fontSize="16px" path="/swap/v1/quote?sellToken=WETH&buyToken=DAI&sellAmount=1000000000000000000&takerAddress=0xff...fff&intentOnFilling=true" />
 
 <CodeTabs tabs={['200 - RFQ-T-enabled']}>
 
