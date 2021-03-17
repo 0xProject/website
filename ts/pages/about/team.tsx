@@ -165,7 +165,7 @@ const team: TeamMember[] = [
     },
     {
         imageUrl: '/images/team/romainb.jpg',
-        name: 'Romain Butteuad',
+        name: 'Romain Butteaud',
         title: 'Engineer',
     },
     {
