@@ -165,7 +165,7 @@ const team: TeamMember[] = [
     },
     {
         imageUrl: '/images/team/romainb.jpg',
-        name: 'Romain Butteuad',
+        name: 'Romain Butteaud',
         title: 'Engineer',
     },
     {
@@ -176,6 +176,31 @@ const team: TeamMember[] = [
     {
         imageUrl: '/images/team/davids.jpg',
         name: 'David Sun',
+        title: 'Engineer',
+    },
+    {
+        imageUrl: '/images/team/jadet.jpg',
+        name: 'Jade Tran',
+        title: 'Engineer',
+    },
+    {
+        imageUrl: '/images/team/dannyo.jpg',
+        name: 'Danny Organ',
+        title: 'Product Marketing Manager',
+    },
+    {
+        imageUrl: '/images/team/phill.jpg',
+        name: 'Phil Liao',
+        title: 'Engineer',
+    },
+    {
+        imageUrl: '/images/team/benl.jpg',
+        name: 'Ben Lyaunzon',
+        title: 'Engineer',
+    },
+    {
+        imageUrl: '/images/team/alexkim.jpg',
+        name: 'Alex Kim',
         title: 'Engineer',
     },
 ];
