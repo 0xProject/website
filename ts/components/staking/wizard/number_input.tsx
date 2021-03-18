@@ -49,9 +49,9 @@ const InputContainer = styled.div<InputProps>`
     margin-bottom: 30px;
     align-items: center;
     background-color: ${colors.white};
-    border: 1px solid ${props => (props.isError ? colors.orange : '#d9d9d9')};
+    border: 1px solid ${(props) => (props.isError ? colors.orange : '#d9d9d9')};
     &:focus-within {
-        border: 1px solid ${props => (props.isError ? colors.orange : colors.brandLight)};
+        border: 1px solid ${(props) => (props.isError ? colors.orange : colors.brandLight)};
     }
 `;
 
@@ -63,7 +63,7 @@ const Input = styled.input<InputProps>`
     border: 0;
     font-size: 20px;
     font-family: 'Formular', monospace;
-    color: ${props => (props.isError ? colors.orange : colors.black)};
+    color: ${(props) => (props.isError ? colors.orange : colors.black)};
     outline: none;
     width: 60%;
     &::placeholder {
@@ -103,12 +103,12 @@ const Labels = styled.ol`
 
 const Label = styled.li<LabelProps>`
     font-size: 14px;
-    color: ${props => (props.isActive ? colors.white : colors.textDarkSecondary)};
-    background-color: ${props => (props.isActive ? colors.brandLight : colors.white)};
+    color: ${(props) => (props.isActive ? colors.white : colors.textDarkSecondary)};
+    background-color: ${(props) => (props.isActive ? colors.brandLight : colors.white)};
     text-align: center;
     padding: 6px;
     margin-right: 15px;
-    border: 1px solid ${props => (props.isActive ? colors.brandLight : '#d5d5d5')};
+    border: 1px solid ${(props) => (props.isActive ? colors.brandLight : '#d5d5d5')};
     cursor: pointer;
     &:last-child {
         margin-right: 20px;
@@ -197,7 +197,7 @@ const BottomLabel: React.FC<BottomLabelComponentProps> = ({ item }) => {
     return <li>{label}</li>;
 };
 
-export const NumberInput: React.FC<NumberInputProps> = props => {
+export const NumberInput: React.FC<NumberInputProps> = (props) => {
     const {
         placeholder,
         bottomLabels,
@@ -226,7 +226,7 @@ export const NumberInput: React.FC<NumberInputProps> = props => {
             <TopLabels>
                 {topLabels != null &&
                     topLabels.length > 0 &&
-                    topLabels.map(label => <TopLabel key={label}>{label}</TopLabel>)}
+                    topLabels.map((label) => <TopLabel key={label}>{label}</TopLabel>)}
             </TopLabels>
             <InputContainer isError={isError}>
                 <ZrxIcon>

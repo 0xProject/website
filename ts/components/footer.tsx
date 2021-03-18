@@ -100,13 +100,11 @@ export const Footer: React.FC<IFooterProps> = React.memo(({ isDocs, shouldShowDi
                 </WrapGrid>
             </FooterColumn>
         </FlexWrap>
-        {
-            shouldShowDisclaimer && (
-                <FlexWrap>
-                    <Text>We provide downloadable software and software services.</Text>
-                </FlexWrap>
-            )
-        }
+        {shouldShowDisclaimer && (
+            <FlexWrap>
+                <Text>We provide downloadable software and software services.</Text>
+            </FlexWrap>
+        )}
     </FooterWrap>
 ));
 
@@ -125,11 +123,11 @@ const LinkList = (props: LinkListProps) => (
 const FooterWrap = styled.footer<IFooterProps>`
     padding: 40px 30px 30px 30px;
     margin-top: 30px;
-    background-color: ${props => (props.isDocs ? colors.backgroundLight : props.theme.footerBg)};
-    color: ${props => props.theme.footerColor};
+    background-color: ${(props) => (props.isDocs ? colors.backgroundLight : props.theme.footerBg)};
+    color: ${(props) => props.theme.footerColor};
 
     path {
-        fill: ${props => props.theme.footerColor};
+        fill: ${(props) => props.theme.footerColor};
     }
 
     @media (min-width: 768px) {
@@ -139,7 +137,7 @@ const FooterWrap = styled.footer<IFooterProps>`
 
 const FooterColumn = styled(Column)`
     @media (min-width: 768px) {
-        width: ${props => props.width};
+        width: ${(props) => props.width};
     }
 
     @media (max-width: 768px) {

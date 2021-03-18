@@ -17,8 +17,8 @@ import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
 
 const PROPOSALS = environments.isProduction() ? proposals : stagingProposals;
-const ZEIP_IDS = Object.keys(PROPOSALS).map(idString => parseInt(idString, 10));
-const ZEIP_PROPOSALS: Proposal[] = ZEIP_IDS.map(id => PROPOSALS[id]).sort(
+const ZEIP_IDS = Object.keys(PROPOSALS).map((idString) => parseInt(idString, 10));
+const ZEIP_PROPOSALS: Proposal[] = ZEIP_IDS.map((id) => PROPOSALS[id]).sort(
     (a, b) => b.voteStartDate.unix() - a.voteStartDate.unix(),
 );
 
@@ -70,7 +70,7 @@ export class VoteIndex extends React.Component<VoteIndexProps, VoteIndexState> {
                     </Column>
                 </Section>
                 <VoteIndexCardWrapper>
-                    {ZEIP_PROPOSALS.map(proposal => {
+                    {ZEIP_PROPOSALS.map((proposal) => {
                         const tally = this.state.tallys && this.state.tallys[proposal.zeipId];
                         return <VoteIndexCard key={proposal.zeipId} tally={tally} {...proposal} />;
                     })}
@@ -117,7 +117,7 @@ export class VoteIndex extends React.Component<VoteIndexProps, VoteIndexState> {
     }
 
     private async _fetchTallysAsync(): Promise<void> {
-        const tallyResponses = await Promise.all(ZEIP_IDS.map(async zeipId => this._fetchVoteStatusAsync(zeipId)));
+        const tallyResponses = await Promise.all(ZEIP_IDS.map(async (zeipId) => this._fetchVoteStatusAsync(zeipId)));
         const tallys: { [key: number]: TallyInterface } = {};
         ZEIP_IDS.forEach((zeipId, i) => (tallys[zeipId] = tallyResponses[i]));
         this.setState({ tallys });

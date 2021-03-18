@@ -7,11 +7,7 @@ interface AccountFigureProps {
     children: React.ReactNode;
 }
 
-export const AccountFigure: React.FC<AccountFigureProps> = ({
-    label,
-    headerComponent,
-    children,
-}) => {
+export const AccountFigure: React.FC<AccountFigureProps> = ({ label, headerComponent, children }) => {
     return (
         <FigureItem>
             <header>

@@ -32,7 +32,7 @@ export const TableOfContents: React.FC<ITableOfContentsProps> = ({ contents, ver
         <SidebarWrapper>
             {versions && <VersionPicker versions={versions} />}
             <div>
-                {contents.map(content => {
+                {contents.map((content) => {
                     const { id, level, title } = content;
                     /* containerId is set to an empty string to make body element the scroll container */
                     return (
@@ -70,7 +70,6 @@ const ContentLink = styled(Link)<{ level: number }>`
 
     &.toc-link-active span {
         font-weight: 500;
-
     }
 
     ${({ level }) =>

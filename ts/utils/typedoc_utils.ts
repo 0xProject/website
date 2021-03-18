@@ -42,15 +42,15 @@ export class TypeDocUtils {
 
         this._typeDocNameOrder = _.compact(
             _.flatten(
-                _.map(exportPathOrder, exportPath => {
+                _.map(exportPathOrder, (exportPath) => {
                     return exportPathToTypedocNames[exportPath];
                 }),
             ),
         );
 
         this._classNames = [];
-        _.each(this._typeDocJson.children, file => {
-            _.each(file.children, child => {
+        _.each(this._typeDocJson.children, (file) => {
+            _.each(file.children, (child) => {
                 if (child.kindString === KindString.Class) {
                     this._classNames.push(child.name);
                 }
@@ -81,8 +81,8 @@ export class TypeDocUtils {
     public getModuleDefinitionsBySectionName(versionDocObj: TypeDocNode, configModulePaths: string[]): TypeDocNode[] {
         const moduleDefinitions: TypeDocNode[] = [];
         const jsonModules = versionDocObj.children;
-        _.each(jsonModules, jsonMod => {
-            _.each(configModulePaths, configModulePath => {
+        _.each(jsonModules, (jsonMod) => {
+            _.each(configModulePaths, (configModulePath) => {
                 if (_.includes(configModulePath, jsonMod.name)) {
                     moduleDefinitions.push(jsonMod);
                 }
@@ -111,11 +111,11 @@ export class TypeDocUtils {
         }
 
         const typeEntities: TypeDocNode[] = [];
-        _.each(this._typeDocNameOrder, typeDocName => {
-            const fileChildIndex = _.findIndex(this._typeDocJson.children, child => child.name === typeDocName);
+        _.each(this._typeDocNameOrder, (typeDocName) => {
+            const fileChildIndex = _.findIndex(this._typeDocJson.children, (child) => child.name === typeDocName);
             const fileChild = this._typeDocJson.children[fileChildIndex];
             let sectionName: string;
-            _.each(fileChild.children, child => {
+            _.each(fileChild.children, (child) => {
                 switch (child.kindString) {
                     case KindString.Class:
                     case KindString.ObjectLiteral: {
@@ -182,7 +182,7 @@ export class TypeDocUtils {
         };
 
         let isConstructor;
-        _.each(entities, entity => {
+        _.each(entities, (entity) => {
             switch (entity.kindString) {
                 case KindString.Constructor:
                     isConstructor = true;
@@ -224,7 +224,7 @@ export class TypeDocUtils {
                     } else {
                         // Otherwise, render as a type
                         const customType = this._convertCustomType(entity, sectionName);
-                        const seenTypeNames = _.map(docSection.types, t => t.name);
+                        const seenTypeNames = _.map(docSection.types, (t) => t.name);
                         const isUnseen = !_.includes(seenTypeNames, customType.name);
                         if (isUnseen) {
                             docSection.types.push(customType);
@@ -236,7 +236,7 @@ export class TypeDocUtils {
                 case KindString.Enumeration:
                 case KindString.TypeAlias: {
                     const customType = this._convertCustomType(entity, sectionName);
-                    const seenTypeNames = _.map(docSection.types, t => t.name);
+                    const seenTypeNames = _.map(docSection.types, (t) => t.name);
                     const isUnseen = !_.includes(seenTypeNames, customType.name);
                     if (isUnseen) {
                         docSection.types.push(customType);
@@ -339,7 +339,7 @@ export class TypeDocUtils {
         const hasComment = signature.comment !== undefined;
         const isStatic = entity.flags.isStatic === undefined ? false : entity.flags.isStatic;
 
-        const parameters = _.map(signature.parameters, param => {
+        const parameters = _.map(signature.parameters, (param) => {
             return this._convertParameter(param, sectionName);
         });
         const returnType = this._convertType(signature.type, sectionName);
@@ -393,7 +393,7 @@ export class TypeDocUtils {
         const source = entity.sources[0];
         const hasComment = signature.comment !== undefined;
 
-        const parameters = _.map(signature.parameters, param => {
+        const parameters = _.map(signature.parameters, (param) => {
             return this._convertParameter(param, sectionName);
         });
         const returnType = this._convertType(signature.type, sectionName);
@@ -456,10 +456,10 @@ export class TypeDocUtils {
         return parameter;
     }
     private _convertType(entity: TypeDocType, sectionName: string): Type {
-        const typeArguments = _.map(entity.typeArguments, typeArgument => {
+        const typeArguments = _.map(entity.typeArguments, (typeArgument) => {
             return this._convertType(typeArgument, sectionName);
         });
-        const types = _.map(entity.types, t => {
+        const types = _.map(entity.types, (t) => {
             return this._convertType(t, sectionName);
         });
 
@@ -475,7 +475,7 @@ export class TypeDocUtils {
             const isConstructor = false;
             methodIfExists = this._convertMethod(entity.declaration, isConstructor, sectionName);
         } else if (entity.type === TypeDocTypes.Tuple) {
-            tupleElementsIfExists = _.map(entity.elements, el => {
+            tupleElementsIfExists = _.map(entity.elements, (el) => {
                 // the following line is required due to an open tslint issue, https://github.com/palantir/tslint/issues/3540
                 // tslint:disable-next-line:no-unnecessary-type-assertion
                 return { name: el.name, typeDocType: el.type as TypeDocTypes };

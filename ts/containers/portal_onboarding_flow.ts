@@ -61,7 +61,4 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => ({
     },
 });
 
-export const PortalOnboardingFlow = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(PortalOnboardingFlowComponent);
+export const PortalOnboardingFlow = connect(mapStateToProps, mapDispatchToProps)(PortalOnboardingFlowComponent);

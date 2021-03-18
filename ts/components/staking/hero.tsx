@@ -108,7 +108,7 @@ const Actions = styled.div`
     }
 `;
 
-export const StakingHero: React.FC<StakingHeroProps> = props => {
+export const StakingHero: React.FC<StakingHeroProps> = (props) => {
     const { title, titleMobile, description, actions, videoChannel, videoId, videoRatio, youtubeOptions } = props;
     const [isVideoOpen, setIsVideoOpen] = React.useState(false);
     const onOpenVideo = () => setIsVideoOpen(true);

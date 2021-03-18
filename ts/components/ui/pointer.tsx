@@ -16,7 +16,7 @@ export interface PointerProps {
     direction: PointerDirection;
 }
 
-const PlainPointer: React.StatelessComponent<PointerProps> = props => <div {...props} />;
+const PlainPointer: React.StatelessComponent<PointerProps> = (props) => <div {...props} />;
 
 const positionToCss = (props: PointerProps) => {
     const position = {
@@ -51,16 +51,16 @@ export const Pointer = styled(PlainPointer)`
     position: relative;
     &:after {
         border: solid transparent;
-        content: " ";
+        content: ' ';
         height: 0;
         width: 0;
         position: absolute;
         pointer-events: none;
         border-color: rgba(136, 183, 213, 0);
-        border-width: ${props => `${props.size}px`};
-        ${props => positionToCss(props).position}
-        ${props => positionToCss(props).border}
-        ${props => positionToCss(props).margin}
+        border-width: ${(props) => `${props.size}px`};
+        ${(props) => positionToCss(props).position}
+        ${(props) => positionToCss(props).border}
+        ${(props) => positionToCss(props).margin}
     }
 `;
 

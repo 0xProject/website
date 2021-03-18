@@ -33,8 +33,8 @@ export const ScrollTopArrow = () => {
 };
 
 const ArrowWrapper = styled.button<{ isArrowVisible: boolean }>`
-    visibility: ${props => (props.isArrowVisible ? 'visible' : 'hidden')};
-    animation: ${props => (props.isArrowVisible ? fadeIn : fadeOut)} 300ms linear;
+    visibility: ${(props) => (props.isArrowVisible ? 'visible' : 'hidden')};
+    animation: ${(props) => (props.isArrowVisible ? fadeIn : fadeOut)} 300ms linear;
     transition: visibility 300ms linear;
 
     display: flex;

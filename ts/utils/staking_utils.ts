@@ -48,7 +48,7 @@ export const stakingUtils = {
             numIterations: 3,
             ...opts,
         };
-        const poolsSummary: PoolStatSummary[] = pools.map(pool => ({
+        const poolsSummary: PoolStatSummary[] = pools.map((pool) => ({
             poolId: pool.poolId,
             operatorShare: pool.nextEpochStats.operatorShare,
             sevenDayProtocolFeesGeneratedInEth: pool.sevenDayProtocolFeesGeneratedInEth,
@@ -57,8 +57,8 @@ export const stakingUtils = {
         // TODO(johnrjj) - Refactor to use BigNumber exclusively
         const stakingDecisions: { [poolId: string]: number } = {};
         for (let i = 0; i < numIterations; i++) {
-            const totalStake = _.sumBy(poolsSummary, p => p.zrxStaked);
-            const totalProtocolFees = _.sumBy(poolsSummary, p => p.sevenDayProtocolFeesGeneratedInEth);
+            const totalStake = _.sumBy(poolsSummary, (p) => p.zrxStaked);
+            const totalProtocolFees = _.sumBy(poolsSummary, (p) => p.sevenDayProtocolFeesGeneratedInEth);
             const adjustedStakeRatios: number[] = [];
             for (const pool of poolsSummary) {
                 const stakeRatio =
@@ -75,18 +75,18 @@ export const stakingUtils = {
             bestPool.zrxStaked += amountZrxToStake / numIterations;
         }
         const recs = Object.keys(stakingDecisions).map(
-            poolId => ({
-                pool: pools.find(pool => pool.poolId === poolId),
+            (poolId) => ({
+                pool: pools.find((pool) => pool.poolId === poolId),
                 zrxAmount: formatZrx(stakingDecisions[poolId], { removeComma: true }).roundedValue,
             }),
             [],
         );
 
         // Sort desc
-        const orderedRecs = _.orderBy(recs, p => p.zrxAmount, ['desc']);
+        const orderedRecs = _.orderBy(recs, (p) => p.zrxAmount, ['desc']);
         // Need to use BigNumbers here when validating reconciliation
         // example: JS normal addition of 1400.09 + 1400.09 + 1400.09 = 4200.2699999999995 , need to use bignumber!
-        const currentTotalSoFar = BigNumber.sum(...orderedRecs.map(x => new BigNumber(x.zrxAmount)));
+        const currentTotalSoFar = BigNumber.sum(...orderedRecs.map((x) => new BigNumber(x.zrxAmount)));
         // Need to round again as we can end up with 0.010000000000019327 as the reconcile amount
         const reconciliationAmount = formatZrx(new BigNumber(amountZrxToStake).minus(currentTotalSoFar)).roundedValue;
         // Sometimes the algorithm will be short by 0.01 to 0.02 ZRX (due to combination of floating point + rounding)
@@ -118,13 +118,15 @@ export const stakingUtils = {
         const epochStart = new Date(currentEpoch.epochStart.timestamp);
 
         const timeElapsed = (now.getTime() - epochStart.getTime()) / 1000;
-        const scaleFactor = scaledToEndOfEpoch ? new BigNumber(epochLengthInSeconds).dividedBy(new BigNumber(timeElapsed)) : new BigNumber(1);
+        const scaleFactor = scaledToEndOfEpoch
+            ? new BigNumber(epochLengthInSeconds).dividedBy(new BigNumber(timeElapsed))
+            : new BigNumber(1);
 
         // --Expected total rewards--
         // Rewards can include non-fee items like rollover and subsidies
         // Fees will be projected forward, the other items will not be scaled
         const currentEpochProtocolFees = new BigNumber(currentEpoch.protocolFeesGeneratedInEth);
-        const nonFeeRewards = (currentRewardBalance).minus(currentEpochProtocolFees);
+        const nonFeeRewards = currentRewardBalance.minus(currentEpochProtocolFees);
         const projectedCurrentEpochProtocolFees = currentEpochProtocolFees.multipliedBy(scaleFactor);
         const projectedRewards = nonFeeRewards.plus(projectedCurrentEpochProtocolFees);
 
@@ -143,14 +145,18 @@ export const stakingUtils = {
         const expectedPoolRewards: ExpectedPoolRewards = {};
         // --Calculate Rewards by Pool--
         for (const pool of pools) {
-            const poolFees =  new BigNumber(pool.currentEpochStats.totalProtocolFeesGeneratedInEth);
+            const poolFees = new BigNumber(pool.currentEpochStats.totalProtocolFeesGeneratedInEth);
             const memberZrxStaked = new BigNumber(pool.currentEpochStats.memberZrxStaked);
             const operatorZrxStaked = new BigNumber(pool.currentEpochStats.operatorZrxStaked);
-            const poolWeightedStake = (memberZrxStaked.multipliedBy(delegatorStakeWeight)).plus(operatorZrxStaked);
+            const poolWeightedStake = memberZrxStaked.multipliedBy(delegatorStakeWeight).plus(operatorZrxStaked);
 
             // BigNumber can't handle fractional exponents, so bringing in the big guns--Decimal.js
-            const feeTerm = new BigNumber((new Decimal((poolFees.dividedBy(totalPoolProtocolFees).toString()))).pow(alpha).toString());
-            const stakeTerm = new BigNumber((new Decimal((poolWeightedStake.dividedBy(totalWeightedStake).toString()))).pow(1 - alpha).toString());
+            const feeTerm = new BigNumber(
+                new Decimal(poolFees.dividedBy(totalPoolProtocolFees).toString()).pow(alpha).toString(),
+            );
+            const stakeTerm = new BigNumber(
+                new Decimal(poolWeightedStake.dividedBy(totalWeightedStake).toString()).pow(1 - alpha).toString(),
+            );
 
             // This follows the reward calculation laid out at:
             // https://github.com/0xProject/0x-protocol-specification/blob/master/staking/staking-specification.md#paying-liquidity-rewards-finalization

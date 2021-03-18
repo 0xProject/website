@@ -245,7 +245,7 @@ interface SectionProps {
 }
 
 const SectionWrap = styled.div<SectionProps>`
-    position: ${props => !props.isNotRelative && 'relative'};
+    position: ${(props) => !props.isNotRelative && 'relative'};
 
     & + & {
         padding-top: 60px;
@@ -273,7 +273,7 @@ interface SectionTitleProps {
 const SectionTitle = styled(Heading)<SectionTitleProps>`
     position: relative;
 
-    ${props =>
+    ${(props) =>
         !props.isNoBorder &&
         `
         &:before {
@@ -304,7 +304,7 @@ const NavStickyWrap = styled(WrapSticky)`
 `;
 
 const ChapterLink = styled.a`
-    color: ${props => props.theme.textColor};
+    color: ${(props) => props.theme.textColor};
     font-size: 22px;
     margin-bottom: 25px;
     display: block;

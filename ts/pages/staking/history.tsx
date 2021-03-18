@@ -97,40 +97,26 @@ export const StakingPoolActivity: React.FC = () => {
             <Breadcrumb crumbs={crumbs} />
 
             <ContentWrap>
-                <Heading
-                    asElement="h1"
-                    fontWeight="500"
-                    marginBottom="60px"
-                >
+                <Heading asElement="h1" fontWeight="500" marginBottom="60px">
                     Binance History
                 </Heading>
 
                 <Table columns={columns}>
-                    {_.map(MOCK_DATA, row => {
+                    {_.map(MOCK_DATA, (row) => {
                         const description = getDescription(`${row.statusId}`);
 
                         return (
                             <tr key={row.id}>
                                 <DateCell>
-                                    <strong>
-                                        {row.timestamp}
-                                    </strong>
+                                    <strong>{row.timestamp}</strong>
                                     {row.date}
                                 </DateCell>
                                 <td>
-                                    <StyledStakeStatus
-                                        title={description.title}
-                                        subtitle={description.subtitle}
-                                    />
+                                    <StyledStakeStatus title={description.title} subtitle={description.subtitle} />
                                 </td>
+                                <td>{row.amount}</td>
                                 <td>
-                                    {row.amount}
-                                </td>
-                                <td>
-                                    <StakeStatus
-                                        title={row.status}
-                                        subtitle={row.id}
-                                    />
+                                    <StakeStatus title={row.status} subtitle={row.id} />
                                 </td>
                             </tr>
                         );
@@ -163,7 +149,7 @@ const DateCell = styled.td`
     strong {
         display: block;
         margin-bottom: 10px;
-        color: ${colors.textDarkPrimary}
+        color: ${colors.textDarkPrimary};
     }
 `;
 

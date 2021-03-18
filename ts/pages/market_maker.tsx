@@ -77,7 +77,7 @@ export class NextMarketMaker extends React.Component<NextMarketMakerProps> {
             <SiteWrap theme="light">
                 <DocumentTitle {...documentConstants.MARKET_MAKER_PROGRAM} />
                 <Hero
-                    maxWidth="865px"
+                    maxWidthContent="865px"
                     maxWidthHeading="715px"
                     isLargeTitle={false}
                     isFullWidth={false}
@@ -158,7 +158,12 @@ export class NextMarketMaker extends React.Component<NextMarketMakerProps> {
 
     private readonly _renderHeroActions = () => (
         <>
-            <Button href={`${WebsitePaths.DocsGuides}/market-making-on-0x`} bgColor={colors.brandDark} color="#ffffff" isInline={true}>
+            <Button
+                href={`${WebsitePaths.DocsGuides}/market-making-on-0x`}
+                bgColor={colors.brandDark}
+                color="#ffffff"
+                isInline={true}
+            >
                 Get Started
             </Button>
             <Button

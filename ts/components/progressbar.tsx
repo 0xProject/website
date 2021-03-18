@@ -18,13 +18,13 @@ interface ContainerProps {
 const Container = styled.div<ContainerProps>`
     height: 5px;
     width: 100%;
-    background-color: ${props => (props.isOverLimit ? colors.error : colors.brandLightest)};
+    background-color: ${(props) => (props.isOverLimit ? colors.error : colors.brandLightest)};
     position: relative;
 `;
 
 const Bar = styled.div<BarProps>`
     transition: width 0.3s ease;
-    width: ${props => props.progress}%;
+    width: ${(props) => props.progress}%;
     background-color: ${colors.brandLight};
     position: absolute;
     top: 0;

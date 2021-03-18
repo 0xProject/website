@@ -6,7 +6,7 @@ import { Paragraph } from 'ts/components/text';
 
 const MetricsContainer = styled.div`
     padding: 20px;
-    background-color: ${props => props.theme.darkBgColor};
+    background-color: ${(props) => props.theme.darkBgColor};
     width: 100%;
 `;
 
@@ -31,7 +31,7 @@ interface MetricsProps {
     metrics: MetricValue[];
 }
 
-export const Metrics: React.FC<MetricsProps> = props => (
+export const Metrics: React.FC<MetricsProps> = (props) => (
     <MetricsContainer>
         <TitleInfoContainer>
             <Paragraph marginBottom="15px" size="small">

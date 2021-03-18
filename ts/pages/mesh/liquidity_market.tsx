@@ -48,10 +48,7 @@ const getSizeWithConstant = (order: SignedOrder, op: Operation, metaData: OrderM
             size = remainingFillableTakerAssetAmount.div(constant);
             break;
         case 'bid':
-            size = remainingFillableTakerAssetAmount
-                .div(takerAssetAmount)
-                .multipliedBy(makerAssetAmount)
-                .div(constant);
+            size = remainingFillableTakerAssetAmount.div(takerAssetAmount).multipliedBy(makerAssetAmount).div(constant);
     }
     return size;
 };
@@ -152,37 +149,34 @@ export const LiquidityMarket: React.FC = () => {
         setSpread(undefined);
     };
 
-    useEffect(
-        () => {
-            const fetchData = async () => {
-                const market = markets[selectedMarketIdx];
-                const orders = await fetchOrders(market.baseAsset, market.quoteAsset);
+    useEffect(() => {
+        const fetchData = async () => {
+            const market = markets[selectedMarketIdx];
+            const orders = await fetchOrders(market.baseAsset, market.quoteAsset);
 
-                const _bids = parseOrders(orders.bids.records, 'bid');
-                const _asks = parseOrders(orders.asks.records, 'ask');
+            const _bids = parseOrders(orders.bids.records, 'bid');
+            const _asks = parseOrders(orders.asks.records, 'ask');
 
-                const midPrice = calcMidPrice(_bids, _asks);
+            const midPrice = calcMidPrice(_bids, _asks);
 
-                calcSlippage(_bids, midPrice);
-                calcSlippage(_asks, midPrice);
+            calcSlippage(_bids, midPrice);
+            calcSlippage(_asks, midPrice);
 
-                const _spread = calcSpread(_bids, _asks);
+            const _spread = calcSpread(_bids, _asks);
 
-                // Reverse asks for display (price descending order)
-                _asks.reverse();
+            // Reverse asks for display (price descending order)
+            _asks.reverse();
 
-                setBids(_bids);
-                setAsks(_asks);
-                setSpread(_spread);
-            };
+            setBids(_bids);
+            setAsks(_asks);
+            setSpread(_spread);
+        };
 
-            resetData();
+        resetData();
 
-            // tslint:disable-next-line:no-floating-promises
-            fetchData();
-        },
-        [selectedMarketIdx],
-    );
+        // tslint:disable-next-line:no-floating-promises
+        fetchData();
+    }, [selectedMarketIdx]);
 
     const parseOrders = (records: OrderbookRecord[], op: Operation) => {
         const { getPrice, getSize, orderSizeThreshold = 0 } = markets[selectedMarketIdx];
@@ -193,7 +187,7 @@ export const LiquidityMarket: React.FC = () => {
             size: getSize(order, op, metaData),
         }));
 
-        const filteredRecords = mappedRecords.filter(order => order.size.gte(orderSizeThreshold));
+        const filteredRecords = mappedRecords.filter((order) => order.size.gte(orderSizeThreshold));
 
         // if there are more filtered records than required, return them
         if (filteredRecords.length >= ORDER_COUNT) {
@@ -224,11 +218,8 @@ export const LiquidityMarket: React.FC = () => {
     };
 
     const calcSlippage = (orders: OrderData[], midPrice: BigNumber) => {
-        return orders.map(order => {
-            order.slippage = order.price
-                .minus(midPrice)
-                .dividedBy(midPrice)
-                .multipliedBy(100);
+        return orders.map((order) => {
+            order.slippage = order.price.minus(midPrice).dividedBy(midPrice).multipliedBy(100);
             return order;
         });
     };
@@ -290,7 +281,7 @@ const Records: React.FC<RecordsProps> = ({ orders, operation }) => {
     return (
         <>
             {operation === 'ask' && emptyRows > 0 && <EmptyRecords count={emptyRows} operation={operation} />}
-            {orders.map(order => {
+            {orders.map((order) => {
                 return (
                     <tr key={order.order.signature} className={operation}>
                         <td>{utils.getAddressBeginAndEnd(order.order.makerAddress, 5, 2)}</td>

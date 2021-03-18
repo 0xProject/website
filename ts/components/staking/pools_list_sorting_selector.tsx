@@ -113,7 +113,7 @@ export const PoolsListSortingSelector: React.FC<PoolsListSortingSelectorProps> =
 }) => {
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
     return (
-        <Wrapper onClick={() => setIsExpanded(_isExpanded => !_isExpanded)}>
+        <Wrapper onClick={() => setIsExpanded((_isExpanded) => !_isExpanded)}>
             <ToggleRow>
                 <StyledText>Sort by</StyledText>
                 <StyledText fontColor={colors.textDarkSecondary}>{sortingParamMapping[currentSortingParam]}</StyledText>

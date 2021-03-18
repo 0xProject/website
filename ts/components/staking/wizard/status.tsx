@@ -54,18 +54,25 @@ const StatusIcon = styled(Icon)`
     margin-bottom: 30px;
 `;
 
-export const Status: React.FC<StatusProps> = props => {
+export const Status: React.FC<StatusProps> = (props) => {
     const { title, linkText, linkUrl, to, iconName, onClick } = props;
     const target = linkUrl && !to ? '_blank' : undefined;
     return (
         <StatusContainer>
             {iconName && <StatusIcon color={colors.brandLight} name={iconName} size={145} />}
             <Title>{title}</Title>
-            {linkText && (linkUrl || to) &&
-                <Link onClick={onClick} href={linkUrl} to={to} isWithArrow={true} color={colors.brandLight} target={target}>
+            {linkText && (linkUrl || to) && (
+                <Link
+                    onClick={onClick}
+                    href={linkUrl}
+                    to={to}
+                    isWithArrow={true}
+                    color={colors.brandLight}
+                    target={target}
+                >
                     {linkText}
                 </Link>
-            }
+            )}
         </StatusContainer>
     );
 };

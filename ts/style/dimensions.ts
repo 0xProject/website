@@ -36,7 +36,7 @@ export function useDimensions({ isLiveMeasure = true }: UseDimensionsArgs = {}):
     const [dimensions, setDimensions] = React.useState({});
     const [node, setNode] = React.useState(null);
 
-    const ref = React.useCallback(_node => {
+    const ref = React.useCallback((_node) => {
         setNode(_node);
     }, []);
 

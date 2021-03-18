@@ -77,7 +77,9 @@ export const TradingPair: React.FC<TradingPairProps> = ({ firstCurrency, secondC
                 <TradingPairName>
                     {firstCurrency.name} - {secondCurrency.name}
                 </TradingPairName>
-                <Price>{price} {currency}</Price>
+                <Price>
+                    {price} {currency}
+                </Price>
             </TradingPairInfo>
         </Container>
     );

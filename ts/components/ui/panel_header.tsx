@@ -82,7 +82,7 @@ const AvatarWrapper = styled.div<AvatarProps>`
     position: relative;
     margin-right: 20px;
     @media (max-width: 768px) {
-        display: ${props => !props.isResponsive && 'none'};
+        display: ${(props) => !props.isResponsive && 'none'};
     }
 `;
 

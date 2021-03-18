@@ -134,9 +134,7 @@
                 "zrxStaked": 1,
                 "operatorShare": 1,
                 "approximateStakeRatio": 0,
-                "makerAddresses": [
-                    "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19"
-                ],
+                "makerAddresses": ["0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19"],
                 "totalProtocolFeesGeneratedInEth": 0
             },
             "nextEpochStats": {
@@ -144,9 +142,7 @@
                 "zrxStaked": 316,
                 "operatorShare": 1,
                 "approximateStakeRatio": 0,
-                "makerAddresses": [
-                    "0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19"
-                ],
+                "makerAddresses": ["0x5c61efcad060f8bd1c1ab34e9b9ac1e452282f19"],
                 "totalProtocolFeesGeneratedInEth": 0
             }
         },
@@ -380,9 +376,7 @@
                 "zrxStaked": 50,
                 "operatorShare": 1,
                 "approximateStakeRatio": 0.5032255676544758,
-                "makerAddresses": [
-                    "0x4f01628c9091484b9cf1a610553bef1504ce1c94"
-                ],
+                "makerAddresses": ["0x4f01628c9091484b9cf1a610553bef1504ce1c94"],
                 "totalProtocolFeesGeneratedInEth": 0.000645
             },
             "nextEpochStats": {
@@ -390,9 +384,7 @@
                 "zrxStaked": 1065,
                 "operatorShare": 1,
                 "approximateStakeRatio": 0.33159913087322695,
-                "makerAddresses": [
-                    "0x4f01628c9091484b9cf1a610553bef1504ce1c94"
-                ],
+                "makerAddresses": ["0x4f01628c9091484b9cf1a610553bef1504ce1c94"],
                 "totalProtocolFeesGeneratedInEth": 0
             }
         },
@@ -419,9 +411,7 @@
                 "zrxStaked": 139281.18,
                 "operatorShare": 0.95,
                 "approximateStakeRatio": 9.254428798587549,
-                "makerAddresses": [
-                    "0xbc5eea869e6a7a30aa41b3b83111aedf23846e33"
-                ],
+                "makerAddresses": ["0xbc5eea869e6a7a30aa41b3b83111aedf23846e33"],
                 "totalProtocolFeesGeneratedInEth": 0
             }
         },
@@ -448,9 +438,7 @@
                 "zrxStaked": 0,
                 "operatorShare": 1,
                 "approximateStakeRatio": 0,
-                "makerAddresses": [
-                    "0xaa19c7fbebeaa6a8d515a5a90cf7de4ba3beec84"
-                ],
+                "makerAddresses": ["0xaa19c7fbebeaa6a8d515a5a90cf7de4ba3beec84"],
                 "totalProtocolFeesGeneratedInEth": 0
             }
         },
@@ -532,9 +520,7 @@
                 "zrxStaked": 94.06,
                 "operatorShare": 1,
                 "approximateStakeRatio": 0,
-                "makerAddresses": [
-                    "0xab6489f054f6fbe7c02820f3d7e52f6cc0bc503f"
-                ],
+                "makerAddresses": ["0xab6489f054f6fbe7c02820f3d7e52f6cc0bc503f"],
                 "totalProtocolFeesGeneratedInEth": 0
             },
             "nextEpochStats": {
@@ -542,9 +528,7 @@
                 "zrxStaked": 374.71,
                 "operatorShare": 1,
                 "approximateStakeRatio": 0,
-                "makerAddresses": [
-                    "0xab6489f054f6fbe7c02820f3d7e52f6cc0bc503f"
-                ],
+                "makerAddresses": ["0xab6489f054f6fbe7c02820f3d7e52f6cc0bc503f"],
                 "totalProtocolFeesGeneratedInEth": 0
             }
         },

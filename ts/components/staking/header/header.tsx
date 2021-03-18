@@ -187,9 +187,9 @@ const WalletConnectedIndicator = styled.div<WalletConnectedIndicatorProps>`
     height: 12px;
     border-radius: 50%;
     border: 1px solid #ffffff;
-    background-color: ${props => (props.isConnected ? '#00AE99' : '#E71D36')};
+    background-color: ${(props) => (props.isConnected ? '#00AE99' : '#E71D36')};
     transition: opacity 0.25s ease-in;
-    opacity: ${props => (props.isNavToggled ? 0 : 1)};
+    opacity: ${(props) => (props.isNavToggled ? 0 : 1)};
     position: absolute;
     top: -7px;
     right: -7px;

@@ -8,20 +8,17 @@ interface Props {
 export const LandingAnimation = (props: Props) => <Wrap>{props.image}</Wrap>;
 
 const Wrap = styled.figure`
-    display: inline-block;
-
     svg {
         width: 100%;
         height: auto;
     }
 
     @media (min-width: 768px) {
-        width: 100%;
-        max-width: 400px;
-    }
-
-    @media (max-width: 768px) {
-        width: 180px;
-        margin-bottom: 40px;
+        margin-top: -40px;
+        margin-left: -10px;
+        /* margin-right: -100px;
+        margin-top: -110px;
+        margin-left: -20px; */
+        min-height: 630px;
     }
 `;

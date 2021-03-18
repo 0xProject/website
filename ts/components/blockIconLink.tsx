@@ -30,9 +30,9 @@ class BaseComponent extends React.PureComponent<BaseComponentProps> {
                 linkUrl,
                 '_blank', // New window
                 'noopener',
-              );
+            );
         } else {
-        this.props.history.push(linkUrl);
+            this.props.history.push(linkUrl);
         }
     };
 
@@ -66,7 +66,7 @@ const Wrap = styled.div`
     align-items: center;
     text-align: center;
     transition: background-color 0.25s;
-    background-color: ${props => props.theme.lightBgColor};
+    background-color: ${(props) => props.theme.lightBgColor};
     cursor: pointer;
 
     a,
@@ -87,5 +87,5 @@ const Wrap = styled.div`
 const Title = styled.h2`
     font-size: 20px;
     margin-bottom: 30px;
-    color: ${props => props.theme.linkColor};
+    color: ${(props) => props.theme.linkColor};
 `;

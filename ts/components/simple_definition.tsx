@@ -71,8 +71,8 @@ const Wrap = styled.div<Props>`
     }
 
     li {
-        color: ${props => props.theme.paragraphColor};
-        font-size: ${props => `var(--${props.fontSize || 'default'}Paragraph)`};
+        color: ${(props) => props.theme.paragraphColor};
+        font-size: ${(props) => `var(--${props.fontSize || 'default'}Paragraph)`};
         font-weight: 300;
         list-style: disc;
         opacity: 0.75;

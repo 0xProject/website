@@ -29,7 +29,7 @@ export const CommunityLinks: React.FC<ICommunityLinksProps> = ({ links }) => {
     );
 };
 
-export const CommunityLink: React.FC<ICommunityLinkProps> = props => (
+export const CommunityLink: React.FC<ICommunityLinkProps> = (props) => (
     <CommunityLinkWrapper to={props.url} shouldOpenInNewTab={true}>
         <CommunityIcon color={colors.brandLight} name={props.icon} margin={[0, 0, 24, 0]} />
         <Heading size="small" marginBottom="8px">

@@ -179,7 +179,7 @@ export const Newsletter = () => {
                                 type="email"
                                 value={email}
                                 width="full"
-                                onChange={e => setEmail(e.target.value)}
+                                onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter your e-mail"
                             />
 

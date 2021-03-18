@@ -5,7 +5,8 @@ import { addFadeInAnimation } from 'ts/constants/animations';
 import { Announcement, AnnouncementProps } from './announcement';
 
 interface Props {
-    title: string;
+    title: string | React.ReactNode;
+    maxWidthContent?: string;
     maxWidth?: string;
     labelText?: string;
     maxWidthHeading?: string;
@@ -19,7 +20,9 @@ interface Props {
     announcement?: AnnouncementProps;
     sectionPadding?: string;
     showFigureBottomMobile?: boolean;
-    figureMaxWidth?: string;
+    hideFigureOnMobile?: boolean;
+    maxWidthFigure?: string;
+    alignItems?: string;
 }
 
 interface SectionProps {
@@ -28,10 +31,10 @@ interface SectionProps {
 }
 
 const Section = styled.section<SectionProps>`
-    padding: ${props => props.padding || (props.isAnnouncement ? '50px 0 120px 0' : '120px 0')};
+    padding: ${(props) => props.padding || (props.isAnnouncement ? '50px 0 120px 0' : '120px 0')};
     position: relative;
     @media (max-width: 768px) {
-        padding: 60px 0;
+        padding: 30px 0 60px 0;
     }
 `;
 
@@ -40,23 +43,25 @@ interface WrapProps {
     isFullWidth?: boolean;
     isCenteredMobile?: boolean;
     showFigureBottomMobile?: boolean;
+    maxWidth?: string;
+    alignItems?: string;
 }
 const Wrap = styled.div<WrapProps>`
     width: calc(100% - 60px);
     margin: 0 auto;
 
     @media (min-width: 768px) {
-        max-width: ${props => (!props.isFullWidth ? '895px' : '1136px')};
+        max-width: ${(props) => (!props.isFullWidth ? '895px' : props.maxWidth ?? '1136px')};
         flex-direction: row-reverse;
         display: flex;
-        align-items: center;
-        text-align: ${props => props.isCentered && 'center'};
-        justify-content: ${props => (props.isCentered ? 'center' : 'space-between')};
+        align-items: ${(props) => props.alignItems ?? 'center'};
+        text-align: ${(props) => props.isCentered && 'center'};
+        justify-content: ${(props) => (props.isCentered ? 'center' : 'space-between')};
     }
 
     @media (max-width: 768px) {
-        text-align: ${props => (props.isCenteredMobile ? `center` : 'left')};
-        flex-direction: ${props => (props.showFigureBottomMobile ? 'column-reverse' : 'column')};
+        text-align: ${(props) => (props.isCenteredMobile ? `center` : 'left')};
+        flex-direction: ${(props) => (props.showFigureBottomMobile ? 'column-reverse' : 'column')};
         display: flex;
         align-items: center;
     }
@@ -67,13 +72,13 @@ interface TitleProps {
     maxWidth?: string;
 }
 const Title = styled.h1<TitleProps>`
-    font-size: ${props => (props.isLarge ? '80px' : '50px')};
+    font-size: ${(props) => (props.isLarge ? '70px' : '50px')};
     font-weight: 300;
     line-height: 1.2;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 30px;
-    max-width: ${props => props.maxWidth};
+    max-width: ${(props) => props.maxWidth};
     ${addFadeInAnimation('0.5s', '0.05s')}
 
     @media (max-width: 1024px) {
@@ -91,7 +96,7 @@ const Description = styled.p`
     font-weight: 300;
     padding: 0;
     margin-bottom: 50px;
-    color: ${props => props.theme.introTextColor};
+    color: ${(props) => props.theme.introTextColor};
     ${addFadeInAnimation('0.5s', '0.15s')} @media (max-width: 1024px) {
         margin-bottom: 30px;
     }
@@ -100,25 +105,29 @@ const Description = styled.p`
 interface ContentProps {
     width: string;
     isCenteredMobile?: boolean;
+    hideFigureOnMobile?: boolean;
 }
 
 const Content = styled.div<ContentProps>`
     width: 100%;
-
-    @media (min-width: 768px) {
-        max-width: ${props => props.width};
+    @media (max-width: 768px) {
+        display: ${(props) => (props.hideFigureOnMobile ? 'none' : props.isCenteredMobile ? 'flex' : 'block')};
+        justify-content: ${(props) => (props.isCenteredMobile ? 'center' : 'inherit')};
     }
     @media (min-width: 768px) {
-        max-width: ${props => props.width};
+        max-width: ${(props) => props.width};
     }
-    ${props =>
+    @media (min-width: 768px) {
+        max-width: ${(props) => props.width};
+    }
+    /* ${(props) =>
         props.isCenteredMobile &&
         `
         @media (max-width: 768px) {
             display: flex;
             justify-content: center;
         }
-    `};
+    `}; */
 `;
 
 const ButtonWrap = styled.div`
@@ -188,18 +197,24 @@ export class Hero extends React.Component<Props> {
             <Section padding={props.sectionPadding} isAnnouncement={!!props.announcement}>
                 {!!props.background && <BackgroundWrap>{props.background}</BackgroundWrap>}
                 <Wrap
+                    maxWidth={props.maxWidth}
                     isCentered={!props.figure}
                     isFullWidth={props.isFullWidth}
                     isCenteredMobile={props.isCenteredMobile}
                     showFigureBottomMobile={props.showFigureBottomMobile}
+                    alignItems={props.alignItems}
                 >
                     {props.figure && (
-                        <Content isCenteredMobile={props.isCenteredMobile} width={props.figureMaxWidth || '400px'}>
+                        <Content
+                            hideFigureOnMobile={props.hideFigureOnMobile}
+                            isCenteredMobile={props.isCenteredMobile}
+                            width={props.maxWidthFigure || '400px'}
+                        >
                             {props.figure}
                         </Content>
                     )}
 
-                    <Content width={props.maxWidth ? props.maxWidth : props.figure ? '546px' : '678px'}>
+                    <Content width={props.maxWidthContent ? props.maxWidthContent : props.figure ? '580px' : '678px'}>
                         {!!props.announcement && <Announcement {...props.announcement} />}
                         {!!props.labelText && <Label>{props.labelText}</Label>}
                         <Title isLarge={props.isLargeTitle} maxWidth={props.maxWidthHeading}>

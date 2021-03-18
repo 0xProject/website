@@ -113,8 +113,8 @@ export class CFL extends React.Component<Props> {
                     showFigureBottomMobile={true}
                     isCenteredMobile={true}
                     figure={<CFLMetrics />}
-                    figureMaxWidth="600px"
-                    maxWidth="500px"
+                    maxWidthFigure="600px"
+                    maxWidthContent="500px"
                     actions={
                         <Button href={constants.CFL_DOCS} isInline={true}>
                             Get Started
@@ -143,7 +143,7 @@ export class CFL extends React.Component<Props> {
                 </Section>
                 <Section>
                     <DeFiHeading size="medium">Use Cases in DeFi</DeFiHeading>
-                    {useCasesData.map(useCase => (
+                    {useCasesData.map((useCase) => (
                         <Definition
                             key={useCase.title}
                             icon={useCase.icon}

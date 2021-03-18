@@ -23,7 +23,4 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): ConnectedDispatch => ({
     dispatcher: new Dispatcher(dispatch),
 });
 
-export const NotFound = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(NotFoundComponent);
+export const NotFound = connect(mapStateToProps, mapDispatchToProps)(NotFoundComponent);

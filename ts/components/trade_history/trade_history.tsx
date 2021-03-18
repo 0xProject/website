@@ -93,11 +93,11 @@ export class TradeHistory extends React.Component<TradeHistoryProps, TradeHistor
     private _numFillsWithoutCustomERC20Tokens(): number {
         let numNonCustomFills = 0;
         const tokens = _.values(this.props.tokenByAddress);
-        _.each(this.state.sortedFills, fill => {
-            const takerToken = _.find(tokens, token => {
+        _.each(this.state.sortedFills, (fill) => {
+            const takerToken = _.find(tokens, (token) => {
                 return token.address === fill.takerToken;
             });
-            const makerToken = _.find(tokens, token => {
+            const makerToken = _.find(tokens, (token) => {
                 return token.address === fill.makerToken;
             });
             // For now we don't show history items for orders using custom ERC20

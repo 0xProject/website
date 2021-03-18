@@ -43,7 +43,7 @@ const StyledInput = styled.input`
     padding: 10px 12px 9px;
     outline: none;
     width: 100%;
-    min-height: ${props => props.type === 'textarea' && `120px`};
+    min-height: ${(props) => props.type === 'textarea' && `120px`};
 
     &::placeholder {
         color: #c3c3c3;
@@ -54,6 +54,6 @@ const InputWrapper = styled.div<InputProps>`
     display: flex;
     align-items: center;
     position: relative;
-    width: ${props => props.width || '100%'};
+    width: ${(props) => props.width || '100%'};
     border-bottom: 1px solid #d5d5d5;
 `;

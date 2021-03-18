@@ -8,7 +8,7 @@ export const docUtils = {
     async getVersionToFilePathAsync(s3DocJsonRoot: string, folderName: string): Promise<VersionToFilePath> {
         const versionFilePaths = await docUtils.getVersionFileNamesAsync(s3DocJsonRoot, folderName);
         const versionToFilePath: VersionToFilePath = {};
-        _.each(versionFilePaths, filePath => {
+        _.each(versionFilePaths, (filePath) => {
             const version = filePath.split('/v')[1].replace('.json', '');
             versionToFilePath[version] = filePath;
         });
@@ -58,14 +58,14 @@ export const docUtils = {
          * <StorageClass>STANDARD</StorageClass>
          * </Contents>
          */
-        const relevantObjs = _.filter(fileObjs, fileObj => {
+        const relevantObjs = _.filter(fileObjs, (fileObj) => {
             const key = fileObj.Key._text;
             const isInFolderOfInterest = _.includes(key, folderName);
             const isFileEntry = !_.endsWith(key, '/');
             return isInFolderOfInterest && isFileEntry;
         });
 
-        const versionFilePaths = _.map(relevantObjs, fileObj => {
+        const versionFilePaths = _.map(relevantObjs, (fileObj) => {
             return fileObj.Key._text;
         });
         return versionFilePaths;

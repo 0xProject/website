@@ -233,8 +233,7 @@ export const proposals: Proposals = {
                 },
                 {
                     text: '0x Forum',
-                    url:
-                        'https://forum.0x.org/',
+                    url: 'https://forum.0x.org/',
                 },
             ],
         },
@@ -244,8 +243,7 @@ export const proposals: Proposals = {
                 `Actively managing the process will constitue an overhead cost for the designated ZEIP committee. This latter will consists initially of members of the 0x Core team, but overtime it will have to be open to other members of the community. `,
             ],
             rating: 1,
-            links: [
-            ],
+            links: [],
         },
     },
     77: {
@@ -268,8 +266,7 @@ export const proposals: Proposals = {
             links: [
                 {
                     text: 'Initial set of staking parameters',
-                    url:
-                        'https://github.com/0xProject/ZEIPs/issues/61',
+                    url: 'https://github.com/0xProject/ZEIPs/issues/61',
                 },
             ],
         },
@@ -288,8 +285,7 @@ export const proposals: Proposals = {
                 },
                 {
                     text: 'Staking security audit',
-                    url:
-                        'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
+                    url: 'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
                 },
             ],
         },
@@ -315,8 +311,7 @@ export const proposals: Proposals = {
             links: [
                 {
                     text: 'Initial set of staking parameters',
-                    url:
-                        'https://github.com/0xProject/ZEIPs/issues/61',
+                    url: 'https://github.com/0xProject/ZEIPs/issues/61',
                 },
             ],
         },
@@ -326,7 +321,6 @@ export const proposals: Proposals = {
                 `Staking contracts were designed to safely allow updates of a specific set of parameters via a SetParams function.`,
                 `This functionality does not trigger security-critical operations, and was considered safe by external security auditors.`,
                 `There is a risk that decreasing the fee multiplier will impact the liquidity rewards in the immediate short term.`,
-
             ],
             rating: 1,
             links: [
@@ -337,8 +331,95 @@ export const proposals: Proposals = {
                 },
                 {
                     text: 'Staking security audit',
-                    url:
-                        'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
+                    url: 'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
+                },
+            ],
+        },
+    },
+    82: {
+        zeipId: 82,
+        title: '0x Protocol V4',
+        summary: [
+            `This proposal concerns a major update to 0x protocol. The upgrades fall mainly into three buckets: the introduction of a new smart contracts architecture, gas optimizations to enhance liquidity aggregation, and a new order type designed for Request for Quote liquidity.`,
+            `In 2020, a new smart contracts architecture has been tested by 0x Labs directly on production DEX applications. This has proven to be a very effective design change, which contributed to making 0x API the best option for DEX aggregators applications.`,
+            `As part of this ZEIP, 0x native order features are natively integrated into these smart contracts pipeline, and registered to start collecting protocol fees. This change completes the upgrade of the canonical 0x protocol to its latest version, 0x v4. `,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/82',
+        voteStartDate: moment(1610827244, 'X'),
+        voteEndDate: moment(1611414044, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `This latest version brings net improvements across three areas.`,
+                `Optimizations in liquidity aggregation and DeFi composability. Thanks to its peer-to-peer protocol design, 0x can represent a superset of liquidity sources, which combined together produce the best price for end users. In addition to that, this version of the protocol introduces the concept of Transformers, which are customizable modules able to execute atomic operations on the traded assets (such as token wrapping/unwrapping, or deposit/withdraw from LP positions).`,
+                `It’s the most gas-efficient DEX protocol. Compared to v3, 0x V4 improves RFQ gas costs by almost 70% (our simulations clocked 105k gas VS 320k on v3) and open orderbook gas cost by 10%. This directly translates to cheaper trades and better prices. In addition to that, it is cheaper to trade on both Uniswap and Sushiswap using 0x v4, thanks to an optimized Uniswap router.`,
+                `It’s automatically upgradable. The new architecture allows to add or modify specific features without requiring existing 0x applications to ‘migrate’. This means 0x contributors (including but not limited to 0x Labs) can focus on implementing smaller, relevant features at a time. Thanks to this new architecture and to the 0x governance process, the protocol will be able to iterate faster based on what the market needs, without having to wait for the ‘next 0x version’.`,
+                `It offers plug&play liquidity. V4 allows custom on-chain liquidity pools to be plugged in via a standard interface and easily aggregated with all other liquidity sources. Whether you're a market maker with a proprietary on-chain strategy or a developer building the next-gen public AMM, V4 can support your use case out of the box.`,
+            ],
+            rating: 3,
+            links: [
+                {
+                    text: 'Protocol specifications',
+                    url: 'https://0xprotocol.readthedocs.io/en/latest/index.html',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `While the 0x v4 contracts architecture is relatively new compared to the previous versions of the protocol, it has been used in production applications in the second half of 2020. Contracts were thoroughly reviewed internally, and audited by Consensys Diligence. No major vulnerabilities were found.`,
+                `Moreover, the new architecture comes with the ability to modify or rollback specific features, without halting the entire pipeline of smart contracts. This means that if a vulnerability is found (0x Labs offers generous bug bounties), it is possible to rollback the functionality that exposes the risk.`,
+            ],
+            rating: 1,
+            links: [
+                {
+                    text: 'Consensys Diligence Security Audit',
+                    url: 'https://consensys.net/diligence/audits/2020/12/0x-exchange-v4/',
+                },
+                {
+                    text: '0x v4 Bug Bounty',
+                    url: 'https://blog.0xproject.com/0x-protocol-v4-bug-bounty-fd0c1942b9a',
+                },
+            ],
+        },
+    },
+    83: {
+        zeipId: 83,
+        title: 'MultiplexFeature, BatchFillNativeOrdersFeature',
+        summary: [
+            `This ZEIP proposes to integrate MultiplexFeature and BatchFillNativeOrdersFeature. The former is designed to more efficiently perform swaps that use multiple liquidity sources.`,
+            `In particular, it enables RFQ orders to be served to 0x API applications without risking reverts, while making the most of the gas savings introduced with 0x V4.`,
+            `This should result in more competitive, exclusive liquidity served to applications connected to 0x API.`,
+            `The latter introduces batchFill functions for 0x V4 limit and RFQ orders. This functionality was requested by market makers to easily fill multiple orders as part of their arbitrage strategies.`,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/83',
+        voteStartDate: moment(1614790800, 'X'),
+        voteEndDate: moment(1615050000, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `Introducing MultiplexFeature will allow RFQ orders to make the most of 0x V4 gas savings (~70% VS 0x V3), as they will not be required to go through the more costly contract pipeline for liquidity aggregation. This will result in more competitive RFQ prices.`,
+                `BatchFillNativeOrdersFeature allows multiple 0x V4 orders to be filled in a single function call. In practice, this should improve the execution of smaller limit orders created from Matcha and other 0x limit order integrators.`,
+            ],
+            rating: 3,
+            links: [
+                {
+                    text: 'Features specifications',
+                    url: 'https://protocol.0x.org/',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Contracts were thoroughly reviewed internally, and spot-checked by Consensys Diligence. No vulnerabilities were found. `,
+                `0x V4 architecture comes with the ability to modify or rollback specific features, without halting the entire pipeline of smart contracts. This means that if a vulnerability is found (0x Labs offers generous bug bounties), it is possible to rollback the functionality that exposes the risk.`,
+            ],
+            rating: 1,
+            links: [
+                {
+                    text: '0x v4 Bug Bounty',
+                    url: 'https://blog.0xproject.com/0x-protocol-v4-bug-bounty-fd0c1942b9a',
                 },
             ],
         },
@@ -352,54 +433,17 @@ export const stagingProposals: Proposals = {
         voteStartDate: moment(Math.floor(Date.now() / 1000), 'X').add(-1, 'day'),
         voteEndDate: moment(Math.floor(Date.now() / 1000), 'X').add(1, 'day'),
     },
-    79: {
-        zeipId: 79,
-        title: 'Set the protocol fee multiplier to 70,000',
-        summary: [
-            `This ZEIP proposes to decrease the current protocol fee multiplier from 150,000 to 70,000.  The goal is to lower the barrier of entry for trading 0x v3 liquidity, with the intent of ultimately increasing its adoption and the liquidity rewards received by market makers (and by token holders who stake with them).`,
-            `With the increase of average gas price over the last 3 months, Ethereum is a substantially different environment from when the current value was set, hence this proposal. The new value would make the 0x protocol fee roughly equivalent to 10bps (0.10%) of DEX median trade size. Refer to the ZEIP for more details.`,
-            `Given the setProtocolFeeMultiplier timelock, if this ZEIP passes, the change will be effective from epoch 28 (starting on 07/18).`,
-        ],
-        url: 'https://github.com/0xProject/ZEIPs/issues/79',
-        voteStartDate: moment(1593867600, 'X'),
-        voteEndDate: moment(1594425630, 'X'),
-        benefit: {
-            title: 'Benefit',
-            summary: [
-                `A negative correlation was observed between the recent increase of gas prices and the volume of DEX protocols with higher gas cost. `,
-                `The goal of reducing the multiplier is to lower the barrier of entry for trading 0x v3 liquidity. For example, a decrease in the fee will make 0x liquidity more competitive on DEX aggregators that take gas cost into account.`,
-            ],
-            rating: 2,
-            links: [
-                {
-                    text: 'Initial set of staking parameters',
-                    url:
-                        'https://github.com/0xProject/ZEIPs/issues/61',
-                },
-            ],
-        },
-        risks: {
-            title: 'Risk',
-            summary: [
-                `Staking contracts were designed to safely allow updates of a specific set of parameters via a SetParams function.`,
-                `This functionality does not trigger security-critical operations, and was considered safe by external security auditors.`,
-                `There is a risk that decreasing the fee multiplier will impact the liquidity rewards in the immediate short term.`,
-
-            ],
-            rating: 1,
-            links: [
-                {
-                    text: 'SetParams function ',
-                    url:
-                        'https://github.com/0xProject/0x-protocol-specification/blob/3.0/staking/staking-specification.md#36-setting-parameters',
-                },
-                {
-                    text: 'Staking security audit',
-                    url:
-                        'https://diligence.consensys.net/audits/2019/10/0x-v3-staking/',
-                },
-            ],
-        },
+    82: {
+        ...proposals[82],
+        title: '0x Protocol V4',
+        voteStartDate: moment(1610827244, 'X'),
+        voteEndDate: moment(1611414044, 'X'),
+    },
+    83: {
+        ...proposals[83],
+        title: 'MultiplexFeature, BatchFillNativeOrdersFeature',
+        voteStartDate: moment(1614790800, 'X'),
+        voteEndDate: moment(1615050000, 'X'),
     },
 };
 

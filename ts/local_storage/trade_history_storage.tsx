@@ -18,7 +18,7 @@ export const tradeHistoryStorage = {
         const lastClearFillDate = localStorage.getItemIfExists(FILL_CLEAR_KEY);
         if (lastClearFillDate !== configs.LAST_LOCAL_STORAGE_FILL_CLEARANCE_DATE) {
             const localStorageKeys = localStorage.getAllKeys();
-            _.each(localStorageKeys, key => {
+            _.each(localStorageKeys, (key) => {
                 if (_.startsWith(key, `${FILLS_KEY}-`) || _.startsWith(key, `${FILLS_LATEST_BLOCK}-`)) {
                     localStorage.removeItem(key);
                 }
@@ -57,7 +57,7 @@ export const tradeHistoryStorage = {
             return {};
         }
         const userFillsByHash = JSON.parse(userFillsJSONString);
-        _.each(userFillsByHash, fill => {
+        _.each(userFillsByHash, (fill) => {
             fill.paidMakerFee = new BigNumber(fill.paidMakerFee);
             fill.paidTakerFee = new BigNumber(fill.paidTakerFee);
             fill.filledTakerTokenAmount = new BigNumber(fill.filledTakerTokenAmount);

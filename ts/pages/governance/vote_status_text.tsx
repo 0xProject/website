@@ -78,7 +78,7 @@ interface VoteStatusTextBaseProps {
 
 const VoteStatusTextBase = styled.div<VoteStatusTextBaseProps>`
     font-size: 22px;
-    color: ${props => props.color};
+    color: ${(props) => props.color};
     margin-bottom: 12px;
     span {
         position: relative;

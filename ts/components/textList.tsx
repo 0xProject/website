@@ -15,13 +15,13 @@ interface UnorderedListProps {
 export const UnorderedList = styled.ul<UnorderedListProps>`
     list-style-type: disc;
     padding-left: 20px;
-    margin-bottom: ${props => props.marginBottom};
+    margin-bottom: ${(props) => props.marginBottom};
 `;
 
 export const OrderedList = styled.ol<OrderedListProps>`
     list-style-type: decimal;
     padding-left: 20px;
-    margin-bottom: ${props => props.marginBottom};
+    margin-bottom: ${(props) => props.marginBottom};
 `;
 
 const Li = styled.li`

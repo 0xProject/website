@@ -203,7 +203,7 @@ export class VoteForm extends React.Component<Props> {
         try {
             const signedVote = await this._signVoteAsync(selectedAddress, typedData);
             // Store the signed vote
-            this.setState(prevState => ({
+            this.setState((prevState) => ({
                 ...prevState,
                 signedVote,
                 voteHash: voteHashHex,
@@ -273,11 +273,7 @@ export class VoteForm extends React.Component<Props> {
                     : web3Wrapper.getProvider();
             const voteHashBuffer = signTypedDataUtils.generateTypedDataHash(typedData);
             const voteHashHex = `0x${voteHashBuffer.toString('hex')}`;
-            signatureHex = await signatureUtils.ecSignHashAsync(
-                provider,
-                voteHashHex,
-                selectedAddress,
-            );
+            signatureHex = await signatureUtils.ecSignHashAsync(provider, voteHashHex, selectedAddress);
         }
         const signedVote = { ...typedData.message, signature: signatureHex };
         return signedVote;
@@ -352,15 +348,15 @@ const ButtonRow = styled(InputRow)`
 `;
 
 const ButtonDisabled = styled(Button)<{ isDisabled?: boolean; disabled?: boolean }>`
-    background-color: ${props => props.disabled && '#898990'};
-    opacity: ${props => props.disabled && '0.4'};
+    background-color: ${(props) => props.disabled && '#898990'};
+    opacity: ${(props) => props.disabled && '0.4'};
 `;
 const Form = styled.form<FormProps>`
     position: relative;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 
-    opacity: ${props => props.isSuccessful && `0`};
-    visibility: ${props => props.isSuccessful && `hidden`};
+    opacity: ${(props) => props.isSuccessful && `0`};
+    visibility: ${(props) => props.isSuccessful && `hidden`};
 `;
 const PreferenceWrapper = styled.div`
     margin-bottom: 30px;

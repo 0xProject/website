@@ -21,7 +21,7 @@ interface IStakingPageLayoutProps {
 
 const { description, keywords, title } = documentConstants.STAKING;
 
-export const StakingPageLayout: React.FC<IStakingPageLayoutProps> = props => {
+export const StakingPageLayout: React.FC<IStakingPageLayoutProps> = (props) => {
     return (
         <SiteWrap isDocs={true} theme="staking" headerComponent={StakingHeader}>
             <DocumentTitle

@@ -10,7 +10,7 @@ export interface AddEthOnboardingStepProps {
     userEthBalanceInWei: BigNumber;
 }
 
-export const AddEthOnboardingStep: React.StatelessComponent<AddEthOnboardingStepProps> = props =>
+export const AddEthOnboardingStep: React.StatelessComponent<AddEthOnboardingStepProps> = (props) =>
     props.userEthBalanceInWei.gt(0) ? (
         <div className="flex items-center flex-column">
             <Text>

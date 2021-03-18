@@ -122,9 +122,12 @@ export class Blockchain {
             };
             const ledgerSubprovider = new LedgerSubprovider(ledgerWalletConfigs);
             provider.addProvider(ledgerSubprovider);
-            const rpcSubproviders = _.map(configs.PUBLIC_NODE_URLS_BY_NETWORK_ID[networkIdIfExists], publicNodeUrl => {
-                return new RPCSubprovider(publicNodeUrl);
-            });
+            const rpcSubproviders = _.map(
+                configs.PUBLIC_NODE_URLS_BY_NETWORK_ID[networkIdIfExists],
+                (publicNodeUrl) => {
+                    return new RPCSubprovider(publicNodeUrl);
+                },
+            );
             provider.addProvider(new RedundantSubprovider(rpcSubproviders));
             providerUtils.startProviderEngine(provider);
             return [provider, ledgerSubprovider];
@@ -139,7 +142,7 @@ export class Blockchain {
                     ? new MetamaskSubprovider(injectedProviderIfExists)
                     : new SignerSubprovider(injectedProviderIfExists);
             provider.addProvider(signerSubprovider);
-            const rpcSubproviders = _.map(publicNodeUrlsIfExistsForNetworkId, publicNodeUrl => {
+            const rpcSubproviders = _.map(publicNodeUrlsIfExistsForNetworkId, (publicNodeUrl) => {
                 return new RPCSubprovider(publicNodeUrl);
             });
             provider.addProvider(new RedundantSubprovider(rpcSubproviders));
@@ -154,7 +157,7 @@ export class Blockchain {
             // injected into their browser.
             const provider = new Web3ProviderEngine();
             const networkId = constants.NETWORK_ID_MAINNET;
-            const rpcSubproviders = _.map(configs.PUBLIC_NODE_URLS_BY_NETWORK_ID[networkId], publicNodeUrl => {
+            const rpcSubproviders = _.map(configs.PUBLIC_NODE_URLS_BY_NETWORK_ID[networkId], (publicNodeUrl) => {
                 return new RPCSubprovider(publicNodeUrl);
             });
             provider.addProvider(new RedundantSubprovider(rpcSubproviders));
@@ -510,7 +513,7 @@ export class Blockchain {
                 ? {}
                 : trackedTokenStorage.getTrackedTokensByAddress(this._userAddressIfExists, this.networkId);
         const tokenRegistryTokens = _.values(tokenRegistryTokensByAddress);
-        const tokenRegistryTokenSymbols = _.map(tokenRegistryTokens, t => t.symbol);
+        const tokenRegistryTokenSymbols = _.map(tokenRegistryTokens, (t) => t.symbol);
         const defaultTrackedTokensInRegistry = _.intersection(
             tokenRegistryTokenSymbols,
             configs.DEFAULT_TRACKED_TOKEN_SYMBOLS,
@@ -528,8 +531,8 @@ export class Blockchain {
             return;
         }
         if (_.isEmpty(trackedTokensByAddress)) {
-            _.each(configs.DEFAULT_TRACKED_TOKEN_SYMBOLS, symbol => {
-                const token = _.find(tokenRegistryTokens, t => t.symbol === symbol);
+            _.each(configs.DEFAULT_TRACKED_TOKEN_SYMBOLS, (symbol) => {
+                const token = _.find(tokenRegistryTokens, (t) => t.symbol === symbol);
                 token.trackedTimestamp = currentTimestamp;
                 trackedTokensByAddress[token.address] = token;
             });

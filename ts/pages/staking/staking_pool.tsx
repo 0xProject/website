@@ -249,7 +249,7 @@ const tradingPairs = [
     },
 ];
 */
-export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = props => {
+export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (props) => {
     const { poolId } = useParams();
 
     const networkId = useSelector((state: State) => state.networkId);
@@ -259,7 +259,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
     useEffect(() => {
         apiClient
             .getStakingPoolByIdAsync(poolId)
-            .then(res => setStakingPool(res.stakingPool))
+            .then((res) => setStakingPool(res.stakingPool))
             .catch((err: Error) => {
                 logUtils.warn(err);
                 errorReporter.report(err);
@@ -284,7 +284,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
         .toNumber();
 
     // Only allow epochs that have finished into historical data
-    const historicalEpochs = stakingPool.epochRewards.filter(x => !!x.epochEndTimestamp);
+    const historicalEpochs = stakingPool.epochRewards.filter((x) => !!x.epochEndTimestamp);
 
     const fullyStakedZrx = nextEpoch.zrxStaked / (nextEpoch.approximateStakeRatio || 1);
     const zrxToStaked = Math.max(fullyStakedZrx - nextEpoch.zrxStaked, 0);
@@ -440,10 +440,10 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = prop
             <Container>
                 <GraphHeading>Historical Details</GraphHeading>
                 <HistoryChart
-                    totalRewards={historicalEpochs.map(e => e.totalRewardsPaidInEth)}
-                    memberRewards={historicalEpochs.map(e => e.membersRewardsPaidInEth)}
-                    epochs={historicalEpochs.map(e => e.epochId)}
-                    labels={historicalEpochs.map(e => format(new Date(e.epochEndTimestamp), 'd MMM'))}
+                    totalRewards={historicalEpochs.map((e) => e.totalRewardsPaidInEth)}
+                    memberRewards={historicalEpochs.map((e) => e.membersRewardsPaidInEth)}
+                    epochs={historicalEpochs.map((e) => e.epochId)}
+                    labels={historicalEpochs.map((e) => format(new Date(e.epochEndTimestamp), 'd MMM'))}
                 />
                 {/* TODO(johnrjj) Trading pairs after launch */}
                 {/* <Heading>Trading Pairs</Heading>

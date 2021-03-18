@@ -29,44 +29,49 @@ export interface ActivityProps {}
 const columns = ['Event timestamp', 'Event', 'Transaction'];
 const shortWidthColumns = ['Event timestamp', 'Event'];
 
-function parseEvent(event: StakingAPIDelegatorHistoryItem): {title: string; subtitle: string} {
+function parseEvent(event: StakingAPIDelegatorHistoryItem): { title: string; subtitle: string } {
     if (event.eventType === 'earned_rewards') {
         const title = 'Earned Rewards';
-        const subtitle = `You earned ${formatEther(event.eventArgs.reward).formatted} ETH from pool ${event.eventArgs.poolId} for epoch ${event.eventArgs.epochId}.`;
-        return {title, subtitle};
+        const subtitle = `You earned ${formatEther(event.eventArgs.reward).formatted} ETH from pool ${
+            event.eventArgs.poolId
+        } for epoch ${event.eventArgs.epochId}.`;
+        return { title, subtitle };
     } else if (event.eventType === 'deposited_zrx') {
         const title = 'Deposited ZRX';
-        const subtitle = `You deposited ${formatZrx(event.eventArgs.zrxAmount).formatted} ZRX into the staking contract.`;
-        return {title, subtitle};
+        const subtitle = `You deposited ${
+            formatZrx(event.eventArgs.zrxAmount).formatted
+        } ZRX into the staking contract.`;
+        return { title, subtitle };
     } else if (event.eventType === 'withdrew_zrx') {
         const title = 'Withdrew ZRX';
-        const subtitle = `You withdrew ${formatZrx(event.eventArgs.zrxAmount).formatted} ZRX from the staking contract.`;
-        return {title, subtitle};
+        const subtitle = `You withdrew ${
+            formatZrx(event.eventArgs.zrxAmount).formatted
+        } ZRX from the staking contract.`;
+        return { title, subtitle };
     } else if (event.eventType === 'staked') {
         const title = 'Staked';
-        const subtitle = `You staked ${formatZrx(event.eventArgs.zrxAmount).formatted} ZRX with pool ${event.eventArgs.poolId}.`;
-        return {title, subtitle};
+        const subtitle = `You staked ${formatZrx(event.eventArgs.zrxAmount).formatted} ZRX with pool ${
+            event.eventArgs.poolId
+        }.`;
+        return { title, subtitle };
     } else if (event.eventType === 'removed_stake') {
         const title = 'Removed Stake';
-        const subtitle = `You removed ${formatZrx(event.eventArgs.zrxAmount).formatted} ZRX from pool ${event.eventArgs.poolId}.`;
-        return {title, subtitle};
+        const subtitle = `You removed ${formatZrx(event.eventArgs.zrxAmount).formatted} ZRX from pool ${
+            event.eventArgs.poolId
+        }.`;
+        return { title, subtitle };
     } else if (event.eventType === 'moved_stake') {
         const title = 'Moved Stake';
-        const subtitle = `You moved ${formatZrx(event.eventArgs.zrxAmount).formatted} ZRX from pool ${event.eventArgs.fromPoolId} to pool ${event.eventArgs.toPoolId}.`;
-        return {title, subtitle};
+        const subtitle = `You moved ${formatZrx(event.eventArgs.zrxAmount).formatted} ZRX from pool ${
+            event.eventArgs.fromPoolId
+        } to pool ${event.eventArgs.toPoolId}.`;
+        return { title, subtitle };
     } else {
-        return {title: 'Unknown event', subtitle: ''};
+        return { title: 'Unknown event', subtitle: '' };
     }
 }
 
-const csvHeaders = [
-    'event_type',
-    'address',
-    'block_number',
-    'event_timestamp',
-    'transaction_hash',
-    'event_args',
-];
+const csvHeaders = ['event_type', 'address', 'block_number', 'event_timestamp', 'transaction_hash', 'event_args'];
 
 export const AccountActivity: React.FC<ActivityProps> = () => {
     const providerState = useSelector((state: State) => state.providerState);
@@ -84,7 +89,9 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
     const account = providerState.account as AccountReady;
 
     const [isFetchingDelegatorData, setIsFetchingDelegatorData] = React.useState<boolean>(false);
-    const [delegatorHistory, setDelegatorHistory] = React.useState<StakingAPIDelegatorHistoryItem[] | undefined>(undefined);
+    const [delegatorHistory, setDelegatorHistory] = React.useState<StakingAPIDelegatorHistoryItem[] | undefined>(
+        undefined,
+    );
 
     const accountLoaded = account && account.address;
     const isDataLoaded = delegatorHistory !== undefined;
@@ -93,9 +100,7 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
 
     React.useEffect(() => {
         const fetchDelegatorData = async () => {
-            const [delegatorHistoryResponse] = await Promise.all([
-                apiClient.getDelegatorHistoryAsync(account.address),
-            ]);
+            const [delegatorHistoryResponse] = await Promise.all([apiClient.getDelegatorHistoryAsync(account.address)]);
 
             setDelegatorHistory(delegatorHistoryResponse);
         };
@@ -154,11 +159,7 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
             <StakingPageLayout title="0x Staking | Activity">
                 <SectionWrapper>
                     <Heading />
-                    <CallToAction
-                        icon="wallet"
-                        title="Loading"
-                        description="Grabbing data for your wallet."
-                    />
+                    <CallToAction icon="wallet" title="Loading" description="Grabbing data for your wallet." />
                 </SectionWrapper>
             </StakingPageLayout>
         );
@@ -169,31 +170,30 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
             <Breadcrumb crumbs={crumbs} />
 
             <ContentWrap>
-                <Heading
-                    asElement="h1"
-                    fontWeight="500"
-                    marginBottom="30px"
-                >
+                <Heading asElement="h1" fontWeight="500" marginBottom="30px">
                     Activity
                 </Heading>
-                {width > 600 ?
-                <ButtonWrapper>
-                    <Button
-                        isWithArrow={true}
-                        isAccentColor={true}
-                        shouldUseAnchorTag={true}
-                        onClick={() => {
-                            try {
-                                exportDataToCSVAndDownloadForUser(csvHeaders, delegatorHistory, 'staking_activity');
-                            } catch (e) {
-                                errorReporter.report(e);
-                                alert('Error exporting CSV.');
+                {width > 600 ? (
+                    <ButtonWrapper>
+                        <Button
+                            isWithArrow={true}
+                            isAccentColor={true}
+                            shouldUseAnchorTag={true}
+                            onClick={() => {
+                                try {
+                                    exportDataToCSVAndDownloadForUser(csvHeaders, delegatorHistory, 'staking_activity');
+                                } catch (e) {
+                                    errorReporter.report(e);
+                                    alert('Error exporting CSV.');
+                                }
                             }}
-                          }
-                    >
-                        Export to CSV
-                    </Button>
-                </ButtonWrapper> : `` }
+                        >
+                            Export to CSV
+                        </Button>
+                    </ButtonWrapper>
+                ) : (
+                    ``
+                )}
 
                 <Table columns={width > 600 ? columns : shortWidthColumns}>
                     {_.map(delegatorHistory, (row, index) => {
@@ -207,29 +207,36 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
                                             year: 'numeric',
                                             month: 'short',
                                             day: '2-digit',
-                                          }).format(new Date(row.eventTimestamp))}
+                                        }).format(new Date(row.eventTimestamp))}
                                     </strong>
                                     <strong>
                                         {Intl.DateTimeFormat('en-US', {
                                             hour: 'numeric',
                                             minute: '2-digit',
                                             second: '2-digit',
-                                          }).format(new Date(row.eventTimestamp))}
+                                        }).format(new Date(row.eventTimestamp))}
                                     </strong>
                                 </DateCell>
                                 <td>
-                                    <StyledStakeStatus
-                                        title={description.title}
-                                        subtitle={description.subtitle}
-                                    />
+                                    <StyledStakeStatus title={description.title} subtitle={description.subtitle} />
                                 </td>
-                                {width > 600 ?
-                                <td>
-                                    <a href={utils.getEtherScanLinkIfExists(row.transactionHash, networkId, EtherscanLinkSuffixes.Tx)} target="_blank" rel="noopener">
-                                        {row.transactionHash === null ? '-' : utils.getAddressBeginAndEnd(row.transactionHash)}
-                                    </a>
-                                </td>
-                                : null}
+                                {width > 600 ? (
+                                    <td>
+                                        <a
+                                            href={utils.getEtherScanLinkIfExists(
+                                                row.transactionHash,
+                                                networkId,
+                                                EtherscanLinkSuffixes.Tx,
+                                            )}
+                                            target="_blank"
+                                            rel="noopener"
+                                        >
+                                            {row.transactionHash === null
+                                                ? '-'
+                                                : utils.getAddressBeginAndEnd(row.transactionHash)}
+                                        </a>
+                                    </td>
+                                ) : null}
                             </tr>
                         );
                     })}
@@ -267,12 +274,11 @@ const DateCell = styled.td`
     strong {
         display: block;
         margin-bottom: 10px;
-        color: ${colors.textDarkPrimary}
+        color: ${colors.textDarkPrimary};
     }
 `;
 
-const StyledStakeStatus = styled(StakeStatus)`
-`;
+const StyledStakeStatus = styled(StakeStatus)``;
 
 const SectionWrapper = styled.div`
     width: calc(100% - 40px);

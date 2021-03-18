@@ -36,9 +36,9 @@ export const DocsGuides: React.FC = () => {
 const Hits: React.FC<IHitsProps> = ({ hits }) => {
     return (
         <div>
-            {difficultyOrder.map(difficulty => {
+            {difficultyOrder.map((difficulty) => {
                 const filteredHits = hits.filter((hit: any) => hit.difficulty === difficulty);
-                const sortedHits = _.orderBy(filteredHits, [hit => hit.title.toLowerCase()], ['asc']);
+                const sortedHits = _.orderBy(filteredHits, [(hit) => hit.title.toLowerCase()], ['asc']);
 
                 return sortedHits.map((hit: any, index: number) => <Resource key={`resource-${index}`} hit={hit} />);
             })}

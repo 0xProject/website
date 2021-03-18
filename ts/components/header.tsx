@@ -5,8 +5,8 @@ import styled, { css, withTheme } from 'styled-components';
 import { Link } from 'ts/components/documentation/shared/link';
 
 import { Button } from 'ts/components/button';
-import { DropdownProducts } from 'ts/components/dropdowns/dropdown_products';
-import { DropdownResources } from 'ts/components/dropdowns/dropdown_resources';
+// import { DropdownProducts } from 'ts/components/dropdowns/dropdown_products';
+// import { DropdownResources } from 'ts/components/dropdowns/dropdown_resources';
 import { Hamburger } from 'ts/components/hamburger';
 import { Logo } from 'ts/components/logo';
 import { MobileNav } from 'ts/components/mobile_nav';
@@ -39,19 +39,8 @@ interface DropdownWrapInterface {
 
 const navItems: NavItemProps[] = [
     {
-        id: 'why',
-        text: 'Why 0x',
-        url: WebsitePaths.Why,
-    },
-    {
-        id: 'products',
-        text: 'Products',
-        dropdownComponent: DropdownProducts,
-        dropdownWidth: 300,
-    },
-    {
         id: 'docs',
-        text: 'Docs',
+        text: 'Developers',
         url: WebsitePaths.Docs,
     },
     {
@@ -59,20 +48,30 @@ const navItems: NavItemProps[] = [
         text: 'ZRX',
         url: WebsitePaths.Staking,
     },
+    //     {
+    //     id: 'resources',
+    //     text: 'Resources',
+    //     dropdownComponent: DropdownResources,
+    //     dropdownWidth: 270,
+    // },
     {
-        id: 'resources',
-        text: 'Resources',
-        dropdownComponent: DropdownResources,
-        dropdownWidth: 270,
+        id: 'blog',
+        text: 'Blog',
+        url: 'https://medium.com/0x-project',
     },
     {
         id: 'about',
         text: 'About',
         url: WebsitePaths.AboutMission,
     },
+    {
+        id: 'analytics',
+        text: 'Analytics',
+        url: 'https://0xtracker.com/',
+    },
 ];
 
-export const HeaderBase: React.FC<HeaderProps> = React.memo(props => {
+export const HeaderBase: React.FC<HeaderProps> = React.memo((props) => {
     const { isNavToggled, toggleMobileNav, theme } = props;
 
     const onUnpin = () => {
@@ -147,7 +146,7 @@ const NavItem = (props: { link: NavItemProps; key: string }) => {
 
 const StyledHeader = styled.header<HeaderProps>`
     padding: 30px;
-    background-color: ${props => props.theme.bgColor};
+    background-color: ${(props) => props.theme.bgColor};
 `;
 
 const LinkWrap = styled.li`
@@ -169,7 +168,7 @@ const LinkWrap = styled.li`
 `;
 
 const linkStyles = css`
-    color: ${props => props.theme.textColor};
+    color: ${(props) => props.theme.textColor};
     opacity: 0.5;
     transition: opacity 0.35s;
     padding: 15px 0;
@@ -213,15 +212,15 @@ const NavLinks = styled.ul`
 `;
 
 const DropdownWrap = styled.div<DropdownWrapInterface>`
-    width: ${props => props.width || 280}px;
+    width: ${(props) => props.width || 280}px;
     padding: 15px 0;
     border: 1px solid transparent;
-    border-color: ${props => props.theme.dropdownBorderColor};
-    background-color: ${props => props.theme.dropdownBg};
-    color: ${props => props.theme.dropdownColor};
+    border-color: ${(props) => props.theme.dropdownBorderColor};
+    background-color: ${(props) => props.theme.dropdownBg};
+    color: ${(props) => props.theme.dropdownColor};
     position: absolute;
     top: 100%;
-    left: calc(50% - ${props => (props.width || 280) / 2}px);
+    left: calc(50% - ${(props) => (props.width || 280) / 2}px);
     visibility: hidden;
     opacity: 0;
     transform: translate3d(0, -10px, 0);
@@ -241,13 +240,13 @@ const DropdownWrap = styled.div<DropdownWrapInterface>`
     }
     &:after {
         border-color: rgba(255, 255, 255, 0);
-        border-bottom-color: ${props => props.theme.dropdownBg};
+        border-bottom-color: ${(props) => props.theme.dropdownBg};
         border-width: 10px;
         margin-left: -10px;
     }
     &:before {
         border-color: rgba(255, 0, 0, 0);
-        border-bottom-color: ${props => props.theme.dropdownBorderColor};
+        border-bottom-color: ${(props) => props.theme.dropdownBorderColor};
         border-width: 11px;
         margin-left: -11px;
     }

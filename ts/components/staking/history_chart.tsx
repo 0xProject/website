@@ -59,10 +59,12 @@ const getOptions = (epochs: number[], fees: number[], rewards: number[]) => {
                         precision: 5,
                         beginAtZero: true,
                         userCallback: (value: string, _index: number, _values: string[]) => {
-                            return `${formatEther(value, {
-                                decimals: 2,
-                                decimalsRounded: 2,
-                            }).formatted}`;
+                            return `${
+                                formatEther(value, {
+                                    decimals: 2,
+                                    decimalsRounded: 2,
+                                }).formatted
+                            }`;
                         },
                     },
                 },
@@ -154,7 +156,7 @@ const Container = styled.div`
     }
 `;
 
-export const HistoryChart: React.FC<HistoryChartProps> = props => {
+export const HistoryChart: React.FC<HistoryChartProps> = (props) => {
     const { totalRewards, memberRewards, labels, epochs } = props;
 
     const container = React.useRef(null);
@@ -167,23 +169,30 @@ export const HistoryChart: React.FC<HistoryChartProps> = props => {
     //     setWidth(c.offsetWidth);
     // }, []);
 
-    const data = useMemo(() =>  ({
-        labels,
-        datasets: [
-            {
-                ...getDefaultDataset(colors.brandLight),
-                data: totalRewards,
-                label: 'Total rewards ',
-            },
-            {
-                ...getDefaultDataset('#A2F5EB'),
-                data: memberRewards,
-                label: 'Rewards shared ',
-            },
-        ],
-    }), [totalRewards, labels, memberRewards]);
+    const data = useMemo(
+        () => ({
+            labels,
+            datasets: [
+                {
+                    ...getDefaultDataset(colors.brandLight),
+                    data: totalRewards,
+                    label: 'Total rewards ',
+                },
+                {
+                    ...getDefaultDataset('#A2F5EB'),
+                    data: memberRewards,
+                    label: 'Rewards shared ',
+                },
+            ],
+        }),
+        [totalRewards, labels, memberRewards],
+    );
 
-    const options = useMemo(() => getOptions(epochs, totalRewards, memberRewards), [epochs, totalRewards, memberRewards]);
+    const options = useMemo(() => getOptions(epochs, totalRewards, memberRewards), [
+        epochs,
+        totalRewards,
+        memberRewards,
+    ]);
 
     return (
         <Container ref={container}>

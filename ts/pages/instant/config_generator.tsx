@@ -122,7 +122,7 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
         };
     };
     private readonly _generateItems = (): SelectItemConfig[] => {
-        return _.map(SRA_ENDPOINTS, endpoint => ({
+        return _.map(SRA_ENDPOINTS, (endpoint) => ({
             label: endpoint,
             value: endpoint,
             onClick: this._handleSRASelection.bind(this, endpoint),
@@ -260,7 +260,7 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
                 </Container>
             );
         }
-        const items = _.map(_.keys(availableTokens), assetData => {
+        const items = _.map(_.keys(availableTokens), (assetData) => {
             const metaData = availableTokens[assetData];
             return {
                 value: assetData,
@@ -327,7 +327,7 @@ interface CheckboxTextProps {
 const CheckboxText = styled.span<CheckboxTextProps>`
     font-size: 14px;
     line-height: 18px;
-    color: ${props => (props.isSelected ? colors.brandDark : '#666666')};
+    color: ${(props) => (props.isSelected ? colors.brandDark : '#666666')};
 `;
 
 const OptionalAction = styled(OptionalText)`

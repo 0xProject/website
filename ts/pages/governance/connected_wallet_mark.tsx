@@ -34,7 +34,7 @@ const Wrapper = styled.div`
     justify-content: flex-end;
 `;
 const Status = styled.span<ConnectedWalletMarkProps>`
-    background: ${props => (props.isConnected ? colors.brandLight : '#FF2828')};
+    background: ${(props) => (props.isConnected ? colors.brandLight : '#FF2828')};
     border-radius: 50%;
     width: 8px;
     height: 8px;

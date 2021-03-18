@@ -21,7 +21,7 @@ interface IMainProps {
     isFullScreen?: boolean;
 }
 
-export const SiteWrap: React.FC<ISiteWrapProps> = props => {
+export const SiteWrap: React.FC<ISiteWrapProps> = (props) => {
     const { children, theme = 'dark', isDocs, isFullScreen, headerComponent, shouldShowDisclaimerInFooter } = props;
     const [isMobileNavOpen, setIsMobileNavOpen] = React.useState<boolean>(false);
 
@@ -53,10 +53,10 @@ export const SiteWrap: React.FC<ISiteWrapProps> = props => {
 
 const Main = styled.main<IMainProps>`
     transition: transform 0.5s, opacity 0.5s;
-    opacity: ${props => props.isNavToggled && '0.5'};
+    opacity: ${(props) => props.isNavToggled && '0.5'};
     padding-bottom: 70px;
 
-    ${props =>
+    ${(props) =>
         props.isFullScreen &&
         `
         display: flex;

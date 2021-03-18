@@ -52,7 +52,7 @@ const Container = styled.div`
     position: relative;
 `;
 
-export const StakingWizard: React.FC<StakingWizardProps> = props => {
+export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
     // If coming from the market maker page, poolId will be provided
     const { poolId } = useQuery<{ poolId: string | undefined }>();
     const { providerState } = props;

@@ -7,6 +7,9 @@
         "prefer-function-over-method": false,
         "custom-no-magic-numbers": false,
         "semicolon": [true, "always", "ignore-bound-class-methods"],
-        "jsx-no-lambda": false
+        "jsx-no-lambda": false,
+        "arrow-parens": false,
+        "trailing-comma": false,
+        "space-before-function-paren": false
     }
 }

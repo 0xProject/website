@@ -85,7 +85,7 @@ const TransactionRow = styled.div<TransactionRowProps>`
     text-align: center;
     height: 50%;
     position: relative;
-    color: ${props => props.isActive ? colors.brandLight : colors.black};
+    color: ${(props) => (props.isActive ? colors.brandLight : colors.black)};
 
     &:first-child {
         border-bottom: 1px solid #d9d9d9;
@@ -100,8 +100,8 @@ const PartyImage = styled.img`
 
 const Caret = styled(Icon)<CaretProps>`
     position: absolute;
-    right: ${props => (props.isLeft ? 'auto' : 0)};
-    left: ${props => (props.isLeft ? 0 : 'auto')};
+    right: ${(props) => (props.isLeft ? 'auto' : 0)};
+    left: ${(props) => (props.isLeft ? 0 : 'auto')};
     top: 50%;
     margin-top: -5px;
 
@@ -110,7 +110,7 @@ const Caret = styled(Icon)<CaretProps>`
     }
 `;
 
-export const TransactionItem: React.FC<TransactionItemProps> = props => {
+export const TransactionItem: React.FC<TransactionItemProps> = (props) => {
     const {
         sendAmount,
         receiveAmount,

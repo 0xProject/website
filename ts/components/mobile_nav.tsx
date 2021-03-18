@@ -12,7 +12,7 @@ interface IMobileNavProps {
     toggleMobileNav: () => void;
 }
 
-export const MobileNav: React.FC<IMobileNavProps> = props => {
+export const MobileNav: React.FC<IMobileNavProps> = (props) => {
     const { isToggled, toggleMobileNav } = props;
 
     return (
@@ -64,12 +64,12 @@ export const MobileNav: React.FC<IMobileNavProps> = props => {
 const Wrap = styled.nav<{ isToggled: boolean }>`
     width: 100%;
     height: 450px;
-    background-color: ${props => props.theme.mobileNavBgUpper};
-    color: ${props => props.theme.mobileNavColor};
-    transition: ${props =>
+    background-color: ${(props) => props.theme.mobileNavBgUpper};
+    color: ${(props) => props.theme.mobileNavColor};
+    transition: ${(props) =>
         props.isToggled ? 'visibility 0s, transform 0.5s' : 'visibility 0s 0.5s, transform 0.5s'};
-    transform: translate3d(0, ${props => (props.isToggled ? 0 : '-100%')}, 0);
-    visibility: ${props => !props.isToggled && 'hidden'};
+    transform: translate3d(0, ${(props) => (props.isToggled ? 0 : '-100%')}, 0);
+    visibility: ${(props) => !props.isToggled && 'hidden'};
     position: fixed;
     display: flex;
     flex-direction: column;
@@ -107,7 +107,7 @@ interface ISectionProps {
 const Section = styled.div<ISectionProps>`
     width: 100%;
     padding: 15px 30px;
-    background-color: ${props => (props.isDark ? props.theme.mobileNavBgLower : 'transparent')};
+    background-color: ${(props) => (props.isDark ? props.theme.mobileNavBgLower : 'transparent')};
 `;
 
 const Grid = styled(WrapGrid)<WrapProps>`

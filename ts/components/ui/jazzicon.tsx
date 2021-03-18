@@ -71,7 +71,7 @@ export interface JazziconProps {
 
 // NOTE: this component will never update after initial render due to forced memo identity
 export const Jazzicon: React.FC<JazziconProps> = React.memo(
-    props => {
+    (props) => {
         const { diameter, paperStyles, seed, svgStyles, isSquare } = props;
 
         const generator = React.useRef(new MersenneTwister(seed));
@@ -85,7 +85,7 @@ export const Jazzicon: React.FC<JazziconProps> = React.memo(
         // tslint:disable-next-line: no-shadowed-variable
         const hueShift = (colors: string[]) => {
             const amount = generator.current.random() * 30 - WOBBLE / 2;
-            return colors.map(hex => {
+            return colors.map((hex) => {
                 const color = Color(hex);
                 color.rotate(amount);
                 return color.hex();

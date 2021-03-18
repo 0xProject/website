@@ -331,7 +331,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                         </Tabs>
                         {metrics != null && (
                             <FiguresList>
-                                {metrics.map(metric => {
+                                {metrics.map((metric) => {
                                     return (
                                         <Figure key={`${metric.title}${metric.number}`}>
                                             <FigureHeader>

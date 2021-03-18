@@ -15,6 +15,7 @@ interface LinkInterface {
     };
     shouldOpenInNewTab?: boolean;
     target?: string;
+    style?: any;
 }
 
 export const Link = (props: LinkInterface) => {
@@ -45,8 +46,8 @@ export const LinkWrap = styled.div`
 `;
 
 const StyledLink = styled(SmartLink)<LinkInterface>`
-    display: ${props => !props.isBlock && 'inline-flex'};
-    color: ${props => props.color || props.theme.linkColor};
+    display: ${(props) => !props.isBlock && 'inline-flex'};
+    color: ${(props) => props.color || props.theme.linkColor};
     text-align: center;
     font-size: 18px;
     text-decoration: none;

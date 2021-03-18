@@ -45,8 +45,8 @@ export class Mesh extends React.Component {
                     isFullWidth={true}
                     showFigureBottomMobile={true}
                     figure={<MeshStats />}
-                    figureMaxWidth="600px"
-                    maxWidth="380px"
+                    maxWidthFigure="600px"
+                    maxWidthContent="380px"
                     actions={
                         <Button href={'#entry-point'} isInline={true}>
                             Choose an accesspoint
@@ -78,7 +78,7 @@ export class Mesh extends React.Component {
                     </Column>
 
                     <Column width="46%" maxWidth="490px">
-                        {descriptionCasesData.map(item => (
+                        {descriptionCasesData.map((item) => (
                             <Definition
                                 key={item.title}
                                 title={item.title}

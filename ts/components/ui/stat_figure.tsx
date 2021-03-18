@@ -18,16 +18,10 @@ const Wrap = styled.div`
     }
 `;
 
-export const StatFigure: React.StatelessComponent<StatFigureProps> = ({
-    label,
-    value,
-}) => {
+export const StatFigure: React.StatelessComponent<StatFigureProps> = ({ label, value }) => {
     return (
         <Wrap>
-            <Heading
-                size={14}
-                marginBottom="8px"
-            >
+            <Heading size={14} marginBottom="8px">
                 {label}
             </Heading>
 

@@ -42,7 +42,7 @@ export const Slide: React.StatelessComponent<SlideProps> = (props: SlideProps) =
     );
 };
 
-export const Slider: React.StatelessComponent<SliderProps> = props => {
+export const Slider: React.StatelessComponent<SliderProps> = (props) => {
     return (
         <StyledSlider>
             <Flickity

@@ -31,7 +31,7 @@ const StyledHamburger = styled.button<Props>`
 
     span {
         display: block;
-        background-color: ${props => props.theme.textColor};
+        background-color: ${(props) => props.theme.textColor};
         width: 100%;
         height: 2px;
         margin-bottom: 5px;
@@ -47,7 +47,7 @@ const StyledHamburger = styled.button<Props>`
             //transform-origin: 0% 100%;
         }
 
-        ${props =>
+        ${(props) =>
             props.isOpen &&
             `
             opacity: 1;

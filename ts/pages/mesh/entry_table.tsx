@@ -104,7 +104,7 @@ interface DefinitionProps {
     value: DataCellValue;
 }
 
-const TableLink: React.FC<TableLinkProps> = props => (
+const TableLink: React.FC<TableLinkProps> = (props) => (
     <Button isWithArrow={true} isAccentColor={true} fontSize="inherit" href={props.href} target="_blank">
         {props.title}
     </Button>
@@ -134,11 +134,11 @@ const Definition: React.FC<DefinitionProps> = ({ id, value }) => {
 
 export const EntryTable: React.FC = () => (
     <Wrapper>
-        {entryTableData.map(item => (
+        {entryTableData.map((item) => (
             <Column key={item.title.toString()}>
                 <Title>{item.title}</Title>
                 <dl>
-                    {rows.map(row => (
+                    {rows.map((row) => (
                         <React.Fragment key={row.title.toString()}>
                             <dt className={row.hideMobile ? 'mobileHidden' : ''}>{row.title}</dt>
                             <Definition id={row.id} value={item[row.id]} />

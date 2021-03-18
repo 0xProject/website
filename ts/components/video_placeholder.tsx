@@ -61,7 +61,7 @@ const StyledPlayIcon = styled(PlayIcon)`
     margin-right: 6px;
 `;
 
-export const VideoPlaceholder: React.FC<VideoPlaceholderProps> = props => {
+export const VideoPlaceholder: React.FC<VideoPlaceholderProps> = (props) => {
     const { title, onClick } = props;
 
     return (

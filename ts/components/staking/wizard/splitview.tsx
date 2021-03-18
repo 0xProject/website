@@ -59,7 +59,7 @@ const Right = styled.div`
     }
 `;
 
-export const Splitview: React.FC<SplitviewProps> = props => {
+export const Splitview: React.FC<SplitviewProps> = (props) => {
     const { leftComponent, rightComponent } = props;
     return (
         <SplitviewContainer>
