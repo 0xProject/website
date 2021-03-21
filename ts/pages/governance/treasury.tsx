@@ -138,7 +138,7 @@ export const Treasury: React.FC<{}> = () => {
             });
             setProposalsLoaded(true);
         }
-    }, [data]);
+    }, [data, quorumThreshold]);
 
     const onVoteReceived = (voteInfo: VoteInfo): void => {
         const { userBalance, voteValue } = voteInfo;

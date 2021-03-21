@@ -163,14 +163,16 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({
     const [shouldOpenPoolsDialog, setOpenPoolsDialog] = React.useState<boolean>(false);
     const [selectedPool, setSelectedPool] = React.useState<PoolWithStats>();
     const [isDelegationFlow, setIsDelegationFlow] = React.useState<boolean>(false);
-    const [zrxAmount, setZRXAmount] = React.useState<number>(userZRXBalance);
+    const [zrxAmount, setZRXAmount] = React.useState<number>(userZRXBalance || 0);
 
     React.useEffect(() => {
-        setZRXAmount(userZRXBalance);
+        if(userZRXBalance) {
+            setZRXAmount(userZRXBalance);
+        }
     }, [userZRXBalance]);
 
     const onInput: React.ChangeEventHandler = (event: React.ChangeEvent) => {
-        setZRXAmount(parseInt((event.target as HTMLInputElement).value, 10));
+        setZRXAmount(parseFloat((event.target as HTMLInputElement).value));
     };
     const onChangePool = (fromPoolId: string, toPoolId: string) => {
         const selectedPoolObj = stakingPools.find((s) => s.poolId === toPoolId);
@@ -181,7 +183,7 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({
 
     return (
         <>
-            {!!userZRXBalance ? (
+            {userZRXBalance || userZRXBalance === 0 ? (
                 <>
                     <InfoHeader>Your voting power</InfoHeader>
                     <Container>
@@ -193,7 +195,6 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({
                             <ZRXAmount>
                                 <Input
                                     type="number"
-                                    defaultValue={userZRXBalance}
                                     onChange={onInput}
                                     value={zrxAmount}
                                 />{' '}
@@ -281,11 +282,6 @@ export const RegistrationSuccess: React.FC<IRegistrationSuccess> = ({ nextEpochS
     return (
         <SuccessContainer>
             <Header>Your voting power is now registered</Header>
-
-            {/* <InfoHeader>Your tokens are now locked.</InfoHeader>
-
-      <InfoHeader>Additional tip</InfoHeader> */}
-
             <MessageList>
                 <li>
                     <strong>Your tokens are now locked.</strong>

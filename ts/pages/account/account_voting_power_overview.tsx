@@ -30,7 +30,7 @@ interface SelfVotingPowerOverviewProps {
     onMoveStake: () => void;
 }
 
-export const AccountVotingPowerOverview: React.StatelessComponent<VotingPowerOverviewProps> = ({
+export const AccountVotingPowerOverview: React.FC<VotingPowerOverviewProps> = ({
     name,
     websiteUrl,
     logoUrl,
@@ -68,7 +68,7 @@ export const AccountVotingPowerOverview: React.StatelessComponent<VotingPowerOve
     );
 };
 
-export const AccountSelfVotingPowerOverview: React.StatelessComponent<SelfVotingPowerOverviewProps> = ({
+export const AccountSelfVotingPowerOverview: React.FC<SelfVotingPowerOverviewProps> = ({
     delegation,
     isSelfDelegated,
     onMoveStake,

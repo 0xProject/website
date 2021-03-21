@@ -74,7 +74,7 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
             setNextEpochStart(epochStart);
             setStakingPools(poolsResponse.stakingPools);
         })();
-    }, []);
+    }, [apiClient]);
 
     const onNextButtonClick = async (isDelegationFlow: boolean, pool: PoolWithStats, zrxAmount: number) => {
         if (isDelegationFlow) {
