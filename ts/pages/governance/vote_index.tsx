@@ -207,7 +207,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
             sortProposals(onChainProposals.reverse(), ZEIP_PROPOSALS);
             setProposals(onChainProposals);
         }
-    }, [data]);
+    }, [data, isQueryLoading, quorumThreshold]);
 
     const applyFilter = (value: string) => {
         setFilter(value);

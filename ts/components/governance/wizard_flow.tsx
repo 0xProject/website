@@ -166,7 +166,7 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({
     const [zrxAmount, setZRXAmount] = React.useState<number>(userZRXBalance || 0);
 
     React.useEffect(() => {
-        if(userZRXBalance) {
+        if (userZRXBalance) {
             setZRXAmount(userZRXBalance);
         }
     }, [userZRXBalance]);
@@ -193,12 +193,7 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({
                             </JazzIconContainer>
                             <Title>You</Title>
                             <ZRXAmount>
-                                <Input
-                                    type="number"
-                                    onChange={onInput}
-                                    value={zrxAmount}
-                                />{' '}
-                                ZRX
+                                <Input type="number" onChange={onInput} value={zrxAmount} /> ZRX
                             </ZRXAmount>
                         </Heading>
                     </Container>
