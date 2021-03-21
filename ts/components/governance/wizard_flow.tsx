@@ -9,16 +9,16 @@ import { colors } from 'ts/style/colors';
 import { PoolWithStats } from 'ts/types';
 
 interface IVotingPowerInputProps {
-  userZRXBalance: number;
-  onOpenConnectWalletDialog: () => void;
-  onNextButtonClick: (isDelegationFlow: boolean, selectedPool: PoolWithStats, zrxAmount: number) => void;
-  address: string;
-  stakingPools: PoolWithStats[];
-  nextEpochStart: Date;
+    userZRXBalance: number;
+    onOpenConnectWalletDialog: () => void;
+    onNextButtonClick: (isDelegationFlow: boolean, selectedPool: PoolWithStats, zrxAmount: number) => void;
+    address: string;
+    stakingPools: PoolWithStats[];
+    nextEpochStart: Date;
 }
 
 interface IRegistrationSuccess {
-  nextEpochStart: Date;
+    nextEpochStart: Date;
 }
 
 const ConnectWalletButton = styled(Button)``;
@@ -77,28 +77,28 @@ const JazzIconContainer = styled.div`
 `;
 
 const Input = styled.input`
-  color: ${colors.textDarkSecondary};
-  font-size: 16px;
-  padding-bottom: 3px;
-  border: none;
-  background: none;
-  text-align: right;
-  margin: 0 5px;
-  outline: none;
-  height: 100%;
-  width: 99%;
+    color: ${colors.textDarkSecondary};
+    font-size: 16px;
+    padding-bottom: 3px;
+    border: none;
+    background: none;
+    text-align: right;
+    margin: 0 5px;
+    outline: none;
+    height: 100%;
+    width: 99%;
 
-  /* Chrome, Safari, Edge, Opera */
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
+    /* Chrome, Safari, Edge, Opera */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 
-  /* Firefox */
-  [type=number] {
-    -moz-appearance: textfield;
-  }
+    /* Firefox */
+    [type='number'] {
+        -moz-appearance: textfield;
+    }
 `;
 
 const Title = styled.h3`
@@ -121,105 +121,120 @@ const ZRXAmount = styled.span`
 `;
 
 const Notice = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 80px;
+    display: flex;
+    align-items: center;
+    margin-top: 80px;
 `;
 
 const Bullet = styled.div`
-  height: 10px;
-  width: 15px;
-  margin-right: 15px;
-  background-color: #000000;
+    height: 10px;
+    width: 15px;
+    margin-right: 15px;
+    background-color: #000000;
 `;
 
 const ConfirmButton = styled(Button)`
-  margin-top: 40px;
-  color: ${() => colors.white};
+    margin-top: 40px;
+    color: ${() => colors.white};
 `;
 
 const DelegateButton = styled.button`
-  border: none;
-  background: none;
-  color: ${() => colors.textDarkSecondary};
-  text-align: right;
-  margin-bottom: 60px;
-  cursor: pointer;
+    border: none;
+    background: none;
+    color: ${() => colors.textDarkSecondary};
+    text-align: right;
+    margin-bottom: 60px;
+    cursor: pointer;
 
-  &:hover {
-    text-decoration: underline;
-  }
+    &:hover {
+        text-decoration: underline;
+    }
 `;
 
-export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({ userZRXBalance, onOpenConnectWalletDialog, address, onNextButtonClick, stakingPools, nextEpochStart }) => {
-  const [shouldOpenPoolsDialog, setOpenPoolsDialog ] = React.useState<boolean>(false);
-  const [selectedPool, setSelectedPool] = React.useState<PoolWithStats>();
-  const [isDelegationFlow, setIsDelegationFlow ] = React.useState<boolean>(false);
-  const [ zrxAmount, setZRXAmount] = React.useState<number>(userZRXBalance);
+export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({
+    userZRXBalance,
+    onOpenConnectWalletDialog,
+    address,
+    onNextButtonClick,
+    stakingPools,
+    nextEpochStart,
+}) => {
+    const [shouldOpenPoolsDialog, setOpenPoolsDialog] = React.useState<boolean>(false);
+    const [selectedPool, setSelectedPool] = React.useState<PoolWithStats>();
+    const [isDelegationFlow, setIsDelegationFlow] = React.useState<boolean>(false);
+    const [zrxAmount, setZRXAmount] = React.useState<number>(userZRXBalance);
 
-  React.useEffect(() => {
-    setZRXAmount(userZRXBalance);
-  }, [userZRXBalance]);
+    React.useEffect(() => {
+        setZRXAmount(userZRXBalance);
+    }, [userZRXBalance]);
 
-  const onInput: React.ChangeEventHandler = (event: React.ChangeEvent) => {
-    setZRXAmount(parseInt((event.target as HTMLInputElement).value, 10));
-  };
-  const onChangePool = (fromPoolId: string, toPoolId: string) => {
-    const selectedPoolObj = stakingPools.find(s => s.poolId === toPoolId);
-    setSelectedPool(selectedPoolObj);
-    setIsDelegationFlow(true);
-    onNextButtonClick(true, selectedPoolObj, zrxAmount);
-  };
+    const onInput: React.ChangeEventHandler = (event: React.ChangeEvent) => {
+        setZRXAmount(parseInt((event.target as HTMLInputElement).value, 10));
+    };
+    const onChangePool = (fromPoolId: string, toPoolId: string) => {
+        const selectedPoolObj = stakingPools.find((s) => s.poolId === toPoolId);
+        setSelectedPool(selectedPoolObj);
+        setIsDelegationFlow(true);
+        onNextButtonClick(true, selectedPoolObj, zrxAmount);
+    };
 
-  return (
-    <>
-    {
-      !!userZRXBalance ?
-      <>
-        <InfoHeader>
-            Your voting power
-        </InfoHeader>
-        <Container>
-          <Heading>
-              <JazzIconContainer>
-                  <Jazzicon isSquare={true} diameter={28}  seed={address && generateUniqueId(address)} />
-              </JazzIconContainer>
-              <Title>
-                  You
-              </Title>
-              <ZRXAmount><Input type="number" defaultValue={userZRXBalance} onChange={onInput} value={zrxAmount} /> ZRX</ZRXAmount>
-          </Heading>
-        </Container>
-          {
-            !isDelegationFlow &&
-            <DelegateButton onClick={() => setOpenPoolsDialog(true)}>Delegate to someone else</DelegateButton>
-          }
-          <Notice>
-            <Bullet />
-            <span><strong>Your ZRX will be locked for 1-2 weeks</strong>, depending amount of time remaining in the current epoch</span>
-          </Notice>
-          <ConfirmButton onClick={() => onNextButtonClick(isDelegationFlow, selectedPool, zrxAmount)}>
-            Confirm Registration
-          </ConfirmButton>
-          <ChangePoolDialog
-              stakingPools={stakingPools || []}
-              onChangePool={onChangePool}
-              isOpen={shouldOpenPoolsDialog}
-              nextEpochStart={nextEpochStart}
-              onDismiss={() => setOpenPoolsDialog(false)}
-              currentPoolDetails={{
-                poolId: '43',
-                zrxAmount: userZRXBalance,
-              }}
-              shouldAskForConfirmation={false}
-          />
-      </>
-      :
-      <ConnectWalletButton color={colors.white} onClick={onOpenConnectWalletDialog}>
-          Connect your wallet to register to vote
-      </ConnectWalletButton>
-    }</>
-  );
+    return (
+        <>
+            {!!userZRXBalance ? (
+                <>
+                    <InfoHeader>Your voting power</InfoHeader>
+                    <Container>
+                        <Heading>
+                            <JazzIconContainer>
+                                <Jazzicon isSquare={true} diameter={28} seed={address && generateUniqueId(address)} />
+                            </JazzIconContainer>
+                            <Title>You</Title>
+                            <ZRXAmount>
+                                <Input
+                                    type="number"
+                                    defaultValue={userZRXBalance}
+                                    onChange={onInput}
+                                    value={zrxAmount}
+                                />{' '}
+                                ZRX
+                            </ZRXAmount>
+                        </Heading>
+                    </Container>
+                    {!isDelegationFlow && (
+                        <DelegateButton onClick={() => setOpenPoolsDialog(true)}>
+                            Delegate to someone else
+                        </DelegateButton>
+                    )}
+                    <Notice>
+                        <Bullet />
+                        <span>
+                            <strong>Your ZRX will be locked for 1-2 weeks</strong>, depending amount of time remaining
+                            in the current epoch
+                        </span>
+                    </Notice>
+                    <ConfirmButton onClick={() => onNextButtonClick(isDelegationFlow, selectedPool, zrxAmount)}>
+                        Confirm Registration
+                    </ConfirmButton>
+                    <ChangePoolDialog
+                        stakingPools={stakingPools || []}
+                        onChangePool={onChangePool}
+                        isOpen={shouldOpenPoolsDialog}
+                        nextEpochStart={nextEpochStart}
+                        onDismiss={() => setOpenPoolsDialog(false)}
+                        currentPoolDetails={{
+                            poolId: '43',
+                            zrxAmount: userZRXBalance,
+                        }}
+                        shouldAskForConfirmation={false}
+                    />
+                </>
+            ) : (
+                <ConnectWalletButton color={colors.white} onClick={onOpenConnectWalletDialog}>
+                    Connect your wallet to register to vote
+                </ConnectWalletButton>
+            )}
+        </>
+    );
 };
 
 const Header = styled.h1`
@@ -231,57 +246,55 @@ const Header = styled.h1`
 `;
 
 const SuccessContainer = styled.div`
-  background-color: ${() => colors.white};
-  border: 1px solid #dddddd;
-  padding: 50px;
+    background-color: ${() => colors.white};
+    border: 1px solid #dddddd;
+    padding: 50px;
 `;
 
 const MessageList = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-  padding: 0 50px;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    padding: 0 50px;
 
-  li {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    line-height: 20px;
-    color: ${() => colors.textDarkSecondary};
-    font-size: 12px;
+    li {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        line-height: 20px;
+        color: ${() => colors.textDarkSecondary};
+        font-size: 12px;
 
-    strong {
-      color: #000000;
-      font-weight: bold;
-      font-size: 14px;
+        strong {
+            color: #000000;
+            font-weight: bold;
+            font-size: 14px;
+        }
     }
-  }
 `;
 
 export const RegistrationSuccess: React.FC<IRegistrationSuccess> = ({ nextEpochStart }) => {
-  const nextEpochMoment = moment(nextEpochStart);
-  const todayMoment = moment();
-  const daysToNextEpoch = nextEpochMoment.diff(todayMoment, 'days');
-  return (
-    <SuccessContainer>
-      <Header>
-        Your voting power is now registered
-      </Header>
+    const nextEpochMoment = moment(nextEpochStart);
+    const todayMoment = moment();
+    const daysToNextEpoch = nextEpochMoment.diff(todayMoment, 'days');
+    return (
+        <SuccessContainer>
+            <Header>Your voting power is now registered</Header>
 
-      {/* <InfoHeader>Your tokens are now locked.</InfoHeader>
+            {/* <InfoHeader>Your tokens are now locked.</InfoHeader>
 
       <InfoHeader>Additional tip</InfoHeader> */}
 
-    <MessageList>
-      <li>
-        <strong>Your tokens are now locked.</strong>
-        Unlocking will be available in {daysToNextEpoch} days
-      </li>
-      <li>
-        <strong>Additional tip</strong>
-        Unlocking will be available in {daysToNextEpoch} days
-      </li>
-    </MessageList>
-    </SuccessContainer>
-  );
+            <MessageList>
+                <li>
+                    <strong>Your tokens are now locked.</strong>
+                    Unlocking will be available in {daysToNextEpoch} days
+                </li>
+                <li>
+                    <strong>Additional tip</strong>
+                    Unlocking will be available in {daysToNextEpoch} days
+                </li>
+            </MessageList>
+        </SuccessContainer>
+    );
 };

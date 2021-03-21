@@ -46,42 +46,56 @@ const StyledUnorderedList = styled(UnorderedList as any)`
 `;
 
 export const StartRegistrationInfo = () => {
-  return (
-    <>
-      <>
-        <IntroHeader>Register your Vote</IntroHeader>
-        <IntroDescription>Registering allows you to use ZRX to vote on treasury proposals.</IntroDescription>
-      </>
-      <Separator margin="0 120px 60px 0" />
-      <StyledUnorderedList>
-          <ListItem>
-              Change your delegation or vote for proposals at {' '}
-              <Button to={WebsitePaths.Vote} isInline={true} isTransparent={true} isNoBorder={true} isNoPadding={true} color={colors.brandLight}>
-                  https://0x.org/zrx/vote
-              </Button>
-          </ListItem>
-      </StyledUnorderedList>
-    </>
-  );
+    return (
+        <>
+            <>
+                <IntroHeader>Register your Vote</IntroHeader>
+                <IntroDescription>Registering allows you to use ZRX to vote on treasury proposals.</IntroDescription>
+            </>
+            <Separator margin="0 120px 60px 0" />
+            <StyledUnorderedList>
+                <ListItem>
+                    Change your delegation or vote for proposals at{' '}
+                    <Button
+                        to={WebsitePaths.Vote}
+                        isInline={true}
+                        isTransparent={true}
+                        isNoBorder={true}
+                        isNoPadding={true}
+                        color={colors.brandLight}
+                    >
+                        https://0x.org/zrx/vote
+                    </Button>
+                </ListItem>
+            </StyledUnorderedList>
+        </>
+    );
 };
 
 export const RegistrationSuccessInfo = () => {
-  return (
-    <>
-      <>
-        <IntroHeader>Success</IntroHeader>
-        <IntroDescription>Delegation allows you to use ZRX to vote on treasury proposals. </IntroDescription>
-      </>
-      <Separator margin="0 120px 60px 0" />
-      <StyledUnorderedList>
-          <ListItem>50% of your voting power must go to the owner the staking pool.</ListItem>
-          <ListItem>
-          You can manage your voting power delegations in your {' '}
-              <Button to={WebsitePaths.Account} isInline={true} isTransparent={true} isNoBorder={true} isNoPadding={true} color={colors.brandLight}>
-                account settings
-              </Button>
-          </ListItem>
-      </StyledUnorderedList>
-    </>
-  );
+    return (
+        <>
+            <>
+                <IntroHeader>Success</IntroHeader>
+                <IntroDescription>Delegation allows you to use ZRX to vote on treasury proposals. </IntroDescription>
+            </>
+            <Separator margin="0 120px 60px 0" />
+            <StyledUnorderedList>
+                <ListItem>50% of your voting power must go to the owner the staking pool.</ListItem>
+                <ListItem>
+                    You can manage your voting power delegations in your{' '}
+                    <Button
+                        to={WebsitePaths.Account}
+                        isInline={true}
+                        isTransparent={true}
+                        isNoBorder={true}
+                        isNoPadding={true}
+                        color={colors.brandLight}
+                    >
+                        account settings
+                    </Button>
+                </ListItem>
+            </StyledUnorderedList>
+        </>
+    );
 };

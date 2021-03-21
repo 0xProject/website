@@ -751,7 +751,7 @@ export const TokenApprovalPane = (props: TokenApprovalPaneProps) => {
     );
 };
 
-export const VotingPowerConfirmation: React.FC<VotingPowerConfirmationProps> = props => {
+export const VotingPowerConfirmation: React.FC<VotingPowerConfirmationProps> = (props) => {
     const { selectedStakingPools, providerState } = props;
 
     if (!selectedStakingPools || selectedStakingPools.length === 0) {
@@ -760,46 +760,46 @@ export const VotingPowerConfirmation: React.FC<VotingPowerConfirmationProps> = p
 
     return (
         <RelativeContainer>
-            <InfoHeader>
-                Your voting power
-            </InfoHeader>
+            <InfoHeader>Your voting power</InfoHeader>
             <Container>
                 <Heading>
                     <JazzIconContainer>
-                        <Jazzicon diameter={40} seed={providerState.account && generateUniqueId((providerState.account as AccountReady).address)} />
+                        <Jazzicon
+                            diameter={40}
+                            seed={
+                                providerState.account &&
+                                generateUniqueId((providerState.account as AccountReady).address)
+                            }
+                        />
                     </JazzIconContainer>
-                    <Title>
-                        You
-                    </Title>
+                    <Title>You</Title>
                     <ZRXAmount>{formatZrx(selectedStakingPools[0].zrxAmount / 2).formatted} ZRX</ZRXAmount>
                     <Difference>({50 / selectedStakingPools.length}%)</Difference>
                 </Heading>
             </Container>
             <Separator />
 
-            <InfoHeader>
-                Voting power delegated to pool owner
-            </InfoHeader>
+            <InfoHeader>Voting power delegated to pool owner</InfoHeader>
 
-            {
-                selectedStakingPools && selectedStakingPools.length > 0 && selectedStakingPools.map((selectedPool: UserStakingChoice) => {
+            {selectedStakingPools &&
+                selectedStakingPools.length > 0 &&
+                selectedStakingPools.map((selectedPool: UserStakingChoice) => {
                     const { pool, zrxAmount } = selectedPool;
                     const poolName = stakingUtils.getPoolDisplayName(pool);
 
                     return (
                         <Container key={poolName}>
                             <Heading>
-                                {pool.metaData.logoUrl && <MarketMakerIcon src={pool.metaData.logoUrl} alt={poolName} />}
-                                <Title>
-                                    {poolName}
-                                </Title>
+                                {pool.metaData.logoUrl && (
+                                    <MarketMakerIcon src={pool.metaData.logoUrl} alt={poolName} />
+                                )}
+                                <Title>{poolName}</Title>
                                 <ZRXAmount>{formatZrx(zrxAmount / 2).formatted} ZRX</ZRXAmount>
                                 <Difference>({50 / selectedStakingPools.length}%)</Difference>
                             </Heading>
                         </Container>
                     );
-                })
-            }
+                })}
 
             <ButtonWithIcon
                 onClick={() => {
@@ -867,7 +867,7 @@ const ZRXAmount = styled.span`
 `;
 
 const Separator = styled.div`
-  margin: 70px 0;
+    margin: 70px 0;
 `;
 
 const JazzIconContainer = styled.div`

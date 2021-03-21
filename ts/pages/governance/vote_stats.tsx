@@ -51,18 +51,14 @@ export const VoteStats: React.StatelessComponent<VoteStatsProps> = ({ tally, isV
 
     return (
         <>
-            {
-                !isVoteCard &&
+            {!isVoteCard && (
                 <Heading asElement="h3" size="small" marginBottom="10px">
                     Results
                 </Heading>
-            }
+            )}
             <VoteBar label="Yes" color={colors.brandLight} percentage={yesPercentage} />
             <VoteBar label="No" color={colors.brandDark} percentage={noPercentage} marginBottom="24px" />
-            {
-                !isVoteCard &&
-                <Paragraph marginBottom="24px">({totalBalanceString} ZRX total vote)</Paragraph>
-            }
+            {!isVoteCard && <Paragraph marginBottom="24px">({totalBalanceString} ZRX total vote)</Paragraph>}
         </>
     );
 };

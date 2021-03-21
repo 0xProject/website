@@ -33,34 +33,46 @@ export const RegisterBanner: React.FC<{}> = () => {
     }, [providerState]);
 
     if (userZRXBalance && userZRXBalance > 0) {
-    return (
-        <Container>
-        <BannerImage src="/images/governance/register_banner.svg" />
-            <MediaQuery minWidth={768}>
-                <TextContent>
-                        <Text noWrap={true} fontColor={colors.textDarkPrimary} Tag="h1" fontSize="28px" fontFamily="Formular">
+        return (
+            <Container>
+                <BannerImage src="/images/governance/register_banner.svg" />
+                <MediaQuery minWidth={768}>
+                    <TextContent>
+                        <Text
+                            noWrap={true}
+                            fontColor={colors.textDarkPrimary}
+                            Tag="h1"
+                            fontSize="28px"
+                            fontFamily="Formular"
+                        >
                             Register to vote with your ZRX!
                         </Text>
-                        <Text noWrap={true} fontColor={colors.textDarkSecondary} fontSize="22px" fontFamily="Formular" fontWeight={300}>
+                        <Text
+                            noWrap={true}
+                            fontColor={colors.textDarkSecondary}
+                            fontSize="22px"
+                            fontFamily="Formular"
+                            fontWeight={300}
+                        >
                             Register to vote on upcoming treasury proposals
                         </Text>
-                </TextContent>
-            </MediaQuery>
-            <MediaQuery maxWidth={768}>
-                <TextContent>
-                    <Text noWrap={true} fontColor={colors.textDarkPrimary} Tag="h1" fontSize="22px">
-                        Register to vote with your ZRX!
-                    </Text>
-                    <Text noWrap={true} fontColor={colors.textDarkSecondary} fontSize="14px">
-                        Register to vote on upcoming treasury proposals
-                    </Text>
-                </TextContent>
-            </MediaQuery>
-        <Button to={WebsitePaths.Register} color={colors.white}>
-            Register your ZRX
-        </Button>
-        </Container>
-    );
+                    </TextContent>
+                </MediaQuery>
+                <MediaQuery maxWidth={768}>
+                    <TextContent>
+                        <Text noWrap={true} fontColor={colors.textDarkPrimary} Tag="h1" fontSize="22px">
+                            Register to vote with your ZRX!
+                        </Text>
+                        <Text noWrap={true} fontColor={colors.textDarkSecondary} fontSize="14px">
+                            Register to vote on upcoming treasury proposals
+                        </Text>
+                    </TextContent>
+                </MediaQuery>
+                <Button to={WebsitePaths.Register} color={colors.white}>
+                    Register your ZRX
+                </Button>
+            </Container>
+        );
     }
     return null;
 };
@@ -72,6 +84,7 @@ const Container = styled.div`
     align-items: center;
     width: 100%;
     padding-bottom: 20px;
+    max-width: 1500px;
 
     @media (min-width: 768px) {
         height: 120px;
@@ -79,7 +92,7 @@ const Container = styled.div`
         padding-right: 50px;
         padding-bottom: 0px;
         width: auto;
-        margin: auto 30px;
+        margin: auto;
     }
 `;
 

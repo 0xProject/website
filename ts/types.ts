@@ -1312,12 +1312,12 @@ export interface OnChainProposal {
     votesAgainst: BigNumber;
     createdTimestamp: BigNumber;
     voteEpoch: {
-      startTimestamp: BigNumber;
-      endTimestamp: BigNumber;
+        startTimestamp: BigNumber;
+        endTimestamp: BigNumber;
     };
     executionEpoch: {
-      startTimestamp: BigNumber;
-      endTimestamp: BigNumber;
+        startTimestamp: BigNumber;
+        endTimestamp: BigNumber;
     };
     executionTimestamp: BigNumber;
 }

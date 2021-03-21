@@ -195,7 +195,12 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
     );
 };
 
-export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss, onVoted: onVoteInfoReceived }) => {
+export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({
+    zeipId,
+    isOpen,
+    onDismiss,
+    onVoted: onVoteInfoReceived,
+}) => {
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
     const account = providerState.account as AccountReady;
@@ -211,10 +216,12 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
     React.useEffect(() => {
         const fetchVotingPower = async () => {
             const poolsResponse = await apiClient.getStakingPoolsAsync();
-            const userOperatedPools = poolsResponse.stakingPools.filter(p => p.operatorAddress === account.address);
+            const userOperatedPools = poolsResponse.stakingPools.filter((p) => p.operatorAddress === account.address);
             setOperatedPools(userOperatedPools);
 
-            const votingPower = await contract.getVotingPower(account.address, userOperatedPools ? userOperatedPools.map(pool => pool.poolId) : []).callAsync();
+            const votingPower = await contract
+                .getVotingPower(account.address, userOperatedPools ? userOperatedPools.map((pool) => pool.poolId) : [])
+                .callAsync();
             const votingPowerBigNumber = new BigNumber(votingPower.toNumber());
             setCurrentVotingPower(votingPowerBigNumber);
         };
@@ -225,7 +232,7 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
 
         fetchVotingPower()
             .then(() => setIsFetchingVotingPowerData(false))
-            .catch(err => {
+            .catch((err) => {
                 setIsFetchingVotingPowerData(false);
                 logUtils.warn(err);
                 errorReporter.report(err);
@@ -241,13 +248,16 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
     );
 
     const [isSuccessful, setSuccess] = React.useState(false);
-    const [ isWaitingForConfirmation, setWaitingForConfirmation] = React.useState<boolean>(false);
-    const [ txHash, setTxHash] = React.useState<string>(null);
-    const onVoted = React.useCallback((voteInfo: VoteInfo, hash?: string) => {
-        setWaitingForConfirmation(true);
-        setTxHash(hash);
-        onVoteInfoReceived(voteInfo);
-    }, [onVoteInfoReceived]);
+    const [isWaitingForConfirmation, setWaitingForConfirmation] = React.useState<boolean>(false);
+    const [txHash, setTxHash] = React.useState<string>(null);
+    const onVoted = React.useCallback(
+        (voteInfo: VoteInfo, hash?: string) => {
+            setWaitingForConfirmation(true);
+            setTxHash(hash);
+            onVoteInfoReceived(voteInfo);
+        },
+        [onVoteInfoReceived],
+    );
 
     const onTransactionSuccess = () => {
         setSuccess(true);
@@ -332,7 +342,8 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, on
                             <SpinnerContainer>
                                 <Spinner height={100} color={colors.brandLight} />
                             </SpinnerContainer>
-                            Your transaction hash is:<br />
+                            Your transaction hash is:
+                            <br />
                             {txHash}
                         </Paragraph>
                         <ButtonWrap>

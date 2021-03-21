@@ -51,8 +51,8 @@ const useRegisterWizard = (): IUSeWizardResult => {
     // Ensure everyone starts on the 'setup' step.
     useEffect(() => {
         reset();
-    // Only do this on mount (empty dep array for effect)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // Only do this on mount (empty dep array for effect)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Right now, user-space will determine what the next step is.

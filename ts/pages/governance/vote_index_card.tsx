@@ -78,7 +78,9 @@ export const getDateString = (voteStartDate: moment.Moment, voteEndDate: moment.
     const timeToEndInDays = endDate.diff(now, 'days');
     const timeToEndInHours = endDate.diff(now, 'hours');
     if (voteTime === 'happening') {
-        return `Voting ends in ${timeToEndInDays > 1 ? timeToEndInDays : timeToEndInHours} ${timeToEndInDays > 1 ? 'days' : 'hours' }`;
+        return `Voting ends in ${timeToEndInDays > 1 ? timeToEndInDays : timeToEndInHours} ${
+            timeToEndInDays > 1 ? 'days' : 'hours'
+        }`;
     }
     if (voteTime === 'upcoming') {
         return `Starting ${startDate.format('MMMM Do YYYY, h:mm a')} PST`;
@@ -102,7 +104,7 @@ const getStatus = (
     }
 };
 
-export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props => {
+export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (props) => {
     const { order, tally } = props;
 
     let totalBalances;
@@ -150,33 +152,26 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                                             <div className="line shimmer" />
                                             <div className="line shimmer" />
                                         </div>
-
                                     </VoteCardShimmer>
                                 )}
                             </Column>
-                            <Column width="25%">
+                            <Column width="25%" className="flex flex-column justify-center">
                                 <div className="flex flex-column sm-col-12">
                                     <VoteStatusText
                                         status={getStatus(
                                             isCanceled,
-                                            (againstVotes < forVotes && forVotes > quorumThreshold),
+                                            againstVotes < forVotes && forVotes > quorumThreshold,
                                             isUpcoming,
                                         )}
                                     />
-                                    {
-                                        isHappening ? (
-                                            <VoteStats tally={tally} isVoteCard={true} />
-                                        ) :
-                                            (
-
-                                                <Paragraph marginBottom="12px" color={colors.textDarkPrimary}>
-                                                    {`${totalBalances} ZRX Total Vote`}
-                                                </Paragraph>
-                                            )
-                                    }
-                                    <Paragraph marginBottom="12px">
-                                        {getDateString(startDate, endDate)}
-                                    </Paragraph>
+                                    {isHappening ? (
+                                        <VoteStats tally={tally} isVoteCard={true} />
+                                    ) : (
+                                        <Paragraph marginBottom="12px" color={colors.textDarkPrimary}>
+                                            {`${totalBalances} ZRX Total Vote`}
+                                        </Paragraph>
+                                    )}
+                                    <Paragraph marginBottom="12px">{getDateString(startDate, endDate)}</Paragraph>
                                 </div>
                             </Column>
                         </FlexWrap>
@@ -210,14 +205,13 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = props
                             <Column width="25%" className="flex flex-column justify-center">
                                 <div className="flex flex-column sm-col-12">
                                     <VoteStatusText status={voteStatus} />
-                                    {
-                                        voteStatus === 'happening' ? (
-                                            <VoteStats tally={tally} isVoteCard={true} />
-                                        ) :
+                                    {voteStatus === 'happening' ? (
+                                        <VoteStats tally={tally} isVoteCard={true} />
+                                    ) : (
                                         <Paragraph marginBottom="12px" color={colors.textDarkPrimary}>
                                             {`${totalBalances} ZRX Total Vote`}
                                         </Paragraph>
-                                    }
+                                    )}
                                     <Paragraph marginBottom="12px">
                                         {getDateString(voteStartDate, voteEndDate)}
                                     </Paragraph>
@@ -269,7 +263,14 @@ const VoteCardShimmer = styled.div`
 
     .shimmer {
         background-repeat: no-repeat;
-        background: linear-gradient(90deg, ${() => colors.grey50} 0, ${() => colors.grey300} 50%, ${() => colors.grey50} 100%) no-repeat, ${() => colors.grey50};
+        background: linear-gradient(
+                    90deg,
+                    ${() => colors.grey50} 0,
+                    ${() => colors.grey300} 50%,
+                    ${() => colors.grey50} 100%
+                )
+                no-repeat,
+            ${() => colors.grey50};
         background-size: 300% auto;
         background-position: -150% 0;
         animation: ${shimmer} 2.5s infinite ease-out;

@@ -167,8 +167,15 @@ export const VotingPowerWizardInfo: React.FC<{}> = () => {
             <StyledUnorderedList>
                 <ListItem>50% of your voting power must go to the owner the staking pool.</ListItem>
                 <ListItem>
-                    Change your delegation or vote for proposals at {' '}
-                    <Button to={WebsitePaths.Vote} isInline={true} isTransparent={true} isNoBorder={true} isNoPadding={true} color={colors.brandLight}>
+                    Change your delegation or vote for proposals at{' '}
+                    <Button
+                        to={WebsitePaths.Vote}
+                        isInline={true}
+                        isTransparent={true}
+                        isNoBorder={true}
+                        isNoPadding={true}
+                        color={colors.brandLight}
+                    >
                         https://0x.org/zrx/vote
                     </Button>
                 </ListItem>

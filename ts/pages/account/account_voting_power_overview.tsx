@@ -56,7 +56,12 @@ export const AccountVotingPowerOverview: React.StatelessComponent<VotingPowerOve
                 </PanelHeader>
 
                 <Stats>
-                    <StatFigure label="Your Delegation" value={formatZrx(delegation).formatted} isNoBorder={true} shouldShowZrxLabel={true} />
+                    <StatFigure
+                        label="Your Delegation"
+                        value={formatZrx(delegation).formatted}
+                        isNoBorder={true}
+                        shouldShowZrxLabel={true}
+                    />
                 </Stats>
             </Flex>
         </Wrap>
@@ -75,16 +80,27 @@ export const AccountSelfVotingPowerOverview: React.StatelessComponent<SelfVoting
             <Flex>
                 <Header>
                     <JazzIconContainer>
-                        <Jazzicon diameter={80} isSquare={true} seed={providerState.account && generateUniqueId((providerState.account as AccountReady).address)} />
+                        <Jazzicon
+                            diameter={80}
+                            isSquare={true}
+                            seed={
+                                providerState.account &&
+                                generateUniqueId((providerState.account as AccountReady).address)
+                            }
+                        />
                     </JazzIconContainer>
-                    <Title>
-                        {isSelfDelegated ? 'You (self delegated)' : 'You'}
-                    </Title>
+                    <Title>{isSelfDelegated ? 'You (self delegated)' : 'You'}</Title>
                 </Header>
 
                 <Stats>
-                    <StatFigure label="Your Delegation" value={formatZrx(delegation).formatted} isNoBorder={true} shouldShowZrxLabel={true} />
-                    {isSelfDelegated && <ButtonWrapper>
+                    <StatFigure
+                        label="Your Delegation"
+                        value={formatZrx(delegation).formatted}
+                        isNoBorder={true}
+                        shouldShowZrxLabel={true}
+                    />
+                    {isSelfDelegated && (
+                        <ButtonWrapper>
                             <Button
                                 color={colors.brandLight}
                                 borderColor={colors.border}
@@ -98,9 +114,8 @@ export const AccountSelfVotingPowerOverview: React.StatelessComponent<SelfVoting
                                 Change
                             </Button>
                         </ButtonWrapper>
-                    }
+                    )}
                 </Stats>
-
             </Flex>
         </Wrap>
     );
@@ -154,9 +169,9 @@ const Flex = styled(FlexBase)`
 `;
 
 const Stats = styled(Flex)`
-  background-color: ${() => colors.backgroundLightGrey};
-  width: 50%;
-  padding-right: 20px !important;
+    background-color: ${() => colors.backgroundLightGrey};
+    width: 50%;
+    padding-right: 20px !important;
 `;
 
 const Title = styled.div`
@@ -176,7 +191,7 @@ const JazzIconContainer = styled.div`
 `;
 
 const Header = styled.div`
-  width: 50%;
-  font-size: 20px;
-  display: flex;
+    width: 50%;
+    font-size: 20px;
+    display: flex;
 `;

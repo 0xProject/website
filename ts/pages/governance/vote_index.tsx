@@ -27,25 +27,25 @@ import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
 
 const FETCH_PROPOSALS = gql`
-  query proposals {
-      proposals(orderDirection:desc) {
-        id
-        proposer
-        description
-        votesFor
-        votesAgainst
-        createdTimestamp
-        voteEpoch {
-          id
-          startTimestamp
-          endTimestamp
+    query proposals {
+        proposals(orderDirection: desc) {
+            id
+            proposer
+            description
+            votesFor
+            votesAgainst
+            createdTimestamp
+            voteEpoch {
+                id
+                startTimestamp
+                endTimestamp
+            }
+            executionEpoch {
+                startTimestamp
+                endTimestamp
+            }
+            executionTimestamp
         }
-        executionEpoch {
-          startTimestamp
-          endTimestamp
-        }
-        executionTimestamp
-      }
     }
 `;
 
@@ -54,8 +54,8 @@ type ProposalWithOrder = Proposal & {
 };
 
 const PROPOSALS = environments.isProduction() ? prodProposals : stagingProposals;
-const ZEIP_IDS = Object.keys(PROPOSALS).map(idString => parseInt(idString, 10));
-const ZEIP_PROPOSALS: ProposalWithOrder[] = ZEIP_IDS.map(id => PROPOSALS[id]).sort(
+const ZEIP_IDS = Object.keys(PROPOSALS).map((idString) => parseInt(idString, 10));
+const ZEIP_PROPOSALS: ProposalWithOrder[] = ZEIP_IDS.map((id) => PROPOSALS[id]).sort(
     (a, b) => b.voteStartDate.unix() - a.voteStartDate.unix(),
 );
 
@@ -65,7 +65,7 @@ interface ZeipTallyMap {
     [id: number]: TallyInterface;
 }
 
-const fetchVoteStatusAsync: (zeipId: number) => Promise<TallyInterface> = async zeipId => {
+const fetchVoteStatusAsync: (zeipId: number) => Promise<TallyInterface> = async (zeipId) => {
     try {
         const voteDomain = environments.isProduction()
             ? `https://${configs.DOMAIN_VOTE}`
@@ -133,7 +133,7 @@ const sortProposals = (onChainProposals: Proposals[], zeipProposals: Proposal[])
 };
 
 const fetchTallysAsync: () => Promise<ZeipTallyMap> = async () => {
-    const tallyResponses = await Promise.all(ZEIP_IDS.map(async zeipId => fetchVoteStatusAsync(zeipId)));
+    const tallyResponses = await Promise.all(ZEIP_IDS.map(async (zeipId) => fetchVoteStatusAsync(zeipId)));
     const tallys: { [key: number]: TallyInterface } = {};
     ZEIP_IDS.forEach((zeipId, i) => (tallys[zeipId] = tallyResponses[i]));
     return tallys;
@@ -144,7 +144,7 @@ interface Proposals {
 }
 
 export const VoteIndex: React.FC<VoteIndexProps> = () => {
-    const [filter, setFilter ] = React.useState<string>('all');
+    const [filter, setFilter] = React.useState<string>('all');
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
     const [proposals, setProposals] = React.useState<ProposalWithOrder[]>([]);
     const [isLoading, setLoading] = React.useState<boolean>(true);
@@ -181,7 +181,13 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                 const now = moment();
                 const isUpcoming = now.isBefore(startDate);
                 const isHappening = now.isAfter(startDate) && now.isBefore(endDate);
-                const timestamp = isHappening ? endDate : isUpcoming ? startDate : executionTimestamp ? executionTimestamp : endDate;
+                const timestamp = isHappening
+                    ? endDate
+                    : isUpcoming
+                    ? startDate
+                    : executionTimestamp
+                    ? executionTimestamp
+                    : endDate;
 
                 return {
                     id,
@@ -256,7 +262,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                 </LoaderWrapper>
             ) : (
                 <VoteIndexCardWrapper>
-                    <Wrapper onClick={() => setIsExpanded(_isExpanded => !_isExpanded)}>
+                    <Wrapper onClick={() => setIsExpanded((_isExpanded) => !_isExpanded)}>
                         <ToggleRow>
                             <StyledText fontColor={colors.textDarkSecondary}>{getFilterName(filter)}</StyledText>
                             <Arrow isExpanded={isExpanded} />
@@ -275,18 +281,20 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                             </ExpandedMenu>
                         )}
                     </Wrapper>
-                    {showZEIP.includes(filter) && ZEIP_PROPOSALS.map(proposal => {
-                        const tally = tallys && tallys[proposal.zeipId];
-                        return (
-                            <VoteIndexCard
-                                type={VotingCardType.Zeip}
-                                key={proposal.zeipId}
-                                tally={tally}
-                                {...proposal}
-                            />
-                        );
-                    })}
-                    {showTreasury.includes(filter) && proposals.length > 0 &&
+                    {showZEIP.includes(filter) &&
+                        ZEIP_PROPOSALS.map((proposal) => {
+                            const tally = tallys && tallys[proposal.zeipId];
+                            return (
+                                <VoteIndexCard
+                                    type={VotingCardType.Zeip}
+                                    key={proposal.zeipId}
+                                    tally={tally}
+                                    {...proposal}
+                                />
+                            );
+                        })}
+                    {showTreasury.includes(filter) &&
+                        proposals.length > 0 &&
                         proposals.map((proposal: TreasuryProposal) => {
                             const tally = {
                                 no: new BigNumber(proposal.againstVotes.toString()),
@@ -337,9 +345,9 @@ const Wrapper = styled.div`
     border: none;
     background-color: transparent;
     outline: none;
-    width: 150px;
-    align-self: flex-end;
-    margin-right: 40px;
+    margin: auto;
+    width: 100%;
+    max-width: 1500px;
 `;
 
 const Arrow = ({ isExpanded }: { isExpanded?: boolean }) => (

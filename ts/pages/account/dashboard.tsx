@@ -24,7 +24,10 @@ import { AccountFigure } from 'ts/pages/account/account_figure';
 import { AccountRewardsOverview } from 'ts/pages/account/account_rewards_overview';
 import { AccountStakeOverview } from 'ts/pages/account/account_stake_overview';
 import { AccountVote } from 'ts/pages/account/account_vote';
-import { AccountSelfVotingPowerOverview, AccountVotingPowerOverview } from 'ts/pages/account/account_voting_power_overview';
+import {
+    AccountSelfVotingPowerOverview,
+    AccountVotingPowerOverview,
+} from 'ts/pages/account/account_voting_power_overview';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
@@ -240,24 +243,25 @@ export const Account: React.FC<AccountProps> = () => {
                 new BigNumber(0),
             );
 
-            const votingPowerPools =  delegatorResponse.forCurrentEpoch.poolData
-            // Don't show pools with pending withdrawals, they are shown in pending section instead
-            .filter(p => !pendingUnstakePoolSet.has(p.poolId) && p.zrxStaked > 0);
+            const votingPowerPools = delegatorResponse.forCurrentEpoch.poolData
+                // Don't show pools with pending withdrawals, they are shown in pending section instead
+                .filter((p) => !pendingUnstakePoolSet.has(p.poolId) && p.zrxStaked > 0);
 
             const _votingPowerMap = votingPowerPools.reduce<{ [key: string]: number }>(
                 (memo, poolData) => {
                     if (poolData.poolId !== DEFAULT_POOL_ID) {
-                        memo[poolData.poolId] = (poolData.zrxStaked / 2) || 0;
-                        memo.self += (poolData.zrxStaked / 2) || 0;
+                        memo[poolData.poolId] = poolData.zrxStaked / 2 || 0;
+                        memo.self += poolData.zrxStaked / 2 || 0;
                     } else {
                         memo.selfDelegated += poolData.zrxStaked || 0;
                     }
                     return memo;
                 },
-                {self: 0, selfDelegated: 0},
+                { self: 0, selfDelegated: 0 },
             );
 
-            const doesUserHaveVotingPower = Object.keys(_votingPowerMap).filter(key => _votingPowerMap[key] > 0).length > 0;
+            const doesUserHaveVotingPower =
+                Object.keys(_votingPowerMap).filter((key) => _votingPowerMap[key] > 0).length > 0;
 
             setDelegatorData(delegatorResponse);
             setStakingPools(poolsResponse.stakingPools);
@@ -584,7 +588,8 @@ export const Account: React.FC<AccountProps> = () => {
                     {/* TODO(johnrjj) - Need to fix api response to not return a null pool  */}
                     {delegatorData.forCurrentEpoch.poolData.length === 0 ||
                     (delegatorData.forCurrentEpoch.poolData.length === 1 &&
-                        delegatorData.forCurrentEpoch.poolData[0].poolId === null) ? hasVotingPower ? (
+                        delegatorData.forCurrentEpoch.poolData[0].poolId === null) ? (
+                        hasVotingPower ? (
                             <CallToAction
                                 icon="revenue"
                                 title="Earn with your ZRX"
@@ -597,17 +602,18 @@ export const Account: React.FC<AccountProps> = () => {
                                 ]}
                             />
                         ) : (
-                        <CallToAction
-                            icon="revenue"
-                            title="You haven't staked ZRX"
-                            description="Start staking your ZRX and getting interest."
-                            actions={[
-                                {
-                                    label: 'Start staking',
-                                    to: WebsitePaths.StakingWizard,
-                                },
-                            ]}
-                        />
+                            <CallToAction
+                                icon="revenue"
+                                title="You haven't staked ZRX"
+                                description="Start staking your ZRX and getting interest."
+                                actions={[
+                                    {
+                                        label: 'Start staking',
+                                        to: WebsitePaths.StakingWizard,
+                                    },
+                                ]}
+                            />
+                        )
                     ) : (
                         delegatorData.forCurrentEpoch.poolData
                             // Don't show pools with pending withdrawals, they are shown in pending section instead
@@ -665,41 +671,39 @@ export const Account: React.FC<AccountProps> = () => {
                             Your Voting Power
                         </Heading>
                     </SectionHeader>
-                    {
-                        Object.keys(votingPowerMap).map(key => {
-                            const zrxAmount = votingPowerMap[key];
-                            if (['self', 'selfDelegated'].includes(key) && zrxAmount > 0) {
-                                return (
-                                    <AccountSelfVotingPowerOverview
-                                        delegation={zrxAmount}
-                                        isSelfDelegated={key === 'selfDelegated'}
-                                        onMoveStake={() => {
-                                            setChangePoolDetails({ poolId: DEFAULT_POOL_ID, zrxAmount });
-                                        }}
-                                    />
-                                );
-                            }
-
-                            const poolId = key;
-                            const pool = poolWithStatsMap[poolId];
-                            if (!pool) {
-                                return null;
-                            }
-
+                    {Object.keys(votingPowerMap).map((key) => {
+                        const zrxAmount = votingPowerMap[key];
+                        if (['self', 'selfDelegated'].includes(key) && zrxAmount > 0) {
                             return (
-                                <AccountVotingPowerOverview
-                                    key={`voting-power-${pool.poolId}`}
-                                    poolId={pool.poolId}
-                                    name={stakingUtils.getPoolDisplayName(pool)}
-                                    websiteUrl={pool.metaData.websiteUrl}
-                                    operatorAddress={pool.operatorAddress}
-                                    logoUrl={pool.metaData.logoUrl}
-                                    isVerified={pool.metaData.isVerified}
+                                <AccountSelfVotingPowerOverview
                                     delegation={zrxAmount}
+                                    isSelfDelegated={key === 'selfDelegated'}
+                                    onMoveStake={() => {
+                                        setChangePoolDetails({ poolId: DEFAULT_POOL_ID, zrxAmount });
+                                    }}
                                 />
                             );
-                        })
-                    }
+                        }
+
+                        const poolId = key;
+                        const pool = poolWithStatsMap[poolId];
+                        if (!pool) {
+                            return null;
+                        }
+
+                        return (
+                            <AccountVotingPowerOverview
+                                key={`voting-power-${pool.poolId}`}
+                                poolId={pool.poolId}
+                                name={stakingUtils.getPoolDisplayName(pool)}
+                                websiteUrl={pool.metaData.websiteUrl}
+                                operatorAddress={pool.operatorAddress}
+                                logoUrl={pool.metaData.logoUrl}
+                                isVerified={pool.metaData.isVerified}
+                                delegation={zrxAmount}
+                            />
+                        );
+                    })}
                 </SectionWrapper>
             )}
 
@@ -776,16 +780,21 @@ export const Account: React.FC<AccountProps> = () => {
                         You are already self delegated
                     </Heading>
 
-                    {   zrxBalance.isGreaterThan(0) ?
+                    {zrxBalance.isGreaterThan(0) ? (
                         <>
                             <Paragraph color={colors.textDarkSecondary}>
-                                If you want to stake your self-delegated ZRX, click the “change” button in the voting power section of your account page and choose a staking pool. Otherwise continue to stake your available ZRX.
+                                If you want to stake your self-delegated ZRX, click the “change” button in the voting
+                                power section of your account page and choose a staking pool. Otherwise continue to
+                                stake your available ZRX.
                             </Paragraph>
                             <StyledParagraph color={colors.textDarkSecondary}>
                                 Available Balance: {formatZrx(zrxBalance).minimized} ZRX
                             </StyledParagraph>
-                            <Button color={colors.white} isFullWidth={true} to={WebsitePaths.StakingWizard}>Stake Available ZRX</Button>
-                        </> :
+                            <Button color={colors.white} isFullWidth={true} to={WebsitePaths.StakingWizard}>
+                                Stake Available ZRX
+                            </Button>
+                        </>
+                    ) : (
                         <>
                             <Paragraph color={colors.textDarkSecondary}>
                                 If you want to stake your self-delegated ZRX. Choose a staking pool from this list
@@ -803,10 +812,9 @@ export const Account: React.FC<AccountProps> = () => {
                                 Stake Delegated ZRX
                             </Button>
                         </>
-                    }
+                    )}
                 </StyledDialogContent>
             </DialogOverlay>
-
         </StakingPageLayout>
     );
 };

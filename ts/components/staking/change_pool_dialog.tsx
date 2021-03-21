@@ -145,12 +145,12 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                             <ConfirmButton
                                 isDisabled={!selectedPoolId}
                                 onClick={
-                                shouldAskForConfirmation ?
-                                    () => setIsConfirmScreen(true) :
-                                    () => {
-                                        onChangePool(fromPool.poolId, toPool.poolId, zrxAmount);
-                                        clearAndDismiss();
-                                    }
+                                    shouldAskForConfirmation
+                                        ? () => setIsConfirmScreen(true)
+                                        : () => {
+                                              onChangePool(fromPool.poolId, toPool.poolId, zrxAmount);
+                                              clearAndDismiss();
+                                          }
                                 }
                             >
                                 Choose this new pool

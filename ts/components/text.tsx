@@ -76,7 +76,7 @@ export const Paragraph = styled.p<ParagraphProps>`
     opacity: ${(props) => (typeof props.isMuted === 'boolean' ? 0.75 : props.isMuted)};
     text-align: ${(props) => (props.textAlign ? props.textAlign : props.isCentered && 'center')};
     line-height: ${(props) => props.lineHeight};
-    word-break: ${(props) => props.wordBreak ? props.wordBreak : 'break-word'};
+    word-break: ${(props) => (props.wordBreak ? props.wordBreak : 'break-word')};
 `;
 
 Paragraph.defaultProps = {

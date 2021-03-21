@@ -30,30 +30,30 @@ import { documentConstants } from 'ts/utils/document_meta_constants';
 import { utils } from 'ts/utils/utils';
 
 const FETCH_PROPOSAL = gql`
-  query proposal($id: ID!) {
-      proposal(id: $id) {
-        id
-        proposer
-        description
-        votesFor
-        votesAgainst
-        createdTimestamp
-        voteEpoch {
-          id
-          startTimestamp
-          endTimestamp
+    query proposal($id: ID!) {
+        proposal(id: $id) {
+            id
+            proposer
+            description
+            votesFor
+            votesAgainst
+            createdTimestamp
+            voteEpoch {
+                id
+                startTimestamp
+                endTimestamp
+            }
+            executionEpoch {
+                id
+                startTimestamp
+                endTimestamp
+            }
+            executionTimestamp
         }
-        executionEpoch {
-          id
-          startTimestamp
-          endTimestamp
-        }
-        executionTimestamp
-      }
     }
 `;
 
-type ProposalState = 'created' |'active' |'succeeded' |'failed' |'queued' |'executed';
+type ProposalState = 'created' | 'active' | 'succeeded' | 'failed' | 'queued' | 'executed';
 
 export const Treasury: React.FC<{}> = () => {
     const [proposal, setProposal] = React.useState<TreasuryProposal>();
@@ -83,7 +83,16 @@ export const Treasury: React.FC<{}> = () => {
         if (data) {
             // Disabling linter to allow for shadowed variables
             // tslint:disable no-shadowed-variable
-            const { id, votesAgainst, votesFor, description, executionTimestamp, voteEpoch, createdTimestamp, executionEpoch } = data;
+            const {
+                id,
+                votesAgainst,
+                votesFor,
+                description,
+                executionTimestamp,
+                voteEpoch,
+                createdTimestamp,
+                executionEpoch,
+            } = data;
             const againstVotes = new BigNumber(votesAgainst);
             const forVotes = new BigNumber(votesFor);
             const tally = {
@@ -158,14 +167,26 @@ export const Treasury: React.FC<{}> = () => {
         );
     }
 
-    const { timestamp, happening: isHappening, description, id, canceled: isCanceled, executed: isExecuted, tally, executionTimestamp, executionEpochEndDate } = proposal;
+    const {
+        timestamp,
+        happening: isHappening,
+        description,
+        id,
+        canceled: isCanceled,
+        executed: isExecuted,
+        tally,
+        executionTimestamp,
+        executionEpochEndDate,
+    } = proposal;
 
     const pstOffset = '-0800';
     const deadlineToVote = moment(timestamp)?.utcOffset(pstOffset);
     const isVoteActive = isHappening;
 
     const tokens = marked.lexer(description);
-    const heading = tokens.find((token: Token) => (token as Tokens.Heading).type === 'heading' && (token as Tokens.Heading).depth === 1);
+    const heading = tokens.find(
+        (token: Token) => (token as Tokens.Heading).type === 'heading' && (token as Tokens.Heading).depth === 1,
+    );
 
     const now = moment();
     const isNotExecutedTillEpochEnd = !executionTimestamp && now.isAfter(executionEpochEndDate);
@@ -181,7 +202,7 @@ export const Treasury: React.FC<{}> = () => {
             show: true,
         },
         succeeded: {
-            done: now.isAfter(proposal.endDate) && !isCanceled && !(isNotExecutedTillEpochEnd),
+            done: now.isAfter(proposal.endDate) && !isCanceled && !isNotExecutedTillEpochEnd,
             timestamp: proposal.endDate,
             show: !isCanceled && !isNotExecutedTillEpochEnd,
         },
@@ -191,7 +212,11 @@ export const Treasury: React.FC<{}> = () => {
             show: isCanceled || isNotExecutedTillEpochEnd,
         },
         queued: {
-            done: now.isAfter(proposal.endDate) && now.isAfter(proposal.executionEpochStartDate) && !isCanceled && !isNotExecutedTillEpochEnd,
+            done:
+                now.isAfter(proposal.endDate) &&
+                now.isAfter(proposal.executionEpochStartDate) &&
+                !isCanceled &&
+                !isNotExecutedTillEpochEnd,
             timestamp: proposal.endDate,
             show: !isCanceled && !isNotExecutedTillEpochEnd,
         },
@@ -206,84 +231,110 @@ export const Treasury: React.FC<{}> = () => {
         <StakingPageLayout isHome={false} title="0x Treasury">
             <RegisterBanner />
             <DocumentTitle {...documentConstants.VOTE} />
-             <Section maxWidth="1170px" isFlex={true}>
-                 <Column width="55%" maxWidth="560px">
-                     <Countdown deadline={deadlineToVote} />
-                     <Tag>Treasury</Tag>
-                     <Heading size="medium" marginBottom="0px">{(heading as Tokens.Heading).text}</Heading>
-                     <StyledText fontColor={colors.textDarkSecondary} fontSize="18px" fontWeight={300} fontFamily="Formular">Submitted by: {utils.getAddressBeginAndEnd(proposal.proposer)}</StyledText>
-                     <Paragraph as="div">
+            <Section maxWidth="1170px" isFlex={true}>
+                <Column width="55%" maxWidth="560px">
+                    <Countdown deadline={deadlineToVote} />
+                    <Tag>Treasury</Tag>
+                    <Heading size="medium" marginBottom="0px">
+                        {(heading as Tokens.Heading).text}
+                    </Heading>
+                    <StyledText
+                        fontColor={colors.textDarkSecondary}
+                        fontSize="18px"
+                        fontWeight={300}
+                        fontFamily="Formular"
+                    >
+                        Submitted by: {utils.getAddressBeginAndEnd(proposal.proposer)}
+                    </StyledText>
+                    <Paragraph as="div">
                         <StyledMarkdown>
                             <ReactMarkdown children={description.replace(heading.raw, '')} />
                         </StyledMarkdown>
-                     </Paragraph>
-                 </Column>
-                 <Column width="30%" maxWidth="300px">
+                    </Paragraph>
+                </Column>
+                <Column width="30%" maxWidth="300px">
                     <Text fontColor={colors.textDarkSecondary} fontSize="18px" fontWeight={300} fontFamily="Formular" />
-                     {tally && <VoteStats tally={tally} />}
-                     {isVoteActive && (
-                         <VoteButton onClick={() => setIsVoteModalOpen(true)} isWithArrow={false}>
-                             {isVoteReceived ? 'Vote Received' : 'Vote'}
-                         </VoteButton>
-                     )}
+                    {tally && <VoteStats tally={tally} />}
+                    {isVoteActive && (
+                        <VoteButton onClick={() => setIsVoteModalOpen(true)} isWithArrow={false}>
+                            {isVoteReceived ? 'Vote Received' : 'Vote'}
+                        </VoteButton>
+                    )}
 
-                    <Heading>
-                        Proposal History
-                    </Heading>
+                    <StyledHeading>Proposal History</StyledHeading>
                     <ProposalHistory>
                         <Ticks>
-                            {
-                                Object.keys(proposalHistoryState).map((state: string) => {
-                                    const historyState = proposalHistoryState[state as ProposalState];
-                                    if (!historyState.show) {
-                                        return null;
-                                    }
-                                    return (
-                                        <React.Fragment key={state}>
-                                            <Tick isActive={historyState.done} isFailed={state === 'failed'}><img src={state === 'failed' ? '/images/governance/cross.svg' : '/images/governance/tick_mark.svg'} /></Tick>
-                                            {
-                                                !['executed', 'failed'].includes(state) &&
-                                                <Connector className={state === 'queued' ? 'small' : ''} />
-                                            }
-                                        </React.Fragment>
-                                    );
-                                })
-                            }
+                            {Object.keys(proposalHistoryState).map((state: string) => {
+                                const historyState = proposalHistoryState[state as ProposalState];
+                                if (!historyState.show) {
+                                    return null;
+                                }
+                                return (
+                                    <React.Fragment key={state}>
+                                        <Tick isActive={historyState.done} isFailed={state === 'failed'}>
+                                            <img
+                                                src={
+                                                    state === 'failed'
+                                                        ? '/images/governance/cross.svg'
+                                                        : '/images/governance/tick_mark.svg'
+                                                }
+                                            />
+                                        </Tick>
+                                        {!['executed', 'failed'].includes(state) && (
+                                            <Connector className={state === 'queued' ? 'small' : ''} />
+                                        )}
+                                    </React.Fragment>
+                                );
+                            })}
                         </Ticks>
                         <HistoryCells>
-                            {
-                                Object.keys(proposalHistoryState).map((state: string) => {
-                                    const historyState = proposalHistoryState[state as ProposalState];
-                                    if (!historyState.show) {
-                                        return null;
-                                    }
-                                    return (
-                                        <CellContent key={state}>
-                                            <StateTitle fontColor={colors.textDarkSecondary} fontFamily="Formular" fontSize="18px" fontWeight={400}>{state}</StateTitle>
-                                            <Text fontColor={colors.textDarkSecondary} fontFamily="Formular" fontSize="17px" fontWeight={300}>{historyState.done ? historyState.timestamp.format('MMMM Do, YYYY - hh:mm a') : 'TBD'}</Text>
-                                        </CellContent>
-                                    );
-                                })
-                            }
+                            {Object.keys(proposalHistoryState).map((state: string) => {
+                                const historyState = proposalHistoryState[state as ProposalState];
+                                if (!historyState.show) {
+                                    return null;
+                                }
+                                return (
+                                    <CellContent key={state}>
+                                        <StateTitle
+                                            fontColor={colors.textDarkSecondary}
+                                            fontFamily="Formular"
+                                            fontSize="18px"
+                                            fontWeight={400}
+                                        >
+                                            {state}
+                                        </StateTitle>
+                                        <Text
+                                            fontColor={colors.textDarkSecondary}
+                                            fontFamily="Formular"
+                                            fontSize="17px"
+                                            fontWeight={300}
+                                        >
+                                            {historyState.done
+                                                ? historyState.timestamp.format('MMMM Do, YYYY - hh:mm a')
+                                                : 'TBD'}
+                                        </Text>
+                                    </CellContent>
+                                );
+                            })}
                         </HistoryCells>
                     </ProposalHistory>
-                 </Column>
-             </Section>
+                </Column>
+            </Section>
 
-              {isVoteActive && (
-                 <Banner
-                     heading={`Vote with ZRX Proposal ${id}`}
-                     subline="Use 0x Instant to quickly purchase ZRX for voting"
-                     mainCta={{ text: 'Get ZRX', onClick: () => onLaunchInstantClick() }}
-                     secondaryCta={{ text: 'Vote', onClick: () => setIsVoteModalOpen(true) }}
-                 />
-             )}
-             <ModalTreasuryVote
-                 zeipId={id}
-                 isOpen={isVoteModalOpen}
-                 onDismiss={() => setIsVoteModalOpen(false)}
-                 onVoted={voteInfo => onVoteReceived(voteInfo)}
-             />
+            {isVoteActive && (
+                <Banner
+                    heading={`Vote with ZRX Proposal ${id}`}
+                    subline="Use 0x Instant to quickly purchase ZRX for voting"
+                    mainCta={{ text: 'Get ZRX', onClick: () => onLaunchInstantClick() }}
+                    secondaryCta={{ text: 'Vote', onClick: () => setIsVoteModalOpen(true) }}
+                />
+            )}
+            <ModalTreasuryVote
+                zeipId={id}
+                isOpen={isVoteModalOpen}
+                onDismiss={() => setIsVoteModalOpen(false)}
+                onVoted={(voteInfo) => onVoteReceived(voteInfo)}
+            />
         </StakingPageLayout>
     );
 };
@@ -316,7 +367,7 @@ const StyledMarkdown = styled.div`
 
 const VoteButton = styled(Button)`
     display: block;
-    margin-bottom: 40px;
+    margin-bottom: 0;
     width: 100%;
     max-width: 205px;
     color: white;
@@ -355,14 +406,15 @@ const Ticks = styled.div`
     justify-content: center;
 `;
 
-const Tick = styled.div<{ isActive: boolean; isFailed: boolean}>`
+const Tick = styled.div<{ isActive: boolean; isFailed: boolean }>`
     height: 29px;
     width: 29px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ${({ isActive, isFailed }) => isActive ? isFailed ? colors.error : colors.brandLight : '#c4c4c4'};
+    background-color: ${({ isActive, isFailed }) =>
+        isActive ? (isFailed ? colors.error : colors.brandLight) : '#c4c4c4'};
 
     & img {
         height: 16px;
@@ -392,4 +444,9 @@ const CellContent = styled.div`
 
 const StateTitle = styled(Text)`
     text-transform: capitalize;
+`;
+
+const StyledHeading = styled(Heading)`
+    margin-top: 68px;
+    margin-bottom: 24px !important;
 `;

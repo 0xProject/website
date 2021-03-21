@@ -15,7 +15,11 @@ import {
     TokenApprovalPane,
     VotingPowerConfirmation,
 } from 'ts/components/staking/wizard/wizard_flow';
-import { ConfirmationWizardInfo, IntroWizardInfo, VotingPowerWizardInfo } from 'ts/components/staking/wizard/wizard_info';
+import {
+    ConfirmationWizardInfo,
+    IntroWizardInfo,
+    VotingPowerWizardInfo,
+} from 'ts/components/staking/wizard/wizard_info';
 
 import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
@@ -179,11 +183,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                                     allTimeStats={allTimeStats}
                                 />
                             )}
-                            {
-                                currentStep === WizardRouterSteps.VotingPower && (
-                                    <VotingPowerWizardInfo />
-                                )
-                            }
+                            {currentStep === WizardRouterSteps.VotingPower && <VotingPowerWizardInfo />}
                             {currentStep === WizardRouterSteps.ReadyToStake && (
                                 <ConfirmationWizardInfo nextEpochStats={nextEpochStats} />
                             )}
@@ -204,13 +204,13 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                                     onUpdateAccountBalances={onUpdateAccountBalances}
                                 />
                             )}
-                            {currentStep === WizardRouterSteps.VotingPower &&
+                            {currentStep === WizardRouterSteps.VotingPower && (
                                 <VotingPowerConfirmation
                                     selectedStakingPools={selectedStakingPools}
                                     onGoToNextStep={handleClickNextStep}
                                     providerState={providerState}
                                 />
-                            }
+                            )}
                             {currentStep === WizardRouterSteps.ApproveTokens && (
                                 <TokenApprovalPane
                                     allowance={allowance}

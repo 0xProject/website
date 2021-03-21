@@ -116,7 +116,10 @@ class VoteFormComponent extends React.Component<Props> {
             bigNumberFormat,
         );
         return (
-            <Form onSubmit={isTreasuryProposal ? this._castVote.bind(this) : this._createAndSubmitVoteAsync.bind(this)} isSuccessful={isSuccessful}>
+            <Form
+                onSubmit={isTreasuryProposal ? this._castVote.bind(this) : this._createAndSubmitVoteAsync.bind(this)}
+                isSuccessful={isSuccessful}
+            >
                 <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
                     {isTreasuryProposal ? 'Vote' : `ZEIP-${zeipId} Vote`}
                 </Heading>
@@ -254,8 +257,16 @@ class VoteFormComponent extends React.Component<Props> {
     private readonly _castVote = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
         try {
-            const { zeipId: proposalId, operatedPools, providerState, selectedAddress, currentBalance, onVoted, onTransactionSuccess } = this.props;
-            const  proposalIdBigNumber = new BigNumber(proposalId);
+            const {
+                zeipId: proposalId,
+                operatedPools,
+                providerState,
+                selectedAddress,
+                currentBalance,
+                onVoted,
+                onTransactionSuccess,
+            } = this.props;
+            const proposalIdBigNumber = new BigNumber(proposalId);
 
             const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
 
@@ -263,17 +274,26 @@ class VoteFormComponent extends React.Component<Props> {
 
             const gasInfo = await backendClient.getGasInfoAsync();
 
-            const txPromise = contract.castVote(proposalIdBigNumber, votePreference === VoteValue.Yes, operatedPools ? operatedPools.map(pool => pool.poolId) : []).awaitTransactionSuccessAsync({ from: selectedAddress, gasPrice: gasInfo.gasPriceInWei});
+            const txPromise = contract
+                .castVote(
+                    proposalIdBigNumber,
+                    votePreference === VoteValue.Yes,
+                    operatedPools ? operatedPools.map((pool) => pool.poolId) : [],
+                )
+                .awaitTransactionSuccessAsync({ from: selectedAddress, gasPrice: gasInfo.gasPriceInWei });
             const txHash = await txPromise.txHashPromise;
             if (onVoted) {
                 this.setState({
                     isSuccessful: true,
                     voteHash: txHash,
                 });
-                onVoted({
-                    userBalance: currentBalance,
-                    voteValue: this._getVoteValueFromString(votePreference),
-                }, txHash);
+                onVoted(
+                    {
+                        userBalance: currentBalance,
+                        voteValue: this._getVoteValueFromString(votePreference),
+                    },
+                    txHash,
+                );
             }
 
             await txPromise;

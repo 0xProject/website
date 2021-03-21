@@ -35,7 +35,6 @@ export const StatFigure: React.StatelessComponent<StatFigureProps> = ({
             <Heading size={14} marginBottom="8px">
                 {label}
             </Heading>
-
             {value} {shouldShowZrxLabel ? 'ZRX' : ''}
         </Wrap>
     );

@@ -129,46 +129,63 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                             </VoteButton>
                         )}
 
-<Heading>
-                        Proposal History
-                    </Heading>
-                    <ProposalHistory>
-                        <Ticks>
-                            {
-                                Object.keys(proposalHistoryState).map((state: string) => {
+                        <Heading>Proposal History</Heading>
+                        <ProposalHistory>
+                            <Ticks>
+                                {Object.keys(proposalHistoryState).map((state: string) => {
                                     const historyState = proposalHistoryState[state as ProposalState];
                                     if (!historyState.show) {
                                         return null;
                                     }
                                     return (
                                         <>
-                                            <Tick isActive={historyState.done} isFailed={state === 'failed'}><img src={state === 'failed' ? '/images/governance/cross.svg' : '/images/governance/tick_mark.svg'} /></Tick>
-                                            {
-                                                !['accepted', 'failed'].includes(state) &&
+                                            <Tick isActive={historyState.done} isFailed={state === 'failed'}>
+                                                <img
+                                                    src={
+                                                        state === 'failed'
+                                                            ? '/images/governance/cross.svg'
+                                                            : '/images/governance/tick_mark.svg'
+                                                    }
+                                                />
+                                            </Tick>
+                                            {!['accepted', 'failed'].includes(state) && (
                                                 <Connector className={state === 'active' ? 'small' : ''} />
-                                            }
+                                            )}
                                         </>
                                     );
-                                })
-                            }
-                        </Ticks>
-                        <HistoryCells>
-                            {
-                                Object.keys(proposalHistoryState).map((state: string) => {
+                                })}
+                            </Ticks>
+                            <HistoryCells>
+                                {Object.keys(proposalHistoryState).map((state: string) => {
                                     const historyState = proposalHistoryState[state as ProposalState];
                                     if (!historyState.show) {
                                         return null;
                                     }
                                     return (
                                         <CellContent key={state}>
-                                            <StateTitle fontColor={colors.textDarkSecondary} fontFamily="Formular" fontSize="18px" fontWeight={400}>{state}</StateTitle>
-                                            <Text fontColor={colors.textDarkSecondary} fontFamily="Formular" fontSize="17px" fontWeight={300}>{historyState.done ? historyState.timestamp.format('MMMM Do, YYYY - hh:mm a') : 'TBD'}</Text>
+                                            <StateTitle
+                                                fontColor={colors.textDarkSecondary}
+                                                fontFamily="Formular"
+                                                fontSize="18px"
+                                                fontWeight={400}
+                                            >
+                                                {state}
+                                            </StateTitle>
+                                            <Text
+                                                fontColor={colors.textDarkSecondary}
+                                                fontFamily="Formular"
+                                                fontSize="17px"
+                                                fontWeight={300}
+                                            >
+                                                {historyState.done
+                                                    ? historyState.timestamp.format('MMMM Do, YYYY - hh:mm a')
+                                                    : 'TBD'}
+                                            </Text>
                                         </CellContent>
                                     );
-                                })
-                            }
-                        </HistoryCells>
-                    </ProposalHistory>
+                                })}
+                            </HistoryCells>
+                        </ProposalHistory>
                     </Column>
                 </Section>
 
@@ -361,14 +378,15 @@ const Ticks = styled.div`
     justify-content: center;
 `;
 
-const Tick = styled.div<{ isActive: boolean; isFailed: boolean}>`
+const Tick = styled.div<{ isActive: boolean; isFailed: boolean }>`
     height: 35px;
     width: 35px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ${({ isActive, isFailed }) => isActive ? isFailed ? colors.error : colors.brandLight : '#c4c4c4'};
+    background-color: ${({ isActive, isFailed }) =>
+        isActive ? (isFailed ? colors.error : colors.brandLight) : '#c4c4c4'};
 
     & img {
         height: 16px;
