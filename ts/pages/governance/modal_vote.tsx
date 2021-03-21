@@ -89,7 +89,7 @@ export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss,
                 logUtils.warn(err);
                 errorReporter.report(err);
             });
-    }, [account.address, apiClient, networkId, providerState.web3Wrapper, isFetchingVotingPowerData]);
+    }, [account.address, apiClient, networkId, providerState.web3Wrapper]);
 
     const onToggleConnectWalletDialog = React.useCallback(
         (open: boolean) => {
@@ -229,7 +229,7 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({
         if (!account.address || isFetchingVotingPowerData) {
             return;
         }
-
+        setIsFetchingVotingPowerData(true);
         fetchVotingPower()
             .then(() => setIsFetchingVotingPowerData(false))
             .catch((err) => {
@@ -237,7 +237,7 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({
                 logUtils.warn(err);
                 errorReporter.report(err);
             });
-    }, [account.address, apiClient, contract, isFetchingVotingPowerData]);
+    }, [account.address, apiClient, contract]);
 
     const onToggleConnectWalletDialog = React.useCallback(
         (open: boolean) => {

@@ -1,3 +1,4 @@
+import { ZrxTreasuryContract } from '@0x/contracts-treasury';
 import { BigNumber } from '@0x/utils';
 import { gql, request } from 'graphql-request';
 import * as _ from 'lodash';
@@ -7,6 +8,7 @@ import moment from 'moment';
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -23,9 +25,10 @@ import { TreasuryProposal } from 'ts/pages/governance/data';
 import { ModalTreasuryVote } from 'ts/pages/governance/modal_vote';
 import { VoteInfo, VoteValue } from 'ts/pages/governance/vote_form';
 import { VoteStats } from 'ts/pages/governance/vote_stats';
+import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { WebsitePaths } from 'ts/types';
-import { configs, GOVERNANCE_THEGRAPH_ENDPOINT } from 'ts/utils/configs';
+import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { utils } from 'ts/utils/utils';
 
@@ -62,6 +65,7 @@ export const Treasury: React.FC<{}> = () => {
     const [isVoteModalOpen, setIsVoteModalOpen] = React.useState<boolean>(false);
     const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
     const { id: proposalId } = useParams();
+    const providerState = useSelector((state: State) => state.providerState);
 
     const { data } = useQuery('proposal', async () => {
         const { proposal: proposalFromGraph } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSAL, {
@@ -72,15 +76,16 @@ export const Treasury: React.FC<{}> = () => {
     });
 
     React.useEffect(() => {
-        // tslint:disable-next-line:no-floating-promises
+        const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
+        // tslint:disable-next-line: no-floating-promises
         (async () => {
-            // const qThreshold = await contract.quorumThreshold().callAsync();
-            // setQuorumThreshold(qThreshold);
-            const hardCodeQuorumThreshold = new BigNumber('10000000');
-            setQuorumThreshold(hardCodeQuorumThreshold);
+            const qThreshold = await contract.quorumThreshold().callAsync();
+            setQuorumThreshold(qThreshold);
         })();
+    }, [providerState]);
 
-        if (data) {
+    React.useEffect(() => {
+        if (data && quorumThreshold) {
             // Disabling linter to allow for shadowed variables
             // tslint:disable no-shadowed-variable
             const {
