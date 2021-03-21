@@ -7,6 +7,7 @@ import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
 import { colors } from 'ts/style/colors';
 import { PoolWithStats } from 'ts/types';
+import { DEFAULT_POOL_ID } from 'ts/utils/configs';
 
 interface IVotingPowerInputProps {
     userZRXBalance: number;
@@ -222,7 +223,7 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({
                         nextEpochStart={nextEpochStart}
                         onDismiss={() => setOpenPoolsDialog(false)}
                         currentPoolDetails={{
-                            poolId: '43',
+                            poolId: DEFAULT_POOL_ID,
                             zrxAmount: userZRXBalance,
                         }}
                         shouldAskForConfirmation={false}
