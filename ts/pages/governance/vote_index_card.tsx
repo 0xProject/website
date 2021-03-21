@@ -33,7 +33,7 @@ interface TreasuryCardProps {
     upcoming: boolean;
     happening: boolean;
     timestamp: moment.Moment;
-    order: number;
+    order?: number;
     description: string;
     tally?: TallyInterface;
     status?: string;

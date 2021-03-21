@@ -18,7 +18,7 @@ import { Heading, Paragraph } from 'ts/components/text';
 import { PreferenceSelecter } from 'ts/pages/governance/preference_selecter';
 import { State as ReduxState } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { PoolWithStats, Providers, ProviderState } from 'ts/types';
+import { Network, PoolWithStats, Providers, ProviderState } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { configs, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';

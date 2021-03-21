@@ -53,6 +53,10 @@ type ProposalWithOrder = Proposal & {
     order?: number;
 };
 
+type TreasuryProposalWithOrder = TreasuryProposal & {
+    order?: number;
+}
+
 const PROPOSALS = environments.isProduction() ? prodProposals : stagingProposals;
 const ZEIP_IDS = Object.keys(PROPOSALS).map((idString) => parseInt(idString, 10));
 const ZEIP_PROPOSALS: ProposalWithOrder[] = ZEIP_IDS.map((id) => PROPOSALS[id]).sort(
@@ -146,7 +150,7 @@ interface Proposals {
 export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [filter, setFilter] = React.useState<string>('all');
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
-    const [proposals, setProposals] = React.useState<ProposalWithOrder[]>([]);
+    const [proposals, setProposals] = React.useState<TreasuryProposalWithOrder[]>([]);
     const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
     const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
     const providerState = useSelector((state: State) => state.providerState);
@@ -299,7 +303,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                         })}
                     {showTreasury.includes(filter) &&
                         proposals.length > 0 &&
-                        proposals.map((proposal: TreasuryProposal) => {
+                        proposals.map((proposal: TreasuryProposalWithOrder) => {
                             const tally = {
                                 no: new BigNumber(proposal.againstVotes.toString()),
                                 yes: new BigNumber(proposal.forVotes.toString()),
