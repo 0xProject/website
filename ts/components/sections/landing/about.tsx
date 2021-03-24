@@ -81,7 +81,7 @@ export const SectionLandingAbout = () => {
                                     Offer competitive pricing through{' '}
                                     <span style={{ color: '#00AE99' }}>
                                         <Link
-                                            href={`/docs/api#an-exclusive-source-of-liquidity`}
+                                            href={`/docs/guides/rfqt-in-the-0x-api`}
                                             isNoArrow={true}
                                             isBlock={false}
                                             shouldOpenInNewTab={true}
