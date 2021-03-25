@@ -284,7 +284,11 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
         .toNumber();
 
     // Only allow epochs that have finished into historical data
-    const historicalEpochs = stakingPool.epochRewards.filter((x) => !!x.epochEndTimestamp);
+    const historicalEpochs = stakingPool.epochRewards
+        .filter((x) => !!x.epochEndTimestamp)
+        .sort((a, b) => {
+            return a.epochId - b.epochId;
+        });
 
     const fullyStakedZrx = nextEpoch.zrxStaked / (nextEpoch.approximateStakeRatio || 1);
     const zrxToStaked = Math.max(fullyStakedZrx - nextEpoch.zrxStaked, 0);
