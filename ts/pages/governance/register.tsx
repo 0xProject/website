@@ -46,6 +46,7 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
         pool: undefined,
         zrxAmount: undefined,
     });
+    const [retryFlowZRXAmount, setRetryFlowZRXAmount] = React.useState<number>();
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
     const stake = useStake(networkId, providerState);
     const [shouldShowDecisionScreen, setShowDecisionScreen] = React.useState<boolean>(true);
@@ -90,6 +91,7 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
                     zrxAmount,
                 },
             ]);
+            setRetryFlowZRXAmount(zrxAmount);
             next(RegisterRouterSteps.Success);
         }
     };
@@ -139,7 +141,11 @@ export const RegisterWizard: React.FC<IRegisterWizardProps> = (props) => {
                                     />
                                 )}
                                 {currentStep === RegisterRouterSteps.Success && (
-                                    <RegistrationSuccess nextEpochStart={nextEpochStart} />
+                                    <RegistrationSuccess
+                                        nextEpochStart={nextEpochStart}
+                                        stake={stake}
+                                        retryFlowZRXAmount={retryFlowZRXAmount}
+                                    />
                                 )}
                             </>
                         }

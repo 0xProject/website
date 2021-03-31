@@ -1,12 +1,15 @@
+import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 import React from 'react';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
+import { ErrorButton } from 'ts/components/staking/wizard/wizard_flow';
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
+import { UseStakeHookResult } from 'ts/hooks/use_stake';
 import { colors } from 'ts/style/colors';
-import { PoolWithStats } from 'ts/types';
+import { PoolWithStats, TransactionLoadingState } from 'ts/types';
 import { DEFAULT_POOL_ID } from 'ts/utils/configs';
 
 interface IVotingPowerInputProps {
@@ -20,6 +23,8 @@ interface IVotingPowerInputProps {
 
 interface IRegistrationSuccess {
     nextEpochStart: Date;
+    stake: UseStakeHookResult;
+    retryFlowZRXAmount: number;
 }
 
 const ConnectWalletButton = styled(Button)``;
@@ -270,23 +275,53 @@ const MessageList = styled.ul`
     }
 `;
 
-export const RegistrationSuccess: React.FC<IRegistrationSuccess> = ({ nextEpochStart }) => {
+const LoaderWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+export const RegistrationSuccess: React.FC<IRegistrationSuccess> = ({ nextEpochStart, stake, retryFlowZRXAmount }) => {
     const nextEpochMoment = moment(nextEpochStart);
     const todayMoment = moment();
     const daysToNextEpoch = nextEpochMoment.diff(todayMoment, 'days');
     return (
         <SuccessContainer>
-            <Header>Your voting power is now registered</Header>
-            <MessageList>
-                <li>
-                    <strong>Your tokens are now locked.</strong>
-                    Unlocking will be available in {daysToNextEpoch} days
-                </li>
-                <li>
-                    <strong>Additional tip</strong>
-                    Unlocking will be available in {daysToNextEpoch} days
-                </li>
-            </MessageList>
+            {stake.loadingState === TransactionLoadingState.Success ? (
+                <>
+                    <Header>Your voting power is now registered</Header>
+                    <MessageList>
+                        <li>
+                            <strong>Your tokens are now locked.</strong>
+                            Unlocking will be available in {daysToNextEpoch} days
+                        </li>
+                        <li>
+                            <strong>Additional tip</strong>
+                            Unlocking will be available in {daysToNextEpoch} days
+                        </li>
+                    </MessageList>
+                </>
+            ) : stake.loadingState === TransactionLoadingState.Failed ? (
+                <ErrorButton
+                    message={'Transaction aborted'}
+                    secondaryButtonText={'Retry'}
+                    onClose={() => {
+                        /*noop*/
+                    }}
+                    onSecondaryClick={() =>
+                        stake.depositAndStake([
+                            {
+                                poolId: DEFAULT_POOL_ID,
+                                zrxAmount: retryFlowZRXAmount,
+                            },
+                        ])
+                    }
+                />
+            ) : (
+                <LoaderWrapper>
+                    <CircularProgress size={40} thickness={2} color={colors.brandLight} />
+                </LoaderWrapper>
+            )}
         </SuccessContainer>
     );
 };

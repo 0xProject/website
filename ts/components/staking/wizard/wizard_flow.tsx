@@ -201,7 +201,7 @@ const NumberRound = styled.span`
     border: 1px solid #f6f6f6;
 `;
 
-const ErrorButton: React.FC<ErrorButtonProps> = (props) => {
+export const ErrorButton: React.FC<ErrorButtonProps> = (props) => {
     const { onSecondaryClick, message, secondaryButtonText } = props;
     return (
         <ErrorButtonContainer>
