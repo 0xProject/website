@@ -85,7 +85,8 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                     <>
                         <StyledHeading as="h3">Move stake confirmation</StyledHeading>
                         <StyledParagraph>
-                            You are moving {formattedAmount} ZRX from {stakingUtils.getPoolDisplayName(fromPool)} to{' '}
+                            You are moving {formattedAmount} ZRX{' '}
+                            {fromPool && `from ${stakingUtils.getPoolDisplayName(fromPool)}`} to{' '}
                             {stakingUtils.getPoolDisplayName(toPool)}.
                         </StyledParagraph>
                         <StyledParagraph>
@@ -148,7 +149,7 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                                     shouldAskForConfirmation
                                         ? () => setIsConfirmScreen(true)
                                         : () => {
-                                              onChangePool(fromPool.poolId, toPool.poolId, zrxAmount);
+                                              onChangePool(fromPool && fromPool.poolId, toPool.poolId, zrxAmount);
                                               clearAndDismiss();
                                           }
                                 }

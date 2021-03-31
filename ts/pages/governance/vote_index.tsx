@@ -55,7 +55,7 @@ type ProposalWithOrder = Proposal & {
 
 type TreasuryProposalWithOrder = TreasuryProposal & {
     order?: number;
-}
+};
 
 const PROPOSALS = environments.isProduction() ? prodProposals : stagingProposals;
 const ZEIP_IDS = Object.keys(PROPOSALS).map((idString) => parseInt(idString, 10));
