@@ -10,6 +10,7 @@ import {
     StakingAPIPoolsResponse,
     StakingAPIStatsResponse,
     StakingPoolResponse,
+    ETHZRXPriceResponse,
 } from 'ts/types';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { utils } from 'ts/utils/utils';
@@ -98,7 +99,7 @@ export class APIClient {
         return result;
     }
 
-    public async getETHZRXPrices() {
+    public async getETHZRXPrices(): Promise<ETHZRXPriceResponse> {
         const resultETH = await fetchUtils.requestAsync(
             utils.getAPIBaseUrl(this.networkId),
             '/swap/v1/price?sellToken=ETH&buyToken=DAI&sellAmount=1000000000000000000',
@@ -107,6 +108,9 @@ export class APIClient {
             utils.getAPIBaseUrl(this.networkId),
             '/swap/v1/price?sellToken=ZRX&buyToken=DAI&sellAmount=1000000000000000000',
         );
-        return [resultETH, resultZRX];
+        return {
+            eth: resultETH,
+            zrx: resultZRX,
+        };
     }
 }

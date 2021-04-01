@@ -1298,3 +1298,12 @@ export interface AllTimeDelegatorPoolStats {
 export interface AllTimeDelegatorStats {
     poolData: AllTimeDelegatorPoolStats[];
 }
+
+export interface ETHZRXPriceResponse {
+    eth: PriceResponse;
+    zrx: PriceResponse;
+}
+
+export interface PriceResponse {
+    price: number;
+}

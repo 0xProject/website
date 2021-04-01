@@ -14,7 +14,7 @@ import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { State } from 'ts/redux/reducer';
-import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
+import { ETHZRXPriceResponse, PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
@@ -259,9 +259,14 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
     const [stakingPoolAPY, setStakingPoolAPY] = useState<number | undefined>(undefined);
 
     useEffect(() => {
-        const calculateAvgStakingAPY = (stakingPool: PoolWithHistoricalStats, numEpochs: number, ethZrxPriceData) => {
-            const ethPriceUSD = ethZrxPriceData[0].price;
-            const zrxPriceUSD = ethZrxPriceData[1].price;
+        // move this to utils
+        const calculateAvgStakingAPY = (
+            stakingPool: PoolWithHistoricalStats,
+            numEpochs: number,
+            ethZrxPriceData: ETHZRXPriceResponse,
+        ) => {
+            const ethPriceUSD = ethZrxPriceData.eth.price;
+            const zrxPriceUSD = ethZrxPriceData.zrx.price;
 
             const historicalEpochs = stakingPool.epochRewards
                 .filter((x) => !!x.epochEndTimestamp)
