@@ -1,7 +1,7 @@
 import { BigNumber, logUtils } from '@0x/utils';
 import { format } from 'date-fns';
 import * as _ from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, RouteChildrenProps, useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -15,6 +15,7 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { State } from 'ts/redux/reducer';
 import { PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
+import { backendClient } from 'ts/utils/backend_client';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
@@ -255,11 +256,40 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
     const networkId = useSelector((state: State) => state.networkId);
     const apiClient = useAPIClient(networkId);
     const [stakingPool, setStakingPool] = useState<PoolWithHistoricalStats | undefined>(undefined);
+    const [stakingPoolAPY, setStakingPoolAPY] = useState<number | undefined>(undefined);
 
     useEffect(() => {
+        const calculateAvgStakingAPY = (stakingPool: PoolWithHistoricalStats, numEpochs: number, ethZrxPriceData) => {
+            const ethPriceUSD = ethZrxPriceData[0].price;
+            const zrxPriceUSD = ethZrxPriceData[1].price;
+
+            const historicalEpochs = stakingPool.epochRewards
+                .filter((x) => !!x.epochEndTimestamp)
+                .sort((a, b) => {
+                    return a.epochId - b.epochId;
+                });
+
+            const slicedHistoricalEpochs = historicalEpochs.slice(-numEpochs);
+
+            const historicalAPYs = slicedHistoricalEpochs.map((x) => {
+                const apy = Number(
+                    ((x.membersRewardsPaidInEth * ethPriceUSD) / (x.memberZrxStaked * zrxPriceUSD)) * (365 / 7) || 0,
+                );
+                return apy;
+            });
+
+            const average = (arr: number[]) => arr.reduce((sum, el) => sum + el, 0) / arr.length;
+            setStakingPoolAPY(average(historicalAPYs));
+        };
+
         apiClient
             .getStakingPoolByIdAsync(poolId)
-            .then((res) => setStakingPool(res.stakingPool))
+            .then((res) => {
+                setStakingPool(res.stakingPool);
+                apiClient.getETHZRXPrices().then((priceData) => {
+                    calculateAvgStakingAPY(res.stakingPool, 7, priceData);
+                });
+            })
             .catch((err: Error) => {
                 logUtils.warn(err);
                 errorReporter.report(err);
@@ -304,6 +334,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
                 estimatedStake={nextEpoch.approximateStakeRatio * 100}
                 zrxToStaked={zrxToStaked}
                 rewardsShared={(1 - nextEpoch.operatorShare) * 100}
+                stakingPoolAPY={stakingPoolAPY * 100 || 0}
                 iconUrl={stakingPool.metaData.logoUrl}
                 networkId={networkId}
                 tabs={[

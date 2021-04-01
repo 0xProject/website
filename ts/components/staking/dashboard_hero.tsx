@@ -34,6 +34,7 @@ interface DashboardHeroProps {
     isVerified: boolean;
     estimatedStake: number;
     zrxToStaked: number;
+    stakingPoolAPY: number;
     rewardsShared: number;
     iconUrl: string;
     networkId: number;
@@ -169,7 +170,7 @@ const HorizontalList = styled.ul`
     font-size: 17px;
     font-weight: 300;
     color: #5c5c5c;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     a {
         color: ${colors.brandLight};
     }
@@ -197,6 +198,13 @@ const HorizontalList = styled.ul`
             height: 4px;
         }
     }
+`;
+
+const StakingAPY = styled.div`
+    font-size: 17px;
+    font-weight: 300;
+    margin-bottom: 20px;
+    color: #5c5c5c;
 `;
 
 const ButtonContainer = styled.div`
@@ -242,6 +250,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
     estimatedStake,
     zrxToStaked,
     rewardsShared,
+    stakingPoolAPY,
     iconUrl,
     networkId,
 }) => {
@@ -290,12 +299,15 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                                 </li>
                             )}
                             <li>{formatPercent(rewardsShared).minimized}% Rewards Shared</li>
+
                             {isVerified && (
                                 <VerificationIndicator>
                                     <Checkmark /> Verified identity
                                 </VerificationIndicator>
                             )}
                         </HorizontalList>
+                        <StakingAPY>{formatPercent(stakingPoolAPY).minimized}% Staking APY</StakingAPY>
+
                         <ButtonContainer>
                             <StakingButton
                                 to={`${WebsitePaths.StakingWizard}?${stringify({ poolId })}`}

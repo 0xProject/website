@@ -1166,6 +1166,7 @@ export interface RewardsStats {
     operatorRewardsPaidInEth: number;
     membersRewardsPaidInEth: number;
     totalRewardsPaidInEth: number;
+    memberZrxStaked: number;
 }
 
 export interface PoolEpochRewards extends RewardsStats {
