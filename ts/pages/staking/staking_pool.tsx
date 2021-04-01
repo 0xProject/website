@@ -1,7 +1,7 @@
 import { BigNumber, logUtils } from '@0x/utils';
 import { format } from 'date-fns';
 import * as _ from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, RouteChildrenProps, useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -15,7 +15,6 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { State } from 'ts/redux/reducer';
 import { ETHZRXPriceResponse, PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
-import { backendClient } from 'ts/utils/backend_client';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
@@ -55,201 +54,6 @@ const TooltipLabel = styled.span`
     font-weight: 600;
 `;
 
-/*
-const TradingPairContainer = styled.div`
-    display: inline-block;
-    width: 330px;
-`;
-
-const ActionsWrapper = styled.div`
-    padding: 20px;
-    margin-top: 0;
-    @media (min-width: 768px) {
-        padding: 60px 30px;
-        background-color: ${colors.backgroundLightGrey};
-        margin: 30px 30px 70px;
-    }
-`;
-
-const ActionsInner = styled.div`
-    max-width: 1152px;
-    margin: 0 auto;
-`;
-
-const ActionHeading = styled.h2`
-    font-size: 28px;
-    margin-bottom: 14px;
-    @media (min-width: 768px) {
-        margin-bottom: 30px;
-        font-size: 34px;
-    }
-`;
-
-const ActionContainer = styled.div`
-    padding: 20px;
-    margin-bottom: 16px;
-    background-color: ${colors.backgroundLightGrey};
-    display: flex;
-    flex-direction: column;
-    @media (min-width: 768px) {
-        justify-content: space-between;
-        align-items: center;
-        flex-direction: row;
-        background-color: ${colors.white};
-        flex: 1;
-        margin-right: 30px;
-        margin-bottom: 0;
-        &:last-child {
-            margin-right: 0;
-        }
-    }
-`;
-
-const Actions = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
-    @media (min-width: 768px) {
-        flex-direction: row;
-    }
-`;
-
-const ActionText = styled.div`
-    line-height: 1.35;
-    margin-bottom: 18px;
-    @media (min-width: 768px) {
-        margin-bottom: 0;
-    }
-    h3 {
-        font-size: 20px;
-        @media (min-width: 991px) {
-            font-size: 28px;
-        }
-        //@media (min-width: 768px) {
-            //font-size: 24px;
-        //}
-        //@media (min-width: 991px) {
-            //font-size: 28px;
-        //}
-    }
-    span {
-        color: #999999;
-        font-size: 16px;
-        margin-bottom: 10px;
-        display: block;
-        @media (min-width: 768px) {
-            font-size: 17px;
-        }
-    }
-`;
-
-const ActionButton = styled.div`
-    background-color: ${colors.white};
-    flex: 1;
-    @media (min-width: 768px) {
-        flex: 0 0 180px;
-    }
-`;
-
-const Action: React.FC<ActionProps> = ({ children, title, figure }) => {
-    return (
-        <ActionContainer>
-            <ActionText>
-                <span>{title}</span>
-                <h3>{figure}</h3>
-            </ActionText>
-            <ActionButton>{children}</ActionButton>
-        </ActionContainer>
-    );
-};
-
-const tradingPairs = [
-    {
-        id: '29n5c290cn0cc2943cn239',
-        price: '1,200',
-        url: 'trading-pairs/29n5c290cn0cc2943cn239',
-        currency: 'USD',
-        firstCurrency: {
-            name: 'AIR',
-            iconUrl: 'path/to/icon',
-        },
-        secondCurrency: {
-            name: 'BAT',
-            iconUrl: 'path/to/icon',
-        },
-    },
-    {
-        id: '29n5c290cn0cc2943cn239',
-        price: '1,200',
-        url: 'trading-pairs/29n5c290cn0cc2943cn239',
-        currency: 'USD',
-        firstCurrency: {
-            name: 'AIR',
-            iconUrl: 'path/to/icon',
-        },
-        secondCurrency: {
-            name: 'BAT',
-            iconUrl: 'path/to/icon',
-        },
-    },
-    {
-        id: '29n5c290cn0cc2943cn239',
-        url: 'trading-pairs/29n5c290cn0cc2943cn239',
-        price: '1,200',
-        currency: 'USD',
-        firstCurrency: {
-            name: 'AIR',
-            iconUrl: 'path/to/icon',
-        },
-        secondCurrency: {
-            name: 'BAT',
-            iconUrl: 'path/to/icon',
-        },
-    },
-    {
-        id: '29n5c290cn0cc2943cn239',
-        url: 'trading-pairs/29n5c290cn0cc2943cn239',
-        price: '1,200',
-        currency: 'USD',
-        firstCurrency: {
-            name: 'AIR',
-            iconUrl: 'path/to/icon',
-        },
-        secondCurrency: {
-            name: 'BAT',
-            iconUrl: 'path/to/icon',
-        },
-    },
-    {
-        id: '29n5c290cn0cc2943cn239',
-        url: 'trading-pairs/29n5c290cn0cc2943cn239',
-        price: '1,200',
-        currency: 'USD',
-        firstCurrency: {
-            name: 'AIR',
-            iconUrl: 'path/to/icon',
-        },
-        secondCurrency: {
-            name: 'BAT',
-            iconUrl: 'path/to/icon',
-        },
-    },
-    {
-        id: '29n5c290cn0cc2943cn239',
-        url: 'trading-pairs/29n5c290cn0cc2943cn239',
-        price: '1,200',
-        currency: 'USD',
-        firstCurrency: {
-            name: 'AIR',
-            iconUrl: 'path/to/icon',
-        },
-        secondCurrency: {
-            name: 'BAT',
-            iconUrl: 'path/to/icon',
-        },
-    },
-];
-*/
 export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (props) => {
     const { poolId } = useParams();
 
@@ -261,20 +65,20 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
     useEffect(() => {
         // move this to utils
         const calculateAvgStakingAPY = (
-            stakingPool: PoolWithHistoricalStats,
+            pool: PoolWithHistoricalStats,
             numEpochs: number,
             ethZrxPriceData: ETHZRXPriceResponse,
         ) => {
             const ethPriceUSD = ethZrxPriceData.eth.price;
             const zrxPriceUSD = ethZrxPriceData.zrx.price;
 
-            const historicalEpochs = stakingPool.epochRewards
+            const historicalEpochRewards = pool.epochRewards
                 .filter((x) => !!x.epochEndTimestamp)
                 .sort((a, b) => {
                     return a.epochId - b.epochId;
                 });
 
-            const slicedHistoricalEpochs = historicalEpochs.slice(-numEpochs);
+            const slicedHistoricalEpochs = historicalEpochRewards.slice(-numEpochs);
 
             const historicalAPYs = slicedHistoricalEpochs.map((x) => {
                 const apy = Number(
@@ -291,9 +95,15 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
             .getStakingPoolByIdAsync(poolId)
             .then((res) => {
                 setStakingPool(res.stakingPool);
-                apiClient.getETHZRXPrices().then((priceData) => {
-                    calculateAvgStakingAPY(res.stakingPool, 7, priceData);
-                });
+                apiClient
+                    .getETHZRXPrices()
+                    .then((priceData) => {
+                        calculateAvgStakingAPY(res.stakingPool, 7, priceData);
+                    })
+                    .catch((getPricesError: Error) => {
+                        logUtils.warn(getPricesError);
+                        errorReporter.report(getPricesError);
+                    });
             })
             .catch((err: Error) => {
                 logUtils.warn(err);
