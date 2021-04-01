@@ -96,7 +96,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
             .then((res) => {
                 setStakingPool(res.stakingPool);
                 apiClient
-                    .getETHZRXPrices()
+                    .getETHZRXPricesAsync()
                     .then((priceData) => {
                         calculateAvgStakingAPY(res.stakingPool, 7, priceData);
                     })
