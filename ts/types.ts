@@ -820,17 +820,19 @@ export interface GasInfo {
     estimatedTimeMs: number;
 }
 
-export interface WebsiteBackendGasInfo {
-    average: number;
+export interface WebsiteBackendGasWaitTimeInfo {
     fastestWait: number;
     fastWait: number;
-    fast: number;
     safeLowWait: number;
     blockNum: number;
     avgWait: number;
     block_time: number;
-    speed: number;
+}
+
+export interface WebsiteBackendGasInfo {
     fastest: number;
+    fast: number;
+    average: number;
     safeLow: number;
 }
 
