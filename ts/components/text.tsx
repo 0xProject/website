@@ -30,6 +30,7 @@ interface ParagraphProps extends BaseTextInterface {
     isMuted?: boolean | number;
     fontSize?: string;
     fontWeight?: string | number;
+    wordBreak?: string;
 }
 
 const StyledHeading = styled.h1<HeadingProps>`
@@ -75,6 +76,7 @@ export const Paragraph = styled.p<ParagraphProps>`
     opacity: ${(props) => (typeof props.isMuted === 'boolean' ? 0.75 : props.isMuted)};
     text-align: ${(props) => (props.textAlign ? props.textAlign : props.isCentered && 'center')};
     line-height: ${(props) => props.lineHeight};
+    word-break: ${(props) => (props.wordBreak ? props.wordBreak : 'break-word')};
 `;
 
 Paragraph.defaultProps = {

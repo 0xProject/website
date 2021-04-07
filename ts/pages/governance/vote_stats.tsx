@@ -11,6 +11,7 @@ import { constants } from 'ts/utils/constants';
 
 export interface VoteStatsProps {
     tally?: TallyInterface;
+    isVoteCard?: boolean;
 }
 
 export const getTotalBalancesString = (tally: TallyInterface = ZERO_TALLY): string => {
@@ -32,7 +33,7 @@ export const getTotalBalancesString = (tally: TallyInterface = ZERO_TALLY): stri
     return totalBalanceString;
 };
 
-export const VoteStats: React.StatelessComponent<VoteStatsProps> = ({ tally }) => {
+export const VoteStats: React.StatelessComponent<VoteStatsProps> = ({ tally, isVoteCard = false }) => {
     const { yes, no } = tally;
     const totalBalance = yes.plus(no);
     const oneHundred = new BigNumber(100);
@@ -50,12 +51,14 @@ export const VoteStats: React.StatelessComponent<VoteStatsProps> = ({ tally }) =
 
     return (
         <>
-            <Heading asElement="h3" size="small" marginBottom="10px">
-                Results
-            </Heading>
+            {!isVoteCard && (
+                <Heading asElement="h3" size="small" marginBottom="10px">
+                    Results
+                </Heading>
+            )}
             <VoteBar label="Yes" color={colors.brandLight} percentage={yesPercentage} />
             <VoteBar label="No" color={colors.brandDark} percentage={noPercentage} marginBottom="24px" />
-            <Paragraph marginBottom="24px">({totalBalanceString} ZRX total vote)</Paragraph>
+            {!isVoteCard && <Paragraph marginBottom="24px">({totalBalanceString} ZRX total vote)</Paragraph>}
         </>
     );
 };

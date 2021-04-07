@@ -13,8 +13,13 @@ import {
     RecommendedPoolsStakeInputPane,
     StartStaking,
     TokenApprovalPane,
+    VotingPowerConfirmation,
 } from 'ts/components/staking/wizard/wizard_flow';
-import { ConfirmationWizardInfo, IntroWizardInfo } from 'ts/components/staking/wizard/wizard_info';
+import {
+    ConfirmationWizardInfo,
+    IntroWizardInfo,
+    VotingPowerWizardInfo,
+} from 'ts/components/staking/wizard/wizard_info';
 
 import { useAllowance } from 'ts/hooks/use_allowance';
 import { useAPIClient } from 'ts/hooks/use_api_client';
@@ -140,8 +145,11 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
             if (doesNeedTokenApproval) {
                 return next(WizardRouterSteps.ApproveTokens);
             } else {
-                return next(WizardRouterSteps.ReadyToStake);
+                return next(WizardRouterSteps.VotingPower);
             }
+        }
+        if (currentStep === WizardRouterSteps.VotingPower) {
+            return next(WizardRouterSteps.ReadyToStake);
         }
         if (currentStep === WizardRouterSteps.ApproveTokens) {
             // We block users to go back to ApproveToken panel once they've already approved.
@@ -175,6 +183,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                                     allTimeStats={allTimeStats}
                                 />
                             )}
+                            {currentStep === WizardRouterSteps.VotingPower && <VotingPowerWizardInfo />}
                             {currentStep === WizardRouterSteps.ReadyToStake && (
                                 <ConfirmationWizardInfo nextEpochStats={nextEpochStats} />
                             )}
@@ -193,6 +202,13 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                                     providerState={providerState}
                                     onGoToNextStep={handleClickNextStep}
                                     onUpdateAccountBalances={onUpdateAccountBalances}
+                                />
+                            )}
+                            {currentStep === WizardRouterSteps.VotingPower && (
+                                <VotingPowerConfirmation
+                                    selectedStakingPools={selectedStakingPools}
+                                    onGoToNextStep={handleClickNextStep}
+                                    providerState={providerState}
                                 />
                             )}
                             {currentStep === WizardRouterSteps.ApproveTokens && (

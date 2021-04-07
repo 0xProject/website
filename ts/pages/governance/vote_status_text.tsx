@@ -62,9 +62,9 @@ export const VoteStatusText: React.StatelessComponent<VoteStatusTextProps> = ({ 
         case 'happening':
             return (
                 <VoteStatusTextBase>
-                    <Button isWithArrow={true} isAccentColor={true} fontSize="22px">
+                    <StyledButton isWithArrow={true} isAccentColor={true} fontSize="22px">
                         Vote Now
-                    </Button>
+                    </StyledButton>
                 </VoteStatusTextBase>
             );
         default:
@@ -85,4 +85,8 @@ const VoteStatusTextBase = styled.div<VoteStatusTextBaseProps>`
         margin-right: 8px;
         top: 1px;
     }
+`;
+
+const StyledButton = styled(Button)`
+    padding: 0px;
 `;

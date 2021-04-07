@@ -26,6 +26,26 @@ export interface Proposal {
     risks: ProposalProperty;
 }
 
+export interface TreasuryProposal {
+    id: number;
+    timestamp: moment.Moment;
+    description: string;
+    canceled: boolean;
+    executed: boolean;
+    forVotes: BigNumber;
+    againstVotes: BigNumber;
+    upcoming: boolean;
+    happening: boolean;
+    startDate: moment.Moment;
+    endDate: moment.Moment;
+    proposer?: string;
+    createdTimestamp?: moment.Moment;
+    executionEpochStartDate: moment.Moment;
+    executionEpochEndDate: moment.Moment;
+    executionTimestamp: moment.Moment;
+    tally?: TallyInterface;
+}
+
 export interface Proposals {
     [id: number]: Proposal;
 }
