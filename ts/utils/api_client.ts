@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 
 import {
-    ETHZRXPriceResponse,
     Network,
     StakingAPIDelegatorHistoryItem,
     StakingAPIDelegatorResponse,

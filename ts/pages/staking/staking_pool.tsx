@@ -16,7 +16,7 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 import { State } from 'ts/redux/reducer';
 import { PoolEpochRewards, PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
 import { errorReporter } from 'ts/utils/error_reporter';
-import { formatEther, formatZrx, formatPercent } from 'ts/utils/format_number';
+import { formatEther, formatPercent, formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
 export interface ActionProps {
