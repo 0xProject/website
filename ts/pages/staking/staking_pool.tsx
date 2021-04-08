@@ -14,7 +14,7 @@ import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { State } from 'ts/redux/reducer';
-import { ETHZRXPriceResponse, PoolWithHistoricalStats, PoolEpochRewards, WebsitePaths } from 'ts/types';
+import { PoolEpochRewards, PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatZrx, formatPercent } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
@@ -65,12 +65,8 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
 
     useEffect(() => {
         const calcAverageEpochApy = (numEpochs: number, rewards: PoolEpochRewards[]) => {
-            let rewardsToAverage = null;
-            if (rewards.length > numEpochs) {
-                rewardsToAverage = rewards.slice(Math.max(rewards.length - numEpochs, 0));
-            } else {
-                rewardsToAverage = rewards;
-            }
+            const rewardsToAverage =
+                rewards.length > numEpochs ? rewards.slice(Math.max(rewards.length - numEpochs, 0)) : rewards;
 
             const historicalAPYs = rewardsToAverage.map((reward) => {
                 return reward.apy;
@@ -82,11 +78,17 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
             .getStakingPoolByIdAsync(poolId)
             .then((res) => {
                 setStakingPool(res.stakingPool);
-                apiClient.getStakingPoolRewardsAsync(poolId).then((res) => {
-                    // fix this, shouldnt be unnecessarily nested
-                    setEpochRewards(res.stakingPoolRewards.epochRewards);
-                    calcAverageEpochApy(7, res.stakingPoolRewards.epochRewards);
-                });
+                apiClient
+                    .getStakingPoolRewardsAsync(poolId)
+                    .then((resRewards) => {
+                        // fix this, shouldnt be unnecessarily nested
+                        setEpochRewards(resRewards.stakingPoolRewards.epochRewards);
+                        calcAverageEpochApy(7, resRewards.stakingPoolRewards.epochRewards);
+                    })
+                    .catch((err: Error) => {
+                        logUtils.warn(err);
+                        errorReporter.report(err);
+                    });
             })
             .catch((err: Error) => {
                 logUtils.warn(err);
