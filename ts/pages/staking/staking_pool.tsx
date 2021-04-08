@@ -14,9 +14,9 @@ import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { State } from 'ts/redux/reducer';
-import { ETHZRXPriceResponse, PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
+import { ETHZRXPriceResponse, PoolWithHistoricalStats, PoolEpochRewards, WebsitePaths } from 'ts/types';
 import { errorReporter } from 'ts/utils/error_reporter';
-import { formatEther, formatZrx } from 'ts/utils/format_number';
+import { formatEther, formatZrx, formatPercent } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
 export interface ActionProps {
@@ -60,50 +60,33 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
     const networkId = useSelector((state: State) => state.networkId);
     const apiClient = useAPIClient(networkId);
     const [stakingPool, setStakingPool] = useState<PoolWithHistoricalStats | undefined>(undefined);
+    const [epochRewards, setEpochRewards] = useState<PoolEpochRewards[] | undefined>(undefined);
     const [stakingPoolAPY, setStakingPoolAPY] = useState<number | undefined>(undefined);
 
     useEffect(() => {
-        // move this to utils
-        const calculateAvgStakingAPY = (
-            pool: PoolWithHistoricalStats,
-            numEpochs: number,
-            ethZrxPriceData: ETHZRXPriceResponse,
-        ) => {
-            const ethPriceUSD = ethZrxPriceData.eth.price;
-            const zrxPriceUSD = ethZrxPriceData.zrx.price;
+        const calcAverageEpochApy = (numEpochs: number, rewards: PoolEpochRewards[]) => {
+            let rewardsToAverage = null;
+            if (rewards.length > numEpochs) {
+                rewardsToAverage = rewards.slice(Math.max(rewards.length - numEpochs, 0));
+            } else {
+                rewardsToAverage = rewards;
+            }
 
-            const historicalEpochRewards = pool.epochRewards
-                .filter((x) => !!x.epochEndTimestamp)
-                .sort((a, b) => {
-                    return a.epochId - b.epochId;
-                });
-
-            const slicedHistoricalEpochs = historicalEpochRewards.slice(-numEpochs);
-
-            const historicalAPYs = slicedHistoricalEpochs.map((x) => {
-                const apy = Number(
-                    ((x.membersRewardsPaidInEth * ethPriceUSD) / (x.memberZrxStaked * zrxPriceUSD)) * (365 / 7) || 0,
-                );
-                return apy;
+            const historicalAPYs = rewardsToAverage.map((reward) => {
+                return reward.apy;
             });
-
             const average = (arr: number[]) => arr.reduce((sum, el) => sum + el, 0) / arr.length;
             setStakingPoolAPY(average(historicalAPYs));
         };
-
         apiClient
             .getStakingPoolByIdAsync(poolId)
             .then((res) => {
                 setStakingPool(res.stakingPool);
-                apiClient
-                    .getETHZRXPricesAsync()
-                    .then((priceData) => {
-                        calculateAvgStakingAPY(res.stakingPool, 7, priceData);
-                    })
-                    .catch((getPricesError: Error) => {
-                        logUtils.warn(getPricesError);
-                        errorReporter.report(getPricesError);
-                    });
+                apiClient.getStakingPoolRewardsAsync(poolId).then((res) => {
+                    // fix this, shouldnt be unnecessarily nested
+                    setEpochRewards(res.stakingPoolRewards.epochRewards);
+                    calcAverageEpochApy(7, res.stakingPoolRewards.epochRewards);
+                });
             })
             .catch((err: Error) => {
                 logUtils.warn(err);
@@ -129,11 +112,13 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
         .toNumber();
 
     // Only allow epochs that have finished into historical data
-    const historicalEpochs = stakingPool.epochRewards
-        .filter((x) => !!x.epochEndTimestamp)
-        .sort((a, b) => {
-            return a.epochId - b.epochId;
-        });
+    const historicalEpochs = epochRewards
+        ? epochRewards
+              .filter((x) => !!x.epochEndTimestamp)
+              .sort((a, b) => {
+                  return a.epochId - b.epochId;
+              })
+        : null;
 
     const fullyStakedZrx = nextEpoch.zrxStaked / (nextEpoch.approximateStakeRatio || 1);
     const zrxToStaked = Math.max(fullyStakedZrx - nextEpoch.zrxStaked, 0);
@@ -149,7 +134,6 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
                 estimatedStake={nextEpoch.approximateStakeRatio * 100}
                 zrxToStaked={zrxToStaked}
                 rewardsShared={(1 - nextEpoch.operatorShare) * 100}
-                stakingPoolAPY={stakingPoolAPY * 100 || 0}
                 iconUrl={stakingPool.metaData.logoUrl}
                 networkId={networkId}
                 tabs={[
@@ -161,6 +145,20 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
                             //     title: 'Total Volume',
                             //     number: '1.23M USD',
                             // },
+                            {
+                                title: 'APY (last 7 epochs)',
+                                number: `${formatPercent(stakingPoolAPY * 100 || 0).minimized}%`,
+                            },
+                            {
+                                title: 'Fees Generated',
+                                // 4 decimals looks better here to keep it from wrapping
+                                number: `${
+                                    formatEther(currentEpoch.totalProtocolFeesGeneratedInEth, {
+                                        decimals: 4,
+                                        decimalsRounded: 4,
+                                    }).minimized
+                                } ETH`,
+                            },
                             {
                                 title: 'ZRX Staked',
                                 number: `${formatZrx(nextEpoch.zrxStaked).minimized}`,
@@ -192,16 +190,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
                                     </InfoTooltip>
                                 ),
                             },
-                            {
-                                title: 'Fees Generated',
-                                // 4 decimals looks better here to keep it from wrapping
-                                number: `${
-                                    formatEther(currentEpoch.totalProtocolFeesGeneratedInEth, {
-                                        decimals: 4,
-                                        decimalsRounded: 4,
-                                    }).minimized
-                                } ETH`,
-                            },
+
                             {
                                 title: 'Rewards Shared',
                                 // No good way to show rewards shared of an epoch in progress (currentEpoch) right now.
@@ -211,10 +200,6 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
                                         zeroStyled: true,
                                     }).formatted
                                 } ETH`,
-                            },
-                            {
-                                title: 'Number of trades',
-                                number: currentEpoch.numberOfFills,
                             },
                         ],
                     },
@@ -289,12 +274,14 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
             </ActionsWrapper> */}
             <Container>
                 <GraphHeading>Historical Details</GraphHeading>
-                <HistoryChart
-                    totalRewards={historicalEpochs.map((e) => e.totalRewardsPaidInEth)}
-                    memberRewards={historicalEpochs.map((e) => e.membersRewardsPaidInEth)}
-                    epochs={historicalEpochs.map((e) => e.epochId)}
-                    labels={historicalEpochs.map((e) => format(new Date(e.epochEndTimestamp), 'd MMM'))}
-                />
+                {historicalEpochs && (
+                    <HistoryChart
+                        totalRewards={historicalEpochs.map((e) => e.totalRewardsPaidInEth)}
+                        memberRewards={historicalEpochs.map((e) => e.membersRewardsPaidInEth)}
+                        epochs={historicalEpochs.map((e) => e.epochId)}
+                        labels={historicalEpochs.map((e) => format(new Date(e.epochEndTimestamp), 'd MMM'))}
+                    />
+                )}
                 {/* TODO(johnrjj) Trading pairs after launch */}
                 {/* <Heading>Trading Pairs</Heading>
                 <div>

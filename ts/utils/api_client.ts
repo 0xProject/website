@@ -11,11 +11,13 @@ import {
     StakingAPIPoolsResponse,
     StakingAPIStatsResponse,
     StakingPoolResponse,
+    StakingPoolRewardsResponse,
 } from 'ts/types';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { utils } from 'ts/utils/utils';
 
 const STAKING_POOLS_ENDPOINT = '/staking/pools';
+const STAKING_POOL_REWARDS_ENDPOINT = '/staking/pools/rewards';
 const DELEGATOR_ENDPOINT = '/staking/delegator';
 const DELEGATOR_HISTORY_ENDPOINT = '/staking/delegator/events';
 const STAKING_EPOCHS_ENDPOINT = '/staking/epochs';
@@ -44,6 +46,15 @@ export class APIClient {
         const result = await fetchUtils.requestAsync(
             utils.getAPIBaseUrl(this.networkId),
             `${STAKING_POOLS_ENDPOINT}/${poolId}`,
+        );
+
+        return result;
+    }
+
+    public async getStakingPoolRewardsAsync(poolId: string): Promise<StakingPoolRewardsResponse> {
+        const result = await fetchUtils.requestAsync(
+            utils.getAPIBaseUrl(this.networkId),
+            `${STAKING_POOL_REWARDS_ENDPOINT}/${poolId}`,
         );
 
         return result;

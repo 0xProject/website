@@ -1173,6 +1173,7 @@ export interface PoolEpochRewards extends RewardsStats {
     epochId: number;
     epochStartTimestamp: string;
     epochEndTimestamp: string;
+    apy: number;
 }
 
 export interface AllTimePoolStats extends RewardsStats {
@@ -1212,6 +1213,15 @@ export interface StakingAPIPoolsResponse {
 export interface StakingPoolResponse {
     poolId: string;
     stakingPool: PoolWithHistoricalStats;
+}
+
+export interface StakingPoolRewardsResponse {
+    poolId: string;
+    stakingPoolRewards: PoolRewards;
+}
+
+export interface PoolRewards {
+    epochRewards: PoolEpochRewards[];
 }
 
 export interface PoolWithHistoricalStats extends Pool {
