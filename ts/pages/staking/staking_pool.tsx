@@ -163,7 +163,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
                             },
                             {
                                 title: 'ZRX Staked',
-                                number: `${formatZrx(nextEpoch.zrxStaked).minimized}`,
+                                number: `${formatZrx(nextEpoch.zrxStaked, { bigUnitPostfix: true }).formatted}`,
                                 headerComponent: () => (
                                     <InfoTooltip id="next-epoch-staked-balance">
                                         <div>
