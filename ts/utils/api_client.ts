@@ -108,19 +108,4 @@ export class APIClient {
         );
         return result;
     }
-
-    public async getETHZRXPricesAsync(): Promise<ETHZRXPriceResponse> {
-        const resultETH = await fetchUtils.requestAsync(
-            utils.getAPIBaseUrl(this.networkId),
-            '/swap/v1/price?sellToken=ETH&buyToken=DAI&sellAmount=1000000000000000000',
-        );
-        const resultZRX = await fetchUtils.requestAsync(
-            utils.getAPIBaseUrl(this.networkId),
-            '/swap/v1/price?sellToken=ZRX&buyToken=DAI&sellAmount=1000000000000000000',
-        );
-        return {
-            eth: resultETH,
-            zrx: resultZRX,
-        };
-    }
 }
