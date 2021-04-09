@@ -28,6 +28,7 @@ interface ChangePoolDialogProps {
     nextEpochStart: Date;
     availableRewardsMap?: { [key: string]: BigNumber };
     onChangePool: (fromPoolId: string, toPoolId: string, zrxAmount: number) => void;
+    shouldAskForConfirmation?: boolean;
 }
 
 interface PoolWithDisplayName extends PoolWithStats {
@@ -46,6 +47,7 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
     nextEpochStart,
     availableRewardsMap,
     currentPoolDetails = {},
+    shouldAskForConfirmation = true,
 }) => {
     const stakingPoolsWithName: PoolWithDisplayName[] = useMemo(
         () =>
@@ -79,11 +81,12 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                 <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={clearAndDismiss}>
                     <Icon name="close-modal" />
                 </ButtonClose>
-                {isConfirmSceen ? (
+                {isConfirmSceen && shouldAskForConfirmation ? (
                     <>
                         <StyledHeading as="h3">Move stake confirmation</StyledHeading>
                         <StyledParagraph>
-                            You are moving {formattedAmount} ZRX from {stakingUtils.getPoolDisplayName(fromPool)} to{' '}
+                            You are moving {formattedAmount} ZRX{' '}
+                            {fromPool && `from ${stakingUtils.getPoolDisplayName(fromPool)}`} to{' '}
                             {stakingUtils.getPoolDisplayName(toPool)}.
                         </StyledParagraph>
                         <StyledParagraph>
@@ -140,7 +143,17 @@ export const ChangePoolDialog: FC<ChangePoolDialogProps> = ({
                             ))}
                         </PoolsListWrapper>
                         <ButtonWrapper>
-                            <ConfirmButton isDisabled={!selectedPoolId} onClick={() => setIsConfirmScreen(true)}>
+                            <ConfirmButton
+                                isDisabled={!selectedPoolId}
+                                onClick={
+                                    shouldAskForConfirmation
+                                        ? () => setIsConfirmScreen(true)
+                                        : () => {
+                                              onChangePool(fromPool && fromPool.poolId, toPool.poolId, zrxAmount);
+                                              clearAndDismiss();
+                                          }
+                                }
+                            >
                                 Choose this new pool
                             </ConfirmButton>
                         </ButtonWrapper>
@@ -276,5 +289,5 @@ const StyledDialogContent = styled(DialogContent)`
 `;
 
 const StyledThumbnail = styled(Thumbnail)`
-    margin 0 20px;
+    margin: 0 20px;
 `;

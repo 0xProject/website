@@ -1,4 +1,7 @@
+import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
+import { ZrxTreasuryContract } from '@0x/contracts-treasury';
 import { signatureUtils } from '@0x/order-utils';
+import { MetamaskSubprovider } from '@0x/subproviders';
 import { ECSignature, SignatureType } from '@0x/types';
 import { BigNumber, signTypedDataUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -6,23 +9,29 @@ import '@reach/dialog/styles.css';
 import * as ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import * as React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
-import { MetamaskSubprovider } from '@0x/subproviders';
 import { Button } from 'ts/components/button';
 import { Input } from 'ts/components/modals/input';
 import { Heading, Paragraph } from 'ts/components/text';
 import { PreferenceSelecter } from 'ts/pages/governance/preference_selecter';
+import { State as ReduxState } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { Providers, ProviderState } from 'ts/types';
-import { configs } from 'ts/utils/configs';
+import { Network, PoolWithStats, Providers, ProviderState } from 'ts/types';
+import { backendClient } from 'ts/utils/backend_client';
+import { configs, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
 
 export enum VoteValue {
     Yes = 'Yes',
     No = 'No',
+}
+
+interface ConnectedState {
+    providerState: ProviderState;
+    networkId: Network;
 }
 
 export interface VoteInfo {
@@ -33,12 +42,15 @@ export interface VoteInfo {
 interface Props {
     onDismiss?: () => void;
     onError?: (errorMessage: string) => void;
-    onVoted?: (userInfo: VoteInfo) => void;
+    onVoted?: (userInfo: VoteInfo, txHash?: string) => void;
+    onTransactionSuccess?: () => void;
     currentBalance?: BigNumber;
     providerState: ProviderState;
     selectedAddress: string;
     zeipId: number;
     networkId: number;
+    isTreasuryProposal?: boolean;
+    operatedPools?: PoolWithStats[];
 }
 
 interface State {
@@ -70,7 +82,7 @@ interface ErrorProps {
 
 // This is a copy of the generic form and includes a number of extra fields
 // TODO remove the extraneous fields
-export class VoteForm extends React.Component<Props> {
+class VoteFormComponent extends React.Component<Props> {
     public static defaultProps = {
         currentBalance: new BigNumber(0),
         isSuccessful: false,
@@ -89,7 +101,7 @@ export class VoteForm extends React.Component<Props> {
     }
     public render(): React.ReactNode {
         const { votePreference, errors, isSuccessful } = this.state;
-        const { currentBalance, selectedAddress, zeipId } = this.props;
+        const { currentBalance, selectedAddress, zeipId, isTreasuryProposal = false } = this.props;
         const bigNumberFormat = {
             decimalSeparator: '.',
             groupSeparator: ',',
@@ -104,9 +116,12 @@ export class VoteForm extends React.Component<Props> {
             bigNumberFormat,
         );
         return (
-            <Form onSubmit={this._createAndSubmitVoteAsync.bind(this)} isSuccessful={isSuccessful}>
+            <Form
+                onSubmit={isTreasuryProposal ? this._castVote.bind(this) : this._createAndSubmitVoteAsync.bind(this)}
+                isSuccessful={isSuccessful}
+            >
                 <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
-                    ZEIP-{zeipId} Vote
+                    {isTreasuryProposal ? 'Vote' : `ZEIP-${zeipId} Vote`}
                 </Heading>
                 <Paragraph isMuted={true} color={colors.textDarkPrimary}>
                     Make sure you are informed to the best of your ability before casting your vote. It will have
@@ -239,6 +254,56 @@ export class VoteForm extends React.Component<Props> {
             this._handleError(err.message);
         }
     };
+    private readonly _castVote = async (e: React.FormEvent): Promise<void> => {
+        e.preventDefault();
+        try {
+            const {
+                zeipId: proposalId,
+                operatedPools,
+                providerState,
+                selectedAddress,
+                currentBalance,
+                onVoted,
+                onTransactionSuccess,
+            } = this.props;
+            const proposalIdBigNumber = new BigNumber(proposalId);
+
+            const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
+
+            const { votePreference } = this.state;
+
+            const gasInfo = await backendClient.getGasInfoAsync();
+
+            const txPromise = contract
+                .castVote(
+                    proposalIdBigNumber,
+                    votePreference === VoteValue.Yes,
+                    operatedPools ? operatedPools.map((pool) => pool.poolId) : [],
+                )
+                .awaitTransactionSuccessAsync({ from: selectedAddress, gasPrice: gasInfo.gasPriceInWei });
+            const txHash = await txPromise.txHashPromise;
+            if (onVoted) {
+                this.setState({
+                    isSuccessful: true,
+                    voteHash: txHash,
+                });
+                onVoted(
+                    {
+                        userBalance: currentBalance,
+                        voteValue: this._getVoteValueFromString(votePreference),
+                    },
+                    txHash,
+                );
+            }
+
+            await txPromise;
+            if (onTransactionSuccess) {
+                onTransactionSuccess();
+            }
+        } catch (error) {
+            this._handleError(error.message);
+        }
+    };
     private _handleError(errorMessage: string): void {
         const { onError } = this.props;
         onError
@@ -361,3 +426,10 @@ const Form = styled.form<FormProps>`
 const PreferenceWrapper = styled.div`
     margin-bottom: 30px;
 `;
+
+const mapStateToProps = (state: ReduxState, _ownProps: Props): ConnectedState => ({
+    providerState: state.providerState,
+    networkId: state.networkId,
+});
+
+export const VoteForm = connect(mapStateToProps, null)(VoteFormComponent);

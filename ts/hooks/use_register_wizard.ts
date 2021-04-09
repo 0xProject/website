@@ -7,15 +7,15 @@ import { useQuery } from 'ts/hooks/use_query';
 import { WebsitePaths } from 'ts/types';
 
 // These are the three primary wizard states (controlled by routing).
-// SetupWizard handles connecting the wallet, selecting pools and staking amounts
+// Start handles connecting the wallet, selecting pools and staking amounts
 // ApproveTokens handles token approval
 // ReadyToStake handles the actual staking process as well as the success confirmation
 // Each of these steps can have their own internal state, which allows flexible transitions.
-export enum WizardRouterSteps {
-    SetupWizard = 'start',
+export enum RegisterRouterSteps {
+    Start = 'start',
     VotingPower = 'voting',
-    ApproveTokens = 'approve',
     ReadyToStake = 'stake',
+    Success = 'success',
 }
 
 export interface NextStepOptions {
@@ -23,23 +23,23 @@ export interface NextStepOptions {
 }
 
 export interface IUSeWizardResult {
-    currentStep: WizardRouterSteps;
-    next: (nextStep: WizardRouterSteps, options?: NextStepOptions) => void;
+    currentStep: RegisterRouterSteps;
+    next: (nextStep: RegisterRouterSteps, options?: NextStepOptions) => void;
     back: () => void;
 }
 
-const DEFAULT_STEP = WizardRouterSteps.SetupWizard;
+const DEFAULT_STEP = RegisterRouterSteps.Start;
 
-const useStakingWizard = (): IUSeWizardResult => {
+const useRegisterWizard = (): IUSeWizardResult => {
     const { step, ...restOfQueryParams } = useQuery<{
         poolId: string | undefined;
-        step: WizardRouterSteps | undefined;
+        step: RegisterRouterSteps | undefined;
     }>();
     const history = useHistory();
 
     const reset = useCallback(() => {
         history.replace(
-            `${WebsitePaths.StakingWizard}?${qs.stringify({
+            `${WebsitePaths.Register}?${qs.stringify({
                 ...restOfQueryParams,
                 step: DEFAULT_STEP,
             })}`,
@@ -63,7 +63,7 @@ const useStakingWizard = (): IUSeWizardResult => {
             }
             const routingFn = replace ? history.replace : history.push;
             return routingFn(
-                `${WebsitePaths.StakingWizard}?${qs.stringify({
+                `${WebsitePaths.Register}?${qs.stringify({
                     ...restOfQueryParams,
                     step: nextStep,
                 })}`,
@@ -83,4 +83,4 @@ const useStakingWizard = (): IUSeWizardResult => {
     };
 };
 
-export { useStakingWizard };
+export { useRegisterWizard };

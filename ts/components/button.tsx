@@ -82,7 +82,7 @@ Button.defaultProps = {
 const ButtonBase = styled.button<ButtonInterface>`
     appearance: none;
     border: 1px solid transparent;
-    display: inline-block;
+    display: ${(props) => (props.isInline ? 'inline' : 'inline-block')};
     background-color: ${(props) => props.bgColor || colors.brandLight};
     background-color: ${(props) =>
         (props.isTransparent || props.isWithArrow) && (props.transparentBgColor || 'transparent')};
