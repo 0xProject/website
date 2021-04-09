@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { Redirect, RouteChildrenProps, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { Loading } from 'ts/components/portal/loading';
 import { DashboardHero } from 'ts/components/staking/dashboard_hero';
 import { HistoryChart } from 'ts/components/staking/history_chart';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
@@ -34,6 +35,10 @@ const Container = styled.div`
     max-width: 1152px;
     margin: 0 auto;
     padding: 0 20px;
+`;
+
+const LoadingContainer = styled.div`
+    padding: 100px 0;
 `;
 
 const Heading = styled.h2`
@@ -249,6 +254,11 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
                     ]}
                 />
             )}
+            {!stakingPool && (
+                <LoadingContainer>
+                    <Loading isLoading={true} content={null} />
+                </LoadingContainer>
+            )}
             {/* TODO(johnrjj) Copy from account page when finished */}
             {/* <ActionsWrapper>
                 <ActionsInner>
@@ -285,18 +295,17 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
                     </Actions>
                 </ActionsInner>
             </ActionsWrapper> */}
-            <Container>
-                <GraphHeading>Historical Details</GraphHeading>
-                {historicalEpochs && (
+            {historicalEpochs && (
+                <Container>
+                    <GraphHeading>Historical Details</GraphHeading>
                     <HistoryChart
                         totalRewards={historicalEpochs.map((e) => e.totalRewardsPaidInEth)}
                         memberRewards={historicalEpochs.map((e) => e.membersRewardsPaidInEth)}
                         epochs={historicalEpochs.map((e) => e.epochId)}
                         labels={historicalEpochs.map((e) => format(new Date(e.epochEndTimestamp), 'd MMM'))}
                     />
-                )}
-                {/* TODO(johnrjj) Trading pairs after launch */}
-                {/* <Heading>Trading Pairs</Heading>
+                    {/* TODO(johnrjj) Trading pairs after launch */}
+                    {/* <Heading>Trading Pairs</Heading>
                 <div>
                     {tradingPairs.map(({ price, currency, firstCurrency, secondCurrency, id, url }) => {
                         return (
@@ -314,7 +323,8 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
                         );
                     })}
                 </div> */}
-            </Container>
+                </Container>
+            )}
         </StakingPageLayout>
     );
 };
