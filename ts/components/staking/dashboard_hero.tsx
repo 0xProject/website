@@ -169,7 +169,7 @@ const HorizontalList = styled.ul`
     font-size: 17px;
     font-weight: 300;
     color: #5c5c5c;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     a {
         color: ${colors.brandLight};
     }
@@ -290,12 +290,14 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({
                                 </li>
                             )}
                             <li>{formatPercent(rewardsShared).minimized}% Rewards Shared</li>
+
                             {isVerified && (
                                 <VerificationIndicator>
                                     <Checkmark /> Verified identity
                                 </VerificationIndicator>
                             )}
                         </HorizontalList>
+
                         <ButtonContainer>
                             <StakingButton
                                 to={`${WebsitePaths.StakingWizard}?${stringify({ poolId })}`}
