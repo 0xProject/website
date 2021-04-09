@@ -106,11 +106,12 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
         return <Redirect to={WebsitePaths.Staking} />;
     }
 
-    let currentEpoch: EpochPoolStats,
-        nextEpoch,
-        historicalEpochs,
-        zrxStakeChangeBetweenEpochs: number,
-        zrxToStaked = null;
+    let currentEpoch: EpochPoolStats = null;
+    let nextEpoch = null;
+    let historicalEpochs = null;
+    let zrxStakeChangeBetweenEpochs: number = null;
+    let zrxToStaked = null;
+
     if (stakingPool) {
         currentEpoch = stakingPool.currentEpochStats;
         nextEpoch = stakingPool.nextEpochStats;
