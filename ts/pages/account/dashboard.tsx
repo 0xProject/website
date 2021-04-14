@@ -150,10 +150,15 @@ export const Account: React.FC<AccountProps> = () => {
     const [pendingUnstakePoolSet, setPendingUnstakePoolSet] = React.useState<Set<string>>(new Set());
 
     const apiClient = useAPIClient(networkId);
-    const { stakingContract, unstake, withdrawStake, withdrawRewards, moveStake, currentEpochRewards, error: useStakeError } = useStake(
-        networkId,
-        providerState,
-    );
+    const {
+        stakingContract,
+        unstake,
+        withdrawStake,
+        withdrawRewards,
+        moveStake,
+        currentEpochRewards,
+        error: useStakeError,
+    } = useStake(networkId, providerState);
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
     const hasRewards = () => Boolean(allTimeRewards.isGreaterThan(0) || expectedCurrentEpochRewards.isGreaterThan(0));
@@ -396,7 +401,7 @@ export const Account: React.FC<AccountProps> = () => {
         if (useStakeError) {
             setStakingError(useStakeError);
         }
-    }, [useStakeError])
+    }, [useStakeError]);
 
     const accountLoaded = account && account.address;
 
@@ -778,10 +783,16 @@ export const Account: React.FC<AccountProps> = () => {
                     });
                 }}
             />
-            <ErrorModal isOpen={Boolean(stakingError)} text={'More ETH is required to complete this transaction. Fund your wallet and try again.'} heading={'Insufficient ETH'} buttonText={'Dismiss'} onClose={() => {
-                setStakingError(undefined);
-            }} />
-       
+            <ErrorModal
+                isOpen={Boolean(stakingError)}
+                text={'More ETH is required to complete this transaction. Fund your wallet and try again.'}
+                heading={'Insufficient ETH'}
+                buttonText={'Dismiss'}
+                onClose={() => {
+                    setStakingError(undefined);
+                }}
+            />
+
             <DialogOverlay
                 style={{ background: 'rgba(0, 0, 0, 0.75)', zIndex: 30 }}
                 isOpen={shouldOpenStakeDecisionModal}
