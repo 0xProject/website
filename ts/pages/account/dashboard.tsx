@@ -10,7 +10,6 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { CallToAction } from 'ts/components/call_to_action';
 import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
-import { ErrorModal } from 'ts/pages/governance/error_modal';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { RemoveStakeDialog } from 'ts/components/staking/remove_stake_dialog';
 import { Heading, Paragraph } from 'ts/components/text';
@@ -29,6 +28,7 @@ import {
     AccountSelfVotingPowerOverview,
     AccountVotingPowerOverview,
 } from 'ts/pages/account/account_voting_power_overview';
+import { ErrorModal } from 'ts/pages/governance/error_modal';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
@@ -123,7 +123,6 @@ export const Account: React.FC<AccountProps> = () => {
     // NOTE: not yet implemented but left in for future reference
     const voteHistory: VoteHistory[] = [];
 
-    const [isErrorModalOpen, setErrorModalOpen] = React.useState(false);
     const [stakingError, setStakingError] = React.useState<Error | undefined>(undefined);
     const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
     const [changePoolDetails, setChangePoolDetails] = React.useState<PoolDetails | undefined>(undefined);
