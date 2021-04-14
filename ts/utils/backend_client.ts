@@ -35,11 +35,15 @@ export const backendClient = {
         // Median gas prices across 0x api gas oracles
         // Defaulting to average/standard gas. Using eth gas station for time estimates
         const gasApiPath = 'source/median?output=eth_gas_station';
-        const gasInfo: WebsiteBackendGasInfo = await fetchUtils.requestAsync(ZEROEX_GAS_API, gasApiPath);
-        const gasWaitTimes: WebsiteBackendGasWaitTimeInfo = await fetchUtils.requestAsync(
-            utils.getBackendBaseUrl(),
-            ETH_GAS_STATION_ENDPOINT,
-        );
+        const gasInfoReq = fetchUtils.requestAsync(ZEROEX_GAS_API, gasApiPath);
+        const gasWaitTimesReq = fetchUtils.requestAsync(utils.getBackendBaseUrl(), ETH_GAS_STATION_ENDPOINT);
+
+        const res: [WebsiteBackendGasInfo, WebsiteBackendGasWaitTimeInfo] = await Promise.all([
+            gasInfoReq,
+            gasWaitTimesReq,
+        ]);
+        const gasInfo = res[0];
+        const gasWaitTimes = res[1];
 
         // Eth Gas Station result is gwei * 10
         const gasPriceInGwei = new BigNumber(gasInfo.average / 10);
