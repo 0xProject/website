@@ -402,7 +402,7 @@ export const Account: React.FC<AccountProps> = () => {
     }, [currentEpochStakeMap, nextEpochStakeMap, delegatorData]);
 
     React.useEffect(() => {
-        const castedStakeError = useStakeError as unknown as RPCError;
+        const castedStakeError = (useStakeError as unknown) as RPCError;
         if (useStakeError && castedStakeError.code === -32000) {
             setStakingError(useStakeError);
         }
