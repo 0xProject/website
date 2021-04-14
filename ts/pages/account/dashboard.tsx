@@ -100,6 +100,11 @@ interface PoolDetails {
     zrxAmount: number;
 }
 
+interface RPCError {
+    code: number;
+    message: string;
+}
+
 interface ExpectedPoolRewards {
     [poolId: string]: BigNumber;
 }
@@ -397,7 +402,8 @@ export const Account: React.FC<AccountProps> = () => {
     }, [currentEpochStakeMap, nextEpochStakeMap, delegatorData]);
 
     React.useEffect(() => {
-        if (useStakeError) {
+        const castedStakeError = useStakeError as unknown as RPCError;
+        if (useStakeError && castedStakeError.code === -32000) {
             setStakingError(useStakeError);
         }
     }, [useStakeError]);
