@@ -28,6 +28,7 @@ import {
     AccountSelfVotingPowerOverview,
     AccountVotingPowerOverview,
 } from 'ts/pages/account/account_voting_power_overview';
+import { ErrorModal } from 'ts/pages/governance/error_modal';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
@@ -122,6 +123,7 @@ export const Account: React.FC<AccountProps> = () => {
     // NOTE: not yet implemented but left in for future reference
     const voteHistory: VoteHistory[] = [];
 
+    const [stakingError, setStakingError] = React.useState<Error | undefined>(undefined);
     const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
     const [changePoolDetails, setChangePoolDetails] = React.useState<PoolDetails | undefined>(undefined);
     const [removeStakePoolDetails, setRemoveStakePoolDetails] = React.useState<PoolDetails | undefined>(undefined);
@@ -147,10 +149,15 @@ export const Account: React.FC<AccountProps> = () => {
     const [pendingUnstakePoolSet, setPendingUnstakePoolSet] = React.useState<Set<string>>(new Set());
 
     const apiClient = useAPIClient(networkId);
-    const { stakingContract, unstake, withdrawStake, withdrawRewards, moveStake, currentEpochRewards } = useStake(
-        networkId,
-        providerState,
-    );
+    const {
+        stakingContract,
+        unstake,
+        withdrawStake,
+        withdrawRewards,
+        moveStake,
+        currentEpochRewards,
+        error: useStakeError,
+    } = useStake(networkId, providerState);
 
     const hasDataLoaded = () => Boolean(delegatorData && poolWithStatsMap && availableRewardsMap);
     const hasRewards = () => Boolean(allTimeRewards.isGreaterThan(0) || expectedCurrentEpochRewards.isGreaterThan(0));
@@ -389,6 +396,12 @@ export const Account: React.FC<AccountProps> = () => {
         );
     }, [currentEpochStakeMap, nextEpochStakeMap, delegatorData]);
 
+    React.useEffect(() => {
+        if (useStakeError) {
+            setStakingError(useStakeError);
+        }
+    }, [useStakeError]);
+
     const accountLoaded = account && account.address;
 
     if (!accountLoaded) {
@@ -424,7 +437,6 @@ export const Account: React.FC<AccountProps> = () => {
     }
 
     const nextEpochStart = nextEpochStats && new Date(nextEpochStats.epochStart.timestamp);
-
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
@@ -770,6 +782,16 @@ export const Account: React.FC<AccountProps> = () => {
                     });
                 }}
             />
+            <ErrorModal
+                isOpen={Boolean(stakingError)}
+                text={'More ETH is required to complete this transaction. Fund your wallet and try again.'}
+                heading={'Insufficient ETH'}
+                buttonText={'Dismiss'}
+                onClose={() => {
+                    setStakingError(undefined);
+                }}
+            />
+
             <DialogOverlay
                 style={{ background: 'rgba(0, 0, 0, 0.75)', zIndex: 30 }}
                 isOpen={shouldOpenStakeDecisionModal}

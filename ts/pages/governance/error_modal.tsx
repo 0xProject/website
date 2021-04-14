@@ -46,7 +46,7 @@ ErrorModal.defaultProps = {
 };
 
 const Wrapper = styled.div<ErrorModalProps>`
-    position: absolute;
+    position: fixed;
     background-color: rgba(0, 0, 0, 0.75);
     display: flex;
     top: 0;
@@ -55,6 +55,7 @@ const Wrapper = styled.div<ErrorModalProps>`
     bottom: 0;
     opacity: 0;
     visibility: hidden;
+    z-index: 30;
 
     ${(props) =>
         props.isOpen &&
@@ -69,7 +70,6 @@ const Inner = styled.div`
     background-color: #f6f6f6;
     padding: 30px 30px;
     width: 440px;
-    height: 440px;
     text-align: center;
 `;
 
@@ -79,7 +79,6 @@ const ErrorBox = styled.div`
     padding: 18px 30px;
     margin-bottom: 30px;
     overflow: auto;
-    max-height: 95px;
 `;
 
 const Text = styled(Paragraph).attrs({
