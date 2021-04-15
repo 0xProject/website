@@ -27,6 +27,7 @@ import { useQuery } from 'ts/hooks/use_query';
 import { useStake } from 'ts/hooks/use_stake';
 import { useStakingWizard, WizardRouterSteps } from 'ts/hooks/use_wizard';
 
+import { ErrorModal } from 'ts/pages/governance/error_modal';
 import { asyncDispatcher } from 'ts/redux/async_dispatcher';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
@@ -51,6 +52,11 @@ export interface StakingWizardProps {
     onOpenConnectWalletDialog: () => void;
 }
 
+interface RPCError {
+    code: number;
+    message: string;
+}
+
 const Container = styled.div`
     max-width: 1390px;
     margin: 0 auto;
@@ -68,6 +74,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
     const networkId = useSelector((state: State) => state.networkId);
     const apiClient = useAPIClient(networkId);
 
+    const [stakingOrAllowanceError, setStakingOrAllowanceError] = React.useState<Error | undefined>(undefined);
     const [stakingPools, setStakingPools] = useState<PoolWithStats[] | undefined>(undefined);
     const [selectedStakingPools, setSelectedStakingPools] = React.useState<UserStakingChoice[] | undefined>(undefined);
     const [currentEpochStats, setCurrentEpochStats] = useState<Epoch | undefined>(undefined);
@@ -137,6 +144,16 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetStakingStats();
     }, [networkId, apiClient]);
+
+    useEffect(() => {
+        const castedStakeError = (stake.error as unknown) as RPCError;
+        const castedAllowanceError = (allowance.error as unknown) as RPCError;
+        if (castedStakeError && castedStakeError.code === -32000) {
+            setStakingOrAllowanceError(stake.error);
+        } else if (castedAllowanceError && castedAllowanceError.code === -32000) {
+            setStakingOrAllowanceError(allowance.error);
+        }
+    }, [stake.error, allowance.error]);
 
     const { currentStep, next } = useStakingWizard();
 
@@ -230,6 +247,15 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                     }
                 />
             </Container>
+            <ErrorModal
+                isOpen={Boolean(stakingOrAllowanceError)}
+                text={'More ETH is required to complete this transaction. Fund your wallet and try again.'}
+                heading={'Insufficient ETH'}
+                buttonText={'Dismiss'}
+                onClose={() => {
+                    setStakingOrAllowanceError(undefined);
+                }}
+            />
         </StakingPageLayout>
     );
 };
