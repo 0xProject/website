@@ -173,7 +173,6 @@ export const Treasury: React.FC<{}> = () => {
     }
 
     const {
-        timestamp,
         happening: isHappening,
         description,
         id,
@@ -184,8 +183,6 @@ export const Treasury: React.FC<{}> = () => {
         executionEpochEndDate,
     } = proposal;
 
-    const pstOffset = '-0800';
-    const deadlineToVote = moment(timestamp)?.utcOffset(pstOffset);
     const isVoteActive = isHappening;
 
     const tokens = marked.lexer(description);
@@ -238,7 +235,7 @@ export const Treasury: React.FC<{}> = () => {
             <DocumentTitle {...documentConstants.VOTE} />
             <Section maxWidth="1170px" isFlex={true}>
                 <Column width="55%" maxWidth="560px">
-                    <Countdown deadline={deadlineToVote} />
+                    <Countdown startDate={proposal.startDate} endDate={proposal.endDate} />
                     <Tag>Treasury</Tag>
                     <Heading size="medium" marginBottom="0px">
                         {(heading as Tokens.Heading).text}
@@ -314,7 +311,7 @@ export const Treasury: React.FC<{}> = () => {
                                             fontSize="17px"
                                             fontWeight={300}
                                         >
-                                            {historyState.done
+                                            {historyState.done || state === 'active'
                                                 ? historyState.timestamp.format('MMMM Do, YYYY - hh:mm a')
                                                 : 'TBD'}
                                         </Text>
