@@ -510,3 +510,4 @@ export const ZERO_TALLY: TallyInterface = {
     yes: new BigNumber(0),
     no: new BigNumber(0),
 };
+// tslint:disable:max-file-line-count
