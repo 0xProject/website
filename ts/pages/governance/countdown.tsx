@@ -5,7 +5,8 @@ import * as React from 'react';
 import { Paragraph } from 'ts/components/text';
 
 interface Props {
-    deadline: moment.Moment;
+    startDate: moment.Moment;
+    endDate: moment.Moment;
 }
 
 interface TimeStructure {
@@ -21,13 +22,23 @@ interface TimeStructure {
 
 const now = moment();
 
-export const Countdown: React.StatelessComponent<Props> = ({ deadline }) => {
+export const Countdown: React.StatelessComponent<Props> = ({ startDate, endDate }) => {
     const pstOffset = '-0800';
-    const time = deadline.utcOffset(pstOffset);
-    const isPassed = time.isBefore(now);
-    const voteTextPrefix = isPassed ? `Voting ended: ` : `Vote ends: `;
-    const timeText = !isPassed ? ` • ${getRelativeTime(time)}` : '';
-    const voteText = `${voteTextPrefix} ${time.format('L LT')} PST ${timeText}`;
+    const startTime = startDate.utcOffset(pstOffset);
+    const endTime = endDate.utcOffset(pstOffset);
+    const isUpcoming = now.isBefore(startTime);
+    const isOver = endTime.isBefore(now);
+    let voteTextPrefix;
+    if (isUpcoming) {
+        voteTextPrefix = 'Voting starts: ';
+    } else if (isOver) {
+        voteTextPrefix = 'Voting ended: ';
+    } else {
+        voteTextPrefix = 'Voting ends: ';
+    }
+    const timeToDisplay = isUpcoming ? startTime : endTime;
+    const timeText = ` • ${getRelativeTime(timeToDisplay)}`;
+    const voteText = `${voteTextPrefix} ${timeToDisplay.format('L LT')} PST ${timeText}`;
 
     // TODO convert to container component
     return (
@@ -39,8 +50,8 @@ export const Countdown: React.StatelessComponent<Props> = ({ deadline }) => {
     );
 };
 
-function getRelativeTime(deadline: moment.Moment): string {
-    const diff = moment().diff(deadline);
+function getRelativeTime(time: moment.Moment): string {
+    const diff = moment().diff(time);
     const duration = moment.duration(diff);
 
     return millisToDaysHoursMinutes(duration.asMilliseconds());

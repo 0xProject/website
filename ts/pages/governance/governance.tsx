@@ -107,7 +107,10 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                 <DocumentTitle {...documentConstants.VOTE} />
                 <Section maxWidth="1170px" isFlex={true}>
                     <Column width="55%" maxWidth="560px">
-                        <Countdown deadline={this._proposalData.voteEndDate} />
+                        <Countdown
+                            startDate={this._proposalData.voteStartDate}
+                            endDate={this._proposalData.voteEndDate}
+                        />
                         <Heading size="medium">{this._proposalData.title}</Heading>
                         {_.map(this._proposalData.summary, (link, index) => (
                             <Paragraph key={`summarytext-${index}`}>{this._proposalData.summary[index]}</Paragraph>
