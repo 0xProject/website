@@ -452,7 +452,7 @@ export const proposals: Proposals = {
             `Signature types that support contract wallets were available in versions 2 and 3 of 0x, so this is bringing v4 into parity with respect to that functionality.`,
         ],
         url: 'https://github.com/0xProject/ZEIPs/issues/84',
-        voteStartDate: moment(1618880880, 'X'),
+        voteStartDate: moment(1619024400, 'X'),
         voteEndDate: moment(1619485760, 'X'),
         benefit: {
             title: 'Benefit',
@@ -470,8 +470,8 @@ export const proposals: Proposals = {
         risks: {
             title: 'Risk',
             summary: [
-                `Contracts were thoroughly reviewed internally, and spot-checked by Consensys Diligence. No vulnerabilities were found. (IN PROGRESS)`,
-                `However, these changes do modify a sensitive part of the codebase—the logic of settling fills.`,
+                `Contracts were thoroughly reviewed internally, and spot-checked by Consensys Diligence. No vulnerabilities were found.`,
+                `However, these changes do modify a risk-sensitive part of the codebase: the logic of settling NativeOrder fills.`,
                 `0x V4 architecture comes with the ability to modify or rollback specific features, without halting the entire pipeline of smart contracts. This means that if a vulnerability is found (0x Labs offers generous bug bounties), it is possible to rollback the functionality that exposes the risk.`,
             ],
             rating: 2,
