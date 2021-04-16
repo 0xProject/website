@@ -444,6 +444,45 @@ export const proposals: Proposals = {
             ],
         },
     },
+    84: {
+        zeipId: 84,
+        title: 'OrderSignerRegistry',
+        summary: [
+            `Currently, in order to market make on 0x v4, you must hold balances in a normal Ethereum address. 0x Labs has gotten feedback from market makers that it would be useful to be able to store funds in a contract to be able to more easily reuse funds for different market making strategies (e.g. on-chain quoting strategies) and to allow for more complex funds management.`,
+            `Signature types that support contract wallets were available in versions 2 and 3 of 0x, so this is bringing v4 into parity with respect to that functionality.`,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/84',
+        voteStartDate: moment(1618880880, 'X'),
+        voteEndDate: moment(1619485760, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `Bringing this feature to 0x v4 will unlock additional capital from market makers who use contract wallets to store their funds. More market making capital means better prices for consumers of liquidity (such as Matcha users).`,
+            ],
+            rating: 3,
+            links: [
+                {
+                    text: 'Features specifications',
+                    url: 'https://protocol.0x.org/',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Contracts were thoroughly reviewed internally, and spot-checked by Consensys Diligence. No vulnerabilities were found. (IN PROGRESS)`,
+                `However, these changes do modify a sensitive part of the codebase—the logic of settling fills.`,
+                `0x V4 architecture comes with the ability to modify or rollback specific features, without halting the entire pipeline of smart contracts. This means that if a vulnerability is found (0x Labs offers generous bug bounties), it is possible to rollback the functionality that exposes the risk.`,
+            ],
+            rating: 2,
+            links: [
+                {
+                    text: '0x v4 Bug Bounty',
+                    url: 'https://blog.0xproject.com/0x-protocol-v4-bug-bounty-fd0c1942b9a',
+                },
+            ],
+        },
+    },
 };
 
 export const stagingProposals: Proposals = {
