@@ -159,13 +159,13 @@ A structured object containing the signature data for the order. For more info s
 
 ## Fees
 There are two ways to capture affiliate fees from a trade.
-*   Capture a percentage of the trade. Set `feeType=buy-token-percentage` and `buyTokenPercentageFee` to set the percentage of the `buyAmount` that should be attributed to the `feeRecipient` address.
-*   Capture the positive slippage of a trade. Positive slippage is the difference between the quoted price and the realized price when the realized price is higher. Set `feeType=positive-slippage` and the `feeRecipient` to activate this feature.
+*   Capture a percentage of the trade. Set `feeType=FIXED` and `buyTokenPercentageFee` to set the percentage of the `buyAmount` that should be attributed to the `feeRecipient` address.
+*   Capture the positive slippage of a trade. Positive slippage is the difference between the quoted price and the realized price when the realized price is higher. Set `feeType=POSITIVE_SLIPPAGE` and the `feeRecipient` to activate this feature.
 
 ### Fees Misc.
 *   Adding a fee will result in an increased of gas for the taker.
-*   When setting `feeType=positive-slippage` and when the trade benefit positive slippage, 0x API will only send the positive slippage funds to `feeRecipient` if the amount is higher than the gas cost to do that operation.
-*   When using fees (`feeType=buy-token-percentage` or `feeType=`positive-slippage`), 0x API won't be able to use our highly gas optimized UniswapV2 Router (https://0xprotocol.readthedocs.io/en/latest/advanced/uniswap.html).
+*   When setting `feeType=POSITIVE_SLIPPAGE` and when the trade benefit positive slippage, 0x API will only send the positive slippage funds to `feeRecipient` if the amount is higher than the gas cost to do that operation.
+*   When using fees (`feeType=FIXED` or `feeType=POSITIVE_SLIPPAGE`), 0x API won't be able to use our highly gas optimized UniswapV2 Router (https://0xprotocol.readthedocs.io/en/latest/advanced/uniswap.html).
 
 # Swap
 
@@ -196,9 +196,9 @@ Either a `sellAmount` or `buyAmount` is required.
 | `includedSources`       | (Optional) For now only supports `RFQT`, which should be used when the integrator only wants RFQT liquidity without any other DEX orders. Requires a particular agreement with the 0x integrations team. This parameter cannot be combined with `excludedSources`.                                                                                                                                            |
 | `skipValidation`        | (Optional) Normally, whenever a `takerAddress` is provided, the API will validate the quote for the user. (For more details, see ["How does `takerAddress` help with catching issues?"](/docs/guides/0x-api-faq#how-does-takeraddress-help-with-catching-issues).)  When this parameter is set to `true`, that validation will be skipped. See also [here](/docs/guides/rfqt-in-the-0x-api#quote-validation). |
 | `intentOnFilling`       | (Optional) Used to enable RFQ-T liquidity.  For more details see the guide [Understanding RFQ-T and the 0x API](/docs/guides/rfqt-in-the-0x-api).                                                                                                                                                                                                                                                             |
-| `feeType`               | (Optional) Type of the affiliate fee (`positive-slippage`, `buy-token-percentage`). Use `positive-slippage` for sending any positive slippage (difference between quoted price and realized price when realized price is higher) to `feeRecipient` or `buy-token-percentage` to use `buyTokenPercentageFee`).                                                                                                 |
+| `feeType`               | (Optional) Type of the affiliate fee (`POSITIVE_SLIPPAGE`, `FIXED`). Use `POSITIVE_SLIPPAGE` for sending any positive slippage (difference between quoted price and realized price when realized price is higher) to `feeRecipient` or `FIXED` to use `buyTokenPercentageFee`).                                                                                                 |
 | `buyTokenPercentageFee` | (Optional) The percentage (between 0 - 1.0) of the buyAmount that should be attributed to `feeRecipient` as affiliate fees. Note that this requires that the `feeRecipient` parameter is also specified in the request.                                                                                                                                                                                       |
-| `feeRecipient`          | (Optional) The ETH address that should receive affiliate fees (specified with `buyTokenPercentageFee` or with `feeType=positive-slippage`).                                                                                                                                                                                                                                                                   |
+| `feeRecipient`          | (Optional) The ETH address that should receive affiliate fees (specified with `buyTokenPercentageFee` or with `feeType=POSITIVE_SLIPPAGE`).                                                                                                                                                                                                                                                                   |
 | `affiliateAddress`      | (Optional) An ETH address for which to attribute the trade for tracking and analytics purposes. Note `affiliateAddress` is only for tracking trades and has no impact on affiliate fees, for affiliate fees use `feeRecipient`.                                                                                                                                                                               |
 
 ### Response
