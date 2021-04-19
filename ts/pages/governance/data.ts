@@ -453,7 +453,7 @@ export const proposals: Proposals = {
         ],
         url: 'https://github.com/0xProject/ZEIPs/issues/84',
         voteStartDate: moment(1619024400, 'X'),
-        voteEndDate: moment(1619485760, 'X'),
+        voteEndDate: moment(1619283600, 'X'),
         benefit: {
             title: 'Benefit',
             summary: [
