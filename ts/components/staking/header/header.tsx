@@ -1,5 +1,8 @@
+import { gql, request } from 'graphql-request';
+import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import Headroom from 'react-headroom';
+import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import MediaQuery from 'react-responsive';
 import styled, { css } from 'styled-components';
@@ -10,15 +13,51 @@ import { Hamburger } from 'ts/components/hamburger';
 import { Logo } from 'ts/components/logo';
 import { FlexWrap } from 'ts/components/newLayout';
 import { SubMenu } from 'ts/components/staking/header/sub_menu';
+import { Proposal, proposals as prodProposals, stagingProposals } from 'ts/pages/governance/data';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
 import { ThemeValuesInterface } from 'ts/style/theme';
 import { zIndex } from 'ts/style/z_index';
-import { AccountState, WebsitePaths } from 'ts/types';
+import { AccountState, OnChainProposal, WebsitePaths } from 'ts/types';
 
 import { useWeb3React } from '@web3-react/core';
 import { useWallet } from 'ts/hooks/use_wallet';
 import { colors } from 'ts/style/colors';
+import { GOVERNANCE_THEGRAPH_ENDPOINT } from 'ts/utils/configs';
+import { environments } from 'ts/utils/environments';
+
+const FETCH_PROPOSALS = gql`
+    query proposals {
+        proposals(orderDirection: desc) {
+            id
+            proposer
+            description
+            votesFor
+            votesAgainst
+            createdTimestamp
+            voteEpoch {
+                id
+                startTimestamp
+                endTimestamp
+            }
+            executionEpoch {
+                startTimestamp
+                endTimestamp
+            }
+            executionTimestamp
+        }
+    }
+`;
+
+type ProposalWithOrder = Proposal & {
+    order?: number;
+};
+
+const PROPOSALS = environments.isProduction() ? prodProposals : stagingProposals;
+const ZEIP_IDS = Object.keys(PROPOSALS).map((idString) => parseInt(idString, 10));
+const ZEIP_PROPOSALS: ProposalWithOrder[] = ZEIP_IDS.map((id) => PROPOSALS[id]).sort(
+    (a, b) => b.voteStartDate.unix() - a.voteStartDate.unix(),
+);
 
 interface HeaderProps {
     location?: Location;
@@ -62,10 +101,33 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
 
     const dispatch = useDispatch();
     const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
+    const [hasLiveOrUpcomingVotes, setHasLiveOrUpcomingVotes] = useState(false);
+
+    const { data } = useQuery('proposals', async () => {
+        const { proposals: treasuryProposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS);
+        return treasuryProposals;
+    });
 
     useEffect(() => {
         setDispatcher(new Dispatcher(dispatch));
     }, [dispatch]);
+
+    const checkHasLiveOrUpcomingVotes = useCallback((treasuryData) => {
+        const hasZEIPS = ZEIP_PROPOSALS.filter((zeip) => {
+            return zeip.voteEndDate.isSameOrAfter(moment());
+        });
+
+        const hasTreasuryProposals = treasuryData.filter((proposal: OnChainProposal) => {
+            return moment.unix((proposal.voteEpoch.endTimestamp as unknown) as number).isSameOrAfter(moment());
+        });
+        setHasLiveOrUpcomingVotes(hasZEIPS.length || hasTreasuryProposals.length);
+    }, []);
+
+    useEffect(() => {
+        if (data) {
+            checkHasLiveOrUpcomingVotes(data);
+        }
+    }, [data, checkHasLiveOrUpcomingVotes]);
 
     const onUnpin = useCallback(() => {
         if (isNavToggled) {
@@ -115,9 +177,16 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
 
                     <MediaQuery minWidth={1200}>
                         <NavLinks>
-                            {navItems.map((link, index) => (
-                                <NavItem key={`navlink-${index}`} link={link} />
-                            ))}
+                            {navItems.map((link, index) => {
+                                return (
+                                    <div key={index} style={{ display: 'flex' }}>
+                                        <NavItem key={`navlink-${index}`} link={link} />
+                                        {link.id === 'governance' && (
+                                            <GovernanceActiveIndicator hasProposals={hasLiveOrUpcomingVotes} />
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </NavLinks>
                         {subMenu}
                     </MediaQuery>
@@ -182,6 +251,11 @@ interface WalletConnectedIndicatorProps {
     isConnected: boolean;
     isNavToggled: boolean;
 }
+
+interface GovernanceActiveIndicatorProps {
+    hasProposals: boolean;
+}
+
 const WalletConnectedIndicator = styled.div<WalletConnectedIndicatorProps>`
     width: 12px;
     height: 12px;
@@ -193,6 +267,20 @@ const WalletConnectedIndicator = styled.div<WalletConnectedIndicatorProps>`
     position: absolute;
     top: -7px;
     right: -7px;
+    z-index: ${zIndex.header + 1};
+`;
+
+const GovernanceActiveIndicator = styled.div<GovernanceActiveIndicatorProps>`
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid #ffffff;
+    background-color: #e71d36;
+    transition: opacity 0.25s ease-in;
+    opacity: ${(props) => (props.hasProposals ? 1 : 0)};
+    position: relative;
+    right: 1.8rem;
+    top: 0.6rem;
     z-index: ${zIndex.header + 1};
 `;
 
