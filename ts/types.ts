@@ -8,7 +8,7 @@ export enum PoolsListSortingParameter {
     Staked = 'staked',
     ProtocolFees = 'protocolFees',
     RewardsShared = 'rewardsShared',
-    APY = 'apy',
+    Apy = 'apy',
 }
 
 export interface MailchimpSubscriberInfo {

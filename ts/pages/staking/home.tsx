@@ -84,9 +84,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
             const rewardsToAverageLongTerm =
                 epochRewardAPYs.length > 12 ? epochRewardAPYs.slice(Math.max(rewards.length - 12, 0)) : epochRewardAPYs;
 
-            return Object.assign({}, pool, {
-                apy: average(rewardsToAverageLongTerm),
-            });
+            return { ...pool, apy: average(rewardsToAverageLongTerm) };
         });
     }, [poolSortingParam, stakingPools]);
 
