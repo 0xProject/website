@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
+require('moment-timezone');
+
 import * as React from 'react';
 
 import { Paragraph } from 'ts/components/text';
@@ -23,9 +25,8 @@ interface TimeStructure {
 const now = moment();
 
 export const Countdown: React.StatelessComponent<Props> = ({ startDate, endDate }) => {
-    const pstOffset = '-0800';
-    const startTime = startDate.utcOffset(pstOffset);
-    const endTime = endDate.utcOffset(pstOffset);
+    const startTime = startDate.local();
+    const endTime = endDate.local();
     const isUpcoming = now.isBefore(startTime);
     const isOver = endTime.isBefore(now);
     let voteTextPrefix;
@@ -38,7 +39,9 @@ export const Countdown: React.StatelessComponent<Props> = ({ startDate, endDate 
     }
     const timeToDisplay = isUpcoming ? startTime : endTime;
     const timeText = ` • ${getRelativeTime(timeToDisplay)}`;
-    const voteText = `${voteTextPrefix} ${timeToDisplay.format('L LT')} PST ${timeText}`;
+    const voteText = `${voteTextPrefix} ${timeToDisplay.format('L LT')} ${moment()
+        .tz(moment.tz.guess())
+        .format('z')} ${timeText}`;
 
     // TODO convert to container component
     return (

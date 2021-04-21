@@ -1,5 +1,5 @@
 import { BigNumber } from '@0x/utils';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 
 import { TallyInterface } from 'ts/types';
 
