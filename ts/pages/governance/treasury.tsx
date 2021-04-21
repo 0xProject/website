@@ -4,7 +4,7 @@ import { gql, request } from 'graphql-request';
 import * as _ from 'lodash';
 import marked, { Token, Tokens } from 'marked';
 import CircularProgress from 'material-ui/CircularProgress';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useQuery } from 'react-query';

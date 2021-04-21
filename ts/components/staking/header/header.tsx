@@ -1,5 +1,5 @@
 import { gql, request } from 'graphql-request';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import React, { useCallback, useEffect, useState } from 'react';
 import Headroom from 'react-headroom';
 import { useQuery } from 'react-query';
