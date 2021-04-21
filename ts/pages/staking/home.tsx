@@ -31,6 +31,7 @@ const sortFnMapping: { [key: string]: (a: PoolWithStats, b: PoolWithStats) => nu
     [PoolsListSortingParameter.Staked]: stakingUtils.sortByStakedDesc,
     [PoolsListSortingParameter.ProtocolFees]: stakingUtils.sortByProtocolFeesDesc,
     [PoolsListSortingParameter.RewardsShared]: stakingUtils.sortByRewardsSharedDesc,
+    [PoolsListSortingParameter.APY]: stakingUtils.sortByAPYDesc,
 };
 
 const HeadingRow = styled.div`
@@ -71,7 +72,22 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         if (!stakingPools) {
             return undefined;
         }
-        return [...stakingPools].sort(sortFnMapping[poolSortingParam]);
+        const sorted = [...stakingPools].sort(sortFnMapping[poolSortingParam]);
+        return sorted.map((pool) => {
+            const rewards = pool.allTimeStakedAmounts;
+            const average = (arr: number[]) => arr.reduce((sum, el) => sum + el, 0) / arr.length;
+
+            const epochRewardAPYs = rewards.map((reward) => {
+                return reward.apy;
+            });
+
+            const rewardsToAverageLongTerm =
+                epochRewardAPYs.length > 12 ? epochRewardAPYs.slice(Math.max(rewards.length - 12, 0)) : epochRewardAPYs;
+
+            return Object.assign({}, pool, {
+                apy: average(rewardsToAverageLongTerm),
+            });
+        });
     }, [poolSortingParam, stakingPools]);
 
     // TODO(kimpers): centralize data fetching so we only fetch once
@@ -152,6 +168,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                     sortedStakingPools.map((pool) => {
                         return (
                             <StakingPoolDetailRow
+                                apy={pool.apy}
                                 to={_.replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}
                                 key={pool.poolId}
                                 poolId={pool.poolId}

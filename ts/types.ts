@@ -8,6 +8,7 @@ export enum PoolsListSortingParameter {
     Staked = 'staked',
     ProtocolFees = 'protocolFees',
     RewardsShared = 'rewardsShared',
+    APY = 'apy',
 }
 
 export interface MailchimpSubscriberInfo {
@@ -1161,6 +1162,8 @@ export interface PoolWithStats extends Pool {
     sevenDayProtocolFeesGeneratedInEth: number;
     avgMemberRewardInEth: number;
     avgTotalRewardInEth: number;
+    allTimeStakedAmounts: PoolEpochRewards[];
+    apy?: number;
 }
 
 export interface RewardsStats {

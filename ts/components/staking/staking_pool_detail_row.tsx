@@ -8,7 +8,7 @@ import { utils } from 'ts/utils/utils';
 
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
-import { formatEther } from 'ts/utils/format_number';
+import { formatEther, formatPercent } from 'ts/utils/format_number';
 
 const StyledStatLabel = styled.div`
     position: relative;
@@ -30,6 +30,7 @@ const PoolWebsiteLink = ({ websiteUrl }: { websiteUrl: string }) => (
 );
 
 interface IStakingPoolDetailRowProps {
+    apy: number;
     name: string;
     address: string;
     totalFeesGeneratedInEth: number;
@@ -44,6 +45,7 @@ interface IStakingPoolDetailRowProps {
 }
 
 export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
+    apy,
     name,
     poolId,
     thumbnailUrl,
@@ -87,8 +89,12 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
         </PoolOverviewSection>
         <PoolPerformanceSection>
             <PoolPerformanceItem>
-                <span>Fees generated</span>
-                <span>{formatEther(totalFeesGeneratedInEth || 0).formatted} ETH</span>
+                <span>APY (last 12 epochs)</span>
+                <div>
+                    <StyledStatLabel>
+                        {Number(formatPercent(apy * 100 || 0, { decimals: 2 }).minimized).toFixed(2)}%
+                    </StyledStatLabel>
+                </div>
             </PoolPerformanceItem>
             <PoolPerformanceItem cutOffRem={ScreenWidths.Sm}>
                 <span>Avg. rewards shared</span>
