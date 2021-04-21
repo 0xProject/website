@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import * as moment from 'moment-timezone';
-require('moment-timezone');
 
 import * as React from 'react';
 
