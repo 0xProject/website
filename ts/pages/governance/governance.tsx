@@ -79,25 +79,16 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
         const outcome = getVoteOutcome(tally);
 
         const proposalHistoryState = {
-            created: {
-                done: true,
-                timestamp: voteStartDate,
-                show: true,
-            },
             active: {
                 done: now.isAfter(voteStartDate),
                 timestamp: voteStartDate,
                 show: true,
             },
-            failed: {
-                done: hasVoteEnded && outcome === 'rejected',
+            finalized: {
+                done: hasVoteEnded && (outcome === 'rejected' || outcome === 'accepted'),
                 timestamp: this._proposalData?.voteEndDate,
-                show: hasVoteEnded && outcome === 'rejected',
-            },
-            accepted: {
-                done: hasVoteEnded && outcome === 'accepted',
-                timestamp: this._proposalData?.voteEndDate,
-                show: (hasVoteStarted && !hasVoteEnded) || (hasVoteEnded && outcome === 'accepted'),
+                outcome,
+                show: true,
             },
         };
 
@@ -136,6 +127,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                             <Ticks>
                                 {Object.keys(proposalHistoryState).map((state: string) => {
                                     const historyState = proposalHistoryState[state as ProposalState];
+                                    console.log(historyState, state);
                                     if (!historyState.show) {
                                         return null;
                                     }
@@ -150,7 +142,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                                                     }
                                                 />
                                             </Tick>
-                                            {!['accepted', 'failed'].includes(state) && (
+                                            {!['accepted', 'failed', 'finalized'].includes(state) && (
                                                 <Connector className={state === 'active' ? 'small' : ''} />
                                             )}
                                         </>
@@ -160,6 +152,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                             <HistoryCells>
                                 {Object.keys(proposalHistoryState).map((state: string) => {
                                     const historyState = proposalHistoryState[state as ProposalState];
+                                    console.log(historyState);
                                     if (!historyState.show) {
                                         return null;
                                     }
@@ -172,6 +165,11 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                                                 fontWeight={400}
                                             >
                                                 {state}
+                                                {historyState.done &&
+                                                (historyState.outcome === 'rejected' ||
+                                                    historyState.outcome === 'accepted')
+                                                    ? ` - ${historyState.outcome}`
+                                                    : ''}
                                             </StateTitle>
                                             <Text
                                                 fontColor={colors.textDarkSecondary}
@@ -179,8 +177,9 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                                                 fontSize="17px"
                                                 fontWeight={300}
                                             >
+                                                <div></div>
                                                 {historyState.done
-                                                    ? historyState.timestamp.format('MMMM Do, YYYY - hh:mm a')
+                                                    ? `${historyState.timestamp.format('MMMM Do, YYYY - hh:mm a')}`
                                                     : 'TBD'}
                                             </Text>
                                         </CellContent>
