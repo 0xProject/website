@@ -185,7 +185,6 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                                                 fontSize="17px"
                                                 fontWeight={300}
                                             >
-                                                <div></div>
                                                 {historyState.done
                                                     ? `${historyState.timestamp.format('MMMM Do, YYYY - hh:mm a')}`
                                                     : 'TBD'}
