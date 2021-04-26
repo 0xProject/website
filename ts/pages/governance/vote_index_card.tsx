@@ -127,6 +127,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                 forVotes,
                 quorumThreshold,
             } = props;
+
             return (
                 <ReactRouterLink style={{ order }} to={`${WebsitePaths.Vote}/proposal/${id}`}>
                     <Section
@@ -160,7 +161,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                                     <VoteStatusText
                                         status={getStatus(
                                             isCanceled,
-                                            againstVotes < forVotes && forVotes > quorumThreshold,
+                                            !isHappening && againstVotes < forVotes && forVotes > quorumThreshold,
                                             isUpcoming,
                                         )}
                                     />

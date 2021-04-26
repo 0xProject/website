@@ -15,8 +15,7 @@ export const environments = {
         return _.includes(window.location.href, domains.DOMAIN_DOGFOOD);
     },
     isProduction(): boolean {
-        return true;
-        // return _.includes(window.location.href, domains.DOMAIN_PRODUCTION);
+        return _.includes(window.location.href, domains.DOMAIN_PRODUCTION);
     },
     getEnvironment(): Environments {
         if (environments.isDogfood()) {

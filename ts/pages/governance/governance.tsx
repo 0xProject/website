@@ -36,6 +36,13 @@ interface State {
     tally?: TallyInterface;
 }
 
+interface HistoryState {
+    done: boolean;
+    timestamp: moment.Moment;
+    outcome?: string;
+    show: boolean;
+}
+
 const benefitLabels: LabelInterface = {
     1: 'Little Benefit',
     2: 'Medium Benefit',
@@ -48,7 +55,7 @@ const riskLabels: LabelInterface = {
     3: 'High Risk',
 };
 
-type ProposalState = 'created' | 'active' | 'failed' | 'accepted';
+type ProposalState = 'active' | 'finalized';
 
 export class Governance extends React.Component<RouteComponentProps<any>> {
     public state: State = {
@@ -88,7 +95,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                 done: hasVoteEnded && (outcome === 'rejected' || outcome === 'accepted'),
                 timestamp: this._proposalData?.voteEndDate,
                 outcome,
-                show: true,
+                show: hasVoteEnded && (outcome === 'rejected' || outcome === 'accepted'),
             },
         };
 
@@ -126,17 +133,19 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                         <ProposalHistory>
                             <Ticks>
                                 {Object.keys(proposalHistoryState).map((state: string) => {
-                                    const historyState = proposalHistoryState[state as ProposalState];
-                                    console.log(historyState, state);
+                                    const historyState: HistoryState = proposalHistoryState[state as ProposalState];
                                     if (!historyState.show) {
                                         return null;
                                     }
                                     return (
                                         <>
-                                            <Tick isActive={historyState.done} isFailed={state === 'failed'}>
+                                            <Tick
+                                                isActive={historyState.done}
+                                                isFailed={historyState.outcome === 'rejected'}
+                                            >
                                                 <img
                                                     src={
-                                                        state === 'failed'
+                                                        historyState.outcome === 'rejected'
                                                             ? '/images/governance/cross.svg'
                                                             : '/images/governance/tick_mark.svg'
                                                     }
@@ -151,8 +160,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                             </Ticks>
                             <HistoryCells>
                                 {Object.keys(proposalHistoryState).map((state: string) => {
-                                    const historyState = proposalHistoryState[state as ProposalState];
-                                    console.log(historyState);
+                                    const historyState: HistoryState = proposalHistoryState[state as ProposalState];
                                     if (!historyState.show) {
                                         return null;
                                     }
