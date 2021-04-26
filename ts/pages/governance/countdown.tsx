@@ -37,7 +37,7 @@ export const Countdown: React.StatelessComponent<Props> = ({ startDate, endDate 
         voteTextPrefix = 'Voting ends: ';
     }
     const timeToDisplay = isUpcoming ? startTime : endTime;
-    const timeText = ` • ${getRelativeTime(timeToDisplay)}`;
+    const timeText = isUpcoming ? ` • ${getRelativeTime(timeToDisplay)}` : ``;
     const voteText = `${voteTextPrefix} ${timeToDisplay.format('L LT')} ${moment()
         .tz(moment.tz.guess())
         .format('z')} ${timeText}`;
