@@ -8,7 +8,7 @@ import { utils } from 'ts/utils/utils';
 
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
-import { formatEther } from 'ts/utils/format_number';
+import { formatPercent } from 'ts/utils/format_number';
 
 const StyledStatLabel = styled.div`
     position: relative;
@@ -30,6 +30,7 @@ const PoolWebsiteLink = ({ websiteUrl }: { websiteUrl: string }) => (
 );
 
 interface IStakingPoolDetailRowProps {
+    apy: number;
     name: string;
     address: string;
     totalFeesGeneratedInEth: number;
@@ -44,6 +45,7 @@ interface IStakingPoolDetailRowProps {
 }
 
 export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
+    apy,
     name,
     poolId,
     thumbnailUrl,
@@ -86,15 +88,15 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
             </DesktopOnlyWrapper>
         </PoolOverviewSection>
         <PoolPerformanceSection>
-            <PoolPerformanceItem>
-                <span>Fees generated</span>
-                <span>{formatEther(totalFeesGeneratedInEth || 0).formatted} ETH</span>
+            <PoolPerformanceItem style={{ width: '8rem' }}>
+                <span>APR (12 week avg.)</span>
+                <div>
+                    <StyledStatLabel>
+                        {Number(formatPercent(apy * 100 || 0, { decimals: 2 }).minimized).toFixed(2)}%
+                    </StyledStatLabel>
+                </div>
             </PoolPerformanceItem>
-            <PoolPerformanceItem cutOffRem={ScreenWidths.Sm}>
-                <span>Avg. rewards shared</span>
-                <span>{formatEther(averageRewardsSharedInEth || 0).formatted} ETH</span>
-            </PoolPerformanceItem>
-            <PoolPerformanceItem>
+            <PoolPerformanceItem style={{ flex: 'none' }}>
                 <span>Saturation</span>
                 <div>
                     <StyledStatLabel>
@@ -193,8 +195,8 @@ const DetailsText = styled.span`
 const PoolPerformanceSection = styled.div`
     display: flex;
     margin-left: auto;
-    width: 480px;
-    justify-content: space-around;
+    width: auto;
+    justify-content: flex-end;
 
     @media (max-width: ${ScreenWidths.Lg}rem) {
         width: 100%;
@@ -207,7 +209,6 @@ const PoolPerformanceItem = styled.div<{ cutOffRem?: number }>`
     position: relative;
     flex-direction: column;
     justify-content: center;
-    flex: 1;
 
     span:nth-of-type(1) {
         font-size: 14px;

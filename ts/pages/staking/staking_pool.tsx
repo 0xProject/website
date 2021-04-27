@@ -163,7 +163,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
                                 //     number: '1.23M USD',
                                 // },
                                 {
-                                    title: 'APY (last 3 epochs)',
+                                    title: 'APR (last 3 epochs)',
                                     number: `${formatPercent(stakingPoolAPY3Epochs * 100 || 0).minimized}%`,
                                 },
                                 {
@@ -224,7 +224,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
                             title: 'All Time',
                             metrics: [
                                 {
-                                    title: 'APY (last 12 epochs)',
+                                    title: 'APR (last 12 epochs)',
                                     number: `${formatPercent(stakingPoolAPY12Epochs * 100 || 0).minimized}%`,
                                 },
                                 {

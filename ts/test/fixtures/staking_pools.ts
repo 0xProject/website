@@ -54,6 +54,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '2',
@@ -111,6 +119,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '16',
@@ -184,6 +200,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '20',
@@ -232,6 +256,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '12',
@@ -288,6 +320,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '10',
@@ -330,6 +370,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '7',
@@ -372,6 +420,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '8',
@@ -420,6 +476,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '4',
@@ -462,6 +526,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '11',
@@ -504,6 +576,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '17',
@@ -546,6 +626,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '3',
@@ -588,6 +676,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '5',
@@ -630,6 +726,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '21',
@@ -672,6 +776,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '15',
@@ -722,6 +834,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '14',
@@ -764,6 +884,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '22',
@@ -812,6 +940,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '13',
@@ -862,6 +998,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '9',
@@ -904,6 +1048,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '19',
@@ -946,6 +1098,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '1',
@@ -988,6 +1148,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
     {
         poolId: '18',
@@ -1036,6 +1204,14 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             numberOfFills: 0,
             shareOfFills: 0,
         },
+        allTimeStakedAmounts: [
+            {
+                epochId: 6,
+                memberZrxStaked: 147787.12010369822,
+                membersReward: 0,
+                apy: 0,
+            },
+        ],
     },
 ];
 
