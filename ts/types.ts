@@ -1161,8 +1161,15 @@ export interface PoolWithStats extends Pool {
     sevenDayProtocolFeesGeneratedInEth: number;
     avgMemberRewardInEth: number;
     avgTotalRewardInEth: number;
-    allTimeStakedAmounts: PoolEpochRewards[];
+    allTimeStakedAmounts: AllTimeStakeStats[];
     apy?: number;
+}
+
+export interface AllTimeStakeStats {
+    epochId: number;
+    memberZrxStaked: number;
+    membersReward: number;
+    apy: number;
 }
 
 export interface RewardsStats {
