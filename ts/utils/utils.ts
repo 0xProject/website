@@ -417,7 +417,7 @@ export const utils = {
         // } else if (environments.isDogfood()) {
         //     return configs.API_BASE_STAGING_URL;
         // }
-        return configs.API_BASE_PROD_URL;
+        return configs.API_BASE_STAGING_URL;
     },
     isExternallyInjected(providerType: ProviderType, injectedProviderName: string): boolean {
         return providerType === ProviderType.Injected && injectedProviderName !== constants.PROVIDER_NAME_PUBLIC;
