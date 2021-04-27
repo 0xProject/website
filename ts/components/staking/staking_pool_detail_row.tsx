@@ -89,16 +89,12 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
         </PoolOverviewSection>
         <PoolPerformanceSection>
             <PoolPerformanceItem>
-                <span>APY (last 12 epochs)</span>
+                <span>APY (12 week avg.)</span>
                 <div>
                     <StyledStatLabel>
                         {Number(formatPercent(apy * 100 || 0, { decimals: 2 }).minimized).toFixed(2)}%
                     </StyledStatLabel>
                 </div>
-            </PoolPerformanceItem>
-            <PoolPerformanceItem cutOffRem={ScreenWidths.Sm}>
-                <span>Avg. rewards shared</span>
-                <span>{formatEther(averageRewardsSharedInEth || 0).formatted} ETH</span>
             </PoolPerformanceItem>
             <PoolPerformanceItem>
                 <span>Saturation</span>
@@ -199,7 +195,7 @@ const DetailsText = styled.span`
 const PoolPerformanceSection = styled.div`
     display: flex;
     margin-left: auto;
-    width: 480px;
+    width: 380px;
     justify-content: space-around;
 
     @media (max-width: ${ScreenWidths.Lg}rem) {
