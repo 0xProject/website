@@ -101,6 +101,7 @@ const sortingParamMapping = {
     [PoolsListSortingParameter.Staked]: 'Saturation',
     [PoolsListSortingParameter.RewardsShared]: 'Average Rewards Shared',
     [PoolsListSortingParameter.ProtocolFees]: 'Fees Generated',
+    [PoolsListSortingParameter.Apy]: 'APR',
 };
 
 interface PoolsListSortingSelectorProps {
@@ -121,13 +122,13 @@ export const PoolsListSortingSelector: React.FC<PoolsListSortingSelectorProps> =
             </ToggleRow>
             {isExpanded && (
                 <ExpandedMenu>
-                    <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.Staked)}>
-                        <StyledText>{sortingParamMapping[PoolsListSortingParameter.Staked]}</StyledText>
+                    <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.Apy)}>
+                        <StyledText>{sortingParamMapping[PoolsListSortingParameter.Apy]}</StyledText>
                         <StyledDescription>
-                            An approximation of the pool saturation for the upcoming epoch.{' '}
+                            The 12 week average ROI from staking in this pool{' '}
                             <StyledButton
                                 target="_blank"
-                                href={`${constants.STAKING_FAQ_DOCS}#what-is-saturation-previously-called-stake--or-stake-ratio`}
+                                href={`${constants.STAKING_FAQ_DOCS}#what-are-rewards-shared`}
                                 isInline={true}
                                 isTransparent={true}
                                 isNoBorder={true}
@@ -140,13 +141,13 @@ export const PoolsListSortingSelector: React.FC<PoolsListSortingSelectorProps> =
                             </StyledButton>
                         </StyledDescription>
                     </MenuItem>
-                    <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.RewardsShared)}>
-                        <StyledText>{sortingParamMapping[PoolsListSortingParameter.RewardsShared]}</StyledText>
+                    <MenuItem onClick={() => setPoolSortingParam(PoolsListSortingParameter.Staked)}>
+                        <StyledText>{sortingParamMapping[PoolsListSortingParameter.Staked]}</StyledText>
                         <StyledDescription>
-                            The average rewards the pool has shared with stakers, per epoch.{' '}
+                            An approximation of the pool saturation for the upcoming epoch.{' '}
                             <StyledButton
                                 target="_blank"
-                                href={`${constants.STAKING_FAQ_DOCS}#what-are-rewards-shared`}
+                                href={`${constants.STAKING_FAQ_DOCS}#what-is-saturation-previously-called-stake--or-stake-ratio`}
                                 isInline={true}
                                 isTransparent={true}
                                 isNoBorder={true}

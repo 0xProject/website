@@ -88,15 +88,15 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
             </DesktopOnlyWrapper>
         </PoolOverviewSection>
         <PoolPerformanceSection>
-            <PoolPerformanceItem>
-                <span>APY (12 week avg.)</span>
+            <PoolPerformanceItem style={{ width: '8rem' }}>
+                <span>APR (12 week avg.)</span>
                 <div>
                     <StyledStatLabel>
                         {Number(formatPercent(apy * 100 || 0, { decimals: 2 }).minimized).toFixed(2)}%
                     </StyledStatLabel>
                 </div>
             </PoolPerformanceItem>
-            <PoolPerformanceItem>
+            <PoolPerformanceItem style={{ flex: 'none' }}>
                 <span>Saturation</span>
                 <div>
                     <StyledStatLabel>
@@ -195,8 +195,8 @@ const DetailsText = styled.span`
 const PoolPerformanceSection = styled.div`
     display: flex;
     margin-left: auto;
-    width: 380px;
-    justify-content: space-around;
+    width: auto;
+    justify-content: flex-end;
 
     @media (max-width: ${ScreenWidths.Lg}rem) {
         width: 100%;
@@ -209,7 +209,6 @@ const PoolPerformanceItem = styled.div<{ cutOffRem?: number }>`
     position: relative;
     flex-direction: column;
     justify-content: center;
-    flex: 1;
 
     span:nth-of-type(1) {
         font-size: 14px;

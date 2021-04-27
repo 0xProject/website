@@ -211,7 +211,7 @@ export const stakingUtils = {
             b.currentEpochStats.totalProtocolFeesGeneratedInEth - a.currentEpochStats.totalProtocolFeesGeneratedInEth
         );
     },
-    sortByAPYDesc: (a: PoolWithStats, b: PoolWithStats): number => {
+    sortByApyDesc: (a: PoolWithStats, b: PoolWithStats): number => {
         return b.apy - a.apy;
     },
 
