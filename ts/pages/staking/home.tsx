@@ -31,7 +31,6 @@ const sortFnMapping: { [key: string]: (a: PoolWithStats, b: PoolWithStats) => nu
     [PoolsListSortingParameter.Staked]: stakingUtils.sortByStakedDesc,
     [PoolsListSortingParameter.ProtocolFees]: stakingUtils.sortByProtocolFeesDesc,
     [PoolsListSortingParameter.RewardsShared]: stakingUtils.sortByRewardsSharedDesc,
-    [PoolsListSortingParameter.APY]: stakingUtils.sortByAPYDesc,
 };
 
 const HeadingRow = styled.div`
