@@ -1,4 +1,6 @@
 import { BigNumber, hexUtils, logUtils } from '@0x/utils';
+import { Banner } from 'ts/components/banner';
+
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
@@ -446,6 +448,22 @@ export const Account: React.FC<AccountProps> = () => {
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
+                <BannerWrapper>
+                    <Banner
+                        mainCtaCentered={true}
+                        padding={'50px'}
+                        heading={`Staking Notice`}
+                        subline="The staking system is currently paused until an issue with the finalization logic is resolved. All user funds are safe. Thank you!"
+                        mainCta={{
+                            text: 'Learn More',
+                            onClick: () => {
+                                window.location.href =
+                                    'https://gov.0x.org/t/0x-staking-system-epoch-67-finalization/882';
+                            },
+                        }}
+                    />
+                </BannerWrapper>
+
                 <Inner>
                     {account && account.address && <AccountDetail userEthAddress={account.address} />}
                     <Figures>
@@ -923,4 +941,8 @@ const StyledDialogContent = styled(DialogContent)`
 
 const StyledParagraph = styled(Paragraph)`
     margin-top: 50px;
+`;
+
+const BannerWrapper = styled.div`
+    margin-bottom: 50px;
 `;

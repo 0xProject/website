@@ -16,6 +16,8 @@ interface Props {
     mainCta?: CTAButton;
     secondaryCta?: CTAButton;
     theme?: IThemeInterface;
+    padding?: string;
+    mainCtaCentered?: boolean;
 }
 
 interface CTAButton {
@@ -30,13 +32,15 @@ interface BorderProps {
 }
 
 export const Banner: React.StatelessComponent<Props> = (props: Props) => {
-    const { heading, subline, mainCta, secondaryCta, customCta } = props;
+    const { heading, subline, mainCta, secondaryCta, customCta, padding, mainCtaCentered } = props;
+    console.log(padding);
     return (
         <CustomSection
             bgColor={colors.brandDark}
             isFlex={true}
             flexBreakpoint="900px"
-            paddingMobile="120px 0"
+            padding={`${padding ? padding : '120px'} 0`}
+            paddingMobile={`${padding ? padding : '120px'} 0`}
             alignItems="center"
         >
             <Border />
@@ -52,10 +56,23 @@ export const Banner: React.StatelessComponent<Props> = (props: Props) => {
                 )}
             </Column>
             <ColumnCta>
+                {mainCta && mainCtaCentered && (
+                    <ButtonWrapCentered>
+                        <Button
+                            color={colors.white}
+                            isTransparent={false}
+                            href={mainCta.href}
+                            onClick={mainCta.onClick}
+                            target={mainCta.shouldOpenInNewTab ? '_blank' : ''}
+                        >
+                            {mainCta.text}
+                        </Button>
+                    </ButtonWrapCentered>
+                )}
                 <ButtonWrap>
                     {customCta}
 
-                    {mainCta && (
+                    {mainCta && !mainCtaCentered && (
                         <Button
                             color={colors.white}
                             isTransparent={false}
@@ -106,6 +123,7 @@ const CustomSection = styled(Section)`
 
 const ColumnCta = styled(Column)`
     flex-shrink: 0;
+    display: flex;
 `;
 
 const CustomHeading = styled.h2`
@@ -121,6 +139,28 @@ const CustomHeading = styled.h2`
 
 const ButtonWrap = styled.div`
     display: inline-block;
+
+    @media (min-width: 768px) {
+        * + * {
+            margin-left: 15px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        a,
+        button {
+            display: block;
+            width: 220px;
+        }
+
+        * + * {
+            margin-top: 15px;
+        }
+    }
+`;
+
+const ButtonWrapCentered = styled.div`
+    align-self: center;
 
     @media (min-width: 768px) {
         * + * {
