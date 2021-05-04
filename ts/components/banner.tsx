@@ -17,7 +17,7 @@ interface Props {
     secondaryCta?: CTAButton;
     theme?: IThemeInterface;
     padding?: string;
-    mainCtaCentered?: boolean;
+    isMainCtaCentered?: boolean;
 }
 
 interface CTAButton {
@@ -32,8 +32,7 @@ interface BorderProps {
 }
 
 export const Banner: React.StatelessComponent<Props> = (props: Props) => {
-    const { heading, subline, mainCta, secondaryCta, customCta, padding, mainCtaCentered } = props;
-    console.log(padding);
+    const { heading, subline, mainCta, secondaryCta, customCta, padding, isMainCtaCentered } = props;
     return (
         <CustomSection
             bgColor={colors.brandDark}
@@ -56,7 +55,7 @@ export const Banner: React.StatelessComponent<Props> = (props: Props) => {
                 )}
             </Column>
             <ColumnCta>
-                {mainCta && mainCtaCentered && (
+                {mainCta && isMainCtaCentered && (
                     <ButtonWrapCentered>
                         <Button
                             color={colors.white}
@@ -72,7 +71,7 @@ export const Banner: React.StatelessComponent<Props> = (props: Props) => {
                 <ButtonWrap>
                     {customCta}
 
-                    {mainCta && !mainCtaCentered && (
+                    {mainCta && !isMainCtaCentered && (
                         <Button
                             color={colors.white}
                             isTransparent={false}

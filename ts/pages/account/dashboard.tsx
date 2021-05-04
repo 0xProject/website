@@ -450,7 +450,7 @@ export const Account: React.FC<AccountProps> = () => {
             <HeaderWrapper>
                 <BannerWrapper>
                     <Banner
-                        mainCtaCentered={true}
+                        isMainCtaCentered={true}
                         padding={'50px'}
                         heading={`Staking Notice`}
                         subline="The staking system is currently paused until an issue with the finalization logic is resolved. All user funds are safe. Thank you!"
