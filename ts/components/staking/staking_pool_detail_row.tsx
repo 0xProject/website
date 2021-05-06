@@ -8,7 +8,7 @@ import { utils } from 'ts/utils/utils';
 
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
-import { formatPercent } from 'ts/utils/format_number';
+import { formatPercent, formatEther } from 'ts/utils/format_number';
 
 const StyledStatLabel = styled.div`
     position: relative;
@@ -95,6 +95,10 @@ export const StakingPoolDetailRow: React.FC<IStakingPoolDetailRowProps> = ({
                         {Number(formatPercent(apy * 100 || 0, { decimals: 2 }).minimized).toFixed(2)}%
                     </StyledStatLabel>
                 </div>
+            </PoolPerformanceItem>
+            <PoolPerformanceItem>
+                <span>Fees generated</span>
+                <span>{formatEther(totalFeesGeneratedInEth || 0, { decimals: 2 }).formatted} ETH</span>
             </PoolPerformanceItem>
             <PoolPerformanceItem style={{ flex: 'none' }}>
                 <span>Saturation</span>
@@ -231,6 +235,7 @@ const PoolPerformanceItem = styled.div<{ cutOffRem?: number }>`
         border-left: 1px solid #d9d9d9;
         height: 47px;
         padding-left: 20px;
+        padding-right: 20px;
     }
 `;
 
