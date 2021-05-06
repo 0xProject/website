@@ -8,7 +8,7 @@ import { utils } from 'ts/utils/utils';
 
 import { CircleCheckMark } from 'ts/components/ui/circle_check_mark';
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
-import { formatPercent, formatEther } from 'ts/utils/format_number';
+import { formatEther, formatPercent } from 'ts/utils/format_number';
 
 const StyledStatLabel = styled.div`
     position: relative;
