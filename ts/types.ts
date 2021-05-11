@@ -1100,6 +1100,7 @@ export interface ZeroExInstantRequiredBaseConfig {
 export enum Network {
     Kovan = 42,
     Mainnet = 1,
+    Ropsten = 3,
 }
 
 export interface AffiliateInfo {
