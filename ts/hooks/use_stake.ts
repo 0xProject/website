@@ -69,7 +69,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
     const [contractAddresses, setContractAddresses] = useState<ContractAddresses | undefined>(undefined);
 
     const getPreviousEpochPoolFeesCollected = useCallback(
-        async (poolData: { poolId: string; amountBaseUnits?: BigNumber }[]) => {
+        async (poolData: Array<{ poolId: string; amountBaseUnits?: BigNumber }>) => {
             const currentEpoch = await stakingContract.currentEpoch().callAsync();
             const prevEpoch = currentEpoch.minus(1);
             const encodePoolId = (poolId: number) =>
@@ -77,7 +77,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
             const feesCollectedPreviousEpoch: { [key: string]: BigNumber } = {};
             _.each(poolData, async ({ poolId }) => {
                 const [feesCollected] = await stakingContract
-                    .poolStatsByEpoch(encodePoolId(parseInt(poolId)), prevEpoch)
+                    .poolStatsByEpoch(encodePoolId(parseInt(poolId, 10)), prevEpoch)
                     .callAsync();
                 feesCollectedPreviousEpoch[poolId] = feesCollected;
             });
