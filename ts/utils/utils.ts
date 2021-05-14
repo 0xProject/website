@@ -414,6 +414,8 @@ export const utils = {
             return configs.API_BASE_DEV_URL;
         } else if (networkId === Network.Kovan) {
             return configs.API_BASE_KOVAN_URL;
+        } else if (networkId === Network.Ropsten) {
+            return configs.API_BASE_ROPSTEN_URL;
         } else if (environments.isDogfood()) {
             return configs.API_BASE_STAGING_URL;
         }
