@@ -68,6 +68,25 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
     const [stakingProxyContract, setStakingProxyContract] = useState<StakingProxyContract | undefined>(undefined);
     const [contractAddresses, setContractAddresses] = useState<ContractAddresses | undefined>(undefined);
 
+    const getPreviousEpochPoolFeesCollected = useCallback(
+        async (poolData: { poolId: string; amountBaseUnits?: BigNumber }[]) => {
+            const currentEpoch = await stakingContract.currentEpoch().callAsync();
+            const prevEpoch = currentEpoch.minus(1);
+            const encodePoolId = (poolId: number) =>
+                `0x${new BigNumber(poolId).plus(1).toString(16).padStart(64, '0')}`;
+            const feesCollectedPreviousEpoch: { [key: string]: BigNumber } = {};
+            _.each(poolData, async ({ poolId }) => {
+                const [feesCollected] = await stakingContract
+                    .poolStatsByEpoch(encodePoolId(parseInt(poolId)), prevEpoch)
+                    .callAsync();
+                feesCollectedPreviousEpoch[poolId] = feesCollected;
+            });
+
+            return feesCollectedPreviousEpoch;
+        },
+        [stakingContract],
+    );
+
     useEffect(() => {
         const _ownerAddress = (providerState.account as AccountReady).address;
         const _contractAddresses = getContractAddressesForChainOrThrow(networkId);
@@ -123,25 +142,31 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
                 new BigNumber(0, 10),
             );
 
+            const feesCollectedPreviousEpoch = await getPreviousEpochPoolFeesCollected(normalizedPoolData);
+
             const data: string[] = [
                 stakingContract.stake(totalStakeBaseUnits).getABIEncodedTransactionData(),
-                ..._.flatMap(normalizedPoolData, ({ poolId, amountBaseUnits }) => [
-                    // TODO(kimpers): only call finalizePool if poolStatsByEpoch returns feesCollected > 0
-                    // https://github.com/0xProject/0x-monorepo/blob/51ca3109eb29e1b03199e98587403fc61f8f2716/contracts/staking/contracts/src/sys/MixinFinalizer.sol#L93-L107
-                    stakingContract.finalizePool(poolId).getABIEncodedTransactionData(),
-                    stakingContract
-                        .moveStake(
-                            { status: StakeStatus.Undelegated, poolId: constants.STAKING.NIL_POOL_ID }, // From undelegated
-                            { status: StakeStatus.Delegated, poolId }, // To the pool
-                            amountBaseUnits,
-                        )
-                        .getABIEncodedTransactionData(),
-                ]),
+                ..._.flatMap(normalizedPoolData, ({ poolId, amountBaseUnits }) => {
+                    const res = [
+                        stakingContract
+                            .moveStake(
+                                { status: StakeStatus.Undelegated, poolId: constants.STAKING.NIL_POOL_ID }, // From undelegated
+                                { status: StakeStatus.Delegated, poolId }, // To the pool
+                                amountBaseUnits,
+                            )
+                            .getABIEncodedTransactionData(),
+                    ];
+
+                    if (feesCollectedPreviousEpoch[poolId].toNumber() > 0) {
+                        res.unshift(stakingContract.finalizePool(poolId).getABIEncodedTransactionData());
+                    }
+                    return res;
+                }),
             ];
 
             await executeWithData(data);
         },
-        [executeWithData, loadingState, stakingContract],
+        [executeWithData, loadingState, stakingContract, getPreviousEpochPoolFeesCollected],
     );
 
     const unstakeFromPoolsAsync = useCallback(
@@ -217,14 +242,23 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
                 return;
             }
 
-            const data: string[] = _.flatMap(poolIds, (poolId) => [
-                stakingContract.finalizePool(poolId).getABIEncodedTransactionData(),
-                stakingContract.withdrawDelegatorRewards(poolId).getABIEncodedTransactionData(),
-            ]);
+            const feesCollectedPreviousEpoch = await getPreviousEpochPoolFeesCollected(
+                poolIds.map((poolId) => {
+                    return { poolId };
+                }),
+            );
+
+            const data: string[] = _.flatMap(poolIds, (poolId) => {
+                const res = [stakingContract.withdrawDelegatorRewards(poolId).getABIEncodedTransactionData()];
+                if (feesCollectedPreviousEpoch[poolId].toNumber() > 0) {
+                    res.unshift(stakingContract.finalizePool(poolId).getABIEncodedTransactionData());
+                }
+                return res;
+            });
 
             await executeWithData(data);
         },
-        [executeWithData, loadingState, stakingContract],
+        [executeWithData, loadingState, stakingContract, getPreviousEpochPoolFeesCollected],
     );
 
     const handleError = useCallback((err: Error) => {
