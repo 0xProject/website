@@ -91,7 +91,8 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         async (data: string[]) => {
             setLoadingState(TransactionLoadingState.WaitingForSignature);
 
-            const gasInfo = await backendClient.getGasInfoAsync();
+            const localStorageSpeed = localStorage.getItem('gas-speed');
+            const gasInfo = await backendClient.getGasInfoAsync(localStorageSpeed || 'standard');
 
             const txPromise = stakingProxyContract
                 .batchExecute(data)
@@ -194,7 +195,8 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
 
             setLoadingState(TransactionLoadingState.WaitingForSignature);
 
-            const gasInfo = await backendClient.getGasInfoAsync();
+            const localStorageSpeed = localStorage.getItem('gas-speed');
+            const gasInfo = await backendClient.getGasInfoAsync(localStorageSpeed || 'standard');
 
             const txPromise = stakingContract
                 .unstake(zrxAmountBaseUnits)

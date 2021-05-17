@@ -13,6 +13,7 @@ import { Hamburger } from 'ts/components/hamburger';
 import { Logo } from 'ts/components/logo';
 import { FlexWrap } from 'ts/components/newLayout';
 import { SubMenu } from 'ts/components/staking/header/sub_menu';
+import { GasTicker } from 'ts/components/staking/gas_ticker';
 import { Proposal, proposals as prodProposals, stagingProposals } from 'ts/pages/governance/data';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { State } from 'ts/redux/reducer';
