@@ -126,7 +126,14 @@ export const GasTicker: React.FC<{}> = ({}) => {
             setSelectedSpeed(localStorageSpeed as GasSpeed);
         }
 
-        getGasInfo().then(() => {});
+        getGasInfo().then(
+            () => {
+                return;
+            },
+            () => {
+                return;
+            },
+        );
         const interval = setInterval(getGasInfo, 10000);
         return () => clearInterval(interval);
     }, []);
