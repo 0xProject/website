@@ -2,8 +2,8 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { GasTickerIcon } from 'ts/components/staking/gas_ticker_icon';
-import { backendClient, GasInfoSelection } from 'ts/utils/backend_client';
 import { colors } from 'ts/style/colors';
+import { backendClient } from 'ts/utils/backend_client';
 
 const Container = styled.a`
     display: inline-flex;
@@ -104,7 +104,7 @@ export const GasTicker: React.FC<{}> = ({}) => {
 
     const toggleExpanded = () => setIsExpanded(!isExpanded);
 
-    const menuSetSpeed = async (speed: GasSpeed) => {
+    const menuSetSpeed = (speed: GasSpeed) => {
         setSelectedSpeed(speed);
         localStorage.setItem('gas-speed', speed);
     };
@@ -126,7 +126,7 @@ export const GasTicker: React.FC<{}> = ({}) => {
             setSelectedSpeed(localStorageSpeed as GasSpeed);
         }
 
-        getGasInfo();
+        getGasInfo().then(() => {});
         const interval = setInterval(getGasInfo, 10000);
         return () => clearInterval(interval);
     }, []);

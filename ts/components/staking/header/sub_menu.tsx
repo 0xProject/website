@@ -6,8 +6,8 @@ import { AccountReady, AccountState, ProviderState } from 'ts/types';
 
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
-import { colors } from 'ts/style/colors';
 import { GasTicker } from 'ts/components/staking/gas_ticker';
+import { colors } from 'ts/style/colors';
 import { utils } from 'ts/utils/utils';
 
 const SubMenuWrapper = styled.div`
