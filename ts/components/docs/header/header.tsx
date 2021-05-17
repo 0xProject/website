@@ -56,6 +56,11 @@ const navItems: INavItems[] = [
         text: 'Tools',
         url: WebsitePaths.DocsTools,
     },
+    {
+        id: 'contracts',
+        text: 'Contracts',
+        url: 'https://protocol.0x.org/en/latest/',
+    },
 ];
 
 export const Header: React.FC<IHeaderProps> = ({ isNavToggled, toggleMobileNav }) => {
