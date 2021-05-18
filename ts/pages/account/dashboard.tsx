@@ -925,7 +925,3 @@ const StyledDialogContent = styled(DialogContent)`
 const StyledParagraph = styled(Paragraph)`
     margin-top: 50px;
 `;
-
-const BannerWrapper = styled.div`
-    margin-bottom: 50px;
-`;
