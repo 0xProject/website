@@ -8,7 +8,6 @@ import { colors } from 'ts/style/colors';
 
 import { State } from 'ts/redux/reducer';
 
-import { Banner } from 'ts/components/banner';
 import { Button } from 'ts/components/button';
 import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 
@@ -110,18 +109,6 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
 
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
-            <Banner
-                isMainCtaCentered={true}
-                padding={'50px'}
-                heading={`Staking Notice`}
-                subline="The staking system is currently paused until an issue with the finalization logic is resolved. All user funds are safe. Thank you!"
-                mainCta={{
-                    text: 'Learn More',
-                    onClick: () => {
-                        window.location.href = 'https://gov.0x.org/t/0x-staking-system-epoch-67-finalization/882';
-                    },
-                }}
-            />
             <StakingHero
                 title={
                     <div>

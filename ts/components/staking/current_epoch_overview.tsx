@@ -71,8 +71,8 @@ export const CurrentEpochOverview: React.FC<CurrentEpochOverviewProps> = ({
                 <Explanation>ZRX Staked</Explanation>
             </OverviewItem>
             <OverviewItem>
-                <Metric>{stakingUtils.getTimeToEpochDate(new Date(1621357200 * 1000))}</Metric>
-                <Explanation>Epoch ends (est)</Explanation>
+                <Metric>{stakingUtils.getTimeToEpochDate(nextEpochStartDate)}</Metric>
+                <Explanation>Epoch ends</Explanation>
             </OverviewItem>
             <OverviewItem>
                 <Metric>{currentEpochRewards ? formatEther(currentEpochRewards, { decimals: 2 }).full : '-'}</Metric>
