@@ -16,7 +16,7 @@ const Container = styled.a`
 `;
 
 const ExpandedMenu = styled.div`
-    width: 131px;
+    width: 187px;
     height: auto;
     background: ${colors.backgroundLightGrey};
     border: 1px solid rgba(92, 92, 92, 0.15);
@@ -27,6 +27,7 @@ const ExpandedMenu = styled.div`
     justify-content: center;
     padding-bottom: 20px;
     cursor: pointer;
+    margin-left: -58px;
 
     &:after {
         content: '';
@@ -46,7 +47,7 @@ const ExpandedMenu = styled.div`
 const MenuItemWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    font-size: 20px;
+    font-size: 17px;
     color: #000000;
 
     @media (min-width: 1200px) {
@@ -63,9 +64,9 @@ const MenuItemWrapper = styled.div`
 `;
 
 const MenuItemText = styled.span`
-    font-size: 10px;
+    font-size: 16px;
     align-self: flex-end;
-    padding-bottom: 2px;
+    font-weight: lighter;
 `;
 
 const MenuItemGasValue = styled.span`
@@ -76,6 +77,12 @@ const GasTickerValue = styled.div`
     margin: 0 10px;
     width: 30px;
     text-align: center;
+    margin-top: 4px;
+    font-size: 18px;
+`;
+
+const Gwei = styled.span`
+    font-size: 12px;
 `;
 
 interface GasInfo {
@@ -84,7 +91,7 @@ interface GasInfo {
 
 const Arrow = ({ isExpanded }: { isExpanded?: boolean }) => (
     <svg
-        style={{ transform: isExpanded ? 'rotate(180deg)' : null }}
+        style={{ transform: isExpanded ? 'rotate(180deg)' : null, marginTop: '4px' }}
         width="17"
         height="9"
         viewBox="0 0 17 9"
@@ -94,6 +101,8 @@ const Arrow = ({ isExpanded }: { isExpanded?: boolean }) => (
         <path d="M16 1L8.5 8.5L1 1" stroke="black" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
+
+const GweiTag = () => <Gwei>gwei</Gwei>;
 
 type GasSpeed = 'standard' | 'fast' | 'instant';
 
@@ -156,24 +165,30 @@ export const GasTicker: React.FC<{}> = ({}) => {
                             menuSetSpeed('standard');
                         }}
                     >
-                        <MenuItemText>standard</MenuItemText>
-                        <MenuItemGasValue>{gasInfo.standard}</MenuItemGasValue>
+                        <MenuItemText>Standard</MenuItemText>
+                        <MenuItemGasValue>
+                            {gasInfo.standard} <GweiTag />
+                        </MenuItemGasValue>
                     </MenuItemWrapper>
                     <MenuItemWrapper
                         onClick={() => {
                             menuSetSpeed('fast');
                         }}
                     >
-                        <MenuItemText>fast</MenuItemText>
-                        <MenuItemGasValue>{gasInfo.fast}</MenuItemGasValue>
+                        <MenuItemText>Fast</MenuItemText>
+                        <MenuItemGasValue>
+                            {gasInfo.fast} <GweiTag />
+                        </MenuItemGasValue>
                     </MenuItemWrapper>
                     <MenuItemWrapper
                         onClick={() => {
                             menuSetSpeed('instant');
                         }}
                     >
-                        <MenuItemText>instant</MenuItemText>
-                        <MenuItemGasValue>{gasInfo.instant}</MenuItemGasValue>
+                        <MenuItemText>Instant</MenuItemText>
+                        <MenuItemGasValue>
+                            {gasInfo.instant} <GweiTag />
+                        </MenuItemGasValue>
                     </MenuItemWrapper>
                 </ExpandedMenu>
             )}
