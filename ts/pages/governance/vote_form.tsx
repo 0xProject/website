@@ -272,7 +272,8 @@ class VoteFormComponent extends React.Component<Props> {
 
             const { votePreference } = this.state;
 
-            const gasInfo = await backendClient.getGasInfoAsync();
+            const localStorageSpeed = localStorage.getItem('gas-speed');
+            const gasInfo = await backendClient.getGasInfoAsync(localStorageSpeed || 'standard');
 
             const txPromise = contract
                 .castVote(

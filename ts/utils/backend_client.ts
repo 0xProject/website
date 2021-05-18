@@ -30,12 +30,34 @@ const SUBSCRIBE_MAILCHIMP_NEWSLETTER_ENDPOINT = '/newsletter_subscriber/mailchim
 const TRADING_PAIRS_ENDPOINT = '/trading-pairs';
 const STAKING_POOLS_ENDPOINT = '/staking-pools';
 
+export interface GasInfoSelection {
+    fastest: number;
+    average: number;
+    fast: number;
+}
+
+const speedToSelectionMap: { [key: string]: string } = {
+    standard: 'average',
+    fast: 'fast',
+    instant: 'fastest',
+};
+
+const speedToWaitTimeMap: { [key: string]: string } = {
+    standard: 'avgWait',
+    fast: 'fastWait',
+    instant: 'fastestWait',
+};
+
 export const backendClient = {
-    async getGasInfoAsync(): Promise<GasInfo> {
+    async getGasInfoAsync(speed?: string): Promise<GasInfo> {
         // Median gas prices across 0x api gas oracles
         // Defaulting to average/standard gas. Using eth gas station for time estimates
         const gasApiPath = 'source/median?output=eth_gas_station';
         const gasInfoReq = fetchUtils.requestAsync(ZEROEX_GAS_API, gasApiPath);
+        const speedInput = speed || 'standard';
+
+        const gasSpeed = speedToSelectionMap[speedInput];
+        const waitTime = speedToWaitTimeMap[speedInput];
         const gasWaitTimesReq = fetchUtils.requestAsync(utils.getBackendBaseUrl(), ETH_GAS_STATION_ENDPOINT);
 
         const res: [WebsiteBackendGasInfo, WebsiteBackendGasWaitTimeInfo] = await Promise.all([
@@ -44,12 +66,24 @@ export const backendClient = {
         ]);
         const gasInfo = res[0];
         const gasWaitTimes = res[1];
-
         // Eth Gas Station result is gwei * 10
-        const gasPriceInGwei = new BigNumber(gasInfo.average / 10);
+        const gasPriceInGwei = new BigNumber((gasInfo as any)[gasSpeed] / 10);
         // Time is in minutes
-        const estimatedTimeMs = gasWaitTimes.avgWait * 60 * 1000; // Minutes to MS
+        const estimatedTimeMs = (gasWaitTimes as any)[waitTime] * 60 * 1000; // Minutes to MS
+
         return { gasPriceInWei: gasPriceInGwei.multipliedBy(constants.GWEI_IN_WEI), estimatedTimeMs };
+    },
+
+    async getGasInfoSelectionAsync(): Promise<GasInfoSelection> {
+        const gasApiPath = 'source/median?output=eth_gas_station';
+        const gasInfoReq = fetchUtils.requestAsync(ZEROEX_GAS_API, gasApiPath);
+
+        const gasInfo: WebsiteBackendGasInfo = await gasInfoReq;
+        return {
+            fast: gasInfo.fast / 10,
+            fastest: gasInfo.fastest / 10,
+            average: gasInfo.average / 10,
+        };
     },
 
     async getJobInfosAsync(): Promise<WebsiteBackendJobInfo[]> {

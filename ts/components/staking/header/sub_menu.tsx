@@ -6,6 +6,7 @@ import { AccountReady, AccountState, ProviderState } from 'ts/types';
 
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
+import { GasTicker } from 'ts/components/staking/gas_ticker';
 import { colors } from 'ts/style/colors';
 import { utils } from 'ts/utils/utils';
 
@@ -118,6 +119,10 @@ const MobileMenuWrapper = styled.div`
     }
 `;
 
+const GasTickerAndWalletWrapper = styled.div`
+    display: flex;
+`;
+
 const ConnectedWallet = ({ providerState, openConnectWalletDialogCB, logoutWalletCB }: ISubMenuProps) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
     const toggleExpanded = () => setIsExpanded(!isExpanded);
@@ -180,9 +185,15 @@ const ConnectButton = styled(Button).attrs({
 export const SubMenu = (props: ISubMenuProps) => {
     const isWalletConnected = props.providerState.account.state === AccountState.Ready;
 
-    if (isWalletConnected) {
-        return <ConnectedWallet {...props} />;
-    }
-
-    return <ConnectButton onClick={props.openConnectWalletDialogCB}>Connect your wallet</ConnectButton>;
+    const wallet = isWalletConnected ? (
+        <ConnectedWallet {...props} />
+    ) : (
+        <ConnectButton onClick={props.openConnectWalletDialogCB}>Connect your wallet</ConnectButton>
+    );
+    return (
+        <GasTickerAndWalletWrapper>
+            <GasTicker />
+            {wallet}
+        </GasTickerAndWalletWrapper>
+    );
 };
