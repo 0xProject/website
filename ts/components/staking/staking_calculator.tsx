@@ -190,8 +190,8 @@ export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoo
         setZrxInput(parseFloat(event.target.value || '0'));
     };
 
-    const handleClick = (e: React.ChangeEvent<HTMLDivElement>) => {
-        if (node.current.contains(e.target)) {
+    const handleClick = (ev: MouseEvent): any => {
+        if (node.current.contains(ev.target as Element)) {
             return;
         }
         onClose();
