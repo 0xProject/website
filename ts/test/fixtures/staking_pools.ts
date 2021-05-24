@@ -20,6 +20,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         sevenDayProtocolFeesGeneratedInEth: 2.005845,
         avgMemberRewardInEth: 0.25832910134562476,
         avgTotalRewardInEth: 5.1665820269124945,
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         currentEpochStats: {
             poolId: '6',
             operatorZrxStaked: 0,
@@ -78,6 +79,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             logoUrl: 'https://github.com/0xProject/0x-staking-pool-registry/raw/master/logos/rigo.png',
             websiteUrl: 'https://rigo.network',
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 1.1365402168344,
         avgMemberRewardInEth: 0.35605950106123124,
         avgTotalRewardInEth: 3.5605950106123125,
@@ -143,6 +145,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             logoUrl: 'https://github.com/0xProject/0x-staking-pool-registry/raw/master/logos/veridex.png',
             websiteUrl: 'https://dex.verisafe.io',
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 0.3088875,
         avgMemberRewardInEth: 0.25530841271377047,
         avgTotalRewardInEth: 1.2765420635688522,
@@ -225,6 +228,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             logoUrl: 'https://github.com/0xProject/0x-staking-pool-registry/raw/master/logos/prycto.png',
             websiteUrl: 'https://prycto.com/',
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 10.84036342873605,
         avgMemberRewardInEth: 0.6913244557952457,
         avgTotalRewardInEth: 13.826489115904913,
@@ -272,6 +276,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             blockNumber: 9068140,
             txHash: '0x781ada4c6f778c603a34f6c392bb3eea6e7fb174f58f88f936c6c8df94736f7e',
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         metaData: {
             name: 'DUST | pool',
             bio: 'cryptographic',
@@ -336,6 +341,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             blockNumber: 9060010,
             txHash: '0x02b56d5b07055c72bcb85e028db47952e02690651f6917b8855e48883bd898f8',
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         metaData: {
             isVerified: false,
         },
@@ -386,6 +392,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             blockNumber: 9057813,
             txHash: '0x2b18027dd582dd8c1299066a7577ff4c24cfe2b4df358973fc3700dc471a2b5d',
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         metaData: {
             isVerified: false,
         },
@@ -439,6 +446,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         metaData: {
             isVerified: false,
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 0,
         avgMemberRewardInEth: 0,
         avgTotalRewardInEth: 0,
@@ -495,6 +503,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         metaData: {
             isVerified: false,
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 0,
         avgMemberRewardInEth: 0,
         avgTotalRewardInEth: 0,
@@ -542,6 +551,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             blockNumber: 9068088,
             txHash: '0xe7c0f78627bdef8ba3803415a3840ac45f3e8657d7ca2218834e956b549dc964',
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         metaData: {
             isVerified: false,
         },
@@ -595,6 +605,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         metaData: {
             isVerified: false,
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 0,
         avgMemberRewardInEth: 0.27859171463444643,
         avgTotalRewardInEth: 0.506530390244448,
@@ -645,6 +656,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         metaData: {
             isVerified: false,
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 0,
         avgMemberRewardInEth: 0,
         avgTotalRewardInEth: 0,
@@ -695,6 +707,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         metaData: {
             isVerified: false,
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 0,
         avgMemberRewardInEth: 0,
         avgTotalRewardInEth: 0.04602176750966387,
@@ -745,6 +758,8 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         metaData: {
             isVerified: false,
         },
+
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 0,
         avgMemberRewardInEth: 0,
         avgTotalRewardInEth: 0,
@@ -795,6 +810,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         metaData: {
             isVerified: false,
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 0.0091063921539,
         avgMemberRewardInEth: 0.016456376695559195,
         avgTotalRewardInEth: 0.19356438109445123,
@@ -853,6 +869,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         metaData: {
             isVerified: false,
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 0,
         avgMemberRewardInEth: 0,
         avgTotalRewardInEth: 0,
@@ -900,6 +917,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             blockNumber: 9364381,
             txHash: '0x6312003e750c96d6115b9776f08ed751d520662dad1e40ad613004181dd9b2d3',
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         metaData: {
             isVerified: false,
         },
@@ -956,6 +974,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
             blockNumber: 9175801,
             txHash: '0x5fcef039064b85eae50daba24fe545c6cd4ad2a20ea473009180e2fdb474ef1c',
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         metaData: {
             isVerified: false,
         },
@@ -1017,6 +1036,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         metaData: {
             isVerified: false,
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 0,
         avgMemberRewardInEth: 0,
         avgTotalRewardInEth: 0,
@@ -1070,6 +1090,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         sevenDayProtocolFeesGeneratedInEth: 0,
         avgMemberRewardInEth: 0,
         avgTotalRewardInEth: 0,
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         currentEpochStats: {
             poolId: '19',
             operatorZrxStaked: 0,
@@ -1117,6 +1138,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         metaData: {
             isVerified: false,
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 0,
         avgMemberRewardInEth: 0,
         avgTotalRewardInEth: 0,
@@ -1167,6 +1189,7 @@ const SAMPLE_POOLS: PoolWithStats[] = [
         metaData: {
             isVerified: false,
         },
+        avgMemberRewardEthPerZrx: 5.1665820269124945,
         sevenDayProtocolFeesGeneratedInEth: 0.07071645,
         avgMemberRewardInEth: 0.037039155552249826,
         avgTotalRewardInEth: 0.18519577776124913,
