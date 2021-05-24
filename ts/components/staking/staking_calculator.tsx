@@ -9,6 +9,7 @@ import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
+import { Loading } from 'ts/components/portal/loading';
 
 import { Heading } from 'ts/components/text';
 import { Select, SelectItemConfig } from 'ts/components/ui/select';
@@ -46,6 +47,12 @@ const Container = styled.div`
 const StakingPoolContainer = styled.div`
     margin: 1rem 0;
 `;
+const LoadingContainer = styled.div`
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+`;
 
 const StakingPoolLabel = styled.div`
     margin-bottom: 0.5rem;
@@ -68,6 +75,7 @@ const YourStakeBalance = styled.div`
     font-size: 14px;
     display: flex;
     align-items: flex-end;
+    cursor: pointer;
 `;
 
 const RewardRow = styled.div`
@@ -172,6 +180,8 @@ export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoo
     const [selectedStakingPool, setSelectedStakingPool] = React.useState<string | undefined>(defaultPoolId);
     const [zrxInput, setZrxInput] = React.useState(0);
 
+    const node = React.useRef<HTMLDivElement>();
+
     const onStakingPoolSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedStakingPool(event.target.value);
     };
@@ -179,6 +189,21 @@ export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoo
     const onZRXInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setZrxInput(parseFloat(event.target.value || '0'));
     };
+
+    const handleClick = (e: React.ChangeEvent<HTMLDivElement>) => {
+        if (node.current.contains(e.target)) {
+            return;
+        }
+        onClose();
+    };
+
+    React.useEffect(() => {
+        document.addEventListener('mousedown', handleClick);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClick);
+        };
+    }, []);
 
     const [userZRXBalance, setZRXBalance] = React.useState<number>();
 
@@ -248,12 +273,17 @@ export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoo
 
     return (
         <>
-            <Container>
+            <Container ref={node}>
+                <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onClose}>
+                    <Icon name="close-modal" />
+                </ButtonClose>
+                {!stakingPools && (
+                    <LoadingContainer>
+                        <Loading isLoading={true} content={null} />
+                    </LoadingContainer>
+                )}
                 {stakingPools && selectedStakingPool && (
                     <>
-                        <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onClose}>
-                            <Icon name="close-modal" />
-                        </ButtonClose>
                         <HeadingWrapper>
                             <Heading fontWeight="400" asElement="h3" marginBottom="0">
                                 Reward Simulator
@@ -273,7 +303,15 @@ export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoo
                         <YourStakeContainer>
                             <YourStakeLabels>
                                 <YourStakeTitle>Your Stake</YourStakeTitle>
-                                <YourStakeBalance>Balance: {userZRXBalance || '--'} ZRX</YourStakeBalance>
+                                <YourStakeBalance
+                                    onClick={() => {
+                                        if (userZRXBalance) {
+                                            setZrxInput(userZRXBalance);
+                                        }
+                                    }}
+                                >
+                                    Balance: {userZRXBalance || '--'} ZRX
+                                </YourStakeBalance>
                             </YourStakeLabels>
                             <ZRXInput value={zrxInput.toString()} onChange={onZRXInputChange} />
                         </YourStakeContainer>
