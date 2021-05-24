@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { Web3Wrapper } from '@0x/web3-wrapper';
 import { BigNumber } from '@0x/utils';
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import * as React from 'react';
 
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
