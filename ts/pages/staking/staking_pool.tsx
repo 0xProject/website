@@ -10,9 +10,12 @@ import { Loading } from 'ts/components/portal/loading';
 import { DashboardHero } from 'ts/components/staking/dashboard_hero';
 import { HistoryChart } from 'ts/components/staking/history_chart';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
+import { StakingCalculator } from 'ts/components/staking/staking_calculator';
 import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 
 import { useAPIClient } from 'ts/hooks/use_api_client';
+
+import { colors } from 'ts/style/colors';
 
 import { State } from 'ts/redux/reducer';
 import { EpochPoolStats, PoolEpochRewards, PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
@@ -59,6 +62,22 @@ const TooltipLabel = styled.span`
     font-weight: 600;
 `;
 
+const StakingCalculatorCTA = styled.div`
+    padding: 2rem;
+    border: 1px solid ${colors.textDarkSecondary};
+    text-align: center;
+    margin-bottom: 60px;
+`;
+
+const StakingCalculatorLink = styled.a`
+    color: ${colors.brandLight};
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`;
+
 export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (props) => {
     const { poolId } = useParams();
 
@@ -68,6 +87,8 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
     const [epochRewards, setEpochRewards] = useState<PoolEpochRewards[] | undefined>(undefined);
     const [stakingPoolAPY3Epochs, setStakingPoolAPY3Epochs] = useState<number | undefined>(undefined);
     const [stakingPoolAPY12Epochs, setStakingPoolAPY12Epochs] = useState<number | undefined>(undefined);
+
+    const [showStakingCalculator, setShowStakingCalculator] = useState(false);
 
     useEffect(() => {
         const calcShortTermAndLongTermAPY = (rewards: PoolEpochRewards[]) => {
@@ -141,6 +162,15 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
 
     return (
         <StakingPageLayout isHome={true} title="Staking pool">
+            {stakingPool && showStakingCalculator && (
+                <StakingCalculator
+                    defaultPoolId={stakingPool.poolId}
+                    rewardsShared={(1 - nextEpoch.operatorShare) * 100}
+                    onClose={() => {
+                        setShowStakingCalculator(false);
+                    }}
+                />
+            )}
             {stakingPool && (
                 <DashboardHero
                     title={stakingUtils.getPoolDisplayName(stakingPool)}
@@ -297,6 +327,16 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
             </ActionsWrapper> */}
             {historicalEpochs && (
                 <Container>
+                    <StakingCalculatorCTA>
+                        Calculate your potential rewards with the{' '}
+                        <StakingCalculatorLink
+                            onClick={() => {
+                                setShowStakingCalculator(true);
+                            }}
+                        >
+                            Staking Calculator
+                        </StakingCalculatorLink>
+                    </StakingCalculatorCTA>
                     <GraphHeading>Historical Details</GraphHeading>
                     <HistoryChart
                         totalRewards={historicalEpochs.map((e) => e.totalRewardsPaidInEth)}
