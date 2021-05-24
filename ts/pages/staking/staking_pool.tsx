@@ -88,7 +88,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
     const [stakingPoolAPY3Epochs, setStakingPoolAPY3Epochs] = useState<number | undefined>(undefined);
     const [stakingPoolAPY12Epochs, setStakingPoolAPY12Epochs] = useState<number | undefined>(undefined);
 
-    const [showStakingCalculator, setShowStakingCalculator] = useState(false);
+    const [hasStakingCalculator, setShowStakingCalculator] = useState(false);
 
     useEffect(() => {
         const calcShortTermAndLongTermAPY = (rewards: PoolEpochRewards[]) => {
@@ -162,7 +162,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
 
     return (
         <StakingPageLayout isHome={true} title="Staking pool">
-            {stakingPool && showStakingCalculator && (
+            {stakingPool && hasStakingCalculator && (
                 <StakingCalculator
                     defaultPoolId={stakingPool.poolId}
                     rewardsShared={(1 - nextEpoch.operatorShare) * 100}

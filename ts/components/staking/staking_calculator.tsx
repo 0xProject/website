@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import { BigNumber } from '@0x/utils';
 
-import styled from 'styled-components';
 import { useSelector } from 'react-redux';
+import styled from 'styled-components';
 import { State } from 'ts/redux/reducer';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
@@ -16,7 +16,7 @@ import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { colors } from 'ts/style/colors';
 
-import { PoolWithStats, AccountReady } from 'ts/types';
+import { AccountReady, PoolWithStats } from 'ts/types';
 import { constants } from 'ts/utils/constants';
 import { formatZrx } from 'ts/utils/format_number';
 
@@ -219,7 +219,10 @@ export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoo
         });
     }
 
-    let poolReward, stakersReward, yourReward, yearlyReturn;
+    let poolReward;
+    let stakersReward;
+    let yourReward;
+    let yearlyReturn;
     const formatRewards = (num: number) => {
         if (num === 0) {
             return 0;
@@ -235,7 +238,6 @@ export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoo
     };
     if (stakingPools && selectedStakingPool) {
         const selectedPool = stakingPools.find((pool) => pool.poolId === selectedStakingPool);
-        console.log(selectedPool);
         poolReward = selectedPool.avgTotalRewardInEth.toFixed(2);
         stakersReward = selectedPool.avgMemberRewardInEth.toFixed(2);
         yourReward = selectedPool.avgMemberRewardEthPerZrx * zrxInput;
