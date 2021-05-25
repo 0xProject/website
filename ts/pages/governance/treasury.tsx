@@ -234,7 +234,7 @@ export const Treasury: React.FC<{}> = () => {
             <RegisterBanner />
             <DocumentTitle {...documentConstants.VOTE} />
             <Section maxWidth="1170px" isFlex={true}>
-                <Column width="55%" maxWidth="560px">
+                <Column width="55%" maxWidth="650px">
                     <Countdown startDate={proposal.startDate} endDate={proposal.endDate} />
                     <Tag>Treasury</Tag>
                     <Heading size="medium" marginBottom="0px">
@@ -363,16 +363,16 @@ const LoaderWrapper = styled.div`
 const StyledMarkdown = styled.div`
     & a {
         color: ${() => colors.brandLight};
-        font-weight: bold;
+        font-weight: normal;
     }
     & h2 {
         font-size: 28px;
         font-weight: 400;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
 
     & p {
-        margin-bottom: 30px;
+        margin-bottom: 40px;
     }
 
     & ul {
@@ -419,6 +419,7 @@ const Tag = styled.div`
 
 const StyledText = styled(Text)`
     margin-bottom: 36px;
+    margin-top: 10px;
 `;
 
 const ProposalHistory = styled.div`
