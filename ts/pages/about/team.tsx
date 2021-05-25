@@ -203,6 +203,11 @@ const team: TeamMember[] = [
         name: 'Alex Kim',
         title: 'Engineer',
     },
+    {
+        imageUrl: '/images/team/kevin.jpg',
+        name: 'Kevin Li',
+        title: 'Engineer',
+    },
 ];
 
 const advisors: TeamMember[] = [
