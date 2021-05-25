@@ -365,6 +365,36 @@ const StyledMarkdown = styled.div`
         color: ${() => colors.brandLight};
         font-weight: bold;
     }
+    & h2 {
+        font-size: 28px;
+        font-weight: 400;
+        margin-bottom: 30px;
+    }
+
+    & p {
+        margin-bottom: 30px;
+    }
+
+    & ul {
+        margin: 1rem 0;
+        list-style-type: circle;
+        padding-left: 2rem;
+    }
+
+    & td {
+        text-align: right;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid ${colors.border};
+        text-align: right;
+        padding: 0.5rem;
+    }
+    & table {
+        margin-bottom: 30px;
+    }
 `;
 
 const VoteButton = styled(Button)`
