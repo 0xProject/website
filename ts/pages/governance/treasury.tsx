@@ -376,7 +376,7 @@ const StyledMarkdown = styled.div`
     }
 
     & ul {
-        margin: 1rem 0;
+        margin-bottom: 30px;
         list-style-type: circle;
         padding-left: 2rem;
     }
