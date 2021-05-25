@@ -483,6 +483,45 @@ export const proposals: Proposals = {
             ],
         },
     },
+    88: {
+        zeipId: 88,
+        title: 'UniswapV3 optimized settlement',
+        summary: [
+            `This ZEIP proposes to optimize the the integration of Uniswap V3 during settlement, lowering the cost for a significant number of trades.`,
+            `As Uniswap V3 is gaining significant volume, it is optimal for our users to access this liquidity source for the lowest cost possible.`,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/88',
+        voteStartDate: moment(1621983600, 'X'),
+        voteEndDate: moment(1622242800, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `This feature will significantly reduce the cost for using the Uniswap V3 liquidity source for all users and integrations of 0xAPI`,
+            ],
+            rating: 3,
+            links: [
+                {
+                    text: 'Features specifications',
+                    url: 'https://protocol.0x.org/',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Contracts were thoroughly reviewed internally, and spot-checked by Consensys Diligence. No vulnerabilities were found.`,
+                `However, these changes do modify a risk-sensitive part of the codebase: the execution within a privleged environment.`,
+                `0x V4 architecture comes with the ability to modify or rollback specific features, without halting the entire pipeline of smart contracts. This means that if a vulnerability is found (0x Labs offers generous bug bounties), it is possible to rollback the functionality that exposes the risk.`,
+            ],
+            rating: 2,
+            links: [
+                {
+                    text: '0x v4 Bug Bounty',
+                    url: 'https://blog.0xproject.com/0x-protocol-v4-bug-bounty-fd0c1942b9a',
+                },
+            ],
+        },
+    },
 };
 
 export const stagingProposals: Proposals = {
@@ -503,6 +542,9 @@ export const stagingProposals: Proposals = {
         title: 'MultiplexFeature, BatchFillNativeOrdersFeature',
         voteStartDate: moment(1614790800, 'X'),
         voteEndDate: moment(1615050000, 'X'),
+    },
+    88: {
+        ...proposals[88],
     },
 };
 
