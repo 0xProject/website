@@ -274,20 +274,20 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                         <ToggleRow>
                             <StyledText fontColor={colors.textDarkSecondary}>{getFilterName(filter)}</StyledText>
                             <Arrow isExpanded={isExpanded} />
+                            {isExpanded && (
+                                <ExpandedMenu>
+                                    <MenuItem onClick={() => applyFilter('all')}>
+                                        <StyledText>Showing All</StyledText>
+                                    </MenuItem>
+                                    <MenuItem onClick={() => applyFilter('zeip')}>
+                                        <StyledText>ZEIP</StyledText>
+                                    </MenuItem>
+                                    <MenuItem onClick={() => applyFilter('treasury')}>
+                                        <StyledText>Treasury</StyledText>
+                                    </MenuItem>
+                                </ExpandedMenu>
+                            )}
                         </ToggleRow>
-                        {isExpanded && (
-                            <ExpandedMenu>
-                                <MenuItem onClick={() => applyFilter('all')}>
-                                    <StyledText>Showing All</StyledText>
-                                </MenuItem>
-                                <MenuItem onClick={() => applyFilter('zeip')}>
-                                    <StyledText>ZEIP</StyledText>
-                                </MenuItem>
-                                <MenuItem onClick={() => applyFilter('treasury')}>
-                                    <StyledText>Treasury</StyledText>
-                                </MenuItem>
-                            </ExpandedMenu>
-                        )}
                     </Wrapper>
                     {showZEIP.includes(filter) &&
                         ZEIP_PROPOSALS.map((proposal) => {
@@ -380,8 +380,7 @@ const ExpandedMenu = styled.div`
     flex-direction: column;
     width: 180px;
     padding: 30px;
-    right: 40px;
-
+    top: 30px;
     @media (max-width: 768px) {
         width: 100%;
         left: 0;
@@ -394,6 +393,8 @@ const ToggleRow = styled.div`
     align-items: center;
     user-select: none;
     cursor: pointer;
+    position: relative;
+    padding-right: 1.65rem;
 
     * + * {
         margin-left: 8px;
