@@ -170,10 +170,9 @@ export interface InputProps {
 
 interface StakingCalculatorProps {
     defaultPoolId: string;
-    rewardsShared: number;
     onClose: () => void;
 }
-export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoolId, rewardsShared, onClose }) => {
+export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoolId, onClose }) => {
     const networkId = useSelector((state: State) => state.networkId);
     const apiClient = useAPIClient(networkId);
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
@@ -248,6 +247,7 @@ export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoo
     let stakersReward;
     let yourReward;
     let yearlyReturn;
+    let rewardsShared;
     const formatRewards = (num: number) => {
         if (num === 0) {
             return 0;
@@ -263,6 +263,7 @@ export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoo
     };
     if (stakingPools && selectedStakingPool) {
         const selectedPool = stakingPools.find((pool) => pool.poolId === selectedStakingPool);
+        rewardsShared = (1 - selectedPool.nextEpochStats.operatorShare) * 100;
         poolReward = selectedPool.avgTotalRewardInEth.toFixed(2);
         stakersReward = selectedPool.avgMemberRewardInEth.toFixed(2);
         yourReward = selectedPool.avgMemberRewardEthPerZrx * zrxInput;
@@ -318,14 +319,14 @@ export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoo
                         <Results>
                             <ResultsLabel>Estimated Weekly Rewards</ResultsLabel>
                             <PoolReward>
-                                Pool Reward <PoolRewardResults>{poolReward} ETH</PoolRewardResults>
+                                Average Pool Reward <PoolRewardResults>{poolReward} ETH</PoolRewardResults>
                             </PoolReward>
                             <StakersReward>
                                 Staker's Reward ({Math.round(rewardsShared)}%)
                                 <StakersRewardResults>{stakersReward} ETH</StakersRewardResults>
                             </StakersReward>
                             <YourReward>
-                                Your Reward <YourRewardResults>{yourReward} ETH</YourRewardResults>
+                                Weekly Return <YourRewardResults>{yourReward} ETH</YourRewardResults>
                             </YourReward>
                             <YearlyReturn>
                                 Yearly Return <YearlyReturnResults>{yearlyReturn} ETH</YearlyReturnResults>

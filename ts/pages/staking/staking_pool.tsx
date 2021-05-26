@@ -165,7 +165,6 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
             {stakingPool && hasStakingCalculator && (
                 <StakingCalculator
                     defaultPoolId={stakingPool.poolId}
-                    rewardsShared={(1 - nextEpoch.operatorShare) * 100}
                     onClose={() => {
                         setShowStakingCalculator(false);
                     }}
