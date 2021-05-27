@@ -39,6 +39,8 @@ interface FormProps {
     isSubmitting?: boolean;
 }
 
+const encodePoolId = (poolId: number) => `0x${new BigNumber(poolId).toString(16).padStart(64, '0')}`;
+
 export const ModalVote: React.FC<ModalVoteProps> = ({ zeipId, isOpen, onDismiss, onVoted: onVoteInfoReceived }) => {
     const providerState = useSelector((state: State) => state.providerState);
     const networkId = useSelector((state: State) => state.networkId);
@@ -212,7 +214,6 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({
     const [isFetchingVotingPowerData, setIsFetchingVotingPowerData] = React.useState<boolean>(false);
     const [operatedPools, setOperatedPools] = React.useState<PoolWithStats[]>();
     const apiClient = useAPIClient(networkId);
-
     React.useEffect(() => {
         const fetchVotingPower = async () => {
             const poolsResponse = await apiClient.getStakingPoolsAsync();
@@ -220,7 +221,10 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({
             setOperatedPools(userOperatedPools);
 
             const votingPower = await contract
-                .getVotingPower(account.address, userOperatedPools ? userOperatedPools.map((pool) => pool.poolId) : [])
+                .getVotingPower(
+                    account.address,
+                    userOperatedPools ? userOperatedPools.map((pool) => encodePoolId(parseInt(pool.poolId, 10))) : [],
+                )
                 .callAsync();
             const votingPowerBigNumber = new BigNumber(votingPower.toNumber());
             setCurrentVotingPower(votingPowerBigNumber);
