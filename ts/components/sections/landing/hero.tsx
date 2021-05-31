@@ -1,6 +1,6 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { animated, useTransition } from 'react-spring-latest';
+import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { Hero } from 'ts/components/hero';
