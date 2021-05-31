@@ -12,6 +12,30 @@ import { WebsitePaths } from 'ts/types';
 
 export interface SectionlandingHeroProps {}
 
+const AnimatedTitleWrap = styled.div`
+    height: 90px;
+    overflow: hidden;
+    display: inline-block;
+    position: absolute;
+    width: 80%;
+    padding-left: 1rem;
+
+    @media (max-width: 768px) {
+        height: 50px;
+        display: inline;
+        position: relative;
+        width: auto;
+    }
+
+    @media (max-width: 650px) {
+        height: 50px;
+        display: flex;
+        position: relative;
+        justify-content: center;
+        width: 100%;
+    }
+`;
+
 const AnimatedHeroTitle: React.FC<{}> = () => {
     const [index, set] = React.useState(0);
 
@@ -47,24 +71,15 @@ const AnimatedHeroTitle: React.FC<{}> = () => {
     }, []);
 
     return (
-        <span>
+        <div>
             The liquidity endpoint for DeFi on
-            <div
-                style={{
-                    height: '90px',
-                    overflow: 'hidden',
-                    display: 'inline-block',
-                    position: 'absolute',
-                    width: '80%',
-                }}
-            >
+            <AnimatedTitleWrap>
                 {transitions((style, i) => {
                     return (
                         <animated.span
                             style={{
                                 ...style,
                                 position: 'absolute',
-                                marginLeft: '1rem',
                                 color: slides[i].color,
                             }}
                         >
@@ -72,8 +87,8 @@ const AnimatedHeroTitle: React.FC<{}> = () => {
                         </animated.span>
                     );
                 })}
-            </div>
-        </span>
+            </AnimatedTitleWrap>
+        </div>
     );
 };
 
