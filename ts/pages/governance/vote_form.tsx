@@ -39,6 +39,8 @@ export interface VoteInfo {
     voteValue: VoteValue;
 }
 
+const encodePoolId = (poolId: number) => `0x${new BigNumber(poolId).toString(16).padStart(64, '0')}`;
+
 interface Props {
     onDismiss?: () => void;
     onError?: (errorMessage: string) => void;
@@ -279,7 +281,7 @@ class VoteFormComponent extends React.Component<Props> {
                 .castVote(
                     proposalIdBigNumber,
                     votePreference === VoteValue.Yes,
-                    operatedPools ? operatedPools.map((pool) => pool.poolId) : [],
+                    operatedPools ? operatedPools.map((pool) => encodePoolId(parseInt(pool.poolId, 10))) : [],
                 )
                 .awaitTransactionSuccessAsync({ from: selectedAddress, gasPrice: gasInfo.gasPriceInWei });
             const txHash = await txPromise.txHashPromise;
