@@ -250,7 +250,7 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({
                 logUtils.warn(err);
                 errorReporter.report(err);
             });
-    }, [account.address, apiClient, contract]);
+    }, [account.address, apiClient]);
 
     const onToggleConnectWalletDialog = React.useCallback(
         (open: boolean) => {
@@ -345,7 +345,7 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({
                 isOpen={isOpen}
                 onDismiss={onModalDismiss}
             >
-                <StyledDialogContent>
+                <StyledDialogContent aria-label={'modal-vote'}>
                     {!isErrorModalOpen && _renderVoteFormContent()}
                     <Confirmation isSuccessful={isWaitingForConfirmation && !isSuccessful}>
                         <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
@@ -444,7 +444,8 @@ const ButtonWrap = styled.div`
     }
 `;
 
-const SpinnerContainer = styled.div`
+const SpinnerContainer = styled.span`
+    display: block;
     height: 100px;
     margin-bottom: 20px;
 `;
