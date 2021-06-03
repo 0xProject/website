@@ -226,15 +226,6 @@ export const ModalTreasuryVote: React.FC<ModalVoteProps> = ({
                     userOperatedPools ? userOperatedPools.map((pool) => encodePoolId(parseInt(pool.poolId, 10))) : [],
                 )
                 .callAsync();
-            const uop = userOperatedPools
-                ? userOperatedPools.map((pool) => encodePoolId(parseInt(pool.poolId, 10)))
-                : [];
-            // tslint:disable-next-line
-            console.log(
-                `fetched voting power | account: ${
-                    account.address
-                } | uop: ${uop} | voting power: ${votingPower.toNumber()}`,
-            );
             const votingPowerBigNumber = new BigNumber(votingPower.toNumber());
             setCurrentVotingPower(votingPowerBigNumber);
         };
