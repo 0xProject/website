@@ -39,49 +39,14 @@ const team: TeamMember[] = [
         title: 'Designer',
     },
     {
-        imageUrl: '/images/team/brandonm.jpg',
-        name: 'Brandon Millman',
-        title: 'Engineering Manager',
-    },
-    {
         imageUrl: '/images/team/jacobe.jpg',
         name: 'Jacob Evans',
         title: 'Senior Engineer',
     },
     {
-        imageUrl: '/images/team/greg.jpg',
-        name: 'Greg Hysen',
-        title: 'Engineering Manager, Protocol',
-    },
-    {
-        imageUrl: '/images/team/blake.jpg',
-        name: 'Blake Henderson',
-        title: 'Product Manager',
-    },
-    {
-        imageUrl: '/images/team/zack.jpg',
-        name: 'Zack Skelly',
-        title: 'Head of Talent',
-    },
-    {
         imageUrl: '/images/team/remcoB.jpg',
         name: 'Remco Bloemen',
         title: 'Technical Fellow',
-    },
-    {
-        imageUrl: '/images/team/chrisk.jpg',
-        name: 'Chris Kalani',
-        title: 'GM, Matcha',
-    },
-    {
-        imageUrl: '/images/team/peterz.jpg',
-        name: 'Peter Zeitz',
-        title: 'Research Fellow',
-    },
-    {
-        imageUrl: '/images/team/clayr.jpg',
-        name: 'Clay Robbins',
-        title: 'Ecosystem Development Lead',
     },
     {
         imageUrl: '/images/team/xiannyn.jpg',
@@ -174,11 +139,6 @@ const team: TeamMember[] = [
         title: 'Data Scientist',
     },
     {
-        imageUrl: '/images/team/davids.jpg',
-        name: 'David Sun',
-        title: 'Engineer',
-    },
-    {
         imageUrl: '/images/team/jadet.jpg',
         name: 'Jade Tran',
         title: 'Engineer',
@@ -207,6 +167,26 @@ const team: TeamMember[] = [
         imageUrl: '/images/team/kevin.jpg',
         name: 'Kevin Li',
         title: 'Engineer',
+    },
+    {
+        imageUrl: '/images/team/jorgep.png',
+        name: 'Jorge Perez',
+        title: 'Data Engineer',
+    },
+    {
+        imageUrl: '/images/team/davidw.jpg',
+        name: 'David Walsh',
+        title: 'Engineer',
+    },
+    {
+        imageUrl: '/images/team/daniala.jpg',
+        name: 'Danial Abbasi',
+        title: 'Research',
+    },
+    {
+        imageUrl: '/images/team/nickh.jpg',
+        name: 'Nick Hollins',
+        title: 'Creative & Content',
     },
 ];
 
