@@ -66,9 +66,9 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         if (myStakingPools) {
             filteredStakingPools = stakingPools.filter((pool) => {
                 const foundPool = myStakingPools.find((delPool) => {
-                    return pool.poolId !== delPool.poolId;
+                    return pool.poolId === delPool.poolId;
                 });
-                return foundPool;
+                return !foundPool;
             });
         }
         const stakngPoolsWithAPY = filteredStakingPools.map((pool) => {
@@ -93,10 +93,12 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         }
 
         const fetchDelegatorDataAsync = async () => {
-            const delegatorResponse = await apiClient.getDelegatorAsync(account.address);
+            // TODO: future would be nice to show people upcoming pools that will be active next epoch
+            const delegatorResponse = await apiClient.getDelegatorAsync('0xd6a6027d168ce1f8036d8d01c2918f8cb610271b');
             const myPools = stakingPools.filter((pool) => {
                 const foundPool = delegatorResponse.forCurrentEpoch.poolData.find((delPool) => {
-                    return pool.poolId === delPool.poolId;
+                    console.log(delPool);
+                    return pool.poolId === delPool.poolId && delPool.zrxStaked > 0;
                 });
                 return foundPool;
             });
@@ -182,7 +184,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                     numMarketMakers={stakingPools && stakingPools.length}
                 />
             </SectionWrapper> */}
-            {myStakingPools && (
+            {myStakingPools && myStakingPools.length > 0 && (
                 <SectionWrapper>
                     <HeadingRow>
                         <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
