@@ -46,6 +46,7 @@ const HeadingRow = styled.div`
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
+    const [allStakingPools, setAllStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
     const [myStakingPools, setMyStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
 
     const networkId = useSelector((state: State) => state.networkId);
@@ -57,6 +58,20 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const [poolSortingParam, setPoolSortingParam] = React.useState<PoolsListSortingParameter>(
         PoolsListSortingParameter.Apy,
     );
+
+    const calcAPR = (pool: PoolWithStats) => {
+        const rewards = pool.allTimeStakedAmounts;
+        const average = (arr: number[]) => arr.reduce((sum, el) => sum + el, 0) / arr.length;
+
+        const epochRewardAPYs = rewards.map((reward) => {
+            return reward.apy;
+        });
+
+        const rewardsToAverageLongTerm =
+            epochRewardAPYs.length > 12 ? epochRewardAPYs.slice(Math.max(rewards.length - 12, 0)) : epochRewardAPYs;
+
+        return { ...pool, apy: average(rewardsToAverageLongTerm) };
+    };
 
     const sortedStakingPools: PoolWithStats[] | undefined = React.useMemo(() => {
         if (!stakingPools) {
@@ -71,31 +86,28 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                 return !foundPool;
             });
         }
-        const stakngPoolsWithAPY = filteredStakingPools.map((pool) => {
-            const rewards = pool.allTimeStakedAmounts;
-            const average = (arr: number[]) => arr.reduce((sum, el) => sum + el, 0) / arr.length;
-
-            const epochRewardAPYs = rewards.map((reward) => {
-                return reward.apy;
-            });
-
-            const rewardsToAverageLongTerm =
-                epochRewardAPYs.length > 12 ? epochRewardAPYs.slice(Math.max(rewards.length - 12, 0)) : epochRewardAPYs;
-
-            return { ...pool, apy: average(rewardsToAverageLongTerm) };
-        });
+        const stakngPoolsWithAPY = filteredStakingPools.map(calcAPR);
         return [...stakngPoolsWithAPY].sort(sortFnMapping[poolSortingParam]);
     }, [poolSortingParam, stakingPools, myStakingPools]);
 
+    const mySortedStakingPools: PoolWithStats[] | undefined = React.useMemo(() => {
+        if (!myStakingPools) {
+            return undefined;
+        }
+
+        const stakngPoolsWithAPY = myStakingPools.map(calcAPR);
+        return [...stakngPoolsWithAPY].sort(sortFnMapping[poolSortingParam]);
+    }, [poolSortingParam, myStakingPools]);
+
     React.useEffect(() => {
-        if (!account.address || !stakingPools) {
+        if (!account.address || !allStakingPools) {
             return;
         }
 
         const fetchDelegatorDataAsync = async () => {
             // TODO: future would be nice to show people upcoming pools that will be active next epoch
             const delegatorResponse = await apiClient.getDelegatorAsync(account.address);
-            const myPools = stakingPools.filter((pool) => {
+            const myPools = allStakingPools.filter((pool) => {
                 const foundPool = delegatorResponse.forCurrentEpoch.poolData.find((delPool) => {
                     return pool.poolId === delPool.poolId && delPool.zrxStaked > 0;
                 });
@@ -106,7 +118,8 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         };
         // tslint:disable-next-line:no-floating-promises
         fetchDelegatorDataAsync();
-    }, [account.address, apiClient, stakingPools]);
+    }, [account.address, apiClient, allStakingPools]);
+
     // TODO(kimpers): centralize data fetching so we only fetch once
     React.useEffect(() => {
         const fetchAndSetEpochs = async () => {
@@ -122,6 +135,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         const fetchAndSetPoolsAsync = async () => {
             const poolsResponse = await apiClient.getStakingPoolsAsync();
             const activePools = (poolsResponse.stakingPools || []).filter(stakingUtils.isPoolActive);
+            setAllStakingPools(poolsResponse.stakingPools || []);
             setStakingPools(activePools);
         };
         // tslint:disable-next-line:no-floating-promises
@@ -183,14 +197,14 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                     numMarketMakers={stakingPools && stakingPools.length}
                 />
             </SectionWrapper> */}
-            {myStakingPools && myStakingPools.length > 0 && (
+            {mySortedStakingPools && mySortedStakingPools.length > 0 && (
                 <SectionWrapper>
                     <HeadingRow>
                         <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
                             Your Staking Pools
                         </Heading>
                     </HeadingRow>
-                    {myStakingPools.map((pool) => {
+                    {mySortedStakingPools.map((pool) => {
                         return (
                             <StakingPoolDetailRow
                                 apy={pool.apy}
@@ -213,7 +227,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
             <SectionWrapper>
                 <HeadingRow>
                     <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
-                        Availible Staking Pools {sortedStakingPools ? `(${sortedStakingPools.length})` : ''}
+                        Available Staking Pools {sortedStakingPools ? `(${sortedStakingPools.length})` : ''}
                     </Heading>
                     <PoolsListSortingSelector
                         setPoolSortingParam={setPoolSortingParam}
