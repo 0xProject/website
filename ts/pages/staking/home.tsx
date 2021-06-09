@@ -94,7 +94,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
 
         const fetchDelegatorDataAsync = async () => {
             // TODO: future would be nice to show people upcoming pools that will be active next epoch
-            const delegatorResponse = await apiClient.getDelegatorAsync('0xd6a6027d168ce1f8036d8d01c2918f8cb610271b');
+            const delegatorResponse = await apiClient.getDelegatorAsync(account.address);
             const myPools = stakingPools.filter((pool) => {
                 const foundPool = delegatorResponse.forCurrentEpoch.poolData.find((delPool) => {
                     return pool.poolId === delPool.poolId && delPool.zrxStaked > 0;
