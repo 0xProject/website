@@ -9,9 +9,7 @@ import { colors } from 'ts/style/colors';
 import { State } from 'ts/redux/reducer';
 
 import { Button } from 'ts/components/button';
-import { CFLMetrics } from 'ts/pages/cfl/cfl_metrics';
 
-import { CurrentEpochOverview } from 'ts/components/staking/current_epoch_overview';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { PoolsListSortingSelector } from 'ts/components/staking/pools_list_sorting_selector';
 import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
@@ -105,8 +103,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
 
             setMyStakingPools(myPools);
         };
-
-        console.log('calling fetch deleg');
+        // tslint:disable-next-line:no-floating-promises
         fetchDelegatorDataAsync();
     }, [account.address, apiClient, stakingPools]);
     // TODO(kimpers): centralize data fetching so we only fetch once

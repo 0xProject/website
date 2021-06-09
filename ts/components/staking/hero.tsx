@@ -1,14 +1,14 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { BigNumber } from '@0x/utils';
 import { Progressbar } from 'ts/components/progressbar';
 import { stakingUtils } from 'ts/utils/staking_utils';
+
+import { BigNumber } from '@0x/utils';
 
 import { differenceInSeconds } from 'date-fns';
 
 import { formatEther, formatZrx } from 'ts/utils/format_number';
 
-import { VideoPlaceholder } from 'ts/components/video_placeholder';
 import { colors } from 'ts/style/colors';
 
 interface StakingHeroProps {
@@ -86,13 +86,6 @@ const Column = styled.div`
         &:last-child {
             padding-right: 0;
         }
-    }
-`;
-
-const Video = styled(Column)`
-    display: none;
-    @media (min-width: 768px) {
-        display: block;
     }
 `;
 
@@ -191,18 +184,11 @@ export const StakingHero: React.FC<StakingHeroProps> = (props) => {
         titleMobile,
         description,
         actions,
-        videoChannel,
-        videoId,
-        videoRatio,
-        youtubeOptions,
+
         metrics,
     } = props;
-    const [isVideoOpen, setIsVideoOpen] = React.useState(false);
-    const onOpenVideo = () => setIsVideoOpen(true);
-    const onCloseVideo = () => setIsVideoOpen(false);
 
     const progressAmt = (differenceInSeconds(metrics.nextEpochStartDate, Date.now()) * 100) / 604800;
-    console.log(progressAmt);
     return (
         <Wrapper>
             <Inner>

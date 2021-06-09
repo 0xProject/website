@@ -209,7 +209,7 @@ export const stakingUtils = {
         }
 
         const now = new Date();
-        let duration = intervalToDuration({
+        const duration = intervalToDuration({
             start: epochDate,
             end: now,
         });
