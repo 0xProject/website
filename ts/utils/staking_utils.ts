@@ -1,5 +1,5 @@
 import { BigNumber } from '@0x/utils';
-import { formatDistanceStrict, isPast } from 'date-fns';
+import { formatDistanceStrict, formatDuration, intervalToDuration, isPast } from 'date-fns';
 import * as _ from 'lodash';
 
 import { Decimal } from 'decimal.js';
@@ -201,6 +201,23 @@ export const stakingUtils = {
 
         const now = new Date();
         return formatDistanceStrict(epochDate, now, { roundingMethod: 'ceil' });
+    },
+
+    getEpochCountdown: (epochDate?: Date): string => {
+        if (!epochDate || isPast(epochDate)) {
+            return '-';
+        }
+
+        const now = new Date();
+        let duration = intervalToDuration({
+            start: epochDate,
+            end: now,
+        });
+        let formattedDuration = formatDuration(duration, { format: ['days', 'hours', 'minutes'] });
+        formattedDuration = formattedDuration.replace(' days', 'd');
+        formattedDuration = formattedDuration.replace(' hours', 'h');
+        formattedDuration = formattedDuration.replace(' minutes', 'm');
+        return formattedDuration;
     },
 
     sortByStakedDesc: (a: PoolWithStats, b: PoolWithStats): number =>

@@ -25,7 +25,7 @@ import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
-import { Epoch, PoolsListSortingParameter, PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
+import { AccountReady, Epoch, PoolsListSortingParameter, PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
 
 const sortFnMapping: { [key: string]: (a: PoolWithStats, b: PoolWithStats) => number } = {
     [PoolsListSortingParameter.Staked]: stakingUtils.sortByStakedDesc,
@@ -48,32 +48,32 @@ const HeadingRow = styled.div`
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
+    const [myStakingPools, setMyStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
+
     const networkId = useSelector((state: State) => state.networkId);
     const providerState = useSelector((state: State) => state.providerState);
     const apiClient = useAPIClient(networkId);
     const { currentEpochRewards } = useStake(networkId, providerState);
     const [nextEpochStats, setNextEpochStats] = React.useState<Epoch | undefined>(undefined);
-
+    const account = providerState.account as AccountReady;
     const [poolSortingParam, setPoolSortingParam] = React.useState<PoolsListSortingParameter>(
         PoolsListSortingParameter.Apy,
     );
-
-    React.useEffect(() => {
-        const fetchAndSetPoolsAsync = async () => {
-            const poolsResponse = await apiClient.getStakingPoolsAsync();
-            const activePools = (poolsResponse.stakingPools || []).filter(stakingUtils.isPoolActive);
-            setStakingPools(activePools);
-        };
-        // tslint:disable-next-line:no-floating-promises
-        fetchAndSetPoolsAsync();
-    }, [apiClient]);
 
     const sortedStakingPools: PoolWithStats[] | undefined = React.useMemo(() => {
         if (!stakingPools) {
             return undefined;
         }
-
-        const stakngPoolsWithAPY = stakingPools.map((pool) => {
+        let filteredStakingPools = stakingPools;
+        if (myStakingPools) {
+            filteredStakingPools = stakingPools.filter((pool) => {
+                const foundPool = myStakingPools.find((delPool) => {
+                    return pool.poolId !== delPool.poolId;
+                });
+                return foundPool;
+            });
+        }
+        const stakngPoolsWithAPY = filteredStakingPools.map((pool) => {
             const rewards = pool.allTimeStakedAmounts;
             const average = (arr: number[]) => arr.reduce((sum, el) => sum + el, 0) / arr.length;
 
@@ -87,8 +87,28 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
             return { ...pool, apy: average(rewardsToAverageLongTerm) };
         });
         return [...stakngPoolsWithAPY].sort(sortFnMapping[poolSortingParam]);
-    }, [poolSortingParam, stakingPools]);
+    }, [poolSortingParam, stakingPools, myStakingPools]);
 
+    React.useEffect(() => {
+        if (!account.address || !stakingPools) {
+            return;
+        }
+
+        const fetchDelegatorDataAsync = async () => {
+            const delegatorResponse = await apiClient.getDelegatorAsync(account.address);
+            const myPools = stakingPools.filter((pool) => {
+                const foundPool = delegatorResponse.forCurrentEpoch.poolData.find((delPool) => {
+                    return pool.poolId === delPool.poolId;
+                });
+                return foundPool;
+            });
+
+            setMyStakingPools(myPools);
+        };
+
+        console.log('calling fetch deleg');
+        fetchDelegatorDataAsync();
+    }, [account.address, apiClient, stakingPools]);
     // TODO(kimpers): centralize data fetching so we only fetch once
     React.useEffect(() => {
         const fetchAndSetEpochs = async () => {
@@ -101,6 +121,13 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                 errorReporter.report(err);
             }
         };
+        const fetchAndSetPoolsAsync = async () => {
+            const poolsResponse = await apiClient.getStakingPoolsAsync();
+            const activePools = (poolsResponse.stakingPools || []).filter(stakingUtils.isPoolActive);
+            setStakingPools(activePools);
+        };
+        // tslint:disable-next-line:no-floating-promises
+        fetchAndSetPoolsAsync();
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetEpochs();
     }, [apiClient]);
@@ -125,12 +152,12 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                         with 0x market makers to earn rewards.
                     </div>
                 }
-                figure={<CFLMetrics />}
+                figure={<></>}
                 videoId="qP_oZAjRkTs"
                 actions={
                     <>
                         <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
-                            Auto Stake
+                            Stake ZRX
                         </Button>
                         <Button
                             to={constants.STAKING_FAQ_DOCS}
@@ -139,24 +166,56 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                             isTransparent={true}
                             borderColor={colors.brandLight}
                         >
-                            Staking FAQ
+                            Learn More
                         </Button>
                     </>
                     // tslint:disable-next-line: jsx-curly-spacing
                 }
+                metrics={{
+                    zrxStaked: nextEpochStats && nextEpochStats.zrxStaked,
+                    currentEpochRewards,
+                    nextEpochStartDate,
+                }}
             />
-            <SectionWrapper>
+            {/* <SectionWrapper>
                 <CurrentEpochOverview
                     zrxStaked={nextEpochStats && nextEpochStats.zrxStaked}
                     nextEpochStartDate={nextEpochStartDate}
                     currentEpochRewards={currentEpochRewards}
                     numMarketMakers={stakingPools && stakingPools.length}
                 />
-            </SectionWrapper>
+            </SectionWrapper> */}
+            {myStakingPools && (
+                <SectionWrapper>
+                    <HeadingRow>
+                        <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
+                            Your Staking Pools
+                        </Heading>
+                    </HeadingRow>
+                    {myStakingPools.map((pool) => {
+                        return (
+                            <StakingPoolDetailRow
+                                apy={pool.apy}
+                                to={_.replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}
+                                key={pool.poolId}
+                                poolId={pool.poolId}
+                                name={stakingUtils.getPoolDisplayName(pool)}
+                                thumbnailUrl={pool.metaData.logoUrl}
+                                isFullSizeTumbnail={pool.poolId === '12'}
+                                isVerified={pool.metaData.isVerified}
+                                address={pool.operatorAddress}
+                                totalFeesGeneratedInEth={pool.currentEpochStats.totalProtocolFeesGeneratedInEth}
+                                averageRewardsSharedInEth={pool.avgMemberRewardInEth}
+                                stakeRatio={pool.nextEpochStats.approximateStakeRatio}
+                            />
+                        );
+                    })}
+                </SectionWrapper>
+            )}
             <SectionWrapper>
                 <HeadingRow>
                     <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
-                        Staking Pools
+                        Availible Staking Pools {sortedStakingPools ? `(${sortedStakingPools.length})` : ''}
                     </Heading>
                     <PoolsListSortingSelector
                         setPoolSortingParam={setPoolSortingParam}
