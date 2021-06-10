@@ -63,7 +63,6 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const [isFetchingData, setIsFetchingData] = React.useState(false);
 
     const calcAPR = (pool: PoolWithStats) => {
-        console.log(pool);
         const rewards = pool.allTimeStakedAmounts;
         if (rewards) {
             const average = (arr: number[]) => arr.reduce((sum, el) => sum + el, 0) / arr.length;

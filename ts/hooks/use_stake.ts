@@ -74,6 +74,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
             const prevEpoch = currentEpoch.minus(1);
             const encodePoolId = (poolId: number) => `0x${new BigNumber(poolId).toString(16).padStart(64, '0')}`;
             const feesCollectedPreviousEpoch: { [key: string]: BigNumber } = {};
+            // tslint:disable-next-line:prefer-for-of
             for (let index = 0; index < poolData.length; index++) {
                 const { poolId } = poolData[index];
                 const [feesCollected] = await stakingContract
