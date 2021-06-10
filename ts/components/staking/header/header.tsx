@@ -22,7 +22,6 @@ import { AccountState, OnChainProposal, WebsitePaths } from 'ts/types';
 
 import { useWeb3React } from '@web3-react/core';
 import { useWallet } from 'ts/hooks/use_wallet';
-import { colors } from 'ts/style/colors';
 import { GOVERNANCE_THEGRAPH_ENDPOINT } from 'ts/utils/configs';
 import { environments } from 'ts/utils/environments';
 
