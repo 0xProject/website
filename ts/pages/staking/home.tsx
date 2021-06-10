@@ -10,6 +10,7 @@ import { State } from 'ts/redux/reducer';
 
 import { Button } from 'ts/components/button';
 
+import { Loading } from 'ts/components/portal/loading';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { PoolsListSortingSelector } from 'ts/components/staking/pools_list_sorting_selector';
 import { StakingPoolDetailRow } from 'ts/components/staking/staking_pool_detail_row';
@@ -59,18 +60,23 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         PoolsListSortingParameter.Apy,
     );
 
+    const [isFetchingData, setIsFetchingData] = React.useState(false);
+
     const calcAPR = (pool: PoolWithStats) => {
+        console.log(pool);
         const rewards = pool.allTimeStakedAmounts;
-        const average = (arr: number[]) => arr.reduce((sum, el) => sum + el, 0) / arr.length;
+        if (rewards) {
+            const average = (arr: number[]) => arr.reduce((sum, el) => sum + el, 0) / arr.length;
 
-        const epochRewardAPYs = rewards.map((reward) => {
-            return reward.apy;
-        });
+            const epochRewardAPYs = rewards.map((reward) => {
+                return reward.apy;
+            });
 
-        const rewardsToAverageLongTerm =
-            epochRewardAPYs.length > 12 ? epochRewardAPYs.slice(Math.max(rewards.length - 12, 0)) : epochRewardAPYs;
-
-        return { ...pool, apy: average(rewardsToAverageLongTerm) };
+            const rewardsToAverageLongTerm =
+                epochRewardAPYs.length > 12 ? epochRewardAPYs.slice(Math.max(rewards.length - 12, 0)) : epochRewardAPYs;
+            return { ...pool, apy: average(rewardsToAverageLongTerm) };
+        }
+        return { ...pool, apy: 0 };
     };
 
     const sortedStakingPools: PoolWithStats[] | undefined = React.useMemo(() => {
@@ -94,7 +100,6 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
         if (!myStakingPools) {
             return undefined;
         }
-
         const stakngPoolsWithAPY = myStakingPools.map(calcAPR);
         return [...stakngPoolsWithAPY].sort(sortFnMapping[poolSortingParam]);
     }, [poolSortingParam, myStakingPools]);
@@ -137,7 +142,9 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
             const activePools = (poolsResponse.stakingPools || []).filter(stakingUtils.isPoolActive);
             setAllStakingPools(poolsResponse.stakingPools || []);
             setStakingPools(activePools);
+            setIsFetchingData(false);
         };
+        setIsFetchingData(true);
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPoolsAsync();
         // tslint:disable-next-line:no-floating-promises
@@ -253,6 +260,11 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                             />
                         );
                     })}
+                {!sortedStakingPools && isFetchingData && (
+                    <StakingPoolsLoadingWrapper>
+                        <Loading isLoading={true} content={null} />
+                    </StakingPoolsLoadingWrapper>
+                )}
             </SectionWrapper>
         </StakingPageLayout>
     );
@@ -268,4 +280,7 @@ const SectionWrapper = styled.div`
         width: calc(100% - 20px);
         padding: 20px;
     }
+`;
+const StakingPoolsLoadingWrapper = styled.div`
+    padding: 80px 0;
 `;

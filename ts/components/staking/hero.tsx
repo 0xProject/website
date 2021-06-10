@@ -45,6 +45,8 @@ const ProgressbarText = styled.span`
 const Wrapper = styled.div<WrapperProps>`
     width: 100%;
     text-align: center;
+    max-width: 1450px;
+    margin: 0 auto;
     @media (min-width: 768px) {
         padding: 30px;
         text-align: left;
@@ -79,7 +81,7 @@ const Row = styled.div<RowProps>`
 const Column = styled.div`
     padding: 30px;
     @media (min-width: 768px) {
-        padding: 60px;
+        padding: 60px 28px;
         &:first-child {
             padding-left: 0;
         }
