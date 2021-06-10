@@ -170,9 +170,6 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
                         <DocsLogoWrap>
                             / <DocsLogoLink to={WebsitePaths.Staking}>ZRX</DocsLogoLink>
                         </DocsLogoWrap>
-                        <BetaTagContainer>
-                            <BetaTag>Beta</BetaTag>
-                        </BetaTagContainer>
                     </LogoWrap>
 
                     <MediaQuery minWidth={1200}>
