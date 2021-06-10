@@ -1,8 +1,14 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { Progressbar } from 'ts/components/progressbar';
+import { stakingUtils } from 'ts/utils/staking_utils';
 
-import { ModalVideo } from 'ts/components/modals/modal_video';
-import { VideoPlaceholder } from 'ts/components/video_placeholder';
+import { BigNumber } from '@0x/utils';
+
+import { differenceInSeconds } from 'date-fns';
+
+import { formatEther, formatZrx } from 'ts/utils/format_number';
+
 import { colors } from 'ts/style/colors';
 
 interface StakingHeroProps {
@@ -15,6 +21,11 @@ interface StakingHeroProps {
     videoChannel?: string;
     videoRatio?: string;
     youtubeOptions?: any;
+    metrics?: {
+        zrxStaked: number;
+        currentEpochRewards: BigNumber;
+        nextEpochStartDate: Date;
+    };
 }
 
 interface WrapperProps {}
@@ -23,9 +34,19 @@ interface InnerProps {}
 
 interface RowProps {}
 
+const ProgressbarText = styled.span`
+    display: block;
+    font-size: 15px;
+    color: #5c5c5c;
+    line-height: 1.2;
+    margin-top: 8px;
+`;
+
 const Wrapper = styled.div<WrapperProps>`
     width: 100%;
     text-align: center;
+    max-width: 1450px;
+    margin: 0 auto;
     @media (min-width: 768px) {
         padding: 30px;
         text-align: left;
@@ -33,7 +54,11 @@ const Wrapper = styled.div<WrapperProps>`
 `;
 
 const Inner = styled.div<InnerProps>`
-    background-color: ${colors.backgroundLightGrey};
+    background-color: #f3f6f4;
+    background-image: url(/images/stakingGraphic.svg);
+    background-repeat: no-repeat;
+    background-position-x: right;
+    background-position-y: center;
     @media (min-width: 768px) {
         padding: 30px;
     }
@@ -49,7 +74,6 @@ const Row = styled.div<RowProps>`
     @media (min-width: 768px) {
         flex-direction: row;
         & > * {
-            width: 50%;
         }
     }
 `;
@@ -57,20 +81,13 @@ const Row = styled.div<RowProps>`
 const Column = styled.div`
     padding: 30px;
     @media (min-width: 768px) {
-        padding: 60px;
+        padding: 60px 28px;
         &:first-child {
             padding-left: 0;
         }
         &:last-child {
             padding-right: 0;
         }
-    }
-`;
-
-const Video = styled(Column)`
-    display: none;
-    @media (min-width: 768px) {
-        display: block;
     }
 `;
 
@@ -108,12 +125,72 @@ const Actions = styled.div`
     }
 `;
 
-export const StakingHero: React.FC<StakingHeroProps> = (props) => {
-    const { title, titleMobile, description, actions, videoChannel, videoId, videoRatio, youtubeOptions } = props;
-    const [isVideoOpen, setIsVideoOpen] = React.useState(false);
-    const onOpenVideo = () => setIsVideoOpen(true);
-    const onCloseVideo = () => setIsVideoOpen(false);
+const MetricsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
 
+const FiguresList = styled.ol`
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding-top: 15px;
+    width: 250px;
+`;
+
+const Figure = styled.li`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+    background-color: ${colors.white};
+    padding: 10px;
+    margin-bottom: 15px;
+    @media (min-width: 480px) {
+        padding: 20px;
+    }
+`;
+
+const FigureHeader = styled.header`
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+`;
+
+const FigureTitle = styled.span`
+    display: block;
+    font-size: 16px;
+    line-height: 1.35;
+    color: #999999;
+    margin-bottom: 5px;
+`;
+
+const FigureNumber = styled.span`
+    display: block;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+    font-size: 20px;
+    line-height: 1.35;
+    @media (min-width: 768px) {
+        font-size: 24px;
+    }
+    @media (min-width: 991px) {
+        font-size: 28px;
+    }
+`;
+
+const FiguresListHeader = styled.h2``;
+
+export const StakingHero: React.FC<StakingHeroProps> = (props) => {
+    const {
+        title,
+        titleMobile,
+        description,
+        actions,
+
+        metrics,
+    } = props;
+
+    const progressAmt = (differenceInSeconds(metrics.nextEpochStartDate, Date.now()) * 100) / 604800;
     return (
         <Wrapper>
             <Inner>
@@ -124,29 +201,39 @@ export const StakingHero: React.FC<StakingHeroProps> = (props) => {
                         <Description>{description}</Description>
                         <Actions>{actions}</Actions>
                     </Column>
-                    {videoId && (
-                        <Video>
-                            <VideoPlaceholder title="Play Video" onClick={onOpenVideo} />
-                        </Video>
-                    )}
+                    <Column>
+                        <MetricsWrapper>
+                            <FiguresListHeader>Epoch Stats</FiguresListHeader>
+                            <FiguresList>
+                                <Figure key={1}>
+                                    <FigureHeader>
+                                        <FigureTitle>Rewards (Weekly)</FigureTitle>
+                                    </FigureHeader>
+                                    <FigureNumber>
+                                        {metrics.currentEpochRewards
+                                            ? formatEther(metrics.currentEpochRewards, { decimals: 2 }).full
+                                            : '-'}
+                                    </FigureNumber>
+                                </Figure>
+                                <Figure key={2}>
+                                    <FigureHeader>
+                                        <FigureTitle>Total ZRX Staked</FigureTitle>
+                                    </FigureHeader>
+                                    <FigureNumber>
+                                        {metrics.zrxStaked
+                                            ? formatZrx(metrics.zrxStaked, { bigUnitPostfix: true }).formatted
+                                            : '-'}
+                                    </FigureNumber>
+                                </Figure>
+                                <ProgressbarText>
+                                    Next rewards in {stakingUtils.getEpochCountdown(metrics.nextEpochStartDate)}
+                                </ProgressbarText>
+                                <Progressbar progress={100 - progressAmt} />
+                            </FiguresList>
+                        </MetricsWrapper>
+                    </Column>
                 </Row>
             </Inner>
-            {videoId && (
-                <ModalVideo
-                    channel={videoChannel}
-                    isOpen={isVideoOpen}
-                    videoId={videoId}
-                    onClose={onCloseVideo}
-                    youtube={{
-                        autoplay: 1,
-                        controls: 0,
-                        showinfo: 0,
-                        modestbranding: 1,
-                        ...youtubeOptions,
-                    }}
-                    ratio={videoRatio}
-                />
-            )}
         </Wrapper>
     );
 };
