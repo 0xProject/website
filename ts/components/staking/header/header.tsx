@@ -210,22 +210,6 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
     );
 };
 
-const BetaTagContainer = styled.div`
-    padding: 6px 8px;
-    background-color: ${colors.backgroundLightGrey};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 10px;
-    margin-bottom: 4px;
-`;
-
-const BetaTag = styled.div`
-    font-size: 11px;
-    line-height: 13px;
-    color: ${colors.backgroundDark};
-`;
-
 const NavItem: React.FC<NavLinkProps> = ({ link }) => {
     const linkElement = link.url ? (
         <StyledNavLink to={link.url}>{link.text}</StyledNavLink>
