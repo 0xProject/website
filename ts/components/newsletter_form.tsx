@@ -1,11 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
+// @ts-ignore
 const GhostAdminAPI = require('@tryghost/admin-api');
-// import GhostAdminAPI from '@tryghost/admin-api'
 import { fadeIn } from 'ts/style/keyframes';
 
-import { backendClient } from 'ts/utils/backend_client';
-import { configs, GHOST_API_KEY } from 'ts/utils/configs';
+import { GHOST_API_KEY } from 'ts/utils/configs';
 import { errorReporter } from 'ts/utils/error_reporter';
 
 interface IFormProps {
