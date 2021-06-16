@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
+const Dotenv = require('dotenv-webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const RollbarSourceMapPlugin = require('rollbar-sourcemap-webpack-plugin');
 const childProcess = require('child_process');
@@ -9,13 +10,10 @@ const remarkAutolinkHeadings = require('./webpack/remark_autolink_headings');
 const remarkSectionizeHeadings = require('./webpack/remark_sectionize_headings');
 const mdxTableOfContents = require('./webpack/mdx_table_of_contents');
 
-const GIT_SHA = childProcess
-    .execSync('git rev-parse HEAD')
-    .toString()
-    .trim();
+const GIT_SHA = childProcess.execSync('git rev-parse HEAD').toString().trim();
 
 module.exports = (_env, argv) => {
-    const plugins = [];
+    const plugins = [new Dotenv()];
     const isDevEnvironment = argv.mode === 'development';
 
     const config = {
@@ -140,7 +138,7 @@ module.exports = (_env, argv) => {
                 rewrites: [
                     {
                         from: /^\/docs\/.*$/,
-                        to: function() {
+                        to: function () {
                             return 'index.html';
                         },
                     },

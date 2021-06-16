@@ -82,7 +82,7 @@ export const Footer: React.FC<IFooterProps> = React.memo(({ isDocs, shouldShowDi
             <FooterColumn width="35%">
                 <Logo />
                 <NewsletterForm />
-                <Text>Subscribe to our newsletter for updates in the 0x ecosystem</Text>
+                <Text>Subscribe to our blog for project and ecosystem updates</Text>
             </FooterColumn>
 
             <FooterColumn width="55%">

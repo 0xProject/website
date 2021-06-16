@@ -1,10 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
-
+const GhostAdminAPI = require('@tryghost/admin-api');
+// import GhostAdminAPI from '@tryghost/admin-api'
 import { fadeIn } from 'ts/style/keyframes';
 
 import { backendClient } from 'ts/utils/backend_client';
-import { configs } from 'ts/utils/configs';
+import { configs, GHOST_API_KEY } from 'ts/utils/configs';
 import { errorReporter } from 'ts/utils/error_reporter';
 
 interface IFormProps {
@@ -24,14 +25,25 @@ interface IArrowProps {
     isSubmitted: boolean;
 }
 
+const api = new GhostAdminAPI({
+    url: 'https://0x-blog.ghost.io',
+    key: GHOST_API_KEY,
+    version: 'v4',
+});
+
 export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
     const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
     const emailInput = React.createRef<HTMLInputElement>();
+    const nameInput = React.createRef<HTMLInputElement>();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
 
+        if (isSubmitted) {
+            return;
+        }
         const email = emailInput.current.value;
+        const name = nameInput.current.value;
 
         setIsSubmitted(true);
 
@@ -40,12 +52,16 @@ export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
         }
 
         try {
-            await backendClient.subscribeToNewsletterAsync({
+            const memberData = {
+                name,
                 email,
-                list: configs.GENERAL_MAILING_LIST_ID,
-                tags: ['Ecosystem'],
-                interests: { [configs.GENERAL_LIST_ECOSYSTEM_UPDATES_INTEREST_ID]: true },
-            });
+                note: 'Website',
+                subscribed: true,
+            };
+            const queryParams: { send_email: boolean } = {
+                send_email: false,
+            };
+            await api.members.add(memberData, queryParams);
         } catch (e) {
             errorReporter.report(e);
         }
@@ -56,15 +72,30 @@ export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
             {isSubmitted ? (
                 <SuccessText isSubmitted={isSubmitted}>🎉 Thank you for signing up!</SuccessText>
             ) : (
-                <Input
-                    color={color}
-                    isSubmitted={isSubmitted}
-                    name="email"
-                    type="email"
-                    label="Email Address"
-                    ref={emailInput}
-                    required={true}
-                />
+                <InputsWrapper>
+                    <NameWrapper>
+                        <Input
+                            color={color}
+                            isSubmitted={isSubmitted}
+                            name="name"
+                            type="name"
+                            label="Name"
+                            ref={nameInput}
+                            required={true}
+                        />
+                    </NameWrapper>
+                    <EmailWrapper>
+                        <Input
+                            color={color}
+                            isSubmitted={isSubmitted}
+                            name="email"
+                            type="email"
+                            label="Email Address"
+                            ref={emailInput}
+                            required={true}
+                        />
+                    </EmailWrapper>
+                </InputsWrapper>
             )}
 
             <SubmitButton>
@@ -101,8 +132,22 @@ const INPUT_HEIGHT = '60px';
 const StyledForm = styled.form`
     position: relative;
     margin-top: 24px;
+    display: flex;
 `;
 
+const InputsWrapper = styled.div`
+    display: flex;
+`;
+
+const NameWrapper = styled.div`
+    margin-right: 1.75rem;
+    width: 30%;
+`;
+
+const EmailWrapper = styled.div`
+    width: 65%;
+    margin-right: 0.75rem;
+`;
 const StyledInput = styled.input<IInputProps>`
     appearance: none;
     background-color: transparent;
@@ -124,11 +169,9 @@ const SubmitButton = styled.button`
     height: ${INPUT_HEIGHT};
     background-color: transparent;
     border: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    overflow: hidden;
     outline: 0;
+    cursor: pointer;
+    padding: 0;
 `;
 
 const SuccessText = styled.p<IArrowProps>`
