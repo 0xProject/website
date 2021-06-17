@@ -186,7 +186,7 @@
         "jest-transform-stub": "^2.0.0",
         "json-stringify-pretty-compact": "^2.0.0",
         "less-loader": "^4.1.0",
-        "node-sass": "^4.12.0",
+        "node-sass": "^4.13.1",
         "prettier": "^2.2.1",
         "raw-loader": "^0.5.1",
         "react-svg-loader": "^2.1.0",
