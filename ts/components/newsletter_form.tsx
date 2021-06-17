@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-// @ts-ignore
+// tslint:disable-next-line
 const GhostAdminAPI = require('@tryghost/admin-api');
 import { fadeIn } from 'ts/style/keyframes';
 

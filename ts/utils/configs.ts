@@ -1,4 +1,4 @@
-// @ts-ignore
+// tslint:disable-next-line
 require('dotenv').config();
 
 import { environments } from 'ts/utils/environments';
