@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { CallToAction } from 'ts/components/call_to_action';
+import { Loading } from 'ts/components/portal/loading';
 import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { RemoveStakeDialog } from 'ts/components/staking/remove_stake_dialog';
@@ -437,7 +438,11 @@ export const Account: React.FC<AccountProps> = () => {
             <StakingPageLayout title="0x Staking | Account">
                 <SectionWrapper>
                     <Heading />
-                    <CallToAction icon="wallet" title="Loading" description="Grabbing data for your wallet." />
+                    <>
+                        <CallToAction icon="wallet" title="Loading" description="Grabbing data for your wallet.">
+                            <Loading isLoading={true} content={null} />
+                        </CallToAction>
+                    </>
                 </SectionWrapper>
             </StakingPageLayout>
         );

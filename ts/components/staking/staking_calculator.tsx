@@ -261,6 +261,7 @@ export const StakingCalculator: React.FC<StakingCalculatorProps> = ({ defaultPoo
 
         return num.toFixed(4);
     };
+
     if (stakingPools && selectedStakingPool) {
         const selectedPool = stakingPools.find((pool) => pool.poolId === selectedStakingPool);
         rewardsShared = (1 - selectedPool.nextEpochStats.operatorShare) * 100;

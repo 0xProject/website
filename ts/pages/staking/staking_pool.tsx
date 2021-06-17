@@ -19,6 +19,7 @@ import { colors } from 'ts/style/colors';
 
 import { State } from 'ts/redux/reducer';
 import { EpochPoolStats, PoolEpochRewards, PoolWithHistoricalStats, WebsitePaths } from 'ts/types';
+import { analytics } from 'ts/utils/analytics';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { formatEther, formatPercent, formatZrx } from 'ts/utils/format_number';
 import { stakingUtils } from 'ts/utils/staking_utils';
@@ -330,6 +331,7 @@ export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (pro
                         Calculate your potential rewards with the{' '}
                         <StakingCalculatorLink
                             onClick={() => {
+                                analytics.track('Activate Staking Calculator');
                                 setShowStakingCalculator(true);
                             }}
                         >

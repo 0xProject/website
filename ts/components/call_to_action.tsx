@@ -9,9 +9,12 @@ interface AccountEmptyStakeProps {
     title: string;
     description: string;
     actions?: Action[];
+    children?: any;
 }
 
 const Wrap = styled.div`
+    display: flex;
+    align-items: center;
     padding: 60px;
     background-color: ${colors.backgroundLightGrey};
     margin-bottom: 20px;
@@ -64,19 +67,19 @@ export const CallToAction: React.StatelessComponent<AccountEmptyStakeProps> = ({
     title,
     description,
     actions,
+    children,
 }) => {
     return (
         <Wrap>
-            <div>
-                <StyledDefinition
-                    icon={icon}
-                    title={title}
-                    description={description}
-                    iconSize="large"
-                    isInlineIcon={true}
-                    actions={actions}
-                />
-            </div>
+            <StyledDefinition
+                icon={icon}
+                title={title}
+                description={description}
+                iconSize="large"
+                isInlineIcon={true}
+                actions={actions}
+            />
+            {children}
         </Wrap>
     );
 };
