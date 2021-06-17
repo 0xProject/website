@@ -144,7 +144,7 @@ export const constants = {
     URL_ANGELLIST: 'https://angel.co/0xproject/jobs',
     URL_APACHE_LICENSE: 'http://www.apache.org/licenses/LICENSE-2.0',
     URL_BITLY_API: 'https://api-ssl.bitly.com',
-    URL_BLOG: 'https://medium.com/0x-project',
+    URL_BLOG: 'https://blog.0x.org/',
     URL_DISCOURSE_FORUM: 'https://forum.0x.org',
     URL_ECOSYSTEM_APPLY: 'https://0x.smapply.io/',
     URL_EXTENSIONS_BLOG_POST: 'https://blog.0xproject.com/0x-extensions-enabling-new-types-of-exchange-1db0bf6125b6',
