@@ -24,12 +24,6 @@ interface IArrowProps {
     isSubmitted: boolean;
 }
 
-const api = new GhostAdminAPI({
-    url: 'https://0x-blog.ghost.io',
-    key: GHOST_API_KEY,
-    version: 'v4',
-});
-
 export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
     const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
     const emailInput = React.createRef<HTMLInputElement>();
