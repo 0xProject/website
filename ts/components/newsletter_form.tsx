@@ -51,16 +51,10 @@ export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
         }
 
         try {
-            const memberData = {
-                name,
-                email,
-                note: 'Website',
-                subscribed: true,
-            };
-            const queryParams: { send_email: boolean } = {
-                send_email: false,
-            };
-            await api.members.add(memberData, queryParams);
+            await fetch('https://blog-api.0x.org', {
+                body: JSON.stringify({ name, email }),
+                method: 'POST',
+            });
         } catch (e) {
             errorReporter.report(e);
         }
