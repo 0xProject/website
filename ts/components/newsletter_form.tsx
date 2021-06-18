@@ -1,10 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-// tslint:disable-next-line
-const GhostAdminAPI = require('@tryghost/admin-api');
 import { fadeIn } from 'ts/style/keyframes';
-
-import { GHOST_API_KEY } from 'ts/utils/configs';
 import { errorReporter } from 'ts/utils/error_reporter';
 
 interface IFormProps {
