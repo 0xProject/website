@@ -14,6 +14,7 @@ import { Loading } from 'ts/components/portal/loading';
 import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { RemoveStakeDialog } from 'ts/components/staking/remove_stake_dialog';
+import { StakeRebalance } from 'ts/components/staking/stake_rebalance';
 import { Heading, Paragraph } from 'ts/components/text';
 import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { StatFigure } from 'ts/components/ui/stat_figure';
@@ -37,6 +38,7 @@ import { colors } from 'ts/style/colors';
 import {
     AccountReady,
     EpochWithFees,
+    PoolEpochDelegatorStats,
     PoolWithStats,
     StakeStatus,
     StakingAPIDelegatorResponse,
@@ -449,6 +451,14 @@ export const Account: React.FC<AccountProps> = () => {
     }
 
     const nextEpochStart = nextEpochStats && new Date(nextEpochStats.epochStart.timestamp);
+    const poolData = delegatorData.forCurrentEpoch.poolData.map((delegatorPoolStats: PoolEpochDelegatorStats) => {
+        const poolId = delegatorPoolStats.poolId;
+        const pool = poolWithStatsMap[poolId];
+        return { pool, zrxStaked: delegatorPoolStats.zrxStaked };
+    });
+
+    console.log(delegatorData);
+
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
@@ -803,7 +813,6 @@ export const Account: React.FC<AccountProps> = () => {
                     setStakingError(undefined);
                 }}
             />
-
             <DialogOverlay
                 style={{ background: 'rgba(0, 0, 0, 0.75)', zIndex: 30 }}
                 isOpen={shouldOpenStakeDecisionModal}
@@ -849,6 +858,8 @@ export const Account: React.FC<AccountProps> = () => {
                     )}
                 </StyledDialogContent>
             </DialogOverlay>
+
+            <StakeRebalance onClose={() => {}} poolData={poolData} stakingPools={stakingPools || []} />
         </StakingPageLayout>
     );
 };
