@@ -1,66 +1,77 @@
-# How to Get 0x and Matcha Data
-
-## With Existing Tools and Resources
-
-This is a blog introducing the dashboards and tools to source 0x trading volume, for different personas. In this 1st piece, we are specifically focusing on ready-made analytics solutions that don’t require advanced data scraping. The following solutions are ideal for teams working on analytics product or data information sites, looking to integrate 0x data with minimum effort; or for DeFi researchers/analysts looking for ready made, reliable sources about the 0x ecosystem.
+This guide introduces the dashboards and tools to available to explore 0x data, for different needs. In this 1st piece, we are specifically focusing on ready-made analytics solutions that don’t require advanced data scraping. The following solutions are ideal for teams working on analytics product or data information sites, looking to integrate 0x data with minimum effort; or for DeFi researchers/analysts looking for ready made, reliable sources about the 0x ecosystem.
 
 ## 🗺️ Scope and Concepts ✏️
 
-The following resources cover **active** versions of 0x exchange contracts (v2, v3, v4) and API endpoints (v1 swap).
-Based on the most common use cases, we will introduce how you can query for the trading volume on different diversions, includes:
+The following resources cover **active** versions of 0x exchange contracts (v2, v3, v4) and API endpoints (v1 `/swap`).
+Based on the most common use cases, we will introduce how to get data on different layers of the 0x ecosystem, which are defined as follows:
 
 ### 1. The DEX Layer  - 0x Native
 
-0x Native covers all the volume settled through 0x exchange contracts, which essentially is 0x native liquidity pool. Orders from 0x open orderbook and RFQ system are settled on them. Besides that, as it’s an open-source onchain infrastructure that any aggregator can use, 1inch exchange and Tokenlon have actively been using the 0x exchange contracts to settle trades. Thus this portion of volume has an overlap with other aggregators’ volume, but no overlap with other AMM DEXes.
+0x Native covers all the volume settled through 0x exchange contracts, which essentially is 0x native liquidity pool. Orders from 0x open order book and RFQ system are settled on them. Besides that, as it’s an open-source onchain infrastructure that any aggregator can use, 1inch exchange and Tokenlon have actively been using the 0x exchange contracts to settle trades. Thus this portion of volume has an overlap with other aggregators’ volume, but no overlap with other AMM DEXes.
 
-### 2. The Aggregator Layer - 0x API (/swap endpoint)
+???? Professional MM + /sra
+Ooh, 0x exchange contracts does not include 0x Exchange Proxy?
+
+### 2. The Aggregator Layer - 0x API (`/swap` endpoint)
 
 0x API is the endpoint that allows any integrator or individual to fetch available quotes from "makers" to match their own "taker" order.
 
 It is an off-chain order matching system that compares prices across:
-1) on-chain **bridge liquidity** (30+ AMM pools across chain like Uniswap, PancakeSwap, etc.);
-2) off-chain **native liquidity** from RFQ system with Professional Market Makers’ quotes;
-3) off-chain **native liquidity** from 0x’s Open Orderbook network (known as mesh, accessed via 0x API /sra endpoint).
+* On-chain **bridge liquidity** (30+ AMM pools across chain like Uniswap, PancakeSwap, etc.)
+* Off-chain **native liquidity** from RFQ system with Professional Market Makers’ quotes
+* Off-chain **native liquidity** from 0x’s Open Order Book network (known as mesh, accessed via 0x API `/sra` endpoint)
 
-It returns the best price source to users and prepare the routing information to be settled onchain — by 0x exchange contracts (**native liquidity**) or other DEXes’ contracts (**bridge liquidity**).
+It returns the best price source (or sources) to users and prepare the routing information to be settled onchain — by 0x exchange contracts (**native liquidity**) or other DEXes' contracts (**bridge liquidity**).
 
-This portion has an overlap with other DEXes’ volume as the bridge liquidity will be settled on their origin DEXes, but there’s no overlap with other aggregators.
+This portion has an overlap with other DEXes' volume as the bridge liquidity will be settled on their origin DEXes, but there’s no overlap with other aggregators.
+
+For a list of all sources see http://help.matcha.xyz/en/articles/4375069-what-exchange-networks-does-matcha-aggregate-liquidity-from
 
 ### 3. The Application Layer - Matcha
 
-Matcha is a end-user facing product sitting on top of 0x API /swap and /sra endpoints. It fetches "maker" order via /swap endpoints for consumers’ **market orders**; and submit "maker" order via /sra endpoints for consumers’ **limit orders** which afterwards can potentially sourced via /swap endpoint.
+[Matcha](https://matcha.xyz) is user facing product sitting on top of 0x API `/swap` and `/sra` endpoints. It fetches "maker" order via `/swap` endpoints for consumers’ **market orders**; and submit "maker" order via `/sra` endpoints for consumers’ **limit orders** which can later be sourced and potentially filled via `/swap` endpoint.
 
 ### 4. The Global Total - 0x Protocol
 
 The term 0x Protocol is used to describe the total combined volume covering both 0x DEX layer (0x Native) and aggregator layer (0x API). As we mentioned above, 0x Native liquidity can potentially be "fetched" by 0x API as well, thus there is an overlap between these 2 attributions. We make sure to de-duplicate that part to avoid double counting.
 
 
+### Summary
 Below is a summary table for different attributions:
 
 | Attribution | Availability on chains | Layer | Tag | Onchain or Offchain? | Overlap with DEXes? | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 0x Protocol | Ethereum, BSC, Polygon | Global | DEX + Aggregator | onchain + offchain | Yes | combined total 0x volume with de-duplication of overlap |
-| 0x API | Ethereum, BSC, Polygon | Aggregator Layer | Aggregator | offchain | Yes | native + bridge volume going thru 0x API /swap endpoint |
-| Matcha | Ethereum, BSC, Polygon | Application Layer | Aggregator (Integrator) | offchain | Yes | volume Matcha affiliated on top of 0x API /swap and /sra endpoints |
 | 0x Native | Ethereum | Settlement Layer | DEX | onchain | No | native volume settled on 0x exchange contracts with fired events including Fill(), rfqOrderFilled() and limitOrderFilled() |
+| 0x API | Ethereum, BSC, Polygon | Aggregator Layer | Aggregator | offchain | Yes | native + bridge volume going thru 0x API `/swap` endpoint |
+| Matcha | Ethereum, BSC, Polygon | Application Layer | Aggregator (Integrator) | offchain | Yes | volume Matcha affiliated on top of 0x API `/swap` and `/sra` endpoints |
+| 0x Protocol | Ethereum, BSC, Polygon | Global | DEX + Aggregator | onchain + offchain | Yes | combined total 0x volume with de-duplication of overlap |
+
+??? Should we remove `Onchain or Offchain?` (The table will fit correctly)
 
 *Note: since 0x Native (native exchange contracts) are not deployed on chains outside Ethereum, 0x Protocol (global volume) is same attribution as 0x API volume on BSC and Polygon at the moment.*
 
 ## 🧮 Available Data Tools 📎
 
-[Image: image.png]
-### 1.1 0xTracker and API
+![Existing Data Sources](/images/docs/existing-data-sources.png)
 
-[0xTracker](https://0xtracker.com/) offers an easy-to-navigate interface to explore all 0x Protocol data, and tags each trade with the known entities that where involved in that trade. It allows the user to explore 0x data seamlessly through different cuts (API integrator, orderbook relayer, Market Maker, Trader).
+### 1.1 0xTracker
 
-Quick links to detailed view:
+For those looking for the easiest way to explore data.
+
+[0xTracker](https://0xtracker.com/) offers an easy to navigate interface to explore all 0x Protocol data, and tags each trade with the known entities involved. It allows the user to explore 0x data seamlessly through different cuts (API integrator, order book relayer, Market Maker, Trader).
+
+Quick links to detailed views:
 
 * 0x Protocol (global volume): https://0xtracker.com/network-insights
 * 0x API: https://0xtracker.com/apps/0x-api
 * Matcha: https://0xtracker.com/apps/matcha
 * All registered applications/integrators on 0x API and 0x Native contracts: https://0xtracker.com/apps
 
-0xTracker also comes with an API to access all the data available through the website, the docs are available at https://docs.0xtracker.com/api-reference/endpoints. This is ideal for all the teams working on analytics products willing to easily integrate 0x data from a reliable source.
+### 1.2 0xTracker API
+
+For those looking for a REST API endpoint.
+
+0xTracker also provides an API to access all the data available through the website, the docs are available at https://docs.0xtracker.com/api-reference/endpoints. This is ideal for all the teams working on analytics products willing to easily integrate 0x data from a reliable source.
 
 Quick links:
 
@@ -73,12 +84,14 @@ Quick links:
 
 While we work on that, we have produced a set of Public Dashboards that cover 0x API on all available blockchains (see next section).
 
-### 1.2 0x Public Dashboards
+### 1.3 0x Public Dashboards
 
-0x uses Metabase as the dashboarding tool and the team constantly opens up public links for ad-hoc data requests from our community. Keep an eye out on our [Twitter](https://twitter.com/0xProject) updates for new dashboards!
+For those looking for aggregated data from all chains.
+
+0x Labs uses Metabase as the dashboarding tool and the team constantly opens up public links for ad-hoc data requests from our community. Keep an eye out on our [Twitter](https://twitter.com/0xProject) updates for new dashboards!
 
 * Multi-chain 0x API
-    * All Blockchains: analytics.0x.org (http://analytics.0x.org/)
+    * All Blockchains: [analytics.0x.org](https://analytics.0x.org/)
     * Binance Smart Chain deep dive: [0x API Volume on BSC](https://metabase.spaceship.0x.org/public/dashboard/56cdb892-47bf-4798-ac86-d0d44da5620f)
 * 0x API Integrator Deep dive (requires affiliate address)
     * All Blockchains: [Multichain 0x API Volume w/ Affiliate](https://metabase.spaceship.0x.org/public/dashboard/e79bb86a-6777-4655-88fd-6453fdbefe0f)
@@ -87,17 +100,20 @@ While we work on that, we have produced a set of Public Dashboards that cover 0x
     * Polygon: [Polygon Volume w/ Affiliate](https://metabase.spaceship.0x.org/public/dashboard/14293014-fc51-44f8-8388-439475b0e6b1)
 
 
-### 1.3 The Graph
+### 1.4 The Graph
 
-0x Labs maintains the subgraph for the latest 0x API /swap endpoint, which gives you the total volume of **0x API** on Ethereum:
+For those looking for a GraphQL endpoint.
+
+0x Labs maintains the subgraph for the latest 0x API `/swap` endpoint, which allows to explore **0x API** data on Ethereum:
 https://thegraph.com/explorer/subgraph/dekz/zeroex_exchangeproxy?selected=playground
 
-Other chains' subgraph are currently not planned as it requires reliable & in-sync subgraphs of Uniswap (and other DEXs) as dependencies.
+Other chains' subgraph are currently not planned as it requires reliable & in-sync subgraphs of certain DEXes from where liquidity is sourced.
 
+!!!! Our subgraph does not provide the USD value of each fill nor trade
 
-### 1.4 Dune Analytics
+### 1.5 Dune Analytics
 
-This is a better option for individual users, analysts or teams that need retrospective data, charts and stats.
+For those looking for retrospective data, charts and stats.
 
 If you are just reporting for historic stats, please check out these dashboards:
 
@@ -114,17 +130,17 @@ Also comparison with other DEXes & Aggregators on:
 
 If you are looking for stats on specific dates or attribution, you can click into the queries in the above dashboards, to simply fork the queries and change filter for dates or affiliate/relayer in SQL.
 
-### 1.5 Coingecko
+### 1.6 Coingecko
 
-For teams and individuals building projects, Coingecko has a free tier API, which currently supports 0x API volume on Ethereum:
+For teams and individuals building projects, Coingecko has a free tier API, which currently expose 0x API volume on Ethereum:
 
 * Page Link: https://www.coingecko.com/en/exchanges/0x-protocol
 * API Endpoint Link: https://api.coingecko.com/api/v3/exchanges/zero_ex/volume_chart?days=1
 * API Docs: https://www.coingecko.com/api/documentations/v3
 
-### 1.6 Coinmarketcap
+### 1.7 Coinmarketcap
 
-For team with budget for API plan on Coinmarketcap, it currently supports 0x Native volume on Ethereum:
+For teams with budget for an API plan on Coinmarketcap, they currently expose 0x Native volume on Ethereum:
 
 * Page Link: https://coinmarketcap.com/exchanges/0x-protocol/
 * API Docs: https://coinmarketcap.com/api/documentation/v1/
