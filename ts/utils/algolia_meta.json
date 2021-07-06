@@ -551,16 +551,6 @@
             "type": "Starter Projects",
             "externalUrl": "https://github.com/0xProject/0x-starter-project"
         },
-        "code-sandbox": {
-            "title": "0x Code Sandbox",
-            "description": "An online code sandbox for playing around with 0x protocol. Mint test tokens, create, fill, cancel 0x orders and much more.",
-            "difficulty": "Beginner",
-            "isCommunity": false,
-            "isFeatured": true,
-            "tags": ["Relayer", "Trader", "Protocol Developer"],
-            "type": "Starter Projects",
-            "externalUrl": "https://codesandbox.io/s/github/0xproject/0x-codesandbox"
-        },
         "migrations": {
             "title": "0x Migrations",
             "description": "A package to deploy the 0x protocol's system of smart contracts to the testnet of your choice",

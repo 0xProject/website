@@ -59,10 +59,6 @@ const usefulLinks = [
         url: `${WebsitePaths.Docs}/guides/0x-cheat-sheet`,
     },
     {
-        title: 'Code Sandbox',
-        url: constants.URL_SANDBOX,
-    },
-    {
         title: 'ZEIPs: 0x Improvement Proposals',
         url: constants.URL_ZEIP_REPO,
     },

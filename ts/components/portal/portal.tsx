@@ -236,18 +236,6 @@ export class Portal extends React.Component<PortalProps, PortalState> {
         return (
             <Container>
                 <MetaTags title={DOCUMENT_TITLE} description={DOCUMENT_DESCRIPTION} />
-                <AnnouncementBanner
-                    dismissed={this.state.dismissBanner}
-                    onDismiss={this._dismissBanner.bind(this)}
-                    heading="Check out the new 0x Explore page"
-                    subline="Need more advanced functionality? Try our code sandbox."
-                    mainCta={{ text: 'Explore 0x', href: WebsitePaths.Explore }}
-                    secondaryCta={{
-                        text: 'Code Sandbox',
-                        href: constants.URL_SANDBOX,
-                        shouldOpenInNewTab: true,
-                    }}
-                />
                 <TopBar
                     userAddress={this.props.userAddress}
                     networkId={this.props.networkId}
