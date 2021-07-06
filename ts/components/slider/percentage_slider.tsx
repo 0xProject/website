@@ -114,9 +114,39 @@ export const PercentageSlider: React.FC<PercentageSliderProps> = ({ pools, tags,
                             const startDragX = e.pageX;
                             const sliderWidth = TagSliderRef.current.offsetWidth;
 
-                            const resize = (e: MouseEvent & TouchEvent & PointerEvent) => {
-                                e.preventDefault();
-                                const endDragX = e.touches ? e.touches[0].pageX : e.pageX;
+                            const resize = (ev: PointerEvent) => {
+                                ev.preventDefault();
+                                const eTouch = (ev as unknown) as TouchEvent;
+                                const endDragX = eTouch.touches ? eTouch.touches[0].pageX : ev.pageX;
+                                const distanceMoved = endDragX - startDragX;
+                                const maxPercent = widths[index] + widths[index + 1];
+
+                                const percentageMoved = nearestN(1, getPercentage(sliderWidth, distanceMoved));
+                                // const percentageMoved = getPercentage(sliderWidth, distanceMoved);
+
+                                const _widths = widths.slice();
+
+                                const prevPercentage = _widths[index];
+
+                                const newPercentage = prevPercentage + percentageMoved;
+                                const currentSectionWidth = limitNumberWithinRange(newPercentage, 0, maxPercent);
+                                _widths[index] = currentSectionWidth;
+
+                                const nextSectionIndex = index + 1;
+
+                                const nextSectionNewPercentage = _widths[nextSectionIndex] - percentageMoved;
+                                const nextSectionWidth = limitNumberWithinRange(
+                                    nextSectionNewPercentage,
+                                    0,
+                                    maxPercent,
+                                );
+                                _widths[nextSectionIndex] = nextSectionWidth;
+
+                                setWidths(_widths);
+                            };
+                            const resizeTouch = (ev: TouchEvent) => {
+                                ev.preventDefault();
+                                const endDragX = ev.touches[0].pageX;
                                 const distanceMoved = endDragX - startDragX;
                                 const maxPercent = widths[index] + widths[index + 1];
 
@@ -146,13 +176,13 @@ export const PercentageSlider: React.FC<PercentageSliderProps> = ({ pools, tags,
                             // tslint:disable-next-line
                             window.addEventListener('pointermove', resize);
                             // tslint:disable-next-line
-                            window.addEventListener('touchmove', resize);
+                            window.addEventListener('touchmove', resizeTouch);
 
                             const removeEventListener = () => {
                                 // tslint:disable-next-line
                                 window.removeEventListener('pointermove', resize);
                                 // tslint:disable-next-line
-                                window.removeEventListener('touchmove', resize);
+                                window.removeEventListener('touchmove', resizeTouch);
                             };
 
                             const handleEventUp = (e: Event) => {
