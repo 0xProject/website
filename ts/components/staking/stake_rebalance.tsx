@@ -1,7 +1,11 @@
 import * as React from 'react';
 
+import * as _ from 'lodash';
+
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+
+import { MoveStakeData } from 'ts/hooks/use_stake';
 import { State } from 'ts/redux/reducer';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
@@ -20,12 +24,8 @@ import { colors } from 'ts/style/colors';
 import { PoolEpochDelegatorStats, PoolWithStats } from 'ts/types';
 
 const paletteColors = require('nice-color-palettes');
-const randPalette = paletteColors
-    .sort(function () {
-        return 0.5 - Math.random();
-    })
+const randPalette = ['#fe4365', '#fc9d9a', '#f9cdad', '#c8c8a9', '#83af9b'];
 
-    .pop();
 const ButtonClose = styled(Button)`
     width: 22px;
     height: 22px;
@@ -63,12 +63,10 @@ const StakingPoolWrapper = styled.div`
 
 const ButtonsContainer = styled.div`
     margin-top: 2rem;
-`;
-const LoadingContainer = styled.div`
+    flex: 1;
     display: flex;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-end;
 `;
 
 const StakingPoolLabel = styled.div`
@@ -78,22 +76,6 @@ const HeadingWrapper = styled.div`
     margin: 1rem 0;
     font-weight: 400;
 `;
-const YourStakeContainer = styled.div`
-    padding: 1rem 0;
-`;
-const YourStakeLabels = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-`;
-const YourStakeTitle = styled.div``;
-const YourStakeBalance = styled.div`
-    color: #999999;
-    font-size: 14px;
-    display: flex;
-    align-items: flex-end;
-    cursor: pointer;
-`;
 
 const RewardRow = styled.div`
     display: flex;
@@ -102,68 +84,27 @@ const RewardRow = styled.div`
     padding-bottom: 0.75rem;
     margin-bottom: 0.85rem;
 `;
-const Results = styled.div`
-    flex: 1;
-    justify-content: flex-end;
-    display: flex;
-    flex-direction: column;
-`;
-const ResultsLabel = styled.div`
-    padding-bottom: 0.75rem;
-    margin-bottom: 0.75rem;
-    border-bottom: 1px solid #d7d7d7;
+
+const ColorBox = styled.div`
+    width: 20px;
+    height: 20px;
+    margin-left: 0.5rem;
+    position: absolute;
+    margin-top: -0.15rem;
+    display: inline-block;
 `;
 
-const PoolReward = styled(RewardRow)`
-    color: #999999;
-
-    border-bottom: 1px solid #d7d7d7;
-`;
-const StakersReward = styled(RewardRow)`
-    color: #999999;
-
-    border-bottom: 1px solid #d7d7d7;
-`;
-const YourReward = styled(RewardRow)`
-    padding-bottom: 0.75rem;
-    margin-bottom: 0;
-`;
-const YearlyReturn = styled(RewardRow)`
-    padding-bottom: 0.75rem;
-    margin-bottom: 0;
-`;
-
-const PoolRewardResults = styled.div``;
-const StakersRewardResults = styled.div``;
-const YourRewardResults = styled.div`
-    font-weight: bolder;
-`;
-const YearlyReturnResults = styled.div``;
-
-const ZRXInputField = styled.div`
+const StakingPoolLabelWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    position: relative;
-`;
-const ZRXLabel = styled.label`
-    position: absolute;
-    right: 0;
-    align-self: center;
-    margin-right: 20px;
 `;
 
-const Input = styled.input`
-    background-color: ${colors.white};
-    color: ${colors.textDarkPrimary};
-    border: 1px solid #d7d7d7;
-    width: 100%;
-    font-size: 18px;
-    padding: 16px 20px 18px;
-    outline: none;
-    &::placeholder {
-        color: #333333;
-        opacity: 0.5;
-    }
+const RemovePool = styled.div`
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+    align-self: flex-end;
+    margin-bottom: 0.5rem;
 `;
 
 export interface InputProps {
@@ -184,14 +125,24 @@ interface PoolDataElement {
     zrxStaked: number;
 }
 
+interface PoolDiff {
+    poolId: string;
+    diff: number;
+}
+
 interface StakeRebalanceProps {
     onClose: () => void;
     poolData: PoolDataElement[];
     stakingPools: PoolWithStats[];
+    rebalanceStake: (rebalanceStakeData: MoveStakeData[]) => void;
 }
-export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolData, stakingPools }) => {
+export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolData, stakingPools, rebalanceStake }) => {
     const networkId = useSelector((state: State) => state.networkId);
     const apiClient = useAPIClient(networkId);
+
+    const originalSumOfZrx = poolData
+        .map((item) => item.zrxStaked)
+        .reduce((accumulator, currentValue) => accumulator + currentValue);
 
     const [sliderPercentages, setSliderPercentages] = React.useState<number[]>(
         new Array(poolData.length).fill(100 / poolData.length),
@@ -201,32 +152,33 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
 
     const node = React.useRef<HTMLDivElement>();
 
-    const handleClick = (ev: MouseEvent): any => {
-        if (node.current.contains(ev.target as Element)) {
-            return;
-        }
-        onClose();
-    };
+    // const handleClick = (ev: MouseEvent): any => {
+    //     if (node.current.contains(ev.target as Element)) {
+    //         return;
+    //     }
+    //     onClose();
+    // };
 
-    React.useEffect(() => {
-        document.addEventListener('mousedown', handleClick);
+    // React.useEffect(() => {
+    //     document.addEventListener('mousedown', handleClick);
 
-        return () => {
-            document.removeEventListener('mousedown', handleClick);
-        };
-    }, []);
+    //     return () => {
+    //         document.removeEventListener('mousedown', handleClick);
+    //     };
+    // }, []);
 
-    const updateSliderPercentage = (widths: number[]) => {
+    const updateSliderPercentages = (widths: number[]) => {
         setSliderPercentages(widths);
         const sumOfZrx = currentPoolData
             .map((item) => item.zrxStaked)
             .reduce((accumulator, currentValue) => accumulator + currentValue);
-        const updatedCurrentPoolData = currentPoolData.map((item) => {
+        const updatedCurrentPoolData = currentPoolData.map((item, index) => {
             return {
                 pool: item.pool,
-                zrxStaked: item.zrxStaked,
+                zrxStaked: parseFloat((sumOfZrx * (widths[index] / 100)).toFixed(2)),
             };
         });
+        setCurrentPoolData(updatedCurrentPoolData);
     };
 
     const addPool = (poolId: string) => {
@@ -240,8 +192,21 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
                 zrxStaked: 0,
             },
         ];
-        setCurrentPoolData(updatedCurrentPoolData);
-        setSliderPercentages(new Array(updatedCurrentPoolData.length).fill(100 / updatedCurrentPoolData.length));
+        const updatedSliderPercentages = new Array(updatedCurrentPoolData.length).fill(
+            100 / updatedCurrentPoolData.length,
+        );
+
+        const sumOfZrx = updatedCurrentPoolData
+            .map((item) => item.zrxStaked)
+            .reduce((accumulator, currentValue) => accumulator + currentValue);
+        const updatedPoolDataWithStakedAmounts = updatedCurrentPoolData.map((item, index) => {
+            return {
+                pool: item.pool,
+                zrxStaked: parseFloat((sumOfZrx * (updatedSliderPercentages[index] / 100)).toFixed(2)),
+            };
+        });
+        setCurrentPoolData(updatedPoolDataWithStakedAmounts);
+        setSliderPercentages(updatedSliderPercentages);
     };
 
     const filteredStakingPools = stakingPools.filter((pool) => {
@@ -258,6 +223,121 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
         };
     });
 
+    const onPoolInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const updatedStakedZrx = parseFloat(e.target.value || '0');
+        let updatedCurrentPoolData = [...currentPoolData];
+        if (updatedStakedZrx <= originalSumOfZrx) {
+            const remainderZrx = (originalSumOfZrx - updatedStakedZrx) / (updatedCurrentPoolData.length - 1);
+            updatedCurrentPoolData = updatedCurrentPoolData.map((item, innerIndex) => {
+                if (index !== innerIndex) {
+                    return {
+                        pool: item.pool,
+                        zrxStaked: remainderZrx,
+                    };
+                }
+                return {
+                    pool: item.pool,
+                    zrxStaked: updatedStakedZrx,
+                };
+            });
+        }
+
+        const sumOfZrx = updatedCurrentPoolData
+            .map((item) => item.zrxStaked)
+            .reduce((accumulator, currentValue) => accumulator + currentValue);
+
+        const _widths = updatedCurrentPoolData.map((item) => {
+            return (item.zrxStaked / sumOfZrx) * 100;
+        });
+
+        setCurrentPoolData(updatedCurrentPoolData);
+        setSliderPercentages(_widths);
+    };
+
+    const removePool = (poolId: string) => {
+        const updatedCurrentPoolData = currentPoolData.filter((item) => {
+            return item.pool.poolId !== poolId;
+        });
+
+        const updatedSliderPercentages = new Array(updatedCurrentPoolData.length).fill(
+            100 / updatedCurrentPoolData.length,
+        );
+
+        const updatedPoolDataWithStakedAmounts = updatedCurrentPoolData.map((item, index) => {
+            return {
+                pool: item.pool,
+                zrxStaked: parseFloat((originalSumOfZrx * (updatedSliderPercentages[index] / 100)).toFixed(2)),
+            };
+        });
+
+        setCurrentPoolData(updatedPoolDataWithStakedAmounts);
+        setSliderPercentages(updatedSliderPercentages);
+    };
+
+    const generateMoveStakeData = (poolDiff: PoolDiff, reductions: PoolDiff[]): MoveStakeData[] | MoveStakeData => {
+        const { poolId, diff } = poolDiff;
+        let accumulatedAmount = 0;
+        const moveStakeData = [];
+        for (let index = 0; index < reductions.length; index++) {
+            const element = reductions[index];
+            const availAmt = Math.abs(element.diff);
+            if (availAmt >= diff - accumulatedAmount) {
+                moveStakeData.push({
+                    fromPoolId: element.poolId,
+                    toPoolId: poolId,
+                    zrxAmount: parseFloat((diff - accumulatedAmount).toFixed(2)),
+                });
+            }
+            accumulatedAmount += availAmt;
+            moveStakeData.push({
+                fromPoolId: element.poolId,
+                toPoolId: poolId,
+                zrxAmount: parseFloat(availAmt.toFixed(2)),
+            });
+        }
+        return moveStakeData;
+    };
+
+    const rebalanceStakeAcrossPools = () => {
+        const additions: PoolDiff[] = [];
+        const reductions: PoolDiff[] = [];
+
+        currentPoolData.forEach((item) => {
+            const foundPool = poolData.find((foundItem) => {
+                return item.pool.poolId === foundItem.pool.poolId;
+            });
+            let diff = 0;
+            if (foundPool) {
+                diff = item.zrxStaked - foundPool.zrxStaked;
+            } else {
+                diff = item.zrxStaked;
+            }
+
+            if (diff !== 0) {
+                if (diff > 0) {
+                    additions.push({
+                        poolId: item.pool.poolId,
+                        diff,
+                    });
+                } else {
+                    reductions.push({
+                        poolId: item.pool.poolId,
+                        diff,
+                    });
+                }
+            }
+        });
+
+        console.log(additions, reductions);
+
+        if (additions.length > 0) {
+            const data = _.flatMap<PoolDiff, MoveStakeData>(additions, (item) => {
+                return generateMoveStakeData(item, reductions);
+            });
+            rebalanceStake(data);
+        }
+    };
+
     return (
         <>
             <Container ref={node}>
@@ -272,13 +352,38 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
                             </Heading>
                         </HeadingWrapper>
                         <StakingPoolsContainer>
-                            {currentPoolData.map((data) => {
+                            {currentPoolData.map((data, index) => {
+                                const poolTag = poolTags.find((item) => {
+                                    return item.name === data.pool.poolId;
+                                });
+
+                                const isStartingPool = poolData.find((item) => {
+                                    return item.pool.poolId === data.pool.poolId;
+                                });
+
                                 return (
                                     <StakingPoolWrapper>
-                                        <StakingPoolLabel>
-                                            {stakingUtils.getPoolDisplayName(data.pool)}
-                                        </StakingPoolLabel>
-                                        <ZRXInput value={data.zrxStaked.toString()} />
+                                        <StakingPoolLabelWrapper>
+                                            <StakingPoolLabel>
+                                                {stakingUtils.getPoolDisplayName(data.pool)}
+                                                <ColorBox style={{ background: poolTag.color }} />
+                                            </StakingPoolLabel>
+                                            {!isStartingPool && (
+                                                <RemovePool
+                                                    onClick={() => {
+                                                        removePool(data.pool.poolId);
+                                                    }}
+                                                >
+                                                    Remove Pool
+                                                </RemovePool>
+                                            )}
+                                        </StakingPoolLabelWrapper>
+                                        <ZRXInput
+                                            value={data.zrxStaked.toString()}
+                                            onChange={(e) => {
+                                                onPoolInputChange(e, index);
+                                            }}
+                                        />
                                     </StakingPoolWrapper>
                                 );
                             })}
@@ -287,23 +392,25 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
                             pools={currentPoolData}
                             tags={poolTags}
                             widths={sliderPercentages}
-                            setWidths={setSliderPercentages}
+                            setWidths={updateSliderPercentages}
                         />
                         <ButtonsContainer>
-                            <AddPoolButton
-                                borderColor="#D5D5D5"
-                                bgColor={colors.white}
-                                fontWeight="300"
-                                isNoBorder={true}
-                                padding="15px 35px"
-                                isFullWidth={true}
-                                onClick={() => {
-                                    setIsAddPoolDialogOpen(true);
-                                }}
-                            >
-                                + Add Pool
-                            </AddPoolButton>
-                            <Button color={colors.white} isFullWidth={true}>
+                            {currentPoolData.length < 4 && (
+                                <AddPoolButton
+                                    borderColor="#D5D5D5"
+                                    bgColor={colors.white}
+                                    fontWeight="300"
+                                    isNoBorder={true}
+                                    padding="15px 35px"
+                                    isFullWidth={true}
+                                    onClick={() => {
+                                        setIsAddPoolDialogOpen(true);
+                                    }}
+                                >
+                                    + Add Pool
+                                </AddPoolButton>
+                            )}
+                            <Button color={colors.white} isFullWidth={true} onClick={rebalanceStakeAcrossPools}>
                                 Confirm New Stake
                             </Button>
                         </ButtonsContainer>

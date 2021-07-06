@@ -19,7 +19,7 @@ import { Heading, Paragraph } from 'ts/components/text';
 import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { useAPIClient } from 'ts/hooks/use_api_client';
-import { useStake } from 'ts/hooks/use_stake';
+import { useStake, MoveStakeData } from 'ts/hooks/use_stake';
 import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
 import { AccountApplyModal } from 'ts/pages/account/account_apply_modal';
 import { AccountDetail } from 'ts/pages/account/account_detail';
@@ -150,6 +150,8 @@ export const Account: React.FC<AccountProps> = () => {
     const [votingPowerMap, setVotingPowerMap] = React.useState<PoolToVotingPowerMap>({});
     const [hasVotingPower, setHasVotingPower] = React.useState<boolean>(false);
     const [shouldOpenStakeDecisionModal, setOpenStakeDecisionModal] = React.useState<boolean>(false);
+
+    const [stakeRelabanceOpen, setStakeRebalanceOpen] = React.useState(false);
     // keeping in case we want to make use of by-pool estimated rewards
     // const [expectedCurrentEpochPoolRewards, setExpectedCurrentEpochPoolRewards] = React.useState<ExpectedPoolRewards>(undefined);
     const [expectedCurrentEpochRewards, setExpectedCurrentEpochRewards] = React.useState<BigNumber>(new BigNumber(0));
@@ -164,6 +166,7 @@ export const Account: React.FC<AccountProps> = () => {
         withdrawStake,
         withdrawRewards,
         moveStake,
+        batchMoveStake,
         currentEpochRewards,
         error: useStakeError,
     } = useStake(networkId, providerState);
@@ -457,8 +460,9 @@ export const Account: React.FC<AccountProps> = () => {
         return { pool, zrxStaked: delegatorPoolStats.zrxStaked };
     });
 
-    console.log(delegatorData);
-
+    const rebalanceStake = (rebalanceStakeData: MoveStakeData[]) => {
+        batchMoveStake(rebalanceStakeData, () => {});
+    };
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
@@ -603,7 +607,7 @@ export const Account: React.FC<AccountProps> = () => {
 
             {/* TODO add loading animations or display partially loaded data */}
             {hasDataLoaded() && (
-                <SectionWrapper>
+                <SectionWrapper style={{ display: 'flex', flexDirection: 'column' }}>
                     <SectionHeader>
                         <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
                             Your Staking Pools
@@ -696,6 +700,21 @@ export const Account: React.FC<AccountProps> = () => {
                                 );
                             })
                     )}
+                    <div
+                        style={{
+                            alignSelf: 'flex-end',
+                            margin: '1rem 0',
+                        }}
+                    >
+                        <Button
+                            color={colors.white}
+                            onClick={() => {
+                                setStakeRebalanceOpen(true);
+                            }}
+                        >
+                            Rebalance Stake
+                        </Button>
+                    </div>
                 </SectionWrapper>
             )}
             {hasDataLoaded() && hasVotingPower && (
@@ -859,7 +878,16 @@ export const Account: React.FC<AccountProps> = () => {
                 </StyledDialogContent>
             </DialogOverlay>
 
-            <StakeRebalance onClose={() => {}} poolData={poolData} stakingPools={stakingPools || []} />
+            {stakeRelabanceOpen && (
+                <StakeRebalance
+                    onClose={() => {
+                        setStakeRebalanceOpen(false);
+                    }}
+                    poolData={poolData}
+                    stakingPools={stakingPools || []}
+                    rebalanceStake={rebalanceStake}
+                />
+            )}
         </StakingPageLayout>
     );
 };

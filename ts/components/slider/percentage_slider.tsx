@@ -62,12 +62,9 @@ const TagSection = ({ name, color, width, onSliderSelect }: TagSectionProps) => 
                 width: width + '%',
             }}
         >
-            <span style={styles.tagText}>{name}</span>
-            <span style={{ ...styles.tagText, fontSize: 12 }}>{Math.round(width) + '%'}</span>
+            <span style={{ ...styles.tagText, fontSize: 14 }}>{Math.round(width) + '%'}</span>
 
-            <div style={styles.sliderButton} onPointerDown={onSliderSelect} className="slider-button">
-                <img src={'https://assets.codepen.io/576444/slider-arrows.svg'} height={'30%'} />
-            </div>
+            <div style={styles.sliderButton} onPointerDown={onSliderSelect} className="slider-button"></div>
         </div>
     );
 };
@@ -81,7 +78,7 @@ interface PercentageSliderProps {
     pools: PoolDataElement[];
     tags: Tag[];
     widths: number[];
-    setWidths: React.Dispatch<React.SetStateAction<number[]>>;
+    setWidths: (widths: number[]) => void;
 }
 
 interface Tag {
@@ -174,7 +171,7 @@ type StylesType = { [key: string]: React.CSSProperties };
 
 const styles: StylesType = {
     tag: {
-        padding: 20,
+        padding: 10,
         textAlign: 'center',
         position: 'relative',
         borderRightWidth: '.1em',
@@ -193,12 +190,12 @@ const styles: StylesType = {
         overflow: 'hidden',
     },
     sliderButton: {
-        width: '2em',
-        height: '2em',
+        width: '1em',
+        height: '1em',
         backgroundColor: 'white',
         position: 'absolute',
         borderRadius: '2em',
-        right: 'calc(-1.1em)',
+        right: 'calc(-.6em)',
         top: 0,
         display: 'flex',
         justifyContent: 'center',
