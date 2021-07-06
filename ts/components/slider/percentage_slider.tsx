@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 import * as React from 'react';
 
 const colors = require('nice-color-palettes');
@@ -141,12 +143,15 @@ export const PercentageSlider: React.FC<PercentageSliderProps> = ({ pools, tags,
 
                                 setWidths(_widths);
                             };
-
+                            // tslint:disable-next-line
                             window.addEventListener('pointermove', resize);
+                            // tslint:disable-next-line
                             window.addEventListener('touchmove', resize);
 
                             const removeEventListener = () => {
+                                // tslint:disable-next-line
                                 window.removeEventListener('pointermove', resize);
+                                // tslint:disable-next-line
                                 window.removeEventListener('touchmove', resize);
                             };
 
