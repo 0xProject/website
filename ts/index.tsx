@@ -26,7 +26,7 @@ import { NextAboutJobs } from 'ts/pages/about/jobs';
 import { NextAboutMission } from 'ts/pages/about/mission';
 import { NextAboutPress } from 'ts/pages/about/press';
 import { NextAboutTeam } from 'ts/pages/about/team';
-import { Credits } from 'ts/pages/credits';
+// import { Credits } from 'ts/pages/credits';
 // import { Explore } from 'ts/pages/explore';
 
 import { AccountActivity } from 'ts/pages/account/activity';
@@ -34,8 +34,8 @@ import { Account } from 'ts/pages/account/dashboard';
 import { StakingPoolActivity } from 'ts/pages/staking/history';
 
 import { ZeroExApi } from 'ts/pages/api';
-import { CFL } from 'ts/pages/cfl';
-import { NextEcosystem } from 'ts/pages/ecosystem';
+// import { CFL } from 'ts/pages/cfl';
+// import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
 import { VoteIndex } from 'ts/pages/governance/vote_index';
 import { Next0xInstant } from 'ts/pages/instant';
@@ -51,7 +51,7 @@ import { RemoveStake } from 'ts/pages/staking/wizard/remove';
 import { TermsOfService } from 'ts/pages/terms';
 import { NextWhy } from 'ts/pages/why';
 
-import { Mesh } from 'ts/pages/mesh';
+// import { Mesh } from 'ts/pages/mesh';
 
 // Check if we've introduced an update that requires us to clear the tradeHistory local storage entries
 tradeHistoryStorage.clearIfRequired();
