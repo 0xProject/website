@@ -39,14 +39,12 @@ The term 0x Protocol is used to describe the total combined volume covering both
 ### Summary
 Below is a summary table for different attributions:
 
-| Attribution | Availability on chains | Layer | Tag | Onchain or Offchain? | Overlap with DEXes? | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| 0x Native | Ethereum | Settlement Layer | DEX | onchain | No | native volume settled on 0x exchange contracts with fired events including Fill(), rfqOrderFilled() and limitOrderFilled() |
-| 0x API | Ethereum, BSC, Polygon | Aggregator Layer | Aggregator | offchain | Yes | native + bridge volume going thru 0x API `/swap` endpoint |
-| Matcha | Ethereum, BSC, Polygon | Application Layer | Aggregator (Integrator) | offchain | Yes | volume Matcha affiliated on top of 0x API `/swap` and `/sra` endpoints |
-| 0x Protocol | Ethereum, BSC, Polygon | Global | DEX + Aggregator | onchain + offchain | Yes | combined total 0x volume with de-duplication of overlap |
-
-??? Should we remove `Onchain or Offchain?` (The table will fit correctly)
+| Attribution | Availability on chains | Layer | Tag | Overlap with DEXes? | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 0x Native | Ethereum | Settlement Layer | DEX | No | native volume settled on 0x exchange contracts with fired events including Fill(), rfqOrderFilled() and limitOrderFilled() |
+| 0x API | Ethereum, BSC, Polygon | Aggregator Layer | Aggregator | Yes | native + bridge volume going thru 0x API `/swap` endpoint |
+| Matcha | Ethereum, BSC, Polygon | Application Layer | Aggregator (Integrator) | Yes | volume Matcha affiliated on top of 0x API `/swap` and `/sra` endpoints |
+| **0x Protocol** | **Ethereum, BSC, Polygon** | **Global** | **DEX + Aggregator** | **Yes** | **combined total 0x volume with de-duplication of overlap** |
 
 *Note: since 0x Native (native exchange contracts) are not deployed on chains outside Ethereum, 0x Protocol (global volume) is same attribution as 0x API volume on BSC and Polygon at the moment.*
 
@@ -93,6 +91,7 @@ For those looking for aggregated data from all chains.
 * Multi-chain 0x API
     * All Blockchains: [analytics.0x.org](https://analytics.0x.org/)
     * Binance Smart Chain deep dive: [0x API Volume on BSC](https://metabase.spaceship.0x.org/public/dashboard/56cdb892-47bf-4798-ac86-d0d44da5620f)
+
 * 0x API Integrator Deep dive (requires affiliate address)
     * All Blockchains: [Multichain 0x API Volume w/ Affiliate](https://metabase.spaceship.0x.org/public/dashboard/e79bb86a-6777-4655-88fd-6453fdbefe0f)
     * Ethereum: https://0xtracker.com/apps
@@ -149,6 +148,10 @@ For teams with budget for an API plan on Coinmarketcap, they currently expose 0x
 ### Disclaimer
 
 We constantly work with the teams and maintain our external reporting on platforms mentioned above. Please refer to the list for reliable 0x data decoding. We are actively exploring partnerships with more data services and tools to expand external reporting offerings.
+
+## 🔎 Use the source (Advanced) ⛓️
+
+Do you believe that the truth can only be found in the blokchain? Our [event scraper](https://github.com/0xProject/0x-event-pipeline) is open source and only requires an RPC endpoint and a Postgres DB (Contributions are also welcome).
 
 Feel free to reach out to [danning@0xproject.com](mailto:danning@0xproject.com) (@sui414) and [jorge@0xproject.com](mailto:jorge@0xproject.com) (@ktl_xv) for any questions!
 
