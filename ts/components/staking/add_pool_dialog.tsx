@@ -1,4 +1,3 @@
-import { BigNumber } from '@0x/utils';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
 import React, { FC, useMemo, useState } from 'react';
@@ -7,8 +6,8 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { Input } from 'ts/components/modals/input';
-import { Heading, Paragraph } from 'ts/components/text';
 import { Thumbnail } from 'ts/components/staking/thumbnail.tsx';
+import { Heading, Paragraph } from 'ts/components/text';
 
 import { useSearch } from 'ts/hooks/use_search';
 import { zIndex } from 'ts/style/z_index';

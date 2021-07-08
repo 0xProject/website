@@ -12,18 +12,15 @@ import { stakingUtils } from 'ts/utils/staking_utils';
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { AddPoolDialog } from 'ts/components/staking/add_pool_dialog';
-import { Loading } from 'ts/components/portal/loading';
 import { ZRXInput } from 'ts/components/staking/staking_calculator';
 import { PercentageSlider } from 'ts/components/slider/percentage_slider';
 
 import { Heading } from 'ts/components/text';
-import { Select, SelectItemConfig } from 'ts/components/ui/select';
 import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { colors } from 'ts/style/colors';
-import { PoolEpochDelegatorStats, PoolWithStats } from 'ts/types';
+import { PoolWithStats } from 'ts/types';
 
-const paletteColors = require('nice-color-palettes');
 const randPalette = ['#fe4365', '#fc9d9a', '#f9cdad', '#c8c8a9', '#83af9b'];
 
 const ButtonClose = styled(Button)`
@@ -75,14 +72,6 @@ const StakingPoolLabel = styled.div`
 const HeadingWrapper = styled.div`
     margin: 1rem 0;
     font-weight: 400;
-`;
-
-const RewardRow = styled.div`
-    display: flex;
-    justify-content: space-between;
-    font-size: 16px;
-    padding-bottom: 0.75rem;
-    margin-bottom: 0.85rem;
 `;
 
 const ColorBox = styled.div`
@@ -137,9 +126,6 @@ interface StakeRebalanceProps {
     rebalanceStake: (rebalanceStakeData: MoveStakeData[]) => void;
 }
 export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolData, stakingPools, rebalanceStake }) => {
-    const networkId = useSelector((state: State) => state.networkId);
-    const apiClient = useAPIClient(networkId);
-
     const originalSumOfZrx = poolData
         .map((item) => item.zrxStaked)
         .reduce((accumulator, currentValue) => accumulator + currentValue);
@@ -327,8 +313,6 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
                 }
             }
         });
-
-        console.log(additions, reductions);
 
         if (additions.length > 0) {
             const data = _.flatMap<PoolDiff, MoveStakeData>(additions, (item) => {
