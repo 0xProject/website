@@ -696,7 +696,6 @@ export enum Key {
     Integrate0xInstant = 'INTEGRATE_0X_INSTANT',
     Integrate0xInstantDescription = 'INTEGRATE_0X_INSTANT_DESCRIPTION',
     ViewAllDocumentation = 'VIEW_ALL_DOCUMENTATION',
-    Sandbox = 'SANDBOX',
     Github = 'GITHUB',
     LiveChat = 'LIVE_CHAT',
     LibrariesAndTools = 'LIBRARIES_AND_TOOLS',
