@@ -94,12 +94,12 @@ render(
                                 {/* Next (new site) routes */}
                                 <Route exact={true} path="/" component={NextLanding} />
                                 <Route exact={true} path={WebsitePaths.Why} component={NextWhy} />
-                                <Route exact={true} path={WebsitePaths.MarketMaker} component={NextMarketMaker} />
+                                {/* <Route exact={true} path={WebsitePaths.MarketMaker} component={NextMarketMaker} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Explore} component={Explore} /> */}
-                                <Route exact={true} path={WebsitePaths.Credits} component={Credits} />
-                                <Route exact={true} path={WebsitePaths.Instant} component={Next0xInstant} />
+                                {/* <Route exact={true} path={WebsitePaths.Credits} component={Credits} /> */}
+                                {/* <Route exact={true} path={WebsitePaths.Instant} component={Next0xInstant} /> */}
                                 <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit} />
-                                <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem} />
+                                {/* <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem} /> */}
 
                                 <Route exact={true} path={WebsitePaths.ZeroExApi} component={ZeroExApi} />
 
@@ -120,14 +120,14 @@ render(
                                 <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex} />
 
                                 <Route exact={true} path={WebsitePaths.Extensions} component={Extensions} />
-                                <Route exact={true} path={WebsitePaths.AssetSwapperPage} component={CFL} />
+                                {/* <Route exact={true} path={WebsitePaths.AssetSwapperPage} component={CFL} /> */}
                                 <Route exact={true} path={WebsitePaths.PrivacyPolicy} component={PrivacyPolicy} />
                                 <Route exact={true} path={WebsitePaths.TermsOfService} component={TermsOfService} />
                                 <Route exact={true} path={WebsitePaths.AboutMission} component={NextAboutMission} />
                                 <Route exact={true} path={WebsitePaths.AboutTeam} component={NextAboutTeam} />
                                 <Route exact={true} path={WebsitePaths.AboutPress} component={NextAboutPress} />
                                 <Route exact={true} path={WebsitePaths.AboutJobs} component={NextAboutJobs} />
-                                <Route exact={true} path={WebsitePaths.Mesh} component={Mesh} />
+                                {/* <Route exact={true} path={WebsitePaths.Mesh} component={Mesh} /> */}
                                 {/*
                                   Note(ez): We remove/replace all old routes with next routes
                                   once we're ready to put a ring on it. for now let's keep em there for reference
