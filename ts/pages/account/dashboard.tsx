@@ -454,14 +454,18 @@ export const Account: React.FC<AccountProps> = () => {
     }
 
     const nextEpochStart = nextEpochStats && new Date(nextEpochStats.epochStart.timestamp);
-    const poolData = delegatorData.forCurrentEpoch.poolData.map((delegatorPoolStats: PoolEpochDelegatorStats) => {
-        const poolId = delegatorPoolStats.poolId;
-        const pool = poolWithStatsMap[poolId];
-        return { pool, zrxStaked: delegatorPoolStats.zrxStaked };
-    });
+    const poolData = delegatorData.forCurrentEpoch.poolData
+        .map((delegatorPoolStats: PoolEpochDelegatorStats) => {
+            const poolId = delegatorPoolStats.poolId;
+            const pool = poolWithStatsMap[poolId];
+            return { pool, zrxStaked: delegatorPoolStats.zrxStaked };
+        })
+        .filter((item) => item.zrxStaked > 0);
 
     const rebalanceStake = (rebalanceStakeData: MoveStakeData[]) => {
-        batchMoveStake(rebalanceStakeData, () => {});
+        batchMoveStake(rebalanceStakeData, () => {
+            setStakeRebalanceOpen(false);
+        });
     };
     return (
         <StakingPageLayout title="0x Staking | Account">

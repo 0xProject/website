@@ -273,6 +273,7 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
                     toPoolId: poolId,
                     zrxAmount: parseFloat((diff - accumulatedAmount).toFixed(2)),
                 });
+                continue;
             }
             accumulatedAmount += availAmt;
             moveStakeData.push({
@@ -372,12 +373,14 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
                                 );
                             })}
                         </StakingPoolsContainer>
-                        <PercentageSlider
-                            pools={currentPoolData}
-                            tags={poolTags}
-                            widths={sliderPercentages}
-                            setWidths={updateSliderPercentages}
-                        />
+                        {currentPoolData.length > 1 && (
+                            <PercentageSlider
+                                pools={currentPoolData}
+                                tags={poolTags}
+                                widths={sliderPercentages}
+                                setWidths={updateSliderPercentages}
+                            />
+                        )}
                         <ButtonsContainer>
                             {currentPoolData.length < 4 && (
                                 <AddPoolButton
