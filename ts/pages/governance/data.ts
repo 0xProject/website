@@ -522,6 +522,45 @@ export const proposals: Proposals = {
             ],
         },
     },
+    89: {
+        zeipId: 89,
+        title: 'ETH support in MultiplexFeature',
+        summary: [
+            `This ZEIP adds various improvements to MultiplexFeature, most notably the ability to wrap/unwrap ETH as a convenience to the user.`,
+            `This reduces the cost of ETH-based trading for users in certain execution flows.`,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/89',
+        voteStartDate: moment(1626195600, 'X'),
+        voteEndDate: moment(1626454800, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `This feature will significantly reduce the cost of trades involving ETH for all users and integrations of 0xAPI`,
+            ],
+            rating: 3,
+            links: [
+                {
+                    text: 'Features specifications',
+                    url: 'https://protocol.0x.org/',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Contracts were thoroughly reviewed internally, and spot-checked by Consensys Diligence. No vulnerabilities were found.`,
+                `However, these changes do modify a risk-sensitive part of the codebase: the execution within a privleged environment.`,
+                `0x V4 architecture comes with the ability to modify or rollback specific features, without halting the entire pipeline of smart contracts. This means that if a vulnerability is found (0x Labs offers generous bug bounties), it is possible to rollback the functionality that exposes the risk.`,
+            ],
+            rating: 2,
+            links: [
+                {
+                    text: '0x v4 Bug Bounty',
+                    url: 'https://blog.0xproject.com/0x-protocol-v4-bug-bounty-fd0c1942b9a',
+                },
+            ],
+        },
+    },
 };
 
 export const stagingProposals: Proposals = {
@@ -545,6 +584,9 @@ export const stagingProposals: Proposals = {
     },
     88: {
         ...proposals[88],
+    },
+    89: {
+        ...proposals[89],
     },
 };
 
