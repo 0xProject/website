@@ -9,9 +9,6 @@ Based on the most common use cases, we will introduce how to get data on differe
 
 0x Native covers all the volume settled through 0x exchange contracts, which essentially is 0x native liquidity pool. Orders from 0x open order book and RFQ system are settled on them. Besides that, as it’s an open-source onchain infrastructure that any aggregator can use, 1inch exchange and Tokenlon have actively been using the 0x exchange contracts to settle trades. Thus this portion of volume has an overlap with other aggregators’ volume, but no overlap with other AMM DEXes.
 
-???? Professional MM + /sra
-Ooh, 0x exchange contracts does not include 0x Exchange Proxy?
-
 ### 2. The Aggregator Layer - 0x API (`/swap` endpoint)
 
 0x API is the endpoint that allows any integrator or individual to fetch available quotes from "makers" to match their own "taker" order.
@@ -25,7 +22,7 @@ It returns the best price source (or sources) to users and prepare the routing i
 
 This portion has an overlap with other DEXes' volume as the bridge liquidity will be settled on their origin DEXes, but there’s no overlap with other aggregators.
 
-For a list of all sources see http://help.matcha.xyz/en/articles/4375069-what-exchange-networks-does-matcha-aggregate-liquidity-from
+For a list of all sources, see: [What exchange networks does Matcha aggregate liquidity from?](http://help.matcha.xyz/en/articles/4375069-what-exchange-networks-does-matcha-aggregate-liquidity-from)
 
 ### 3. The Application Layer - Matcha
 
@@ -50,7 +47,7 @@ Below is a summary table for different attributions:
 
 ## 🧮 Available Data Tools 📎
 
-![Existing Data Sources](/images/docs/existing-data-sources.png)
+![Existing Data Sources](public/images/docs/existing-data-sources-updated.png)
 
 ### 1.1 0xTracker
 
@@ -91,12 +88,14 @@ For those looking for aggregated data from all chains.
 * Multi-chain 0x API
     * All Blockchains: [analytics.0x.org](https://analytics.0x.org/)
     * Binance Smart Chain deep dive: [0x API Volume on BSC](https://metabase.spaceship.0x.org/public/dashboard/56cdb892-47bf-4798-ac86-d0d44da5620f)
-
-* 0x API Integrator Deep dive (requires affiliate address)
+* 0x API Integrator Deep dive (requires affiliate address input)
     * All Blockchains: [Multichain 0x API Volume w/ Affiliate](https://metabase.spaceship.0x.org/public/dashboard/e79bb86a-6777-4655-88fd-6453fdbefe0f)
     * Ethereum: https://0xtracker.com/apps
     * Binance Smart Chain: [BSC Volume w/ Affiliate](https://metabase.spaceship.0x.org/public/dashboard/1cde2fab-7d96-4021-99e9-07278c2f9543)
     * Polygon: [Polygon Volume w/ Affiliate](https://metabase.spaceship.0x.org/public/dashboard/14293014-fc51-44f8-8388-439475b0e6b1)
+
+* For Individual Trader (requires a trader address input)
+    * [Your 0x API Trade Explorer on BSC](https://metabase.spaceship.0x.org/public/dashboard/0c403d9c-8c58-4594-a9b9-1bfd091b0615)
 
 
 ### 1.4 The Graph
@@ -104,11 +103,12 @@ For those looking for aggregated data from all chains.
 For those looking for a GraphQL endpoint.
 
 0x Labs maintains the subgraph for the latest 0x API `/swap` endpoint, which allows to explore **0x API** data on Ethereum:
-https://thegraph.com/explorer/subgraph/dekz/zeroex_exchangeproxy?selected=playground
+
+New subgraph: [0x-exchange-proxy](https://thegraph.com/explorer/subgraph?id=0x36c057dd1850fad3c075ba83105e67d2448dedaf-0&version=0x36c057dd1850fad3c075ba83105e67d2448dedaf-0-0)
+Legacy subgraph: [ZeroEx_ExchangeProxy](https://thegraph.com/explorer/subgraph/dekz/zeroex_exchangeproxy?selected=playground)
 
 Other chains' subgraph are currently not planned as it requires reliable & in-sync subgraphs of certain DEXes from where liquidity is sourced.
 
-!!!! Our subgraph does not provide the USD value of each fill nor trade
 
 ### 1.5 Dune Analytics
 
@@ -116,9 +116,9 @@ For those looking for retrospective data, charts and stats.
 
 If you are just reporting for historic stats, please check out these dashboards:
 
-* 0x Trading Activities https://www.duneanalytics.com/0x/0x-trading-activity (covers 0x Protocol, 0x API, 0x Native)
-* Matcha 🍵 https://www.duneanalytics.com/0x/matcha (covers Matcha)
-* 0x Staking https://www.duneanalytics.com/0x/0x-staking-stats
+* [0x Trading Activities](https://www.duneanalytics.com/0x/0x-trading-activity) (covers 0x Protocol, 0x API, 0x Native)
+* [Matcha 🍵 ](https://www.duneanalytics.com/0x/matcha) (covers Matcha)
+* [0x Staking](https://www.duneanalytics.com/0x/0x-staking-stats)
 
 
 Also comparison with other DEXes & Aggregators on:
@@ -126,23 +126,7 @@ Also comparison with other DEXes & Aggregators on:
 * DEX metrics 📊 https://explore.duneanalytics.com/dashboard/dex-metrics (covers 0x API, 0x Native)
 * Aggregator Market Share 🏦 https://duneanalytics.com/danning.sui/dex-aggregators-by-sui414 (covers 0x API)
 
-
 If you are looking for stats on specific dates or attribution, you can click into the queries in the above dashboards, to simply fork the queries and change filter for dates or affiliate/relayer in SQL.
-
-### 1.6 Coingecko
-
-For teams and individuals building projects, Coingecko has a free tier API, which currently expose 0x API volume on Ethereum:
-
-* Page Link: https://www.coingecko.com/en/exchanges/0x-protocol
-* API Endpoint Link: https://api.coingecko.com/api/v3/exchanges/zero_ex/volume_chart?days=1
-* API Docs: https://www.coingecko.com/api/documentations/v3
-
-### 1.7 Coinmarketcap
-
-For teams with budget for an API plan on Coinmarketcap, they currently expose 0x Native volume on Ethereum:
-
-* Page Link: https://coinmarketcap.com/exchanges/0x-protocol/
-* API Docs: https://coinmarketcap.com/api/documentation/v1/
 
 
 ### Disclaimer
@@ -151,7 +135,10 @@ We constantly work with the teams and maintain our external reporting on platfor
 
 ## 🔎 Use the source (Advanced) ⛓️
 
-Do you believe that the truth can only be found in the blokchain? Our [event scraper](https://github.com/0xProject/0x-event-pipeline) is open source and only requires an RPC endpoint and a Postgres DB (Contributions are also welcome).
+Do you believe that the truth can only be found in the blokchain? 
+- If you don't have a data pipeline yet -- our [event scraper](https://github.com/0xProject/0x-event-pipeline) is open source and only requires an RPC endpoint and a Postgres DB (Contributions are also welcome).
+- If you already have a full copy of blockchain data ETL, with low level tables processed into relational database -- our [folder](https://github.com/duneanalytics/abstractions/tree/master/ethereum/zeroex) under DuneAnalytics' collaborative repo will be the best reference.
 
 Feel free to reach out to [danning@0xproject.com](mailto:danning@0xproject.com) (@sui414) and [jorge@0xproject.com](mailto:jorge@0xproject.com) (@ktl_xv) for any questions!
 
+The data must flow.
