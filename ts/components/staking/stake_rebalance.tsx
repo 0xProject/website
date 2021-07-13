@@ -2,11 +2,9 @@ import * as React from 'react';
 
 import * as _ from 'lodash';
 
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { MoveStakeData } from 'ts/hooks/use_stake';
-import { State } from 'ts/redux/reducer';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { Button } from 'ts/components/button';
@@ -16,7 +14,6 @@ import { ZRXInput } from 'ts/components/staking/staking_calculator';
 import { PercentageSlider } from 'ts/components/slider/percentage_slider';
 
 import { Heading } from 'ts/components/text';
-import { useAPIClient } from 'ts/hooks/use_api_client';
 
 import { colors } from 'ts/style/colors';
 import { PoolWithStats } from 'ts/types';
