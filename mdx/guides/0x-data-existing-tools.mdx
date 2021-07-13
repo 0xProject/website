@@ -7,7 +7,7 @@ Based on the most common use cases, we will introduce how to get data on differe
 
 ### 1. The DEX Layer  - 0x Native
 
-0x Native covers all the volume settled through 0x exchange contracts, which essentially is 0x native liquidity pool. Orders from 0x open order book and RFQ system are settled on them. Besides that, as it’s an open-source onchain infrastructure that any aggregator can use, 1inch exchange and Tokenlon have actively been using the 0x exchange contracts to settle trades. Thus this portion of volume has an overlap with other aggregators’ volume, but no overlap with other AMM DEXes.
+0x Native volume covers orders conforming to one of the 0x Native Order formats (currently two: Limit Order and Rfq Order) and are settled by 0x smart contracts. Orders generated from 0x open order book and RFQ system are settled on them. Besides that, as it’s an open-source onchain infrastructure that any aggregator can use, 1inch exchange and Tokenlon have actively been using the 0x exchange contracts to settle trades. Thus this portion of volume has an overlap with other aggregators’ volume, but no overlap with other AMM DEXes.
 
 ### 2. The Aggregator Layer - 0x API (`/swap` endpoint)
 
