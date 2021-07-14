@@ -1,4 +1,4 @@
-This guide introduces the dashboards and tools to available to explore 0x data, for different needs. In this 1st piece, we are mainly focusing on ready-made analytics solutions that don’t require advanced data scraping. The following solutions are ideal for teams working on analytics product or data information sites, looking to integrate 0x data with minimum effort; or for DeFi researchers/analysts looking for ready made, reliable sources about the 0x ecosystem.
+This guide introduces the dashboards and tools to available to explore 0x data, for different needs. In this piece, we are mainly focusing on ready-made analytics solutions that don’t require advanced data scraping. The following solutions are ideal for teams working on analytics product or data information sites, looking to integrate 0x data with minimum effort; or for DeFi researchers/analysts looking for ready made, reliable sources about the 0x ecosystem. At the end of the document we provide links to resources for advanced use cases.
 
 ## 🗺️ Scope and Concepts ✏️
 
@@ -26,7 +26,7 @@ For a list of all sources, see: [What exchange networks does Matcha aggregate li
 
 ### 3. The Application Layer - Matcha and other 0x API Integrators
 
-[Matcha](https://matcha.xyz) is user facing product sitting on top of 0x API `/swap` and `/sra` endpoints. It fetches "maker" order via `/swap` endpoints for consumers’ **market orders**; and submit "maker" order via `/sra` endpoints for consumers’ **limit orders** which can later be sourced and potentially filled via `/swap` endpoint.
+[Matcha](https://matcha.xyz) is user facing product sitting on top of 0x API `/swap` and `/sra` endpoints. It fetches "maker" order via `/swap` endpoints for consumers’ **market orders**; and submit "maker" order via `/sra` endpoints for consumers’ **limit orders** which can later be sourced and potentially filled via `/swap` endpoint. Other integrators work in a similar way, but may include additional sources.
 
 ### 4. The Global Total - 0x Protocol
 
@@ -47,7 +47,7 @@ Below is a summary table for different attributions:
 
 ## 🧮 Available Data Tools 📎
 
-<img src="https://raw.githubusercontent.com/0xProject/website/feat/docs/data/add-existing-tools/public/images/docs/existing-data-sources-updated.png">
+![Existing Data Tools Diagram](/images/docs/existing-data-sources.png)
 
 ### 1.1 0xTracker
 
@@ -104,7 +104,7 @@ While we work on that, we have produced a set of Public Dashboards that cover 0x
 
 0x Labs maintains the subgraph for the latest 0x API `/swap` endpoint, which allows to explore **0x API** data on Ethereum:
 
-- New subgraph: [0x-exchange-proxy](https://thegraph.com/explorer/subgraph?id=0x36c057dd1850fad3c075ba83105e67d2448dedaf-0&version=0x36c057dd1850fad3c075ba83105e67d2448dedaf-0-0)  
+- New subgraph: [0x-exchange-proxy](https://thegraph.com/explorer/subgraph?id=0x36c057dd1850fad3c075ba83105e67d2448dedaf-0&version=0x36c057dd1850fad3c075ba83105e67d2448dedaf-0-0)
 - Legacy subgraph: [Exchange V4](https://thegraph.com/legacy-explorer/subgraph/0xproject/exchange-v4)
 
 Other chains' subgraph are currently not planned as it requires reliable & in-sync subgraphs of certain DEXes from where liquidity is sourced.
@@ -135,7 +135,7 @@ We constantly work with the teams and maintain our external reporting on platfor
 
 ## 🔎 Decode it from Scratch (Advanced) ⛓️
 
-Do you believe that the truth can only be found in the blokchain? 
+Do you believe that the truth can only be found in the blokchain?
 - If you don't have a data pipeline yet - our [event scraper](https://github.com/0xProject/0x-event-pipeline) is open source and only requires an RPC endpoint and a Postgres DB (Contributions are also welcome).
 - If you already have a full copy of blockchain data ETL, with low level tables processed into relational database - our [folder](https://github.com/duneanalytics/abstractions/tree/master/ethereum/zeroex) under DuneAnalytics' collaborative repo will be the best reference.
 
