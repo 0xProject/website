@@ -40,7 +40,7 @@ Below is a summary table for different attributions:
 | --- | --- | --- | --- | --- | --- |
 | 0x Native | Ethereum | Settlement Layer | DEX | No | native volume settled on 0x exchange contracts with fired events including Fill(), rfqOrderFilled() and limitOrderFilled() |
 | 0x API | Ethereum, BSC, Polygon | Aggregator Layer | Aggregator | Yes | native + bridge volume going thru 0x API `/swap` endpoint |
-| Matcha | Ethereum, BSC, Polygon | Application Layer | Aggregator (Integrator) | Yes | volume Matcha affiliated on top of 0x API `/swap` and `/sra` endpoints |
+| 0x API Integrator (e.g. Matcha) | Ethereum, BSC, Polygon | Application Layer | Aggregator (Integrator) | Yes | volume Integrator affiliated on top of 0x API `/swap` and `/sra` endpoints |
 | **0x Protocol** | **Ethereum, BSC, Polygon** | **Global** | **DEX + Aggregator** | **Yes** | **combined total 0x volume with de-duplication of overlap** |
 
 *Note: since 0x Native (native exchange contracts) are not deployed on chains outside Ethereum, 0x Protocol (global volume) is same attribution as 0x API volume on BSC and Polygon at the moment.*
@@ -72,7 +72,7 @@ Quick links:
 
 * [0x Protocol](https://api.0xtracker.com/stats/network) (global volume)
 * [0x API](https://api.0xtracker.com/apps/0x-api?statsPeriodFrom=2021-06-01&statsPeriodTo=2021-06-30)
-* [Matcha](https://api.0xtracker.com/apps/matcha?statsPeriodFrom=2021-06-01&statsPeriodTo=2021-06-30)
+* [0x API Integrator (e.g. Matcha)](https://api.0xtracker.com/apps/matcha?statsPeriodFrom=2021-06-01&statsPeriodTo=2021-06-30)
 
 
 0xTracker is currently covering 0x on Ethereum Mainnet only. We at 0x Labs have plans to expand it so as to cover 0x in all other blockchains where 0x is present. We consider **0xTracker the first step towards a fully-fledged 0x Analytics hub**.
