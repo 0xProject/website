@@ -278,6 +278,15 @@
             "topics": ["0x API"],
             "difficulty": "Advanced",
             "path": "guides/rfqt-in-the-0x-api.mdx"
+        },
+        "0x-data-existing-tools": {
+            "title": "How to Get 0x and Matcha Data",
+            "subtitle": "With Existing Tools and Resources",
+            "description": "A list of sources for exploring 0x data",
+            "tags": ["Data"],
+            "topics": ["Data"],
+            "difficulty": "Beginner",
+            "path": "guides/0x-data-existing-tools.mdx"
         }
     },
     "tools": {

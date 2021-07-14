@@ -56,4 +56,8 @@ export const TableInner = styled.table`
         color: ${colors.brandDark};
         font-family: inherit;
     }
+
+    strong {
+        font-weight: bold;
+    }
 `;
