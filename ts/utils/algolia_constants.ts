@@ -4,6 +4,8 @@ import { ObjectMap } from '@0x/types';
 
 const ALGOLIA_MAX_NUMBER_HITS = 1000; // Limit set by algolia
 
+export const ALGOLIA_MAX_NUMBER_FACETS = 15;
+
 export const ALGOLIA_APP_ID = '39X6WOJZKW';
 const ALGOLIA_CLIENT_API_KEY = '6acba761a34d99781628c6178af1e16c';
 export const searchClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_CLIENT_API_KEY);
