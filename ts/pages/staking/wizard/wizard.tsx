@@ -76,6 +76,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
 
     const [stakingOrAllowanceError, setStakingOrAllowanceError] = React.useState<Error | undefined>(undefined);
     const [stakingPools, setStakingPools] = useState<PoolWithStats[] | undefined>(undefined);
+    const [allStakingPools, setAllStakingPools] = useState<PoolWithStats[] | undefined>(undefined);
+
     const [selectedStakingPools, setSelectedStakingPools] = React.useState<UserStakingChoice[] | undefined>(undefined);
     const [currentEpochStats, setCurrentEpochStats] = useState<Epoch | undefined>(undefined);
     const [nextEpochStats, setNextEpochStats] = useState<Epoch | undefined>(undefined);
@@ -99,10 +101,12 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
         const fetchAndSetPools = async () => {
             try {
                 const poolsResponse = await apiClient.getStakingPoolsAsync();
+                setAllStakingPools(poolsResponse.stakingPools);
                 const activePools = (poolsResponse.stakingPools || []).filter(stakingUtils.isPoolActive);
                 setStakingPools(activePools);
             } catch (err) {
                 logUtils.warn(err);
+                setAllStakingPools([]);
                 setStakingPools([]);
                 errorReporter.report(err);
             }
@@ -214,6 +218,7 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                                     poolId={poolId}
                                     setSelectedStakingPools={setSelectedStakingPools}
                                     stakingPools={stakingPools}
+                                    allStakingPools={allStakingPools}
                                     zrxBalanceBaseUnitAmount={zrxBalanceBaseUnitAmount}
                                     zrxBalance={zrxBalance}
                                     providerState={providerState}
@@ -267,6 +272,7 @@ export interface SetupStakingProps {
     onOpenConnectWalletDialog: () => void;
     onGoToNextStep: () => void;
     stakingPools?: PoolWithStats[];
+    allStakingPools?: PoolWithStats[];
     zrxBalanceBaseUnitAmount?: BigNumber;
     zrxBalance?: BigNumber;
     poolId?: string;
@@ -287,6 +293,7 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
     providerState,
     setSelectedStakingPools,
     stakingPools,
+    allStakingPools,
     onOpenConnectWalletDialog,
     zrxBalanceBaseUnitAmount,
     zrxBalance,
@@ -338,7 +345,7 @@ const SetupStaking: React.FC<SetupStakingProps> = ({
                 <MarketMakerStakeInputPane
                     poolId={poolId}
                     zrxBalance={zrxBalance}
-                    stakingPools={stakingPools}
+                    stakingPools={allStakingPools}
                     onOpenConnectWalletDialog={onOpenConnectWalletDialog}
                     setSelectedStakingPools={setSelectedStakingPools}
                     onGoToNextStep={onGoToNextStep}
