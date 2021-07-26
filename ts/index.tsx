@@ -26,7 +26,7 @@ import { NextAboutJobs } from 'ts/pages/about/jobs';
 import { NextAboutMission } from 'ts/pages/about/mission';
 import { NextAboutPress } from 'ts/pages/about/press';
 import { NextAboutTeam } from 'ts/pages/about/team';
-import { Credits } from 'ts/pages/credits';
+// import { Credits } from 'ts/pages/credits';
 // import { Explore } from 'ts/pages/explore';
 
 import { AccountActivity } from 'ts/pages/account/activity';
@@ -34,14 +34,14 @@ import { Account } from 'ts/pages/account/dashboard';
 import { StakingPoolActivity } from 'ts/pages/staking/history';
 
 import { ZeroExApi } from 'ts/pages/api';
-import { CFL } from 'ts/pages/cfl';
-import { NextEcosystem } from 'ts/pages/ecosystem';
+// import { CFL } from 'ts/pages/cfl';
+// import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
 import { VoteIndex } from 'ts/pages/governance/vote_index';
-import { Next0xInstant } from 'ts/pages/instant';
+// import { Next0xInstant } from 'ts/pages/instant';
 import { NextLanding } from 'ts/pages/landing';
 import { NextLaunchKit } from 'ts/pages/launch_kit';
-import { NextMarketMaker } from 'ts/pages/market_maker';
+// import { NextMarketMaker } from 'ts/pages/market_maker';
 import { PrivacyPolicy } from 'ts/pages/privacy';
 import { StakingIndex } from 'ts/pages/staking/home';
 import { StakingPool } from 'ts/pages/staking/staking_pool';
@@ -51,7 +51,7 @@ import { RemoveStake } from 'ts/pages/staking/wizard/remove';
 import { TermsOfService } from 'ts/pages/terms';
 import { NextWhy } from 'ts/pages/why';
 
-import { Mesh } from 'ts/pages/mesh';
+// import { Mesh } from 'ts/pages/mesh';
 
 // Check if we've introduced an update that requires us to clear the tradeHistory local storage entries
 tradeHistoryStorage.clearIfRequired();
@@ -94,12 +94,12 @@ render(
                                 {/* Next (new site) routes */}
                                 <Route exact={true} path="/" component={NextLanding} />
                                 <Route exact={true} path={WebsitePaths.Why} component={NextWhy} />
-                                <Route exact={true} path={WebsitePaths.MarketMaker} component={NextMarketMaker} />
+                                {/* <Route exact={true} path={WebsitePaths.MarketMaker} component={NextMarketMaker} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Explore} component={Explore} /> */}
-                                <Route exact={true} path={WebsitePaths.Credits} component={Credits} />
-                                <Route exact={true} path={WebsitePaths.Instant} component={Next0xInstant} />
+                                {/* <Route exact={true} path={WebsitePaths.Credits} component={Credits} /> */}
+                                {/* <Route exact={true} path={WebsitePaths.Instant} component={Next0xInstant} /> */}
                                 <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit} />
-                                <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem} />
+                                {/* <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem} /> */}
 
                                 <Route exact={true} path={WebsitePaths.ZeroExApi} component={ZeroExApi} />
 
@@ -120,14 +120,14 @@ render(
                                 <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex} />
 
                                 <Route exact={true} path={WebsitePaths.Extensions} component={Extensions} />
-                                <Route exact={true} path={WebsitePaths.AssetSwapperPage} component={CFL} />
+                                {/* <Route exact={true} path={WebsitePaths.AssetSwapperPage} component={CFL} /> */}
                                 <Route exact={true} path={WebsitePaths.PrivacyPolicy} component={PrivacyPolicy} />
                                 <Route exact={true} path={WebsitePaths.TermsOfService} component={TermsOfService} />
                                 <Route exact={true} path={WebsitePaths.AboutMission} component={NextAboutMission} />
                                 <Route exact={true} path={WebsitePaths.AboutTeam} component={NextAboutTeam} />
                                 <Route exact={true} path={WebsitePaths.AboutPress} component={NextAboutPress} />
                                 <Route exact={true} path={WebsitePaths.AboutJobs} component={NextAboutJobs} />
-                                <Route exact={true} path={WebsitePaths.Mesh} component={Mesh} />
+                                {/* <Route exact={true} path={WebsitePaths.Mesh} component={Mesh} /> */}
                                 {/*
                                   Note(ez): We remove/replace all old routes with next routes
                                   once we're ready to put a ring on it. for now let's keep em there for reference
