@@ -214,15 +214,15 @@ export const Account: React.FC<AccountProps> = () => {
             }, {});
 
             const _currentEpochStakeMap = delegatorResponse.forCurrentEpoch.poolData.reduce<{ [key: string]: number }>(
-                (memo, poolData) => {
-                    memo[poolData.poolId] = poolData.zrxStaked || 0;
+                (memo, pData) => {
+                    memo[pData.poolId] = pData.zrxStaked || 0;
                     return memo;
                 },
                 {},
             );
             const _nextEpochStakeMap = delegatorResponse.forNextEpoch.poolData.reduce<{ [key: string]: number }>(
-                (memo, poolData) => {
-                    memo[poolData.poolId] = poolData.zrxStaked || 0;
+                (memo, pData) => {
+                    memo[pData.poolId] = pData.zrxStaked || 0;
                     return memo;
                 },
                 {},
@@ -267,12 +267,12 @@ export const Account: React.FC<AccountProps> = () => {
                 .filter((p) => !pendingUnstakePoolSet.has(p.poolId) && p.zrxStaked > 0);
 
             const _votingPowerMap = votingPowerPools.reduce<{ [key: string]: number }>(
-                (memo, poolData) => {
-                    if (poolData.poolId !== DEFAULT_POOL_ID) {
-                        memo[poolData.poolId] = poolData.zrxStaked / 2 || 0;
-                        memo.self += poolData.zrxStaked / 2 || 0;
+                (memo, pData) => {
+                    if (pData.poolId !== DEFAULT_POOL_ID) {
+                        memo[pData.poolId] = pData.zrxStaked / 2 || 0;
+                        memo.self += pData.zrxStaked / 2 || 0;
                     } else {
-                        memo.selfDelegated += poolData.zrxStaked || 0;
+                        memo.selfDelegated += pData.zrxStaked || 0;
                     }
                     return memo;
                 },
@@ -314,9 +314,7 @@ export const Account: React.FC<AccountProps> = () => {
 
     React.useEffect(() => {
         const fetchAvailableRewards = async () => {
-            const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter(
-                (poolData) => poolData.rewardsInEth > 0,
-            );
+            const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter((pData) => pData.rewardsInEth > 0);
 
             const undelegatedBalancesBaseUnits = await stakingContract
                 .getOwnerStakeByStatus(account.address, StakeStatus.Undelegated)
@@ -331,8 +329,8 @@ export const Account: React.FC<AccountProps> = () => {
             setUndelegatedBalanceBaseUnits(undelegatedInBothEpochsBaseUnits);
 
             const poolRewards: PoolReward[] = await Promise.all(
-                poolsWithAllTimeRewards.map(async (poolData) => {
-                    const paddedHexPoolId = hexUtils.leftPad(hexUtils.toHex(poolData.poolId));
+                poolsWithAllTimeRewards.map(async (pData) => {
+                    const paddedHexPoolId = hexUtils.leftPad(hexUtils.toHex(pData.poolId));
 
                     const availableRewardInEth = await stakingContract
                         .computeRewardBalanceOfDelegator(paddedHexPoolId, account.address)
@@ -340,7 +338,7 @@ export const Account: React.FC<AccountProps> = () => {
 
                     // TODO(kimpers): There is some typing issue here, circle back later to remove the BigNumber conversion
                     return {
-                        poolId: poolData.poolId,
+                        poolId: pData.poolId,
                         rewardsInEth: Web3Wrapper.toUnitAmount(
                             new BigNumber(availableRewardInEth.toString()),
                             constants.DECIMAL_PLACES_ETH,
