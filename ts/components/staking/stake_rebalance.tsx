@@ -9,9 +9,9 @@ import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
+import { PercentageSlider } from 'ts/components/slider/percentage_slider';
 import { AddPoolDialog } from 'ts/components/staking/add_pool_dialog';
 import { ZRXInput } from 'ts/components/staking/staking_calculator';
-import { PercentageSlider } from 'ts/components/slider/percentage_slider';
 
 import { Heading } from 'ts/components/text';
 
@@ -165,8 +165,8 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
     };
 
     const addPool = (poolId: string) => {
-        const pool = stakingPools.find((pool) => {
-            return pool.poolId === poolId;
+        const pool = stakingPools.find((stakingPool) => {
+            return stakingPool.poolId === poolId;
         });
         const updatedCurrentPoolData = [
             ...currentPoolData,
@@ -261,8 +261,7 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
         const { poolId, diff } = poolDiff;
         let accumulatedAmount = 0;
         const moveStakeData = [];
-        for (let index = 0; index < reductions.length; index++) {
-            const element = reductions[index];
+        for (const element of reductions) {
             const availAmt = Math.abs(element.diff);
             if (availAmt >= diff - accumulatedAmount) {
                 moveStakeData.push({
@@ -290,12 +289,7 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
             const foundPool = poolData.find((foundItem) => {
                 return item.pool.poolId === foundItem.pool.poolId;
             });
-            let diff = 0;
-            if (foundPool) {
-                diff = item.zrxStaked - foundPool.zrxStaked;
-            } else {
-                diff = item.zrxStaked;
-            }
+            const diff = foundPool ? item.zrxStaked - foundPool.zrxStaked : item.zrxStaked;
 
             if (diff !== 0) {
                 if (diff > 0) {
@@ -326,24 +320,24 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
                 <ButtonClose isTransparent={true} isNoBorder={true} padding="0px" onClick={onClose}>
                     <Icon name="close-modal" />
                 </ButtonClose>
-                {true && (
-                    <>
-                        <HeadingWrapper>
-                            <Heading fontWeight="400" asElement="h3" marginBottom="0">
-                                Change your Stake
-                            </Heading>
-                        </HeadingWrapper>
-                        <StakingPoolsContainer>
-                            {currentPoolData.map((data, index) => {
-                                const poolTag = poolTags.find((item) => {
-                                    return item.name === data.pool.poolId;
-                                });
+                <>
+                    <HeadingWrapper>
+                        <Heading fontWeight="400" asElement="h3" marginBottom="0">
+                            Change your Stake
+                        </Heading>
+                    </HeadingWrapper>
+                    <StakingPoolsContainer>
+                        {currentPoolData.map((data, index) => {
+                            const poolTag = poolTags.find((item) => {
+                                return item.name === data.pool.poolId;
+                            });
 
-                                const isStartingPool = poolData.find((item) => {
-                                    return item.pool.poolId === data.pool.poolId;
-                                });
+                            const isStartingPool = poolData.find((item) => {
+                                return item.pool.poolId === data.pool.poolId;
+                            });
 
-                                return (
+                            return (
+                                <div key={index}>
                                     <StakingPoolWrapper>
                                         <StakingPoolLabelWrapper>
                                             <StakingPoolLabel>
@@ -367,47 +361,47 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
                                             }}
                                         />
                                     </StakingPoolWrapper>
-                                );
-                            })}
-                        </StakingPoolsContainer>
-                        {currentPoolData.length > 1 && (
-                            <PercentageSlider
-                                pools={currentPoolData}
-                                tags={poolTags}
-                                widths={sliderPercentages}
-                                setWidths={updateSliderPercentages}
-                            />
-                        )}
-                        <ButtonsContainer>
-                            {currentPoolData.length < 4 && (
-                                <AddPoolButton
-                                    borderColor="#D5D5D5"
-                                    bgColor={colors.white}
-                                    fontWeight="300"
-                                    isNoBorder={true}
-                                    padding="15px 35px"
-                                    isFullWidth={true}
-                                    onClick={() => {
-                                        setIsAddPoolDialogOpen(true);
-                                    }}
-                                >
-                                    + Add Pool
-                                </AddPoolButton>
-                            )}
-                            <Button color={colors.white} isFullWidth={true} onClick={rebalanceStakeAcrossPools}>
-                                Confirm New Stake
-                            </Button>
-                        </ButtonsContainer>
-                        <AddPoolDialog
-                            stakingPools={filteredStakingPools || []}
-                            isOpen={isAddPoolDialogOpen}
-                            onDismiss={() => {
-                                setIsAddPoolDialogOpen(false);
-                            }}
-                            onAddPool={addPool}
+                                </div>
+                            );
+                        })}
+                    </StakingPoolsContainer>
+                    {currentPoolData.length > 1 && (
+                        <PercentageSlider
+                            pools={currentPoolData}
+                            tags={poolTags}
+                            widths={sliderPercentages}
+                            setWidths={updateSliderPercentages}
                         />
-                    </>
-                )}
+                    )}
+                    <ButtonsContainer>
+                        {currentPoolData.length < 4 && (
+                            <AddPoolButton
+                                borderColor="#D5D5D5"
+                                bgColor={colors.white}
+                                fontWeight="300"
+                                isNoBorder={true}
+                                padding="15px 35px"
+                                isFullWidth={true}
+                                onClick={() => {
+                                    setIsAddPoolDialogOpen(true);
+                                }}
+                            >
+                                + Add Pool
+                            </AddPoolButton>
+                        )}
+                        <Button color={colors.white} isFullWidth={true} onClick={rebalanceStakeAcrossPools}>
+                            Confirm New Stake
+                        </Button>
+                    </ButtonsContainer>
+                    <AddPoolDialog
+                        stakingPools={filteredStakingPools || []}
+                        isOpen={isAddPoolDialogOpen}
+                        onDismiss={() => {
+                            setIsAddPoolDialogOpen(false);
+                        }}
+                        onAddPool={addPool}
+                    />
+                </>
             </Container>
         </>
     );
