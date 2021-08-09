@@ -14,11 +14,12 @@ import { Loading } from 'ts/components/portal/loading';
 import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 import { RemoveStakeDialog } from 'ts/components/staking/remove_stake_dialog';
+import { StakeRebalance } from 'ts/components/staking/stake_rebalance';
 import { Heading, Paragraph } from 'ts/components/text';
 import { InfoTooltip } from 'ts/components/ui/info_tooltip';
 import { StatFigure } from 'ts/components/ui/stat_figure';
 import { useAPIClient } from 'ts/hooks/use_api_client';
-import { useStake } from 'ts/hooks/use_stake';
+import { MoveStakeData, useStake } from 'ts/hooks/use_stake';
 import { AccountActivitySummary } from 'ts/pages/account/account_activity_summary';
 import { AccountApplyModal } from 'ts/pages/account/account_apply_modal';
 import { AccountDetail } from 'ts/pages/account/account_detail';
@@ -37,6 +38,7 @@ import { colors } from 'ts/style/colors';
 import {
     AccountReady,
     EpochWithFees,
+    PoolEpochDelegatorStats,
     PoolWithStats,
     StakeStatus,
     StakingAPIDelegatorResponse,
@@ -148,6 +150,8 @@ export const Account: React.FC<AccountProps> = () => {
     const [votingPowerMap, setVotingPowerMap] = React.useState<PoolToVotingPowerMap>({});
     const [hasVotingPower, setHasVotingPower] = React.useState<boolean>(false);
     const [shouldOpenStakeDecisionModal, setOpenStakeDecisionModal] = React.useState<boolean>(false);
+
+    const [isRebalanceOpen, setIsRebalanceOpen] = React.useState(false);
     // keeping in case we want to make use of by-pool estimated rewards
     // const [expectedCurrentEpochPoolRewards, setExpectedCurrentEpochPoolRewards] = React.useState<ExpectedPoolRewards>(undefined);
     const [expectedCurrentEpochRewards, setExpectedCurrentEpochRewards] = React.useState<BigNumber>(new BigNumber(0));
@@ -162,6 +166,7 @@ export const Account: React.FC<AccountProps> = () => {
         withdrawStake,
         withdrawRewards,
         moveStake,
+        batchMoveStake,
         currentEpochRewards,
         error: useStakeError,
     } = useStake(networkId, providerState);
@@ -209,15 +214,15 @@ export const Account: React.FC<AccountProps> = () => {
             }, {});
 
             const _currentEpochStakeMap = delegatorResponse.forCurrentEpoch.poolData.reduce<{ [key: string]: number }>(
-                (memo, poolData) => {
-                    memo[poolData.poolId] = poolData.zrxStaked || 0;
+                (memo, pData) => {
+                    memo[pData.poolId] = pData.zrxStaked || 0;
                     return memo;
                 },
                 {},
             );
             const _nextEpochStakeMap = delegatorResponse.forNextEpoch.poolData.reduce<{ [key: string]: number }>(
-                (memo, poolData) => {
-                    memo[poolData.poolId] = poolData.zrxStaked || 0;
+                (memo, pData) => {
+                    memo[pData.poolId] = pData.zrxStaked || 0;
                     return memo;
                 },
                 {},
@@ -262,12 +267,12 @@ export const Account: React.FC<AccountProps> = () => {
                 .filter((p) => !pendingUnstakePoolSet.has(p.poolId) && p.zrxStaked > 0);
 
             const _votingPowerMap = votingPowerPools.reduce<{ [key: string]: number }>(
-                (memo, poolData) => {
-                    if (poolData.poolId !== DEFAULT_POOL_ID) {
-                        memo[poolData.poolId] = poolData.zrxStaked / 2 || 0;
-                        memo.self += poolData.zrxStaked / 2 || 0;
+                (memo, pData) => {
+                    if (pData.poolId !== DEFAULT_POOL_ID) {
+                        memo[pData.poolId] = pData.zrxStaked / 2 || 0;
+                        memo.self += pData.zrxStaked / 2 || 0;
                     } else {
-                        memo.selfDelegated += poolData.zrxStaked || 0;
+                        memo.selfDelegated += pData.zrxStaked || 0;
                     }
                     return memo;
                 },
@@ -309,9 +314,7 @@ export const Account: React.FC<AccountProps> = () => {
 
     React.useEffect(() => {
         const fetchAvailableRewards = async () => {
-            const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter(
-                (poolData) => poolData.rewardsInEth > 0,
-            );
+            const poolsWithAllTimeRewards = delegatorData.allTime.poolData.filter((pData) => pData.rewardsInEth > 0);
 
             const undelegatedBalancesBaseUnits = await stakingContract
                 .getOwnerStakeByStatus(account.address, StakeStatus.Undelegated)
@@ -326,8 +329,8 @@ export const Account: React.FC<AccountProps> = () => {
             setUndelegatedBalanceBaseUnits(undelegatedInBothEpochsBaseUnits);
 
             const poolRewards: PoolReward[] = await Promise.all(
-                poolsWithAllTimeRewards.map(async (poolData) => {
-                    const paddedHexPoolId = hexUtils.leftPad(hexUtils.toHex(poolData.poolId));
+                poolsWithAllTimeRewards.map(async (pData) => {
+                    const paddedHexPoolId = hexUtils.leftPad(hexUtils.toHex(pData.poolId));
 
                     const availableRewardInEth = await stakingContract
                         .computeRewardBalanceOfDelegator(paddedHexPoolId, account.address)
@@ -335,7 +338,7 @@ export const Account: React.FC<AccountProps> = () => {
 
                     // TODO(kimpers): There is some typing issue here, circle back later to remove the BigNumber conversion
                     return {
-                        poolId: poolData.poolId,
+                        poolId: pData.poolId,
                         rewardsInEth: Web3Wrapper.toUnitAmount(
                             new BigNumber(availableRewardInEth.toString()),
                             constants.DECIMAL_PLACES_ETH,
@@ -449,6 +452,19 @@ export const Account: React.FC<AccountProps> = () => {
     }
 
     const nextEpochStart = nextEpochStats && new Date(nextEpochStats.epochStart.timestamp);
+    const poolData = delegatorData.forCurrentEpoch.poolData
+        .map((delegatorPoolStats: PoolEpochDelegatorStats) => {
+            const poolId = delegatorPoolStats.poolId;
+            const pool = poolWithStatsMap[poolId];
+            return { pool, zrxStaked: delegatorPoolStats.zrxStaked };
+        })
+        .filter((item) => item.zrxStaked > 0);
+
+    const rebalanceStake = (rebalanceStakeData: MoveStakeData[]) => {
+        batchMoveStake(rebalanceStakeData, () => {
+            setIsRebalanceOpen(false);
+        });
+    };
     return (
         <StakingPageLayout title="0x Staking | Account">
             <HeaderWrapper>
@@ -593,7 +609,7 @@ export const Account: React.FC<AccountProps> = () => {
 
             {/* TODO add loading animations or display partially loaded data */}
             {hasDataLoaded() && (
-                <SectionWrapper>
+                <SectionWrapper style={{ display: 'flex', flexDirection: 'column' }}>
                     <SectionHeader>
                         <Heading asElement="h3" fontWeight="400" isNoMargin={true}>
                             Your Staking Pools
@@ -686,6 +702,21 @@ export const Account: React.FC<AccountProps> = () => {
                                 );
                             })
                     )}
+                    <div
+                        style={{
+                            alignSelf: 'flex-end',
+                            margin: '1rem 0',
+                        }}
+                    >
+                        <Button
+                            color={colors.white}
+                            onClick={() => {
+                                setIsRebalanceOpen(true);
+                            }}
+                        >
+                            Rebalance Stake
+                        </Button>
+                    </div>
                 </SectionWrapper>
             )}
             {hasDataLoaded() && hasVotingPower && (
@@ -803,7 +834,6 @@ export const Account: React.FC<AccountProps> = () => {
                     setStakingError(undefined);
                 }}
             />
-
             <DialogOverlay
                 style={{ background: 'rgba(0, 0, 0, 0.75)', zIndex: 30 }}
                 isOpen={shouldOpenStakeDecisionModal}
@@ -849,6 +879,17 @@ export const Account: React.FC<AccountProps> = () => {
                     )}
                 </StyledDialogContent>
             </DialogOverlay>
+
+            {isRebalanceOpen && (
+                <StakeRebalance
+                    onClose={() => {
+                        setIsRebalanceOpen(false);
+                    }}
+                    poolData={poolData}
+                    stakingPools={stakingPools || []}
+                    rebalanceStake={rebalanceStake}
+                />
+            )}
         </StakingPageLayout>
     );
 };

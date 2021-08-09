@@ -135,7 +135,7 @@ const ZRXLabel = styled.label`
     margin-right: 20px;
 `;
 
-const ZRXInput: React.FC<InputProps> = ({ value, className, placeholder, onChange }) => (
+export const ZRXInput: React.FC<InputProps> = ({ value, className, placeholder, onChange }) => (
     <ZRXInputField>
         <Input className={className} value={value} onChange={onChange} placeholder={placeholder} />
         <ZRXLabel>ZRX</ZRXLabel>
