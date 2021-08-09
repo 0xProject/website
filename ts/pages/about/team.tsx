@@ -188,6 +188,11 @@ const team: TeamMember[] = [
         name: 'Nick Hollins',
         title: 'Creative & Content',
     },
+    {
+        imageUrl: '/images/team/wojciech.jpeg',
+        name: 'Wojciech Wasik',
+        title: 'Engineer',
+    },
 ];
 
 const advisors: TeamMember[] = [
