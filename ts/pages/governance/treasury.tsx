@@ -256,6 +256,8 @@ export const Treasury: React.FC<{}> = () => {
         },
     };
 
+    let cleanedDescription = description.replace(/<br\/><br\/>/g, '\n');
+    cleanedDescription = cleanedDescription.replace(heading.raw, '');
     return (
         <StakingPageLayout isHome={false} title="0x Treasury">
             <RegisterBanner />
@@ -278,7 +280,7 @@ export const Treasury: React.FC<{}> = () => {
                     <Paragraph as="div">
                         <VoterBreakdown data={voterBreakdownData} />
                         <StyledMarkdown>
-                            <ReactMarkdown children={description.replace(heading.raw, '')} />
+                            <ReactMarkdown children={cleanedDescription} />
                         </StyledMarkdown>
                     </Paragraph>
                 </Column>
