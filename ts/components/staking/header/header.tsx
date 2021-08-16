@@ -117,8 +117,12 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
         });
 
         const hasTreasuryProposals = treasuryData.filter((proposal: OnChainProposal) => {
-            return moment.unix((proposal.voteEpoch.endTimestamp as unknown) as number).isSameOrAfter(moment());
+            return moment
+                .unix((proposal.voteEpoch.startTimestamp as unknown) as number)
+                .add(3, 'd')
+                .isSameOrAfter(moment());
         });
+
         setHasLiveOrUpcomingVotes(hasZEIPS.length || hasTreasuryProposals.length);
     }, []);
 

@@ -52,7 +52,7 @@ export const backendClient = {
     async getGasInfoAsync(speed?: string): Promise<GasInfo> {
         // Median gas prices across 0x api gas oracles
         // Defaulting to average/standard gas. Using eth gas station for time estimates
-        const gasApiPath = 'source/median?output=eth_gas_station';
+        const gasApiPath = 'source/gas_now?output=eth_gas_station';
         const gasInfoReq = fetchUtils.requestAsync(ZEROEX_GAS_API, gasApiPath);
         const speedInput = speed || 'standard';
 
@@ -75,7 +75,7 @@ export const backendClient = {
     },
 
     async getGasInfoSelectionAsync(): Promise<GasInfoSelection> {
-        const gasApiPath = 'source/median?output=eth_gas_station';
+        const gasApiPath = 'source/gas_now?output=eth_gas_station';
         const gasInfoReq = fetchUtils.requestAsync(ZEROEX_GAS_API, gasApiPath);
 
         const gasInfo: WebsiteBackendGasInfo = await gasInfoReq;
