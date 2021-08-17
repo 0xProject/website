@@ -1451,7 +1451,7 @@ A list consisting of signed orders with metaData.
 
 The 0x API provides a superset of the SRA, and contains functionality that is not strictly part of the spec.
 
-## GET /orderbook/v4/
+## GET /orderbook/v1/
 
 Retrieves the orderbook for a given asset pair.
 
@@ -1629,7 +1629,7 @@ After taker fee price, orders are sorted by expiration in ascending order.
 
 
 
-## GET /orderbook/v4/orders
+## GET /orderbook/v1/orders
 
 Retrieves a list of orders given query parameters.
 
@@ -1656,7 +1656,7 @@ Any [Signed Order](/docs/api#signed-order) field can be use as a query parameter
 
 #### Get All Orders Selling WETH
 
-<HttpCall path="/orderbook/v4/orders?makerToken=0xf47261b...756cc2" />
+<HttpCall path="/orderbook/v1/orders?makerToken=0xf47261b...756cc2" />
 
 <CodeTabs tabs={['200 - OK']}>
 
@@ -1700,7 +1700,7 @@ Any [Signed Order](/docs/api#signed-order) field can be use as a query parameter
 ```
 </CodeTabs>
 
-## POST /orderbook/v4/order
+## POST /orderbook/v1/order
 
 Submit a signed order to [0x Mesh](https://0x-org.gitbook.io/mesh/).
 
@@ -1716,7 +1716,7 @@ No response fields when successful. An [error](/docs/api#errors) when unsuccessf
 
 #### Post an Order
 
-<HttpCall verb="POST" path="/orderbook/v4/order" >
+<HttpCall verb="POST" path="/orderbook/v1/order" >
 
 ```json
 {
@@ -1753,7 +1753,7 @@ Empty response body
 
 </CodeTabs>
 
-## POST /orderbook/v4/orders
+## POST /orderbook/v1/orders
 
 Submit a list of signed orders to [0x Mesh](https://0x-org.gitbook.io/mesh/).
 
@@ -1769,7 +1769,7 @@ No response fields when successful. An [error](/docs/api#errors) when unsuccessf
 
 #### Post some Orders
 
-<HttpCall verb="POST" path="/orderbook/v4/orders" >
+<HttpCall verb="POST" path="/orderbook/v1/orders" >
 
 ```json
 [
@@ -1830,7 +1830,7 @@ Empty response body
 
 </CodeTabs>
 
-## GET /orderbook/v4/order/:orderHash:
+## GET /orderbook/v1/order/:orderHash:
 
 Retrieves a specific order by orderHash.
 
@@ -1852,7 +1852,7 @@ Retrieves a specific order by orderHash.
 
 #### Get an Order
 
-<HttpCall path="/orderbook/v4/order/0xa1e06a9...eaa29e1a6" />
+<HttpCall path="/orderbook/v1/order/0xa1e06a9...eaa29e1a6" />
 
 <CodeTabs tabs={['200 - OK']}>
 
@@ -1889,7 +1889,7 @@ Retrieves a specific order by orderHash.
 ```
 </CodeTabs>
 
-## POST /orderbook/v4/order_config
+## POST /orderbook/v1/order_config
 
 Send a partial [signed order](/docs/api#signed-order) to this endpoint to receive the rest of configuration-oriented fields.
 This response is currently static.
@@ -1919,7 +1919,7 @@ This response is currently static.
 
 #### Get an Order Configuration
 
-<HttpCall verb="POST" path="/orderbook/v4/order_config">
+<HttpCall verb="POST" path="/orderbook/v1/order_config">
 
 ```json
 {
@@ -1947,7 +1947,7 @@ This response is currently static.
 ```
 </CodeTabs>
 
-## GET /orderbook/v4/fee_recipients
+## GET /orderbook/v1/fee_recipients
 
 Retrieves a list of valid feeRecipient addresses.
 
@@ -1967,7 +1967,7 @@ A valid Ethereum address(s).
 
 #### Get Fee Recipients
 
-<HttpCall path="/orderbook/v4/fee_recipients" />
+<HttpCall path="/orderbook/v1/fee_recipients" />
 
 <CodeTabs tabs={['200 - OK']}>
 
