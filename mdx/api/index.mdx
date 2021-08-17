@@ -1449,7 +1449,7 @@ A list consisting of signed orders with metaData.
 
 # Orderbook
 
-The 0x API provides a superset of the SRA, and contains functionality that is not strictly part of the spec.
+The 0x API provides a superset of the SRA, and contains functionality that is not strictly part of the SRA spec.
 
 ## GET /orderbook/v1/
 
@@ -1487,7 +1487,7 @@ After taker fee price, orders are sorted by expiration in ascending order.
 
 #### Get the WETH/DAI Orderbook
 
-<HttpCall fontSize="14px" path="/orderbook/v4?quoteToken=0xc02aaa...756cc2&baseToken=0xa0b869...06eb48" />
+<HttpCall fontSize="14px" path="/orderbook/v1?quoteToken=0xc02aaa...756cc2&baseToken=0xa0b869...06eb48" />
 
 <CodeTabs tabs={['200 - OK']}>
 
@@ -1702,7 +1702,7 @@ Any [Signed Order](/docs/api#signed-order) field can be use as a query parameter
 
 ## POST /orderbook/v1/order
 
-Submit a signed order to [0x Mesh](https://0x-org.gitbook.io/mesh/).
+Submit a signed order.
 
 ### Request
 
@@ -1755,7 +1755,7 @@ Empty response body
 
 ## POST /orderbook/v1/orders
 
-Submit a list of signed orders to [0x Mesh](https://0x-org.gitbook.io/mesh/).
+Submit a list of signed orders.
 
 ### Request
 
@@ -1989,7 +1989,7 @@ The Standard Relayer API also exposes a websocket server at the root endpoint.
 
 | Network | Endpoint                      |
 | ------- | ----------------------------- |
-| Mainnet | wss://api.0x.org/sra/v4       |
+| Mainnet | wss://api.0x.org/orderbook/v1 |
 
 The server will allow you to subscribe to 0x order updates in [0x Mesh](https://0x-org.gitbook.io/mesh/),
 and will push updates whenever the "fillability" of an order changes.
