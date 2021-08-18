@@ -193,6 +193,11 @@ const team: TeamMember[] = [
         name: 'Wojciech Wasik',
         title: 'Engineer',
     },
+    {
+        imageUrl: '/images/team/tong.jpg',
+        name: 'Tong Pow',
+        title: 'Engineer',
+    },
 ];
 
 const advisors: TeamMember[] = [
