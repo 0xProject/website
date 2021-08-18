@@ -232,6 +232,8 @@ export const ConnectWalletDialog = () => {
     const handleAccount = async (currentConnector: AbstractConnector, option: Option) => {
         let address: string = '';
 
+        (window as any).heap.track('Wallet connected', { wallet: option.type });
+
         try {
             await activate(currentConnector, undefined, true);
             setActivatingConnector(currentConnector);
