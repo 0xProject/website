@@ -1326,6 +1326,7 @@ export interface AllTimeDelegatorStats {
 export enum VotingCardType {
     Treasury = 'TREASURY',
     Zeip = 'ZEIP',
+    Snapshot = 'SNAPSHOT',
 }
 
 export interface OnChainProposal {

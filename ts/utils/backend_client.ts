@@ -18,6 +18,8 @@ import { constants } from 'ts/utils/constants';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { utils } from 'ts/utils/utils';
 
+import { request, gql, GraphQLClient } from 'graphql-request';
+
 const ZEROEX_GAS_API = 'https://gas.api.0x.org/';
 
 const ETH_GAS_STATION_ENDPOINT = '/eth_gas_station';
@@ -48,7 +50,93 @@ const speedToWaitTimeMap: { [key: string]: string } = {
     instant: 'fastestWait',
 };
 
+const graphqlClient = new GraphQLClient('https://hub.snapshot.org/graphql');
+
 export const backendClient = {
+    async getSnapshotSpaceAsync() {
+        const spaceQuery = gql`
+            query GetSpace($id: String!) {
+                space(id: $id) {
+                    id
+                    name
+                    about
+                    network
+                    symbol
+                    members
+                }
+            }
+        `;
+
+        const res = await graphqlClient.request(spaceQuery, { id: '0xgov.eth' });
+        return res;
+    },
+    async getSnapshotProposalsAsync() {
+        const proposalsQuery = gql`
+            query {
+                proposals(first: 1000, where: { space_in: ["0xgov.eth"] }) {
+                    id
+                    title
+                    body
+                    choices
+                    start
+                    end
+                    snapshot
+                    state
+                    author
+                    space {
+                        id
+                        name
+                    }
+                }
+            }
+        `;
+
+        const res = await graphqlClient.request(proposalsQuery, {});
+        return res;
+    },
+
+    async getSnapshotVotesAsync(proposalId: string) {
+        const votesQuery = gql`
+            query GetVotes($proposal: String!) {
+                votes(first: 1000, skip: 0, where: { proposal: $proposal }) {
+                    id
+                    voter
+                    created
+                    choice
+                    space {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const res = await graphqlClient.request(votesQuery, { proposal: proposalId });
+        return res;
+    },
+    async getSnapshotProposalsAndVotes() {
+        const res = await this.getSnapshotProposalsAsync();
+        const { proposals } = res;
+
+        const getVotesPromises = [];
+        for (let index = 0; index < proposals.length; index++) {
+            const element = proposals[index];
+            getVotesPromises.push(this.getSnapshotVotesAsync(element.id));
+        }
+
+        const votesResult = await Promise.all(getVotesPromises);
+        // return {
+        //     votes: votesResult,
+        //     proposals,
+        // };
+
+        return proposals.map((proposal: any, index: number) => {
+            const votes = votesResult[index];
+            proposal.votes = votes;
+            return proposal;
+        });
+    },
+    async getSnapshotProposalAsync() {},
+
     async getGasInfoAsync(speed?: string): Promise<GasInfo> {
         // Median gas prices across 0x api gas oracles
         // Defaulting to average/standard gas. Using eth gas station for time estimates

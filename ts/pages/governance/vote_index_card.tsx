@@ -44,7 +44,22 @@ interface TreasuryCardProps {
     againstVotes: BigNumber;
 }
 
-type VoteIndexCardProps = ZEIPCardProps | TreasuryCardProps;
+interface SnapshotCardProps {
+    id: string;
+    type: VotingCardType.Snapshot;
+    votes?: any[];
+    title: string;
+    choices: string[];
+    body: string;
+    start: number;
+    end: number;
+    author: string;
+    state: string;
+    order?: number;
+    tally?: TallyInterface;
+}
+
+type VoteIndexCardProps = ZEIPCardProps | TreasuryCardProps | SnapshotCardProps;
 
 const getVoteTime = (voteStartDate: moment.Moment, voteEndDate: moment.Moment): VoteTime | undefined => {
     const now = moment();
@@ -222,6 +237,60 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                     </Section>
                 </ReactRouterLink>
             );
+        case VotingCardType.Snapshot:
+            const snapshotText = props.body.length > 500 ? props.body.substring(0, 500) + '...' : props.body;
+            const status = props.state;
+            const votes = props.votes;
+            console.log(votes);
+            const proposalState = status === 'active' ? 'happening' : 'accepted';
+            return (
+                <a style={{ order }} target="_blank" href={`https://snapshot.org/#/0xgov.eth/proposal/${props.id}`}>
+                    <Section
+                        hasBorder={true}
+                        bgColor="none"
+                        padding="30px 30px 10px"
+                        hasHover={true}
+                        margin="30px auto"
+                        maxWidth="100%"
+                    >
+                        <FlexWrap>
+                            <Column width="60%" padding="0px 20px 0px 0px">
+                                <Tag className="snapshot">Snapshot</Tag>
+                                <Heading marginBottom="15px">{`${props.title} `}</Heading>
+                                {props.body ? (
+                                    <>
+                                        <Paragraph marginBottom="12px">{snapshotText}</Paragraph>
+                                    </>
+                                ) : (
+                                    <VoteCardShimmer>
+                                        <div className="title shimmer" />
+                                        <div className="description">
+                                            <div className="line shimmer" />
+                                            <div className="line shimmer" />
+                                            <div className="line shimmer" />
+                                        </div>
+                                    </VoteCardShimmer>
+                                )}
+                            </Column>
+                            <Column width="25%" className="flex flex-column justify-center">
+                                <div className="flex flex-column sm-col-12">
+                                    <VoteStatusText status={proposalState} isSnapshot={true} />
+                                    {/* {isHappening ? (
+                                        <VoteStats tally={tally} isVoteCard={true} />
+                                    ) : (
+                                        <Paragraph marginBottom="12px" color={colors.textDarkPrimary}>
+                                            {`${totalBalances} ZRX Total Vote`}
+                                        </Paragraph>
+                                    )} */}
+                                    <Paragraph marginBottom="12px">
+                                        {getDateString(moment.unix(props.start), moment.unix(props.end))}
+                                    </Paragraph>
+                                </div>
+                            </Column>
+                        </FlexWrap>
+                    </Section>
+                </a>
+            );
         default:
             return null;
     }
@@ -245,6 +314,10 @@ const Tag = styled.div`
     &.zeip {
         width: 50px;
         background-color: ${() => colors.brandLight};
+    }
+    &.snapshot {
+        width: 90px;
+        background-color: ${() => colors.blue700};
     }
 `;
 

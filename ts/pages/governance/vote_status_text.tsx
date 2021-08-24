@@ -34,9 +34,10 @@ const renderCross = (width: number = 14) => (
 
 export interface VoteStatusTextProps {
     status: VoteStatus;
+    isSnapshot?: boolean;
 }
 
-export const VoteStatusText: React.StatelessComponent<VoteStatusTextProps> = ({ status }) => {
+export const VoteStatusText: React.StatelessComponent<VoteStatusTextProps> = ({ status, isSnapshot }) => {
     switch (status) {
         case 'upcoming':
             return (
@@ -63,7 +64,7 @@ export const VoteStatusText: React.StatelessComponent<VoteStatusTextProps> = ({ 
             return (
                 <VoteStatusTextBase>
                     <StyledButton isWithArrow={true} isAccentColor={true} fontSize="22px">
-                        Vote Now
+                        Vote Now {isSnapshot ? 'on Snapshot' : ''}
                     </StyledButton>
                 </VoteStatusTextBase>
             );

@@ -77,8 +77,8 @@
         "find-versions": "^2.0.0",
         "flickity": "^2.2.2",
         "fuse.js": "^3.4.6",
-        "graphql": "^15.5.0",
-        "graphql-request": "^3.4.0",
+        "graphql": "^15.5.1",
+        "graphql-request": "^3.5.0",
         "is-mobile": "^0.2.2",
         "less": "^2.7.2",
         "lodash": "^4.17.11",
@@ -128,6 +128,7 @@
         "styled-components": "^5.0.0",
         "thenby": "^1.2.3",
         "truffle-contract": "2.0.1",
+        "urql": "^2.0.4",
         "valid-url": "^1.0.9",
         "web3-provider-engine": "14.0.6",
         "xml-js": "^1.6.4"

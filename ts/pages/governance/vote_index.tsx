@@ -9,6 +9,8 @@ import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import { backendClient } from 'ts/utils/backend_client';
+
 import { Button } from 'ts/components/button';
 import { DocumentTitle } from 'ts/components/document_title';
 import { RegisterBanner } from 'ts/components/governance/register_banner';
@@ -54,6 +56,19 @@ type ProposalWithOrder = Proposal & {
 };
 
 type TreasuryProposalWithOrder = TreasuryProposal & {
+    order?: number;
+};
+
+type SnapshotProposals = {
+    id: string;
+    votes?: any[];
+    title: string;
+    choices: string[];
+    body: string;
+    start: number;
+    end: number;
+    author: string;
+    state: string;
     order?: number;
 };
 
@@ -107,33 +122,50 @@ const fetchVoteStatusAsync: (zeipId: number) => Promise<TallyInterface> = async 
     }
 };
 
-const sortProposals = (onChainProposals: Proposals[], zeipProposals: Proposal[]) => {
-    let i = 0;
-    let j = 0;
-    let order = 0;
-    while (i < onChainProposals.length && j < zeipProposals.length) {
-        const treasury = onChainProposals[i];
-        const zeip = zeipProposals[j];
-        const treasuryStartDate = moment(treasury.startDate);
-        const zeipStartDate = moment(zeip.voteStartDate);
-        if (treasuryStartDate.isAfter(zeipStartDate)) {
-            onChainProposals[i].order = order++;
-            i++;
+const sortProposals = (
+    onChainProposals: Proposals[],
+    zeipProposals: Proposal[],
+    snapshotProposals: SnapshotProposals[],
+) => {
+    // aggregate all proposals
+    const allData = [...onChainProposals, ...zeipProposals, ...snapshotProposals];
+
+    // sort aggregated proposals
+    const allDataSorted = allData.sort((propA: Proposals, propB: Proposals) => {
+        const aStart = propA.startDate
+            ? propA.startDate
+            : propA.voteStartDate
+            ? propA.voteStartDate
+            : moment.unix(propA.start);
+        const bStart = propB.startDate
+            ? propB.startDate
+            : propB.voteStartDate
+            ? propB.voteStartDate
+            : moment.unix(propB.start);
+        return bStart.diff(aStart);
+    });
+
+    // set overall order based on aggregated sorting
+    allDataSorted.forEach((proposal: Proposals, index) => {
+        if (proposal.zeipId) {
+            const foundIndex = ZEIP_PROPOSALS.findIndex((p) => {
+                return p.zeipId === proposal.zeipId;
+            });
+            ZEIP_PROPOSALS[foundIndex].order = index;
         } else {
-            ZEIP_PROPOSALS[j].order = order++;
-            j++;
+            if (proposal.startDate) {
+                const foundIndex = onChainProposals.findIndex((p) => {
+                    return p.id === proposal.id;
+                });
+                onChainProposals[foundIndex].order = index;
+            } else {
+                const foundIndex = snapshotProposals.findIndex((p) => {
+                    return p.id === proposal.id;
+                });
+                snapshotProposals[foundIndex].order = index;
+            }
         }
-    }
-
-    while (i < onChainProposals.length) {
-        onChainProposals[i].order = order++;
-        i++;
-    }
-
-    while (j < zeipProposals.length) {
-        ZEIP_PROPOSALS[j].order = order++;
-        j++;
-    }
+    });
 };
 
 const fetchTallysAsync: () => Promise<ZeipTallyMap> = async () => {
@@ -151,9 +183,19 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [filter, setFilter] = React.useState<string>('all');
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
     const [proposals, setProposals] = React.useState<TreasuryProposalWithOrder[]>([]);
+    const [snapshotProposals, setSnapshotProposals] = React.useState<SnapshotProposals[]>(undefined);
     const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
     const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
     const providerState = useSelector((state: State) => state.providerState);
+
+    React.useEffect(() => {
+        // tslint:disable-next-line: no-floating-promises
+        (async () => {
+            const proposalsAndVotes = await backendClient.getSnapshotProposalsAndVotes();
+            console.log(proposalsAndVotes);
+            setSnapshotProposals(proposalsAndVotes);
+        })();
+    }, []);
 
     const { data, isLoading } = useQuery('proposals', async () => {
         const { proposals: treasuryProposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS);
@@ -178,7 +220,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     }, [providerState]);
 
     React.useEffect(() => {
-        if (data && quorumThreshold) {
+        if (data && quorumThreshold && snapshotProposals) {
             const onChainProposals = data.map((proposal: OnChainProposal) => {
                 const { id, votesAgainst, votesFor, description, executionTimestamp, voteEpoch } = proposal;
                 const againstVotes = new BigNumber(votesAgainst);
@@ -212,10 +254,10 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     endDate,
                 };
             });
-            sortProposals(onChainProposals.reverse(), ZEIP_PROPOSALS);
+            sortProposals(onChainProposals.reverse(), ZEIP_PROPOSALS, snapshotProposals);
             setProposals(onChainProposals);
         }
-    }, [data, quorumThreshold]);
+    }, [data, quorumThreshold, snapshotProposals]);
 
     const applyFilter = (value: string) => {
         setFilter(value);
@@ -314,6 +356,18 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                                     type={VotingCardType.Treasury}
                                     key={proposal.id}
                                     tally={tally}
+                                    {...proposal}
+                                    quorumThreshold={quorumThreshold}
+                                />
+                            );
+                        })}
+                    {snapshotProposals &&
+                        snapshotProposals.length > 0 &&
+                        snapshotProposals.map((proposal: any, index: number) => {
+                            return (
+                                <VoteIndexCard
+                                    type={VotingCardType.Snapshot}
+                                    key={proposal.id}
                                     {...proposal}
                                     quorumThreshold={quorumThreshold}
                                 />
