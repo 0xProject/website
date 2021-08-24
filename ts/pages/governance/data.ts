@@ -561,6 +561,43 @@ export const proposals: Proposals = {
             ],
         },
     },
+    90: {
+        zeipId: 90,
+        title: 'OTC Orders',
+        summary: [
+            `This ZEIP introduces a new order format, termed OTC orders, to the 0x V4 protocol.`,
+            `OTC orders are a slimmed down version of the existing 0x v4 RFQ order format designed to reduce gas usage.`,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/90',
+        voteStartDate: moment(1629824400, 'X'),
+        voteEndDate: moment(1630083600, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [`This feature will significantly reduce the cost of Metatransactions`],
+            rating: 3,
+            links: [
+                {
+                    text: 'Features specifications',
+                    url: 'https://protocol.0x.org/',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Contracts were thoroughly reviewed internally, and spot-checked by Consensys Diligence. No vulnerabilities were found.`,
+                `However, these changes do modify a risk-sensitive part of the codebase: the execution within a privleged environment.`,
+                `0x V4 architecture comes with the ability to modify or rollback specific features, without halting the entire pipeline of smart contracts. This means that if a vulnerability is found (0x Labs offers generous bug bounties), it is possible to rollback the functionality that exposes the risk.`,
+            ],
+            rating: 2,
+            links: [
+                {
+                    text: '0x v4 Bug Bounty',
+                    url: 'https://blog.0xproject.com/0x-protocol-v4-bug-bounty-fd0c1942b9a',
+                },
+            ],
+        },
+    },
 };
 
 export const stagingProposals: Proposals = {
@@ -587,6 +624,9 @@ export const stagingProposals: Proposals = {
     },
     89: {
         ...proposals[89],
+    },
+    90: {
+        ...proposals[90],
     },
 };
 
