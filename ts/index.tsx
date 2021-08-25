@@ -98,7 +98,7 @@ render(
                                 {/* <Route exact={true} path={WebsitePaths.Explore} component={Explore} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Credits} component={Credits} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Instant} component={Next0xInstant} /> */}
-                                <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit} />
+                                {/* <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem} /> */}
 
                                 <Route exact={true} path={WebsitePaths.ZeroExApi} component={ZeroExApi} />

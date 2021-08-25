@@ -90,7 +90,7 @@ export const getDateString = (voteStartDate: moment.Moment, voteEndDate: moment.
     const now = moment();
     const endDate = voteEndDate.utcOffset(pstOffset);
     const startDate = voteStartDate.utcOffset(pstOffset);
-    const timeToEndInDays = endDate.diff(now, 'days');
+    const timeToEndInDays = endDate.diff(now, 'days') + 1;
     const timeToEndInHours = endDate.diff(now, 'hours');
     if (voteTime === 'happening') {
         return `Voting ends in ${timeToEndInDays > 1 ? timeToEndInDays : timeToEndInHours} ${
