@@ -137,6 +137,32 @@ export const backendClient = {
     },
     async getSnapshotProposalAsync() {},
 
+    async getTreasuryTokenPrices() {
+        const treasuryTokenCGIds = ['0x', 'matic-network'];
+        const cgSimplePriceBaseUri = 'https://api.coingecko.com/api/v3/simple/price';
+        const res = fetchUtils.requestAsync(
+            cgSimplePriceBaseUri,
+            `?ids=${treasuryTokenCGIds.join(',')}&vs_currencies=usd`,
+        );
+        return res;
+    },
+
+    async getTreasuryTokenTransfers() {
+        const ZRX_TOKEN = '0xe41d2489571d322189246dafa5ebde1f4699f498';
+        const MATIC_TOKEN = '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0';
+        const reqBaseUri =
+            'https://api.covalenthq.com/v1/1/address/0x0bB1810061C2f5b2088054eE184E6C79e1591101/transfers_v2/';
+        const zrxTransfers = fetchUtils.requestAsync(
+            reqBaseUri,
+            `?contract-address=${ZRX_TOKEN}&key=ckey_02c853f8bd48448190555163e59`,
+        );
+        const maticTransfers = fetchUtils.requestAsync(
+            reqBaseUri,
+            `?contract-address=${MATIC_TOKEN}&key=ckey_02c853f8bd48448190555163e59`,
+        );
+        return await Promise.all([zrxTransfers, maticTransfers]);
+    },
+
     async getGasInfoAsync(speed?: string): Promise<GasInfo> {
         // Median gas prices across 0x api gas oracles
         // Defaulting to average/standard gas. Using eth gas station for time estimates

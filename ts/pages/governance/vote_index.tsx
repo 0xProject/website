@@ -27,6 +27,7 @@ import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from
 import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
+import { GovernanceHero } from 'ts/components/governance/hero';
 
 const FETCH_PROPOSALS = gql`
     query proposals {
@@ -283,8 +284,38 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
         <StakingPageLayout isHome={false} title="0x Governance">
             <RegisterBanner />
             <DocumentTitle {...documentConstants.VOTE} />
-            <Section isTextCentered={true} isPadded={true} padding="80px 0 80px">
-                <Column>
+            {/* <Section isTextCentered={true} isPadded={true}> */}
+            <GovernanceHero
+                title={
+                    <div>
+                        Make an impact
+                        <br />
+                        with your ZRX
+                    </div>
+                }
+                titleMobile="Earn liquidity rewards with ZRX"
+                description={<div>Vote to change the infastructure of internet finance</div>}
+                figure={<></>}
+                videoId="qP_oZAjRkTs"
+                actions={
+                    <>
+                        <Button to={''} isInline={true} color={colors.white}>
+                            Vote Now
+                        </Button>
+                        <Button
+                            to={''}
+                            isInline={true}
+                            color={colors.brandLight}
+                            isTransparent={true}
+                            borderColor={colors.brandLight}
+                        >
+                            Learn More
+                        </Button>
+                    </>
+                    // tslint:disable-next-line: jsx-curly-spacing
+                }
+            />
+            {/* <Column>
                     <Heading size="medium" isCentered={true}>
                         Govern 0x Protocol
                     </Heading>
@@ -304,8 +335,8 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                             </Button>
                         </ButtonWrapper>
                     </SubtitleContentWrap>
-                </Column>
-            </Section>
+                </Column> */}
+            {/* </Section> */}
             {isLoading ? (
                 <LoaderWrapper>
                     <CircularProgress size={40} thickness={2} color={colors.brandLight} />
