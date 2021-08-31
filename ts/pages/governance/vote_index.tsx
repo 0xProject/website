@@ -293,17 +293,26 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                         with your ZRX
                     </div>
                 }
-                titleMobile="Earn liquidity rewards with ZRX"
-                description={<div>Vote to change the infastructure of internet finance</div>}
+                titleMobile="Make an impact with your ZRX"
+                description={<div>Govern the exchange infrastructure of the Internet</div>}
                 figure={<></>}
                 videoId="qP_oZAjRkTs"
                 actions={
                     <>
-                        <Button to={''} isInline={true} color={colors.white}>
+                        <Button
+                            onClick={() => {
+                                document.getElementById('governance-content').scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            to={''}
+                            isInline={true}
+                            color={colors.white}
+                        >
                             Vote Now
                         </Button>
                         <Button
-                            to={''}
+                            href={
+                                'https://0xdao.gitbook.io/0x-dao/ecosystem-value-experiment/0xdao-grant-program-framework-v1'
+                            }
                             isInline={true}
                             color={colors.brandLight}
                             isTransparent={true}
@@ -342,7 +351,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     <CircularProgress size={40} thickness={2} color={colors.brandLight} />
                 </LoaderWrapper>
             ) : (
-                <VoteIndexCardWrapper>
+                <VoteIndexCardWrapper id={'governance-content'}>
                     <Wrapper onClick={() => setIsExpanded((_isExpanded) => !_isExpanded)}>
                         <ToggleRow>
                             <StyledText fontColor={colors.textDarkSecondary}>{getFilterName(filter)}</StyledText>
