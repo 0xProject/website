@@ -26,6 +26,7 @@ import { ZeroExProvider } from '@0x/asset-buyer';
 
 interface GovernanceHeroProps {
     title: string | React.ReactNode;
+    numProposals?: number | null;
     titleMobile: string | React.ReactNode;
     description: string | React.ReactNode;
     figure: React.ReactNode;
@@ -149,7 +150,6 @@ const FiguresList = styled.ol`
     flex-direction: column;
     flex-wrap: wrap;
     padding-top: 15px;
-    width: 250px;
 `;
 
 const Figure = styled.li`
@@ -157,7 +157,6 @@ const Figure = styled.li`
     flex-direction: column;
     justify-content: space-between;
     text-align: left;
-    background-color: ${colors.white};
     padding: 10px;
     margin-bottom: 15px;
     @media (min-width: 480px) {
@@ -165,6 +164,10 @@ const Figure = styled.li`
     }
 `;
 
+const FigurePair = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
 const FigureHeader = styled.header`
     display: flex;
     justify-content: space-between;
@@ -175,7 +178,6 @@ const FigureTitle = styled.span`
     display: block;
     font-size: 16px;
     line-height: 1.35;
-    color: #999999;
     margin-bottom: 5px;
 `;
 
@@ -185,10 +187,10 @@ const FigureNumber = styled.span`
     font-size: 20px;
     line-height: 1.35;
     @media (min-width: 768px) {
-        font-size: 24px;
+        font-size: 34px;
     }
     @media (min-width: 991px) {
-        font-size: 28px;
+        font-size: 44px;
     }
 `;
 
@@ -199,7 +201,7 @@ type TreasuryTokenPricesUsd = {
     matic: number;
 };
 export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
-    const { title, titleMobile, description, actions, provider, metrics } = props;
+    const { title, titleMobile, description, actions, numProposals } = props;
     const providerState = useSelector((state: State) => state.providerState);
 
     const [totalTreasuryAmountUSD, setTotalTreasuryAmountUSD] = React.useState('-');
@@ -279,20 +281,42 @@ export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
                     </Column>
                     <Column>
                         <MetricsWrapper>
-                            <FiguresListHeader>Treasury Stats</FiguresListHeader>
+                            {/* <FiguresListHeader>Treasury Stats</FiguresListHeader> */}
                             <FiguresList>
-                                <Figure key={1}>
-                                    <FigureHeader>
-                                        <FigureTitle>Available Treasury</FigureTitle>
-                                    </FigureHeader>
-                                    <FigureNumber>{totalTreasuryAmountUSD}</FigureNumber>
-                                </Figure>
-                                <Figure key={2}>
-                                    <FigureHeader>
-                                        <FigureTitle>Total Distributed</FigureTitle>
-                                    </FigureHeader>
-                                    <FigureNumber>{totalTreasuryDistributedUSD}</FigureNumber>
-                                </Figure>
+                                <FigurePair>
+                                    <Figure key={1}>
+                                        <FigureHeader>
+                                            <FigureTitle>Available Treasury</FigureTitle>
+                                        </FigureHeader>
+                                        <FigureNumber>{totalTreasuryAmountUSD}</FigureNumber>
+                                    </Figure>
+                                    <Figure key={2}>
+                                        <FigureHeader>
+                                            <FigureTitle>Total Distributed</FigureTitle>
+                                        </FigureHeader>
+                                        <FigureNumber>{totalTreasuryDistributedUSD}</FigureNumber>
+                                    </Figure>
+                                </FigurePair>
+
+                                <FigurePair>
+                                    <Figure key={3}>
+                                        <FigureHeader>
+                                            <FigureTitle>Votes Passed</FigureTitle>
+                                        </FigureHeader>
+                                        <FigureNumber>{numProposals || 0}</FigureNumber>
+                                    </Figure>
+                                    <Figure
+                                        key={4}
+                                        style={{
+                                            paddingLeft: '100px',
+                                        }}
+                                    >
+                                        <FigureHeader>
+                                            <FigureTitle>Number of Voters (est.)</FigureTitle>
+                                        </FigureHeader>
+                                        <FigureNumber>4k</FigureNumber>
+                                    </Figure>
+                                </FigurePair>
                                 {/* <ProgressbarText>Treasury Details</ProgressbarText> */}
                             </FiguresList>
                         </MetricsWrapper>

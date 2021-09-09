@@ -77,14 +77,14 @@ interface NavItems {
 
 const navItems: NavItems[] = [
     {
-        id: 'staking',
-        text: 'Staking',
-        url: WebsitePaths.Staking,
-    },
-    {
         id: 'governance',
         text: 'Governance',
         url: WebsitePaths.Vote,
+    },
+    {
+        id: 'staking',
+        text: 'Staking',
+        url: WebsitePaths.Staking,
     },
     {
         id: 'your-account',

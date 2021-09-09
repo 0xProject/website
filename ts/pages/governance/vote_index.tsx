@@ -24,7 +24,6 @@ import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { OnChainProposal, TallyInterface, VotingCardType } from 'ts/types';
 import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
-import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
 import { GovernanceHero } from 'ts/components/governance/hero';
@@ -279,7 +278,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
 
     const showZEIP = ['all', 'zeip'];
     const showTreasury = ['all', 'treasury'];
-
+    const numProposals = proposals.length + ZEIP_PROPOSALS.length + snapshotProposals?.length || 0;
     return (
         <StakingPageLayout isHome={false} title="0x Governance">
             <RegisterBanner />
@@ -293,10 +292,10 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                         with your ZRX
                     </div>
                 }
+                numProposals={numProposals}
                 titleMobile="Make an impact with your ZRX"
                 description={<div>Govern the exchange infrastructure of the Internet</div>}
                 figure={<></>}
-                videoId="qP_oZAjRkTs"
                 actions={
                     <>
                         <Button
@@ -310,6 +309,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                             Vote Now
                         </Button>
                         <Button
+                            target="_blank"
                             href={
                                 'https://0xdao.gitbook.io/0x-dao/ecosystem-value-experiment/0xdao-grant-program-framework-v1'
                             }

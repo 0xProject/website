@@ -45,6 +45,7 @@ import { NextLaunchKit } from 'ts/pages/launch_kit';
 import { PrivacyPolicy } from 'ts/pages/privacy';
 import { StakingIndex } from 'ts/pages/staking/home';
 import { StakingPool } from 'ts/pages/staking/staking_pool';
+import { TreasuryBreakdown } from 'ts/pages/governance/treasury_breakdown';
 
 import { RemoveStake } from 'ts/pages/staking/wizard/remove';
 
@@ -115,6 +116,11 @@ render(
                                     component={StakingPoolActivity}
                                 />
                                 <Route exact={true} path={`${WebsitePaths.Register}`} component={RegisterWizard} />
+                                <Route
+                                    exact={true}
+                                    path={`${WebsitePaths.Vote}/treasury`}
+                                    component={TreasuryBreakdown}
+                                />
                                 <Route exact={true} path={`${WebsitePaths.Vote}/proposal/:id`} component={Treasury} />
                                 <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance} />
                                 <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex} />

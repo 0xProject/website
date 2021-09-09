@@ -46,7 +46,7 @@ const navItems: NavItemProps[] = [
     {
         id: 'zrx',
         text: 'ZRX',
-        url: WebsitePaths.Staking,
+        url: WebsitePaths.Vote,
     },
     //     {
     //     id: 'resources',

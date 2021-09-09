@@ -399,10 +399,12 @@ const StyledMarkdown = styled.div`
         font-size: 28px;
         font-weight: 400;
         margin-bottom: 20px;
+        color: black;
     }
 
     & p {
         margin-bottom: 40px;
+        color: black;
     }
 
     & ul {
