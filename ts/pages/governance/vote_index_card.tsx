@@ -86,7 +86,7 @@ export const getVoteOutcome = (tally?: TallyInterface): VoteOutcome | undefined 
 
 export const getDateString = (voteStartDate: moment.Moment, voteEndDate: moment.Moment): string => {
     const voteTime = getVoteTime(voteStartDate, voteEndDate);
-    const pstOffset = '-0800';
+    const pstOffset = '-0700';
     const now = moment();
     const endDate = voteEndDate.utcOffset(pstOffset);
     const startDate = voteStartDate.utcOffset(pstOffset);
