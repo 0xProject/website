@@ -1,6 +1,9 @@
 import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import { ZeroExProvider } from 'ethereum-types';
+
 import {
     GasInfo,
     MailchimpSubscriberInfo,
@@ -161,6 +164,40 @@ export const backendClient = {
             `?contract-address=${MATIC_TOKEN}&key=ckey_02c853f8bd48448190555163e59`,
         );
         return await Promise.all([zrxTransfers, maticTransfers]);
+    },
+
+    async getTreasuryProposalDistributions(provider: ZeroExProvider) {
+        const web3 = new Web3Wrapper(provider);
+        const reqBaseUri = `https://api.covalenthq.com/v1/1/transaction_v2/`;
+        const proposalExecutionLogs = await web3.getLogsAsync({
+            address: '0x0bb1810061c2f5b2088054ee184e6c79e1591101',
+            topics: ['0x712ae1383f79ac853f8d882153778e0260ef8f03b504e2866e0593e04d2b291f'],
+            fromBlock: 0,
+            toBlock: 'latest',
+        });
+
+        const txnHashesPromises = proposalExecutionLogs.map((log) => {
+            return fetchUtils.requestAsync(reqBaseUri, `${log.transactionHash}/?key=ckey_02c853f8bd48448190555163e59`);
+        });
+
+        const transactions = await Promise.all(txnHashesPromises);
+        const data = transactions.map((txn) => {
+            let proposalId,
+                tokensTransferred: any[] = [];
+            txn.data.items[0].log_events.forEach((log: any) => {
+                if (log.decoded.name === 'ProposalExecuted') {
+                    proposalId = log.decoded.params[0].value;
+                } else if (log.decoded.name === 'Transfer') {
+                    tokensTransferred.push({
+                        name: log.sender_contract_ticker_symbol,
+                        amount: parseInt(log.decoded.params[2].value) / 10 ** (log.sender_contract_decimals || 18),
+                    });
+                }
+            });
+
+            return { proposalId, tokensTransferred, hash: txn.data.items[0].tx_hash };
+        });
+        return data;
     },
 
     async getGasInfoAsync(speed?: string): Promise<GasInfo> {

@@ -4,6 +4,8 @@ import { Progressbar } from 'ts/components/progressbar';
 import { stakingUtils } from 'ts/utils/staking_utils';
 import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import { ethers, Contract } from 'ethers';
+
 import { formatNumber } from 'ts/utils/format_number';
 
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
@@ -24,6 +26,8 @@ import { backendClient } from 'ts/utils/backend_client';
 import { differenceInSeconds } from 'date-fns';
 
 import { formatEther, formatZrx } from 'ts/utils/format_number';
+
+import { Blockchain } from 'ts/blockchain';
 
 import { colors } from 'ts/style/colors';
 import { PieChart } from 'react-minimal-pie-chart';
@@ -187,12 +191,20 @@ const PieAndLegend = styled.div`
 
 const Legend = styled.div`
     display: flex-column;
-    margin-left: 2rem;
+    margin-left: 4rem;
 `;
 
 interface ColorBlockProps {
     color: string;
 }
+
+const ProposalLink = styled.a`
+    color: #00ae99;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`;
 
 const ColorBlock = styled.div<ColorBlockProps>`
     background-color: ${(props) => props.color};
@@ -221,7 +233,7 @@ const AssetsTable = styled.table`
 `;
 
 const TableHeaderElement = styled.th`
-    text-align: left;
+    text-align: center;
     padding: 15px 80px;
     font-size: 15px;
 `;
@@ -238,12 +250,23 @@ const VoteTableHeaderElementSupport = styled.th`
 const VoteTableHeaderElementPower = styled.th`
     text-align: right;
 `;
-const VoteRowAddress = styled.td`
-    padding: 0.5rem 0;
-    display: flex;
+const AssetName = styled.td`
+    text-align: center;
+    font-size: 20px;
+    padding-top: 2rem;
 `;
 
-const FiguresListHeader = styled.h2``;
+const AssetBalance = styled.td`
+    text-align: center;
+    font-size: 20px;
+`;
+
+const AssetValue = styled.td`
+    text-align: center;
+    font-size: 20px;
+`;
+
+const AssetRow = styled.tr``;
 
 type TreasuryTokenPricesUsd = {
     zrx: number;
@@ -259,6 +282,7 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
     const [zrxUSDValue, setZrxUSDValue] = React.useState(undefined);
     const [maticUSDValue, setMaticUSDValue] = React.useState(undefined);
     const [assetList, setAssetList] = React.useState([]);
+    const [allocations, setAllocations] = React.useState([]);
 
     const parseTotalDistributed = (transferData: any) => {
         let totalDistributed = 0;
@@ -297,6 +321,7 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
             const res = await backendClient.getTreasuryTokenPrices();
             const zrxAmount = Web3Wrapper.toUnitAmount(zrxBalance, 18);
             const maticAmount = Web3Wrapper.toUnitAmount(maticBalance, 18);
+
             const zrxUSD = zrxAmount.multipliedBy(res['0x'].usd);
             const maticUSD = maticAmount.multipliedBy(res['matic-network'].usd);
 
@@ -307,19 +332,52 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
             setAssetList([
                 {
                     name: 'ZRX',
-                    balance: zrxAmount,
-                    usdValue: zrxUSD,
+                    balance: zrxAmount.toString(),
+                    usdValue:
+                        '$' +
+                        formatNumber(zrxUSD.toString(), {
+                            decimals: 0,
+                            decimalsRounded: 6,
+                            bigUnitPostfix: false,
+                        }).formatted,
                 },
                 {
-                    name: 'ZRX',
-                    balance: zrxAmount,
-                    usdValue: zrxUSD,
+                    name: 'MATIC',
+                    balance: maticAmount.toString(),
+                    usdValue:
+                        '$' +
+                        formatNumber(maticUSD.toString(), {
+                            decimals: 0,
+                            decimalsRounded: 6,
+                            bigUnitPostfix: false,
+                        }).formatted,
                 },
             ]);
 
             const treasuryTokenTransferData = await backendClient.getTreasuryTokenTransfers();
             const totalDistributed = parseTotalDistributed(treasuryTokenTransferData);
 
+            const treauryProposalDistributions = await backendClient.getTreasuryProposalDistributions(
+                providerState.provider,
+            );
+
+            console.log(treauryProposalDistributions);
+            const treasuryAllocations = treauryProposalDistributions.map((distribution: any) => {
+                const { tokensTransferred } = distribution;
+
+                let updatedTokensTransferred = tokensTransferred.map((token: any) => {
+                    if (token.name === 'ZRX') {
+                        token.usdValue = Math.round(token.amount * res['0x'].usd);
+                    } else {
+                        token.usdValue = Math.round(token.amount * res['matic-network'].usd);
+                    }
+                    return token;
+                });
+                distribution.tokensTransferred = updatedTokensTransferred;
+                return distribution;
+            });
+
+            setAllocations(treasuryAllocations);
             setTotalTreasuryDistributedUSD(
                 '$' +
                     formatNumber(totalDistributed, {
@@ -353,7 +411,7 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                                         data={[
                                             { title: 'ZRX', value: parseInt(zrxUSDValue.toString()), color: '#000000' },
                                             {
-                                                title: 'Matic',
+                                                title: 'MATIC',
                                                 value: parseInt(maticUSDValue.toString()),
                                                 color: '#8247E5',
                                             },
@@ -400,34 +458,70 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                                     <TableHeaderElement>Value</TableHeaderElement>
                                 </tr>
                             </TableHeader>
-                            {/* <tbody>
-                                {data.map((voteData: VoterBreakdownData) => {
-                                    return (
-                                        <VoteRow>
-                                            <VoteRowAddress>
-                                                <Jazzicon
-                                                    isSquare={true}
-                                                    diameter={28}
-                                                    seed={generateUniqueId(voteData.voter)}
-                                                />
-                                                <VoterAddress>
-                                                    {voteData.voterName ||
-                                                        utils.getAddressBeginAndEnd(voteData.voter, 4, 4)}
-                                                </VoterAddress>
-                                            </VoteRowAddress>
-                                            <VoteRowSupport supportColor={voteData.support ? 'green' : 'red'}>
-                                                {voteData.support ? 'Yes' : 'No'}
-                                            </VoteRowSupport>
-                                            <VoteRowPower>{voteData.votingPower}</VoteRowPower>
-                                        </VoteRow>
-                                    );
-                                })}
-                            </tbody> */}
+                            <tbody>
+                                {assetList &&
+                                    assetList.map((data) => {
+                                        return (
+                                            <AssetRow>
+                                                <AssetName>{data.name}</AssetName>
+                                                <AssetBalance>{data.balance}</AssetBalance>
+                                                <AssetValue>{data.usdValue}</AssetValue>
+                                            </AssetRow>
+                                        );
+                                    })}
+                            </tbody>
                         </AssetsTable>
                     </Column>
                 </ColumnsWrapper>
                 <TreasuryAllocations>
                     <H2>Historical Treasury Allocations</H2>
+                    <AssetsTable>
+                        <TableHeader>
+                            <tr>
+                                <TableHeaderElement>Proposal</TableHeaderElement>
+                                <TableHeaderElement>Transfer Funds</TableHeaderElement>
+                                <TableHeaderElement>USD Value</TableHeaderElement>
+                            </tr>
+                        </TableHeader>
+                        <tbody>
+                            {allocations &&
+                                allocations.map((data) => {
+                                    let summedTokenValue = 0;
+                                    let tokenAmountsString = '';
+                                    data.tokensTransferred.forEach((token: any, index) => {
+                                        summedTokenValue += token.usdValue;
+                                        const formattedTokenAmount = formatNumber(token.amount, {
+                                            decimals: 0,
+                                            decimalsRounded: 6,
+                                            bigUnitPostfix: true,
+                                        }).formatted;
+                                        tokenAmountsString += `${token.name} ${formattedTokenAmount}`;
+                                        if (index < data.tokensTransferred.length - 1) {
+                                            tokenAmountsString += ', ';
+                                        }
+                                    });
+                                    const proposalTitle = `Proposal #${data.proposalId}`;
+                                    const usd =
+                                        '$' +
+                                        formatNumber(summedTokenValue, {
+                                            decimals: 0,
+                                            decimalsRounded: 6,
+                                            bigUnitPostfix: false,
+                                        }).formatted;
+                                    return (
+                                        <AssetRow>
+                                            <AssetName>
+                                                <ProposalLink href={`https://etherscan.io/tx/${data.hash}`}>
+                                                    {proposalTitle}
+                                                </ProposalLink>
+                                            </AssetName>
+                                            <AssetBalance>{tokenAmountsString}</AssetBalance>
+                                            <AssetValue>{usd}</AssetValue>
+                                        </AssetRow>
+                                    );
+                                })}
+                        </tbody>
+                    </AssetsTable>
                 </TreasuryAllocations>
             </Wrapper>
         </StakingPageLayout>
