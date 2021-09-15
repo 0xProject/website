@@ -1,6 +1,6 @@
 # Introduction
 
-The 0x API is the easiest way to source liquidity from [0x Mesh](https://0x-org.gitbook.io/mesh/) as well as on-chain sources such as Kyber, Uniswap, Oasis, Curve and other decentralized exchange networks.
+The 0x API is the easiest way to source liquidity from 0x limit orders as well as on-chain sources such as Kyber, Uniswap, Oasis, Curve and other decentralized exchange networks.
 While the 0x Core Team hosts a version of the 0x API (subject to the [0x Terms of Service](https://0x.org/terms)), all the code is open source and available at the [0x-API GitHub repo](https://github.com/0xProject/0x-api).
 If you run into a problem, don't hesitate to [open an issue](https://github.com/0xProject/0x-api/issues).
 
@@ -160,7 +160,7 @@ A structured object containing the signature data for the order. For more info s
 
 # Swap
 
-This API faciliates consuming the best-priced liquidity from [0x Mesh](https://0x-org.gitbook.io/mesh/) and the greater DEX ecosystem.
+This API faciliates consuming the best-priced liquidity from limit orders and the greater DEX ecosystem.
 We use smart order routing to split up your transaction across decentralized exchange networks to be filled with the lowest slippage possible while minimizing transaction costs.
 Follow the "[Swap Tokens with 0x API](/docs/guides/swap-tokens-with-0x-api)" guide to see how to use it.
 
@@ -817,7 +817,6 @@ Identical to the response schema for `/swap/v1/quote`, with one exception: the `
 
 The Standard Relayer API is an API specification that is implemented by several 0x relayers (exchanges), including [Radar Relay](https://developers.radarrelay.com/api/0x-sra) and [Bamboo Relay](https://sra.bamboorelay.com/zrx.html).
 It allows you to interact with the liquidity of a certain relayer, including querying and posting to their orderbook.
-0x API SRA uses [0x Mesh](https://0x-org.gitbook.io/mesh/) as the underlying orderbook.
 The 0x API provides a superset of the SRA, and contains functionality that is not strictly part of the spec.
 
 
@@ -894,7 +893,7 @@ Any [Signed Order](/docs/api#signed-order) field can be use as a query parameter
 
 ## POST /sra/v4/order
 
-Submit a signed order to [0x Mesh](https://0x-org.gitbook.io/mesh/).
+Submit a signed order.
 
 ### Request
 
@@ -947,7 +946,7 @@ Empty response body
 
 ## POST /sra/v4/orders
 
-Submit a list of signed orders to [0x Mesh](https://0x-org.gitbook.io/mesh/).
+Submit a list of signed orders.
 
 ### Request
 
@@ -1359,7 +1358,7 @@ The Standard Relayer API also exposes a websocket server at the root endpoint.
 | ------- | ----------------------------- |
 | Mainnet | wss://api.0x.org/sra/v4       |
 
-The server will allow you to subscribe to 0x order updates in [0x Mesh](https://0x-org.gitbook.io/mesh/),
+The server will allow you to subscribe to 0x order updates,
 and will push updates whenever the "fillability" of an order changes.
 In practice, this will happen whenever a new order is added, an order is cancelled, or an order is filled.
 At the moment, the update message will not specify the exact reason for the update.
@@ -1991,7 +1990,7 @@ The Standard Relayer API also exposes a websocket server at the root endpoint.
 | ------- | ----------------------------- |
 | Mainnet | wss://api.0x.org/orderbook/v1 |
 
-The server will allow you to subscribe to 0x order updates in [0x Mesh](https://0x-org.gitbook.io/mesh/),
+The server will allow you to subscribe to 0x order updates,
 and will push updates whenever the "fillability" of an order changes.
 In practice, this will happen whenever a new order is added, an order is cancelled, or an order is filled.
 At the moment, the update message will not specify the exact reason for the update.
