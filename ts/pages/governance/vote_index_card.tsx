@@ -155,7 +155,10 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                     >
                         <FlexWrap>
                             <Column width="60%" padding="0px 20px 0px 0px">
-                                <Tag>Treasury</Tag>
+                                <TagsWrapper>
+                                    <Tag>Treasury</Tag>
+                                    <Tag className="gas-required">Gas Required</Tag>
+                                </TagsWrapper>
                                 {description ? (
                                     <>
                                         <TreasurySummary description={description} />
@@ -210,7 +213,10 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                     >
                         <FlexWrap>
                             <Column width="60%" padding="0px 20px 0px 0px">
-                                <Tag className="zeip">ZEIP</Tag>
+                                <TagsWrapper>
+                                    <Tag className="zeip">ZEIP</Tag>
+                                    <Tag className="freevote">Free Vote</Tag>
+                                </TagsWrapper>
                                 <Heading marginBottom="15px">
                                     {`${title} `}
                                     <Muted>{`(ZEIP-${zeipId})`}</Muted>
@@ -241,7 +247,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
             const snapshotText = props.body.length > 500 ? props.body.substring(0, 500) + '...' : props.body;
             const status = props.state;
             const votes = props.votes;
-            console.log(votes);
+
             const proposalState = status === 'active' ? 'happening' : 'accepted';
             return (
                 <a style={{ order }} target="_blank" href={`https://snapshot.org/#/0xgov.eth/proposal/${props.id}`}>
@@ -255,7 +261,10 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                     >
                         <FlexWrap>
                             <Column width="60%" padding="0px 20px 0px 0px">
-                                <Tag className="snapshot">Snapshot</Tag>
+                                <TagsWrapper>
+                                    <Tag className="snapshot">Snapshot</Tag>
+                                    <Tag className="freevote-snapshot">Free Vote</Tag>
+                                </TagsWrapper>
                                 <Heading marginBottom="15px">{`${props.title} `}</Heading>
                                 {props.body ? (
                                     <>
@@ -315,6 +324,29 @@ const Tag = styled.div`
         width: 50px;
         background-color: ${() => colors.brandLight};
     }
+    &.freevote {
+        background-color: transparent;
+        color: ${() => colors.brandLight};
+        border: 1px solid ${() => colors.brandLight};
+        width: 87px;
+        margin-left: 6px;
+    }
+
+    &.gas-required {
+        background-color: transparent;
+        color: ${() => colors.yellow500};
+        border: 1px solid ${() => colors.yellow500};
+        width: 120px;
+        margin-left: 6px;
+    }
+
+    &.freevote-snapshot {
+        background-color: transparent;
+        color: #0500fa;
+        border: 1px solid #0500fa;
+        width: 87px;
+        margin-left: 6px;
+    }
     &.snapshot {
         width: 90px;
         background-color: ${() => colors.blue700};
@@ -326,6 +358,10 @@ const shimmer = keyframes`
     background-position:
      150% 0;
   }
+`;
+
+const TagsWrapper = styled.div`
+    display: flex;
 `;
 
 const VoteCardShimmer = styled.div`

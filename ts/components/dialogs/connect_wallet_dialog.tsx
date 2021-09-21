@@ -206,7 +206,7 @@ interface Option {
 export const ConnectWalletDialog = () => {
     const isOpen = useSelector((state: State) => state.isConnectWalletDialogOpen);
     const isMetamask = window.ethereum && window.ethereum.isMetamask ? true : false;
-    const { connector, activate, error } = useWeb3React();
+    const { connector, activate, error, chainId } = useWeb3React();
     const [activatingConnector, setActivatingConnector] = useState<any>();
 
     useEffect(() => {
@@ -233,7 +233,7 @@ export const ConnectWalletDialog = () => {
         let address: string = '';
 
         (window as any).heap.track('Wallet connected', { wallet: option.type });
-
+        // console.log(currentConnector, option)
         try {
             await activate(currentConnector, undefined, true);
             setActivatingConnector(currentConnector);
@@ -261,6 +261,7 @@ export const ConnectWalletDialog = () => {
                 if (typeof window !== undefined) {
                     window.localStorage.setItem('WALLETCONNECTOR', JSON.stringify(data));
                 }
+                console.log('heyo', provider)
                 connectToWallet(provider);
             }
         } catch (error) {

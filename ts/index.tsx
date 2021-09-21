@@ -116,11 +116,7 @@ render(
                                     component={StakingPoolActivity}
                                 />
                                 <Route exact={true} path={`${WebsitePaths.Register}`} component={RegisterWizard} />
-                                <Route
-                                    exact={true}
-                                    path={`${WebsitePaths.Vote}/treasury`}
-                                    component={TreasuryBreakdown}
-                                />
+                                <Route exact={true} path={`${WebsitePaths.Treasury}`} component={TreasuryBreakdown} />
                                 <Route exact={true} path={`${WebsitePaths.Vote}/proposal/:id`} component={Treasury} />
                                 <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance} />
                                 <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex} />
@@ -141,7 +137,7 @@ render(
                             Portal does currently does not support V3 architecture
                             //<Route path={WebsitePaths.Portal} component={LazyPortal} />
                                 */}
-                                <Redirect from={WebsitePaths.StakingShortLink} to={WebsitePaths.Staking} />
+                                <Redirect from={WebsitePaths.StakingShortLink} to={WebsitePaths.Vote} />
                                 <Redirect
                                     from={`${WebsiteLegacyPaths.ZeroExJs}/:version?`}
                                     to={constants.URL_NPMJS_ZEROEXJS}

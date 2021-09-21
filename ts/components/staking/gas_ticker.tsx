@@ -13,6 +13,10 @@ const Container = styled.a`
     padding: 22px 20px 20px;
     margin-right: 20px;
     cursor: pointer;
+    @media (max-width: 428px) {
+        width: 40%;
+        margin-bottom: 20px;
+    }
 `;
 
 const ExpandedMenu = styled.div`

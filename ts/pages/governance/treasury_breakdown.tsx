@@ -400,7 +400,7 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
     return (
         <StakingPageLayout isHome={false} title="0x Governance">
             <Wrapper>
-                <H1>ZRX Treasury Breakdown</H1>
+                <H1>0x DAO Treasury Breakdown</H1>
                 <ColumnsWrapper>
                     <Column>
                         <Title>{totalTreasuryAmountUSD}</Title>
@@ -438,12 +438,7 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                         <BreakdownCopy>
                             <H3>Govern the entire treasury with your ZRX</H3>
                             <Paragraph>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sit amet posuere justo,
-                                quis scelerisque odio. Praesent sollicitudin magna libero, eget elementum dolor sagittis
-                                ut. Nunc scelerisque euismod sodales. Ut libero justo, pretium vel tortor eget, faucibus
-                                rutrum erat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
-                                cubilia curae; In euismod vitae urna eu ornare. Integer eleifend orci ac lobortis
-                                vehicula
+                                The intended purpose of the treasury is to fund activities and projects that benefit and add value to the 0x ecosystem. ZRX holders fully control the treasury. Anyone can submit a governance proposal to use the funds or apply for funding themselves.
                             </Paragraph>
                         </BreakdownCopy>
                     </Column>
@@ -488,7 +483,7 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                                 allocations.map((data) => {
                                     let summedTokenValue = 0;
                                     let tokenAmountsString = '';
-                                    data.tokensTransferred.forEach((token: any, index) => {
+                                    data.tokensTransferred.forEach((token: any, index: number) => {
                                         summedTokenValue += token.usdValue;
                                         const formattedTokenAmount = formatNumber(token.amount, {
                                             decimals: 0,

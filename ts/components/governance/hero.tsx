@@ -134,9 +134,14 @@ const Description = styled.h2`
 `;
 
 const Actions = styled.div`
+    display: flex;
+    flex-direction: column;
     & > * {
         margin-right: 13px;
         margin-bottom: 10px;
+    }
+    @media (min-width: 768px) {
+        flex-direction: row;
     }
 `;
 
@@ -159,6 +164,7 @@ const Figure = styled.li`
     text-align: left;
     padding: 10px;
     margin-bottom: 15px;
+    max-width: 50%;
     @media (min-width: 480px) {
         padding: 20px;
     }
@@ -305,12 +311,7 @@ export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
                                         </FigureHeader>
                                         <FigureNumber>{numProposals || 0}</FigureNumber>
                                     </Figure>
-                                    <Figure
-                                        key={4}
-                                        style={{
-                                            paddingLeft: '100px',
-                                        }}
-                                    >
+                                    <Figure key={4} style={{}}>
                                         <FigureHeader>
                                             <FigureTitle>Number of Voters (est.)</FigureTitle>
                                         </FigureHeader>

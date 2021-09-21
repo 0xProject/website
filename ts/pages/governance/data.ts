@@ -607,8 +607,8 @@ export const proposals: Proposals = {
             `A public dashboard will be produced in time for the change to go into effect to monitor its effects. If this proposal is accepted, the update will become effective after 7 days for 0x v3, and 2 days for 0x v4, due to protocol timelocks.`,
         ],
         url: 'https://github.com/0xProject/ZEIPs/issues/91',
-        voteStartDate: moment(1631552400, 'X'),
-        voteEndDate: moment(1631811600, 'X'),
+        voteStartDate: moment(1631725200, 'X'),
+        voteEndDate: moment(1631984400, 'X'),
         benefit: {
             title: 'Benefit',
             summary: [

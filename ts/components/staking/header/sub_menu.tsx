@@ -121,6 +121,13 @@ const MobileMenuWrapper = styled.div`
 
 const GasTickerAndWalletWrapper = styled.div`
     display: flex;
+    padding: 15px 30px;
+    padding-bottom: 30px;
+
+    @media (max-width: 428px) {
+        display: flex;
+        flex-direction: column;
+    }
 `;
 
 const ConnectedWallet = ({ providerState, openConnectWalletDialogCB, logoutWalletCB }: ISubMenuProps) => {
@@ -177,7 +184,6 @@ const ConnectButton = styled(Button).attrs({
     color: ${colors.black};
 
     @media (max-width: 1199px) {
-        margin: 30px;
         width: 315px;
     }
 `;

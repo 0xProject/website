@@ -44,6 +44,22 @@ const HeadingRow = styled.div`
     }
 `;
 
+const StakingBanner = styled.div`
+    background-color: #003831;
+    text-align: center;
+    color: white;
+    padding: 1rem;
+`;
+
+const StakingBannerLink = styled.a`
+    text-decoration:underline;
+    color: white;
+    &:hover {
+        text-decoration:underline;
+        color: white;
+        cursor:pointer;
+    }
+`;
 export interface StakingIndexProps {}
 export const StakingIndex: React.FC<StakingIndexProps> = () => {
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
@@ -154,6 +170,9 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
 
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
+            {/* <StakingBanner>
+                Protocol fees are paused for 2 weeks as a result of a ZRX vote. <StakingBannerLink href={'https://0x.org/zrx/vote/zeip-91'}>Learn more</StakingBannerLink>
+            </StakingBanner> */}
             <StakingHero
                 title={
                     <div>

@@ -278,7 +278,14 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
 
     const showZEIP = ['all', 'zeip'];
     const showTreasury = ['all', 'treasury'];
-    const numProposals = proposals.length + ZEIP_PROPOSALS.length + snapshotProposals?.length || 0;
+    const numProposals =
+        proposals.filter((proposal) => {
+            return !proposal.happening && !proposal.upcoming;
+        }).length +
+            ZEIP_PROPOSALS.filter((zeip) => {
+                return zeip.voteEndDate.isBefore(moment.now());
+            }).length +
+            snapshotProposals?.length || 0;
     return (
         <StakingPageLayout isHome={false} title="0x Governance">
             <RegisterBanner />
