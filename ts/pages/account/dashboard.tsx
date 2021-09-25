@@ -133,6 +133,7 @@ export const Account: React.FC<AccountProps> = () => {
     const voteHistory: VoteHistory[] = [];
 
     const [stakingError, setStakingError] = React.useState<Error | undefined>(undefined);
+    const [stakingErrorMessage, setStakingErrorMessage] = React.useState<string | undefined>(undefined);
     const [isApplyModalOpen, toggleApplyModal] = React.useState(false);
     const [changePoolDetails, setChangePoolDetails] = React.useState<PoolDetails | undefined>(undefined);
     const [removeStakePoolDetails, setRemoveStakePoolDetails] = React.useState<PoolDetails | undefined>(undefined);
@@ -410,6 +411,10 @@ export const Account: React.FC<AccountProps> = () => {
         const castedStakeError = (useStakeError as unknown) as RPCError;
         if (useStakeError && castedStakeError.code === -32000) {
             setStakingError(useStakeError);
+            if (castedStakeError.message.includes('max fee per gas less than block base fee')) {
+                setStakingErrorMessage('Max fee per gas less than block base fee: Please retry shortly');
+            }
+            setStakingErrorMessage(castedStakeError.message);
         }
     }, [useStakeError]);
 
@@ -827,8 +832,8 @@ export const Account: React.FC<AccountProps> = () => {
             />
             <ErrorModal
                 isOpen={Boolean(stakingError)}
-                text={'More ETH is required to complete this transaction. Fund your wallet and try again.'}
-                heading={'Insufficient ETH'}
+                text={stakingErrorMessage || ''}
+                heading={'Error'}
                 buttonText={'Dismiss'}
                 onClose={() => {
                     setStakingError(undefined);

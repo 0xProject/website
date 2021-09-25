@@ -121,12 +121,16 @@ const MobileMenuWrapper = styled.div`
 
 const GasTickerAndWalletWrapper = styled.div`
     display: flex;
-    padding: 15px 30px;
+    padding: 15px 0px;
     padding-bottom: 30px;
 
     @media (max-width: 428px) {
         display: flex;
         flex-direction: column;
+    }
+
+    @media (max-width: 1199px) {
+        padding-left: 30px;
     }
 `;
 
@@ -185,6 +189,10 @@ const ConnectButton = styled(Button).attrs({
 
     @media (max-width: 1199px) {
         width: 315px;
+    }
+
+    @media (max-width: 1400px) {
+        width: 250px;
     }
 `;
 

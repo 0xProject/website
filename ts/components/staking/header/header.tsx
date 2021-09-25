@@ -213,7 +213,7 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
                             toggleMobileNav={toggleMobileNav}
                             hasBackButton={false}
                             hasSearch={false}
-                            navHeight={426}
+                            navHeight={isWalletConnected ? 590 : 480}
                         >
                             {subMenu}
                         </MobileNav>

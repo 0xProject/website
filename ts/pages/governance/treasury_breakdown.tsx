@@ -5,6 +5,7 @@ import { stakingUtils } from 'ts/utils/staking_utils';
 import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { ethers, Contract } from 'ethers';
+import { Image } from 'ts/components/ui/image';
 
 import { formatNumber } from 'ts/utils/format_number';
 
@@ -22,12 +23,6 @@ import { Text } from 'ts/components/ui/text';
 
 import { State } from 'ts/redux/reducer';
 import { backendClient } from 'ts/utils/backend_client';
-
-import { differenceInSeconds } from 'date-fns';
-
-import { formatEther, formatZrx } from 'ts/utils/format_number';
-
-import { Blockchain } from 'ts/blockchain';
 
 import { colors } from 'ts/style/colors';
 import { PieChart } from 'react-minimal-pie-chart';
@@ -88,6 +83,14 @@ const Row = styled.div<RowProps>`
 
 const Column = styled.div`
     width: 50%;
+
+    @media (max-width: 1024px) {
+        width: 100%;
+    }
+`;
+
+const AssetsColumn = styled.div`
+    width: auto;
 `;
 
 const Title = styled.h1`
@@ -179,6 +182,10 @@ const FigureNumber = styled.span`
 
 const ColumnsWrapper = styled.div`
     display: flex;
+
+    @media (max-width: 1024px) {
+        flex-direction: column;
+    }
 `;
 const PieChartWrapper = styled.div`
     width: 40%;
@@ -236,6 +243,10 @@ const TableHeaderElement = styled.th`
     text-align: center;
     padding: 15px 80px;
     font-size: 15px;
+
+    @media (max-width: 1024px) {
+        padding: 15px 25px;
+    }
 `;
 
 const TableHeader = styled.thead`
@@ -254,24 +265,68 @@ const AssetName = styled.td`
     text-align: center;
     font-size: 20px;
     padding-top: 2rem;
+
+    @media (max-width: 600px) {
+        font-size: 15px;
+    }
 `;
 
 const AssetBalance = styled.td`
     text-align: center;
     font-size: 20px;
+
+    @media (max-width: 600px) {
+        font-size: 15px;
+    }
 `;
 
 const AssetValue = styled.td`
     text-align: center;
     font-size: 20px;
+
+    @media (max-width: 600px) {
+        font-size: 15px;
+    }
 `;
 
 const AssetRow = styled.tr``;
+
+const CTADisplay = styled.div`
+    display: flex;
+    background-color: #f3f6f4;
+    width: 100%;
+    color: #5c5c5c;
+    justify-content: center;
+    margin-top: 2rem;
+
+    @media (max-width: 600px) {
+        padding-left: 2em;
+    }
+`;
+
+const CTADisplayText = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 2.5rem 4rem;
+`;
+
+const CTALink = styled.a`
+    margin-top: 1rem;
+    color: #00ae99;
+`;
+
+const ArrowCTA = styled.svg`
+    margin-left: 0.25rem;
+    margin-top: -4px;
+`;
 
 type TreasuryTokenPricesUsd = {
     zrx: number;
     matic: number;
 };
+
 export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
     const providerState = useSelector((state: State) => state.providerState);
 
@@ -437,14 +492,19 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                         </PieAndLegend>
                         <BreakdownCopy>
                             <H3>Govern the entire treasury with your ZRX</H3>
-                            <Paragraph>
-                                The intended purpose of the treasury is to fund activities and projects that benefit and add value to the 0x ecosystem. ZRX holders fully control the treasury. Anyone can submit a governance proposal to use the funds or apply for funding themselves.
+                            <Paragraph
+                                style={{
+                                    paddingRight: '1rem',
+                                }}
+                            >
+                                The intended purpose of the treasury is to fund activities and projects that benefit and
+                                add value to the 0x ecosystem. ZRX holders fully control the treasury. Anyone can submit
+                                a governance proposal to use the funds or apply for funding themselves.
                             </Paragraph>
                         </BreakdownCopy>
                     </Column>
-                    <Column>
+                    <AssetsColumn>
                         <H2>Assets</H2>
-
                         <AssetsTable>
                             <TableHeader>
                                 <tr>
@@ -466,7 +526,45 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                                     })}
                             </tbody>
                         </AssetsTable>
-                    </Column>
+                        <CTADisplay>
+                            <Image src="/images/treasury_breakdown/treasury_breakdown_eve.png" />
+                            <CTADisplayText>
+                                Have an idea that requires funding?
+                                <br />
+                                <CTALink href="https://app.gitbook.com/@0xdao/s/0x-dao/ecosystem-value-experiment/0xdao-grant-program-framework-v1">
+                                    Apply for funds with 0x Eve
+                                    <ArrowCTA
+                                        fill="#00AE99"
+                                        height="15"
+                                        viewBox="0 0 16 15"
+                                        width="16"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path d="M4.484.246l.024 1.411 8.146.053L.817 13.547l.996.996L13.65 2.706l.052 8.146 1.412.024L15.045.315 4.484.246z" />
+                                    </ArrowCTA>
+                                </CTALink>
+                            </CTADisplayText>
+                        </CTADisplay>
+                        <CTADisplay>
+                            <Image src="/images/treasury_breakdown/treasury_breakdown_past.png" />
+                            <CTADisplayText>
+                                Have an idea that requires funding?
+                                <br />
+                                <CTALink href="/zrx/vote">
+                                    View all active and past proposals
+                                    <ArrowCTA
+                                        fill="#00AE99"
+                                        height="15"
+                                        viewBox="0 0 16 15"
+                                        width="16"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path d="M4.484.246l.024 1.411 8.146.053L.817 13.547l.996.996L13.65 2.706l.052 8.146 1.412.024L15.045.315 4.484.246z" />
+                                    </ArrowCTA>
+                                </CTALink>
+                            </CTADisplayText>
+                        </CTADisplay>
+                    </AssetsColumn>
                 </ColumnsWrapper>
                 <TreasuryAllocations>
                     <H2>Historical Treasury Allocations</H2>

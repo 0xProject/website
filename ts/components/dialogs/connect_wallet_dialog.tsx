@@ -261,7 +261,6 @@ export const ConnectWalletDialog = () => {
                 if (typeof window !== undefined) {
                     window.localStorage.setItem('WALLETCONNECTOR', JSON.stringify(data));
                 }
-                console.log('heyo', provider)
                 connectToWallet(provider);
             }
         } catch (error) {

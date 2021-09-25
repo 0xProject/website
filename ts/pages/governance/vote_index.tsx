@@ -8,8 +8,10 @@ import * as React from 'react';
 import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { fadeIn } from 'ts/style/keyframes';
 
 import { backendClient } from 'ts/utils/backend_client';
+import { Image } from 'ts/components/ui/image';
 
 import { Button } from 'ts/components/button';
 import { DocumentTitle } from 'ts/components/document_title';
@@ -58,6 +60,23 @@ type ProposalWithOrder = Proposal & {
 type TreasuryProposalWithOrder = TreasuryProposal & {
     order?: number;
 };
+
+interface IFormProps {
+    color?: string;
+}
+
+interface IInputProps {
+    isSubmitted: boolean;
+    name: string;
+    type: string;
+    label: string;
+    color?: string;
+    required?: boolean;
+}
+
+interface IArrowProps {
+    isSubmitted: boolean;
+}
 
 type SnapshotProposals = {
     id: string;
@@ -179,6 +198,20 @@ interface Proposals {
     [index: string]: any;
 }
 
+const Input = React.forwardRef((props: IInputProps, ref: React.Ref<HTMLInputElement>) => {
+    const { name, label, type } = props;
+    const id = `input-${name}`;
+
+    return (
+        <>
+            <label className="visuallyHidden" htmlFor={id}>
+                {label}
+            </label>
+            <StyledInput ref={ref} id={id} placeholder={label} type={type || 'text'} {...props} />
+        </>
+    );
+});
+
 export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [filter, setFilter] = React.useState<string>('all');
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
@@ -186,6 +219,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [snapshotProposals, setSnapshotProposals] = React.useState<SnapshotProposals[]>(undefined);
     const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
     const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
+    const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
     const providerState = useSelector((state: State) => state.providerState);
 
     React.useEffect(() => {
@@ -331,6 +365,52 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     // tslint:disable-next-line: jsx-curly-spacing
                 }
             />
+            {/* <NewVoteNotificationSignup>
+                <SignupCTA>
+                    <img
+                        style={{
+                            width: '48px',
+                            marginRight: '30px',
+                        }}
+                        src={'/images/mail.png'}
+                    />
+                    <div>Get notified whenever there's a new vote. (We won't spam)</div>
+                </SignupCTA>
+                <StyledForm
+                    onSubmit={() => {
+                        setIsSubmitted(true);
+                    }}
+                >
+                    {isSubmitted ? (
+                        <SuccessText isSubmitted={isSubmitted}>🎉 Thank you for signing up!</SuccessText>
+                    ) : (
+                        <InputsWrapper>
+                            <EmailWrapper>
+                                <Input
+                                    color={''}
+                                    isSubmitted={isSubmitted}
+                                    name="email"
+                                    type="email"
+                                    label="Email Address"
+                                    ref={null}
+                                    required={true}
+                                />
+                            </EmailWrapper>
+                        </InputsWrapper>
+                    )}
+
+                    <SubmitButton>
+                        <SignupArrow
+                            isSubmitted={isSubmitted}
+                            width="22"
+                            height="17"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path d="M13.066 0l-1.068 1.147 6.232 6.557H0v1.592h18.23l-6.232 6.557L13.066 17l8.08-8.5-8.08-8.5z" />
+                        </SignupArrow>
+                    </SubmitButton>
+                </StyledForm>
+            </NewVoteNotificationSignup> */}
             {/* <Column>
                     <Heading size="medium" isCentered={true}>
                         Govern 0x Protocol
@@ -518,4 +598,84 @@ const StyledText = styled(Text)`
     @media (max-width: 768px) {
         font-size: 18px;
     }
+`;
+
+const INPUT_HEIGHT = '60px';
+
+const StyledForm = styled.form`
+    display: flex;
+    margin-right: 45px;
+`;
+
+const InputsWrapper = styled.div`
+    display: flex;
+`;
+
+const NameWrapper = styled.div`
+    margin-right: 1.75rem;
+    width: 30%;
+`;
+
+const EmailWrapper = styled.div`
+    width: 400px;
+    margin-right: 0.75rem;
+`;
+const StyledInput = styled.input<IInputProps>`
+    appearance: none;
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid ${({ color }) => color || '#393939'};
+    color: ${({ theme }) => theme.textColor};
+    height: ${INPUT_HEIGHT};
+    font-size: 1.3rem;
+    outline: none;
+    width: 100%;
+
+    &::placeholder {
+        color: #b1b1b1;
+    }
+`;
+
+const SubmitButton = styled.button`
+    height: ${INPUT_HEIGHT};
+    background-color: transparent;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    padding: 0;
+    margin-left: -40px;
+`;
+
+const SuccessText = styled.p<IArrowProps>`
+    color: #b1b1b1;
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: ${INPUT_HEIGHT};
+    animation: ${fadeIn} 0.5s ease-in-out;
+`;
+
+const SignupArrow = styled.svg<IArrowProps>`
+    fill: ${({ color }) => color};
+    transform: ${({ isSubmitted }) => isSubmitted && `translateX(44px)`};
+    transition: transform 0.25s ease-in-out;
+`;
+
+const NewVoteNotificationSignup = styled.div`
+    display: flex;
+    width: 100%;
+    text-align: center;
+    max-width: 1390px;
+    margin: 0 auto;
+    margin-bottom: 30px;
+    justify-content: space-between;
+    background-color: #f2f4f3;
+    @media (min-width: 768px) {
+        padding: 40px 80px;
+        text-align: left;
+    }
+`;
+
+const SignupCTA = styled.div`
+    display: flex;
+    align-items: center;
 `;
