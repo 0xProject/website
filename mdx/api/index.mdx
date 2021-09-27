@@ -1,7 +1,8 @@
 # Introduction
 
-The 0x API is the easiest way to source liquidity from [0x Mesh](https://0x-org.gitbook.io/mesh/) as well as on-chain sources such as Kyber, Uniswap, Oasis, Curve and other decentralized exchange networks.
-While the 0x Core Team hosts a version of the 0x API (subject to the [0x Terms of Service](https://0x.org/terms)), all the code is open source and available at the [0x-API GitHub repo](https://github.com/0xProject/0x-api).
+**The 0x API is the liquidity and data endpoint for DeFi**. It lets you access aggregated liquidity from tens of on-chain and off-chain decentralized exchange networks, across multiple blockchains. It comes with many parameters to customize your requests for your application and your users.
+
+While the 0x Labs Team hosts a version of the 0x API (subject to the [0x Terms of Service](https://0x.org/terms)), all the code is open source and available at the [0x-API GitHub repo](https://github.com/0xProject/0x-api).
 If you run into a problem, don't hesitate to [open an issue](https://github.com/0xProject/0x-api/issues).
 
 We offer hosted versions for different Ethereum networks. Requests for more networks, and questions/feedback in general should be directed at our [Discord](https://discordapp.com/invite/d3FTX3M).
@@ -161,7 +162,7 @@ A structured object containing the signature data for the order. For more info s
 
 # Swap
 
-This API faciliates consuming the best-priced liquidity from [0x Mesh](https://0x-org.gitbook.io/mesh/) and the greater DEX ecosystem.
+This API faciliates consuming the best-priced liquidity from the greater DEX ecosystem, including tens of on-chain and off-chain liquidity networks.
 We use smart order routing to split up your transaction across decentralized exchange networks to be filled with the lowest slippage possible while minimizing transaction costs.
 Follow the "[Swap Tokens with 0x API](/docs/guides/swap-tokens-with-0x-api)" guide to see how to use it.
 
@@ -814,275 +815,12 @@ Identical to the response schema for `/swap/v1/quote`, with one exception: the `
 
 </CodeTabs>
 
-# SRA
 
-The Standard Relayer API is an API specification that is implemented by several 0x relayers (exchanges), including [Radar Relay](https://developers.radarrelay.com/api/0x-sra) and [Bamboo Relay](https://sra.bamboorelay.com/zrx.html).
-It allows you to interact with the liquidity of a certain relayer, including querying and posting to their orderbook.
-0x API SRA uses [0x Mesh](https://0x-org.gitbook.io/mesh/) as the underlying orderbook.
-The 0x API provides a superset of the SRA, and contains functionality that is not strictly part of the spec.
+# Orderbook
 
+The Orderbook API lets applications and users access 0x's open orderbook liquidity, and post limit orders making them publicly available immediately. Orderbook API supersedes the 'SRA' API, without introducing breaking changes as all endpoints are backward compatible. 
 
-## GET /sra/v4/orders
-
-Retrieves a list of orders given query parameters.
-
-<Notification type="alert">This endpoint is paginated.</Notification>
-
-### Request
-
-Any [Signed Order](/docs/api#signed-order) field can be use as a query parameter. Additional query parameters are listed below.
-
-| Field                   | Description                                                                                                                                                                                                                                                                                                                                        |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `trader`                | (Optional) The address of either the maker or the taker                                                                                                                                                                                                                                                                                            |
-
-### Response
-
-#### Record
-
-| Field         | Description                                                                                                        |
-| ------------- | -------------------------------------------------------------------------------------------------------------------|
-| `order`       | Raw [signed order](/docs/api#signed-order).                                                                        |
-| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAmount`. |
-
-### Examples
-
-#### Get All Orders Selling WETH
-
-<HttpCall path="/sra/v4/orders?makerToken=0xf47261b...756cc2" />
-
-<CodeTabs tabs={['200 - OK']}>
-
-```json
-{
-  "total": 111
-  "page": 1,
-  "perPage": 20,
-  "records": [
-    {
-      "metaData": {
-        "createdAt": "2021-03-05T14:19:58.745Z",
-        "orderHash": "0x9cecbbb001b2ddcb23cee4de97b46ef014621050ce04099ace24d25ad7022d99",
-        "remainingFillableTakerAmount": "2000000000000000000000"
-      },
-      "order": {
-        "chainId": 1,
-        "expiry": "1614954899",
-        "feeRecipient": "0x0000000000000000000000000000000000000000",
-        "maker": "0x56eb0ad2dc746540fab5c02478b31e2aa9ddc38c",
-        "makerAmount": "100000000000000",
-        "makerToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-        "pool": "0x0000000000000000000000000000000000000000000000000000000000000000",
-        "salt": "76705913446798151184926653565841843850509871332931031350949084138605565413651",
-        "sender": "0x0000000000000000000000000000000000000000",
-        "signature": {
-          "r": "0x2ca75df712c9a0a56ccf315af5608dd1dda859fce001403de34ee21df9ae5eef",
-          "s": "0x01c3f1eb9dcce82ac989c3a7491cafe69c13f7c2d51adae3426e93d4f3447df4",
-          "signatureType": 3,
-          "v": 27
-        },
-        "taker": "0x0000000000000000000000000000000000000000",
-        "takerAmount": "2000000000000000000000",
-        "takerToken": "0xe41d2489571d322189246dafa5ebde1f4699f498",
-        "takerTokenFeeAmount": "0",
-        "verifyingContract": "0xdef1c0ded9bec7f1a1670819833240f027b25eff"
-      }
-    }
-  ],
-}
-```
-</CodeTabs>
-
-## POST /sra/v4/order
-
-Submit a signed order to [0x Mesh](https://0x-org.gitbook.io/mesh/).
-
-### Request
-
-A [signed order](/docs/api#signed-order).
-
-### Response
-
-No response fields when successful. An [error](/docs/api#errors) when unsuccessful.
-
-### Examples
-
-#### Post an Order
-
-<HttpCall verb="POST" path="/sra/v4/order" >
-
-```json
-{
-  "makerToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-  "takerToken": "0xe41d2489571d322189246dafa5ebde1f4699f498",
-  "makerAmount": "100000000000000",
-  "takerAmount": "2000000000000000000000",
-  "maker": "0x56EB0aD2dC746540Fab5C02478B31e2AA9DdC38C",
-  "taker": "0x0000000000000000000000000000000000000000",
-  "pool": "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "expiry": "1614956256",
-  "salt": "2752094376750492926844965905320507011598275560670346196138937898764349624882",
-  "chainId": 1,
-  "verifyingContract": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
-  "takerTokenFeeAmount": "0",
-  "sender": "0x0000000000000000000000000000000000000000",
-  "feeRecipient": "0x0000000000000000000000000000000000000000",
-  "signature": {
-    "v": 27,
-    "r": "0x983a8a8dad663124a52609fe9aa82737f7f02d12ed951785f36b50906041794d",
-    "s": "0x5f18ae837be4732bcb3dd019104cf775f92b8740b275be510462a7aa62cdf252",
-    "signatureType": 3
-  }
-}
-```
-
-</HttpCall>
-
-<CodeTabs tabs={['200 - OK']}>
-
-```json
-Empty response body
-```
-
-</CodeTabs>
-
-## POST /sra/v4/orders
-
-Submit a list of signed orders to [0x Mesh](https://0x-org.gitbook.io/mesh/).
-
-### Request
-
-A list of [signed orders](/docs/api#signed-order).
-
-### Response
-
-No response fields when successful. An [error](/docs/api#errors) when unsuccessful.
-
-### Examples
-
-#### Post some Orders
-
-<HttpCall verb="POST" path="/sra/v4/orders" >
-
-```json
-[
-  {
-    "makerToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-    "takerToken": "0xe41d2489571d322189246dafa5ebde1f4699f498",
-    "makerAmount": "100000000000000",
-    "takerAmount": "2000000000000000000000",
-    "maker": "0x56EB0aD2dC746540Fab5C02478B31e2AA9DdC38C",
-    "taker": "0x0000000000000000000000000000000000000000",
-    "pool": "0x0000000000000000000000000000000000000000000000000000000000000000",
-    "expiry": "1614957869",
-    "salt": "6783702559744797318323886303764333477871845949851321622397911580758640049826",
-    "chainId": 1,
-    "verifyingContract": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
-    "takerTokenFeeAmount": "0",
-    "sender": "0x0000000000000000000000000000000000000000",
-    "feeRecipient": "0x0000000000000000000000000000000000000000",
-    "signature": {
-      "v": 27,
-      "r": "0x260e3ade4c5e995074e51c5e6031a7f9ac4c466923cf636a52da5618733ca733",
-      "s": "0x0ad43fef82c1deaa740905d76fd6201960b034dbaebda9ae55a28276fffda5b4",
-      "signatureType": 3
-    }
-  },
-  {
-    "makerToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-    "takerToken": "0xe41d2489571d322189246dafa5ebde1f4699f498",
-    "makerAmount": "100000000000000",
-    "takerAmount": "2000000000000000000000",
-    "maker": "0x56EB0aD2dC746540Fab5C02478B31e2AA9DdC38C",
-    "taker": "0x0000000000000000000000000000000000000000",
-    "pool": "0x0000000000000000000000000000000000000000000000000000000000000000",
-    "expiry": "1614957869",
-    "salt": "75302780246208148116958057129632839621788678452217539992230761105996524515708",
-    "chainId": 1,
-    "verifyingContract": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
-    "takerTokenFeeAmount": "0",
-    "sender": "0x0000000000000000000000000000000000000000",
-    "feeRecipient": "0x0000000000000000000000000000000000000000",
-    "signature": {
-      "v": 28,
-      "r": "0xb8d4cefbad61a6d05d78d400473509ad384aa6b8e9533052bb6918bb9cb9ae26",
-      "s": "0x797e4630d9f827cdca76ef6523b2e6617d79bb82ee50b5206490237056708402",
-      "signatureType": 3
-    }
-  }
-]
-```
-
-</HttpCall>
-
-<CodeTabs tabs={['200 - OK']}>
-
-```json
-Empty response body
-```
-
-</CodeTabs>
-
-## GET /sra/v4/order/:orderHash:
-
-Retrieves a specific order by orderHash.
-
-### Request
-
-| Path Params   | Description                                                                          |
-| ------------- | -------------------------------------------------------------------------------------|
-| `orderHash`   | The hash of the desired [signed order](/docs/api#signed-order).                      |
-
-
-### Response
-
-| Field         | Description                                                                                                        |
-| ------------- | -------------------------------------------------------------------------------------------------------------------|
-| `order`       | Raw [signed orders](/docs/api#signed-order).                                                                       |
-| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAmount`. |
-
-### Examples
-
-#### Get an Order
-
-<HttpCall path="/sra/v4/order/0xa1e06a9...eaa29e1a6" />
-
-<CodeTabs tabs={['200 - OK']}>
-
-```json
-{
-  "order": {
-    "signature": {
-      "signatureType": 3,
-      "r": "0x260e3ade4c5e995074e51c5e6031a7f9ac4c466923cf636a52da5618733ca733",
-      "s": "0x0ad43fef82c1deaa740905d76fd6201960b034dbaebda9ae55a28276fffda5b4",
-      "v": 27
-    },
-    "sender": "0x0000000000000000000000000000000000000000",
-    "maker": "0x56eb0ad2dc746540fab5c02478b31e2aa9ddc38c",
-    "taker": "0x0000000000000000000000000000000000000000",
-    "takerTokenFeeAmount": "0",
-    "makerAmount": "100000000000000",
-    "takerAmount": "2000000000000000000000",
-    "makerToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-    "takerToken": "0xe41d2489571d322189246dafa5ebde1f4699f498",
-    "salt": "6783702559744797318323886303764333477871845949851321622397911580758640049826",
-    "verifyingContract": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
-    "feeRecipient": "0x0000000000000000000000000000000000000000",
-    "expiry": "1614957869",
-    "chainId": 1,
-    "pool": "0x0000000000000000000000000000000000000000000000000000000000000000"
-  },
-  "metaData": {
-    "orderHash": "0xd56098f729763f53b338c723be01ffdb8a1ff9dd8d323c9021ff1d8e29635fca",
-    "remainingFillableTakerAmount": "2000000000000000000000",
-    "createdAt": "2021-03-05T15:09:28.611Z"
-  }
-}
-```
-</CodeTabs>
-
-## GET /sra/v4/orderbook
+## GET /orderbook/v1/
 
 Retrieves the orderbook for a given asset pair.
 
@@ -1118,7 +856,7 @@ After taker fee price, orders are sorted by expiration in ascending order.
 
 #### Get the WETH/DAI Orderbook
 
-<HttpCall fontSize="14px" path="/sra/v4/orderbook?quoteToken=0xc02aaa...756cc2&baseToken=0xa0b869...06eb48" />
+<HttpCall fontSize="14px" path="/orderbook/v1?quoteToken=0xc02aaa...756cc2&baseToken=0xa0b869...06eb48" />
 
 <CodeTabs tabs={['200 - OK']}>
 
@@ -1258,7 +996,269 @@ After taker fee price, orders are sorted by expiration in ascending order.
 ```
 </CodeTabs>
 
-## POST /sra/v4/order_config
+
+
+## GET /orderbook/v1/orders
+
+Retrieves a list of orders given query parameters.
+
+<Notification type="alert">This endpoint is paginated.</Notification>
+
+### Request
+
+Any [Signed Order](/docs/api#signed-order) field can be use as a query parameter. Additional query parameters are listed below.
+
+| Field                   | Description                                                                                                                                                                                                                                                                                                                                        |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `trader`                | (Optional) The address of either the maker or the taker                                                                                                                                                                                                                                                                                            |
+
+### Response
+
+#### Record
+
+| Field         | Description                                                                                                        |
+| ------------- | -------------------------------------------------------------------------------------------------------------------|
+| `order`       | Raw [signed order](/docs/api#signed-order).                                                                        |
+| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAmount`. |
+
+### Examples
+
+#### Get All Orders Selling WETH
+
+<HttpCall path="/orderbook/v1/orders?makerToken=0xf47261b...756cc2" />
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+{
+  "total": 111
+  "page": 1,
+  "perPage": 20,
+  "records": [
+    {
+      "metaData": {
+        "createdAt": "2021-03-05T14:19:58.745Z",
+        "orderHash": "0x9cecbbb001b2ddcb23cee4de97b46ef014621050ce04099ace24d25ad7022d99",
+        "remainingFillableTakerAmount": "2000000000000000000000"
+      },
+      "order": {
+        "chainId": 1,
+        "expiry": "1614954899",
+        "feeRecipient": "0x0000000000000000000000000000000000000000",
+        "maker": "0x56eb0ad2dc746540fab5c02478b31e2aa9ddc38c",
+        "makerAmount": "100000000000000",
+        "makerToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "pool": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "salt": "76705913446798151184926653565841843850509871332931031350949084138605565413651",
+        "sender": "0x0000000000000000000000000000000000000000",
+        "signature": {
+          "r": "0x2ca75df712c9a0a56ccf315af5608dd1dda859fce001403de34ee21df9ae5eef",
+          "s": "0x01c3f1eb9dcce82ac989c3a7491cafe69c13f7c2d51adae3426e93d4f3447df4",
+          "signatureType": 3,
+          "v": 27
+        },
+        "taker": "0x0000000000000000000000000000000000000000",
+        "takerAmount": "2000000000000000000000",
+        "takerToken": "0xe41d2489571d322189246dafa5ebde1f4699f498",
+        "takerTokenFeeAmount": "0",
+        "verifyingContract": "0xdef1c0ded9bec7f1a1670819833240f027b25eff"
+      }
+    }
+  ],
+}
+```
+</CodeTabs>
+
+## POST /orderbook/v1/order
+
+Submit a signed order.
+
+### Request
+
+A [signed order](/docs/api#signed-order).
+
+### Response
+
+No response fields when successful. An [error](/docs/api#errors) when unsuccessful.
+
+### Examples
+
+#### Post an Order
+
+<HttpCall verb="POST" path="/orderbook/v1/order" >
+
+```json
+{
+  "makerToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+  "takerToken": "0xe41d2489571d322189246dafa5ebde1f4699f498",
+  "makerAmount": "100000000000000",
+  "takerAmount": "2000000000000000000000",
+  "maker": "0x56EB0aD2dC746540Fab5C02478B31e2AA9DdC38C",
+  "taker": "0x0000000000000000000000000000000000000000",
+  "pool": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "expiry": "1614956256",
+  "salt": "2752094376750492926844965905320507011598275560670346196138937898764349624882",
+  "chainId": 1,
+  "verifyingContract": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
+  "takerTokenFeeAmount": "0",
+  "sender": "0x0000000000000000000000000000000000000000",
+  "feeRecipient": "0x0000000000000000000000000000000000000000",
+  "signature": {
+    "v": 27,
+    "r": "0x983a8a8dad663124a52609fe9aa82737f7f02d12ed951785f36b50906041794d",
+    "s": "0x5f18ae837be4732bcb3dd019104cf775f92b8740b275be510462a7aa62cdf252",
+    "signatureType": 3
+  }
+}
+```
+
+</HttpCall>
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+Empty response body
+```
+
+</CodeTabs>
+
+## POST /orderbook/v1/orders
+
+Submit a list of signed orders.
+
+### Request
+
+A list of [signed orders](/docs/api#signed-order).
+
+### Response
+
+No response fields when successful. An [error](/docs/api#errors) when unsuccessful.
+
+### Examples
+
+#### Post some Orders
+
+<HttpCall verb="POST" path="/orderbook/v1/orders" >
+
+```json
+[
+  {
+    "makerToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "takerToken": "0xe41d2489571d322189246dafa5ebde1f4699f498",
+    "makerAmount": "100000000000000",
+    "takerAmount": "2000000000000000000000",
+    "maker": "0x56EB0aD2dC746540Fab5C02478B31e2AA9DdC38C",
+    "taker": "0x0000000000000000000000000000000000000000",
+    "pool": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "expiry": "1614957869",
+    "salt": "6783702559744797318323886303764333477871845949851321622397911580758640049826",
+    "chainId": 1,
+    "verifyingContract": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
+    "takerTokenFeeAmount": "0",
+    "sender": "0x0000000000000000000000000000000000000000",
+    "feeRecipient": "0x0000000000000000000000000000000000000000",
+    "signature": {
+      "v": 27,
+      "r": "0x260e3ade4c5e995074e51c5e6031a7f9ac4c466923cf636a52da5618733ca733",
+      "s": "0x0ad43fef82c1deaa740905d76fd6201960b034dbaebda9ae55a28276fffda5b4",
+      "signatureType": 3
+    }
+  },
+  {
+    "makerToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "takerToken": "0xe41d2489571d322189246dafa5ebde1f4699f498",
+    "makerAmount": "100000000000000",
+    "takerAmount": "2000000000000000000000",
+    "maker": "0x56EB0aD2dC746540Fab5C02478B31e2AA9DdC38C",
+    "taker": "0x0000000000000000000000000000000000000000",
+    "pool": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "expiry": "1614957869",
+    "salt": "75302780246208148116958057129632839621788678452217539992230761105996524515708",
+    "chainId": 1,
+    "verifyingContract": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
+    "takerTokenFeeAmount": "0",
+    "sender": "0x0000000000000000000000000000000000000000",
+    "feeRecipient": "0x0000000000000000000000000000000000000000",
+    "signature": {
+      "v": 28,
+      "r": "0xb8d4cefbad61a6d05d78d400473509ad384aa6b8e9533052bb6918bb9cb9ae26",
+      "s": "0x797e4630d9f827cdca76ef6523b2e6617d79bb82ee50b5206490237056708402",
+      "signatureType": 3
+    }
+  }
+]
+```
+
+</HttpCall>
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+Empty response body
+```
+
+</CodeTabs>
+
+## GET /orderbook/v1/order/:orderHash:
+
+Retrieves a specific order by orderHash.
+
+### Request
+
+| Path Params   | Description                                                                          |
+| ------------- | -------------------------------------------------------------------------------------|
+| `orderHash`   | The hash of the desired [signed order](/docs/api#signed-order).                      |
+
+
+### Response
+
+| Field         | Description                                                                                                        |
+| ------------- | -------------------------------------------------------------------------------------------------------------------|
+| `order`       | Raw [signed orders](/docs/api#signed-order).                                                                       |
+| `metaData`    | Object where optional meta-data will be included, such as the `orderHash` and `remainingFillableTakerAmount`. |
+
+### Examples
+
+#### Get an Order
+
+<HttpCall path="/orderbook/v1/order/0xa1e06a9...eaa29e1a6" />
+
+<CodeTabs tabs={['200 - OK']}>
+
+```json
+{
+  "order": {
+    "signature": {
+      "signatureType": 3,
+      "r": "0x260e3ade4c5e995074e51c5e6031a7f9ac4c466923cf636a52da5618733ca733",
+      "s": "0x0ad43fef82c1deaa740905d76fd6201960b034dbaebda9ae55a28276fffda5b4",
+      "v": 27
+    },
+    "sender": "0x0000000000000000000000000000000000000000",
+    "maker": "0x56eb0ad2dc746540fab5c02478b31e2aa9ddc38c",
+    "taker": "0x0000000000000000000000000000000000000000",
+    "takerTokenFeeAmount": "0",
+    "makerAmount": "100000000000000",
+    "takerAmount": "2000000000000000000000",
+    "makerToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "takerToken": "0xe41d2489571d322189246dafa5ebde1f4699f498",
+    "salt": "6783702559744797318323886303764333477871845949851321622397911580758640049826",
+    "verifyingContract": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
+    "feeRecipient": "0x0000000000000000000000000000000000000000",
+    "expiry": "1614957869",
+    "chainId": 1,
+    "pool": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "metaData": {
+    "orderHash": "0xd56098f729763f53b338c723be01ffdb8a1ff9dd8d323c9021ff1d8e29635fca",
+    "remainingFillableTakerAmount": "2000000000000000000000",
+    "createdAt": "2021-03-05T15:09:28.611Z"
+  }
+}
+```
+</CodeTabs>
+
+## POST /orderbook/v1/order_config
 
 Send a partial [signed order](/docs/api#signed-order) to this endpoint to receive the rest of configuration-oriented fields.
 This response is currently static.
@@ -1288,7 +1288,7 @@ This response is currently static.
 
 #### Get an Order Configuration
 
-<HttpCall verb="POST" path="/sra/v4/order_config">
+<HttpCall verb="POST" path="/orderbook/v1/order_config">
 
 ```json
 {
@@ -1316,7 +1316,7 @@ This response is currently static.
 ```
 </CodeTabs>
 
-## GET /sra/v4/fee_recipients
+## GET /orderbook/v1/fee_recipients
 
 Retrieves a list of valid feeRecipient addresses.
 
@@ -1336,7 +1336,7 @@ A valid Ethereum address(s).
 
 #### Get Fee Recipients
 
-<HttpCall path="/sra/v4/fee_recipients" />
+<HttpCall path="/orderbook/v1/fee_recipients" />
 
 <CodeTabs tabs={['200 - OK']}>
 
@@ -1358,9 +1358,9 @@ The Standard Relayer API also exposes a websocket server at the root endpoint.
 
 | Network | Endpoint                      |
 | ------- | ----------------------------- |
-| Mainnet | wss://api.0x.org/sra/v4       |
+| Mainnet | wss://api.0x.org/orderbook/v1 |
 
-The server will allow you to subscribe to 0x order updates in [0x Mesh](https://0x-org.gitbook.io/mesh/),
+The server will allow you to subscribe to 0x order updates,
 and will push updates whenever the "fillability" of an order changes.
 In practice, this will happen whenever a new order is added, an order is cancelled, or an order is filled.
 At the moment, the update message will not specify the exact reason for the update.
