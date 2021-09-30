@@ -84,7 +84,7 @@ const VoterBreakdownWrapper = styled.div`
     margin-bottom: 1rem;
 `;
 
-export const VoterBreakdown: React.FC<{ data: VoterBreakdownData[] }> = ({ data }) => {
+export const VoterBreakdown: React.FC<{ data: VoterBreakdownData[]; showAll?: boolean }> = ({ data, showAll }) => {
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
     const networkId = useSelector((state: State) => state.networkId);
     const apiClient = useAPIClient(networkId);
@@ -102,7 +102,9 @@ export const VoterBreakdown: React.FC<{ data: VoterBreakdownData[] }> = ({ data 
     }, [apiClient]);
 
     if (data) {
-        data = data.slice(0, 5);
+        if (!showAll) {
+            data = data.slice(0, 5);
+        }
         if (stakingPools) {
             data = data.map((vote) => {
                 const foundPool = stakingPools.find((pool) => {

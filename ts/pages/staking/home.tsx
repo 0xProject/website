@@ -52,12 +52,12 @@ const StakingBanner = styled.div`
 `;
 
 const StakingBannerLink = styled.a`
-    text-decoration:underline;
+    text-decoration: underline;
     color: white;
     &:hover {
-        text-decoration:underline;
+        text-decoration: underline;
         color: white;
-        cursor:pointer;
+        cursor: pointer;
     }
 `;
 export interface StakingIndexProps {}
@@ -170,9 +170,10 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
 
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
-            {/* <StakingBanner>
-                Protocol fees are paused for 2 weeks as a result of a ZRX vote. <StakingBannerLink href={'https://0x.org/zrx/vote/zeip-91'}>Learn more</StakingBannerLink>
-            </StakingBanner> */}
+            <StakingBanner>
+                Protocol fees are paused for 6 weeks as a result of a ZRX vote.{' '}
+                <StakingBannerLink href={'https://0x.org/zrx/vote/zeip-91'}>Learn more</StakingBannerLink>
+            </StakingBanner>
             <StakingHero
                 title={
                     <div>

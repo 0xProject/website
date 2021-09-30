@@ -36,6 +36,7 @@ interface GovernanceHeroProps {
     videoChannel?: string;
     videoRatio?: string;
     youtubeOptions?: any;
+    averageVotingPower?: number | undefined;
     metrics?: {
         zrxStaked: number;
         currentEpochRewards: BigNumber;
@@ -207,7 +208,7 @@ type TreasuryTokenPricesUsd = {
     matic: number;
 };
 export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
-    const { title, titleMobile, description, actions, numProposals } = props;
+    const { title, titleMobile, description, actions, numProposals, averageVotingPower } = props;
     const providerState = useSelector((state: State) => state.providerState);
 
     const [totalTreasuryAmountUSD, setTotalTreasuryAmountUSD] = React.useState('-');
@@ -221,7 +222,12 @@ export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
                     tf.data.items.forEach((item: any) => {
                         item.transfers.forEach((transfer: any) => {
                             if (transfer.transfer_type === 'OUT') {
-                                totalDistributed += transfer.delta_quote;
+                                const delta_quote =
+                                    parseInt(transfer.delta) *
+                                    Math.pow(10, -transfer.contract_decimals) *
+                                    transfer.quote_rate;
+
+                                totalDistributed += delta_quote;
                             }
                         });
                     });
@@ -254,6 +260,7 @@ export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
             const maticUSD = maticAmount.multipliedBy(res['matic-network'].usd);
 
             const treasuryTokenTransferData = await backendClient.getTreasuryTokenTransfers();
+            console.log(treasuryTokenTransferData);
             const totalDistributed = parseTotalDistributed(treasuryTokenTransferData);
             console.log(totalDistributed);
             setTotalTreasuryDistributedUSD(
@@ -275,6 +282,13 @@ export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
         })();
     }, [providerState]);
 
+    const averageVotingPowerFormatted = averageVotingPower
+        ? formatNumber(averageVotingPower, {
+              decimals: 6,
+              decimalsRounded: 6,
+              bigUnitPostfix: true,
+          }).formatted
+        : '-';
     return (
         <Wrapper>
             <Inner>
@@ -313,9 +327,9 @@ export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
                                     </Figure>
                                     <Figure key={4} style={{}}>
                                         <FigureHeader>
-                                            <FigureTitle>Number of Voters (est.)</FigureTitle>
+                                            <FigureTitle>Avg. ZRX Voted Per Proposal</FigureTitle>
                                         </FigureHeader>
-                                        <FigureNumber>4k</FigureNumber>
+                                        <FigureNumber>{averageVotingPowerFormatted}</FigureNumber>
                                     </Figure>
                                 </FigurePair>
                                 {/* <ProgressbarText>Treasury Details</ProgressbarText> */}

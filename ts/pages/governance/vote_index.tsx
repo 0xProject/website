@@ -10,6 +10,8 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { fadeIn } from 'ts/style/keyframes';
 
+import { Web3Wrapper } from '@0x/web3-wrapper';
+
 import { backendClient } from 'ts/utils/backend_client';
 import { Image } from 'ts/components/ui/image';
 
@@ -72,6 +74,7 @@ interface IInputProps {
     label: string;
     color?: string;
     required?: boolean;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface IArrowProps {
@@ -199,7 +202,7 @@ interface Proposals {
 }
 
 const Input = React.forwardRef((props: IInputProps, ref: React.Ref<HTMLInputElement>) => {
-    const { name, label, type } = props;
+    const { name, label, type, onChange } = props;
     const id = `input-${name}`;
 
     return (
@@ -207,7 +210,7 @@ const Input = React.forwardRef((props: IInputProps, ref: React.Ref<HTMLInputElem
             <label className="visuallyHidden" htmlFor={id}>
                 {label}
             </label>
-            <StyledInput ref={ref} id={id} placeholder={label} type={type || 'text'} {...props} />
+            <StyledInput onChange={onChange} ref={ref} id={id} placeholder={label} type={type || 'text'} {...props} />
         </>
     );
 });
@@ -221,6 +224,8 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
     const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
     const providerState = useSelector((state: State) => state.providerState);
+
+    const [email, setEmail] = React.useState<string>('');
 
     React.useEffect(() => {
         // tslint:disable-next-line: no-floating-promises
@@ -310,6 +315,23 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
         }
     };
 
+    const onSubmit = React.useCallback(
+        async (event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+            if (!email) {
+                return;
+            }
+            try {
+                await backendClient.subscribeToNewsletterAsync({
+                    email,
+                    list: configs.STAKING_UPDATES_NEWSLETTER_ID,
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        [email],
+    );
     const showZEIP = ['all', 'zeip'];
     const showTreasury = ['all', 'treasury'];
     const numProposals =
@@ -320,6 +342,30 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                 return zeip.voteEndDate.isBefore(moment.now());
             }).length +
             snapshotProposals?.length || 0;
+
+    let sumOfTotalVotingPowerAverage = undefined;
+    if (proposals.length && ZEIP_PROPOSALS.length) {
+        let sumOfZEIPVotingPower = undefined;
+        let sumOfTreasuryVotingPower = undefined;
+        proposals.forEach((proposal) => {
+            const tally = {
+                no: new BigNumber(proposal.againstVotes.toString()),
+                yes: new BigNumber(proposal.forVotes.toString()),
+                zeip: proposal.id,
+            };
+            sumOfTreasuryVotingPower = tally.no.plus(tally.yes);
+        });
+        ZEIP_PROPOSALS.forEach((zeip) => {
+            const tally = tallys && tallys[zeip.zeipId];
+
+            sumOfZEIPVotingPower = tally.no.plus(tally.yes);
+        });
+        sumOfTotalVotingPowerAverage =
+            (Web3Wrapper.toUnitAmount(sumOfTreasuryVotingPower, 18).toNumber() / proposals.length +
+                Web3Wrapper.toUnitAmount(sumOfZEIPVotingPower, 18).toNumber() / ZEIP_PROPOSALS.length) /
+            2;
+    }
+
     return (
         <StakingPageLayout isHome={false} title="0x Governance">
             <RegisterBanner />
@@ -334,6 +380,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     </div>
                 }
                 numProposals={numProposals}
+                averageVotingPower={sumOfTotalVotingPowerAverage}
                 titleMobile="Make an impact with your ZRX"
                 description={<div>Govern the exchange infrastructure of the Internet</div>}
                 figure={<></>}
@@ -365,7 +412,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     // tslint:disable-next-line: jsx-curly-spacing
                 }
             />
-            {/* <NewVoteNotificationSignup>
+            <NewVoteNotificationSignup>
                 <SignupCTA>
                     <img
                         style={{
@@ -377,8 +424,9 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     <div>Get notified whenever there's a new vote. (We won't spam)</div>
                 </SignupCTA>
                 <StyledForm
-                    onSubmit={() => {
+                    onSubmit={(event) => {
                         setIsSubmitted(true);
+                        onSubmit(event);
                     }}
                 >
                     {isSubmitted ? (
@@ -393,6 +441,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                                     type="email"
                                     label="Email Address"
                                     ref={null}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     required={true}
                                 />
                             </EmailWrapper>
@@ -410,7 +459,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                         </SignupArrow>
                     </SubmitButton>
                 </StyledForm>
-            </NewVoteNotificationSignup> */}
+            </NewVoteNotificationSignup>
             {/* <Column>
                     <Heading size="medium" isCentered={true}>
                         Govern 0x Protocol
@@ -619,6 +668,10 @@ const NameWrapper = styled.div`
 const EmailWrapper = styled.div`
     width: 400px;
     margin-right: 0.75rem;
+    @media (max-width: 768px) {
+        width: 250px;
+        margin-bottom: 1rem;
+    }
 `;
 const StyledInput = styled.input<IInputProps>`
     appearance: none;
@@ -647,7 +700,7 @@ const SubmitButton = styled.button`
 `;
 
 const SuccessText = styled.p<IArrowProps>`
-    color: #b1b1b1;
+    margin-right: 30px;
     font-size: 1rem;
     font-weight: 300;
     line-height: ${INPUT_HEIGHT};
@@ -662,20 +715,32 @@ const SignupArrow = styled.svg<IArrowProps>`
 
 const NewVoteNotificationSignup = styled.div`
     display: flex;
-    width: 100%;
     text-align: center;
-    max-width: 1390px;
+
     margin: 0 auto;
     margin-bottom: 30px;
+    max-width: 1390px;
     justify-content: space-between;
     background-color: #f2f4f3;
-    @media (min-width: 768px) {
-        padding: 40px 80px;
-        text-align: left;
+    padding: 40px 80px;
+    text-align: left;
+
+    @media (max-width: 900px) {
+        flex-direction: column;
+    }
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+        padding: 20px 40px;
     }
 `;
 
 const SignupCTA = styled.div`
     display: flex;
     align-items: center;
+    max-width: 40%;
+    @media (max-width: 900px) {
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
 `;

@@ -17,6 +17,7 @@ import { DocsPage } from 'ts/pages/docs/page';
 import { DocsTools } from 'ts/pages/docs/tools';
 import { Governance } from 'ts/pages/governance/governance';
 import { Treasury } from 'ts/pages/governance/treasury';
+import { VoterLeaderboard } from 'ts/pages/governance/voter_leaderboard';
 import { store } from 'ts/redux/store';
 import { WebsiteLegacyPaths, WebsitePaths } from 'ts/types';
 import { muiTheme } from 'ts/utils/mui_theme';
@@ -118,6 +119,11 @@ render(
                                 <Route exact={true} path={`${WebsitePaths.Register}`} component={RegisterWizard} />
                                 <Route exact={true} path={`${WebsitePaths.Treasury}`} component={TreasuryBreakdown} />
                                 <Route exact={true} path={`${WebsitePaths.Vote}/proposal/:id`} component={Treasury} />
+                                <Route
+                                    exact={true}
+                                    path={`${WebsitePaths.Vote}/proposal/voter-leaderboard/:id`}
+                                    component={VoterLeaderboard}
+                                />
                                 <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance} />
                                 <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex} />
 

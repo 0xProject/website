@@ -157,11 +157,11 @@ export const backendClient = {
             'https://api.covalenthq.com/v1/1/address/0x0bB1810061C2f5b2088054eE184E6C79e1591101/transfers_v2/';
         const zrxTransfers = fetchUtils.requestAsync(
             reqBaseUri,
-            `?contract-address=${ZRX_TOKEN}&key=ckey_02c853f8bd48448190555163e59`,
+            `?contract-address=${ZRX_TOKEN}&key=ckey_6a1cbb454aa243b1bc66da64530`,
         );
         const maticTransfers = fetchUtils.requestAsync(
             reqBaseUri,
-            `?contract-address=${MATIC_TOKEN}&key=ckey_02c853f8bd48448190555163e59`,
+            `?contract-address=${MATIC_TOKEN}&key=ckey_6a1cbb454aa243b1bc66da64530`,
         );
         return await Promise.all([zrxTransfers, maticTransfers]);
     },
@@ -177,7 +177,7 @@ export const backendClient = {
         });
 
         const txnHashesPromises = proposalExecutionLogs.map((log) => {
-            return fetchUtils.requestAsync(reqBaseUri, `${log.transactionHash}/?key=ckey_02c853f8bd48448190555163e59`);
+            return fetchUtils.requestAsync(reqBaseUri, `${log.transactionHash}/?key=ckey_6a1cbb454aa243b1bc66da64530`);
         });
 
         const transactions = await Promise.all(txnHashesPromises);

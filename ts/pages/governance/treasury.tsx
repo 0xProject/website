@@ -34,6 +34,7 @@ import { utils } from 'ts/utils/utils';
 
 import { VoterBreakdown } from 'ts/components/governance/voter_breakdown';
 import { fetchUtils } from 'ts/utils/fetch_utils';
+import { VoterLeaderboard } from './voter_leaderboard';
 
 const TREASURY_VOTER_BREAKDOWN_URI = 'https://um5ppgumcc.us-east-1.awsapprunner.com';
 
@@ -279,6 +280,13 @@ export const Treasury: React.FC<{}> = () => {
                     </StyledText>
                     <Paragraph as="div">
                         <VoterBreakdown data={voterBreakdownData} />
+                        <StyledButton
+                            isAccentColor={true}
+                            isWithArrow={true}
+                            href={`/zrx/vote/proposal/voter-leaderboard/${proposalId}`}
+                        >
+                            Voter Leaderboard
+                        </StyledButton>
                         <StyledMarkdown>
                             <ReactMarkdown children={cleanedDescription} />
                         </StyledMarkdown>
@@ -514,4 +522,12 @@ const StateTitle = styled(Text)`
 const StyledHeading = styled(Heading)`
     margin-top: 68px;
     margin-bottom: 24px !important;
+`;
+
+const VoterLeaderboardLink = styled.a`
+    color: ${() => colors.brandLight};
+`;
+
+const StyledButton = styled(Button)`
+    margin-bottom: 1rem;
 `;
