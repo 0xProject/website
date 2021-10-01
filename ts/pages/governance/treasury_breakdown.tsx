@@ -409,7 +409,7 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                 },
             ]);
 
-            const treasuryTokenTransferData = await backendClient.getTreasuryTokenTransfers();
+            const treasuryTokenTransferData = await backendClient.getTreasuryTokenTransfers(providerState.provider);
             const totalDistributed = parseTotalDistributed(treasuryTokenTransferData);
 
             const treauryProposalDistributions = await backendClient.getTreasuryProposalDistributions(

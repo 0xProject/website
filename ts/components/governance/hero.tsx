@@ -259,7 +259,7 @@ export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
             const zrxUSD = zrxAmount.multipliedBy(res['0x'].usd);
             const maticUSD = maticAmount.multipliedBy(res['matic-network'].usd);
 
-            const treasuryTokenTransferData = await backendClient.getTreasuryTokenTransfers();
+            const treasuryTokenTransferData = await backendClient.getTreasuryTokenTransfers(providerState.provider);
             console.log(treasuryTokenTransferData);
             const totalDistributed = parseTotalDistributed(treasuryTokenTransferData);
             console.log(totalDistributed);

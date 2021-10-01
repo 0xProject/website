@@ -150,7 +150,9 @@ export const backendClient = {
         return res;
     },
 
-    async getTreasuryTokenTransfers() {
+    async getTreasuryTokenTransfers(provider: ZeroExProvider) {
+        const web3 = new Web3Wrapper(provider);
+
         const ZRX_TOKEN = '0xe41d2489571d322189246dafa5ebde1f4699f498';
         const MATIC_TOKEN = '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0';
         const reqBaseUri =
@@ -163,6 +165,16 @@ export const backendClient = {
             reqBaseUri,
             `?contract-address=${MATIC_TOKEN}&key=ckey_6a1cbb454aa243b1bc66da64530`,
         );
+
+        const transferLogs = await web3.getLogsAsync({
+            address: '0x0bb1810061c2f5b2088054ee184e6c79e1591101',
+            topics: ['0x712ae1383f79ac853f8d882153778e0260ef8f03b504e2866e0593e04d2b291f'],
+            fromBlock: 0,
+            toBlock: 'latest',
+        });
+
+        console.log('transferlogs', transferLogs);
+
         return await Promise.all([zrxTransfers, maticTransfers]);
     },
 
