@@ -34,7 +34,6 @@ import { utils } from 'ts/utils/utils';
 
 import { VoterBreakdown } from 'ts/components/governance/voter_breakdown';
 import { fetchUtils } from 'ts/utils/fetch_utils';
-import { VoterLeaderboard } from './voter_leaderboard';
 
 const TREASURY_VOTER_BREAKDOWN_URI = 'https://um5ppgumcc.us-east-1.awsapprunner.com';
 
@@ -524,10 +523,7 @@ const StyledHeading = styled(Heading)`
     margin-bottom: 24px !important;
 `;
 
-const VoterLeaderboardLink = styled.a`
-    color: ${() => colors.brandLight};
-`;
-
 const StyledButton = styled(Button)`
     margin-bottom: 1rem;
 `;
+// tslint:disable:max-file-line-count

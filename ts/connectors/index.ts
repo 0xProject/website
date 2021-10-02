@@ -3,8 +3,6 @@ import { NetworkConnector } from '@web3-react/network-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 
-import { environments } from 'ts/utils/environments';
-
 import { configs } from 'ts/utils/configs';
 
 const POLLING_INTERVAL = 10000;

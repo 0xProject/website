@@ -13,14 +13,12 @@ import { fadeIn } from 'ts/style/keyframes';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 
 import { backendClient } from 'ts/utils/backend_client';
-import { Image } from 'ts/components/ui/image';
 
 import { Button } from 'ts/components/button';
 import { DocumentTitle } from 'ts/components/document_title';
+import { GovernanceHero } from 'ts/components/governance/hero';
 import { RegisterBanner } from 'ts/components/governance/register_banner';
-import { Column, Section } from 'ts/components/newLayout';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
-import { Heading, Paragraph } from 'ts/components/text';
 import { Text } from 'ts/components/ui/text';
 import { Proposal, proposals as prodProposals, stagingProposals, TreasuryProposal } from 'ts/pages/governance/data';
 import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
@@ -30,7 +28,6 @@ import { OnChainProposal, TallyInterface, VotingCardType } from 'ts/types';
 import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
-import { GovernanceHero } from 'ts/components/governance/hero';
 
 const FETCH_PROPOSALS = gql`
     query proposals {
@@ -63,10 +60,6 @@ type TreasuryProposalWithOrder = TreasuryProposal & {
     order?: number;
 };
 
-interface IFormProps {
-    color?: string;
-}
-
 interface IInputProps {
     isSubmitted: boolean;
     name: string;
@@ -81,7 +74,7 @@ interface IArrowProps {
     isSubmitted: boolean;
 }
 
-type SnapshotProposals = {
+interface SnapshotProposals {
     id: string;
     votes?: any[];
     title: string;
@@ -92,7 +85,7 @@ type SnapshotProposals = {
     author: string;
     state: string;
     order?: number;
-};
+}
 
 const PROPOSALS = environments.isProduction() ? prodProposals : stagingProposals;
 const ZEIP_IDS = Object.keys(PROPOSALS).map((idString) => parseInt(idString, 10));
@@ -230,8 +223,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     React.useEffect(() => {
         // tslint:disable-next-line: no-floating-promises
         (async () => {
-            const proposalsAndVotes = await backendClient.getSnapshotProposalsAndVotes();
-            console.log(proposalsAndVotes);
+            const proposalsAndVotes = await backendClient.getSnapshotProposalsAndVotesAsync();
             setSnapshotProposals(proposalsAndVotes);
         })();
     }, []);
@@ -327,7 +319,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     list: configs.STAKING_UPDATES_NEWSLETTER_ID,
                 });
             } catch (err) {
-                console.log(err);
+                // console.error(err);
             }
         },
         [email],
@@ -343,10 +335,10 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
             }).length +
             snapshotProposals?.length || 0;
 
-    let sumOfTotalVotingPowerAverage = undefined;
+    let sumOfTotalVotingPowerAverage;
     if (proposals.length && ZEIP_PROPOSALS.length) {
-        let sumOfZEIPVotingPower = undefined;
-        let sumOfTreasuryVotingPower = undefined;
+        let sumOfZEIPVotingPower;
+        let sumOfTreasuryVotingPower;
         proposals.forEach((proposal) => {
             const tally = {
                 no: new BigNumber(proposal.againstVotes.toString()),
@@ -426,6 +418,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                 <StyledForm
                     onSubmit={(event) => {
                         setIsSubmitted(true);
+                        // tslint:disable-next-line: no-floating-promises
                         onSubmit(event);
                     }}
                 >
@@ -561,18 +554,6 @@ const VoteIndexCardWrapper = styled.div`
     flex-direction: column;
 `;
 
-const SubtitleContentWrap = styled.div`
-    max-width: 450px;
-    margin: auto;
-    & > * {
-        display: inline;
-    }
-`;
-
-const ButtonWrapper = styled.div`
-    margin-left: 0.5rem;
-`;
-
 const LoaderWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -660,11 +641,6 @@ const InputsWrapper = styled.div`
     display: flex;
 `;
 
-const NameWrapper = styled.div`
-    margin-right: 1.75rem;
-    width: 30%;
-`;
-
 const EmailWrapper = styled.div`
     width: 400px;
     margin-right: 0.75rem;
@@ -744,3 +720,4 @@ const SignupCTA = styled.div`
         margin-bottom: 1rem;
     }
 `;
+// tslint:disable:max-file-line-count

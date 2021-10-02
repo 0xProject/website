@@ -5,13 +5,11 @@ import styled from 'styled-components';
 import { State } from 'ts/redux/reducer';
 import { utils } from 'ts/utils/utils';
 
+import { Heading } from 'ts/components/text';
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
-import { Heading, Paragraph } from 'ts/components/text';
 
 import { useAPIClient } from 'ts/hooks/use_api_client';
-
 import { PoolWithStats } from 'ts/types';
-import { StakingPoolActivity } from 'ts/pages/staking/history';
 
 interface VoterBreakdownData {
     voter: string;
@@ -84,29 +82,31 @@ const VoterBreakdownWrapper = styled.div`
     margin-bottom: 1rem;
 `;
 
-export const VoterBreakdown: React.FC<{ data: VoterBreakdownData[]; showAll?: boolean }> = ({ data, showAll }) => {
+export const VoterBreakdown: React.FC<{ data: VoterBreakdownData[]; shouldShowAll?: boolean }> = ({
+    data,
+    shouldShowAll,
+}) => {
     const [stakingPools, setStakingPools] = React.useState<PoolWithStats[] | undefined>(undefined);
     const networkId = useSelector((state: State) => state.networkId);
     const apiClient = useAPIClient(networkId);
-    const [isFetchingData, setIsFetchingData] = React.useState(false);
 
     React.useEffect(() => {
         const fetchAndSetPoolsAsync = async () => {
             const poolsResponse = await apiClient.getStakingPoolsAsync();
             setStakingPools(poolsResponse.stakingPools || []);
-            setIsFetchingData(false);
         };
-        setIsFetchingData(true);
         // tslint:disable-next-line:no-floating-promises
         fetchAndSetPoolsAsync();
     }, [apiClient]);
 
+    let parsedData = null;
+
     if (data) {
-        if (!showAll) {
-            data = data.slice(0, 5);
+        if (!shouldShowAll) {
+            parsedData = data.slice(0, 5);
         }
         if (stakingPools) {
-            data = data.map((vote) => {
+            parsedData = data.map((vote) => {
                 const foundPool = stakingPools.find((pool) => {
                     return vote.voter.toLowerCase() === pool.operatorAddress.toLowerCase();
                 });
@@ -119,7 +119,7 @@ export const VoterBreakdown: React.FC<{ data: VoterBreakdownData[]; showAll?: bo
     }
     return (
         <VoterBreakdownWrapper>
-            {data && data.length > 0 && (
+            {parsedData && parsedData.length > 0 && (
                 <>
                     <Heading marginBottom="15px">Votes:</Heading>
 
@@ -132,9 +132,9 @@ export const VoterBreakdown: React.FC<{ data: VoterBreakdownData[]; showAll?: bo
                             </tr>
                         </thead>
                         <tbody>
-                            {data.map((voteData: VoterBreakdownData) => {
+                            {parsedData.map((voteData: VoterBreakdownData, index) => {
                                 return (
-                                    <VoteRow>
+                                    <VoteRow key={index}>
                                         <VoteRowAddress>
                                             <Jazzicon
                                                 isSquare={true}

@@ -38,16 +38,15 @@ import { ZeroExApi } from 'ts/pages/api';
 // import { CFL } from 'ts/pages/cfl';
 // import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
+import { TreasuryBreakdown } from 'ts/pages/governance/treasury_breakdown';
 import { VoteIndex } from 'ts/pages/governance/vote_index';
 // import { Next0xInstant } from 'ts/pages/instant';
 import { NextLanding } from 'ts/pages/landing';
-import { NextLaunchKit } from 'ts/pages/launch_kit';
+// import { NextLaunchKit } from 'ts/pages/launch_kit';
 // import { NextMarketMaker } from 'ts/pages/market_maker';
 import { PrivacyPolicy } from 'ts/pages/privacy';
 import { StakingIndex } from 'ts/pages/staking/home';
 import { StakingPool } from 'ts/pages/staking/staking_pool';
-import { TreasuryBreakdown } from 'ts/pages/governance/treasury_breakdown';
-
 import { RemoveStake } from 'ts/pages/staking/wizard/remove';
 
 import { TermsOfService } from 'ts/pages/terms';

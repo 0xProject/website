@@ -21,7 +21,7 @@ import { constants } from 'ts/utils/constants';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 import { utils } from 'ts/utils/utils';
 
-import { request, gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request';
 
 const ZEROEX_GAS_API = 'https://gas.api.0x.org/';
 
@@ -56,7 +56,7 @@ const speedToWaitTimeMap: { [key: string]: string } = {
 const graphqlClient = new GraphQLClient('https://hub.snapshot.org/graphql');
 
 export const backendClient = {
-    async getSnapshotSpaceAsync() {
+    async getSnapshotSpaceAsync(): Promise<any> {
         const spaceQuery = gql`
             query GetSpace($id: String!) {
                 space(id: $id) {
@@ -73,7 +73,7 @@ export const backendClient = {
         const res = await graphqlClient.request(spaceQuery, { id: '0xgov.eth' });
         return res;
     },
-    async getSnapshotProposalsAsync() {
+    async getSnapshotProposalsAsync(): Promise<any> {
         const proposalsQuery = gql`
             query {
                 proposals(first: 1000, where: { space_in: ["0xgov.eth"] }) {
@@ -98,7 +98,7 @@ export const backendClient = {
         return res;
     },
 
-    async getSnapshotVotesAsync(proposalId: string) {
+    async getSnapshotVotesAsync(proposalId: string): Promise<any> {
         const votesQuery = gql`
             query GetVotes($proposal: String!) {
                 votes(first: 1000, skip: 0, where: { proposal: $proposal }) {
@@ -116,21 +116,20 @@ export const backendClient = {
         const res = await graphqlClient.request(votesQuery, { proposal: proposalId });
         return res;
     },
-    async getSnapshotProposalsAndVotes() {
+
+    async getSnapshotProposalsAndVotesAsync(): Promise<any> {
+        // tslint:disable-next-line: no-invalid-this
         const res = await this.getSnapshotProposalsAsync();
         const { proposals } = res;
 
         const getVotesPromises = [];
-        for (let index = 0; index < proposals.length; index++) {
-            const element = proposals[index];
+
+        for (const element of proposals) {
+            // tslint:disable-next-line: no-invalid-this
             getVotesPromises.push(this.getSnapshotVotesAsync(element.id));
         }
 
         const votesResult = await Promise.all(getVotesPromises);
-        // return {
-        //     votes: votesResult,
-        //     proposals,
-        // };
 
         return proposals.map((proposal: any, index: number) => {
             const votes = votesResult[index];
@@ -138,9 +137,8 @@ export const backendClient = {
             return proposal;
         });
     },
-    async getSnapshotProposalAsync() {},
 
-    async getTreasuryTokenPrices() {
+    async getTreasuryTokenPricesAsync(): Promise<any> {
         const treasuryTokenCGIds = ['0x', 'matic-network'];
         const cgSimplePriceBaseUri = 'https://api.coingecko.com/api/v3/simple/price';
         const res = fetchUtils.requestAsync(
@@ -150,9 +148,7 @@ export const backendClient = {
         return res;
     },
 
-    async getTreasuryTokenTransfers(provider: ZeroExProvider) {
-        const web3 = new Web3Wrapper(provider);
-
+    async getTreasuryTokenTransfersAsync(): Promise<any[]> {
         const ZRX_TOKEN = '0xe41d2489571d322189246dafa5ebde1f4699f498';
         const MATIC_TOKEN = '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0';
         const reqBaseUri =
@@ -166,19 +162,10 @@ export const backendClient = {
             `?contract-address=${MATIC_TOKEN}&key=ckey_6a1cbb454aa243b1bc66da64530`,
         );
 
-        const transferLogs = await web3.getLogsAsync({
-            address: '0x0bb1810061c2f5b2088054ee184e6c79e1591101',
-            topics: ['0x712ae1383f79ac853f8d882153778e0260ef8f03b504e2866e0593e04d2b291f'],
-            fromBlock: 0,
-            toBlock: 'latest',
-        });
-
-        console.log('transferlogs', transferLogs);
-
-        return await Promise.all([zrxTransfers, maticTransfers]);
+        return Promise.all([zrxTransfers, maticTransfers]);
     },
 
-    async getTreasuryProposalDistributions(provider: ZeroExProvider) {
+    async getTreasuryProposalDistributionsAsync(provider: ZeroExProvider): Promise<any[]> {
         const web3 = new Web3Wrapper(provider);
         const reqBaseUri = `https://api.covalenthq.com/v1/1/transaction_v2/`;
         const proposalExecutionLogs = await web3.getLogsAsync({
@@ -188,21 +175,21 @@ export const backendClient = {
             toBlock: 'latest',
         });
 
-        const txnHashesPromises = proposalExecutionLogs.map((log) => {
+        const txnHashesPromises = proposalExecutionLogs.map(async (log) => {
             return fetchUtils.requestAsync(reqBaseUri, `${log.transactionHash}/?key=ckey_6a1cbb454aa243b1bc66da64530`);
         });
 
         const transactions = await Promise.all(txnHashesPromises);
         const data = transactions.map((txn) => {
-            let proposalId,
-                tokensTransferred: any[] = [];
+            let proposalId;
+            const tokensTransferred: any[] = [];
             txn.data.items[0].log_events.forEach((log: any) => {
                 if (log.decoded.name === 'ProposalExecuted') {
                     proposalId = log.decoded.params[0].value;
                 } else if (log.decoded.name === 'Transfer') {
                     tokensTransferred.push({
                         name: log.sender_contract_ticker_symbol,
-                        amount: parseInt(log.decoded.params[2].value) / 10 ** (log.sender_contract_decimals || 18),
+                        amount: parseInt(log.decoded.params[2].value, 10) / 10 ** (log.sender_contract_decimals || 18),
                     });
                 }
             });
@@ -253,6 +240,7 @@ export const backendClient = {
         const result = await fetchUtils.requestAsync(utils.getBackendBaseUrl(), JOBS_ENDPOINT);
         return result;
     },
+
     async getPriceInfoAsync(tokenSymbols: string[]): Promise<WebsiteBackendPriceInfo> {
         if (_.isEmpty(tokenSymbols)) {
             return {};
@@ -264,14 +252,17 @@ export const backendClient = {
         const result = await fetchUtils.requestAsync(utils.getBackendBaseUrl(), PRICES_ENDPOINT, queryParams);
         return result;
     },
+
     async getRelayerInfosAsync(): Promise<WebsiteBackendRelayerInfo[]> {
         const result = await fetchUtils.requestAsync(utils.getBackendBaseUrl(), RELAYERS_ENDPOINT);
         return result;
     },
+
     async getTokenInfosAsync(): Promise<WebsiteBackendTokenInfo[]> {
         const result = await fetchUtils.requestAsync(utils.getBackendBaseUrl(), TOKENS_ENDPOINT);
         return result;
     },
+
     async subscribeToNewsletterAsync({
         email,
         subscriberInfo,
@@ -294,15 +285,19 @@ export const backendClient = {
         });
         return result;
     },
+
     async getCFLMetricsAsync(): Promise<WebsiteBackendCFLMetricsData> {
         return fetchUtils.requestAsync(utils.getBackendBaseUrl(), CFL_METRICS_ENDPOINT);
     },
+
     async getTradingPairsAsync(): Promise<WebsiteBackendTradingPairs[]> {
         return fetchUtils.requestAsync(utils.getBackendBaseUrl(), TRADING_PAIRS_ENDPOINT);
     },
+
     async getStakingPoolsAsync(): Promise<WebsiteBackendStakingPoolInfo[]> {
         return fetchUtils.requestAsync(utils.getBackendBaseUrl(), STAKING_POOLS_ENDPOINT);
     },
+
     async getStakingPoolAsync(id: string): Promise<WebsiteBackendStakingPoolInfo> {
         return fetchUtils.requestAsync(utils.getBackendBaseUrl(), `${STAKING_POOLS_ENDPOINT}/${id}`);
     },

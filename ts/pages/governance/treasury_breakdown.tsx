@@ -1,49 +1,27 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { Progressbar } from 'ts/components/progressbar';
-import { stakingUtils } from 'ts/utils/staking_utils';
-import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
-import { Web3Wrapper } from '@0x/web3-wrapper';
-import { ethers, Contract } from 'ethers';
-import { Image } from 'ts/components/ui/image';
 
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import { Image } from 'ts/components/ui/image';
+import { GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { formatNumber } from 'ts/utils/format_number';
 
-import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
 
-import { BigNumber } from '@0x/utils';
-import { useSelector } from 'react-redux';
-import { utils } from 'ts/utils/utils';
-
-import { Section } from 'ts/components/newLayout';
-import { Heading, Paragraph } from 'ts/components/text';
-import { Text } from 'ts/components/ui/text';
+import { Paragraph } from 'ts/components/text';
 
 import { State } from 'ts/redux/reducer';
 import { backendClient } from 'ts/utils/backend_client';
 
-import { colors } from 'ts/style/colors';
 import { PieChart } from 'react-minimal-pie-chart';
 
-import { H3, H4, H2, H1 } from 'ts/components/docs/mdx/headings';
+import { H1, H2, H3, H4 } from 'ts/components/docs/mdx/headings';
 
 interface TreasuryBreakdownProps {}
 
 interface WrapperProps {}
-
-interface InnerProps {}
-
-interface RowProps {}
-
-const ProgressbarText = styled.span`
-    display: block;
-    font-size: 15px;
-    color: #5c5c5c;
-    line-height: 1.2;
-    margin-top: 8px;
-`;
 
 const Wrapper = styled.div<WrapperProps>`
     width: 100%;
@@ -53,31 +31,6 @@ const Wrapper = styled.div<WrapperProps>`
     @media (min-width: 768px) {
         padding: 30px;
         text-align: left;
-    }
-`;
-
-const Inner = styled.div<InnerProps>`
-    background-color: #f3f6f4;
-    background-image: url(/images/stakingGraphic.svg);
-    background-repeat: no-repeat;
-    background-position-x: right;
-    background-position-y: center;
-    @media (min-width: 768px) {
-        padding: 30px;
-    }
-`;
-
-const Row = styled.div<RowProps>`
-    max-width: 1152px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-direction: column;
-    @media (min-width: 768px) {
-        flex-direction: row;
-        & > * {
-        }
     }
 `;
 
@@ -102,81 +55,6 @@ const Title = styled.h1`
     @media (min-width: 768px) {
         font-size: 50px;
         display: block;
-    }
-`;
-
-const TitleMobile = styled(Title)`
-    display: block;
-    @media (min-width: 768px) {
-        display: none;
-    }
-`;
-
-const Description = styled.h2`
-    font-size: 18px;
-    line-height: 1.45;
-    font-weight: 300;
-    margin-bottom: 30px;
-    color: ${colors.textDarkSecondary};
-`;
-
-const Actions = styled.div`
-    & > * {
-        margin-right: 13px;
-        margin-bottom: 10px;
-    }
-`;
-
-const MetricsWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const FiguresList = styled.ol`
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    padding-top: 15px;
-    width: 250px;
-`;
-
-const Figure = styled.li`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    text-align: left;
-    background-color: ${colors.white};
-    padding: 10px;
-    margin-bottom: 15px;
-    @media (min-width: 480px) {
-        padding: 20px;
-    }
-`;
-
-const FigureHeader = styled.header`
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-`;
-
-const FigureTitle = styled.span`
-    display: block;
-    font-size: 16px;
-    line-height: 1.35;
-    color: #999999;
-    margin-bottom: 5px;
-`;
-
-const FigureNumber = styled.span`
-    display: block;
-    font-feature-settings: 'tnum' on, 'lnum' on;
-    font-size: 20px;
-    line-height: 1.35;
-    @media (min-width: 768px) {
-        font-size: 24px;
-    }
-    @media (min-width: 991px) {
-        font-size: 28px;
     }
 `;
 
@@ -229,7 +107,7 @@ const LegendItem = styled.div`
 const BreakdownCopy = styled.div`
     margin-top: 4rem;
 `;
-const AssetListWrapper = styled.div``;
+
 const TreasuryAllocations = styled.div`
     padding-top: 2rem;
 `;
@@ -254,13 +132,6 @@ const TableHeader = styled.thead`
     color: #898990;
 `;
 
-const VoteTableHeaderElementSupport = styled.th`
-    text-align: center;
-`;
-
-const VoteTableHeaderElementPower = styled.th`
-    text-align: right;
-`;
 const AssetName = styled.td`
     text-align: center;
     font-size: 20px;
@@ -322,41 +193,14 @@ const ArrowCTA = styled.svg`
     margin-top: -4px;
 `;
 
-type TreasuryTokenPricesUsd = {
-    zrx: number;
-    matic: number;
-};
-
 export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
     const providerState = useSelector((state: State) => state.providerState);
 
     const [totalTreasuryAmountUSD, setTotalTreasuryAmountUSD] = React.useState('-');
-    const [totalTreasuryDistributedUSD, setTotalTreasuryDistributedUSD] = React.useState('-');
-    const [zrxBalance, setZrxBalance] = React.useState(undefined);
-    const [maticBalance, setMaticBalance] = React.useState(undefined);
     const [zrxUSDValue, setZrxUSDValue] = React.useState(undefined);
     const [maticUSDValue, setMaticUSDValue] = React.useState(undefined);
     const [assetList, setAssetList] = React.useState([]);
     const [allocations, setAllocations] = React.useState([]);
-
-    const parseTotalDistributed = (transferData: any) => {
-        let totalDistributed = 0;
-        if (transferData) {
-            transferData.forEach((tf: any) => {
-                if (tf.data.items) {
-                    tf.data.items.forEach((item: any) => {
-                        item.transfers.forEach((transfer: any) => {
-                            if (transfer.transfer_type === 'OUT') {
-                                totalDistributed += transfer.delta_quote;
-                            }
-                        });
-                    });
-                }
-            });
-        }
-
-        return totalDistributed;
-    };
 
     React.useEffect(() => {
         const zrxTokenContract = new ERC20TokenContract(
@@ -368,64 +212,59 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
             providerState.provider,
         );
 
+        // tslint:disable-next-line:no-floating-promises
         (async () => {
             const [zrxBalance, maticBalance] = await Promise.all([
                 zrxTokenContract.balanceOf(GOVERNOR_CONTRACT_ADDRESS.ZRX).callAsync(),
                 maticTokenContract.balanceOf(GOVERNOR_CONTRACT_ADDRESS.ZRX).callAsync(),
             ]);
-            const res = await backendClient.getTreasuryTokenPrices();
+            const res = await backendClient.getTreasuryTokenPricesAsync();
             const zrxAmount = Web3Wrapper.toUnitAmount(zrxBalance, 18);
             const maticAmount = Web3Wrapper.toUnitAmount(maticBalance, 18);
 
             const zrxUSD = zrxAmount.multipliedBy(res['0x'].usd);
             const maticUSD = maticAmount.multipliedBy(res['matic-network'].usd);
 
-            setZrxBalance(zrxAmount);
-            setMaticBalance(maticAmount);
             setZrxUSDValue(zrxUSD);
             setMaticUSDValue(maticUSD);
             setAssetList([
                 {
                     name: 'ZRX',
                     balance: zrxAmount.toString(),
-                    usdValue:
-                        '$' +
+                    usdValue: `$${
                         formatNumber(zrxUSD.toString(), {
                             decimals: 0,
                             decimalsRounded: 6,
                             bigUnitPostfix: false,
-                        }).formatted,
+                        }).formatted
+                    }`,
                 },
                 {
                     name: 'MATIC',
                     balance: maticAmount.toString(),
-                    usdValue:
-                        '$' +
+                    usdValue: `$${
                         formatNumber(maticUSD.toString(), {
                             decimals: 0,
                             decimalsRounded: 6,
                             bigUnitPostfix: false,
-                        }).formatted,
+                        }).formatted
+                    }`,
                 },
             ]);
 
-            const treasuryTokenTransferData = await backendClient.getTreasuryTokenTransfers(providerState.provider);
-            const totalDistributed = parseTotalDistributed(treasuryTokenTransferData);
-
-            const treauryProposalDistributions = await backendClient.getTreasuryProposalDistributions(
+            const treauryProposalDistributions = await backendClient.getTreasuryProposalDistributionsAsync(
                 providerState.provider,
             );
 
-            console.log(treauryProposalDistributions);
             const treasuryAllocations = treauryProposalDistributions.map((distribution: any) => {
                 const { tokensTransferred } = distribution;
 
-                let updatedTokensTransferred = tokensTransferred.map((token: any) => {
-                    if (token.name === 'ZRX') {
-                        token.usdValue = Math.round(token.amount * res['0x'].usd);
-                    } else {
-                        token.usdValue = Math.round(token.amount * res['matic-network'].usd);
-                    }
+                const updatedTokensTransferred = tokensTransferred.map((token: any) => {
+                    token.usdValue =
+                        token.name === 'ZRX'
+                            ? Math.round(token.amount * res['0x'].usd)
+                            : Math.round(token.amount * res['matic-network'].usd);
+
                     return token;
                 });
                 distribution.tokensTransferred = updatedTokensTransferred;
@@ -433,21 +272,15 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
             });
 
             setAllocations(treasuryAllocations);
-            setTotalTreasuryDistributedUSD(
-                '$' +
-                    formatNumber(totalDistributed, {
-                        decimals: 6,
-                        decimalsRounded: 6,
-                        bigUnitPostfix: true,
-                    }).formatted,
-            );
+
             setTotalTreasuryAmountUSD(
-                '$' +
+                `$${
                     formatNumber(zrxUSD.plus(maticUSD).toString(), {
                         decimals: 6,
                         decimalsRounded: 6,
                         bigUnitPostfix: true,
-                    }).formatted,
+                    }).formatted
+                }`,
             );
         })();
     }, [providerState]);
@@ -464,14 +297,18 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                                 {zrxUSDValue && maticUSDValue && (
                                     <PieChart
                                         data={[
-                                            { title: 'ZRX', value: parseInt(zrxUSDValue.toString()), color: '#000000' },
+                                            {
+                                                title: 'ZRX',
+                                                value: parseInt(zrxUSDValue.toString(), 10),
+                                                color: '#000000',
+                                            },
                                             {
                                                 title: 'MATIC',
-                                                value: parseInt(maticUSDValue.toString()),
+                                                value: parseInt(maticUSDValue.toString(), 10),
                                                 color: '#8247E5',
                                             },
                                         ]}
-                                        label={(data: any) => Math.round(data.dataEntry.percentage) + '%'}
+                                        label={(data: any) => `${Math.round(data.dataEntry.percentage)}%`}
                                         labelStyle={{
                                             fontSize: '8px',
                                             fontFamily: 'sans-serif',
@@ -515,9 +352,9 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                             </TableHeader>
                             <tbody>
                                 {assetList &&
-                                    assetList.map((data) => {
+                                    assetList.map((data, index) => {
                                         return (
-                                            <AssetRow>
+                                            <AssetRow key={index}>
                                                 <AssetName>{data.name}</AssetName>
                                                 <AssetBalance>{data.balance}</AssetBalance>
                                                 <AssetValue>{data.usdValue}</AssetValue>
@@ -578,7 +415,7 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                         </TableHeader>
                         <tbody>
                             {allocations &&
-                                allocations.map((data) => {
+                                allocations.map((data, alloctionsIndex) => {
                                     let summedTokenValue = 0;
                                     let tokenAmountsString = '';
                                     data.tokensTransferred.forEach((token: any, index: number) => {
@@ -594,15 +431,15 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                                         }
                                     });
                                     const proposalTitle = `Proposal #${data.proposalId}`;
-                                    const usd =
-                                        '$' +
+                                    const usd = `$${
                                         formatNumber(summedTokenValue, {
                                             decimals: 0,
                                             decimalsRounded: 6,
                                             bigUnitPostfix: false,
-                                        }).formatted;
+                                        }).formatted
+                                    }`;
                                     return (
-                                        <AssetRow>
+                                        <AssetRow key={alloctionsIndex}>
                                             <AssetName>
                                                 <ProposalLink href={`https://etherscan.io/tx/${data.hash}`}>
                                                     {proposalTitle}
@@ -622,3 +459,4 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
 };
 
 TreasuryBreakdown.defaultProps = {};
+// tslint:disable:max-file-line-count

@@ -206,7 +206,7 @@ interface Option {
 export const ConnectWalletDialog = () => {
     const isOpen = useSelector((state: State) => state.isConnectWalletDialogOpen);
     const isMetamask = window.ethereum && window.ethereum.isMetamask ? true : false;
-    const { connector, activate, error, chainId } = useWeb3React();
+    const { connector, activate, error } = useWeb3React();
     const [activatingConnector, setActivatingConnector] = useState<any>();
 
     useEffect(() => {

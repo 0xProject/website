@@ -90,7 +90,7 @@ export const getDateString = (voteStartDate: moment.Moment, voteEndDate: moment.
     const now = moment();
     const endDate = voteEndDate.utcOffset(pstOffset);
     const startDate = voteStartDate.utcOffset(pstOffset);
-    const timeToEndInDays = endDate.diff(now, 'days') + 1;
+    const timeToEndInDays = (endDate.diff(now, 'days') as number) + 1;
     const timeToEndInHours = endDate.diff(now, 'hours');
     if (voteTime === 'happening') {
         return `Voting ends in ${timeToEndInDays > 1 ? timeToEndInDays : timeToEndInHours} ${
@@ -244,9 +244,8 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                 </ReactRouterLink>
             );
         case VotingCardType.Snapshot:
-            const snapshotText = props.body.length > 500 ? props.body.substring(0, 500) + '...' : props.body;
+            const snapshotText = props.body.length > 500 ? `${props.body.substring(0, 500)}...` : props.body;
             const status = props.state;
-            const votes = props.votes;
 
             const proposalState = status === 'active' ? 'happening' : 'accepted';
             return (

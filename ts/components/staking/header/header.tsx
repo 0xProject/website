@@ -130,7 +130,7 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
         });
 
         setHasLiveOrUpcomingVotes(hasZEIPS.length || hasTreasuryProposals.length);
-        setNumberOfLiveVotes(hasZEIPS.length + hasTreasuryProposals.length);
+        setNumberOfLiveVotes(hasZEIPS.length + (hasTreasuryProposals.length as number));
     }, []);
 
     useEffect(() => {

@@ -1,28 +1,19 @@
+import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as React from 'react';
 import styled from 'styled-components';
-import { Progressbar } from 'ts/components/progressbar';
-import { stakingUtils } from 'ts/utils/staking_utils';
-import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
-import { Web3Wrapper } from '@0x/web3-wrapper';
+import { GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { formatNumber } from 'ts/utils/format_number';
 
-import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
 
 import { BigNumber } from '@0x/utils';
 import { useSelector } from 'react-redux';
-import { utils } from 'ts/utils/utils';
 
 import { State } from 'ts/redux/reducer';
 import { backendClient } from 'ts/utils/backend_client';
 
-import { differenceInSeconds } from 'date-fns';
-
-import { formatEther, formatZrx } from 'ts/utils/format_number';
-
-import { colors } from 'ts/style/colors';
-import { ZrxTreasuryContract } from '@0x/contracts-treasury';
 import { ZeroExProvider } from '@0x/asset-buyer';
+import { colors } from 'ts/style/colors';
 
 interface GovernanceHeroProps {
     title: string | React.ReactNode;
@@ -49,14 +40,6 @@ interface WrapperProps {}
 interface InnerProps {}
 
 interface RowProps {}
-
-const ProgressbarText = styled.span`
-    display: block;
-    font-size: 15px;
-    color: #5c5c5c;
-    line-height: 1.2;
-    margin-top: 8px;
-`;
 
 const Wrapper = styled.div<WrapperProps>`
     width: 100%;
@@ -201,12 +184,6 @@ const FigureNumber = styled.span`
     }
 `;
 
-const FiguresListHeader = styled.h2``;
-
-type TreasuryTokenPricesUsd = {
-    zrx: number;
-    matic: number;
-};
 export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
     const { title, titleMobile, description, actions, numProposals, averageVotingPower } = props;
     const providerState = useSelector((state: State) => state.providerState);
@@ -223,7 +200,7 @@ export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
                         item.transfers.forEach((transfer: any) => {
                             if (transfer.transfer_type === 'OUT') {
                                 const delta_quote =
-                                    parseInt(transfer.delta) *
+                                    parseInt(transfer.delta, 10) *
                                     Math.pow(10, -transfer.contract_decimals) *
                                     transfer.quote_rate;
 
@@ -248,36 +225,37 @@ export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
             providerState.provider,
         );
 
+        // tslint:disable-next-line:no-floating-promises
         (async () => {
             const [zrxBalance, maticBalance] = await Promise.all([
                 zrxTokenContract.balanceOf(GOVERNOR_CONTRACT_ADDRESS.ZRX).callAsync(),
                 maticTokenContract.balanceOf(GOVERNOR_CONTRACT_ADDRESS.ZRX).callAsync(),
             ]);
-            const res = await backendClient.getTreasuryTokenPrices();
+            const res = await backendClient.getTreasuryTokenPricesAsync();
             const zrxAmount = Web3Wrapper.toUnitAmount(zrxBalance, 18);
             const maticAmount = Web3Wrapper.toUnitAmount(maticBalance, 18);
             const zrxUSD = zrxAmount.multipliedBy(res['0x'].usd);
             const maticUSD = maticAmount.multipliedBy(res['matic-network'].usd);
 
-            const treasuryTokenTransferData = await backendClient.getTreasuryTokenTransfers(providerState.provider);
-            console.log(treasuryTokenTransferData);
+            const treasuryTokenTransferData = await backendClient.getTreasuryTokenTransfersAsync();
             const totalDistributed = parseTotalDistributed(treasuryTokenTransferData);
-            console.log(totalDistributed);
             setTotalTreasuryDistributedUSD(
-                '$' +
+                `$${
                     formatNumber(totalDistributed, {
                         decimals: 6,
                         decimalsRounded: 6,
                         bigUnitPostfix: true,
-                    }).formatted,
+                    }).formatted
+                }`,
             );
             setTotalTreasuryAmountUSD(
-                '$' +
+                `$${
                     formatNumber(zrxUSD.plus(maticUSD).toString(), {
                         decimals: 6,
                         decimalsRounded: 6,
                         bigUnitPostfix: true,
-                    }).formatted,
+                    }).formatted
+                }`,
             );
         })();
     }, [providerState]);
