@@ -19,9 +19,7 @@ export const network = new NetworkConnector({
     defaultChainId: 1,
 });
 
-export const injected = new InjectedConnector({
-    supportedChainIds: [1, 3, 4, 5, 42],
-});
+export const injected = new InjectedConnector({});
 
 const newWalletConnect = () =>
     new WalletConnectConnector({

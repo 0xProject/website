@@ -44,6 +44,7 @@ export interface UseStakeHookResult {
     depositAndStake: (stakingPools: StakePoolData[], callback?: () => void) => void;
     unstake: (stakePoolData: StakePoolData[], callback?: () => void) => void;
     moveStake: (fromPoolId: string, toPoolId: string, zrxAmount: number, callback?: () => void) => void;
+    batchMoveStake: (moveStakeData: MoveStakeData[], callback?: () => void) => void;
     withdrawStake: (zrxAmountBaseUnits: BigNumber, callback?: () => void) => void;
     withdrawRewards: (poolIds: string[], callback?: () => void) => void;
     stakingContract?: StakingContract;
@@ -53,6 +54,12 @@ export interface UseStakeHookResult {
     estimatedTimeMs?: number;
     estimatedTransactionFinishTime?: Date;
     currentEpochRewards?: BigNumber;
+}
+
+export interface MoveStakeData {
+    fromPoolId: string;
+    toPoolId: string;
+    zrxAmount: number;
 }
 
 export const useStake = (networkId: ChainId, providerState: ProviderState): UseStakeHookResult => {
@@ -111,9 +118,8 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         async (data: string[]) => {
             setLoadingState(TransactionLoadingState.WaitingForSignature);
 
-            const localStorageSpeed = localStorage.getItem('gas-speed');
-            const gasInfo = await backendClient.getGasInfoAsync(localStorageSpeed || 'standard');
-
+            // const localStorageSpeed = localStorage.getItem('gas-speed');
+            const gasInfo = await backendClient.getGasInfoAsync('instant');
             const txPromise = stakingProxyContract
                 .batchExecute(data)
                 .awaitTransactionSuccessAsync({ from: ownerAddress, gasPrice: gasInfo.gasPriceInWei });
@@ -213,6 +219,28 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         [executeWithData, stakingContract],
     );
 
+    const batchMoveStakeAsync = useCallback(
+        async (moveStakeData: MoveStakeData[]) => {
+            const data = moveStakeData.map((item) => {
+                const { zrxAmount, fromPoolId, toPoolId } = item;
+
+                const zrxAmountBaseUnits = toZrxBaseUnits(zrxAmount);
+                const fromPoolIdPadded = utils.toPaddedHex(fromPoolId);
+                const toPoolIdPadded = utils.toPaddedHex(toPoolId);
+
+                return stakingContract
+                    .moveStake(
+                        { status: StakeStatus.Delegated, poolId: fromPoolIdPadded },
+                        { status: StakeStatus.Delegated, poolId: toPoolIdPadded },
+                        zrxAmountBaseUnits,
+                    )
+                    .getABIEncodedTransactionData();
+            });
+            await executeWithData(data);
+        },
+        [executeWithData, stakingContract],
+    );
+
     const withdrawStakeAsync = useCallback(
         async (zrxAmountBaseUnits: BigNumber) => {
             if (zrxAmountBaseUnits.isLessThanOrEqualTo(0) || isTxInProgress(loadingState)) {
@@ -221,8 +249,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
 
             setLoadingState(TransactionLoadingState.WaitingForSignature);
 
-            const localStorageSpeed = localStorage.getItem('gas-speed');
-            const gasInfo = await backendClient.getGasInfoAsync(localStorageSpeed || 'standard');
+            const gasInfo = await backendClient.getGasInfoAsync('instant');
 
             const txPromise = stakingContract
                 .unstake(zrxAmountBaseUnits)
@@ -351,6 +378,17 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         },
         moveStake: (fromPoolId: string, toPoolId: string, zrxAmount: number, callback?: () => void) => {
             moveStakeAsync(fromPoolId, toPoolId, zrxAmount)
+                .then(() => {
+                    trackEvent(TRACKING.MOVE_STAKE, { event_label: 'success' });
+                })
+                .then(callback)
+                .catch((err: Error) => {
+                    trackEvent(TRACKING.MOVE_STAKE, { event_label: 'failed' });
+                    handleError(err);
+                });
+        },
+        batchMoveStake: (moveStakeData: MoveStakeData[], callback?: () => void) => {
+            batchMoveStakeAsync(moveStakeData)
                 .then(() => {
                     trackEvent(TRACKING.MOVE_STAKE, { event_label: 'success' });
                 })

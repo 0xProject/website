@@ -32,6 +32,11 @@ import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { utils } from 'ts/utils/utils';
 
+import { VoterBreakdown } from 'ts/components/governance/voter_breakdown';
+import { fetchUtils } from 'ts/utils/fetch_utils';
+
+const TREASURY_VOTER_BREAKDOWN_URI = 'https://um5ppgumcc.us-east-1.awsapprunner.com';
+
 const FETCH_PROPOSAL = gql`
     query proposal($id: ID!) {
         proposal(id: $id) {
@@ -58,12 +63,20 @@ const FETCH_PROPOSAL = gql`
 
 type ProposalState = 'created' | 'active' | 'succeeded' | 'failed' | 'queued' | 'executed';
 
+interface VoterBreakdownData {
+    voter: string;
+    proposalId: string;
+    support: boolean;
+    votingPower: string;
+}
+
 export const Treasury: React.FC<{}> = () => {
     const [proposal, setProposal] = React.useState<TreasuryProposal>();
     const [isProposalsLoaded, setProposalsLoaded] = React.useState<boolean>(false);
     const [isVoteReceived, setIsVoteReceived] = React.useState<boolean>(false);
     const [isVoteModalOpen, setIsVoteModalOpen] = React.useState<boolean>(false);
     const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
+    const [voterBreakdownData, setVoterBreakdownData] = React.useState<VoterBreakdownData[]>();
     const { id: proposalId } = useParams();
     const providerState = useSelector((state: State) => state.providerState);
 
@@ -80,6 +93,20 @@ export const Treasury: React.FC<{}> = () => {
         // tslint:disable-next-line: no-floating-promises
         (async () => {
             const qThreshold = await contract.quorumThreshold().callAsync();
+
+            const result = await fetchUtils.requestAsync(TREASURY_VOTER_BREAKDOWN_URI, `/treasury/${proposalId}`);
+            const cleanedData = result
+                .sort((a: VoterBreakdownData, b: VoterBreakdownData) => {
+                    return parseFloat(b.votingPower) - parseFloat(a.votingPower);
+                })
+                .map((vote: VoterBreakdownData) => {
+                    vote.votingPower = utils.getFormattedAmount(new BigNumber(vote.votingPower), 18);
+                    vote.votingPower = vote.votingPower.split('.')[0];
+                    return vote;
+                });
+
+            setVoterBreakdownData(cleanedData);
+
             setQuorumThreshold(qThreshold);
         })();
     }, [providerState]);
@@ -229,6 +256,8 @@ export const Treasury: React.FC<{}> = () => {
         },
     };
 
+    let cleanedDescription = description.replace(/<br\/><br\/>/g, '\n');
+    cleanedDescription = cleanedDescription.replace(heading.raw, '');
     return (
         <StakingPageLayout isHome={false} title="0x Treasury">
             <RegisterBanner />
@@ -249,8 +278,16 @@ export const Treasury: React.FC<{}> = () => {
                         Submitted by: {utils.getAddressBeginAndEnd(proposal.proposer)}
                     </StyledText>
                     <Paragraph as="div">
+                        <VoterBreakdown data={voterBreakdownData} />
+                        <StyledButton
+                            isAccentColor={true}
+                            isWithArrow={true}
+                            href={`/zrx/vote/proposal/voter-leaderboard/${proposalId}`}
+                        >
+                            Voter Leaderboard
+                        </StyledButton>
                         <StyledMarkdown>
-                            <ReactMarkdown children={description.replace(heading.raw, '')} />
+                            <ReactMarkdown children={cleanedDescription} />
                         </StyledMarkdown>
                     </Paragraph>
                 </Column>
@@ -369,10 +406,12 @@ const StyledMarkdown = styled.div`
         font-size: 28px;
         font-weight: 400;
         margin-bottom: 20px;
+        color: black;
     }
 
     & p {
         margin-bottom: 40px;
+        color: black;
     }
 
     & ul {
@@ -483,3 +522,8 @@ const StyledHeading = styled(Heading)`
     margin-top: 68px;
     margin-bottom: 24px !important;
 `;
+
+const StyledButton = styled(Button)`
+    margin-bottom: 1rem;
+`;
+// tslint:disable:max-file-line-count

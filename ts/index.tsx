@@ -17,6 +17,7 @@ import { DocsPage } from 'ts/pages/docs/page';
 import { DocsTools } from 'ts/pages/docs/tools';
 import { Governance } from 'ts/pages/governance/governance';
 import { Treasury } from 'ts/pages/governance/treasury';
+import { VoterLeaderboard } from 'ts/pages/governance/voter_leaderboard';
 import { store } from 'ts/redux/store';
 import { WebsiteLegacyPaths, WebsitePaths } from 'ts/types';
 import { muiTheme } from 'ts/utils/mui_theme';
@@ -37,15 +38,15 @@ import { ZeroExApi } from 'ts/pages/api';
 // import { CFL } from 'ts/pages/cfl';
 // import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
+import { TreasuryBreakdown } from 'ts/pages/governance/treasury_breakdown';
 import { VoteIndex } from 'ts/pages/governance/vote_index';
 // import { Next0xInstant } from 'ts/pages/instant';
 import { NextLanding } from 'ts/pages/landing';
-import { NextLaunchKit } from 'ts/pages/launch_kit';
+// import { NextLaunchKit } from 'ts/pages/launch_kit';
 // import { NextMarketMaker } from 'ts/pages/market_maker';
 import { PrivacyPolicy } from 'ts/pages/privacy';
 import { StakingIndex } from 'ts/pages/staking/home';
 import { StakingPool } from 'ts/pages/staking/staking_pool';
-
 import { RemoveStake } from 'ts/pages/staking/wizard/remove';
 
 import { TermsOfService } from 'ts/pages/terms';
@@ -98,7 +99,7 @@ render(
                                 {/* <Route exact={true} path={WebsitePaths.Explore} component={Explore} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Credits} component={Credits} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Instant} component={Next0xInstant} /> */}
-                                <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit} />
+                                {/* <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem} /> */}
 
                                 <Route exact={true} path={WebsitePaths.ZeroExApi} component={ZeroExApi} />
@@ -115,7 +116,13 @@ render(
                                     component={StakingPoolActivity}
                                 />
                                 <Route exact={true} path={`${WebsitePaths.Register}`} component={RegisterWizard} />
+                                <Route exact={true} path={`${WebsitePaths.Treasury}`} component={TreasuryBreakdown} />
                                 <Route exact={true} path={`${WebsitePaths.Vote}/proposal/:id`} component={Treasury} />
+                                <Route
+                                    exact={true}
+                                    path={`${WebsitePaths.Vote}/proposal/voter-leaderboard/:id`}
+                                    component={VoterLeaderboard}
+                                />
                                 <Route exact={true} path={`${WebsitePaths.Vote}/:zeip`} component={Governance} />
                                 <Route exact={true} path={WebsitePaths.Vote} component={VoteIndex} />
 
@@ -135,7 +142,7 @@ render(
                             Portal does currently does not support V3 architecture
                             //<Route path={WebsitePaths.Portal} component={LazyPortal} />
                                 */}
-                                <Redirect from={WebsitePaths.StakingShortLink} to={WebsitePaths.Staking} />
+                                <Redirect from={WebsitePaths.StakingShortLink} to={WebsitePaths.Vote} />
                                 <Redirect
                                     from={`${WebsiteLegacyPaths.ZeroExJs}/:version?`}
                                     to={constants.URL_NPMJS_ZEROEXJS}

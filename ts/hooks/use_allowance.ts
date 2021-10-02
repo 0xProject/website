@@ -40,8 +40,8 @@ export const useAllowance = (): UseAllowanceHookResult => {
         setIsStarted(true);
         const ownerAddress = (providerState.account as AccountReady).address;
 
-        const localStorageSpeed = localStorage.getItem('gas-speed');
-        const gasInfo = await backendClient.getGasInfoAsync(localStorageSpeed || 'standard');
+        // const localStorageSpeed = localStorage.getItem('gas-speed');
+        const gasInfo = await backendClient.getGasInfoAsync('instant');
 
         const contractAddresses = getContractAddressesForChainOrThrow(networkId);
         const erc20ProxyAddress = contractAddresses.erc20Proxy;

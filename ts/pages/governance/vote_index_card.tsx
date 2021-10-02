@@ -44,7 +44,22 @@ interface TreasuryCardProps {
     againstVotes: BigNumber;
 }
 
-type VoteIndexCardProps = ZEIPCardProps | TreasuryCardProps;
+interface SnapshotCardProps {
+    id: string;
+    type: VotingCardType.Snapshot;
+    votes?: any[];
+    title: string;
+    choices: string[];
+    body: string;
+    start: number;
+    end: number;
+    author: string;
+    state: string;
+    order?: number;
+    tally?: TallyInterface;
+}
+
+type VoteIndexCardProps = ZEIPCardProps | TreasuryCardProps | SnapshotCardProps;
 
 const getVoteTime = (voteStartDate: moment.Moment, voteEndDate: moment.Moment): VoteTime | undefined => {
     const now = moment();
@@ -71,11 +86,11 @@ export const getVoteOutcome = (tally?: TallyInterface): VoteOutcome | undefined 
 
 export const getDateString = (voteStartDate: moment.Moment, voteEndDate: moment.Moment): string => {
     const voteTime = getVoteTime(voteStartDate, voteEndDate);
-    const pstOffset = '-0800';
+    const pstOffset = '-0700';
     const now = moment();
     const endDate = voteEndDate.utcOffset(pstOffset);
     const startDate = voteStartDate.utcOffset(pstOffset);
-    const timeToEndInDays = endDate.diff(now, 'days');
+    const timeToEndInDays = (endDate.diff(now, 'days') as number) + 1;
     const timeToEndInHours = endDate.diff(now, 'hours');
     if (voteTime === 'happening') {
         return `Voting ends in ${timeToEndInDays > 1 ? timeToEndInDays : timeToEndInHours} ${
@@ -140,7 +155,10 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                     >
                         <FlexWrap>
                             <Column width="60%" padding="0px 20px 0px 0px">
-                                <Tag>Treasury</Tag>
+                                <TagsWrapper>
+                                    <Tag>Treasury</Tag>
+                                    <Tag className="gas-required">Gas Required</Tag>
+                                </TagsWrapper>
                                 {description ? (
                                     <>
                                         <TreasurySummary description={description} />
@@ -195,7 +213,10 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                     >
                         <FlexWrap>
                             <Column width="60%" padding="0px 20px 0px 0px">
-                                <Tag className="zeip">ZEIP</Tag>
+                                <TagsWrapper>
+                                    <Tag className="zeip">ZEIP</Tag>
+                                    <Tag className="freevote">Free Vote</Tag>
+                                </TagsWrapper>
                                 <Heading marginBottom="15px">
                                     {`${title} `}
                                     <Muted>{`(ZEIP-${zeipId})`}</Muted>
@@ -222,6 +243,62 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                     </Section>
                 </ReactRouterLink>
             );
+        case VotingCardType.Snapshot:
+            const snapshotText = props.body.length > 500 ? `${props.body.substring(0, 500)}...` : props.body;
+            const status = props.state;
+
+            const proposalState = status === 'active' ? 'happening' : 'accepted';
+            return (
+                <a style={{ order }} target="_blank" href={`https://snapshot.org/#/0xgov.eth/proposal/${props.id}`}>
+                    <Section
+                        hasBorder={true}
+                        bgColor="none"
+                        padding="30px 30px 10px"
+                        hasHover={true}
+                        margin="30px auto"
+                        maxWidth="100%"
+                    >
+                        <FlexWrap>
+                            <Column width="60%" padding="0px 20px 0px 0px">
+                                <TagsWrapper>
+                                    <Tag className="snapshot">Snapshot</Tag>
+                                    <Tag className="freevote-snapshot">Free Vote</Tag>
+                                </TagsWrapper>
+                                <Heading marginBottom="15px">{`${props.title} `}</Heading>
+                                {props.body ? (
+                                    <>
+                                        <Paragraph marginBottom="12px">{snapshotText}</Paragraph>
+                                    </>
+                                ) : (
+                                    <VoteCardShimmer>
+                                        <div className="title shimmer" />
+                                        <div className="description">
+                                            <div className="line shimmer" />
+                                            <div className="line shimmer" />
+                                            <div className="line shimmer" />
+                                        </div>
+                                    </VoteCardShimmer>
+                                )}
+                            </Column>
+                            <Column width="25%" className="flex flex-column justify-center">
+                                <div className="flex flex-column sm-col-12">
+                                    <VoteStatusText status={proposalState} isSnapshot={true} />
+                                    {/* {isHappening ? (
+                                        <VoteStats tally={tally} isVoteCard={true} />
+                                    ) : (
+                                        <Paragraph marginBottom="12px" color={colors.textDarkPrimary}>
+                                            {`${totalBalances} ZRX Total Vote`}
+                                        </Paragraph>
+                                    )} */}
+                                    <Paragraph marginBottom="12px">
+                                        {getDateString(moment.unix(props.start), moment.unix(props.end))}
+                                    </Paragraph>
+                                </div>
+                            </Column>
+                        </FlexWrap>
+                    </Section>
+                </a>
+            );
         default:
             return null;
     }
@@ -246,6 +323,33 @@ const Tag = styled.div`
         width: 50px;
         background-color: ${() => colors.brandLight};
     }
+    &.freevote {
+        background-color: transparent;
+        color: ${() => colors.brandLight};
+        border: 1px solid ${() => colors.brandLight};
+        width: 87px;
+        margin-left: 6px;
+    }
+
+    &.gas-required {
+        background-color: transparent;
+        color: ${() => colors.yellow500};
+        border: 1px solid ${() => colors.yellow500};
+        width: 120px;
+        margin-left: 6px;
+    }
+
+    &.freevote-snapshot {
+        background-color: transparent;
+        color: #0500fa;
+        border: 1px solid #0500fa;
+        width: 87px;
+        margin-left: 6px;
+    }
+    &.snapshot {
+        width: 90px;
+        background-color: ${() => colors.blue700};
+    }
 `;
 
 const shimmer = keyframes`
@@ -253,6 +357,10 @@ const shimmer = keyframes`
     background-position:
      150% 0;
   }
+`;
+
+const TagsWrapper = styled.div`
+    display: flex;
 `;
 
 const VoteCardShimmer = styled.div`

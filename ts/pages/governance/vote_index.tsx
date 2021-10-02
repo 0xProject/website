@@ -8,13 +8,17 @@ import * as React from 'react';
 import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { fadeIn } from 'ts/style/keyframes';
+
+import { Web3Wrapper } from '@0x/web3-wrapper';
+
+import { backendClient } from 'ts/utils/backend_client';
 
 import { Button } from 'ts/components/button';
 import { DocumentTitle } from 'ts/components/document_title';
+import { GovernanceHero } from 'ts/components/governance/hero';
 import { RegisterBanner } from 'ts/components/governance/register_banner';
-import { Column, Section } from 'ts/components/newLayout';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
-import { Heading, Paragraph } from 'ts/components/text';
 import { Text } from 'ts/components/ui/text';
 import { Proposal, proposals as prodProposals, stagingProposals, TreasuryProposal } from 'ts/pages/governance/data';
 import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
@@ -22,7 +26,6 @@ import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
 import { OnChainProposal, TallyInterface, VotingCardType } from 'ts/types';
 import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
-import { constants } from 'ts/utils/constants';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
 
@@ -56,6 +59,33 @@ type ProposalWithOrder = Proposal & {
 type TreasuryProposalWithOrder = TreasuryProposal & {
     order?: number;
 };
+
+interface IInputProps {
+    isSubmitted: boolean;
+    name: string;
+    type: string;
+    label: string;
+    color?: string;
+    required?: boolean;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+interface IArrowProps {
+    isSubmitted: boolean;
+}
+
+interface SnapshotProposals {
+    id: string;
+    votes?: any[];
+    title: string;
+    choices: string[];
+    body: string;
+    start: number;
+    end: number;
+    author: string;
+    state: string;
+    order?: number;
+}
 
 const PROPOSALS = environments.isProduction() ? prodProposals : stagingProposals;
 const ZEIP_IDS = Object.keys(PROPOSALS).map((idString) => parseInt(idString, 10));
@@ -107,33 +137,50 @@ const fetchVoteStatusAsync: (zeipId: number) => Promise<TallyInterface> = async 
     }
 };
 
-const sortProposals = (onChainProposals: Proposals[], zeipProposals: Proposal[]) => {
-    let i = 0;
-    let j = 0;
-    let order = 0;
-    while (i < onChainProposals.length && j < zeipProposals.length) {
-        const treasury = onChainProposals[i];
-        const zeip = zeipProposals[j];
-        const treasuryStartDate = moment(treasury.startDate);
-        const zeipStartDate = moment(zeip.voteStartDate);
-        if (treasuryStartDate.isAfter(zeipStartDate)) {
-            onChainProposals[i].order = order++;
-            i++;
+const sortProposals = (
+    onChainProposals: Proposals[],
+    zeipProposals: Proposal[],
+    snapshotProposals: SnapshotProposals[],
+) => {
+    // aggregate all proposals
+    const allData = [...onChainProposals, ...zeipProposals, ...snapshotProposals];
+
+    // sort aggregated proposals
+    const allDataSorted = allData.sort((propA: Proposals, propB: Proposals) => {
+        const aStart = propA.startDate
+            ? propA.startDate
+            : propA.voteStartDate
+            ? propA.voteStartDate
+            : moment.unix(propA.start);
+        const bStart = propB.startDate
+            ? propB.startDate
+            : propB.voteStartDate
+            ? propB.voteStartDate
+            : moment.unix(propB.start);
+        return bStart.diff(aStart);
+    });
+
+    // set overall order based on aggregated sorting
+    allDataSorted.forEach((proposal: Proposals, index) => {
+        if (proposal.zeipId) {
+            const foundIndex = ZEIP_PROPOSALS.findIndex((p) => {
+                return p.zeipId === proposal.zeipId;
+            });
+            ZEIP_PROPOSALS[foundIndex].order = index;
         } else {
-            ZEIP_PROPOSALS[j].order = order++;
-            j++;
+            if (proposal.startDate) {
+                const foundIndex = onChainProposals.findIndex((p) => {
+                    return p.id === proposal.id;
+                });
+                onChainProposals[foundIndex].order = index;
+            } else {
+                const foundIndex = snapshotProposals.findIndex((p) => {
+                    return p.id === proposal.id;
+                });
+                snapshotProposals[foundIndex].order = index;
+            }
         }
-    }
-
-    while (i < onChainProposals.length) {
-        onChainProposals[i].order = order++;
-        i++;
-    }
-
-    while (j < zeipProposals.length) {
-        ZEIP_PROPOSALS[j].order = order++;
-        j++;
-    }
+    });
 };
 
 const fetchTallysAsync: () => Promise<ZeipTallyMap> = async () => {
@@ -147,13 +194,39 @@ interface Proposals {
     [index: string]: any;
 }
 
+const Input = React.forwardRef((props: IInputProps, ref: React.Ref<HTMLInputElement>) => {
+    const { name, label, type, onChange } = props;
+    const id = `input-${name}`;
+
+    return (
+        <>
+            <label className="visuallyHidden" htmlFor={id}>
+                {label}
+            </label>
+            <StyledInput onChange={onChange} ref={ref} id={id} placeholder={label} type={type || 'text'} {...props} />
+        </>
+    );
+});
+
 export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [filter, setFilter] = React.useState<string>('all');
     const [tallys, setTallys] = React.useState<ZeipTallyMap>(undefined);
     const [proposals, setProposals] = React.useState<TreasuryProposalWithOrder[]>([]);
+    const [snapshotProposals, setSnapshotProposals] = React.useState<SnapshotProposals[]>(undefined);
     const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
     const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
+    const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
     const providerState = useSelector((state: State) => state.providerState);
+
+    const [email, setEmail] = React.useState<string>('');
+
+    React.useEffect(() => {
+        // tslint:disable-next-line: no-floating-promises
+        (async () => {
+            const proposalsAndVotes = await backendClient.getSnapshotProposalsAndVotesAsync();
+            setSnapshotProposals(proposalsAndVotes);
+        })();
+    }, []);
 
     const { data, isLoading } = useQuery('proposals', async () => {
         const { proposals: treasuryProposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS);
@@ -178,7 +251,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     }, [providerState]);
 
     React.useEffect(() => {
-        if (data && quorumThreshold) {
+        if (data && quorumThreshold && snapshotProposals) {
             const onChainProposals = data.map((proposal: OnChainProposal) => {
                 const { id, votesAgainst, votesFor, description, executionTimestamp, voteEpoch } = proposal;
                 const againstVotes = new BigNumber(votesAgainst);
@@ -212,10 +285,10 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     endDate,
                 };
             });
-            sortProposals(onChainProposals.reverse(), ZEIP_PROPOSALS);
+            sortProposals(onChainProposals.reverse(), ZEIP_PROPOSALS, snapshotProposals);
             setProposals(onChainProposals);
         }
-    }, [data, quorumThreshold]);
+    }, [data, quorumThreshold, snapshotProposals]);
 
     const applyFilter = (value: string) => {
         setFilter(value);
@@ -234,15 +307,153 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
         }
     };
 
+    const onSubmit = React.useCallback(
+        async (event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+            if (!email) {
+                return;
+            }
+            try {
+                await backendClient.subscribeToNewsletterAsync({
+                    email,
+                    list: configs.STAKING_UPDATES_NEWSLETTER_ID,
+                });
+            } catch (err) {
+                // console.error(err);
+            }
+        },
+        [email],
+    );
     const showZEIP = ['all', 'zeip'];
     const showTreasury = ['all', 'treasury'];
+    const numProposals =
+        proposals.filter((proposal) => {
+            return !proposal.happening && !proposal.upcoming;
+        }).length +
+            ZEIP_PROPOSALS.filter((zeip) => {
+                return zeip.voteEndDate.isBefore(moment.now());
+            }).length +
+            snapshotProposals?.length || 0;
+
+    let sumOfTotalVotingPowerAverage;
+    if (proposals.length && ZEIP_PROPOSALS.length) {
+        let sumOfZEIPVotingPower;
+        let sumOfTreasuryVotingPower;
+        proposals.forEach((proposal) => {
+            const tally = {
+                no: new BigNumber(proposal.againstVotes.toString()),
+                yes: new BigNumber(proposal.forVotes.toString()),
+                zeip: proposal.id,
+            };
+            sumOfTreasuryVotingPower = tally.no.plus(tally.yes);
+        });
+        ZEIP_PROPOSALS.forEach((zeip) => {
+            const tally = tallys && tallys[zeip.zeipId];
+
+            sumOfZEIPVotingPower = tally.no.plus(tally.yes);
+        });
+        sumOfTotalVotingPowerAverage =
+            (Web3Wrapper.toUnitAmount(sumOfTreasuryVotingPower, 18).toNumber() / proposals.length +
+                Web3Wrapper.toUnitAmount(sumOfZEIPVotingPower, 18).toNumber() / ZEIP_PROPOSALS.length) /
+            2;
+    }
 
     return (
         <StakingPageLayout isHome={false} title="0x Governance">
             <RegisterBanner />
             <DocumentTitle {...documentConstants.VOTE} />
-            <Section isTextCentered={true} isPadded={true} padding="80px 0 80px">
-                <Column>
+            {/* <Section isTextCentered={true} isPadded={true}> */}
+            <GovernanceHero
+                title={
+                    <div>
+                        Make an impact
+                        <br />
+                        with your ZRX
+                    </div>
+                }
+                numProposals={numProposals}
+                averageVotingPower={sumOfTotalVotingPowerAverage}
+                titleMobile="Make an impact with your ZRX"
+                description={<div>Govern the exchange infrastructure of the Internet</div>}
+                figure={<></>}
+                actions={
+                    <>
+                        <Button
+                            onClick={() => {
+                                document.getElementById('governance-content').scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            to={''}
+                            isInline={true}
+                            color={colors.white}
+                        >
+                            Vote Now
+                        </Button>
+                        <Button
+                            target="_blank"
+                            href={
+                                'https://0xdao.gitbook.io/0x-dao/ecosystem-value-experiment/0xdao-grant-program-framework-v1'
+                            }
+                            isInline={true}
+                            color={colors.brandLight}
+                            isTransparent={true}
+                            borderColor={colors.brandLight}
+                        >
+                            Learn More
+                        </Button>
+                    </>
+                    // tslint:disable-next-line: jsx-curly-spacing
+                }
+            />
+            <NewVoteNotificationSignup>
+                <SignupCTA>
+                    <img
+                        style={{
+                            width: '48px',
+                            marginRight: '30px',
+                        }}
+                        src={'/images/mail.png'}
+                    />
+                    <div>Get notified whenever there's a new vote. (We won't spam)</div>
+                </SignupCTA>
+                <StyledForm
+                    onSubmit={(event) => {
+                        setIsSubmitted(true);
+                        // tslint:disable-next-line: no-floating-promises
+                        onSubmit(event);
+                    }}
+                >
+                    {isSubmitted ? (
+                        <SuccessText isSubmitted={isSubmitted}>🎉 Thank you for signing up!</SuccessText>
+                    ) : (
+                        <InputsWrapper>
+                            <EmailWrapper>
+                                <Input
+                                    color={''}
+                                    isSubmitted={isSubmitted}
+                                    name="email"
+                                    type="email"
+                                    label="Email Address"
+                                    ref={null}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required={true}
+                                />
+                            </EmailWrapper>
+                        </InputsWrapper>
+                    )}
+
+                    <SubmitButton>
+                        <SignupArrow
+                            isSubmitted={isSubmitted}
+                            width="22"
+                            height="17"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path d="M13.066 0l-1.068 1.147 6.232 6.557H0v1.592h18.23l-6.232 6.557L13.066 17l8.08-8.5-8.08-8.5z" />
+                        </SignupArrow>
+                    </SubmitButton>
+                </StyledForm>
+            </NewVoteNotificationSignup>
+            {/* <Column>
                     <Heading size="medium" isCentered={true}>
                         Govern 0x Protocol
                     </Heading>
@@ -262,14 +473,14 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                             </Button>
                         </ButtonWrapper>
                     </SubtitleContentWrap>
-                </Column>
-            </Section>
+                </Column> */}
+            {/* </Section> */}
             {isLoading ? (
                 <LoaderWrapper>
                     <CircularProgress size={40} thickness={2} color={colors.brandLight} />
                 </LoaderWrapper>
             ) : (
-                <VoteIndexCardWrapper>
+                <VoteIndexCardWrapper id={'governance-content'}>
                     <Wrapper onClick={() => setIsExpanded((_isExpanded) => !_isExpanded)}>
                         <ToggleRow>
                             <StyledText fontColor={colors.textDarkSecondary}>{getFilterName(filter)}</StyledText>
@@ -319,6 +530,18 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                                 />
                             );
                         })}
+                    {snapshotProposals &&
+                        snapshotProposals.length > 0 &&
+                        snapshotProposals.map((proposal: any, index: number) => {
+                            return (
+                                <VoteIndexCard
+                                    type={VotingCardType.Snapshot}
+                                    key={proposal.id}
+                                    {...proposal}
+                                    quorumThreshold={quorumThreshold}
+                                />
+                            );
+                        })}
                 </VoteIndexCardWrapper>
             )}
         </StakingPageLayout>
@@ -329,18 +552,6 @@ const VoteIndexCardWrapper = styled.div`
     margin-bottom: 150px;
     display: flex;
     flex-direction: column;
-`;
-
-const SubtitleContentWrap = styled.div`
-    max-width: 450px;
-    margin: auto;
-    & > * {
-        display: inline;
-    }
-`;
-
-const ButtonWrapper = styled.div`
-    margin-left: 0.5rem;
 `;
 
 const LoaderWrapper = styled.div`
@@ -418,3 +629,95 @@ const StyledText = styled(Text)`
         font-size: 18px;
     }
 `;
+
+const INPUT_HEIGHT = '60px';
+
+const StyledForm = styled.form`
+    display: flex;
+    margin-right: 45px;
+`;
+
+const InputsWrapper = styled.div`
+    display: flex;
+`;
+
+const EmailWrapper = styled.div`
+    width: 400px;
+    margin-right: 0.75rem;
+    @media (max-width: 768px) {
+        width: 250px;
+        margin-bottom: 1rem;
+    }
+`;
+const StyledInput = styled.input<IInputProps>`
+    appearance: none;
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid ${({ color }) => color || '#393939'};
+    color: ${({ theme }) => theme.textColor};
+    height: ${INPUT_HEIGHT};
+    font-size: 1.3rem;
+    outline: none;
+    width: 100%;
+
+    &::placeholder {
+        color: #b1b1b1;
+    }
+`;
+
+const SubmitButton = styled.button`
+    height: ${INPUT_HEIGHT};
+    background-color: transparent;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    padding: 0;
+    margin-left: -40px;
+`;
+
+const SuccessText = styled.p<IArrowProps>`
+    margin-right: 30px;
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: ${INPUT_HEIGHT};
+    animation: ${fadeIn} 0.5s ease-in-out;
+`;
+
+const SignupArrow = styled.svg<IArrowProps>`
+    fill: ${({ color }) => color};
+    transform: ${({ isSubmitted }) => isSubmitted && `translateX(44px)`};
+    transition: transform 0.25s ease-in-out;
+`;
+
+const NewVoteNotificationSignup = styled.div`
+    display: flex;
+    text-align: center;
+
+    margin: 0 auto;
+    margin-bottom: 30px;
+    max-width: 1390px;
+    justify-content: space-between;
+    background-color: #f2f4f3;
+    padding: 40px 80px;
+    text-align: left;
+
+    @media (max-width: 900px) {
+        flex-direction: column;
+    }
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+        padding: 20px 40px;
+    }
+`;
+
+const SignupCTA = styled.div`
+    display: flex;
+    align-items: center;
+    max-width: 40%;
+    @media (max-width: 900px) {
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
+`;
+// tslint:disable:max-file-line-count

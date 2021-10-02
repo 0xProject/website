@@ -598,6 +598,42 @@ export const proposals: Proposals = {
             ],
         },
     },
+    91: {
+        zeipId: 91,
+        title: 'Set the protocol fee multiplier to 0',
+        summary: [
+            `This ZEIP proposes to decrease the protocol fee multiplier from the current value (70,000) to zero (0). The goal is to conduct an experiment that measures the impact on volume in a zero-fee environment to inform decision-making around 0x network economics.`,
+            `Protocol fees introduced in 0x v3 have been experiencing a sharp decrease in Q3 due to a combination of decreased activity in open orderbook markets, the emergence of Flashbots as an efficient venue for MEV value capture, and increased competition in open orderbook liquidity protocols.`,
+            `A public dashboard will be produced in time for the change to go into effect to monitor its effects. If this proposal is accepted, the update will become effective after 7 days for 0x v3, and 2 days for 0x v4, due to protocol timelocks.`,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/91',
+        voteStartDate: moment(1631725200, 'X'),
+        voteEndDate: moment(1631984400, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `The purpose of the experiment is to measure the effect of the protocol fee on limit orders success rate and 0x open orderbook volume as a whole.`,
+                `In fact, the presence of the 0x protocol fee requires arbitrageurs to wait for mid-market price to move an extra premium (the cost of the protocol fee) before filling the limit order.`,
+            ],
+            rating: 4,
+            links: [],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `The fee multiplier parameter was designed to be updatable to meet evolving environmental conditions. As per the temperature check poll, the community supports this adjustment.`,
+                `This change will result in no protocol fees collected, hence halting ZRX staking rewards.`,
+                `Updating the multiplier back to the current value or some new value at the conclusion of the measurement period will require a separate vote as the parameter cannot be set to an arbitrary time period. We propose to run this experiment for a period of at least 6 weeks, adding extra 2 weeks to the initial proposal in the temperature check vote. This additional time will allow mitigating the effects of differences in market conditions in the pre/post periods of the analysis.`,
+            ],
+            rating: 1,
+            links: [
+                {
+                    text: 'Temperature Check',
+                    url: 'https://snapshot.org/#/0xgov.eth/proposal/QmUYZwMkDue5RhZGpdGLomsRbKTknmjmjMecz5uz635NFz',
+                },
+            ],
+        },
+    },
 };
 
 export const stagingProposals: Proposals = {
@@ -627,6 +663,9 @@ export const stagingProposals: Proposals = {
     },
     90: {
         ...proposals[90],
+    },
+    91: {
+        ...proposals[91],
     },
 };
 

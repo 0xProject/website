@@ -2015,6 +2015,11 @@
     "@ethersproject/properties" "^5.0.3"
     "@ethersproject/strings" "^5.0.4"
 
+"@graphql-typed-document-node/core@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.1.0.tgz#0eee6373e11418bfe0b5638f654df7a4ca6a3950"
+  integrity sha512-wYn6r8zVZyQJ6rQaALBEln5B1pzxb9shV5Ef97kTvn6yVGrqyXVnDqnU24MXnFubR+rZjBY9NWuxX3FB2sTsjg==
+
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-24.9.0.tgz#79b1bc06fb74a8cfb01cbdedf945584b1b9707f0"
@@ -3085,6 +3090,14 @@
     lodash.unescape "4.0.1"
     semver "^6.3.0"
     tsutils "^3.17.1"
+
+"@urql/core@^2.1.4":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@urql/core/-/core-2.3.0.tgz#3bc34e46e0ac9646a5bfcfad2c93872a1d20106b"
+  integrity sha512-pBw3LxqoYroXlLb+jvWrLyNpGl2WRvga9ZSco99aG/o/pMKb5ugfDVPPGPE7UCh7IGI4rb/2xPEmkiWdrtYbkg==
+  dependencies:
+    "@graphql-typed-document-node/core" "^3.1.0"
+    wonka "^4.0.14"
 
 "@walletconnect/client@^1.3.4":
   version "1.3.4"
@@ -9302,7 +9315,7 @@ got@7.1.0, got@^7.1.0:
     url-parse-lax "^1.0.0"
     url-to-options "^1.0.1"
 
-got@9.6.0:
+got@9.6.0, got@^9.2.2:
   version "9.6.0"
   resolved "https://registry.yarnpkg.com/got/-/got-9.6.0.tgz#edf45e7d67f99545705de1f7bbeeeb121765ed85"
   integrity sha512-R7eWptXuGYxwijs0eV+v3o6+XH1IqVK8dJOEecQfTmkncw9AV4dcw/Dhxi8MdlqPthxxpZyizMzyg8RTmEsG+Q==
@@ -9328,19 +9341,19 @@ graceful-fs@^4.1.10, graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphql-request@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-3.4.0.tgz#3a400cd5511eb3c064b1873afb059196bbea9c2b"
-  integrity sha512-acrTzidSlwAj8wBNO7Q/UQHS8T+z5qRGquCQRv9J1InwR01BBWV9ObnoE+JS5nCCEj8wSGS0yrDXVDoRiKZuOg==
+graphql-request@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-3.5.0.tgz#7e69574e15875fb3f660a4b4be3996ecd0bbc8b7"
+  integrity sha512-Io89QpfU4rqiMbqM/KwMBzKaDLOppi8FU8sEccCE4JqCgz95W9Q8bvxQ4NfPALLSMvg9nafgg8AkYRmgKSlukA==
   dependencies:
     cross-fetch "^3.0.6"
     extract-files "^9.0.0"
     form-data "^3.0.0"
 
-graphql@^15.5.0:
-  version "15.5.0"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.5.0.tgz#39d19494dbe69d1ea719915b578bf920344a69d5"
-  integrity sha512-OmaM7y0kaK31NKG31q4YbD2beNYa6jBBKtMFT6gLYJljHLJr42IqJ8KX08u3Li/0ifzTU5HjmoOOrwa5BRLeDA==
+graphql@^15.5.1:
+  version "15.5.1"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.5.1.tgz#f2f84415d8985e7b84731e7f3536f8bb9d383aad"
+  integrity sha512-FeTRX67T3LoE3LWAxxOlW2K3Bz+rMYAC18rRguK4wgXaTZMiJwSUwDmPFo3UadAKbzirKIg5Qy+sNJXbpPRnQw==
 
 growly@^1.3.0:
   version "1.3.0"
@@ -11898,6 +11911,13 @@ map-cache@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/map-cache/-/map-cache-0.2.2.tgz#c32abd0bd6525d9b051645bb4f26ac5dc98a0dbf"
 
+map-limit@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/map-limit/-/map-limit-0.0.1.tgz#eb7961031c0f0e8d001bf2d56fab685d58822f38"
+  integrity sha1-63lhAxwPDo0AG/LVb6toXViCLzg=
+  dependencies:
+    once "~1.3.0"
+
 map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
@@ -12586,9 +12606,24 @@ neo-async@^2.6.0, neo-async@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
 
+new-array@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/new-array/-/new-array-1.0.0.tgz#5dbc639d961eac7f1a9fbc1a7146ec12f2924fbf"
+  integrity sha1-XbxjnZYerH8an7wacUbsEvKST78=
+
 next-tick@1, next-tick@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
+
+nice-color-palettes@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/nice-color-palettes/-/nice-color-palettes-3.0.0.tgz#1ec31927cfc4ce8a51822b6bab2c64845d181abb"
+  integrity sha512-lL4AjabAAFi313tjrtmgm/bxCRzp4l3vCshojfV/ij3IPdtnRqv6Chcw+SqJUhbe7g3o3BecaqCJYUNLswGBhQ==
+  dependencies:
+    got "^9.2.2"
+    map-limit "0.0.1"
+    minimist "^1.2.0"
+    new-array "^1.0.0"
 
 nice-try@^1.0.4:
   version "1.0.4"
@@ -13016,6 +13051,13 @@ once@^1.3.0, once@^1.3.1, once@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
   integrity sha1-WDsap3WWHUsROsF9nFC6753Xa9E=
+  dependencies:
+    wrappy "1"
+
+once@~1.3.0:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/once/-/once-1.3.3.tgz#b2e261557ce4c314ec8304f3fa82663e4297ca20"
+  integrity sha1-suJhVXzkwxTsgwTz+oJmPkKXyiA=
   dependencies:
     wrappy "1"
 
@@ -14494,6 +14536,11 @@ react-markdown@^4.0.6:
     unified "^6.1.5"
     unist-util-visit "^1.3.0"
     xtend "^4.0.1"
+
+react-minimal-pie-chart@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/react-minimal-pie-chart/-/react-minimal-pie-chart-8.2.0.tgz#22b53af2363f040d818331721658dfa7a1ea847a"
+  integrity sha512-RhrHzprJt3KfBe4L3sE0Ha6fj4kYcwQtesQgscnld9Umf64+nZnxxInycnbimKsbIjxJONv77JIZp+qRbJD+bA==
 
 react-popper@^1.0.0-beta.6:
   version "1.0.0-beta.6"
@@ -17790,6 +17837,14 @@ url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
+urql@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/urql/-/urql-2.0.4.tgz#8d6d9f98521c45afc56ca1373141a5cc767af49f"
+  integrity sha512-ARITb+l+DsGbK/y3mxQjbC4lw8Z4IqFfk4Va8Eg1rDpN1HhOkMTxFA/YvGZoQIU1re/SsARLe//TEBtsgH0/CQ==
+  dependencies:
+    "@urql/core" "^2.1.4"
+    wonka "^4.0.14"
+
 use-callback-ref@^1.2.1, use-callback-ref@^1.2.3:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/use-callback-ref/-/use-callback-ref-1.2.4.tgz#d86d1577bfd0b955b6e04aaf5971025f406bea3c"
@@ -18899,6 +18954,11 @@ window-metadata@1.0.0:
 window-size@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/window-size/-/window-size-0.2.0.tgz#b4315bb4214a3d7058ebeee892e13fa24d98b075"
+
+wonka@^4.0.14:
+  version "4.0.15"
+  resolved "https://registry.yarnpkg.com/wonka/-/wonka-4.0.15.tgz#9aa42046efa424565ab8f8f451fcca955bf80b89"
+  integrity sha512-U0IUQHKXXn6PFo9nqsHphVCE5m3IntqZNB9Jjn7EB1lrR7YTDY3YWgFvEvwniTzXSvOH/XMzAZaIfJF/LvHYXg==
 
 word-wrap@~1.2.3:
   version "1.2.3"

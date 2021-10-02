@@ -77,14 +77,19 @@ interface NavItems {
 
 const navItems: NavItems[] = [
     {
+        id: 'governance',
+        text: 'Governance',
+        url: WebsitePaths.Vote,
+    },
+    {
         id: 'staking',
         text: 'Staking',
         url: WebsitePaths.Staking,
     },
     {
-        id: 'governance',
-        text: 'Governance',
-        url: WebsitePaths.Vote,
+        id: 'treasury',
+        text: 'Treasury',
+        url: WebsitePaths.Treasury,
     },
     {
         id: 'your-account',
@@ -94,13 +99,14 @@ const navItems: NavItems[] = [
 ];
 
 export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav }) => {
-    const { connector, deactivate } = useWeb3React();
+    const { connector, deactivate, chainId } = useWeb3React();
     const providerState = useSelector((state: State) => state.providerState);
     const { logoutWallet } = useWallet();
 
     const dispatch = useDispatch();
     const [dispatcher, setDispatcher] = useState<Dispatcher | undefined>(undefined);
     const [hasLiveOrUpcomingVotes, setHasLiveOrUpcomingVotes] = useState(false);
+    const [numberOfLiveVotes, setNumberOfLiveVotes] = useState(undefined);
 
     const { data } = useQuery('proposals', async () => {
         const { proposals: treasuryProposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS);
@@ -113,13 +119,18 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
 
     const checkHasLiveOrUpcomingVotes = useCallback((treasuryData) => {
         const hasZEIPS = ZEIP_PROPOSALS.filter((zeip) => {
-            return zeip.voteEndDate.isSameOrAfter(moment());
+            return zeip.voteEndDate.isSameOrAfter(moment()) && zeip.voteStartDate.isBefore(moment());
         });
 
         const hasTreasuryProposals = treasuryData.filter((proposal: OnChainProposal) => {
-            return moment.unix((proposal.voteEpoch.endTimestamp as unknown) as number).isSameOrAfter(moment());
+            return moment
+                .unix((proposal.voteEpoch.startTimestamp as unknown) as number)
+                .add(3, 'd')
+                .isSameOrAfter(moment());
         });
+
         setHasLiveOrUpcomingVotes(hasZEIPS.length || hasTreasuryProposals.length);
+        setNumberOfLiveVotes(hasZEIPS.length + (hasTreasuryProposals.length as number));
     }, []);
 
     useEffect(() => {
@@ -153,6 +164,8 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
     );
 
     const isWalletConnected = providerState.account.state === AccountState.Ready;
+    const isUsingCorrectChain = !chainId ? true : chainId === 1;
+
     return (
         <Headroom
             onUnpin={onUnpin}
@@ -163,11 +176,11 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
             <StyledHeader isNavToggled={isNavToggled}>
                 <HeaderWrap>
                     <LogoWrap>
-                        <Link to={WebsitePaths.Home}>
+                        <Link to={WebsitePaths.Vote}>
                             <Logo />
                         </Link>
                         <DocsLogoWrap>
-                            / <DocsLogoLink to={WebsitePaths.Staking}>ZRX</DocsLogoLink>
+                            / <DocsLogoLink to={WebsitePaths.Vote}>ZRX</DocsLogoLink>
                         </DocsLogoWrap>
                     </LogoWrap>
 
@@ -178,7 +191,9 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
                                     <div key={index} style={{ display: 'flex' }}>
                                         <NavItem key={`navlink-${index}`} link={link} />
                                         {link.id === 'governance' && (
-                                            <GovernanceActiveIndicator hasProposals={hasLiveOrUpcomingVotes} />
+                                            <GovernanceActiveIndicator hasProposals={hasLiveOrUpcomingVotes}>
+                                                {numberOfLiveVotes}
+                                            </GovernanceActiveIndicator>
                                         )}
                                     </div>
                                 );
@@ -198,13 +213,16 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
                             toggleMobileNav={toggleMobileNav}
                             hasBackButton={false}
                             hasSearch={false}
-                            navHeight={isWalletConnected ? 426 : 365}
+                            navHeight={isWalletConnected ? 590 : 480}
                         >
                             {subMenu}
                         </MobileNav>
                     </MediaQuery>
                 </HeaderWrap>
             </StyledHeader>
+            {!isUsingCorrectChain && !environments.isDevelopment() && (
+                <ChainErrorBanner>Wrong network: Switch to the Ethereum Network</ChainErrorBanner>
+            )}
         </Headroom>
     );
 };
@@ -251,16 +269,20 @@ const WalletConnectedIndicator = styled.div<WalletConnectedIndicatorProps>`
 `;
 
 const GovernanceActiveIndicator = styled.div<GovernanceActiveIndicatorProps>`
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+    width: 15px;
+    height: 15px;
     border: 1px solid #ffffff;
     background-color: #e71d36;
     transition: opacity 0.25s ease-in;
     opacity: ${(props) => (props.hasProposals ? 1 : 0)};
     position: relative;
     right: 1.8rem;
-    top: 0.6rem;
+    top: 0.2rem;
+    color: white;
+    font-size: 8px;
+    padding-right: 1px;
+    text-align: center;
+    padding-top: 3px;
     z-index: ${zIndex.header + 1};
 `;
 
@@ -348,4 +370,11 @@ const NavLinks = styled.ul`
 const LogoWrap = styled.div`
     display: flex;
     align-items: center;
+`;
+
+const ChainErrorBanner = styled.div`
+    background-color: #e71d36;
+    text-align: center;
+    color: white;
+    padding: 1rem 0;
 `;

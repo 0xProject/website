@@ -582,6 +582,7 @@ export enum WebsitePaths {
     Careers = '/careers',
     Credits = '/credits',
     Vote = '/zrx/vote',
+    Treasury = '/zrx/treasury',
     Register = '/zrx/register-to-vote',
     Extensions = '/extensions',
     // Explore = '/explore',
@@ -1326,6 +1327,7 @@ export interface AllTimeDelegatorStats {
 export enum VotingCardType {
     Treasury = 'TREASURY',
     Zeip = 'ZEIP',
+    Snapshot = 'SNAPSHOT',
 }
 
 export interface OnChainProposal {
