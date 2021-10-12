@@ -817,10 +817,16 @@ export interface WebsiteBackendTokenInfo {
     symbol: string;
 }
 
-export interface GasInfo {
-    gasPriceInWei: BigNumber;
-    estimatedTimeMs: number;
+export interface EIP1559GasInfo {
+    price: number;
+    maxPriorityFeePerGas: number;
+    maxFeePerGas: number;
+    baseFeePerGas: number;
 }
+
+export type GasInfo = EIP1559GasInfo & {
+    estimatedTimeMs: number;
+};
 
 export interface WebsiteBackendGasWaitTimeInfo {
     fastestWait: number;

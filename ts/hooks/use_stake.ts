@@ -119,10 +119,12 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
             setLoadingState(TransactionLoadingState.WaitingForSignature);
 
             // const localStorageSpeed = localStorage.getItem('gas-speed');
-            const gasInfo = await backendClient.getGasInfoAsync('instant');
-            const txPromise = stakingProxyContract
-                .batchExecute(data)
-                .awaitTransactionSuccessAsync({ from: ownerAddress, gasPrice: gasInfo.gasPriceInWei });
+            const gasInfo = await backendClient.getGasInfoAsync();
+            const txPromise = stakingProxyContract.batchExecute(data).awaitTransactionSuccessAsync({
+                from: ownerAddress,
+                maxFeePerGas: gasInfo.maxFeePerGas,
+                maxPriorityFeePerGas: gasInfo.maxPriorityFeePerGas,
+            });
 
             await txPromise.txHashPromise;
             setEstimatedTimeMs(gasInfo.estimatedTimeMs);
@@ -249,11 +251,13 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
 
             setLoadingState(TransactionLoadingState.WaitingForSignature);
 
-            const gasInfo = await backendClient.getGasInfoAsync('instant');
+            const gasInfo = await backendClient.getGasInfoAsync();
 
-            const txPromise = stakingContract
-                .unstake(zrxAmountBaseUnits)
-                .awaitTransactionSuccessAsync({ from: ownerAddress, gasPrice: gasInfo.gasPriceInWei });
+            const txPromise = stakingContract.unstake(zrxAmountBaseUnits).awaitTransactionSuccessAsync({
+                from: ownerAddress,
+                maxFeePerGas: gasInfo.maxFeePerGas,
+                maxPriorityFeePerGas: gasInfo.maxPriorityFeePerGas,
+            });
 
             await txPromise.txHashPromise;
             setEstimatedTimeMs(gasInfo.estimatedTimeMs);
