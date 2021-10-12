@@ -28,7 +28,7 @@ const fetchOrders = async () => fetchUtils.requestAsync(ordersBaseUrl, ordersPat
 export const MeshStats: React.FC = () => {
     const [meshFetchedSnapshot, setMeshSnapshot] = useState<{ meshNodes: MeshNodeMetaData[] }>();
     const [meshData, setMeshData] = useState<{ numActiveNodes: number; numEdges: number }>();
-    const [orders, setOrders] = useState();
+    const [orders, setOrders] = useState<{ total: number }>();
 
     const [nodeDetails, setNodeDetails] = useState<{ data?: MeshNodeMetaData; isVisible: boolean }>({
         data: undefined,
