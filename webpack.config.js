@@ -147,25 +147,12 @@ module.exports = (_env, argv) => {
             disableHostCheck: true,
             // Fixes assertion error
             // Source: https://github.com/webpack/webpack-dev-server/issues/1491
-            https: {
-                spdy: {
-                    protocols: ['http/1.1'],
-                },
-            },
         },
     };
 
     if (isDevEnvironment) {
         config.mode = 'development';
         config.devtool = 'cheap-module-eval-source-map';
-        // SSL certs
-        if (fs.existsSync('./server.cert') && fs.existsSync('./server.key')) {
-            config.devServer.https = {
-                ...config.devServer.https,
-                key: fs.readFileSync('./server.key'),
-                cert: fs.readFileSync('./server.cert'),
-            };
-        }
     } else {
         config.mode = 'production';
         config.devtool = 'source-map';

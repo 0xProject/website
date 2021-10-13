@@ -48,7 +48,7 @@ export const orderHashUtils = {
         // format, we only assert that we were indeed passed a string.
         assert.isString('orderHash', orderHash);
         const schemaValidator = new SchemaValidator();
-        const isValid = schemaValidator.validate(orderHash, schemas.orderHashSchema).valid;
+        const isValid = schemaValidator.isValid(orderHash, schemas.orderHashSchema);
         return isValid;
     },
 

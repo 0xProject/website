@@ -274,8 +274,8 @@ class VoteFormComponent extends React.Component<Props> {
 
             const { votePreference } = this.state;
 
-            // const localStorageSpeed = localStorage.getItem('gas-speed');
-            const gasInfo = await backendClient.getGasInfoAsync('instant');
+            const localStorageSpeed = localStorage.getItem('gas-speed');
+            const gasInfo = await backendClient.getGasInfoAsync(localStorageSpeed);
 
             const txPromise = contract
                 .castVote(
@@ -283,7 +283,11 @@ class VoteFormComponent extends React.Component<Props> {
                     votePreference === VoteValue.Yes,
                     operatedPools ? operatedPools.map((pool) => encodePoolId(parseInt(pool.poolId, 10))) : [],
                 )
-                .awaitTransactionSuccessAsync({ from: selectedAddress, gasPrice: gasInfo.gasPriceInWei });
+                .awaitTransactionSuccessAsync({
+                    from: selectedAddress,
+                    maxFeePerGas: gasInfo.maxFeePerGas,
+                    maxPriorityFeePerGas: gasInfo.maxPriorityFeePerGas,
+                });
             const txHash = await txPromise.txHashPromise;
             if (onVoted) {
                 this.setState({

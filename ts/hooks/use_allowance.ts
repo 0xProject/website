@@ -40,8 +40,8 @@ export const useAllowance = (): UseAllowanceHookResult => {
         setIsStarted(true);
         const ownerAddress = (providerState.account as AccountReady).address;
 
-        // const localStorageSpeed = localStorage.getItem('gas-speed');
-        const gasInfo = await backendClient.getGasInfoAsync('instant');
+        const localStorageSpeed = localStorage.getItem('gas-speed');
+        const gasInfo = await backendClient.getGasInfoAsync(localStorageSpeed);
 
         const contractAddresses = getContractAddressesForChainOrThrow(networkId);
         const erc20ProxyAddress = contractAddresses.erc20Proxy;
@@ -56,7 +56,8 @@ export const useAllowance = (): UseAllowanceHookResult => {
                 .approve(erc20ProxyAddress, constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)
                 .awaitTransactionSuccessAsync({
                     from: ownerAddress,
-                    gasPrice: gasInfo.gasPriceInWei,
+                    maxFeePerGas: gasInfo.maxFeePerGas,
+                    maxPriorityFeePerGas: gasInfo.maxPriorityFeePerGas,
                 });
 
             await txPromise.txHashPromise;

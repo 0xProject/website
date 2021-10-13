@@ -27,13 +27,7 @@ export interface IThemeInterface {
 }
 
 // tslint:disable:no-unnecessary-type-assertion
-const {
-    default: styled,
-    css,
-    createGlobalStyle,
-    keyframes,
-    ThemeProvider,
-} = styledComponents as styledComponents.ThemedStyledComponentsModule<IThemeInterface>;
+const { default: styled, css, createGlobalStyle, keyframes, ThemeProvider } = styledComponents;
 // tslint:enable:no-unnecessary-type-assertion
 
 export { styled, css, createGlobalStyle, keyframes, ThemeProvider };

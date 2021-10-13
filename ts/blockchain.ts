@@ -622,7 +622,7 @@ export class Blockchain {
         const provider = this._contractWrappers.getProvider();
         const web3Wrapper = new Web3Wrapper(provider);
         const exchangeAbi = this._contractWrappers.exchange.abi;
-        web3Wrapper.abiDecoder.addABI(exchangeAbi);
+        web3Wrapper.abiDecoder.addABI(exchangeAbi as any);
         const receipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
         return receipt;
     }
@@ -935,9 +935,9 @@ export class Blockchain {
     }
     private async _updateDefaultGasPriceAsync(): Promise<void> {
         try {
-            const localStorageSpeed = localStorage.getItem('gas-speed');
-            const { gasPriceInWei } = await backendClient.getGasInfoAsync(localStorageSpeed || 'standard');
-            this._defaultGasPrice = gasPriceInWei;
+            const { price } = await backendClient.getGasInfoAsync('standard');
+            // HACK: this is not supporting EIP1559 but this file is legacy and not used anywhere
+            this._defaultGasPrice = new BigNumber(price);
         } catch (err) {
             return;
         }
