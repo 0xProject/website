@@ -51,12 +51,6 @@ export const documentConstants: { [s: string]: DocumentMetadata } = {
             'As more assets become tokenized, 0x provides the critical exchange layer in a new financial stack that is more efficient, transparent, and equitable than any system in the past.',
         keywords: '',
     },
-    TEAM: {
-        title: '0x: Our Team',
-        description:
-            'The 0x Core Team is passionate about accelerating the adoption decentralized technology and believe in its potential to be an equalizing force in the world. Join us and do the most impactful work of your life.',
-        keywords: '',
-    },
     PRESS: {
         title: '0x: Press Highlights',
         description: '0x has been featured in major publications such as Forbes, Fortune, VentureBeat, and TechCrunch.',

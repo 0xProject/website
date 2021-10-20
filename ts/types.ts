@@ -557,7 +557,6 @@ export enum WebsitePaths {
     Home = '/',
     About = '/about',
     AboutMission = '/about/mission',
-    AboutTeam = '/about/team',
     AboutPress = '/about/press',
     AboutJobs = '/about/jobs',
     Community = '/community',

@@ -18,7 +18,6 @@ https://0x.org/docs/guides/rfqt-in-the-0x-api
 https://0x.org/docs
 https://0x.org/about
 https://0x.org/about/mission
-https://0x.org/about/team
 https://0x.org/about/press
 https://0x.org/about/jobs
 https://0x.org/community

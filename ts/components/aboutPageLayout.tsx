@@ -25,7 +25,6 @@ export const AboutPageLayout = (props: Props) => (
         <Section isFlex={true} maxWidth="1170px" wrapWidth="100%">
             <Column>
                 <ChapterLink to={WebsitePaths.AboutMission}>Mission</ChapterLink>
-                <ChapterLink to={WebsitePaths.AboutTeam}>Team</ChapterLink>
                 <ChapterLink to={WebsitePaths.AboutPress}>Press</ChapterLink>
                 <ChapterLink to={WebsitePaths.AboutJobs}>Jobs</ChapterLink>
             </Column>
