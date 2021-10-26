@@ -34,7 +34,6 @@ const linkRows: LinkRows[] = [
         links: [
             { url: WebsitePaths.ZeroExApi, text: '0x API' },
             { url: WebsitePaths.Mesh, text: '0x Mesh' },
-            { url: WebsitePaths.Instant, text: '0x Instant' },
             { url: constants.MATCHA_PRODUCTION_URL, text: 'Matcha', shouldOpenInNewTab: true },
             { url: WebsitePaths.Extensions, text: 'Extensions' },
             { url: WebsitePaths.Vote, text: 'Governance' },
