@@ -290,7 +290,9 @@ export const Account: React.FC<AccountProps> = () => {
             setCurrentEpochStakeMap(_currentEpochStakeMap);
             setNextEpochStakeMap(_nextEpochStakeMap);
             setAllTimeRewards(_allTimeRewards);
-            setExpectedCurrentEpochRewards(_expectedCurrentEpochRewards);
+            setExpectedCurrentEpochRewards(
+                _expectedCurrentEpochRewards.isNaN() ? new BigNumber(0) : _expectedCurrentEpochRewards,
+            );
             setVotingPowerMap(_votingPowerMap);
             setHasVotingPower(doesUserHaveVotingPower);
         };
@@ -707,21 +709,27 @@ export const Account: React.FC<AccountProps> = () => {
                                 );
                             })
                     )}
-                    <div
-                        style={{
-                            alignSelf: 'flex-end',
-                            margin: '1rem 0',
-                        }}
-                    >
-                        <Button
-                            color={colors.white}
-                            onClick={() => {
-                                setIsRebalanceOpen(true);
-                            }}
-                        >
-                            Rebalance Stake
-                        </Button>
-                    </div>
+                    {
+                        // Only show the "Rebalance Stake" button if there is at least one stake pool
+                        // for the current epoch
+                        poolData.length && (
+                            <div
+                                style={{
+                                    alignSelf: 'flex-end',
+                                    margin: '1rem 0',
+                                }}
+                            >
+                                <Button
+                                    color={colors.white}
+                                    onClick={() => {
+                                        setIsRebalanceOpen(true);
+                                    }}
+                                >
+                                    Rebalance Stake
+                                </Button>
+                            </div>
+                        )
+                    }
                 </SectionWrapper>
             )}
             {hasDataLoaded() && hasVotingPower && (
