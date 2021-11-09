@@ -224,12 +224,11 @@ export const backendClient = {
         const gasPriceInfo = gasInfo.result[speedInput as GasSpeedSelectors]
             ? gasInfo.result[speedInput as GasSpeedSelectors]
             : gasInfo.result.standard;
-
         return { ...gasPriceInfo, estimatedTimeMs };
     },
 
     async getGasInfoSelectionAsync(): Promise<GasInfoSelection> {
-        const gasApiPath = 'source/gas_now?output=eth_gas_station';
+        const gasApiPath = 'source/median?output=eth_gas_station';
         const gasInfoReq = fetchUtils.requestAsync(ZEROEX_GAS_API, gasApiPath);
 
         const gasInfo: WebsiteBackendGasInfo = await gasInfoReq;
