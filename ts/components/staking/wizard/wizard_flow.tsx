@@ -296,6 +296,14 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
     const isStakeAmountAboveBalance = zrxBalance.isLessThan(roundedStakeAmount);
     const isZeroAmountStakeInput = stakeAmount && roundedStakeAmount <= 0;
 
+    if (stakingPools?.length === 0) {
+        return (
+            <>
+                <NotAvailableHeader>Staking recommendations not available</NotAvailableHeader>
+            </>
+        );
+    }
+
     return (
         <>
             <NumberInput
@@ -874,5 +882,13 @@ const JazzIconContainer = styled.div`
     height: 40px;
     width: 40px;
     margin-right: 20px;
+`;
+
+const NotAvailableHeader = styled.h1`
+    font-size: 30px;
+    font-weight: 300;
+    line-height: 1.1;
+    text-align: center;
+    color: ${colors.error};
 `;
 // tslint:disable-next-line: max-file-line-count

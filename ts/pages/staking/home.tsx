@@ -194,9 +194,12 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                 videoId="qP_oZAjRkTs"
                 actions={
                     <>
-                        <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
-                            Stake ZRX
-                        </Button>
+                        {/*
+                    // TODO(kimpers): enable staking button again if we turn protocol fees back on
+                    <Button to={WebsitePaths.StakingWizard} isInline={true} color={colors.white}>
+                        Stake ZRX
+                    </Button>
+                    */}
                         <Button
                             to={constants.STAKING_FAQ_DOCS}
                             isInline={true}
