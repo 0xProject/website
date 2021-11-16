@@ -120,8 +120,10 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
 
             const localStorageSpeed = localStorage.getItem('gas-speed');
             const gasInfo = await backendClient.getGasInfoAsync(localStorageSpeed);
+            const gas = await stakingProxyContract.batchExecute(data).estimateGasAsync();
             const txPromise = stakingProxyContract.batchExecute(data).awaitTransactionSuccessAsync({
                 from: ownerAddress,
+                gas,
                 maxFeePerGas: gasInfo.maxFeePerGas,
                 maxPriorityFeePerGas: gasInfo.maxPriorityFeePerGas,
             });
