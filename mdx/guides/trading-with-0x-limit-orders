@@ -1,0 +1,164 @@
+This tutorial will attempt to bridge the knowledge-gap between trading limit orders on centralized cryptocurrency exchanges (e.g Binance) and trading limit orders using the 0x Protocol and 0x API, a suite decentralized exchange technologies (see protocol specification (https://protocol.0x.org/en/latest/index.html) and API specification (https://0x.org/docs/api) ).
+
+Trading with 0x Limit Orders
+
+The 0x Protocol (https://protocol.0x.org/en/latest/index.html) is a system of smart contracts that live on respective blockchains.  It facilitates trust-less, low friction exchange of assets.  While the protocol is open source and accessible by anyone, 0x Labs built the 0x API (https://0x.org/docs/api#introduction) as an additional off-chain layer to facilitate smooth interaction between applications and the 0x protocol smart contracts.
+
+Used together, the 0x protocol and 0x API offer traders the opportunity to retain custody of their assets until their trades are settled.   Conversely, one of the main disadvantages of trading on a centralized exchange (“CEX”) is that the CEX has full custody over your funds: you deposit your assets into a respective blockchain address controlled by the CEX, and must trust the CEX to secure your assets from hackers, rogue employees and other attackers. When trading with 0x, your assets never leave your own blockchain address until a trade is settled.
+
+The 0x protocol currently serves two different kinds of orders: 0x Limit Orders (https://protocol.0x.org/en/latest/basics/orders.html#limit-orders) and 0x RFQ Orders (https://protocol.0x.org/en/latest/basics/orders.html#rfq-orders).  This article focuses primarily on 0x Limit Orders, but both orders are essentially data packets that contain the order's details (https://0x.org/docs/guides/v3-specification#order-message-format) and at least one valid signature (https://0x.org/docs/guides/v3-specification#signature-types) (e.g. a valid elliptic curve signature generated from the trader’s blockchain address).  When two entities agree on the terms of a trade, the 0x order is submitted to the respective blockchain and settled via the 0x protocol smart contracts.
+
+In order for the 0x smart contracts to move funds on the behalf of traders, the traders must first give the contracts explicit permission. This is done by setting an "allowance" (https://tokenallowance.io/) for a certain number of assets the 0x protocol can transfer from the traders’ addresses, and then cryptographically agreeing to the terms of the trade by applying a valid signature to the order.  These rules are all enforced by the 0x protocol’s open-source smart contracts, which are deployed to the respective blockchains.
+
+
+_Applications Supporting 0x Limit Orders_
+
+0x Limit Orders are created off-chain and are completely free to create.  Here are a few applications from the 0x ecosystem where you can trade with 0x Limit Orders:
+
+* Matcha (https://matcha.xyz/)
+* Opyn (https://v2.opyn.co/#/)
+* Metric.exchange (https://metric.exchange/)
+* Thales (https://thalesmarket.io/)
+
+_0x API_
+
+You can also trade with 0x Limit orders using the 0x API.  0x Limit Orders are supported on multiple blockchains, including:
+
+* Ethereum
+* Binance Smart Chain
+* Polygon
+
+We are deploying 0x Limit Orders to more chains, so please check here (https://0x.org/docs/api#introduction) for the most up-to-date list of availability.
+
+Creating 0x Limit Orders
+
+When created with the 0x API, these limit orders are represented JSON objects (refer to this documentation (https://protocol.0x.org/en/latest/basics/orders.html#limit-orders) for the order format).  In order to create a valid 0x Limit Order with the 0x API, you can use the @0x/order-utils (https://0x.org/docs/tools/order-utils) TypeScript/Javascript library. The TypeScript library will help you:
+
+1. Generate an order in the proper format
+2. Generating a proper hash for the order contents
+3. Sign the order hash using your keys (which makes the order valid)
+
+Some basic code demonstrating how to create, sign and submit 0x Limit Orders on the Ropsten test network is available here (https://codesandbox.io/s/recursing-bell-ydbxb).
+
+Viewing & Distributing 0x Limit Orders
+
+0x Limit Orders can be submitted to the 0x Orderbook (https://0x.org/docs/api#orderbook).  The following request-endpoint combinations are commonly used to view and distribute 0x Limit Orders via the 0x API.
+
+* GET /orderbook/v1/ (https://0x.org/docs/api#get-orderbookv1)
+    * Retrieves the orderbook for a given asset pair
+* GET /orderbook/v1/orders (https://0x.org/docs/api#get-orderbookv1orders)
+    * Retrieves a list of orders given query parameters
+* POST /orderbook/v1/order (https://0x.org/docs/api#post-orderbookv1order)
+    * Submit a signed 0x Limit Order
+* POST /orderbook/v1/orders (https://0x.org/docs/api#post-orderbookv1orders)
+    * Submit a list of signed orders
+
+Filling 0x Limit Orders
+
+0x Limit Orders may be filled by calling the following methods on the Exchange Proxy (https://protocol.0x.org/en/latest/architecture/overview.html).  Our protocol utilization (https://github.com/0xProject/protocol/tree/development/packages/protocol-utils) package is available for developers to generate, parse, sign and validate 0x orders.  Some sample Python code for interacting and trading through the Exchange Proxy is provided here (https://gist.github.com/PirosB3/8141b51fbb307bca265866ef1cef564f) (please note that this example uses a 0x RFQ Order.  The code can be modified by making minor modifications, substituting 0x Limit Orders (https://protocol.0x.org/en/latest/basics/orders.html#limit-orders)).
+
+* fillLimitOrder (https://protocol.0x.org/en/latest/basics/functions.html#filllimitorder)
+    * Fills a 0x Limit Order up to the amount requested
+* fillOrKillLimitOrder (https://protocol.0x.org/en/latest/basics/functions.html#filllimitorder)
+    * Fills exactly the amount requested or reverts
+
+Cancelling 0x Limit Orders
+
+There are multiple ways to cancel 0x Limit orders by interacting with the Exchange Proxy (https://protocol.0x.org/en/latest/architecture/overview.html):
+
+* cancelLimitOrder (https://protocol.0x.org/en/latest/basics/functions.html#cancellimitorder)
+    * Cancels a single 0x Limit Order created by the caller
+* batchCancelLimitOrders (https://protocol.0x.org/en/latest/basics/functions.html#batchcancellimitorders)
+    * Cancels multiple limit orders created by the caller
+* cancelPairLimitOrders (https://protocol.0x.org/en/latest/basics/functions.html#cancelpairlimitorders)
+    * Cancels limit orders in s specific market pair
+* cancelPairLimitOrdersWithSigner (https://protocol.0x.org/en/latest/basics/functions.html#cancelpairlimitorderswithsigner)
+    * Same functionality to cancelPairLimitOrders, but msg.sender  is a registered order signer instead of the maker itself
+* batchCancelPairLimitOrders (https://protocol.0x.org/en/latest/basics/functions.html#batchcancelpairlimitorders)
+    * A batch call to cancelPairLimitOrders
+* batchCancelPairLimitOrdersWithSIgner (https://protocol.0x.org/en/latest/basics/functions.html#batchcancelpairlimitorderswithsigner)
+    * Same functionality to batchCancelPairLimitOrders but with a registered order signer instead of the maker itself.
+
+Monitoring 0x Limit Orders
+
+The 0x API also exposes a websocket server (https://0x.org/docs/api#websocket-api) at the root enpoint.  The server will allow you to subscribe to 0x Limit Order updates, and will push updates whenever the status (eg: open, filled, expired) of an order changes.
+
+_Considerations when Trading On-Chain_
+
+When trading on a centralized exchange, you must integrate exclusively with the CEX's trading API in order to know the state of the world (e.g orderbook, filled/cancellation state). When trading on 0x, your sources of truth are the blockchain and the off-chain orders in existence. This section will dive deeper into the on-chain state you'll need.
+
+Node management
+
+In order to monitor the blockchain, you must interface with a node. You can either integrate with a hosted node service such as Infura.io (https://infura.io/) or you can host your own node. While developing your strategy, you might want to setup a local 0x testnet (https://0x.org/docs/guides/setting-up-a-local-0x-testnet), providing you with a fake blockchain node useful for testing purposes.
+
+Probabilistic finality
+
+Since trades on 0x are settled by being included by miners into a block, settlement is subject to the same probabalistic finality as any other on-chain state-transition. Probabilistic finality means that no trade settlement is ever 100% final. It becomes exponentially more final with every additional block that is mined on top of the one it was included in.
+What this means is that for a period of time settlement can still revert. This sometimes happens when there is a block re-organization, causing a valid next block to become "uncled" (i.e. no longer part of the main chain). It does not happen often, but it is an important edge-case to handle.
+
+Block timestamps
+
+With blockchains, the only requirement on a block's timestamp is that it is greater then the previous block timestamp. What this means is that the timestamp of the next block could be before or after the current unix timestamp.
+Because the 0x Protocol checks order expiration using block timestamps, the order will only be considered expired once a block timestamp exists that is larger then the order expiration. You can use the current time as an approximation of the block time, however there is still a chance the "expired" order gets filled if the next block timestamp falls between the last block timestamp and the current timestamp.
+
+Miner discretion
+
+In most blockchains, the miner decides which valid transactions to include in the next block they attempt to mine. They are expected to be economically rational agents who will prioritize transactions that pay them the most fees, however they have full discretion over transaction ordering.
+
+Let's say a trader submits an order cancellation transaction; there are no guarantees about the order in which this transaction will be included in the blockchain. You can try and incentize miners to include it sooner by increasing the gasPrice (read: fee) paid for the transaction, but so can any other trader attempting to fill the order (read more about this problem in our front-running, griefing and the perils of virtual settlement (https://blog.0xproject.com/front-running-griefing-and-the-perils-of-virtual-settlement-part-1-8554ab283e97) blog post series). Because of this race-condition, we recommend you use shorter expiration times on your orders rather than relying heavily on on-chain cancellations. Alternatively, you can use our cancelOrdersUpTo (https://0x.org/docs/guides/v3-specification#cancelordersupto) feature to cancel multiple orders in a single transaction.
+
+Transaction failures
+
+In general, an blockchain transaction will either execute or fail entirely. This allows the transactor to update blockchain state knowing that the state changes will be reverted unless some later condition is met within the same transaction.
+
+Transaction atomicity
+
+All function calls that occur within a single blockchain transaction are executed sequentially and atomically. This allows a transactor to take advantage of how transaction failures occur and call multiple functions within a transaction without taking the risk that only a part of the transaction will succeed. This is very useful for arbitraging or purchasing/consuming tokens simultaneously.
+
+_Managing risk_
+
+Traders may hedge risk when an order is filled by taking opposing positions in the same or correlated asset using either centralized or decentralized exchanges.
+
+Shorting, derivatives, and margin trading
+
+The following non-comprehensive list of protocols may be used for borrowing, lending, shorting, margin trading, and creating synthetic assets or derivatives. It is highly recommended to only use these protocols with a full understanding of their mechanics and risks:
+
+* Augur (https://www.augur.net/)
+* Compound (https://compound.finance/)
+* dYdX (https://dydx.exchange/)
+* Maker (https://makerdao.com/)
+* Thales (https://thalesmarket.io/)
+* Opyn (https://www.opyn.co/)
+
+Hedging asynchronicity
+
+While taking orders benefits from the atomicity of blockchain transactions, hedging one of your own orders that has been taken will always be asynchronous. Because blockchain transactions currently have probabilistic finality, traders should be careful to monitor the state of their own filled orders before and after executing the hedge. For example, the following scenario is possible (though unlikely):
+
+1. A trader sees a pending fill of her own order in the mempool.
+2. The trader hedges by taking the opposite position of the same asset on a CEX.
+3. The original fill fails due to an insufficient balance or allowance of the counterparty, and the trader is left with only the hedge leg of their position.
+
+Similar scenarios can arise due to block re-orgs. There are ways to reduce the risk of this by using specialized smart contracts if executing hedges on other DEX platforms. For example, the smart contract can conditionally execute a hedge only if a given order has been filled. This would mean that the hedge would not execute if the original fill failed, and the resulting state would even be reverted in the case of a block re-org that excluded the initial fill transaction.
+
+Capital allocation
+
+The 0x protocol expects a user's assets to be located in their own wallet, rather than deposited in a DEX-specific contract. This allows traders to place multiple orders without needing to split their capital in multiple different locations.
+
+_Developer tooling_
+
+* 0x Project on Github (https://github.com/0xProject)
+    * @0x/protcol-utils (https://github.com/0xProject/protocol/tree/development/packages/protocol-utils): A set of utilities for generating, parsing, signing and validating 0x orders.
+
+If you plan on implementing custom infrastructure, you will need the following functionality at a bare minimum:
+
+* Interacting with relayers over Websockets or HTTPS
+* Hashing orders
+* Cryptographically signing orders with the address you wish to trade with
+
+In addition, it is highly recommended to be connected to an blockchain node so that you can:
+
+* Read the state of orders
+* Be notified when the state of an order changes (by subscribing to the relevant events)
+* Set allowances to the 0x smart contracts for assets you wish to sell
+* Fill or cancel orders
+
