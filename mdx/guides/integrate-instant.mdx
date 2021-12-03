@@ -1,6 +1,6 @@
 # Introduction
 
-0x Instant is a product from the 0x core team that offers a convenient way for people to get access to a wide variety of tokens and other crypto-assets in just a few clicks. Developers can integrate the free, open source library into their applications or websites in order to both offer seamless access to crypto-assets, as well as gain a new source of revenue, with just a few lines of code.
+0x Instant is a product built by 0x community that offers a convenient way for people to get access to a wide variety of tokens and other crypto-assets in just a few clicks. Developers can integrate the free, open source library into their applications or websites in order to both offer seamless access to crypto-assets, as well as gain a new source of revenue, with just a few lines of code.
 
 <Image
     src="https://s3.eu-west-2.amazonaws.com/0x-wiki-images/instant_screenshot.png"
@@ -15,7 +15,7 @@ Check out a live example on [mainnet](https://dexkit-storage.nyc3.digitaloceansp
 
 ## Libraries
 
-0x Instant has the library `0x Instant UI component` that users will see  and is powered by 0x API. Check out the `0x API` documentation [here](https://0x.org/docs/api).
+0x Instant has the library `0x Instant UI component` that users will see  and is powered by 0x API. Check out the `0x API` documentation [here](https://0x.org/docs/api). Check out the Instant Github repo [here](https://github.com/0xProject/0x-instant)
 
 
 ## Affiliate Fees
@@ -24,7 +24,7 @@ As an end host of 0x Instant, you can charge users a fee on all trades made thro
 
 # UI Integration
 
-The 0x Instant UI powered by 0x API are bundled together in a convenient JS package for you. You can either download and serve the package yourself, or use the CDN-hosted version from 0x.
+The 0x Instant UI powered by 0x API are bundled together in a convenient JS package for you. You can either download and serve the package yourself, or use the CDN-hosted version from 0x community.
 
 <CodeTabs tabs={['html']}>
 
@@ -66,7 +66,7 @@ The 0x Instant UI powered by 0x API are bundled together in a convenient JS pack
 | `defaultAmountTokenOut`          | Pre-fill the amount of out tokens Defaults to 0.                                                                                                                                                                                                                                                                                                                                                                                             |
 | `tokenList`                      | Token list url where to fetch the list of supported tokens                                                                                                                                                                                                                                                                                                                                                                                            |
 | `chainId`                        | Chain Id of Ethereum network to connect to. Defaults to 1 (mainnet).                                                                                                                                                                                                                                                                                                                                                                                  |
-| `affiliateInfo`                  | An object specifying what % ETH fee should be added to orders and where the fee should be sent. Max feePercentage is .05 (See examples below)                                                                                                                                                                                                                                                                                                         |
+| `affiliateInfo`                  | An object specifying what % Token fee on bought tokens should be added to orders and where the fee should be sent. Max feePercentage is .05 (See examples below)                                                                                                                                                                                                                                                                                                         |
 | `shouldDisableAnalyticsTracking` | An option to turn on / off analytics used to make Instant a better experience. Defaults to false.                                                                                                                                                                                                                                                                                                                                                     |
 | `onSuccess`                      | a function handler that is called when the token purchase through 0x Instant is complete. The function handler requests one argument: the transaction hash.                                                                                                                                                                                                                                                                                           |
 | `onClose`                        | a function handler that is called when the Instant overlay is closed. The function handler does not request any argument                                                                                                                                                                                                                                                                                                                              |
@@ -140,7 +140,7 @@ zeroExInstant.render(
 
 # Learn about affiliate fees
 
-As an end host of 0x Instant, you can charge users a fee on all trades made through Instant with the `affiliateFee` option. Simply specify an ethereum address and feePercentage (up to 5%), and a percentage of each transaction will be deposited into the specified address (denominated in bought tokens).
+As an end host of 0x Instant, you can charge users a fee on all trades made through Instant with the `affiliateFee` option. Simply specify an ethereum address and feePercentage (up to 5%), and a percentage of each transaction will be deposited into the specified address (denominated in bought tokens). If no affiliate address is specified it defaults to zero address.
 
 Example: 3% of transaction volume (in ETH) will be deposited into 0x50ff5828a216170cf224389f1c5b0301a5d0a230
 
@@ -180,6 +180,14 @@ Check out this [article](/docs/guides/web3-provider-explained) in the guides sec
 
 0x Instant supports any ERC20 <-> ERC20 swaps.
 
+### Q: Which networks will Instant supports?
+
+Instant supports at the moment only ETH network, support for networks for BSC, Polygon, Fantom, Celo and Avalanche are on Roadmap.
+
+### Q: This project has a roadmap?
+
+Check the roadmap [here](#roadmap)
+
 
 ## Mobile
 
@@ -193,6 +201,11 @@ For apps using React Native or apps that have a web view, the 0x API will work o
 
 If you host 0x Instant, you can designate an address that you own to receive a small % of bought tokens that users spend on assets. The fee percent maxes out at 5%. You can configure this in the AffiliateInfo setting.
 
+### Q: Do I need to set an affiliate?
+
+Affiliate info is optional.
+
+
 ## Support
 
 ### Q: How can I get help integrating Instant?
@@ -201,8 +214,12 @@ Create question on [StackExchange](https://ethereum.stackexchange.com/questions/
 
 ### Q: Who maintains this package?
 
-This package is maintained by  community member @JoaoCampos89 under a grant gave by ZRX.
+This package is maintained by  community member @JoaoCampos89 under a grant gave by "the 0x community"
 
 ### Q: I found a bug on instant?
 
 Please open issue on [Instant Github](https://github.com/0xProject/0x-instant/issues)
+
+### Q: The token that I want to swap keeps failling?
+
+Instant powered by 0x API supports any Token that has liquidity and follows ERC20 standard. Tokens that not follow ERC20 standard can fail as for instance deflationary or with buy back functions.
