@@ -54,6 +54,15 @@
             "difficulty": "Beginner",
             "path": "guides/how-to-set-your-token-allowances.mdx"
         },
+        "integrate-instant": {
+            "title": "How to integrate 0x Instant in your project",
+            "subtitle": "Learn how to use 0x Instant to enable trading of tokens on any website",
+            "description": "Learn how to use 0x Instant to enable trading of tokens on any website",
+            "tags": ["0x API"],
+            "topics": ["0x Instant", "0x API"],
+            "difficulty": "Beginner",
+            "path": "guides/integrate-instant.mdx"
+        },
         "create-staking-pool": {
             "title": "Create and manage your staking pool",
             "subtitle": "Learn how to create and manage your staking pool to collect liquidity rewards",
