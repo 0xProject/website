@@ -71,6 +71,7 @@ Unless the spec defines otherwise, errors to bad requests should respond with HT
 | 429  | Too many requests - Rate limit exceeded |
 | 500  | Internal Server Error                   |
 | 501  | Not Implemented                         |
+| 503  | Server Error - Too many open connections|
 
 ### Error reporting format
 
@@ -204,7 +205,7 @@ Either a `sellAmount` or `buyAmount` is required.
 | `data`               | The call data required to be sent to the `to` contract address.                                                                                                                                                                                                                                                                  |
 | `value`              | The amount of ether (in wei) that should be sent with the transaction. (Assuming protocolFee is paid in ether).                                                                                                                                                                                                                  |
 | `gasPrice`           | The gas price (in wei) that should be used to send the transaction. The transaction needs to be sent with this `gasPrice` or lower for the transaction to be successful.                                                                                                                                                         |
-| `gas`                | The estimated gas limit that should be used to send the transaction to guarantee settlement. A computed estimate is returned in all responses, for a more accurate estimate provide a `takerAddress` in the request.                                                                                                             |
+| `gas`                | The estimated gas limit that should be used to send the transaction to guarantee settlement. While a computed estimate is returned in all responses, an accurate estimate will only be returned if a `takerAddress` is included in the request.                                                                                  |
 | `estimatedGas`       | The estimate for the amount of gas that will actually be used in the transaction. Always less than `gas`.                                                                                                                                                                                                                        |
 | `protocolFee`        | The maximum amount of ether that will be paid towards the protocol fee (in wei), and what is used to compute the `value` field of the transaction.                                                                                                                                                                               |
 | `minimumProtocolFee` | The minimum amount of ether that will be paid towards the protocol fee (in wei) during the transaction.                                                                                                                                                                                                                          |
