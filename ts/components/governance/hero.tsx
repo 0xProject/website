@@ -224,18 +224,25 @@ export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
             '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
             providerState.provider,
         );
+        const wCeloTokenContract = new ERC20TokenContract(
+            '0xe452e6ea2ddeb012e20db73bf5d3863a3ac8d77a',
+            providerState.provider,
+        );
 
         // tslint:disable-next-line:no-floating-promises
         (async () => {
-            const [zrxBalance, maticBalance] = await Promise.all([
+            const [zrxBalance, maticBalance, wCeloBalance] = await Promise.all([
                 zrxTokenContract.balanceOf(GOVERNOR_CONTRACT_ADDRESS.ZRX).callAsync(),
                 maticTokenContract.balanceOf(GOVERNOR_CONTRACT_ADDRESS.ZRX).callAsync(),
+                wCeloTokenContract.balanceOf(GOVERNOR_CONTRACT_ADDRESS.ZRX).callAsync(),
             ]);
             const res = await backendClient.getTreasuryTokenPricesAsync();
             const zrxAmount = Web3Wrapper.toUnitAmount(zrxBalance, 18);
             const maticAmount = Web3Wrapper.toUnitAmount(maticBalance, 18);
+            const wCeloAmount = Web3Wrapper.toUnitAmount(wCeloBalance, 18);
             const zrxUSD = zrxAmount.multipliedBy(res['0x'].usd);
             const maticUSD = maticAmount.multipliedBy(res['matic-network'].usd);
+            const wCeloUSD = wCeloAmount.multipliedBy(res['celo'].usd);
 
             const treasuryTokenTransferData = await backendClient.getTreasuryTokenTransfersAsync();
             const totalDistributed = parseTotalDistributed(treasuryTokenTransferData);
@@ -250,7 +257,7 @@ export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
             );
             setTotalTreasuryAmountUSD(
                 `$${
-                    formatNumber(zrxUSD.plus(maticUSD).toString(), {
+                    formatNumber(zrxUSD.plus(maticUSD).plus(wCeloUSD).toString(), {
                         decimals: 6,
                         decimalsRounded: 6,
                         bigUnitPostfix: true,
