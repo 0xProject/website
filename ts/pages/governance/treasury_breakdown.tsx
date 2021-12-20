@@ -199,6 +199,7 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
     const [totalTreasuryAmountUSD, setTotalTreasuryAmountUSD] = React.useState('-');
     const [zrxUSDValue, setZrxUSDValue] = React.useState(undefined);
     const [maticUSDValue, setMaticUSDValue] = React.useState(undefined);
+    const [wCeloUSDValue, setWCeloUSDValue] = React.useState(undefined);
     const [assetList, setAssetList] = React.useState([]);
     const [allocations, setAllocations] = React.useState([]);
 
@@ -211,22 +212,41 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
             '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
             providerState.provider,
         );
+        const wCeloTokenContract = new ERC20TokenContract(
+            '0xe452e6ea2ddeb012e20db73bf5d3863a3ac8d77a',
+            providerState.provider,
+        );
 
         // tslint:disable-next-line:no-floating-promises
         (async () => {
-            const [zrxBalance, maticBalance] = await Promise.all([
+            const [zrxBalance, maticBalance, wCeloBalance] = await Promise.all([
                 zrxTokenContract.balanceOf(GOVERNOR_CONTRACT_ADDRESS.ZRX).callAsync(),
                 maticTokenContract.balanceOf(GOVERNOR_CONTRACT_ADDRESS.ZRX).callAsync(),
+                wCeloTokenContract.balanceOf(GOVERNOR_CONTRACT_ADDRESS.ZRX).callAsync(),
             ]);
-            const res = await backendClient.getTreasuryTokenPricesAsync();
+            const treasuryTokenPrices = await backendClient.getTreasuryTokenPricesAsync();
+            const getTokenPrice = (tokenSymbol: string) => {
+                const symbolIdMap: { [symbol: string]: string } = {
+                    'ZRX': '0x',
+                    'MATIC': 'matic-network',
+                    'wCELO': 'celo'
+                }
+                const priceId = symbolIdMap[tokenSymbol];
+                const price = treasuryTokenPrices[priceId].usd;
+
+                return price;
+            }
             const zrxAmount = Web3Wrapper.toUnitAmount(zrxBalance, 18);
             const maticAmount = Web3Wrapper.toUnitAmount(maticBalance, 18);
+            const wCeloAmount = Web3Wrapper.toUnitAmount(wCeloBalance, 18);
 
-            const zrxUSD = zrxAmount.multipliedBy(res['0x'].usd);
-            const maticUSD = maticAmount.multipliedBy(res['matic-network'].usd);
+            const zrxUSD = zrxAmount.multipliedBy(getTokenPrice('ZRX'));
+            const maticUSD = maticAmount.multipliedBy(getTokenPrice('MATIC'));
+            const wCeloUSD = wCeloAmount.multipliedBy(getTokenPrice('wCELO'));
 
             setZrxUSDValue(zrxUSD);
             setMaticUSDValue(maticUSD);
+            setWCeloUSDValue(wCeloUSD);
             setAssetList([
                 {
                     name: 'ZRX',
@@ -250,6 +270,17 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                         }).formatted
                     }`,
                 },
+                {
+                    name: 'wCELO',
+                    balance: wCeloAmount.toString(),
+                    usdValue: `$${
+                        formatNumber(wCeloUSD.toString(), {
+                            decimals: 0,
+                            decimalsRounded: 6,
+                            bigUnitPostfix: false,
+                        }).formatted
+                    }`,
+                },
             ]);
 
             const treauryProposalDistributions = await backendClient.getTreasuryProposalDistributionsAsync(
@@ -258,12 +289,8 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
 
             const treasuryAllocations = treauryProposalDistributions.map((distribution: any) => {
                 const { tokensTransferred } = distribution;
-
                 const updatedTokensTransferred = tokensTransferred.map((token: any) => {
-                    token.usdValue =
-                        token.name === 'ZRX'
-                            ? Math.round(token.amount * res['0x'].usd)
-                            : Math.round(token.amount * res['matic-network'].usd);
+                    token.usdValue = Math.round(token.amount * getTokenPrice(token.name));
 
                     return token;
                 });
@@ -275,7 +302,7 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
 
             setTotalTreasuryAmountUSD(
                 `$${
-                    formatNumber(zrxUSD.plus(maticUSD).toString(), {
+                    formatNumber(zrxUSD.plus(maticUSD).plus(wCeloUSD).toString(), {
                         decimals: 6,
                         decimalsRounded: 6,
                         bigUnitPostfix: true,
@@ -294,7 +321,7 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                         <Title>{totalTreasuryAmountUSD}</Title>
                         <PieAndLegend>
                             <PieChartWrapper>
-                                {zrxUSDValue && maticUSDValue && (
+                                {zrxUSDValue && maticUSDValue && wCeloUSDValue && (
                                     <PieChart
                                         data={[
                                             {
@@ -306,6 +333,11 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                                                 title: 'MATIC',
                                                 value: parseInt(maticUSDValue.toString(), 10),
                                                 color: '#8247E5',
+                                            },
+                                            {
+                                                title: 'wCELO',
+                                                value: parseInt(wCeloUSDValue.toString(), 10),
+                                                color: '#fcc44c',
                                             },
                                         ]}
                                         label={(data: any) => `${Math.round(data.dataEntry.percentage)}%`}
@@ -324,6 +356,9 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
                                 </LegendItem>
                                 <LegendItem>
                                     <ColorBlock color={'#8247E5'} /> Matic
+                                </LegendItem>
+                                <LegendItem>
+                                    <ColorBlock color={'#fcc44c'} /> wCelo
                                 </LegendItem>
                             </Legend>
                         </PieAndLegend>

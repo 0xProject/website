@@ -145,7 +145,7 @@ export const backendClient = {
     },
 
     async getTreasuryTokenPricesAsync(): Promise<any> {
-        const treasuryTokenCGIds = ['0x', 'matic-network'];
+        const treasuryTokenCGIds = ['0x', 'matic-network', 'celo'];
         const cgSimplePriceBaseUri = 'https://api.coingecko.com/api/v3/simple/price';
         const res = fetchUtils.requestAsync(
             cgSimplePriceBaseUri,
@@ -157,6 +157,7 @@ export const backendClient = {
     async getTreasuryTokenTransfersAsync(): Promise<any[]> {
         const ZRX_TOKEN = '0xe41d2489571d322189246dafa5ebde1f4699f498';
         const MATIC_TOKEN = '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0';
+        const WCELO_TOKEN = '0xe452e6ea2ddeb012e20db73bf5d3863a3ac8d77a';
         const reqBaseUri =
             'https://api.covalenthq.com/v1/1/address/0x0bB1810061C2f5b2088054eE184E6C79e1591101/transfers_v2/';
         const zrxTransfers = fetchUtils.requestAsync(
@@ -167,8 +168,12 @@ export const backendClient = {
             reqBaseUri,
             `?contract-address=${MATIC_TOKEN}&key=ckey_6a1cbb454aa243b1bc66da64530`,
         );
+        const wCeloTransfers = fetchUtils.requestAsync(
+            reqBaseUri,
+            `?contract-address=${WCELO_TOKEN}&key=ckey_6a1cbb454aa243b1bc66da64530`,
+        );
 
-        return Promise.all([zrxTransfers, maticTransfers]);
+        return Promise.all([zrxTransfers, maticTransfers, wCeloTransfers]);
     },
 
     async getTreasuryProposalDistributionsAsync(provider: ZeroExProvider): Promise<any[]> {
