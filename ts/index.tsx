@@ -26,7 +26,6 @@ import { muiTheme } from 'ts/utils/mui_theme';
 import { NextAboutJobs } from 'ts/pages/about/jobs';
 import { NextAboutMission } from 'ts/pages/about/mission';
 import { NextAboutPress } from 'ts/pages/about/press';
-import { NextAboutTeam } from 'ts/pages/about/team';
 // import { Credits } from 'ts/pages/credits';
 // import { Explore } from 'ts/pages/explore';
 
@@ -131,7 +130,6 @@ render(
                                 <Route exact={true} path={WebsitePaths.PrivacyPolicy} component={PrivacyPolicy} />
                                 <Route exact={true} path={WebsitePaths.TermsOfService} component={TermsOfService} />
                                 <Route exact={true} path={WebsitePaths.AboutMission} component={NextAboutMission} />
-                                <Route exact={true} path={WebsitePaths.AboutTeam} component={NextAboutTeam} />
                                 <Route exact={true} path={WebsitePaths.AboutPress} component={NextAboutPress} />
                                 <Route exact={true} path={WebsitePaths.AboutJobs} component={NextAboutJobs} />
                                 {/* <Route exact={true} path={WebsitePaths.Mesh} component={Mesh} /> */}
