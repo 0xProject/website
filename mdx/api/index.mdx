@@ -709,7 +709,10 @@ Nearly identical to [`/swap/v1/quote`](#get-swapv1quote), but with a few key dif
 
 ### Request
 
-Identical to the request schema for `/swap/v1/quote`, with one exception: the `skipValidation` parameter will always be considered to be `true`, even when a `takerAddress` has been specified.
+Identical to the request schema for `/swap/v1/quote`, with one exception: the `skipValidation` parameter - 
+* On Mainnet, `skipValidation` is always considered `true`, even when a `takerAddress` has been specified. Note that this will change soon to behave as it does on Ropsten. 
+* On Ropsten, `skipValidation` behaves identically to that on `/swap/v1/quote`. For details, see the `skipValidation` parameter in the [/swap/v1/quote Request](https://0x.org/docs/api#request-1) section.
+
 
 ### Response
 
