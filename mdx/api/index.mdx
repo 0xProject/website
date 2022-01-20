@@ -62,7 +62,7 @@ If the query specifies a `page` that does not exist (ie. there are not enough `r
 ## Allowance Targets
 Some interactions with 0x require or are improved by setting [token allowances](https://tokenallowance.io/), or in other words, giving 0x's smart contracts permission to move certain tokens on your behalf. Some examples include - 
 
-* Submitting a 0x API quote selling ERC20 tokens, you will need to give an allowance to the contract address. This address can be found either from the `allowanceTarget` quote response or from the ExchangeProxcy Address from (#addresses by network) table below. 
+* Submitting a 0x API quote selling ERC20 tokens, you will need to give an allowance to the contract address. This address can be found either as the value of `allowanceTarget` returned in the quote response or in the ExchangeProxy Address column in the (#addresses by network) table below.
 * Trading ERC20 tokens using the Exchange contract, you will have to give an allowance to the [ERC20Proxy](https://0x.org/docs/guides/v3-specification#assetproxy) contract. 
 * Paying protocol fees in WETH, you will need to give a WETH allowance to the [StakingProxy](https://0x.org/docs/guides/v3-staking-specification#architecture)
 * **Note:** For swaps with "ETH" as sellToken, wrapping "ETH" to "WETH" or unwrapping "WETH" to "ETH" no allowance is needed, a null address of `0x0000000000000000000000000000000000000000` is then returned instead.
