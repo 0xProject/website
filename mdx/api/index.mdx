@@ -58,6 +58,30 @@ And will only document the objects in the `records` field.
 If a query provides an unreasonable (ie. too high) `perPage` value, the response can return a validation error as specified in the [errors section](#errors).
 If the query specifies a `page` that does not exist (ie. there are not enough `records`), the response will return an empty `records` array.
 
+
+## Allowance Targets
+Some interactions with 0x require or are improved by setting [token allowances](https://tokenallowance.io/), or in other words, giving 0x's smart contracts permission to move certain tokens on your behalf. Some examples include - 
+
+* Submitting a 0x API quote selling ERC20 tokens, you will need to give an allowance to the contract address. This address can be found either from the `allowanceTarget` quote response or from the ExchangeProxcy Address from (#addresses by network) table below. 
+* Trading ERC20 tokens using the Exchange contract, you will have to give an allowance to the [ERC20Proxy](https://0x.org/docs/guides/v3-specification#assetproxy) contract. 
+* Paying protocol fees in WETH, you will need to give a WETH allowance to the [StakingProxy](https://0x.org/docs/guides/v3-staking-specification#architecture)
+* **Note:** For swaps with "ETH" as sellToken, wrapping "ETH" to "WETH" or unwrapping "WETH" to "ETH" no allowance is needed, a null address of `0x0000000000000000000000000000000000000000` is then returned instead.
+
+### Addresses by Network
+
+The following table includes commonly used contract addresses. For a full list of our smart contract deployments address, see the [0x cheat sheet](https://0x.org/docs/guides/0x-cheat-sheet). 
+
+| Network             | Endpoint                      | ExchangeProxy Address                      | ERC20Proxy Address                         | StakingProxy Address                       |
+|---------------------|-------------------------------|--------------------------------------------|--------------------------------------------|--------------------------------------------|
+| Mainnet             | https://api.0x.org/           | 0xdef1c0ded9bec7f1a1670819833240f027b25eff | 0x95e6f48254609a6ee006f7d493c8e5fb97094cef | 0xa26e80e7dea86279c6d778d702cc413e6cffa777 |
+| Binance Smart Chain | https://bsc.api.0x.org/       | 0xdef1c0ded9bec7f1a1670819833240f027b25eff | 0x0000000000000000000000000000000000000000 | 0x0000000000000000000000000000000000000000 |
+| Ropsten             | https://ropsten.api.0x.org/   | 0xdef1c0ded9bec7f1a1670819833240f027b25eff | 0xf1ec7d0ba42f15fb5c9e3adbe86431973e44764c | 0x6acab4c9c4e3a0c78435fdb5ad1719c95460a668 |
+| Polygon             | https://polygon.api.0x.org/   | 0xdef1c0ded9bec7f1a1670819833240f027b25eff | 0x0000000000000000000000000000000000000000 | 0x0000000000000000000000000000000000000000 |
+| Avalanche           | https://avalanche.api.0x.org/ | 0xdef1c0ded9bec7f1a1670819833240f027b25eff | 0x0000000000000000000000000000000000000000 | 0x0000000000000000000000000000000000000000 |
+| Fantom              | https://fantom.api.0x.org/    | 0xdef189deaef76e379df891899eb5a00a94cbc250 | 0x0000000000000000000000000000000000000000 | 0x0000000000000000000000000000000000000000 |
+| Celo                | https://celo.api.0x.org/      | 0xdef1c0ded9bec7f1a1670819833240f027b25eff | 0x0000000000000000000000000000000000000000 | 0x0000000000000000000000000000000000000000 |
+
+
 ## Errors
 
 Unless the spec defines otherwise, errors to bad requests should respond with HTTP 4xx or status codes.
