@@ -3,7 +3,7 @@
 > Note: This feature is in beta and is subject to change. Testnet deployments coming soon. Mainnet deployments are pending audit.
 > We invite you to join our [Discord](https://discord.com/invite/YyG9fkK) and share feedback in the [#dev-feature-feedback](https://discord.com/channels/435912040142602260/936366257521954857).
 
-We are adding support for ERC721<>ERC20 and ERC1155<>ERC20 orders to 0x v4. Contracts can be found [here](https://github.com/0xProject/protocol/tree/refactor/nft-orders/contracts/zero-ex/contracts/src/features/nft_orders). Contract interfaces are also in [this doc](https://0x.org/docs/guides/0x-v4-nft-contract-interfaces)
+We are adding support for ERC721<\>ERC20 and ERC1155<\>ERC20 orders to 0x v4. Contracts can be found [here](https://github.com/0xProject/protocol/tree/refactor/nft-orders/contracts/zero-ex/contracts/src/features/nft_orders). Contract interfaces are also in [this doc](https://0x.org/docs/guides/0x-v4-nft-contract-interfaces)
 
 ## Basics
 
@@ -132,7 +132,7 @@ For expensive chains like Ethereum mainnet, disbursing multiple fees would be co
 
 A **sell** order must use WETH instead of ETH, since we require the ERC20 `transferFrom` functionality to transfer WETH from the maker to the taker. Even so, the taker can choose to *receive* ETH when filling a WETH sell order by setting the `unwrapNativeToken` parameter to `true` in `sellERC721` or `sellERC1155`.
 
-A **buy** order can specify either ETH or WETH, i.e. the buyer can indicate whether they would like to receive ETH or WETH. A ** WETH sell order can be filled by a taker using ETH: the `buyERC721` and `buyERC1155` functions are `payable` and the `msg.value` can be used to fill a WETH sell order.
+A **buy** order can specify either ETH or WETH, i.e. the buyer can indicate whether they would like to receive ETH or WETH. A **WETH** sell order can be filled by a taker using ETH: the `buyERC721` and `buyERC1155` functions are `payable` and the `msg.value` can be used to fill a WETH sell order.
 
 ## `onERC721Received` and `onERC1155Received`
 

@@ -227,15 +227,15 @@ export const TreasuryBreakdown: React.FC<TreasuryBreakdownProps> = (props) => {
             const treasuryTokenPrices = await backendClient.getTreasuryTokenPricesAsync();
             const getTokenPrice = (tokenSymbol: string) => {
                 const symbolIdMap: { [symbol: string]: string } = {
-                    'ZRX': '0x',
-                    'MATIC': 'matic-network',
-                    'wCELO': 'celo'
-                }
+                    ZRX: '0x',
+                    MATIC: 'matic-network',
+                    wCELO: 'celo',
+                };
                 const priceId = symbolIdMap[tokenSymbol];
                 const price = treasuryTokenPrices[priceId].usd;
 
                 return price;
-            }
+            };
             const zrxAmount = Web3Wrapper.toUnitAmount(zrxBalance, 18);
             const maticAmount = Web3Wrapper.toUnitAmount(maticBalance, 18);
             const wCeloAmount = Web3Wrapper.toUnitAmount(wCeloBalance, 18);

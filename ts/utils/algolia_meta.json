@@ -18,6 +18,24 @@
         }
     },
     "guides": {
+        "0x-v4-nft-features-overview": {
+            "title": "0x V4 NFT Features Overview",
+            "subtitle": "Learn about the NFT features of the 0x V4 Protocol",
+            "description": "Learn about the NFT features of the 0x V4 Protocol",
+            "tags": ["NFT", "Protocol Developer"],
+            "topics": ["NFT", "Protocol Developer"],
+            "difficulty": "Intermediate",
+            "path": "guides/0x-v4-nft-features-overview.mdx"
+        },
+        "0x-v4-nft-contract-interfaces": {
+            "title": "0x V4 NFT contract interfaces",
+            "subtitle": "Learn the in-depth details about the 0x V4 NFT contract interfaces",
+            "description": "Learn the in-depth details about the 0x V4 NFT contract interfaces",
+            "tags": ["NFT", "Protocol Developer"],
+            "topics": ["NFT", "Protocol Developer"],
+            "difficulty": "Intermediate",
+            "path": "guides/0x-v4-nft-contract-interfaces.mdx"
+        },
         "migrate-0x-api-from-v0-to-v1": {
             "title": "Migrate 0x API integrations from the v0 to v1 endpoints",
             "subtitle": "Learn how to migrate your existing 0x API integration to use the v1 endpoints",

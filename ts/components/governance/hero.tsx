@@ -242,7 +242,7 @@ export const GovernanceHero: React.FC<GovernanceHeroProps> = (props) => {
             const wCeloAmount = Web3Wrapper.toUnitAmount(wCeloBalance, 18);
             const zrxUSD = zrxAmount.multipliedBy(res['0x'].usd);
             const maticUSD = maticAmount.multipliedBy(res['matic-network'].usd);
-            const wCeloUSD = wCeloAmount.multipliedBy(res['celo'].usd);
+            const wCeloUSD = wCeloAmount.multipliedBy(res.celo.usd);
 
             const treasuryTokenTransferData = await backendClient.getTreasuryTokenTransfersAsync();
             const totalDistributed = parseTotalDistributed(treasuryTokenTransferData);
