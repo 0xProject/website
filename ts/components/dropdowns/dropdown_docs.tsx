@@ -9,18 +9,18 @@ import { Link } from '../documentation/shared/link';
 const navData = [
     {
         title: '0x Docs',
-        description: 'Single integration point to access all DEX liquidity',
+        description: 'Learn and build with 0x',
         url: WebsitePaths.Docs,
     },
     {
         title: '0x Docs - Alpha Release',
-        description: 'Learn about 0x core concepts from our updated documentation ',
+        description: 'Get a sneak peek at our updated documentation',
         url: 'https://docs.0x.org/',
         shouldOpenInNewTab: true,
     },
 ];
 
-export const DropdownProducts: React.FC = () => (
+export const DropdownDocs: React.FC = () => (
     <List>
         {navData.map((item, index) => (
             <li key={`productLink-${index}`}>
