@@ -663,7 +663,7 @@ export const proposals: Proposals = {
         risks: {
             title: 'Risk',
             summary: [
-                `Contracts were thoroughly reviewed internally, and spot-checked by ABDK. No vulnerabilities were found.`,
+                `Contracts were thoroughly reviewed internally and audited by ABDK. No vulnerabilities were found.`,
                 `However, these changes do modify a risk-sensitive part of the codebase: the execution within a privileged environment.`,
                 `0x V4 architecture comes with the ability to modify or rollback specific features, without halting the entire pipeline of smart contracts. This means that if a vulnerability is found (0x Labs offers generous bug bounties), it is possible to rollback the functionality that exposes the risk.`,
             ],
