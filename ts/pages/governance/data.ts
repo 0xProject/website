@@ -671,7 +671,7 @@ export const proposals: Proposals = {
             links: [
                 {
                     text: '0x v4 Bug Bounty',
-                    url: 'https://blog.0xproject.com/0x-protocol-v4-bug-bounty-fd0c1942b9a',
+                    url: 'https://protocol.0x.org/en/latest/additional/bounties.html',
                 },
             ],
         },
