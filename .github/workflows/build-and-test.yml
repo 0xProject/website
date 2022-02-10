@@ -3,64 +3,65 @@ name: build and test
 on: [push]
 
 jobs:
-  install-dependencies:
-    runs-on: ubuntu-latest
-    env:
-      CI: true
-    strategy:
-      matrix:
-        node-version: [12.x]
-    steps:
-      - uses: actions/checkout@v2
-      - run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-      - run: yarn install --frozen-lockfile --check-files
-      - uses: actions/cache@v1
-        id: cache-deps
-        with:
-          token: ${{ github.token }}
-          path: '.'
-          key: ${{ github.sha }}-deps
-  lint:
-    runs-on: ubuntu-latest
-    needs: install-dependencies
-    steps:
-      - uses: actions/cache@v1
-        id: restore-deps
-        with:
-          path: '.'
-          key: ${{ github.sha }}-deps
-      - run: yarn lint
-  unit-test:
-    runs-on: ubuntu-latest
-    needs: install-dependencies
-    steps:
-      - uses: actions/cache@v1
-        id: restore-deps
-        with:
-          path: '.'
-          key: ${{ github.sha }}-deps
-      - run: yarn test
-  build:
-    runs-on: ubuntu-latest
-    needs: install-dependencies
-    strategy:
-      matrix:
-        node-version: [12.x]
-    steps:
-      - uses: actions/cache@v1
-        id: restore-deps
-        with:
-          path: '.'
-          key: ${{ github.sha }}
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-        # HACK(johnrjj) - Rebuild node-sass in case build step runs on a separate machine than the dependency install
-      - run: npm rebuild node-sass
-      - run: yarn build:prod
-      - uses: actions/cache@v1
-        id: cache-build
-        with:
-          path: '.'
-          key: ${{ github.sha }}-build
+    install-dependencies:
+        runs-on: ubuntu-latest
+        env:
+            CI: true
+        steps:
+            - uses: actions/checkout@v2
+            - run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+            - name: Setup node 12
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 12.x
+            - run: yarn install --frozen-lockfile --check-files
+            - uses: actions/cache@v1
+              id: cache-deps
+              with:
+                  token: ${{ github.token }}
+                  path: '.'
+                  key: ${{ github.sha }}-deps
+    lint:
+        runs-on: ubuntu-latest
+        needs: install-dependencies
+        steps:
+            - uses: actions/cache@v1
+              id: restore-deps
+              with:
+                  path: '.'
+                  key: ${{ github.sha }}-deps
+            - run: yarn lint
+    unit-test:
+        runs-on: ubuntu-latest
+        needs: install-dependencies
+        steps:
+            - uses: actions/cache@v1
+              id: restore-deps
+              with:
+                  path: '.'
+                  key: ${{ github.sha }}-deps
+            - run: yarn test
+    build:
+        runs-on: ubuntu-latest
+        needs: install-dependencies
+        strategy:
+            matrix:
+                node-version: [12.x]
+        steps:
+            - uses: actions/cache@v1
+              id: restore-deps
+              with:
+                  path: '.'
+                  key: ${{ github.sha }}
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node-version }}
+              # HACK(johnrjj) - Rebuild node-sass in case build step runs on a separate machine than the dependency install
+            - run: npm rebuild node-sass
+            - run: yarn build:prod
+            - uses: actions/cache@v1
+              id: cache-build
+              with:
+                  path: '.'
+                  key: ${{ github.sha }}-build
