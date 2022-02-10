@@ -13,7 +13,7 @@ const navData = [
         url: WebsitePaths.Docs,
     },
     {
-        title: '0x Docs - Alpha Release',
+        title: '(Alpha Release) 0x Docs',
         description: 'Get a sneak peek at our updated documentation',
         url: 'https://docs.0x.org/',
         shouldOpenInNewTab: true,
