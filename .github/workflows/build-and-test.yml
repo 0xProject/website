@@ -7,6 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
+    strategy:
+      matrix:
+        node-version: [12.x]
     steps:
       - uses: actions/checkout@v2
       - run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
