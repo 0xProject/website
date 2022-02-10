@@ -643,8 +643,8 @@ export const proposals: Proposals = {
             `Property based orders are supported, enabling traders to create floor bids for any asset.`,
         ],
         url: 'https://github.com/0xProject/ZEIPs/issues/93',
-        voteStartDate: moment(1644894000, 'X'),
-        voteEndDate: moment(1645153200, 'X'),
+        voteStartDate: moment(1644879000, 'X'),
+        voteEndDate: moment(1645138200, 'X'),
         benefit: {
             title: 'Benefit',
             summary: [
