@@ -30,6 +30,10 @@ jobs:
               with:
                   path: '.'
                   key: ${{ github.sha }}-deps
+            - name: Setup node 12
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 12.x
             - run: yarn lint
     unit-test:
         runs-on: ubuntu-latest
@@ -40,6 +44,10 @@ jobs:
               with:
                   path: '.'
                   key: ${{ github.sha }}-deps
+            - name: Setup node 12
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 12.x
             - run: yarn test
     build:
         runs-on: ubuntu-latest
