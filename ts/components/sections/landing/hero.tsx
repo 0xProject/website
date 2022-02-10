@@ -52,6 +52,7 @@ const AnimatedHeroTitle: React.FC<{}> = () => {
         { label: 'Avalanche', color: '#FF3500' },
         { label: 'Fantom', color: '#a2f5eb' },
         { label: 'Celo', color: '#14b094' },
+        { label: 'Optimism', color: '#FF3500' },
     ];
 
     const transitions = useTransition(index, {

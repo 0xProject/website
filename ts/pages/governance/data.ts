@@ -634,6 +634,48 @@ export const proposals: Proposals = {
             ],
         },
     },
+    93: {
+        zeipId: 93,
+        title: 'NFT Orders',
+        summary: [
+            `This ZEIP proposes to add NFT orders to the 0x V4 protocol. Users can now trade ERC-721 and ERC-1155 assets on all the networks 0x supports.`,
+            `NFT orders have been built to be up to 54% cheaper than other alternatives.`,
+            `Property based orders are supported, enabling traders to create floor bids for any asset.`,
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/93',
+        voteStartDate: moment(1644894000, 'X'),
+        voteEndDate: moment(1645153200, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `Allow users to trade ERC-721 and ERC-1155 assets on all the networks 0x supports.`,
+                `Up to 54% cheaper than other alternatives.`,
+                `Instant royalties for creators.`,
+            ],
+            rating: 5,
+            links: [
+                {
+                    text: 'Launch Announcement',
+                    url: 'https://blog.0x.org/introducing-multi-chain-nft-swaps/',
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Contracts were thoroughly reviewed internally, and spot-checked by ABDK. No vulnerabilities were found.`,
+                `However, these changes do modify a risk-sensitive part of the codebase: the execution within a privileged environment.`,
+                `0x V4 architecture comes with the ability to modify or rollback specific features, without halting the entire pipeline of smart contracts. This means that if a vulnerability is found (0x Labs offers generous bug bounties), it is possible to rollback the functionality that exposes the risk.`,
+            ],
+            rating: 1,
+            links: [
+                {
+                    text: '0x v4 Bug Bounty',
+                    url: 'https://blog.0xproject.com/0x-protocol-v4-bug-bounty-fd0c1942b9a',
+                },
+            ],
+        },
+    },
 };
 
 export const stagingProposals: Proposals = {
@@ -666,6 +708,9 @@ export const stagingProposals: Proposals = {
     },
     91: {
         ...proposals[91],
+    },
+    93: {
+        ...proposals[93],
     },
 };
 
