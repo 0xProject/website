@@ -2,7 +2,7 @@
     "name": "@0x/website",
     "version": "0.0.89",
     "engines": {
-        "node": ">=6.12"
+        "node": ">=12 <13"
     },
     "private": true,
     "description": "Website and 0x portal dapp",
