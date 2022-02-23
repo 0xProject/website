@@ -2,7 +2,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Heading, Paragraph } from 'ts/components/text';
 import { WebsitePaths } from 'ts/types';
-import { constants } from 'ts/utils/constants';
 
 import { Link } from '../documentation/shared/link';
 
