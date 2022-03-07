@@ -14,6 +14,11 @@
             "source": "/docs/:path*",
             "destination": "https://docs.0x.org/:path*",
             "permanent": true
+        },
+        {
+            "source": "/docs",
+            "destination": "https://docs.0x.org/",
+            "permanent": true
         }
     ]
 }
