@@ -1,0 +1,19 @@
+{
+    "redirects": [
+        {
+            "source": "/docs/api",
+            "destination": "https://docs.0x.org/0x-api-swap/api-references",
+            "permanent": true
+        },
+        {
+            "source": "/docs/core-concepts",
+            "destination": "https://docs.0x.org/introduction/introduction-to-0x",
+            "permanent": true
+        },
+        {
+            "source": "/docs/:path*",
+            "destination": "https://docs.0x.org/:path*",
+            "permanent": true
+        }
+    ]
+}
