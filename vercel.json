@@ -11,6 +11,16 @@
             "permanent": true
         },
         {
+            "source": "/docs/tools",
+            "destination": "https://docs.0x.org/",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides",
+            "destination": "https://docs.0x.org/introduction/guides",
+            "permanent": true
+        },
+        {
             "source": "/docs/:path*",
             "destination": "https://docs.0x.org/:path*",
             "permanent": true
