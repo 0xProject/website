@@ -29,6 +29,7 @@
             "source": "/docs",
             "destination": "https://docs.0x.org/",
             "permanent": true
-        }
+        },
+        { "src": "/[^.]+", "dest": "/", "status": 200 }
     ]
 }
