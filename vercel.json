@@ -30,6 +30,6 @@
             "destination": "https://docs.0x.org/",
             "permanent": true
         },
-        { "source": "/(.*)", "destination": "/" }
+        { "source": "/(.+)", "destination": "/" }
     ]
 }
