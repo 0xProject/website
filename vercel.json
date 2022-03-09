@@ -30,6 +30,6 @@
             "destination": "https://docs.0x.org/",
             "permanent": true
         },
-        { "src": "/[^.]+", "dest": "/", "status": 200 }
+        { "source": "/[^.]+", "destination": "/", "statusCode": 200 }
     ]
 }
