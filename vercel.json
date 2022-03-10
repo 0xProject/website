@@ -29,7 +29,7 @@
             "source": "/docs",
             "destination": "https://docs.0x.org/",
             "permanent": true
-        },
-        { "source": "/(.+)", "destination": "/" }
-    ]
+        }
+    ],
+    "routes": [{ "src": "/[^.]+", "dest": "/", "status": 200 }]
 }
