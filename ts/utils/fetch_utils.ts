@@ -15,10 +15,15 @@ const logErrorIfPresent = (response: Response, requestedURL: string) => {
 };
 
 export const fetchUtils = {
-    async requestAsync<T = any>(baseUrl: string, path: string, queryParams?: object): Promise<T> {
+    async requestAsync<T = any>(
+        baseUrl: string,
+        path: string,
+        queryParams?: object,
+        options?: RequestInit,
+    ): Promise<T> {
         const query = queryStringFromQueryParams(queryParams);
         const url = `${baseUrl}${path}${query}`;
-        const response = await fetchAsync(url);
+        const response = await fetchAsync(url, options);
         logErrorIfPresent(response, url);
         const result = await response.json();
         return result;

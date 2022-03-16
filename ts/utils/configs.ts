@@ -12,6 +12,7 @@ const INFURA_API_KEY = environments.isDevelopment()
     : 'dbb71566cad444979f59c42b11b4f603';
 
 export const GHOST_API_KEY = process.env.GHOST_API_KEY || null;
+export const ZRX_FORUMS_API_KEY = process.env.ZRX_FORUMS_API_KEY;
 export const ALCHEMY_API_KEY = '8JwI7bMSK8ojsPDbyeHt6NK8w23afo1q';
 export const GOVERNOR_CONTRACT_ADDRESS = {
     COMPOUND: '0xc0dA01a04C3f3E0be433606045bB7017A7323E38',
@@ -22,6 +23,8 @@ export const GOVERNOR_CONTRACT_ADDRESS = {
 export const DEFAULT_POOL_ID = '51';
 
 export const GOVERNANCE_THEGRAPH_ENDPOINT = 'https://api.thegraph.com/subgraphs/name/mzhu25/zeroex-staking';
+
+export const FORUM_API_ENDPOINT = 'https://gov.0x.org';
 
 export const configs = {
     AMOUNT_DISPLAY_PRECSION: 5,
