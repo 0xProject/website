@@ -29,7 +29,8 @@
     },
     "resolutions": {
         "node-hid": "2.1.1",
-        "scrypt": "github:barrysteyn/node-scrypt#fb60a8d"
+        "scrypt": "github:barrysteyn/node-scrypt#fb60a8d",
+        "websocket": "github:frozeman/WebSocket-Node#browserifyCompatible"
     },
     "author": "Fabio Berger",
     "license": "Apache-2.0",
