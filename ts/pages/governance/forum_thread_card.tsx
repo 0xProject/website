@@ -43,4 +43,5 @@ const ForumThreadHeading = styled(Heading)`
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
+    -webkit-box-align: start !important;
 `;

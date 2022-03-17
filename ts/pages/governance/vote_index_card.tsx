@@ -413,4 +413,5 @@ const TruncatedParagraph = styled(Paragraph)`
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+    -webkit-box-align: start !important;
 `;
