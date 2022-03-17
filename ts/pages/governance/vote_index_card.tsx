@@ -222,7 +222,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                                     <Muted>{`(ZEIP-${zeipId})`}</Muted>
                                 </Heading>
 
-                                <Paragraph marginBottom="20px">{summary[0]}</Paragraph>
+                                <TruncatedParagraph marginBottom="20px">{summary[0]}</TruncatedParagraph>
                             </Column>
                             <Column width="25%" className="flex flex-column justify-center">
                                 <div className="flex flex-column sm-col-12">
@@ -267,7 +267,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                                 <Heading marginBottom="15px">{`${props.title} `}</Heading>
                                 {props.body ? (
                                     <>
-                                        <Paragraph marginBottom="12px">{snapshotText}</Paragraph>
+                                        <TruncatedParagraph marginBottom="12px">{snapshotText}</TruncatedParagraph>
                                     </>
                                 ) : (
                                     <VoteCardShimmer>
@@ -403,4 +403,14 @@ const VoteCardShimmer = styled.div`
             width: 100%;
         }
     }
+`;
+
+const TruncatedParagraph = styled(Paragraph)`
+    line-height: 1.4rem !important;
+    max-height: calc(1.4rem * n3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 `;
