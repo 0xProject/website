@@ -27,7 +27,7 @@ import { backendClient } from 'ts/utils/backend_client';
 import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
-import { getTopNPostsAsync } from 'ts/utils/forum_client';
+import { ForumTopic, getLatestNPostsFilteredAsync, getTopNPostsAsync } from 'ts/utils/forum_client';
 
 import { ForumThreadCard } from './forum_thread_card';
 
@@ -230,7 +230,12 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
         })();
     }, []);
 
-    const { loading: isPostsLoading, value: posts } = useAsync(getTopNPostsAsync, []);
+    const retrievalFunc = async () => {
+        const filterFunc = (topic: ForumTopic) => topic.numPosts > 1;
+        return getLatestNPostsFilteredAsync(3, filterFunc);
+    };
+
+    const { loading: isPostsLoading, value: posts } = useAsync(retrievalFunc, []);
 
     const { data, isLoading } = useQuery('proposals', async () => {
         const { proposals: treasuryProposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS);
