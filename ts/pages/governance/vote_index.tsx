@@ -27,7 +27,7 @@ import { backendClient } from 'ts/utils/backend_client';
 import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
-import { ForumTopic, getLatestNPostsFilteredAsync, getTopNPostsAsync } from 'ts/utils/forum_client';
+import { ForumTopic, getLatestNPostsFilteredAsync } from 'ts/utils/forum_client';
 
 import { ForumThreadCard } from './forum_thread_card';
 

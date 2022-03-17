@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 
-import { FORUM_API_ENDPOINT, GOVERNANCE_THEGRAPH_ENDPOINT } from './configs';
+import { FORUM_API_ENDPOINT } from './configs';
 
 interface ForumUser {
     id: number;
@@ -45,7 +45,7 @@ function makeTopPostsPerCategoryEndpoint(slug: string, categoryId: number): stri
     return `/c/${slug}/${categoryId}/l/top.json?ascending=false`;
 }
 
-function makeLatestPostsPerCategoryEndpoint(slug: string, categoryId: number, page: number = 0) {
+function makeLatestPostsPerCategoryEndpoint(slug: string, categoryId: number, page: number = 0): string {
     return `/c/${slug}/${categoryId}/l/latest.json?ascending=false&page=${page}`;
 }
 
