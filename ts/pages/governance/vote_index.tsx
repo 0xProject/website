@@ -28,6 +28,10 @@ import { OnChainProposal, TallyInterface, VotingCardType } from 'ts/types';
 import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
+import { Heading } from 'ts/components/text';
+import ForumThreadCard from './forum_thread_card';
+import { getTopNPosts } from 'ts/utils/forum_client';
+import { useAsync } from 'react-use';
 
 const FETCH_PROPOSALS = gql`
     query proposals {
@@ -227,6 +231,8 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
             setSnapshotProposals(proposalsAndVotes);
         })();
     }, []);
+
+    const { loading: postsLoading, error: postsError, value: posts } = useAsync(getTopNPosts, []);
 
     const { data, isLoading } = useQuery('proposals', async () => {
         const { proposals: treasuryProposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS);
@@ -453,6 +459,38 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     </SubmitButton>
                 </StyledForm>
             </NewVoteNotificationSignup>
+            <Wrapper>
+                <FlexRow>
+                    <FlexRowHeading>Top Forum Discussions:</FlexRowHeading>
+                    <Button
+                        isWithArrow={true}
+                        isAccentColor={true}
+                        fontSize="20px"
+                        href="https://gov.0x.org/"
+                        target="_blank"
+                    >
+                        Visit Forum
+                    </Button>
+                </FlexRow>
+                <TopPostsRow>
+                    {postsLoading ? (
+                        <LoaderWrapper>
+                            <CircularProgress size={40} thickness={2} color={colors.brandLight} />
+                        </LoaderWrapper>
+                    ) : (
+                        posts &&
+                        posts.map((post) => (
+                            <ForumThreadCard
+                                author={post.author.username}
+                                numComments={post.numPosts}
+                                title={post.title}
+                                url={post.url}
+                                key={post.id}
+                            />
+                        ))
+                    )}
+                </TopPostsRow>
+            </Wrapper>
             {/* <Column>
                     <Heading size="medium" isCentered={true}>
                         Govern 0x Protocol
@@ -719,5 +757,34 @@ const SignupCTA = styled.div`
         max-width: 100%;
         margin-bottom: 1rem;
     }
+`;
+
+const TopPostsRow = styled.div`
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 20px;
+    padding-right: 1.65rem;
+    padding-left: 1.65rem;
+    margin-bottom: 60px;
+`;
+
+const FlexRow = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    padding-right: 1.65rem;
+    padding-left: 1.65rem;
+    margin-bottom: 30px;
+
+    * + * {
+        margin-left: 8px;
+    }
+`;
+
+const FlexRowHeading = styled(Heading)`
+    flex-grow: 1;
+    margin: 0;
+    margin-bottom: 0 !important;
 `;
 // tslint:disable:max-file-line-count
