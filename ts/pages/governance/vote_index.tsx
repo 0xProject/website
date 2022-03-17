@@ -1,5 +1,6 @@
 import { ZrxTreasuryContract } from '@0x/contracts-treasury';
 import { BigNumber } from '@0x/utils';
+import { Web3Wrapper } from '@0x/web3-wrapper';
 import { gql, request } from 'graphql-request';
 import * as _ from 'lodash';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -7,31 +8,28 @@ import moment from 'moment';
 import * as React from 'react';
 import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
+import { useAsync } from 'react-use';
 import styled from 'styled-components';
-import { fadeIn } from 'ts/style/keyframes';
-
-import { Web3Wrapper } from '@0x/web3-wrapper';
-
-import { backendClient } from 'ts/utils/backend_client';
-
 import { Button } from 'ts/components/button';
 import { DocumentTitle } from 'ts/components/document_title';
 import { GovernanceHero } from 'ts/components/governance/hero';
 import { RegisterBanner } from 'ts/components/governance/register_banner';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
+import { Heading } from 'ts/components/text';
 import { Text } from 'ts/components/ui/text';
 import { Proposal, proposals as prodProposals, stagingProposals, TreasuryProposal } from 'ts/pages/governance/data';
 import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
+import { fadeIn } from 'ts/style/keyframes';
 import { OnChainProposal, TallyInterface, VotingCardType } from 'ts/types';
+import { backendClient } from 'ts/utils/backend_client';
 import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
-import { Heading } from 'ts/components/text';
-import ForumThreadCard from './forum_thread_card';
-import { getTopNPosts } from 'ts/utils/forum_client';
-import { useAsync } from 'react-use';
+import { getTopNPostsAsync } from 'ts/utils/forum_client';
+
+import { ForumThreadCard } from './forum_thread_card';
 
 const FETCH_PROPOSALS = gql`
     query proposals {
@@ -232,7 +230,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
         })();
     }, []);
 
-    const { loading: postsLoading, error: postsError, value: posts } = useAsync(getTopNPosts, []);
+    const { loading: isPostsLoading, value: posts } = useAsync(getTopNPostsAsync, []);
 
     const { data, isLoading } = useQuery('proposals', async () => {
         const { proposals: treasuryProposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS);
@@ -473,7 +471,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     </Button>
                 </FlexRow>
                 <TopPostsRow>
-                    {postsLoading ? (
+                    {isPostsLoading ? (
                         <LoaderWrapper>
                             <CircularProgress size={40} thickness={2} color={colors.brandLight} />
                         </LoaderWrapper>

@@ -1,26 +1,27 @@
 import * as _ from 'lodash';
 import { fetchUtils } from 'ts/utils/fetch_utils';
-import { FORUM_API_ENDPOINT, ZRX_FORUMS_API_KEY } from './configs';
 
-type ForumUser = {
+import { FORUM_API_ENDPOINT } from './configs';
+
+interface ForumUser {
     id: number;
     username: string;
-};
+}
 
-type ForumTopic = {
+interface ForumTopic {
     id: number;
     title: string;
     author: ForumUser;
     numPosts: number;
     url: string;
-};
+}
 
-type ForumPosterResponse = {
+interface ForumPosterResponse {
     user_id: number;
     description: string;
-};
+}
 
-type ForumTopicResponse = {
+interface ForumTopicResponse {
     id: number;
     title: string;
     posters: ForumPosterResponse[];
@@ -28,14 +29,14 @@ type ForumTopicResponse = {
     visible: boolean;
     slug: string;
     category_id: number;
-};
+}
 
-type TopicApiResponse = {
+interface TopicApiResponse {
     users: ForumUser[];
     topic_list: {
         topics: ForumTopicResponse[];
     };
-};
+}
 
 const GOVERNANCE_SLUG = 'governance';
 const GOVERNANCE_CATEGORY_ID = 13;
@@ -44,7 +45,7 @@ function makeTopPostsPerCategoryEndpoint(slug: string, categoryId: number): stri
     return `/c/${slug}/${categoryId}/l/top.json?ascending=false`;
 }
 
-export async function getTopNPosts(numPosts: number = 3): Promise<ForumTopic[]> {
+export async function getTopNPostsAsync(numPosts: number = 3): Promise<ForumTopic[]> {
     const result = await fetchUtils.requestAsync<TopicApiResponse>(
         FORUM_API_ENDPOINT,
         makeTopPostsPerCategoryEndpoint(GOVERNANCE_SLUG, GOVERNANCE_CATEGORY_ID),

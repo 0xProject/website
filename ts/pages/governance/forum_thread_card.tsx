@@ -1,9 +1,9 @@
 import React from 'react';
+import { Link as ReactRouterLink } from 'react-router-dom';
+import ReactTooltip from 'react-tooltip';
+import styled from 'styled-components';
 import { Section } from 'ts/components/newLayout';
 import { Heading, Paragraph } from 'ts/components/text';
-import ReactTooltip from 'react-tooltip';
-import { Link as ReactRouterLink } from 'react-router-dom';
-import styled from 'styled-components';
 import { colors } from 'ts/style/colors';
 
 interface ForumThreadCardProps {
@@ -13,18 +13,25 @@ interface ForumThreadCardProps {
     url: string;
 }
 
-export default function ForumThreadCard({ title, author, numComments, url }: ForumThreadCardProps): JSX.Element {
+export function ForumThreadCard({ title, author, numComments, url }: ForumThreadCardProps): JSX.Element {
     return (
         <ReactRouterLink to={{ pathname: url }} target="_blank">
-            <Section hasBorder bgColor="none" padding="24px 35px" hasHover margin="0" isFullWidth wrapWidth="100%">
+            <Section
+                hasBorder={true}
+                bgColor="none"
+                padding="24px 35px"
+                hasHover={true}
+                margin="0"
+                isFullWidth={true}
+                wrapWidth="100%"
+            >
                 <ForumThreadHeading size="small" data-tip={title}>
                     {title}
                 </ForumThreadHeading>
                 <ReactTooltip />
-                <MetaParagraph
-                    fontSize="17px"
-                    color={colors.textDarkSecondary}
-                >{`By ${author}  \u25CF  ${numComments} comments`}</MetaParagraph>
+                <MetaParagraph fontSize="17px" color={colors.textDarkSecondary}>
+                    {`By ${author}  \u25CF  ${numComments} comments`}
+                </MetaParagraph>
             </Section>
         </ReactRouterLink>
     );

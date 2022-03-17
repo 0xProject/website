@@ -9,7 +9,7 @@ export const useAsync = <T, E = string>(asyncFunction: () => Promise<T>, immedia
     // handles setting state for pending, value, and error.
     // useCallback ensures the below useEffect is not called
     // on every render, but only if asyncFunction changes.
-    const execute = useCallback(() => {
+    const execute = useCallback(async () => {
         setStatus('pending');
         setValue(null);
         setError(null);
@@ -18,8 +18,8 @@ export const useAsync = <T, E = string>(asyncFunction: () => Promise<T>, immedia
                 setValue(response);
                 setStatus('success');
             })
-            .catch((error: any) => {
-                setError(error);
+            .catch((e: any) => {
+                setError(e);
                 setStatus('error');
             });
     }, [asyncFunction]);
@@ -28,6 +28,7 @@ export const useAsync = <T, E = string>(asyncFunction: () => Promise<T>, immedia
     // in an onClick handler.
     useEffect(() => {
         if (immediate) {
+            // tslint:disable-next-line:no-floating-promises
             execute();
         }
     }, [execute, immediate]);
