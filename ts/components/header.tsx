@@ -7,7 +7,7 @@ import { Link } from 'ts/components/documentation/shared/link';
 import { Button } from 'ts/components/button';
 // import { DropdownProducts } from 'ts/components/dropdowns/dropdown_products';
 // import { DropdownResources } from 'ts/components/dropdowns/dropdown_resources';
-import { DropdownDocs } from 'ts/components/dropdowns/dropdown_docs';
+// import { DropdownDocs } from 'ts/components/dropdowns/dropdown_docs';
 import { Hamburger } from 'ts/components/hamburger';
 import { Logo } from 'ts/components/logo';
 import { MobileNav } from 'ts/components/mobile_nav';
@@ -41,9 +41,8 @@ interface DropdownWrapInterface {
 const navItems: NavItemProps[] = [
     {
         id: 'docs',
-        text: 'Developers',
-        dropdownComponent: DropdownDocs,
-        dropdownWidth: 270,
+        text: 'Documentation',
+        url: 'https://docs.0x.org/',
     },
     {
         id: 'zrx',

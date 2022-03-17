@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Heading, Paragraph } from 'ts/components/text';
-import { WebsitePaths } from 'ts/types';
 
 import { Link } from '../documentation/shared/link';
 
@@ -9,11 +8,6 @@ const navData = [
     {
         title: '0x Docs',
         description: 'Learn and build with 0x',
-        url: WebsitePaths.Docs,
-    },
-    {
-        title: '(Alpha Release) 0x Docs',
-        description: 'Get a sneak peek at our updated documentation',
         url: 'https://docs.0x.org/',
         shouldOpenInNewTab: true,
     },
