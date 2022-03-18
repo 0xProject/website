@@ -462,7 +462,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     </SubmitButton>
                 </StyledForm>
             </NewVoteNotificationSignup>
-            <Wrapper>
+            <Wrapper style={{ marginTop: '60px' }}>
                 <FlexRow>
                     <FlexRowHeading>Top Forum Discussions:</FlexRowHeading>
                     <Button
@@ -769,6 +769,9 @@ const TopPostsRow = styled.div`
     padding-right: 1.65rem;
     padding-left: 1.65rem;
     margin-bottom: 60px;
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
 `;
 
 const FlexRow = styled.div`

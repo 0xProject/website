@@ -43,8 +43,8 @@ const MetaParagraph = styled(Paragraph)`
 
 const ForumThreadHeading = styled(Heading)`
     margin-bottom: 8px !important;
-    line-height: 1rem !important;
-    max-height: 1rem;
+    line-height: 1.1rem !important;
+    max-height: 1.1rem;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
