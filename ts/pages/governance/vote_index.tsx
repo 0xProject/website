@@ -1,5 +1,6 @@
 import { ZrxTreasuryContract } from '@0x/contracts-treasury';
 import { BigNumber } from '@0x/utils';
+import { Web3Wrapper } from '@0x/web3-wrapper';
 import { gql, request } from 'graphql-request';
 import * as _ from 'lodash';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -7,27 +8,28 @@ import moment from 'moment';
 import * as React from 'react';
 import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
+import { useAsync } from 'react-use';
 import styled from 'styled-components';
-import { fadeIn } from 'ts/style/keyframes';
-
-import { Web3Wrapper } from '@0x/web3-wrapper';
-
-import { backendClient } from 'ts/utils/backend_client';
-
 import { Button } from 'ts/components/button';
 import { DocumentTitle } from 'ts/components/document_title';
 import { GovernanceHero } from 'ts/components/governance/hero';
 import { RegisterBanner } from 'ts/components/governance/register_banner';
 import { StakingPageLayout } from 'ts/components/staking/layout/staking_page_layout';
+import { Heading } from 'ts/components/text';
 import { Text } from 'ts/components/ui/text';
 import { Proposal, proposals as prodProposals, stagingProposals, TreasuryProposal } from 'ts/pages/governance/data';
 import { VoteIndexCard } from 'ts/pages/governance/vote_index_card';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
+import { fadeIn } from 'ts/style/keyframes';
 import { OnChainProposal, TallyInterface, VotingCardType } from 'ts/types';
+import { backendClient } from 'ts/utils/backend_client';
 import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
+import { ForumTopic, getLatestNPostsFilteredAsync } from 'ts/utils/forum_client';
+
+import { ForumThreadCard } from './forum_thread_card';
 
 const FETCH_PROPOSALS = gql`
     query proposals {
@@ -227,6 +229,13 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
             setSnapshotProposals(proposalsAndVotes);
         })();
     }, []);
+
+    const retrievalFunc = async () => {
+        const filterFunc = (topic: ForumTopic) => topic.numPosts > 1;
+        return getLatestNPostsFilteredAsync(3, filterFunc);
+    };
+
+    const { loading: isPostsLoading, value: posts } = useAsync(retrievalFunc, []);
 
     const { data, isLoading } = useQuery('proposals', async () => {
         const { proposals: treasuryProposals } = await request(GOVERNANCE_THEGRAPH_ENDPOINT, FETCH_PROPOSALS);
@@ -453,6 +462,38 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
                     </SubmitButton>
                 </StyledForm>
             </NewVoteNotificationSignup>
+            <Wrapper style={{ marginTop: '60px' }}>
+                <FlexRow>
+                    <FlexRowHeading>Top Forum Discussions:</FlexRowHeading>
+                    <Button
+                        isWithArrow={true}
+                        isAccentColor={true}
+                        fontSize="20px"
+                        href="https://gov.0x.org/"
+                        target="_blank"
+                    >
+                        Visit Forum
+                    </Button>
+                </FlexRow>
+                <TopPostsRow>
+                    {isPostsLoading ? (
+                        <LoaderWrapper>
+                            <CircularProgress size={40} thickness={2} color={colors.brandLight} />
+                        </LoaderWrapper>
+                    ) : (
+                        posts &&
+                        posts.map((post) => (
+                            <ForumThreadCard
+                                author={post.author.username}
+                                numComments={post.numPosts}
+                                title={post.title}
+                                url={post.url}
+                                key={post.id}
+                            />
+                        ))
+                    )}
+                </TopPostsRow>
+            </Wrapper>
             {/* <Column>
                     <Heading size="medium" isCentered={true}>
                         Govern 0x Protocol
@@ -719,5 +760,37 @@ const SignupCTA = styled.div`
         max-width: 100%;
         margin-bottom: 1rem;
     }
+`;
+
+const TopPostsRow = styled.div`
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 20px;
+    padding-right: 1.65rem;
+    padding-left: 1.65rem;
+    margin-bottom: 60px;
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+`;
+
+const FlexRow = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    padding-right: 1.65rem;
+    padding-left: 1.65rem;
+    margin-bottom: 30px;
+
+    * + * {
+        margin-left: 8px;
+    }
+`;
+
+const FlexRowHeading = styled(Heading)`
+    flex-grow: 1;
+    margin: 0;
+    margin-bottom: 0 !important;
 `;
 // tslint:disable:max-file-line-count

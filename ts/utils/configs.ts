@@ -23,6 +23,8 @@ export const DEFAULT_POOL_ID = '51';
 
 export const GOVERNANCE_THEGRAPH_ENDPOINT = 'https://api.thegraph.com/subgraphs/name/mzhu25/zeroex-staking';
 
+export const FORUM_API_ENDPOINT = 'https://gov.0x.org';
+
 export const configs = {
     AMOUNT_DISPLAY_PRECSION: 5,
     BACKEND_BASE_PROD_URL: 'https://website.api.0x.org',
