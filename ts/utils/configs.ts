@@ -70,7 +70,11 @@ export const configs = {
     ] as OutdatedWrappedEtherByNetworkId[],
     // The order matters. We first try first node and only then fall back to others.
     PUBLIC_NODE_URLS_BY_NETWORK_ID: {
-        [1]: ['https://eth-mainnet.alchemyapi.io/v2/8JwI7bMSK8ojsPDbyeHt6NK8w23afo1q'], // [`https://mainnet.infura.io/v3/${INFURA_API_KEY}`, 'https://mainnet.0x.org'],
+        [1]: [
+            environments.isDevelopment()
+                ? 'https://mainnet.0x.org'
+                : 'https://eth-mainnet.alchemyapi.io/v2/8JwI7bMSK8ojsPDbyeHt6NK8w23afo1q',
+        ], // [`https://mainnet.infura.io/v3/${INFURA_API_KEY}`, 'https://mainnet.0x.org'],
         [42]: [`https://kovan.infura.io/v3/${INFURA_API_KEY}`, 'https://kovan.0x.org'],
         [3]: [`https://ropsten.infura.io/v3/${INFURA_API_KEY}`],
         [4]: [`https://rinkeby.infura.io/v3/${INFURA_API_KEY}`],
