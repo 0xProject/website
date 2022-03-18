@@ -21,7 +21,7 @@ export function ForumThreadCard({ title, author, numComments, url }: ForumThread
                 bgColor="none"
                 padding="24px 35px"
                 hasHover={true}
-                margin="0"
+                margin="0 0 35px 0"
                 isFullWidth={true}
                 wrapWidth="100%"
             >
