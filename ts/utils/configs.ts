@@ -12,7 +12,6 @@ const INFURA_API_KEY = environments.isDevelopment()
     : 'dbb71566cad444979f59c42b11b4f603';
 
 export const GHOST_API_KEY = process.env.GHOST_API_KEY || null;
-export const ZRX_FORUMS_API_KEY = process.env.ZRX_FORUMS_API_KEY;
 export const ALCHEMY_API_KEY = '8JwI7bMSK8ojsPDbyeHt6NK8w23afo1q';
 export const GOVERNOR_CONTRACT_ADDRESS = {
     COMPOUND: '0xc0dA01a04C3f3E0be433606045bB7017A7323E38',
