@@ -30,7 +30,8 @@
     "resolutions": {
         "node-hid": "2.1.1",
         "scrypt": "github:barrysteyn/node-scrypt#fb60a8d",
-        "websocket": "github:frozeman/WebSocket-Node#browserifyCompatible"
+        "websocket": "github:frozeman/WebSocket-Node#browserifyCompatible",
+        "**/ethereumjs-common": "npm:@ethereumjs/common@^2.5.0"
     },
     "author": "Fabio Berger",
     "license": "Apache-2.0",
@@ -205,6 +206,7 @@
         "to-vfile": "^6.0.0",
         "ts-jest": "^24.2.0",
         "ts-node": "^8.3.0",
+        "tslib": "^2.3.1",
         "tslint": "5.11.0",
         "tslint-config-0xproject": "^0.0.2",
         "typescript": "^3.8.3",
@@ -214,6 +216,7 @@
         "unist-util-visit": "^2.0.0",
         "unist-util-visit-parents": "^3.0.0",
         "webpack": "^4.39.2",
+        "webpack-bundle-analyzer": "^4.5.0",
         "webpack-cli": "3.3.7",
         "webpack-dev-server": "^3.8.0",
         "yargs": "^10.0.3"

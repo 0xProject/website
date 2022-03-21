@@ -9,11 +9,12 @@ const remarkSlug = require('remark-slug');
 const remarkAutolinkHeadings = require('./webpack/remark_autolink_headings');
 const remarkSectionizeHeadings = require('./webpack/remark_sectionize_headings');
 const mdxTableOfContents = require('./webpack/mdx_table_of_contents');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const GIT_SHA = childProcess.execSync('git rev-parse HEAD').toString().trim();
 
 module.exports = (_env, argv) => {
-    const plugins = [new Dotenv()];
+    const plugins = [new Dotenv(), new BundleAnalyzerPlugin()];
     const isDevEnvironment = argv.mode === 'development';
 
     const config = {
@@ -21,7 +22,7 @@ module.exports = (_env, argv) => {
         output: {
             path: path.join(__dirname, '/public'),
             filename: 'bundle.js',
-            chunkFilename: 'bundle-[name].js',
+            chunkFilename: 'bundle-[name].[contenthash].js',
             publicPath: '/',
         },
         externals: {
@@ -119,7 +120,7 @@ module.exports = (_env, argv) => {
             minimizer: [
                 new TerserPlugin({
                     parallel: true,
-                    sourceMap: true,
+                    sourceMap: isDevEnvironment,
                     terserOptions: {
                         mangle: {
                             reserved: ['BigNumber'],
@@ -127,6 +128,23 @@ module.exports = (_env, argv) => {
                     },
                 }),
             ],
+            runtimeChunk: 'single',
+            splitChunks: {
+                chunks: 'all',
+                cacheGroups: {
+                    vendor: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name(module) {
+                            // get the name. E.g. node_modules/packageName/not/this/part.js
+                            // or node_modules/packageName
+                            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+
+                            // npm package names are URL-safe, but some servers don't like @ symbols
+                            return `npm.${packageName.replace('@', '')}`;
+                        },
+                    },
+                },
+            },
         },
         devServer: {
             host: '0.0.0.0',
