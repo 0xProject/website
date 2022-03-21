@@ -14,8 +14,12 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const GIT_SHA = childProcess.execSync('git rev-parse HEAD').toString().trim();
 
 module.exports = (_env, argv) => {
-    const plugins = [new Dotenv(), new BundleAnalyzerPlugin()];
+    const plugins = [new Dotenv()];
     const isDevEnvironment = argv.mode === 'development';
+
+    if (isDevEnvironment) {
+        plugins.push(new BundleAnalyzerPlugin());
+    }
 
     const config = {
         entry: ['./ts/index.tsx'],
