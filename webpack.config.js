@@ -9,12 +9,13 @@ const remarkSlug = require('remark-slug');
 const remarkAutolinkHeadings = require('./webpack/remark_autolink_headings');
 const remarkSectionizeHeadings = require('./webpack/remark_sectionize_headings');
 const mdxTableOfContents = require('./webpack/mdx_table_of_contents');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const GIT_SHA = childProcess.execSync('git rev-parse HEAD').toString().trim();
 
 module.exports = (_env, argv) => {
-    const plugins = [new Dotenv()];
+    const plugins = [new Dotenv(), new HtmlWebpackPlugin({ template: `public/index.html` })];
     const isDevEnvironment = argv.mode === 'development';
 
     if (isDevEnvironment) {
@@ -132,7 +133,7 @@ module.exports = (_env, argv) => {
                     },
                 }),
             ],
-            runtimeChunk: 'single',
+            // runtimeChunk: 'single',
             splitChunks: {
                 chunks: 'all',
                 cacheGroups: {
