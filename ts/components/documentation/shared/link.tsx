@@ -17,6 +17,7 @@ export interface BaseLinkProps {
     onMouseEnter?: (event: React.MouseEvent<HTMLElement>) => void;
     textDecoration?: string;
     fontColor?: string;
+    rel?: string;
 }
 
 export interface ScrollLinkProps extends BaseLinkProps {
@@ -89,7 +90,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
                         onMouseOver={this.props.onMouseOver}
                         onMouseEnter={this.props.onMouseEnter}
                         onMouseLeave={this.props.onMouseLeave}
-                        rel={this.props.shouldOpenInNewTab ? 'noopener' : undefined}
+                        rel={this.props.shouldOpenInNewTab ? 'noopener' : this.props.rel || undefined}
                     >
                         {this.props.children}
                     </a>

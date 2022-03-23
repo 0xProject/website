@@ -37,7 +37,7 @@ import { NextAboutPress } from 'ts/pages/about/press';
 // import { CFL } from 'ts/pages/cfl';
 // import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
-import { TreasuryBreakdown } from 'ts/pages/governance/treasury_breakdown';
+// import { TreasuryBreakdown } from 'ts/pages/governance/treasury_breakdown';
 import { VoteIndex } from 'ts/pages/governance/vote_index';
 // import { Next0xInstant } from 'ts/pages/instant';
 import { NextLanding } from 'ts/pages/landing';
