@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-d
 import { MetaTags } from 'ts/components/meta_tags';
 import { RegisterWizard } from 'ts/containers/governance/register/wizard';
 import { NotFound } from 'ts/containers/not_found';
-import { StakingWizard } from 'ts/containers/staking/wizard/wizard';
+// import { StakingWizard } from 'ts/containers/staking/wizard/wizard';
 // import { createLazyComponent } from 'ts/lazy_component';
 import { trackedTokenStorage } from 'ts/local_storage/tracked_token_storage';
 import { tradeHistoryStorage } from 'ts/local_storage/trade_history_storage';
@@ -29,11 +29,11 @@ import { NextAboutPress } from 'ts/pages/about/press';
 // import { Credits } from 'ts/pages/credits';
 // import { Explore } from 'ts/pages/explore';
 
-import { AccountActivity } from 'ts/pages/account/activity';
-import { Account } from 'ts/pages/account/dashboard';
-import { StakingPoolActivity } from 'ts/pages/staking/history';
+// import { AccountActivity } from 'ts/pages/account/activity';
+// import { Account } from 'ts/pages/account/dashboard';
+// import { StakingPoolActivity } from 'ts/pages/staking/history';
 
-import { ZeroExApi } from 'ts/pages/api';
+// import { ZeroExApi } from 'ts/pages/api';
 // import { CFL } from 'ts/pages/cfl';
 // import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
@@ -44,12 +44,12 @@ import { NextLanding } from 'ts/pages/landing';
 // import { NextLaunchKit } from 'ts/pages/launch_kit';
 // import { NextMarketMaker } from 'ts/pages/market_maker';
 import { PrivacyPolicy } from 'ts/pages/privacy';
-import { StakingIndex } from 'ts/pages/staking/home';
-import { StakingPool } from 'ts/pages/staking/staking_pool';
-import { RemoveStake } from 'ts/pages/staking/wizard/remove';
+// import { StakingIndex } from 'ts/pages/staking/home';
+// import { StakingPool } from 'ts/pages/staking/staking_pool';
+// import { RemoveStake } from 'ts/pages/staking/wizard/remove';
 
 import { TermsOfService } from 'ts/pages/terms';
-import { NextWhy } from 'ts/pages/why';
+// import { NextWhy } from 'ts/pages/why';
 
 // import { Mesh } from 'ts/pages/mesh';
 
@@ -58,10 +58,15 @@ tradeHistoryStorage.clearIfRequired();
 trackedTokenStorage.clearIfRequired();
 
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import loadable from '@loadable/component';
 import { Web3ReactProvider } from '@web3-react/core';
 import 'less/all.less';
 import 'sass/modal_video.scss';
 import { constants } from 'ts/utils/constants';
+const AsyncPage = loadable(async (props: { page: string; compName: string }) => {
+    const module = await import(`ts/pages/${props.page}`);
+    return { default: module[props.compName] };
+});
 
 // We pass modulePromise returning lambda instead of module promise,
 // cause we only want to import the module when the user navigates to the page.
@@ -93,7 +98,11 @@ render(
                             <Switch>
                                 {/* Next (new site) routes */}
                                 <Route exact={true} path="/" component={NextLanding} />
-                                <Route exact={true} path={WebsitePaths.Why} component={NextWhy} />
+                                <Route
+                                    exact={true}
+                                    path={WebsitePaths.Why}
+                                    render={() => <AsyncPage compName="NextWhy" page="why" />}
+                                />
                                 {/* <Route exact={true} path={WebsitePaths.MarketMaker} component={NextMarketMaker} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Explore} component={Explore} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Credits} component={Credits} /> */}
@@ -101,21 +110,55 @@ render(
                                 {/* <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem} /> */}
 
-                                <Route exact={true} path={WebsitePaths.ZeroExApi} component={ZeroExApi} />
+                                <Route
+                                    exact={true}
+                                    path={WebsitePaths.ZeroExApi}
+                                    render={() => <AsyncPage compName="ZeroExApi" page="api" />}
+                                />
 
-                                <Route exact={true} path={WebsitePaths.Account} component={Account} />
-                                <Route exact={true} path={WebsitePaths.AccountActivity} component={AccountActivity} />
-                                <Route exact={true} path={WebsitePaths.Staking} component={StakingIndex} />
-                                <Route exact={true} path={WebsitePaths.StakingWizard} component={StakingWizard} />
-                                <Route exact={true} path={WebsitePaths.StakingWizardRemove} component={RemoveStake} />
-                                <Route exact={true} path={WebsitePaths.StakingPool} component={StakingPool} />
+                                <Route
+                                    exact={true}
+                                    path={WebsitePaths.Account}
+                                    render={() => <AsyncPage compName="Account" page="account/dashboard" />}
+                                />
+                                <Route
+                                    exact={true}
+                                    path={WebsitePaths.AccountActivity}
+                                    render={() => <AsyncPage compName="AccountActivity" page="account/activity" />}
+                                />
+                                <Route
+                                    exact={true}
+                                    path={WebsitePaths.Staking}
+                                    render={() => <AsyncPage compName="StakingIndex" page="staking/home" />}
+                                />
+                                <Route
+                                    exact={true}
+                                    path={WebsitePaths.StakingWizard}
+                                    render={() => <AsyncPage compName="StakingWizard" page="staking/wizard" />}
+                                />
+                                <Route
+                                    exact={true}
+                                    path={WebsitePaths.StakingWizardRemove}
+                                    render={() => <AsyncPage compName="RemoveStake" page="staking/wizard/remove" />}
+                                />
+                                <Route
+                                    exact={true}
+                                    path={WebsitePaths.StakingPool}
+                                    render={() => <AsyncPage compName="StakingPool" page="staking/staking_pool" />}
+                                />
                                 <Route
                                     exact={true}
                                     path={WebsitePaths.StakingPoolActivity}
-                                    component={StakingPoolActivity}
+                                    render={() => <AsyncPage compName="StakingPoolActivity" page="staking/history" />}
                                 />
                                 <Route exact={true} path={`${WebsitePaths.Register}`} component={RegisterWizard} />
-                                <Route exact={true} path={`${WebsitePaths.Treasury}`} component={TreasuryBreakdown} />
+                                <Route
+                                    exact={true}
+                                    path={`${WebsitePaths.Treasury}`}
+                                    render={() => (
+                                        <AsyncPage compName="TreasuryBreakdown" page="governance/treasury_breakdown" />
+                                    )}
+                                />
                                 <Route exact={true} path={`${WebsitePaths.Vote}/proposal/:id`} component={Treasury} />
                                 <Route
                                     exact={true}

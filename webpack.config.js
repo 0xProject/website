@@ -15,7 +15,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const GIT_SHA = childProcess.execSync('git rev-parse HEAD').toString().trim();
 
 module.exports = (_env, argv) => {
-    const plugins = [new Dotenv(), new HtmlWebpackPlugin({ template: `public/index.html` })];
+    const plugins = [new Dotenv()];
     const isDevEnvironment = argv.mode === 'development';
 
     if (isDevEnvironment) {
@@ -134,22 +134,22 @@ module.exports = (_env, argv) => {
                 }),
             ],
             // runtimeChunk: 'single',
-            splitChunks: {
-                chunks: 'all',
-                cacheGroups: {
-                    vendor: {
-                        test: /[\\/]node_modules[\\/]/,
-                        name(module) {
-                            // get the name. E.g. node_modules/packageName/not/this/part.js
-                            // or node_modules/packageName
-                            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+            // splitChunks: {
+            //     chunks: 'all',
+            //     cacheGroups: {
+            //         vendor: {
+            //             test: /[\\/]node_modules[\\/]/,
+            //             name(module) {
+            //                 // get the name. E.g. node_modules/packageName/not/this/part.js
+            //                 // or node_modules/packageName
+            //                 const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
 
-                            // npm package names are URL-safe, but some servers don't like @ symbols
-                            return `npm.${packageName.replace('@', '')}`;
-                        },
-                    },
-                },
-            },
+            //                 // npm package names are URL-safe, but some servers don't like @ symbols
+            //                 return `npm.${packageName.replace('@', '')}`;
+            //             },
+            //         },
+            //     },
+            // },
         },
         devServer: {
             host: '0.0.0.0',
