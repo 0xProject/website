@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { includes } from 'lodash-es';
 
 import { Environments } from '../types';
 
@@ -6,16 +6,16 @@ import { domains } from './domains';
 
 export const environments = {
     isDevelopment(): boolean {
-        return _.includes(domains.DOMAINS_DEVELOPMENT, window.location.host);
+        return includes(domains.DOMAINS_DEVELOPMENT, window.location.host);
     },
     isStaging(): boolean {
-        return _.includes(window.location.href, domains.DOMAIN_STAGING);
+        return includes(window.location.href, domains.DOMAIN_STAGING);
     },
     isDogfood(): boolean {
-        return _.includes(window.location.href, domains.DOMAIN_DOGFOOD);
+        return includes(window.location.href, domains.DOMAIN_DOGFOOD);
     },
     isProduction(): boolean {
-        return _.includes(window.location.href, domains.DOMAIN_PRODUCTION);
+        return includes(window.location.href, domains.DOMAIN_PRODUCTION);
     },
     getEnvironment(): Environments {
         if (environments.isDogfood()) {

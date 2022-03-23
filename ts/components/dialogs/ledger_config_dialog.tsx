@@ -1,6 +1,6 @@
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import * as _ from 'lodash';
+import { isEmpty, map, startsWith, values } from 'lodash-es';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
@@ -85,7 +85,7 @@ export class LedgerConfigDialog extends React.Component<LedgerConfigDialogProps,
         );
     }
     private _renderConnectStep(): React.ReactNode {
-        const networkIds = _.values(constants.NETWORK_ID_BY_NAME);
+        const networkIds = values(constants.NETWORK_ID_BY_NAME);
         return (
             <div>
                 <div className="h4 pt3">Follow these instructions before proceeding:</div>
@@ -115,7 +115,7 @@ export class LedgerConfigDialog extends React.Component<LedgerConfigDialogProps,
                         labelComplete="Connected!"
                         onClickAsyncFn={this._onConnectLedgerClickAsync.bind(this, true)}
                     />
-                    {!_.isEmpty(this.state.connectionErrMsg) && (
+                    {!isEmpty(this.state.connectionErrMsg) && (
                         <div className="pt2 left-align" style={{ color: colors.red200 }}>
                             {this.state.connectionErrMsg}
                         </div>
@@ -162,7 +162,7 @@ export class LedgerConfigDialog extends React.Component<LedgerConfigDialogProps,
         );
     }
     private _renderAddressTableRows(): React.ReactNode {
-        const rows = _.map(this.state.userAddresses, (userAddress: string, i: number) => {
+        const rows = map(this.state.userAddresses, (userAddress: string, i: number) => {
             const balanceInWei = this.state.addressBalances[i];
             const addressTooltipId = `address-${userAddress}`;
             const balanceTooltipId = `balance-${userAddress}`;
@@ -254,7 +254,7 @@ export class LedgerConfigDialog extends React.Component<LedgerConfigDialogProps,
     }
     private _onDerivationPathChanged(_event: any, derivationPath: string): void {
         let derivationErrMsg = '';
-        if (!_.startsWith(derivationPath, VALID_ETHEREUM_DERIVATION_PATH_PREFIX)) {
+        if (!startsWith(derivationPath, VALID_ETHEREUM_DERIVATION_PATH_PREFIX)) {
             derivationErrMsg = 'Must be valid Ethereum path.';
         }
 
@@ -293,7 +293,7 @@ export class LedgerConfigDialog extends React.Component<LedgerConfigDialogProps,
         let userAddresses: string[];
         userAddresses = await this.props.blockchain.getUserAccountsAsync();
 
-        if (_.isEmpty(userAddresses)) {
+        if (isEmpty(userAddresses)) {
             throw new Error('No addresses retrieved.');
         }
         return userAddresses;

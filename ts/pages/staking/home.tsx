@@ -1,5 +1,6 @@
 import { logUtils } from '@0x/utils';
-import * as _ from 'lodash';
+import { replace } from 'lodash-es';
+
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -237,7 +238,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                         return (
                             <StakingPoolDetailRow
                                 apy={pool.apy}
-                                to={_.replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}
+                                to={replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}
                                 key={pool.poolId}
                                 poolId={pool.poolId}
                                 name={stakingUtils.getPoolDisplayName(pool)}
@@ -268,7 +269,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
                         return (
                             <StakingPoolDetailRow
                                 apy={pool.apy}
-                                to={_.replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}
+                                to={replace(WebsitePaths.StakingPool, ':poolId', pool.poolId)}
                                 key={pool.poolId}
                                 poolId={pool.poolId}
                                 name={stakingUtils.getPoolDisplayName(pool)}

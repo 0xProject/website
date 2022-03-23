@@ -1,5 +1,6 @@
 import { addressUtils } from '@0x/utils';
-import * as _ from 'lodash';
+import { isEmpty } from 'lodash-es';
+
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -40,7 +41,7 @@ export class ConfigGeneratorAddressInput extends React.Component<
     };
     public render(): React.ReactNode {
         const { errMsg } = this.state;
-        const hasError = !_.isEmpty(errMsg);
+        const hasError = !isEmpty(errMsg);
         return (
             <Container height="80px">
                 <Input value={this.props.value} onChange={this._handleChange} placeholder="0xe99...aa8da4" />

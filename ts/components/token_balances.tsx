@@ -1,6 +1,6 @@
 import { BigNumber, errorUtils, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import * as _ from 'lodash';
+import { difference, each, includes, isEmpty, isEqual, keys, map, size } from 'lodash-es';
 import Dialog from 'material-ui/Dialog';
 import Divider from 'material-ui/Divider';
 import FlatButton from 'material-ui/FlatButton';
@@ -98,7 +98,7 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
         };
     }
     public componentWillMount(): void {
-        const trackedTokenAddresses = _.keys(this.state.trackedTokenStateByAddress);
+        const trackedTokenAddresses = keys(this.state.trackedTokenStateByAddress);
         // tslint:disable-next-line:no-floating-promises
         this._fetchBalancesAndAllowancesAsync(trackedTokenAddresses);
     }
@@ -125,14 +125,14 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
             nextProps.networkId !== this.props.networkId ||
             nextProps.lastForceTokenStateRefetch !== this.props.lastForceTokenStateRefetch
         ) {
-            const trackedTokenAddresses = _.keys(this.state.trackedTokenStateByAddress);
+            const trackedTokenAddresses = keys(this.state.trackedTokenStateByAddress);
             // tslint:disable-next-line:no-floating-promises
             this._fetchBalancesAndAllowancesAsync(trackedTokenAddresses);
         }
 
-        if (!_.isEqual(nextProps.trackedTokens, this.props.trackedTokens)) {
-            const newTokens = _.difference(nextProps.trackedTokens, this.props.trackedTokens);
-            const newTokenAddresses = _.map(newTokens, (token) => token.address);
+        if (!isEqual(nextProps.trackedTokens, this.props.trackedTokens)) {
+            const newTokens = difference(nextProps.trackedTokens, this.props.trackedTokens);
+            const newTokenAddresses = map(newTokens, (token) => token.address);
             // Add placeholder entry for this token to the state, since fetching the
             // balance/allowance is asynchronous
             const trackedTokenStateByAddress = this.state.trackedTokenStateByAddress;
@@ -167,7 +167,7 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
         const stubColumnStyle = {
             display: isTestNetwork ? 'none' : 'table-cell',
         };
-        const allTokenRowHeight = _.size(this.props.tokenByAddress) * TOKEN_TABLE_ROW_HEIGHT;
+        const allTokenRowHeight = size(this.props.tokenByAddress) * TOKEN_TABLE_ROW_HEIGHT;
         const tokenTableHeight =
             allTokenRowHeight < MAX_TOKEN_TABLE_HEIGHT ? allTokenRowHeight : MAX_TOKEN_TABLE_HEIGHT;
         const isSmallScreen = this.props.screenWidth === ScreenWidths.Sm;
@@ -306,7 +306,7 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
                 .thenBy((t: Token) => t.symbol !== ZRX_TOKEN_SYMBOL)
                 .thenBy('trackedTimestamp'),
         );
-        const tableRows = _.map(
+        const tableRows = map(
             trackedTokensStartingWithEtherToken,
             this._renderTokenRow.bind(this, tokenColSpan, actionPaddingX),
         );
@@ -320,9 +320,9 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
             EtherscanLinkSuffixes.Address,
         );
         const isMintable =
-            (_.includes(configs.SYMBOLS_OF_MINTABLE_KOVAN_TOKENS, token.symbol) &&
+            (includes(configs.SYMBOLS_OF_MINTABLE_KOVAN_TOKENS, token.symbol) &&
                 this.props.networkId === constants.NETWORK_ID_BY_NAME[Networks.Kovan]) ||
-            (_.includes(configs.SYMBOLS_OF_MINTABLE_ROPSTEN_TOKENS, token.symbol) &&
+            (includes(configs.SYMBOLS_OF_MINTABLE_ROPSTEN_TOKENS, token.symbol) &&
                 this.props.networkId === constants.NETWORK_ID_BY_NAME[Networks.Ropsten]);
         return (
             <TableRow key={token.address} style={{ height: TOKEN_TABLE_ROW_HEIGHT }}>
@@ -395,14 +395,14 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
         );
     }
     private _onAssetTokenPicked(tokenAddress: string): void {
-        if (_.isEmpty(tokenAddress)) {
+        if (isEmpty(tokenAddress)) {
             this.setState({
                 isTokenPickerOpen: false,
             });
             return;
         }
         const token = this.props.tokenByAddress[tokenAddress];
-        const isDefaultTrackedToken = _.includes(configs.DEFAULT_TRACKED_TOKEN_SYMBOLS, token.symbol);
+        const isDefaultTrackedToken = includes(configs.DEFAULT_TRACKED_TOKEN_SYMBOLS, token.symbol);
         if (!this.state.isAddingToken && !isDefaultTrackedToken) {
             if (token.isRegistered) {
                 // Remove the token from tracked tokens
@@ -477,7 +477,7 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
             return true;
         } catch (err) {
             const errMsg = `${err}`;
-            if (_.includes(errMsg, BlockchainCallErrs.UserHasNoAssociatedAddresses)) {
+            if (includes(errMsg, BlockchainCallErrs.UserHasNoAssociatedAddresses)) {
                 this.props.dispatcher.updateShouldBlockchainErrDialogBeOpen(true);
                 return false;
             }
@@ -512,7 +512,7 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
     }
     private async _fetchBalancesAndAllowancesAsync(tokenAddresses: string[]): Promise<void> {
         const trackedTokenStateByAddress = this.state.trackedTokenStateByAddress;
-        const userAddressIfExists = _.isEmpty(this.props.userAddress) ? undefined : this.props.userAddress;
+        const userAddressIfExists = isEmpty(this.props.userAddress) ? undefined : this.props.userAddress;
         for (const tokenAddress of tokenAddresses) {
             const [balance, allowance] = await this.props.blockchain.getTokenBalanceAndAllowanceAsync(
                 userAddressIfExists,
@@ -532,7 +532,7 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
     }
     private _getInitialTrackedTokenStateByAddress(trackedTokens: Token[]): TokenStateByAddress {
         const trackedTokenStateByAddress: TokenStateByAddress = {};
-        _.each(trackedTokens, (token) => {
+        each(trackedTokens, (token) => {
             trackedTokenStateByAddress[token.address] = {
                 balance: new BigNumber(0),
                 allowance: new BigNumber(0),
@@ -542,7 +542,7 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
         return trackedTokenStateByAddress;
     }
     private async _refetchTokenStateAsync(tokenAddress: string): Promise<void> {
-        const userAddressIfExists = _.isEmpty(this.props.userAddress) ? undefined : this.props.userAddress;
+        const userAddressIfExists = isEmpty(this.props.userAddress) ? undefined : this.props.userAddress;
         const [balance, allowance] = await this.props.blockchain.getTokenBalanceAndAllowanceAsync(
             userAddressIfExists,
             tokenAddress,

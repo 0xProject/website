@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -196,7 +196,7 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
                 )}
 
                 <Table columns={width > 600 ? columns : shortWidthColumns}>
-                    {_.map(delegatorHistory, (row, index) => {
+                    {map(delegatorHistory, (row, index) => {
                         const description = parseEvent(row);
 
                         return (

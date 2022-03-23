@@ -1,6 +1,6 @@
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import * as _ from 'lodash';
+
 import * as React from 'react';
 import { BalanceBoundedInput } from 'ts/components/inputs/balance_bounded_input';
 import { ValidatedBigNumberCallback } from 'ts/types';

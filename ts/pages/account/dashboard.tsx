@@ -4,7 +4,8 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { DialogContent, DialogOverlay } from '@reach/dialog';
 import '@reach/dialog/styles.css';
 import { format } from 'date-fns';
-import * as _ from 'lodash';
+
+import { map, uniq } from 'lodash-es';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -380,7 +381,7 @@ export const Account: React.FC<AccountProps> = () => {
     }, [delegatorData, account.address, stakingContract]);
 
     React.useEffect(() => {
-        const poolsWithActivity = _.uniq([...Object.keys(currentEpochStakeMap), ...Object.keys(nextEpochStakeMap)]);
+        const poolsWithActivity = uniq([...Object.keys(currentEpochStakeMap), ...Object.keys(nextEpochStakeMap)]);
         const _pendingActions: PendingAction[] = poolsWithActivity.reduce((memo, poolId) => {
             const currentEpochStake = currentEpochStakeMap[poolId] || 0;
             const nextEpochStake = nextEpochStakeMap[poolId] || 0;
@@ -784,7 +785,7 @@ export const Account: React.FC<AccountProps> = () => {
                     </SectionHeader>
 
                     <Grid>
-                        {_.map(voteHistory, (item, index) => {
+                        {map(voteHistory, (item, index) => {
                             return (
                                 <AccountVote
                                     key={`vote-history-${index}`}

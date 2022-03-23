@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -13,7 +13,7 @@ export const Table: React.StatelessComponent<TableProps> = ({ columns, children 
     return (
         <StyledTable>
             <thead>
-                {_.map(columns, (label) => {
+                {map(columns, (label) => {
                     return <th key={label}>{label}</th>;
                 })}
             </thead>

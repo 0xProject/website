@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { isEmpty } from 'lodash-es';
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -169,7 +169,7 @@ class PlainPortalOnboardingFlow extends React.Component<PortalOnboardingFlowProp
         return steps;
     }
     private _isAddressAvailable(): boolean {
-        return !_.isEmpty(this.props.userAddress);
+        return !isEmpty(this.props.userAddress);
     }
     private _userHasVisibleEth(): boolean {
         return this.props.userEtherBalanceInWei > new BigNumber(0);

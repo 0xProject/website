@@ -15,7 +15,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const GIT_SHA = childProcess.execSync('git rev-parse HEAD').toString().trim();
 
 module.exports = (_env, argv) => {
-    const plugins = [new Dotenv()];
+    const plugins = [new Dotenv(), new HtmlWebpackPlugin({ template: 'public/index.html' })];
     const isDevEnvironment = argv.mode === 'development';
 
     if (isDevEnvironment) {
@@ -133,6 +133,10 @@ module.exports = (_env, argv) => {
                     },
                 }),
             ],
+            splitChunks: {
+                chunks: 'all',
+                minSize: 1000 * 600,
+            },
             // runtimeChunk: 'single',
             // splitChunks: {
             //     chunks: 'all',

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { each, find, map, sortBy, values } from 'lodash-es';
 import Divider from 'material-ui/Divider';
 import Paper from 'material-ui/Paper';
 import * as React from 'react';
@@ -71,7 +71,7 @@ export class TradeHistory extends React.Component<TradeHistoryProps, TradeHistor
             return this._renderEmptyNotice();
         }
 
-        return _.map(this.state.sortedFills, (fill, index) => {
+        return map(this.state.sortedFills, (fill, index) => {
             return (
                 <TradeHistoryItem
                     key={`${fill.orderHash}-${fill.filledTakerTokenAmount}-${index}`}
@@ -92,12 +92,12 @@ export class TradeHistory extends React.Component<TradeHistoryProps, TradeHistor
     }
     private _numFillsWithoutCustomERC20Tokens(): number {
         let numNonCustomFills = 0;
-        const tokens = _.values(this.props.tokenByAddress);
-        _.each(this.state.sortedFills, (fill) => {
-            const takerToken = _.find(tokens, (token) => {
+        const tokens = values(this.props.tokenByAddress);
+        each(this.state.sortedFills, (fill) => {
+            const takerToken = find(tokens, (token) => {
                 return token.address === fill.takerToken;
             });
-            const makerToken = _.find(tokens, (token) => {
+            const makerToken = find(tokens, (token) => {
                 return token.address === fill.makerToken;
             });
             // For now we don't show history items for orders using custom ERC20
@@ -125,8 +125,8 @@ export class TradeHistory extends React.Component<TradeHistoryProps, TradeHistor
     }
     private _getSortedFills(): Fill[] {
         const fillsByHash = tradeHistoryStorage.getUserFillsByHash(this.props.userAddress, this.props.networkId);
-        const fills = _.values(fillsByHash);
-        const sortedFills = _.sortBy(fills, [(fill: Fill) => fill.blockTimestamp * -1]);
+        const fills = values(fillsByHash);
+        const sortedFills = sortBy(fills, [(fill: Fill) => fill.blockTimestamp * -1]);
         return sortedFills;
     }
 }

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -159,7 +159,7 @@ export class NextAboutJobs extends React.Component<NextAboutJobsProps, NextAbout
                     </Column>
 
                     <Column maxWidth="826px">
-                        {_.map(positions, (position, index) => (
+                        {map(positions, (position, index) => (
                             <Position key={`position-${index}`} position={position} />
                         ))}
                     </Column>

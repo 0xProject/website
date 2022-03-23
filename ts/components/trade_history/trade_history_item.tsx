@@ -1,6 +1,7 @@
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import * as _ from 'lodash';
+
+import { find, values } from 'lodash-es';
 import Paper from 'material-ui/Paper';
 import * as moment from 'moment';
 import * as React from 'react';
@@ -25,11 +26,11 @@ interface TradeHistoryItemState {}
 export class TradeHistoryItem extends React.Component<TradeHistoryItemProps, TradeHistoryItemState> {
     public render(): React.ReactNode {
         const fill = this.props.fill;
-        const tokens = _.values(this.props.tokenByAddress);
-        const takerToken = _.find(tokens, (token) => {
+        const tokens = values(this.props.tokenByAddress);
+        const takerToken = find(tokens, (token) => {
             return token.address === fill.takerToken;
         });
-        const makerToken = _.find(tokens, (token) => {
+        const makerToken = find(tokens, (token) => {
             return token.address === fill.makerToken;
         });
         // For now we don't show history items for orders using custom ERC20

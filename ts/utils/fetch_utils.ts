@@ -1,5 +1,6 @@
 import { fetchAsync, logUtils } from '@0x/utils';
-import * as _ from 'lodash';
+
+import { isEmpty } from 'lodash-es';
 import * as queryString from 'query-string';
 
 import { errorReporter } from 'ts/utils/error_reporter';
@@ -44,7 +45,7 @@ export const fetchUtils = {
 
 function queryStringFromQueryParams(queryParams?: object): string {
     // if params are undefined or empty, return an empty string
-    if (queryParams === undefined || _.isEmpty(queryParams)) {
+    if (queryParams === undefined || isEmpty(queryParams)) {
         return '';
     }
     // stringify the formatted object

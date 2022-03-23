@@ -1,7 +1,6 @@
 import { providerUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { SupportedProvider, ZeroExProvider } from 'ethereum-types';
-import * as _ from 'lodash';
 
 import { Maybe, Network, Providers, ProviderState } from 'ts/types';
 import { constants } from 'ts/utils/constants';

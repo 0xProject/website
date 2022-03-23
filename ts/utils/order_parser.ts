@@ -1,5 +1,6 @@
 import { logUtils } from '@0x/utils';
-import * as _ from 'lodash';
+
+import { find, get } from 'lodash-es';
 import { orderParsingUtils } from 'ts/utils/order_utils';
 
 import { portalOrderSchema } from 'ts/schemas/portal_order_schema';
@@ -12,7 +13,7 @@ export const orderParser = {
             return undefined;
         }
         const queryParams = queryString.substring(1).split('&');
-        const orderQueryParam = _.find(queryParams, (queryParam) => {
+        const orderQueryParam = find(queryParams, (queryParam) => {
             const queryPair = queryParam.split('=');
             return queryPair[0] === 'order';
         });
@@ -29,7 +30,7 @@ export const orderParser = {
             logUtils.log(`Invalid shared order: ${validationResult.errors}`);
             return undefined;
         }
-        const signedOrder = _.get(order, 'signedOrder');
+        const signedOrder = get(order, 'signedOrder');
         const convertedSignedOrder = orderParsingUtils.convertOrderStringFieldsToBigNumber(signedOrder);
         const result = {
             ...order,
@@ -39,7 +40,7 @@ export const orderParser = {
     },
     parseJsonString(orderJson: string): PortalOrder {
         const order = JSON.parse(orderJson);
-        const signedOrder = _.get(order, 'signedOrder');
+        const signedOrder = get(order, 'signedOrder');
         const convertedSignedOrder = orderParsingUtils.convertOrderStringFieldsToBigNumber(signedOrder);
         const result = {
             ...order,

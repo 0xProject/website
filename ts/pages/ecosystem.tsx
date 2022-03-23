@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -103,7 +103,7 @@ export const NextEcosystem = () => (
                 </Heading>
             </Column>
             <WrapGrid isTextCentered={true} isWrapped={true} isFullWidth={true}>
-                {_.map(benefits, (benefit: BenefitProps, index) => (
+                {map(benefits, (benefit: BenefitProps, index) => (
                     <Column key={`benefit-${index}`} width="33%" padding="0 45px 30px">
                         <Icon name={benefit.icon} size="medium" margin={[0, 0, 'small', 0]} />
                         <Heading color={colors.textDarkPrimary} size="small" marginBottom="10px" isCentered={true}>

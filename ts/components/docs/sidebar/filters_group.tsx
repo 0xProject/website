@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { orderBy } from 'lodash-es';
 import * as React from 'react';
 import { connectRefinementList } from 'react-instantsearch-dom';
 
@@ -26,7 +26,7 @@ const FiltersList: React.FC<IFilterListProps> = ({ attribute, items, currentRefi
     //    then visually disabling filters. That way the user is still able to see all filters, even those that do not apply to
     //    the current state of filtering.
 
-    const sortAlphabetically = (_items: IFilterProps[]) => _.orderBy(_items, 'label', 'asc');
+    const sortAlphabetically = (_items: IFilterProps[]) => orderBy(_items, 'label', 'asc');
 
     const sortByDifficulty = (_items: IFilterProps[]) => {
         return _items.sort((a, b) => difficultyOrder.indexOf(a.label) - difficultyOrder.indexOf(b.label));

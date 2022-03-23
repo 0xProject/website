@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { keys } from 'lodash-es';
 
 export const localStorage = {
     doesExist(): boolean {
@@ -40,6 +40,6 @@ export const localStorage = {
         if (!localStorage.doesExist) {
             return [];
         }
-        return _.keys(window.localStorage);
+        return keys(window.localStorage);
     },
 };

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { filter, isEmpty, map, values } from 'lodash-es';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import * as moment from 'moment';
@@ -135,12 +135,12 @@ export class AssetPicker extends React.Component<AssetPickerProps, AssetPickerSt
     private _renderGridTiles(): React.ReactNode {
         let isHovered;
         let tileStyles;
-        const allTokens = _.values(this.props.tokenByAddress);
+        const allTokens = values(this.props.tokenByAddress);
         // filter tokens based on visibility specified in props, do not show ZRX or ETHER as tracked or untracked
         const filteredTokens =
             this.props.tokenVisibility === TokenVisibility.All
                 ? allTokens
-                : _.filter(allTokens, (token) => {
+                : filter(allTokens, (token) => {
                       return (
                           token.symbol !== constants.ZRX_TOKEN_SYMBOL &&
                           token.symbol !== constants.ETHER_TOKEN_SYMBOL &&
@@ -152,10 +152,10 @@ export class AssetPicker extends React.Component<AssetPickerProps, AssetPickerSt
         // if we are showing tracked tokens, sort by date added, otherwise sort by symbol
         const sortKey = this.props.tokenVisibility === TokenVisibility.Tracked ? 'trackedTimestamp' : 'symbol';
         const sortedTokens = filteredTokens.sort(firstBy(sortKey));
-        if (_.isEmpty(sortedTokens)) {
+        if (isEmpty(sortedTokens)) {
             return <div className="mx-auto p4 h2">No tokens to remove.</div>;
         }
-        const gridTiles = _.map(sortedTokens, (token) => {
+        const gridTiles = map(sortedTokens, (token) => {
             const address = token.address;
             isHovered = this.state.hoveredAddress === address;
             tileStyles = {

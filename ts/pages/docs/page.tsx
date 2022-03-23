@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { compact, map } from 'lodash-es';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
@@ -154,8 +154,8 @@ const mdxComponents = {
 const waitForImages = async () => {
     const images = document.querySelectorAll('img');
     return Promise.all(
-        _.compact(
-            _.map(images, (img: HTMLImageElement) => {
+        compact(
+            map(images, (img: HTMLImageElement) => {
                 if (!img.complete) {
                     // tslint:disable-next-line:no-inferred-empty-object-type
                     return new Promise((resolve) => {

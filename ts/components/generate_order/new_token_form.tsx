@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { find, parseInt as lodashParseInt, values } from 'lodash-es';
 import TextField from 'material-ui/TextField';
 import * as moment from 'moment';
 import * as React from 'react';
@@ -144,7 +144,7 @@ export class NewTokenForm extends React.Component<NewTokenFormProps, NewTokenFor
 
         const newToken: Token = {
             address: this.state.address,
-            decimals: _.parseInt(this.state.decimals),
+            decimals: lodashParseInt(this.state.decimals),
             iconUrl: undefined,
             name: this.state.name,
             symbol: this.state.symbol.toUpperCase(),
@@ -156,8 +156,8 @@ export class NewTokenForm extends React.Component<NewTokenFormProps, NewTokenFor
     private _onTokenNameChanged(_event: any, name: string): void {
         let nameErrText = '';
         const maxLength = 30;
-        const tokens = _.values(this.props.tokenByAddress);
-        const tokenWithNameIfExists = _.find(tokens, { name });
+        const tokens = values(this.props.tokenByAddress);
+        const tokenWithNameIfExists = find(tokens, { name });
         const doesTokenWithNameExists = tokenWithNameIfExists !== undefined;
         if (name === '') {
             nameErrText = 'Name is required';
@@ -177,8 +177,8 @@ export class NewTokenForm extends React.Component<NewTokenFormProps, NewTokenFor
     private _onTokenSymbolChanged(_event: any, symbol: string): void {
         let symbolErrText = '';
         const maxLength = 5;
-        const tokens = _.values(this.props.tokenByAddress);
-        const doesTokenWithSymbolExists = _.find(tokens, { symbol }) !== undefined;
+        const tokens = values(this.props.tokenByAddress);
+        const doesTokenWithSymbolExists = find(tokens, { symbol }) !== undefined;
         if (symbol === '') {
             symbolErrText = 'Symbol is required';
         } else if (!this._isAlphanumeric(symbol)) {

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -88,7 +88,7 @@ export class Extensions extends React.Component<Props> {
 
                 <CustomSection>
                     <Grid>
-                        {_.map(extensionData, (item, index) => (
+                        {map(extensionData, (item, index) => (
                             <Card
                                 key={`extensionCard-${index}`}
                                 heading={item.title}

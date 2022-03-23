@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { noop } from 'lodash-es';
 import * as React from 'react';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 import { Link } from 'ts/components/documentation/shared/link';
@@ -38,12 +38,7 @@ export const SimpleMenuItem: React.StatelessComponent<SimpleMenuItemProps> = ({ 
     // Falling back to _.noop for onclick retains the hovering effect
     return (
         <Container marginTop="16px" className="flex flex-column">
-            <Text
-                fontSize="14px"
-                fontColor={colors.darkGrey}
-                onClick={onClick || _.noop.bind(_)}
-                hoverColor={colors.mediumBlue}
-            >
+            <Text fontSize="14px" fontColor={colors.darkGrey} onClick={onClick || noop} hoverColor={colors.mediumBlue}>
                 {displayText}
             </Text>
         </Container>

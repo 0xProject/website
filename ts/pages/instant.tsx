@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import styled, { keyframes } from 'styled-components';
 
@@ -114,7 +114,7 @@ export class Next0xInstant extends React.Component<Props> {
                 </Section>
 
                 <Section>
-                    {_.map(featuresData, (item, index) => (
+                    {map(featuresData, (item, index) => (
                         <Definition
                             key={`definition-${index}`}
                             icon={item.icon}

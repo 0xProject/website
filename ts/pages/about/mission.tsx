@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -64,7 +64,7 @@ export const NextAboutMission = () => (
 
             <Column width="70%" maxWidth="826px">
                 <Column width="100%" maxWidth="800px">
-                    {_.map(values, (item, index) => (
+                    {map(values, (item, index) => (
                         <StyledDefinition
                             key={`coreValue-${index}`}
                             icon={item.icon}

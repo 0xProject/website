@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { keys } from 'lodash-es';
 import * as moment from 'moment-timezone';
 
 import * as React from 'react';
@@ -69,7 +69,7 @@ function millisToDaysHoursMinutes(futureDateMs: number): string {
         second: 1,
     };
 
-    _.keys(structure).forEach((key: string) => {
+    keys(structure).forEach((key: string) => {
         result[key] = Math.floor(delta / structure[key]);
         delta -= result[key] * structure[key];
     });

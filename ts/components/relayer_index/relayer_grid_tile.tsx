@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { GridTile as PlainGridTile } from 'material-ui/GridList';
 import * as React from 'react';
 import { analytics } from 'ts/utils/analytics';
@@ -109,7 +109,7 @@ export const RelayerGridTile: React.StatelessComponent<RelayerGridTileProps> = (
                         </Section>
                         <Container marginTop="10px">
                             <Section titleText="Top Tokens">
-                                {!_.isEmpty(topTokens) && <TopTokens tokens={topTokens} networkId={props.networkId} />}
+                                {!isEmpty(topTokens) && <TopTokens tokens={topTokens} networkId={props.networkId} />}
                             </Section>
                         </Container>
                     </div>

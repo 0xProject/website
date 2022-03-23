@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -127,7 +127,7 @@ export class NextCommunity extends React.Component<Props> {
                         isCentered={false}
                         maxWidth="1151px"
                     >
-                        {_.map(communityLinks, (link: CommunityLinkProps, index: number) => (
+                        {map(communityLinks, (link: CommunityLinkProps, index: number) => (
                             <CommunityLink
                                 key={`cl-${index}`}
                                 icon={link.icon}
@@ -170,7 +170,7 @@ export class NextCommunity extends React.Component<Props> {
                         isCentered={false}
                         maxWidth="1149px"
                     >
-                        {_.map(events, (ev: EventProps, index: number) => (
+                        {map(events, (ev: EventProps, index: number) => (
                             <Event
                                 key={`event-${index}`}
                                 title={ev.title}

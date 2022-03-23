@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { assign } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -82,16 +82,16 @@ export class ExploreGrid extends React.Component<ExptoreGridProps> {
             const gridStart = gridEndCounter;
             const gridEnd = gridEndCounter + EXPLORE_TILE_COL_WIDTH[t.width][width];
             gridEndCounter = gridEnd;
-            const newTilePositions = _.assign({}, t.tilePositions);
+            const newTilePositions = assign({}, t.tilePositions);
             newTilePositions[width] = { gridStart, gridEnd };
-            return _.assign({}, t, { tilePositions: newTilePositions }) as RicherExploreGridListTile;
+            return assign({}, t, { tilePositions: newTilePositions }) as RicherExploreGridListTile;
         });
         return newTiles;
     };
 
     private readonly _generateGridValues = (tiles: ExploreTile[]): RicherExploreGridListTile[] => {
         let richerTiles = tiles.map((t) => {
-            return _.assign({ tilePositions: {} }, t) as RicherExploreGridListTile;
+            return assign({ tilePositions: {} }, t) as RicherExploreGridListTile;
         });
         richerTiles = this._generateGridPositions(richerTiles, ExploreTileGridWidth.ThreeColumn);
         richerTiles = this._generateGridPositions(richerTiles, ExploreTileGridWidth.TwoColumn);

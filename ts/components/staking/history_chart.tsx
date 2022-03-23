@@ -2,7 +2,7 @@ import { extent } from 'd3-array';
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { defaults, Line } from 'react-chartjs-2';
 
 import { colors } from 'ts/style/colors';

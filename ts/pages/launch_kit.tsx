@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import { Banner } from 'ts/components/banner';
 import { Button } from 'ts/components/button';
@@ -124,7 +124,7 @@ export class NextLaunchKit extends React.Component<Props> {
                     />
                 </Section>
 
-                {_.map(offersData, (item, index) => (
+                {map(offersData, (item, index) => (
                     <ShowcaseSection
                         maxWidth="1170px"
                         showcaseImgSrc={item.showcaseUrl}
@@ -142,9 +142,9 @@ export class NextLaunchKit extends React.Component<Props> {
 
                 <Section maxWidth="1170px" isFlex={true}>
                     <Heading size={42}>Features</Heading>
-                    {_.map(featuresList, (details: string[], listIndex: number) => (
+                    {map(featuresList, (details: string[], listIndex: number) => (
                         <CheckedUl key={`features-list-${listIndex}`}>
-                            {_.map(details, (detail: string, detailIndex: number) => (
+                            {map(details, (detail: string, detailIndex: number) => (
                                 <CheckedLi>{detail}</CheckedLi>
                             ))}
                         </CheckedUl>

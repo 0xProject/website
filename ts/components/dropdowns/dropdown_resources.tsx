@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import styled, { withTheme } from 'styled-components';
 import { Column, FlexWrap } from 'ts/components/newLayout';
@@ -55,7 +55,7 @@ export const DropdownResources: React.FunctionComponent<Props> = withTheme((prop
     <>
         <DropdownWrap>
             <ul>
-                {_.map(introData, (item, index) => (
+                {map(introData, (item, index) => (
                     <li key={`introLink-${index}`}>
                         <Link to={item.url} shouldOpenInNewTab={item.shouldOpenInNewTab}>
                             {item.label}
@@ -71,7 +71,7 @@ export const DropdownResources: React.FunctionComponent<Props> = withTheme((prop
                     </Heading>
 
                     <ul>
-                        {_.map(programsData, (item, index) => (
+                        {map(programsData, (item, index) => (
                             <li key={`programsLink-${index}`}>
                                 <Link to={item.url} shouldOpenInNewTab={item.shouldOpenInNewTab}>
                                     {item.label}

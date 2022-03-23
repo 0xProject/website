@@ -3,7 +3,7 @@ import { DevUtilsContract } from '@0x/contracts-dev-utils';
 import { schemas, SchemaValidator } from '@0x/json-schemas';
 import { Order } from '@0x/types';
 import { BigNumber } from '@0x/utils';
-import * as _ from 'lodash';
+import { assign, each, update } from 'lodash-es';
 
 // TODO(kimpers): This file is completely untested make sure to verify when bringing back Portal
 
@@ -11,9 +11,9 @@ import * as _ from 'lodash';
 // https://github.com/0xProject/0x-monorepo/blob/development/packages/connect/src/utils/order_parsing_utils.ts
 export const orderParsingUtils = {
     convertStringsFieldsToBigNumbers(obj: any, fields: string[]): any {
-        const result = _.assign({}, obj);
-        _.each(fields, (field) => {
-            _.update(result, field, (value: string) => {
+        const result = assign({}, obj);
+        each(fields, (field) => {
+            update(result, field, (value: string) => {
                 if (value === undefined) {
                     throw new Error(`Could not find field '${field}' while converting string fields to BigNumber.`);
                 }

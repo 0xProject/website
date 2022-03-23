@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { concat, includes, isEmpty, omitBy, pull, reduce } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -384,7 +384,7 @@ export class ModalContact extends React.Component<Props> {
                                 <CheckBoxInput
                                     onClick={this._handleCheckBoxInput.bind(this, metadata.name)}
                                     key={`checkbox-${metadata.name}`}
-                                    isSelected={_.includes(this.state.creditLeadsServices, metadata.name)}
+                                    isSelected={includes(this.state.creditLeadsServices, metadata.name)}
                                     label={metadata.label}
                                 />
                             );
@@ -397,9 +397,9 @@ export class ModalContact extends React.Component<Props> {
 
     private _handleCheckBoxInput(checkBoxName: string): void {
         if (this.props.modalContactType === ModalContactType.Credits) {
-            const newCreditLeadsServices = _.includes(this.state.creditLeadsServices, checkBoxName)
-                ? _.pull(this.state.creditLeadsServices, checkBoxName)
-                : _.concat(this.state.creditLeadsServices, checkBoxName);
+            const newCreditLeadsServices = includes(this.state.creditLeadsServices, checkBoxName)
+                ? pull(this.state.creditLeadsServices, checkBoxName)
+                : concat(this.state.creditLeadsServices, checkBoxName);
             this.setState({ creditLeadsServices: newCreditLeadsServices });
         } else if (this.props.modalContactType === ModalContactType.Explore) {
             this.setState({ exploreSupportInstant: checkBoxName === 'no' ? false : true });
@@ -533,7 +533,7 @@ export class ModalContact extends React.Component<Props> {
                 headers: {
                     'content-type': 'application/json; charset=utf-8',
                 },
-                body: JSON.stringify(_.omitBy(jsonBody, _.isEmpty)),
+                body: JSON.stringify(omitBy(jsonBody, isEmpty)),
             });
 
             if (!response.ok) {
@@ -552,7 +552,7 @@ export class ModalContact extends React.Component<Props> {
     private _parseErrors(errors: ErrorResponseProps[]): ErrorProps {
         const initialValue: {} = {};
         // tslint:disable-next-line: no-inferred-empty-object-type
-        return _.reduce(
+        return reduce(
             errors,
             (hash: ErrorProps, error: ErrorResponseProps) => {
                 const { param, msg } = error;

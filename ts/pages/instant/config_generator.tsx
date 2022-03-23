@@ -2,7 +2,8 @@ import { StandardRelayerAPIOrderProvider } from '@0x/asset-buyer';
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { assetDataUtils } from '@0x/order-utils';
 import { ObjectMap } from '@0x/types';
-import * as _ from 'lodash';
+
+import { includes, isEmpty, isString, keys, map, pull, reduce } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -61,7 +62,7 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
     }
     public render(): React.ReactNode {
         const { value } = this.props;
-        if (!_.isString(value.orderSource)) {
+        if (!isString(value.orderSource)) {
             throw new Error('ConfigGenerator component only supports string values as an orderSource.');
         }
         return (
@@ -95,7 +96,7 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
                         isDisabled={
                             value.affiliateInfo === undefined ||
                             value.affiliateInfo.feeRecipient === undefined ||
-                            _.isEmpty(value.affiliateInfo.feeRecipient)
+                            isEmpty(value.affiliateInfo.feeRecipient)
                         }
                     />
                 </ConfigGeneratorSection>
@@ -103,7 +104,7 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
         );
     }
     private readonly _getTokenSelectorProps = (): ConfigGeneratorSectionProps => {
-        if (_.isEmpty(this.state.availableTokens)) {
+        if (isEmpty(this.state.availableTokens)) {
             return {
                 title: 'What tokens can users buy?',
             };
@@ -122,7 +123,7 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
         };
     };
     private readonly _generateItems = (): SelectItemConfig[] => {
-        return _.map(SRA_ENDPOINTS, (endpoint) => ({
+        return map(SRA_ENDPOINTS, (endpoint) => ({
             label: endpoint,
             value: endpoint,
             onClick: this._handleSRASelection.bind(this, endpoint),
@@ -180,12 +181,12 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
     private readonly _handleTokenClick = (assetData: string) => {
         const { value } = this.props;
         let newAvailableAssetDatas: string[] = [];
-        const allKnownAssetDatas = _.keys(this.state.availableTokens);
+        const allKnownAssetDatas = keys(this.state.availableTokens);
         const availableAssetDatas = value.availableAssetDatas;
         if (availableAssetDatas === undefined) {
             // It being undefined means it's all tokens.
-            newAvailableAssetDatas = _.pull(allKnownAssetDatas, assetData);
-        } else if (!_.includes(availableAssetDatas, assetData)) {
+            newAvailableAssetDatas = pull(allKnownAssetDatas, assetData);
+        } else if (!includes(availableAssetDatas, assetData)) {
             // Add it
             newAvailableAssetDatas = [...availableAssetDatas, assetData];
             if (newAvailableAssetDatas.length === allKnownAssetDatas.length) {
@@ -194,7 +195,7 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
             }
         } else {
             // Remove it
-            newAvailableAssetDatas = _.pull(availableAssetDatas, assetData);
+            newAvailableAssetDatas = pull(availableAssetDatas, assetData);
         }
         const newConfig: ZeroExInstantBaseConfig = {
             ...this.props.value,
@@ -204,7 +205,7 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
     };
     private readonly _setAvailableAssetsFromOrderProvider = async (): Promise<void> => {
         const { value } = this.props;
-        if (value.orderSource !== undefined && _.isString(value.orderSource)) {
+        if (value.orderSource !== undefined && isString(value.orderSource)) {
             this.setState({ isLoadingAvailableTokens: true });
             const networkId = constants.NETWORK_ID_MAINNET;
             // TODO(kimpers): is this correct??
@@ -212,7 +213,7 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
             const etherTokenAddress = getContractAddressesForChainOrThrow(networkId).etherToken;
             const etherTokenAssetData = assetDataUtils.encodeERC20AssetData(etherTokenAddress);
             const assetDatas = await sraOrderProvider.getAvailableMakerAssetDatasAsync(etherTokenAssetData);
-            const availableTokens = _.reduce(
+            const availableTokens = reduce(
                 assetDatas,
                 (acc, assetData) => {
                     const metaDataIfExists = assetMetaDataMap[assetData] as ERC20AssetMetaData;
@@ -246,7 +247,7 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
                 </Container>
             );
         }
-        const availableAssetDatas = _.keys(availableTokens);
+        const availableAssetDatas = keys(availableTokens);
         if (availableAssetDatas.length === 0) {
             return (
                 <Container
@@ -260,7 +261,7 @@ export class ConfigGenerator extends React.Component<ConfigGeneratorProps, Confi
                 </Container>
             );
         }
-        const items = _.map(_.keys(availableTokens), (assetData) => {
+        const items = map(keys(availableTokens), (assetData) => {
             const metaData = availableTokens[assetData];
             return {
                 value: assetData,

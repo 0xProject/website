@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import ScrollableAnchor, { configureAnchors } from 'react-scrollable-anchor';
 import styled from 'styled-components';
@@ -165,7 +165,7 @@ export class NextWhy extends React.Component<Props> {
                                         What 0x offers
                                     </SectionTitle>
 
-                                    {_.map(offersData, (item, index) => (
+                                    {map(offersData, (item, index) => (
                                         <Definition
                                             key={`offers-${index}`}
                                             icon={item.icon}
@@ -184,7 +184,7 @@ export class NextWhy extends React.Component<Props> {
                                         Use Cases
                                     </SectionTitle>
                                     <Slider>
-                                        {_.map(useCaseSlides, (item, index) => (
+                                        {map(useCaseSlides, (item, index) => (
                                             <Slide
                                                 key={`useCaseSlide-${index}`}
                                                 heading={item.title}
@@ -202,7 +202,7 @@ export class NextWhy extends React.Component<Props> {
                                         Exchange Functionality
                                     </SectionTitle>
 
-                                    {_.map(functionalityData, (item, index) => (
+                                    {map(functionalityData, (item, index) => (
                                         <Definition
                                             key={`functionality-${index}`}
                                             icon={item.icon}

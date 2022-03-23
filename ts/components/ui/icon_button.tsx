@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { isEmpty } from 'lodash-es';
 import * as React from 'react';
 import { Styles } from 'ts/types';
 import { colors } from 'ts/utils/colors';
@@ -49,7 +49,7 @@ export class IconButton extends React.Component<IconButtonProps, IconButtonState
                 style={styles.root}
             >
                 <i style={styles.icon} className={`zmdi ${this.props.iconName}`} />
-                {!_.isEmpty(this.props.labelText) && (
+                {!isEmpty(this.props.labelText) && (
                     <div className="pl1" style={styles.label}>
                         {this.props.labelText}
                     </div>

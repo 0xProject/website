@@ -4,7 +4,8 @@ import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { addMilliseconds } from 'date-fns';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
-import * as _ from 'lodash';
+
+import { flatMap } from 'lodash-es';
 import { useCallback, useEffect, useState } from 'react';
 
 import { AccountReady, ProviderState, StakePoolData, StakeStatus, TransactionLoadingState } from 'ts/types';
@@ -158,7 +159,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
 
             const data: string[] = [
                 stakingContract.stake(totalStakeBaseUnits).getABIEncodedTransactionData(),
-                ..._.flatMap(normalizedPoolData, ({ poolId, amountBaseUnits }) => {
+                ...flatMap(normalizedPoolData, ({ poolId, amountBaseUnits }) => {
                     const res = [
                         stakingContract
                             .moveStake(
@@ -285,7 +286,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
                 }),
             );
 
-            const data: string[] = _.flatMap(poolIds, (poolId) => {
+            const data: string[] = flatMap(poolIds, (poolId) => {
                 const res = [stakingContract.withdrawDelegatorRewards(poolId).getABIEncodedTransactionData()];
                 if (feesCollectedPreviousEpoch[poolId].toNumber() > 0) {
                     res.unshift(stakingContract.finalizePool(poolId).getABIEncodedTransactionData());

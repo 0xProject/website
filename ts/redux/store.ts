@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { throttle } from 'lodash-es';
 import { applyMiddleware, createStore, Store as ReduxStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import { stateStorage } from 'ts/local_storage/state_storage';
@@ -13,7 +13,7 @@ export const store: ReduxStore<State> = createStore(
     composeWithDevTools(applyMiddleware(analyticsMiddleware)),
 );
 store.subscribe(
-    _.throttle(() => {
+    throttle(() => {
         const state = store.getState();
         // Persisted state
         stateStorage.saveState({

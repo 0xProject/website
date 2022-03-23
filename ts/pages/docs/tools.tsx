@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { orderBy } from 'lodash-es';
 import * as React from 'react';
 import { Configure, connectHits, InstantSearch } from 'react-instantsearch-dom';
 import styled from 'styled-components';
@@ -56,7 +56,7 @@ const FeaturedTools: React.FC<IHitsProps> = ({ hits }) => {
     if (featuredTools.length === 0) {
         return null;
     } else {
-        const sortedFeaturedTools = _.orderBy(featuredTools, [(hit) => hit.title.toLowerCase()], ['asc']);
+        const sortedFeaturedTools = orderBy(featuredTools, [(hit) => hit.title.toLowerCase()], ['asc']);
 
         return (
             <FeaturedToolsWrapper>
@@ -87,7 +87,7 @@ const GroupedTools: React.FC<IHitsProps> = ({ hits }) => {
 
                         {difficultyOrder.map((difficulty) => {
                             const filteredHits = filteredByType.filter((hit: any) => hit.difficulty === difficulty);
-                            const sortedHits = _.orderBy(filteredHits, [(hit) => hit.title.toLowerCase()], ['asc']);
+                            const sortedHits = orderBy(filteredHits, [(hit) => hit.title.toLowerCase()], ['asc']);
 
                             return sortedHits.map((hit: any, index: number) => (
                                 <Resource key={`resource-${index}`} hit={hit} />

@@ -1,6 +1,7 @@
 import { BigNumber } from '@0x/utils';
 import { addDays, formatDistanceStrict } from 'date-fns';
-import * as _ from 'lodash';
+
+import { debounce, find, once } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -273,7 +274,7 @@ export interface StakingInputPaneProps {
 }
 
 type AmountTrackingValue = '25%' | '50%' | '100%' | 'custom';
-const trackStakingAmountSelected = _.debounce(
+const trackStakingAmountSelected = debounce(
     (value: AmountTrackingValue): void => {
         const { TRACKING } = constants.STAKING;
         trackEvent(TRACKING.STAKING_AMOUNT_EVENT, { value });
@@ -411,7 +412,7 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
         return null;
     }
 
-    const marketMakerPool = _.find(stakingPools, (p) => p.poolId === poolId);
+    const marketMakerPool = find(stakingPools, (p) => p.poolId === poolId);
 
     if (!marketMakerPool) {
         // TODO(johnrjj) error state
@@ -495,7 +496,7 @@ export const MarketMakerStakeInputPane: React.FC<MarketMakerStakeInputPaneProps>
     );
 };
 
-const trackStartStakingScreenViewed = _.once(() => {
+const trackStartStakingScreenViewed = once(() => {
     const { TRACKING } = constants.STAKING;
     trackEvent(TRACKING.START_STAKING_SCREEN_VIEWED);
 });

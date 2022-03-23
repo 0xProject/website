@@ -1,6 +1,7 @@
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import * as _ from 'lodash';
+
+import { isEmpty } from 'lodash-es';
 import * as React from 'react';
 import { Blockchain } from 'ts/blockchain';
 import { Link } from 'ts/components/documentation/shared/link';
@@ -127,7 +128,7 @@ export class TokenAmountInput extends React.Component<TokenAmountInputProps, Tok
         this.setState({
             isBalanceAndAllowanceLoaded: false,
         });
-        const userAddressIfExists = _.isEmpty(userAddress) ? undefined : userAddress;
+        const userAddressIfExists = isEmpty(userAddress) ? undefined : userAddress;
         const [balance, allowance] = await this.props.blockchain.getTokenBalanceAndAllowanceAsync(
             userAddressIfExists,
             tokenAddress,

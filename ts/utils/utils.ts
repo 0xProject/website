@@ -11,7 +11,8 @@ import * as changeCase from 'change-case';
 import deepEqual from 'deep-equal';
 import { providers } from 'ethers';
 import isMobile from 'is-mobile';
-import * as _ from 'lodash';
+import { filter, find, get, includes, isEmpty, isInteger, isNaN, repeat, values } from 'lodash-es';
+
 import * as moment from 'moment';
 import * as numeral from 'numeral';
 import { scroller } from 'react-scroll';
@@ -135,7 +136,7 @@ export const utils = {
     getColSize(items: number): number {
         const bassCssGridSize = 12; // Source: http://basscss.com/#basscss-grid
         const colSize = bassCssGridSize / items;
-        if (!_.isInteger(colSize)) {
+        if (!isInteger(colSize)) {
             throw new Error(`Number of cols must be divisible by ${bassCssGridSize}`);
         }
         return colSize;
@@ -187,9 +188,9 @@ export const utils = {
         const paritySignerDenialErrMsg = 'Request has been rejected';
         const ledgerDenialErrMsg = 'Invalid status 6985';
         const isUserDeniedErrMsg =
-            _.includes(errMsg, metamaskDenialErrMsg) ||
-            _.includes(errMsg, paritySignerDenialErrMsg) ||
-            _.includes(errMsg, ledgerDenialErrMsg);
+            includes(errMsg, metamaskDenialErrMsg) ||
+            includes(errMsg, paritySignerDenialErrMsg) ||
+            includes(errMsg, ledgerDenialErrMsg);
         return isUserDeniedErrMsg;
     },
     getAddressBeginAndEnd(address: string, beginCharCount: number = 6, endCharCount: number = 4): string {
@@ -216,7 +217,7 @@ export const utils = {
         injectedProviderName: string,
         userAddress?: string,
     ): AccountState {
-        const isAddressAvailable = userAddress !== undefined && !_.isEmpty(userAddress);
+        const isAddressAvailable = userAddress !== undefined && !isEmpty(userAddress);
         const isExternallyInjectedProvider = utils.isExternallyInjected(providerType, injectedProviderName);
         if (!isBlockchainReady) {
             return AccountState.Loading;
@@ -233,12 +234,12 @@ export const utils = {
         if (token.isRegistered) {
             return true; // Since it's registered, it is the canonical token
         }
-        const registeredTokens = _.filter(tokens, (t) => t.isRegistered);
-        const tokenWithSameNameIfExists = _.find(registeredTokens, {
+        const registeredTokens = filter(tokens, (t) => t.isRegistered);
+        const tokenWithSameNameIfExists = find(registeredTokens, {
             name: token.name,
         });
         const isUniqueName = tokenWithSameNameIfExists === undefined;
-        const tokenWithSameSymbolIfExists = _.find(registeredTokens, {
+        const tokenWithSameSymbolIfExists = find(registeredTokens, {
             name: token.symbol,
         });
         const isUniqueSymbol = tokenWithSameSymbolIfExists === undefined;
@@ -284,13 +285,13 @@ export const utils = {
         return humanReadableErrorMsg;
     },
     isParityNode(nodeVersion: string): boolean {
-        return _.includes(nodeVersion, 'Parity');
+        return includes(nodeVersion, 'Parity');
     },
     isTestRpc(nodeVersion: string): boolean {
-        return _.includes(nodeVersion, 'TestRPC');
+        return includes(nodeVersion, 'TestRPC');
     },
     isTestNetwork(networkId: number): boolean {
-        const isTestNetwork = _.includes(
+        const isTestNetwork = includes(
             [
                 constants.NETWORK_ID_BY_NAME[Networks.Kovan],
                 constants.NETWORK_ID_BY_NAME[Networks.Rinkeby],
@@ -319,9 +320,9 @@ export const utils = {
     checkWindowProviderProperty(propertyName: string): boolean {
         if ((window.ethereum && window.ethereum[propertyName]) || (window.web3 && window.web3[propertyName])) {
             return true;
-        } else if (_.get(window, propertyName) !== undefined) {
+        } else if (get(window, propertyName) !== undefined) {
             return true;
-        } else if (_.get(window, propertyName) !== undefined) {
+        } else if (get(window, propertyName) !== undefined) {
             return true;
         } else if (utils.getBrowserType() === propertyName && !window.ethereum) {
             return true;
@@ -334,7 +335,7 @@ export const utils = {
         const anyProvider = provider as any;
         if (provider.constructor.name === 'EthereumProvider') {
             return Providers.Mist;
-        } else if (_.get(window, 'Bitpie')) {
+        } else if (get(window, 'Bitpie')) {
             // NOTE: Bitpie is TrustWallet based so isTrust is also true
             return Providers.Bitpie;
         } else if (anyProvider.isTrust) {
@@ -345,9 +346,9 @@ export const utils = {
             return Providers.Metamask;
         } else if (anyProvider.isImToken) {
             return Providers.ImToken;
-        } else if (_.get(window, 'SOFA') !== undefined) {
+        } else if (get(window, 'SOFA') !== undefined) {
             return Providers.CoinbaseWallet;
-        } else if (_.get(window, '__CIPHER__') !== undefined) {
+        } else if (get(window, '__CIPHER__') !== undefined) {
             return Providers.Cipher;
         } else if (utils.getBrowserType() === BrowserType.Opera && !anyProvider.isMetaMask) {
             return Providers.Opera;
@@ -431,13 +432,13 @@ export const utils = {
         return utils.getTokenBySymbol(constants.ZRX_TOKEN_SYMBOL, tokenByAddress);
     },
     getTokenBySymbol(symbol: string, tokenByAddress: TokenByAddress): Token {
-        const tokens = _.values(tokenByAddress);
-        const token = _.find(tokens, { symbol });
+        const tokens = values(tokenByAddress);
+        const token = find(tokens, { symbol });
         return token;
     },
     getTrackedTokens(tokenByAddress: TokenByAddress): Token[] {
-        const allTokens = _.values(tokenByAddress);
-        const trackedTokens = _.filter(allTokens, (t) => utils.isTokenTracked(t));
+        const allTokens = values(tokenByAddress);
+        const trackedTokens = filter(allTokens, (t) => utils.isTokenTracked(t));
         return trackedTokens;
     },
     getFormattedAmountFromToken(token: Token, tokenState: TokenState): string {
@@ -445,7 +446,7 @@ export const utils = {
     },
     format(value: BigNumber, format: string): string {
         const formattedAmount = numeral(value).format(format);
-        if (_.isNaN(formattedAmount) || formattedAmount === 'NaN') {
+        if (isNaN(formattedAmount) || formattedAmount === 'NaN') {
             // https://github.com/adamwdraper/Numeral-js/issues/596
             return numeral(new BigNumber(0)).format(format);
         }
@@ -462,7 +463,7 @@ export const utils = {
         const lessThanOnePrecision = Math.min(constants.TOKEN_AMOUNT_DISPLAY_PRECISION, unitAmount.decimalPlaces());
         const greaterThanOnePrecision = 2;
         const precision = unitAmount.lt(1) ? lessThanOnePrecision : greaterThanOnePrecision;
-        const format = `0,0.${_.repeat('0', precision)}`;
+        const format = `0,0.${repeat('0', precision)}`;
         return utils.format(unitAmount, format);
     },
     getUsdValueFormattedAmount(amount: BigNumber, decimals: number, price: BigNumber): string {
@@ -558,7 +559,7 @@ export const utils = {
     },
     scrollToHash(hash: string, containerId: string): void {
         let finalHash = hash;
-        if (_.isEmpty(hash)) {
+        if (isEmpty(hash)) {
             finalHash = constants.SCROLL_TOP_ID; // scroll to the top
         }
 

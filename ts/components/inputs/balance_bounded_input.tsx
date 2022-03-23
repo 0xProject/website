@@ -1,5 +1,6 @@
 import { BigNumber } from '@0x/utils';
-import * as _ from 'lodash';
+import { includes, noop } from 'lodash-es';
+
 import TextField from 'material-ui/TextField';
 import * as React from 'react';
 import { RequiredLabel } from 'ts/components/ui/required_label';
@@ -35,7 +36,7 @@ export class BalanceBoundedInput extends React.Component<BalanceBoundedInputProp
         isDisabled: false,
         shouldShowErrs: true,
         hintText: 'amount',
-        onErrorMsgChange: _.noop.bind(_),
+        onErrorMsgChange: noop,
         shouldShowUnderline: true,
     };
     constructor(props: BalanceBoundedInputProps) {
@@ -103,7 +104,7 @@ export class BalanceBoundedInput extends React.Component<BalanceBoundedInputProp
     private _onValueChange(_event: any, amountString: string): void {
         this._setAmountState(amountString, this.props.balance, () => {
             const isValid = this._validate(amountString, this.props.balance) === undefined;
-            const isPositiveNumber = utils.isNumeric(amountString) && !_.includes(amountString, '-');
+            const isPositiveNumber = utils.isNumeric(amountString) && !includes(amountString, '-');
             if (isPositiveNumber) {
                 this.props.onChange(isValid, new BigNumber(amountString));
             } else {
@@ -125,7 +126,7 @@ export class BalanceBoundedInput extends React.Component<BalanceBoundedInputProp
         const errMsg = this.props.validate === undefined ? undefined : this.props.validate(amount);
         return errMsg;
     }
-    private _setAmountState(amount: string, balance: BigNumber, callback: () => void = _.noop.bind(_)): void {
+    private _setAmountState(amount: string, balance: BigNumber, callback: () => void = noop): void {
         const errorMsg = this._validate(amount, balance);
         this.props.onErrorMsgChange(errorMsg);
         this.setState(

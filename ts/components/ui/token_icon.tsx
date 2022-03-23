@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { isEmpty } from 'lodash-es';
 import * as React from 'react';
 import { Identicon } from 'ts/components/ui/identicon';
 import { Token } from 'ts/types';
@@ -21,7 +21,7 @@ export class TokenIcon extends React.Component<TokenIconProps, TokenIconState> {
             ) : (
                 <Identicon address={token.address} diameter={diameter} />
             );
-        if (_.isEmpty(this.props.link)) {
+        if (isEmpty(this.props.link)) {
             return icon;
         } else {
             return (

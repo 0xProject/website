@@ -1,6 +1,6 @@
 import { BigNumber, logUtils } from '@0x/utils';
 import { format } from 'date-fns';
-import * as _ from 'lodash';
+
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, RouteChildrenProps, useParams } from 'react-router-dom';

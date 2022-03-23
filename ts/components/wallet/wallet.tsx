@@ -1,7 +1,8 @@
 import { BigNumber, errorUtils } from '@0x/utils';
-import * as _ from 'lodash';
+
 import { utils } from 'ts/utils/utils';
 
+import { concat, difference, head, includes, isEmpty, map, noop, range, size } from 'lodash-es';
 import ActionAccountBalanceWallet from 'material-ui/svg-icons/action/account-balance-wallet';
 import * as React from 'react';
 import firstBy from 'thenby';
@@ -109,14 +110,14 @@ export class Wallet extends React.Component<WalletProps, WalletState> {
     }
     public componentDidUpdate(prevProps: WalletProps): void {
         const currentTrackedTokens = this.props.trackedTokens;
-        const differentTrackedTokens = _.difference(currentTrackedTokens, prevProps.trackedTokens);
-        const firstDifferentTrackedToken = _.head(differentTrackedTokens);
+        const differentTrackedTokens = difference(currentTrackedTokens, prevProps.trackedTokens);
+        const firstDifferentTrackedToken = head(differentTrackedTokens);
         // check if there is only one different token, and if that token is a member of the current tracked tokens
         // this means that the token was added, not removed
         if (
             firstDifferentTrackedToken !== undefined &&
-            _.size(differentTrackedTokens) === 1 &&
-            _.includes(currentTrackedTokens, firstDifferentTrackedToken)
+            size(differentTrackedTokens) === 1 &&
+            includes(currentTrackedTokens, firstDifferentTrackedToken)
         ) {
             document.getElementById(firstDifferentTrackedToken.address).scrollIntoView();
         }
@@ -129,17 +130,17 @@ export class Wallet extends React.Component<WalletProps, WalletState> {
         );
     }
     private _renderLoadingRows(): React.ReactNode {
-        return _.concat(this._renderLoadingHeaderRows(), this._renderLoadingBodyRows());
+        return concat(this._renderLoadingHeaderRows(), this._renderLoadingBodyRows());
     }
     private _renderLoadingHeaderRows(): React.ReactElement<{}> {
         return this._renderPlainHeaderRow('Loading...');
     }
     private _renderLoadingBodyRows(): React.ReactElement<{}> {
         const bodyStyle = this._getBodyStyle();
-        const loadingRowsRange = _.range(LOADING_ROWS_COUNT);
+        const loadingRowsRange = range(LOADING_ROWS_COUNT);
         return (
             <div key={BODY_ITEM_KEY} className="flex flex-column" style={bodyStyle}>
-                {_.map(loadingRowsRange, (index) => {
+                {map(loadingRowsRange, (index) => {
                     return <NullTokenRow key={index} iconDimension={ICON_DIMENSION} fillColor={PLACEHOLDER_COLOR} />;
                 })}
                 <Container
@@ -165,10 +166,10 @@ export class Wallet extends React.Component<WalletProps, WalletState> {
         );
     }
     private _renderLoadedRows(): React.ReactNode {
-        const isAddressAvailable = !_.isEmpty(this.props.userAddress);
+        const isAddressAvailable = !isEmpty(this.props.userAddress);
         return isAddressAvailable
-            ? _.concat(this._renderConnectedHeaderRows(), this._renderBody())
-            : _.concat(this._renderDisconnectedHeaderRows(), this._renderLoadingBodyRows());
+            ? concat(this._renderConnectedHeaderRows(), this._renderBody())
+            : concat(this._renderDisconnectedHeaderRows(), this._renderLoadingBodyRows());
     }
     private _renderDisconnectedHeaderRows(): React.ReactElement<{}> {
         const isExternallyInjectedProvider = utils.isExternallyInjected(
@@ -207,7 +208,7 @@ export class Wallet extends React.Component<WalletProps, WalletState> {
                 <AccountConnection accountState={accountState} injectedProviderName={this.props.injectedProviderName} />
             </div>
         );
-        const onClick = _.noop.bind(_);
+        const onClick = noop;
         const accessory = (
             <DropDown
                 activeNode={
@@ -317,7 +318,7 @@ export class Wallet extends React.Component<WalletProps, WalletState> {
                 .thenBy((t: Token) => t.symbol !== constants.ZRX_TOKEN_SYMBOL)
                 .thenBy('trackedTimestamp'),
         );
-        return _.map(trackedTokensStartingWithEtherToken, this._renderTokenRow.bind(this));
+        return map(trackedTokensStartingWithEtherToken, this._renderTokenRow.bind(this));
     }
     private _renderTokenRow(token: Token): React.ReactNode {
         const tokenState = this.props.trackedTokenStateByAddress[token.address];

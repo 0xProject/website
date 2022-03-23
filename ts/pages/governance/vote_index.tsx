@@ -2,7 +2,7 @@ import { ZrxTreasuryContract } from '@0x/contracts-treasury';
 import { BigNumber } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { gql, request } from 'graphql-request';
-import * as _ from 'lodash';
+
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 import * as React from 'react';

@@ -1,5 +1,5 @@
 import { BigNumber } from '@0x/utils';
-import * as _ from 'lodash';
+
 import * as moment from 'moment';
 import * as React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';

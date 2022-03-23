@@ -1,8 +1,8 @@
 import { BigNumber } from '@0x/utils';
 import { formatDistanceStrict, formatDuration, intervalToDuration, isPast } from 'date-fns';
-import * as _ from 'lodash';
 
 import { Decimal } from 'decimal.js';
+import { min, orderBy, sumBy } from 'lodash-es';
 import { constants } from 'ts/utils/constants';
 import { formatZrx } from 'ts/utils/format_number';
 
@@ -57,8 +57,8 @@ export const stakingUtils = {
         // TODO(johnrjj) - Refactor to use BigNumber exclusively
         const stakingDecisions: { [poolId: string]: number } = {};
         for (let i = 0; i < numIterations; i++) {
-            const totalStake = _.sumBy(poolsSummary, (p) => p.zrxStaked);
-            const totalProtocolFees = _.sumBy(poolsSummary, (p) => p.sevenDayProtocolFeesGeneratedInEth);
+            const totalStake = sumBy(poolsSummary, (p) => p.zrxStaked);
+            const totalProtocolFees = sumBy(poolsSummary, (p) => p.sevenDayProtocolFeesGeneratedInEth);
             const adjustedStakeRatios: number[] = [];
             for (const pool of poolsSummary) {
                 const stakeRatio =
@@ -68,7 +68,7 @@ export const stakingUtils = {
                 const adjStakeRatio = Math.pow((1 - alpha) / (1 - pool.operatorShare), 1 / alpha) * stakeRatio;
                 adjustedStakeRatios.push(adjStakeRatio);
             }
-            const bestPoolIndex = adjustedStakeRatios.indexOf(_.min(adjustedStakeRatios));
+            const bestPoolIndex = adjustedStakeRatios.indexOf(min(adjustedStakeRatios));
             const bestPool = poolsSummary[bestPoolIndex];
             stakingDecisions[bestPool.poolId] = stakingDecisions[bestPool.poolId] || 0;
             stakingDecisions[bestPool.poolId] += amountZrxToStake / numIterations;
@@ -83,7 +83,7 @@ export const stakingUtils = {
         );
 
         // Sort desc
-        const orderedRecs = _.orderBy(recs, (p) => p.zrxAmount, ['desc']);
+        const orderedRecs = orderBy(recs, (p) => p.zrxAmount, ['desc']);
         // Need to use BigNumbers here when validating reconciliation
         // example: JS normal addition of 1400.09 + 1400.09 + 1400.09 = 4200.2699999999995 , need to use bignumber!
         const currentTotalSoFar = BigNumber.sum(...orderedRecs.map((x) => new BigNumber(x.zrxAmount)));

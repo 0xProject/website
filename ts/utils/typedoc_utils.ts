@@ -18,7 +18,7 @@ import {
     TypescriptMethod,
 } from '@0x/types';
 import { errorUtils } from '@0x/utils';
-import * as _ from 'lodash';
+import { compact, each, findIndex, flatten, includes, isEmpty, map, startsWith } from 'lodash-es';
 
 import { KindString } from '../types';
 
@@ -40,17 +40,17 @@ export class TypeDocUtils {
         this._externalExportToLink = generatedDocJson.metadata.externalExportToLink;
         this._typeDocJson = generatedDocJson.typedocJson;
 
-        this._typeDocNameOrder = _.compact(
-            _.flatten(
-                _.map(exportPathOrder, (exportPath) => {
+        this._typeDocNameOrder = compact(
+            flatten(
+                map(exportPathOrder, (exportPath) => {
                     return exportPathToTypedocNames[exportPath];
                 }),
             ),
         );
 
         this._classNames = [];
-        _.each(this._typeDocJson.children, (file) => {
-            _.each(file.children, (child) => {
+        each(this._typeDocJson.children, (file) => {
+            each(file.children, (child) => {
                 if (child.kindString === KindString.Class) {
                     this._classNames.push(child.name);
                 }
@@ -76,14 +76,14 @@ export class TypeDocUtils {
         return entity.kindString === KindString.Property;
     }
     public isUnderscorePrefixed(name: string): boolean {
-        return _.startsWith(name, '_');
+        return startsWith(name, '_');
     }
     public getModuleDefinitionsBySectionName(versionDocObj: TypeDocNode, configModulePaths: string[]): TypeDocNode[] {
         const moduleDefinitions: TypeDocNode[] = [];
         const jsonModules = versionDocObj.children;
-        _.each(jsonModules, (jsonMod) => {
-            _.each(configModulePaths, (configModulePath) => {
-                if (_.includes(configModulePath, jsonMod.name)) {
+        each(jsonModules, (jsonMod) => {
+            each(configModulePaths, (configModulePath) => {
+                if (includes(configModulePath, jsonMod.name)) {
                     moduleDefinitions.push(jsonMod);
                 }
             });
@@ -93,7 +93,7 @@ export class TypeDocUtils {
     public convertToDocAgnosticFormat(): DocAgnosticFormat {
         const docAgnosticFormat: DocAgnosticFormat = {};
 
-        if (!_.isEmpty(this._externalExportToLink)) {
+        if (!isEmpty(this._externalExportToLink)) {
             this._docsInfo.sections[constants.EXTERNAL_EXPORTS_SECTION_NAME] = constants.EXTERNAL_EXPORTS_SECTION_NAME;
             this._docsInfo.markdownMenu[constants.EXTERNAL_EXPORTS_SECTION_NAME] = [
                 constants.EXTERNAL_EXPORTS_SECTION_NAME,
@@ -111,11 +111,11 @@ export class TypeDocUtils {
         }
 
         const typeEntities: TypeDocNode[] = [];
-        _.each(this._typeDocNameOrder, (typeDocName) => {
-            const fileChildIndex = _.findIndex(this._typeDocJson.children, (child) => child.name === typeDocName);
+        each(this._typeDocNameOrder, (typeDocName) => {
+            const fileChildIndex = findIndex(this._typeDocJson.children, (child) => child.name === typeDocName);
             const fileChild = this._typeDocJson.children[fileChildIndex];
             let sectionName: string;
-            _.each(fileChild.children, (child) => {
+            each(fileChild.children, (child) => {
                 switch (child.kindString) {
                     case KindString.Class:
                     case KindString.ObjectLiteral: {
@@ -158,7 +158,7 @@ export class TypeDocUtils {
                 }
             });
         });
-        if (!_.isEmpty(typeEntities)) {
+        if (!isEmpty(typeEntities)) {
             this._docsInfo.sections[constants.TYPES_SECTION_NAME] = constants.TYPES_SECTION_NAME;
             this._docsInfo.markdownMenu[constants.TYPES_SECTION_NAME] = [constants.TYPES_SECTION_NAME];
             const docSection = this._convertEntitiesToDocSection(typeEntities, constants.TYPES_SECTION_NAME);
@@ -182,7 +182,7 @@ export class TypeDocUtils {
         };
 
         let isConstructor;
-        _.each(entities, (entity) => {
+        each(entities, (entity) => {
             switch (entity.kindString) {
                 case KindString.Constructor:
                     isConstructor = true;
@@ -224,8 +224,8 @@ export class TypeDocUtils {
                     } else {
                         // Otherwise, render as a type
                         const customType = this._convertCustomType(entity, sectionName);
-                        const seenTypeNames = _.map(docSection.types, (t) => t.name);
-                        const isUnseen = !_.includes(seenTypeNames, customType.name);
+                        const seenTypeNames = map(docSection.types, (t) => t.name);
+                        const isUnseen = !includes(seenTypeNames, customType.name);
                         if (isUnseen) {
                             docSection.types.push(customType);
                         }
@@ -236,8 +236,8 @@ export class TypeDocUtils {
                 case KindString.Enumeration:
                 case KindString.TypeAlias: {
                     const customType = this._convertCustomType(entity, sectionName);
-                    const seenTypeNames = _.map(docSection.types, (t) => t.name);
-                    const isUnseen = !_.includes(seenTypeNames, customType.name);
+                    const seenTypeNames = map(docSection.types, (t) => t.name);
+                    const isUnseen = !includes(seenTypeNames, customType.name);
                     if (isUnseen) {
                         docSection.types.push(customType);
                     }
@@ -275,7 +275,7 @@ export class TypeDocUtils {
 
         const childrenIfExist =
             entity.children !== undefined
-                ? _.map(entity.children, (child: TypeDocNode) => {
+                ? map(entity.children, (child: TypeDocNode) => {
                       let childTypeIfExists =
                           child.type !== undefined ? this._convertType(child.type, sectionName) : undefined;
                       if (child.kindString === KindString.Method) {
@@ -339,7 +339,7 @@ export class TypeDocUtils {
         const hasComment = signature.comment !== undefined;
         const isStatic = entity.flags.isStatic === undefined ? false : entity.flags.isStatic;
 
-        const parameters = _.map(signature.parameters, (param) => {
+        const parameters = map(signature.parameters, (param) => {
             return this._convertParameter(param, sectionName);
         });
         const returnType = this._convertType(signature.type, sectionName);
@@ -383,7 +383,7 @@ export class TypeDocUtils {
         return callPath;
     }
     private _getLowercaseSectionName(sectionName: string): string {
-        if (_.startsWith(sectionName, 'ERC')) {
+        if (startsWith(sectionName, 'ERC')) {
             return `${sectionName.slice(0, 3).toLowerCase()}${sectionName.slice(3)}`;
         }
         return `${sectionName[0].toLowerCase()}${sectionName.slice(1)}`;
@@ -393,7 +393,7 @@ export class TypeDocUtils {
         const source = entity.sources[0];
         const hasComment = signature.comment !== undefined;
 
-        const parameters = _.map(signature.parameters, (param) => {
+        const parameters = map(signature.parameters, (param) => {
             return this._convertParameter(param, sectionName);
         });
         const returnType = this._convertType(signature.type, sectionName);
@@ -456,10 +456,10 @@ export class TypeDocUtils {
         return parameter;
     }
     private _convertType(entity: TypeDocType, sectionName: string): Type {
-        const typeArguments = _.map(entity.typeArguments, (typeArgument) => {
+        const typeArguments = map(entity.typeArguments, (typeArgument) => {
             return this._convertType(typeArgument, sectionName);
         });
-        const types = _.map(entity.types, (t) => {
+        const types = map(entity.types, (t) => {
             return this._convertType(t, sectionName);
         });
 
@@ -475,7 +475,7 @@ export class TypeDocUtils {
             const isConstructor = false;
             methodIfExists = this._convertMethod(entity.declaration, isConstructor, sectionName);
         } else if (entity.type === TypeDocTypes.Tuple) {
-            tupleElementsIfExists = _.map(entity.elements, (el) => {
+            tupleElementsIfExists = map(entity.elements, (el) => {
                 // the following line is required due to an open tslint issue, https://github.com/palantir/tslint/issues/3540
                 // tslint:disable-next-line:no-unnecessary-type-assertion
                 return { name: el.name, typeDocType: el.type as TypeDocTypes };
@@ -493,7 +493,7 @@ export class TypeDocUtils {
         const type: Type = {
             name: entity.name,
             value: entity.value,
-            isExportedClassReference: _.includes(this._classNames, entity.name),
+            isExportedClassReference: includes(this._classNames, entity.name),
             typeDocType: entity.type,
             typeArguments,
             elementType: elementTypeIfExists,

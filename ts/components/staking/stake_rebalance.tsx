@@ -1,6 +1,5 @@
+import { flatMap } from 'lodash-es';
 import * as React from 'react';
-
-import * as _ from 'lodash';
 
 import styled from 'styled-components';
 
@@ -307,7 +306,7 @@ export const StakeRebalance: React.FC<StakeRebalanceProps> = ({ onClose, poolDat
         });
 
         if (additions.length > 0) {
-            const data = _.flatMap<PoolDiff, MoveStakeData>(additions, (item) => {
+            const data = flatMap<PoolDiff, MoveStakeData>(additions, (item) => {
                 return generateMoveStakeData(item, reductions);
             });
             rebalanceStake(data);

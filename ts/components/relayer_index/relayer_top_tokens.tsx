@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import { colors } from 'ts/utils/colors';
 
@@ -16,7 +16,7 @@ export interface TopTokensProps {
 export const TopTokens: React.StatelessComponent<TopTokensProps> = (props: TopTokensProps) => {
     return (
         <div className="flex">
-            {_.map(props.tokens, (tokenInfo: WebsiteBackendTokenInfo) => {
+            {map(props.tokens, (tokenInfo: WebsiteBackendTokenInfo) => {
                 return (
                     <Container key={tokenInfo.address} marginRight="16px">
                         <TokenLink tokenInfo={tokenInfo} networkId={props.networkId} />

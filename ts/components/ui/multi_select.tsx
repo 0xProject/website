@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { includes, map } from 'lodash-es';
 import * as React from 'react';
 import { colors } from 'ts/utils/colors';
 
@@ -31,13 +31,13 @@ export class MultiSelect extends React.Component<MultiSelectProps> {
                 height={height}
                 overflowY="scroll"
             >
-                {_.map(items, (item) => (
+                {map(items, (item) => (
                     <MultiSelectItem
                         key={item.value}
                         renderItemContent={item.renderItemContent}
                         backgroundColor={backgroundColor}
                         onClick={item.onClick}
-                        isSelected={selectedValues === undefined || _.includes(selectedValues, item.value)}
+                        isSelected={selectedValues === undefined || includes(selectedValues, item.value)}
                     />
                 ))}
             </Container>

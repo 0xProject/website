@@ -3,7 +3,7 @@ import { assetDataUtils, orderHashUtils } from '@0x/order-utils';
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as accounting from 'accounting';
-import * as _ from 'lodash';
+
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';

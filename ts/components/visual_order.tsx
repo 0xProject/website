@@ -1,5 +1,5 @@
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import * as _ from 'lodash';
+import { values } from 'lodash-es';
 import * as React from 'react';
 import { Party } from 'ts/components/ui/party';
 import { AssetToken, Token, TokenByAddress } from 'ts/types';
@@ -21,7 +21,7 @@ interface VisualOrderState {}
 
 export class VisualOrder extends React.Component<VisualOrderProps, VisualOrderState> {
     public render(): React.ReactNode {
-        const allTokens = _.values(this.props.tokenByAddress);
+        const allTokens = values(this.props.tokenByAddress);
         const makerImage = this.props.makerToken.iconUrl;
         const takerImage = this.props.takerToken.iconUrl;
         return (

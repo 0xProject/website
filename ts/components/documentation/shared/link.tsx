@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { noop, startsWith } from 'lodash-es';
 import * as React from 'react';
 import { NavLink as ReactRounterLink } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
@@ -50,9 +50,9 @@ export class Link extends React.Component<LinkProps, LinkState> {
         duration: constants.DOCS_SCROLL_DURATION_MS,
         fontColor: 'inherit',
         offset: 0,
-        onMouseEnter: _.noop.bind(_),
-        onMouseLeave: _.noop.bind(_),
-        onMouseOver: _.noop.bind(_),
+        onMouseEnter: noop,
+        onMouseLeave: noop,
+        onMouseOver: noop,
         shouldOpenInNewTab: false,
         textDecoration: 'none',
     };
@@ -63,8 +63,8 @@ export class Link extends React.Component<LinkProps, LinkState> {
     }
     public render(): React.ReactNode {
         let type: LinkType;
-        const isReactRoute = _.startsWith(this.props.to, '/');
-        const isExternal = validUrl.isWebUri(this.props.to) || _.startsWith(this.props.to, 'mailto:');
+        const isReactRoute = startsWith(this.props.to, '/');
+        const isExternal = validUrl.isWebUri(this.props.to) || startsWith(this.props.to, 'mailto:');
         if (isReactRoute) {
             type = LinkType.ReactRoute;
         } else if (isExternal) {
