@@ -21,18 +21,12 @@ export const MobileNav: React.FC<IMobileNavProps> = (props) => {
                 <h4>Products</h4>
                 <ul>
                     <li>
-                        <Link to={WebsitePaths.ZeroExApi}>0x API</Link>
-                    </li>
-                    <li>
-                        <Link to={WebsitePaths.Mesh}>0x Mesh</Link>
-                    </li>
-                    <li>
                         <Link to={constants.MATCHA_PRODUCTION_URL} shouldOpenInNewTab={true}>
                             Matcha
                         </Link>
                     </li>
                     <li>
-                        <Link to={WebsitePaths.Staking}>ZRX</Link>
+                        <Link to={WebsitePaths.Vote}>ZRX</Link>
                     </li>
                 </ul>
             </Section>
@@ -43,7 +37,9 @@ export const MobileNav: React.FC<IMobileNavProps> = (props) => {
                         <Link to={WebsitePaths.Why}>Why 0x</Link>
                     </li>
                     <li>
-                        <Link to={WebsitePaths.Docs}>Docs</Link>
+                        <Link to="https://docs.0x.org" shouldOpenInNewTab={true}>
+                            Docs
+                        </Link>
                     </li>
                     <li>
                         <Link to={WebsitePaths.AboutMission}>About</Link>
@@ -63,7 +59,7 @@ export const MobileNav: React.FC<IMobileNavProps> = (props) => {
 
 const Wrap = styled.nav<{ isToggled: boolean }>`
     width: 100%;
-    height: 450px;
+    height: 350px;
     background-color: ${(props) => props.theme.mobileNavBgUpper};
     color: ${(props) => props.theme.mobileNavColor};
     transition: ${(props) =>
