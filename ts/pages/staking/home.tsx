@@ -171,7 +171,7 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
     return (
         <StakingPageLayout isHome={true} title="0x Staking">
             <StakingBanner>
-                Protocol fees are paused for 6 weeks as a result of a ZRX vote.{' '}
+                Protocol fees are paused as a result of a ZRX vote.{' '}
                 <StakingBannerLink href={'https://0x.org/zrx/vote/zeip-91'}>Learn more</StakingBannerLink>
             </StakingBanner>
             <StakingHero

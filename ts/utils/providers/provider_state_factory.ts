@@ -20,14 +20,18 @@ export const providerStateFactory = {
             const provider = providerUtils.standardizeOrThrow(supportedProvider);
             return providerStateFactory.getInitialProviderStateFromProvider(provider, walletDisplayName);
         }
-        const providerStateFromWindowIfExits = providerStateFactory.getInitialProviderStateFromWindowIfExists(
-            walletDisplayName,
-        );
-        if (providerStateFromWindowIfExits) {
-            return providerStateFromWindowIfExits;
-        } else {
-            return providerStateFactory.getInitialProviderStateFallback(fallbackNetworkId, walletDisplayName);
-        }
+        return providerStateFactory.getInitialProviderStateFallback(fallbackNetworkId, walletDisplayName);
+        // We don't currently initially connect to a wallet, we only use public RDC nodes.
+        // Connection to a wallet (so far) is a manual process
+        //
+        // const providerStateFromWindowIfExits = providerStateFactory.getInitialProviderStateFromWindowIfExists(
+        //     walletDisplayName,
+        // );
+        // if (providerStateFromWindowIfExits) {
+        //     return providerStateFromWindowIfExits;
+        // } else {
+        //     return providerStateFactory.getInitialProviderStateFallback(fallbackNetworkId, walletDisplayName);
+        // }
     },
 
     getInitialProviderStateFromProvider: (provider: ZeroExProvider, walletDisplayName?: string): ProviderState => {

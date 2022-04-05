@@ -117,7 +117,7 @@ export const WrapSticky = styled.div<WrapProps>`
 const SectionBase = styled.section<SectionProps>`
     width: ${(props) => !props.isFullWidth && 'calc(100% - 60px)'};
     min-height: ${(props) => props.minHeight || 'auto'};
-    max-width: 1500px;
+    max-width: ${(props) => props.maxWidth || '1500px'};
     cursor: ${(props) => props.hasHover && 'pointer'};
     border: ${(props) => props.hasBorder && `1px solid ${props.theme.lightBgColor}`};
     margin: ${(props) => (props.margin ? props.margin : '0 auto')};
@@ -138,7 +138,7 @@ const SectionBase = styled.section<SectionProps>`
 
 const Wrap = styled(FlexWrap)<WrapProps>`
     width: ${(props) => props.wrapWidth || 'calc(100% - 60px)'};
-    width: ${(props) => props.bgColor && 'calc(100% - 60px)'};
+    background-color: ${(props) => props.theme[`${props.bgColor}BgColor`] || props.bgColor};
     max-width: ${(props) => !props.isFullWidth && (props.maxWidth || '895px')};
     text-align: ${(props) => props.isTextCentered && 'center'};
     margin: 0 auto;
