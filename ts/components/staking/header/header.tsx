@@ -153,7 +153,7 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
     const onLogoutWallet = useCallback(() => {
         onUnpin();
         logoutWallet(connector, deactivate);
-    }, [logoutWallet, onUnpin]);
+    }, [connector, deactivate, logoutWallet, onUnpin]);
 
     const subMenu = (
         <SubMenu
@@ -176,7 +176,7 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
             <StyledHeader isNavToggled={isNavToggled}>
                 <HeaderWrap>
                     <LogoWrap>
-                        <Link to={WebsitePaths.Vote}>
+                        <Link to={WebsitePaths.Home}>
                             <Logo />
                         </Link>
                         <DocsLogoWrap>
