@@ -7,7 +7,7 @@ function mdxTableOfContents(options = {}) {
     let OldCompiler = this.Compiler;
     let tableOfContents;
 
-    this.Compiler = tree => {
+    this.Compiler = (tree) => {
         let code = OldCompiler(tree, {}, options);
 
         code += `\nexport const tableOfContents = (components={}) => ${tableOfContentsListSerializer(
@@ -81,7 +81,7 @@ function tableOfContentsListSerializer(nodes, indent = 0) {
     return indentString(
         indent,
         `[
-  ${nodes.map(node => tableOfContentsNodeSerializer(node, indent + 2)).join(',\n')}
+  ${nodes.map((node) => tableOfContentsNodeSerializer(node, indent + 2)).join(',\n')}
 ]`,
     );
 }
@@ -101,7 +101,7 @@ function tableOfContentsNodeSerializer(node, indent = 0) {
 function indentString(size, string) {
     return string
         .split('\n')
-        .map(x => ' '.repeat(size) + x)
+        .map((x) => ' '.repeat(size) + x)
         .join('\n')
         .trim();
 }

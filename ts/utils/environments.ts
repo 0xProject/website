@@ -6,7 +6,8 @@ import { domains } from './domains';
 
 export const environments = {
     isDevelopment(): boolean {
-        return _.includes(domains.DOMAINS_DEVELOPMENT, window.location.host);
+        return false;
+        // return _.includes(domains.DOMAINS_DEVELOPMENT, window.location.host);
     },
     isStaging(): boolean {
         return _.includes(window.location.href, domains.DOMAIN_STAGING);

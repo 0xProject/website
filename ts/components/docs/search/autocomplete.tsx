@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Autosuggest from 'react-autosuggest';
 import { connectAutoComplete, Highlight, Snippet } from 'react-instantsearch-dom';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { scroller } from 'react-scroll';
 
 import { Link } from 'ts/components/documentation/shared/link';

@@ -6,14 +6,22 @@ const TerserPlugin = require('terser-webpack-plugin');
 const RollbarSourceMapPlugin = require('rollbar-sourcemap-webpack-plugin');
 const childProcess = require('child_process');
 const remarkSlug = require('remark-slug');
-const remarkAutolinkHeadings = require('./webpack/remark_autolink_headings');
-const remarkSectionizeHeadings = require('./webpack/remark_sectionize_headings');
-const mdxTableOfContents = require('./webpack/mdx_table_of_contents');
+const remarkAutolinkHeadings = require('./webpack/remark_autolink_headings.js');
+const remarkSectionizeHeadings = require('./webpack/remark_sectionize_headings.js');
+const mdxTableOfContents = require('./webpack/mdx_table_of_contents.js');
 
 const GIT_SHA = childProcess.execSync('git rev-parse HEAD').toString().trim();
 
 module.exports = (_env, argv) => {
-    const plugins = [new Dotenv()];
+    const plugins = [
+        new Dotenv(),
+        new webpack.ProvidePlugin({
+            process: 'process/browser.js',
+        }),
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+        }),
+    ];
     const isDevEnvironment = argv.mode === 'development';
 
     const config = {
@@ -27,9 +35,6 @@ module.exports = (_env, argv) => {
         externals: {
             zeroExInstant: 'zeroExInstant',
         },
-        node: {
-            fs: 'empty',
-        },
         resolve: {
             modules: [path.join(__dirname, '/ts'), 'node_modules'],
             extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.md', '.mdx'],
@@ -39,6 +44,17 @@ module.exports = (_env, argv) => {
                 sass: path.join(__dirname, '/sass'),
                 md: path.join(__dirname, '/md'),
                 mdx: path.join(__dirname, '/mdx'),
+            },
+            fallback: {
+                fs: require.resolve('browserify-fs'),
+                util: require.resolve('util'),
+                stream: require.resolve('stream'),
+                crypto: require.resolve('crypto-browserify'),
+                path: require.resolve('path-browserify'),
+                url: require.resolve('url'),
+                assert: require.resolve('assert'),
+                os: require.resolve('os'),
+                buffer: require.resolve('buffer'),
             },
         },
         module: {
@@ -53,9 +69,9 @@ module.exports = (_env, argv) => {
                 },
                 {
                     test: /\.tsx?$/,
-                    loader: 'awesome-typescript-loader',
+                    loader: 'ts-loader',
+                    exclude: /node_modules/,
                     options: {
-                        useCache: true,
                         // Skip type checking for local dev, can be done in editor and pre-push
                         transpileOnly: isDevEnvironment,
                     },
@@ -97,7 +113,7 @@ module.exports = (_env, argv) => {
                 },
                 {
                     test: /\.css$/,
-                    loaders: ['style-loader', 'css-loader'],
+                    use: ['style-loader', 'css-loader'],
                 },
 
                 {
@@ -119,7 +135,7 @@ module.exports = (_env, argv) => {
             minimizer: [
                 new TerserPlugin({
                     parallel: true,
-                    sourceMap: true,
+                    // sourceMap: true,
                     terserOptions: {
                         mangle: {
                             reserved: ['BigNumber'],
@@ -144,7 +160,8 @@ module.exports = (_env, argv) => {
                     },
                 ],
             },
-            disableHostCheck: true,
+            static: path.resolve(__dirname, 'public'),
+            allowedHosts: 'all',
             // Fixes assertion error
             // Source: https://github.com/webpack/webpack-dev-server/issues/1491
         },
@@ -152,7 +169,13 @@ module.exports = (_env, argv) => {
 
     if (isDevEnvironment) {
         config.mode = 'development';
-        config.devtool = 'cheap-module-eval-source-map';
+        config.devtool = 'eval-cheap-module-source-map';
+
+        // plugins.push(
+        //     new webpack.DefinePlugin({
+        //         'process.env': {},
+        //     }),
+        // );
     } else {
         config.mode = 'production';
         config.devtool = 'source-map';

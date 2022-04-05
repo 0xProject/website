@@ -2,7 +2,7 @@ import { ZrxTreasuryContract } from '@0x/contracts-treasury';
 import { BigNumber } from '@0x/utils';
 import { gql, request } from 'graphql-request';
 import * as _ from 'lodash';
-import marked, { Token, Tokens } from 'marked';
+import { lexer, Token, Tokens } from 'marked';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment-timezone';
 import * as React from 'react';
@@ -33,6 +33,7 @@ import { documentConstants } from 'ts/utils/document_meta_constants';
 import { utils } from 'ts/utils/utils';
 
 import { VoterBreakdown } from 'ts/components/governance/voter_breakdown';
+import { backendClient } from 'ts/utils/backend_client';
 import { fetchUtils } from 'ts/utils/fetch_utils';
 
 const TREASURY_VOTER_BREAKDOWN_URI = 'https://um5ppgumcc.us-east-1.awsapprunner.com';
@@ -212,7 +213,7 @@ export const Treasury: React.FC<{}> = () => {
 
     const isVoteActive = isHappening;
 
-    const tokens = marked.lexer(description);
+    const tokens = lexer(description);
     const heading = tokens.find(
         (token: Token) => (token as Tokens.Heading).type === 'heading' && (token as Tokens.Heading).depth === 1,
     );
@@ -258,6 +259,7 @@ export const Treasury: React.FC<{}> = () => {
 
     let cleanedDescription = description.replace(/<br\/><br\/>/g, '\n');
     cleanedDescription = cleanedDescription.replace(heading.raw, '');
+
     return (
         <StakingPageLayout isHome={false} title="0x Treasury">
             <RegisterBanner />

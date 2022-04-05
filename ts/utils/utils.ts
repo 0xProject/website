@@ -580,7 +580,7 @@ export const utils = {
         return text.replace(/-/g, ' ');
     },
     convertCamelCaseToSpaces(text: string): string {
-        return changeCase.snake(text).replace(/_/g, ' ');
+        return changeCase.snakeCase(text).replace(/_/g, ' ');
     },
     getEtherScanLinkIfExists(
         addressOrTxHash: string,

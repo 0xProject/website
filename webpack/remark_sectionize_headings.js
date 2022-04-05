@@ -11,7 +11,7 @@ function plugin() {
 
 function transform(tree) {
     for (let depth = MAX_HEADING_DEPTH; depth > 0; depth--) {
-        visit(tree, node => node.type === 'heading' && node.depth === depth, sectionize);
+        visit(tree, (node) => node.type === 'heading' && node.depth === depth, sectionize);
     }
 }
 
@@ -19,7 +19,7 @@ function sectionize(node, ancestors) {
     const start = node;
     const parent = ancestors[ancestors.length - 1];
 
-    const isEnd = node => {
+    const isEnd = (node) => {
         if (start.depth < MAX_HEADING_DEPTH) {
             return node.type === 'section' || (node.type === 'heading' && node.depth <= start.depth);
         }

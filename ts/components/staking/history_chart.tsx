@@ -2,8 +2,9 @@ import { extent } from 'd3-array';
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
+import { defaults } from 'chart.js';
 import { merge } from 'lodash';
-import { defaults, Line } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 import { colors } from 'ts/style/colors';
 import { formatEther } from 'ts/utils/format_number';

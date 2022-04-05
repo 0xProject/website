@@ -1,11 +1,11 @@
-import marked, { Token, Tokens } from 'marked';
+import { lexer, Token, Tokens } from 'marked';
 import React from 'react';
 import styled from 'styled-components';
 
 import { Heading, Paragraph } from 'ts/components/text';
 
 export const TreasurySummary: React.FC<{ description: string }> = ({ description }) => {
-    const tokens = marked.lexer(description);
+    const tokens = lexer(description);
     const heading = tokens.find(
         (token: Token) => (token as Tokens.Heading).type === 'heading' && (token as Tokens.Heading).depth === 1,
     );

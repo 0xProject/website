@@ -2,6 +2,7 @@ import { BigNumber } from '@0x/utils';
 import * as _ from 'lodash';
 import moment from 'moment-timezone';
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -19,8 +20,11 @@ import { RatingBar } from 'ts/pages/governance/rating_bar';
 import { VoteInfo, VoteValue } from 'ts/pages/governance/vote_form';
 import { getVoteOutcome } from 'ts/pages/governance/vote_index_card';
 import { VoteStats } from 'ts/pages/governance/vote_stats';
+import type { State as ReduxState } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { TallyInterface } from 'ts/types';
+
+import type { ProviderState, TallyInterface } from 'ts/types';
+import { backendClient } from 'ts/utils/backend_client';
 import { configs } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 import { environments } from 'ts/utils/environments';
@@ -57,14 +61,26 @@ const riskLabels: LabelInterface = {
 
 type ProposalState = 'active' | 'finalized';
 
-export class Governance extends React.Component<RouteComponentProps<any>> {
+interface PropsWithProviderState {
+    providerState: ProviderState;
+}
+
+const mapStateToProps = (
+    state: ReduxState,
+    _ownProps: RouteComponentProps<any> & PropsWithProviderState,
+): RouteComponentProps<any> & PropsWithProviderState => ({
+    ..._ownProps,
+    providerState: state.providerState,
+});
+
+class GovernanceClass extends React.Component<RouteComponentProps<any> & PropsWithProviderState> {
     public state: State = {
         isVoteModalOpen: false,
         isVoteReceived: false,
         providerName: 'Metamask',
     };
     private readonly _proposalData: Proposal;
-    constructor(props: RouteComponentProps<any>) {
+    constructor(props: RouteComponentProps<any> & PropsWithProviderState) {
         super(props);
         const zeipId = parseInt(props.match.params.zeip.split('-')[1], 10);
         this._proposalData = environments.isProduction() ? proposals[zeipId] : stagingProposals[zeipId];
@@ -72,18 +88,20 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
     public componentDidMount(): void {
         // tslint:disable:no-floating-promises
         this._fetchVoteStatusAsync();
+        this._fetchTransactionInfoAsync(this.props.providerState);
     }
+
     public render(): React.ReactNode {
         const { isVoteReceived, tally } = this.state;
-
+        const { providerState } = this.props;
         const now = moment();
         const deadlineToVote = this._proposalData?.voteEndDate?.local();
         const voteStartDate = this._proposalData?.voteStartDate?.local();
         const hasVoteEnded = deadlineToVote?.isBefore(now) || false;
         const hasVoteStarted = voteStartDate ? now.isAfter(voteStartDate) : false;
         const isVoteActive = hasVoteStarted && !hasVoteEnded;
-
         const outcome = getVoteOutcome(tally);
+        console.log({ provider: providerState.provider });
 
         const proposalHistoryState = {
             active: {
@@ -172,7 +190,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                                                 fontSize="18px"
                                                 fontWeight={400}
                                             >
-                                                {state}
+                                                {`${state}-test`}
                                                 {historyState.done &&
                                                 (historyState.outcome === 'rejected' ||
                                                     historyState.outcome === 'accepted')
@@ -331,6 +349,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
             }
 
             const responseData = await response.json();
+
             let { no, yes } = responseData;
             yes = new BigNumber(yes);
             no = new BigNumber(no);
@@ -347,7 +366,15 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
             // Empty block
         }
     }
+    private async _fetchTransactionInfoAsync(providerState: ProviderState): Promise<void> {
+        const treauryProposalDistributions = await backendClient.getTreasuryProposalDistributionsAsync(
+            providerState.provider,
+        );
+        console.log({ treauryProposalDistributions });
+    }
 }
+
+export const Governance = connect(mapStateToProps)(GovernanceClass);
 
 const SectionWrap = styled.div`
     & + & {
