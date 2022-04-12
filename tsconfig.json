@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "es6",
         "lib": ["es2017", "dom"],
         "experimentalDecorators": true,
         "downlevelIteration": true,
@@ -17,6 +17,7 @@
         "allowJs": true,
         "strictNullChecks": false,
         "noImplicitThis": false,
+        "removeComments": false,
         // tsconfig.json at the monorepo root contains some options required for
         // project references which do not work for website. We override those
         // options here.
@@ -27,7 +28,8 @@
             "*": ["node_modules/@types/*", "*"]
         },
         "module": "esnext",
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "importHelpers": true
     },
     "awesomeTypescriptLoaderOptions": {
         "useCache": true,

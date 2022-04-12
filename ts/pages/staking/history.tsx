@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -102,7 +102,7 @@ export const StakingPoolActivity: React.FC = () => {
                 </Heading>
 
                 <Table columns={columns}>
-                    {_.map(MOCK_DATA, (row) => {
+                    {map(MOCK_DATA, (row) => {
                         const description = getDescription(`${row.statusId}`);
 
                         return (

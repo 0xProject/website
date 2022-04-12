@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import { CustomMenuItem } from 'ts/components/ui/custom_menu_item';
 import { colors } from 'ts/style/colors';
@@ -63,7 +63,7 @@ const DEFAULT_MENU_THEME: MenuTheme = {
 export const Menu: React.StatelessComponent<MenuProps> = (props: MenuProps) => {
     return (
         <div style={{ paddingTop: 25 }}>
-            {_.map(props.menuItemEntries, (entry) => {
+            {map(props.menuItemEntries, (entry) => {
                 const isSelected = entry.to === props.selectedPath;
                 return (
                     <CustomMenuItem key={entry.to} to={entry.to}>

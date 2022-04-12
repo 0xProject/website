@@ -30,7 +30,7 @@ import {
     TransactionReceiptWithDecodedLogs,
     ZeroExProvider,
 } from 'ethereum-types';
-import * as _ from 'lodash';
+import { each, find, includes, intersection, isEmpty, map, parseInt as lodashParseInt, values } from 'lodash-es';
 import * as moment from 'moment';
 import * as React from 'react';
 import contract from 'truffle-contract';
@@ -122,12 +122,9 @@ export class Blockchain {
             };
             const ledgerSubprovider = new LedgerSubprovider(ledgerWalletConfigs);
             provider.addProvider(ledgerSubprovider);
-            const rpcSubproviders = _.map(
-                configs.PUBLIC_NODE_URLS_BY_NETWORK_ID[networkIdIfExists],
-                (publicNodeUrl) => {
-                    return new RPCSubprovider(publicNodeUrl);
-                },
-            );
+            const rpcSubproviders = map(configs.PUBLIC_NODE_URLS_BY_NETWORK_ID[networkIdIfExists], (publicNodeUrl) => {
+                return new RPCSubprovider(publicNodeUrl);
+            });
             provider.addProvider(new RedundantSubprovider(rpcSubproviders));
             providerUtils.startProviderEngine(provider);
             return [provider, ledgerSubprovider];
@@ -142,7 +139,7 @@ export class Blockchain {
                     ? new MetamaskSubprovider(injectedProviderIfExists)
                     : new SignerSubprovider(injectedProviderIfExists);
             provider.addProvider(signerSubprovider);
-            const rpcSubproviders = _.map(publicNodeUrlsIfExistsForNetworkId, (publicNodeUrl) => {
+            const rpcSubproviders = map(publicNodeUrlsIfExistsForNetworkId, (publicNodeUrl) => {
                 return new RPCSubprovider(publicNodeUrl);
             });
             provider.addProvider(new RedundantSubprovider(rpcSubproviders));
@@ -157,7 +154,7 @@ export class Blockchain {
             // injected into their browser.
             const provider = new Web3ProviderEngine();
             const networkId = constants.NETWORK_ID_MAINNET;
-            const rpcSubproviders = _.map(configs.PUBLIC_NODE_URLS_BY_NETWORK_ID[networkId], (publicNodeUrl) => {
+            const rpcSubproviders = map(configs.PUBLIC_NODE_URLS_BY_NETWORK_ID[networkId], (publicNodeUrl) => {
                 return new RPCSubprovider(publicNodeUrl);
             });
             provider.addProvider(new RedundantSubprovider(rpcSubproviders));
@@ -201,13 +198,13 @@ export class Blockchain {
     }
     public async isAddressInTokenRegistryAsync(tokenAddress: string): Promise<boolean> {
         const tokens = fakeTokenRegistry[this.networkId];
-        const tokenIfExists = _.find(tokens, { address: tokenAddress });
+        const tokenIfExists = find(tokens, { address: tokenAddress });
 
         // HACK: Override token addresses on testnets
         const tokenSymbolToAddressOverrides = tokenAddressOverrides[this.networkId];
         let isTokenAddressInOverrides = false;
         if (tokenSymbolToAddressOverrides !== undefined) {
-            isTokenAddressInOverrides = _.values(tokenSymbolToAddressOverrides).includes(tokenAddress);
+            isTokenAddressInOverrides = values(tokenSymbolToAddressOverrides).includes(tokenAddress);
         }
         return tokenIfExists !== undefined || isTokenAddressInOverrides;
     }
@@ -308,7 +305,7 @@ export class Blockchain {
             });
         const receipt = await this._showEtherScanLinkAndAwaitTransactionMinedAsync(txHash);
         const logs: Array<LogWithDecodedArgs<ExchangeEventArgs>> = receipt.logs as any;
-        const logFill = _.find(logs, { event: ExchangeEvents.Fill });
+        const logFill = find(logs, { event: ExchangeEvents.Fill });
         const args = (logFill.args as any) as ExchangeFillEventArgs;
         const takerAssetFilledAmount = args.takerAssetFilledAmount;
         return takerAssetFilledAmount;
@@ -321,7 +318,7 @@ export class Blockchain {
         });
         const receipt = await this._showEtherScanLinkAndAwaitTransactionMinedAsync(txHash);
         const logs: Array<LogWithDecodedArgs<ExchangeEventArgs>> = receipt.logs as any;
-        const logCancel = _.find(logs, { event: ExchangeEvents.Cancel });
+        const logCancel = find(logs, { event: ExchangeEvents.Cancel });
         const args = (logCancel.args as any) as ExchangeCancelEventArgs;
         const cancelledOrderHash = args.orderHash;
         return cancelledOrderHash;
@@ -512,9 +509,9 @@ export class Blockchain {
             this._userAddressIfExists === undefined
                 ? {}
                 : trackedTokenStorage.getTrackedTokensByAddress(this._userAddressIfExists, this.networkId);
-        const tokenRegistryTokens = _.values(tokenRegistryTokensByAddress);
-        const tokenRegistryTokenSymbols = _.map(tokenRegistryTokens, (t) => t.symbol);
-        const defaultTrackedTokensInRegistry = _.intersection(
+        const tokenRegistryTokens = values(tokenRegistryTokensByAddress);
+        const tokenRegistryTokenSymbols = map(tokenRegistryTokens, (t) => t.symbol);
+        const defaultTrackedTokensInRegistry = intersection(
             tokenRegistryTokenSymbols,
             configs.DEFAULT_TRACKED_TOKEN_SYMBOLS,
         );
@@ -530,20 +527,20 @@ export class Blockchain {
             errorReporter.report(err);
             return;
         }
-        if (_.isEmpty(trackedTokensByAddress)) {
-            _.each(configs.DEFAULT_TRACKED_TOKEN_SYMBOLS, (symbol) => {
-                const token = _.find(tokenRegistryTokens, (t) => t.symbol === symbol);
+        if (isEmpty(trackedTokensByAddress)) {
+            each(configs.DEFAULT_TRACKED_TOKEN_SYMBOLS, (symbol) => {
+                const token = find(tokenRegistryTokens, (t) => t.symbol === symbol);
                 token.trackedTimestamp = currentTimestamp;
                 trackedTokensByAddress[token.address] = token;
             });
             if (this._userAddressIfExists !== undefined) {
-                _.each(trackedTokensByAddress, (token: Token) => {
+                each(trackedTokensByAddress, (token: Token) => {
                     trackedTokenStorage.addTrackedTokenToUser(this._userAddressIfExists, this.networkId, token);
                 });
             }
         } else {
             // Properly set all tokenRegistry tokens `trackedTimestamp` if they are in the existing trackedTokens array
-            _.each(trackedTokensByAddress, (trackedToken: Token, address: string) => {
+            each(trackedTokensByAddress, (trackedToken: Token, address: string) => {
                 if (tokenRegistryTokensByAddress[address] !== undefined) {
                     tokenRegistryTokensByAddress[address].trackedTimestamp = trackedToken.trackedTimestamp;
                 }
@@ -553,10 +550,10 @@ export class Blockchain {
             ...tokenRegistryTokensByAddress,
             ...trackedTokensByAddress,
         };
-        const allTokens = _.values(allTokensByAddress);
+        const allTokens = values(allTokensByAddress);
         const mostPopularTradingPairTokens: Token[] = [
-            _.find(allTokens, { symbol: configs.DEFAULT_TRACKED_TOKEN_SYMBOLS[0] }),
-            _.find(allTokens, { symbol: configs.DEFAULT_TRACKED_TOKEN_SYMBOLS[1] }),
+            find(allTokens, { symbol: configs.DEFAULT_TRACKED_TOKEN_SYMBOLS[0] }),
+            find(allTokens, { symbol: configs.DEFAULT_TRACKED_TOKEN_SYMBOLS[1] }),
         ];
         const sideToAssetToken: SideToAssetToken = {
             [Side.Deposit]: {
@@ -633,7 +630,7 @@ export class Blockchain {
         if (update.networkVersion === 'loading' || this._ledgerSubprovider !== undefined) {
             return;
         }
-        const updatedNetworkId = _.parseInt(update.networkVersion);
+        const updatedNetworkId = lodashParseInt(update.networkVersion);
         if (this.networkId === updatedNetworkId) {
             return;
         }
@@ -769,7 +766,7 @@ export class Blockchain {
             const tokenSymbolToAddressOverrides = tokenAddressOverrides[this.networkId];
             if (tokenAddressOverrides !== undefined) {
                 // HACK: Override token addresses on testnets
-                tokenRegistryTokens = _.map(tokenRegistryTokens, (token: ZeroExToken) => {
+                tokenRegistryTokens = map(tokenRegistryTokens, (token: ZeroExToken) => {
                     const overrideIfExists = tokenSymbolToAddressOverrides[token.symbol];
                     if (overrideIfExists !== undefined) {
                         return {
@@ -782,7 +779,7 @@ export class Blockchain {
             }
         }
         const tokenByAddress: TokenByAddress = {};
-        _.each(tokenRegistryTokens, (t: ZeroExToken) => {
+        each(tokenRegistryTokens, (t: ZeroExToken) => {
             // HACK: For now we have a hard-coded list of iconUrls for the dummyTokens
             // TODO: Refactor this out and pull the iconUrl directly from the TokenRegistry
             const iconUrl = utils.getTokenIconUrl(t.symbol);
@@ -920,7 +917,7 @@ export class Blockchain {
         } catch (err) {
             const errMsg = `${err}`;
             logUtils.log(`Notice: Error encountered: ${err} ${err.stack}`);
-            if (_.includes(errMsg, 'not been deployed to detected network')) {
+            if (includes(errMsg, 'not been deployed to detected network')) {
                 throw new Error(BlockchainCallErrs.ContractDoesNotExist);
             } else {
                 errorReporter.report(err);

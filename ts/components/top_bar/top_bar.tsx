@@ -1,7 +1,8 @@
 import { Link } from 'ts/components/documentation/shared/link';
 
 import { ObjectMap } from '@0x/types';
-import * as _ from 'lodash';
+
+import { includes } from 'lodash-es';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import * as React from 'react';
@@ -259,7 +260,7 @@ export class TopBar extends React.Component<TopBarProps, TopBarState> {
         });
     }
     private _isViewingPortal(): boolean {
-        return _.includes(this.props.location.pathname, WebsitePaths.Portal);
+        return includes(this.props.location.pathname, WebsitePaths.Portal);
     }
     private _shouldDisplayBottomBar(): boolean {
         return this._isViewingPortal();

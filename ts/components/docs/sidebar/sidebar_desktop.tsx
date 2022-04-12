@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { throttle } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -57,7 +57,7 @@ export const SidebarDesktop: React.FC<ISidebarWrapperProps> = ({ children }) => 
         }
     };
 
-    const throttledListener = _.throttle(listener, THROTTLE_RATE);
+    const throttledListener = throttle(listener, THROTTLE_RATE);
 
     React.useEffect(() => {
         const { top } = asideRef.current.getBoundingClientRect();

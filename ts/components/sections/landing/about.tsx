@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash-es';
 import * as React from 'react';
 import { useWindowSize } from 'react-use';
 import styled from 'styled-components';

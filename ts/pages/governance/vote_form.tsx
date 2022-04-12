@@ -7,7 +7,7 @@ import { BigNumber, signTypedDataUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import '@reach/dialog/styles.css';
 import * as ethUtil from 'ethereumjs-util';
-import * as _ from 'lodash';
+
 import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';

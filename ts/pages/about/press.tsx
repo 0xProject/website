@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -61,7 +61,7 @@ export const NextAboutPress = () => (
                     Want to write about 0x? <a href="mailto:team@0xproject.com">Get in touch.</a>
                 </Paragraph>
 
-                {_.map(highlights, (highlight, index) => (
+                {map(highlights, (highlight, index) => (
                     <Highlight key={`highlight-${index}`} highlight={highlight} />
                 ))}
             </>

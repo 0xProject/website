@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { each, filter, isEmpty } from 'lodash-es';
 import { localStorage } from 'ts/local_storage/local_storage';
 import { Token, TokenByAddress, TrackedTokensByUserAddress } from 'ts/types';
 import { configs } from 'ts/utils/configs';
@@ -32,7 +32,7 @@ export const trackedTokenStorage = {
     },
     getTrackedTokensByUserAddress(): TrackedTokensByUserAddress {
         const trackedTokensJSONString = localStorage.getItemIfExists(TRACKED_TOKENS_KEY);
-        if (_.isEmpty(trackedTokensJSONString)) {
+        if (isEmpty(trackedTokensJSONString)) {
             return {};
         }
         const trackedTokensByUserAddress = JSON.parse(trackedTokensJSONString);
@@ -41,7 +41,7 @@ export const trackedTokenStorage = {
     getTrackedTokensByAddress(userAddress: string, networkId: number): TokenByAddress {
         const trackedTokensByAddress: TokenByAddress = {};
         const trackedTokensJSONString = localStorage.getItemIfExists(TRACKED_TOKENS_KEY);
-        if (_.isEmpty(trackedTokensJSONString)) {
+        if (isEmpty(trackedTokensJSONString)) {
             return trackedTokensByAddress;
         }
         const trackedTokensByUserAddress = JSON.parse(trackedTokensJSONString);
@@ -50,7 +50,7 @@ export const trackedTokenStorage = {
             return trackedTokensByAddress;
         }
         const trackedTokens = trackedTokensByNetworkId[networkId];
-        _.each(trackedTokens, (trackedToken: Token) => {
+        each(trackedTokens, (trackedToken: Token) => {
             trackedTokensByAddress[trackedToken.address] = trackedToken;
         });
         return trackedTokensByAddress;
@@ -59,7 +59,7 @@ export const trackedTokenStorage = {
         const trackedTokensByUserAddress = trackedTokenStorage.getTrackedTokensByUserAddress();
         const trackedTokensByNetworkId = trackedTokensByUserAddress[userAddress];
         const trackedTokens = trackedTokensByNetworkId[networkId];
-        const remainingTrackedTokens = _.filter(trackedTokens, (token: Token) => {
+        const remainingTrackedTokens = filter(trackedTokens, (token: Token) => {
             return token.address !== tokenAddress;
         });
         trackedTokensByNetworkId[networkId] = remainingTrackedTokens;

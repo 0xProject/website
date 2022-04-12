@@ -1,5 +1,6 @@
 import { BigNumber, logUtils } from '@0x/utils';
-import * as _ from 'lodash';
+
+import { noop } from 'lodash-es';
 import * as React from 'react';
 import ReactTooltip from 'react-tooltip';
 import { Blockchain } from 'ts/blockchain';
@@ -36,7 +37,7 @@ const DEFAULT_ALLOWANCE_AMOUNT_IN_BASE_UNITS = new BigNumber(2).pow(256).minus(1
 
 export class AllowanceStateToggle extends React.Component<AllowanceStateToggleProps, AllowanceStateToggleState> {
     public static defaultProps = {
-        onErrorOccurred: _.noop.bind(_),
+        onErrorOccurred: noop,
         tooltipDirection: PointerDirection.Right,
     };
     private static _getAllowanceState(tokenState: TokenState): AllowanceState {

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { isEmpty } from 'lodash-es';
 
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { ZeroExProvider } from 'ethereum-types';
@@ -250,7 +250,7 @@ export const backendClient = {
     },
 
     async getPriceInfoAsync(tokenSymbols: string[]): Promise<WebsiteBackendPriceInfo> {
-        if (_.isEmpty(tokenSymbols)) {
+        if (isEmpty(tokenSymbols)) {
             return {};
         }
         const joinedTokenSymbols = tokenSymbols.join(',');

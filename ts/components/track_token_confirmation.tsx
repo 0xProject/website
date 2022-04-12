@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map, values } from 'lodash-es';
 import * as React from 'react';
 import { Party } from 'ts/components/ui/party';
 import { Token, TokenByAddress } from 'ts/types';
@@ -17,7 +17,7 @@ interface TrackTokenConfirmationState {}
 export class TrackTokenConfirmation extends React.Component<TrackTokenConfirmationProps, TrackTokenConfirmationState> {
     public render(): React.ReactNode {
         const isMultipleTokens = this.props.tokens.length > 1;
-        const allTokens = _.values(this.props.tokenByAddress);
+        const allTokens = values(this.props.tokenByAddress);
         return (
             <div style={{ color: colors.grey700 }}>
                 {this.props.isAddingTokenToTracked ? (
@@ -31,7 +31,7 @@ export class TrackTokenConfirmation extends React.Component<TrackTokenConfirmati
                     <div>
                         <div>You do not currently track the following token{isMultipleTokens && 's'}:</div>
                         <div className="py2 clearfix mx-auto center" style={{ width: 355 }}>
-                            {_.map(this.props.tokens, (token: Token) => (
+                            {map(this.props.tokens, (token: Token) => (
                                 <div
                                     key={`token-profile-${token.name}`}
                                     className={`col col-${isMultipleTokens ? '6' : '12'} px2`}

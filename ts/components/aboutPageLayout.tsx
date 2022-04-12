@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
 

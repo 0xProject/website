@@ -1,6 +1,6 @@
 /*
 import { BigNumber, fetchAsync, logUtils } from '@0x/utils';
-import * as _ from 'lodash';
+
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import * as React from 'react';

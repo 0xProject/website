@@ -1,7 +1,7 @@
 import { EmptyWalletSubprovider, RPCSubprovider, Web3ProviderEngine } from '@0x/subproviders';
 import { providerUtils } from '@0x/utils';
 import { ZeroExProvider } from 'ethereum-types';
-import _ from 'lodash';
+import _ from 'lodash-es';
 
 import { Maybe, Network } from 'ts/types';
 import { configs } from 'ts/utils/configs';

@@ -1,5 +1,6 @@
 import { BigNumber } from '@0x/utils';
-import * as _ from 'lodash';
+
+import { map } from 'lodash-es';
 import moment from 'moment-timezone';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -109,7 +110,7 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                             endDate={this._proposalData.voteEndDate}
                         />
                         <Heading size="medium">{this._proposalData.title}</Heading>
-                        {_.map(this._proposalData.summary, (link, index) => (
+                        {map(this._proposalData.summary, (link, index) => (
                             <Paragraph key={`summarytext-${index}`}>{this._proposalData.summary[index]}</Paragraph>
                         ))}
                         <Button
@@ -202,12 +203,12 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                         <Heading>{this._proposalData.benefit.title}</Heading>
                         <FlexWrap>
                             <Column width="55%" maxWidth="560px">
-                                {_.map(this._proposalData.benefit.summary, (link, index) => (
+                                {map(this._proposalData.benefit.summary, (link, index) => (
                                     <Paragraph key={`benefittext-${index}`}>
                                         {this._proposalData.benefit.summary[index]}
                                     </Paragraph>
                                 ))}
-                                {_.map(this._proposalData.benefit.links, (link, index) => (
+                                {map(this._proposalData.benefit.links, (link, index) => (
                                     <MoreLink
                                         href={link.url}
                                         target={link.url !== undefined ? '_blank' : undefined}
@@ -232,12 +233,12 @@ export class Governance extends React.Component<RouteComponentProps<any>> {
                         <Heading>{this._proposalData.risks.title}</Heading>
                         <FlexWrap>
                             <Column width="55%" maxWidth="560px">
-                                {_.map(this._proposalData.risks.summary, (link, index) => (
+                                {map(this._proposalData.risks.summary, (link, index) => (
                                     <Paragraph key={`risktext-${index}`}>
                                         {this._proposalData.risks.summary[index]}
                                     </Paragraph>
                                 ))}
-                                {_.map(this._proposalData.risks.links, (link, index) => (
+                                {map(this._proposalData.risks.links, (link, index) => (
                                     <div key={`risklink-${index}`}>
                                         <MoreLink
                                             href={link.url}

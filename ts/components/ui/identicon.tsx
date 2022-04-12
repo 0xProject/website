@@ -1,5 +1,6 @@
 import blockies from 'blockies';
-import * as _ from 'lodash';
+
+import { isEmpty } from 'lodash-es';
 import * as React from 'react';
 
 import { Circle } from 'ts/components/ui/circle';
@@ -31,7 +32,7 @@ export class Identicon extends React.Component<IdenticonProps, IdenticonState> {
                     ...this.props.style,
                 }}
             >
-                {!_.isEmpty(address) ? (
+                {!isEmpty(address) ? (
                     <Image
                         src={blockies({
                             seed: address.toLowerCase(),

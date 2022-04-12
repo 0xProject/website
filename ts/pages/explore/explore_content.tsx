@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { sortBy } from 'lodash-es';
 import * as React from 'react';
 
 import { ExploreGridFeaturedTile } from 'ts/pages/explore/explore_grid_featured_tile';
@@ -383,6 +383,6 @@ export const ORDERINGS: { [s: string]: ExploreTilesOrderingMetadata } = {
         label: 'Alphabetical',
         ordering: ExploreTilesOrdering.Alphabetical,
         type: ExploreTilesOrderingType.DynamicBySortFunction,
-        sort: (tiles: ExploreTile[]) => _.sortBy(tiles, (t) => t.name),
+        sort: (tiles: ExploreTile[]) => sortBy(tiles, (t) => t.name),
     },
 };

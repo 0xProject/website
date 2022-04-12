@@ -1,6 +1,7 @@
 import { BigNumber } from '@0x/utils';
 import ethUtil from 'ethereumjs-util';
-import * as _ from 'lodash';
+
+import { each, isEmpty, parseInt as lodashParseInt, startsWith } from 'lodash-es';
 import { localStorage } from 'ts/local_storage/local_storage';
 import { Fill } from 'ts/types';
 import { configs } from 'ts/utils/configs';
@@ -18,8 +19,8 @@ export const tradeHistoryStorage = {
         const lastClearFillDate = localStorage.getItemIfExists(FILL_CLEAR_KEY);
         if (lastClearFillDate !== configs.LAST_LOCAL_STORAGE_FILL_CLEARANCE_DATE) {
             const localStorageKeys = localStorage.getAllKeys();
-            _.each(localStorageKeys, (key) => {
-                if (_.startsWith(key, `${FILLS_KEY}-`) || _.startsWith(key, `${FILLS_LATEST_BLOCK}-`)) {
+            each(localStorageKeys, (key) => {
+                if (startsWith(key, `${FILLS_KEY}-`) || startsWith(key, `${FILLS_LATEST_BLOCK}-`)) {
                     localStorage.removeItem(key);
                 }
             });
@@ -53,11 +54,11 @@ export const tradeHistoryStorage = {
     getUserFillsByHash(userAddress: string, networkId: number): { [fillHash: string]: Fill } {
         const userFillsKey = tradeHistoryStorage._getUserFillsKey(userAddress, networkId);
         const userFillsJSONString = localStorage.getItemIfExists(userFillsKey);
-        if (_.isEmpty(userFillsJSONString)) {
+        if (isEmpty(userFillsJSONString)) {
             return {};
         }
         const userFillsByHash = JSON.parse(userFillsJSONString);
-        _.each(userFillsByHash, (fill) => {
+        each(userFillsByHash, (fill) => {
             fill.paidMakerFee = new BigNumber(fill.paidMakerFee);
             fill.paidTakerFee = new BigNumber(fill.paidTakerFee);
             fill.filledTakerTokenAmount = new BigNumber(fill.filledTakerTokenAmount);
@@ -68,10 +69,10 @@ export const tradeHistoryStorage = {
     getFillsLatestBlock(userAddress: string, networkId: number): number {
         const userFillsLatestBlockKey = tradeHistoryStorage._getFillsLatestBlockKey(userAddress, networkId);
         const blockNumberStr = localStorage.getItemIfExists(userFillsLatestBlockKey);
-        if (_.isEmpty(blockNumberStr)) {
+        if (isEmpty(blockNumberStr)) {
             return constants.GENESIS_ORDER_BLOCK_BY_NETWORK_ID[networkId];
         }
-        const blockNumber = _.parseInt(blockNumberStr);
+        const blockNumber = lodashParseInt(blockNumberStr);
         return blockNumber;
     },
     setFillsLatestBlock(userAddress: string, networkId: number, blockNumber: number): void {

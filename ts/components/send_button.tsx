@@ -1,5 +1,5 @@
 import { BigNumber, logUtils } from '@0x/utils';
-import * as _ from 'lodash';
+import { includes } from 'lodash-es';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as React from 'react';
 import { Blockchain } from 'ts/blockchain';
@@ -77,7 +77,7 @@ export class SendButton extends React.Component<SendButtonProps, SendButtonState
             }
         } catch (err) {
             const errMsg = `${err}`;
-            if (_.includes(errMsg, BlockchainCallErrs.UserHasNoAssociatedAddresses)) {
+            if (includes(errMsg, BlockchainCallErrs.UserHasNoAssociatedAddresses)) {
                 this.props.dispatcher.updateShouldBlockchainErrDialogBeOpen(true);
                 return;
             } else if (!utils.didUserDenyWeb3Request(errMsg)) {

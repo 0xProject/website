@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { includes, map } from 'lodash-es';
 import { Deco, Key, Language } from 'ts/types';
 
 import chinese from '../../translations/chinese.json';
@@ -31,13 +31,13 @@ export class Translate {
         }
         const browserLanguage = (window.navigator as any).userLanguage || window.navigator.language || 'en-US';
         let language = Language.English;
-        if (_.includes(browserLanguage, 'es-')) {
+        if (includes(browserLanguage, 'es-')) {
             language = Language.Spanish;
-        } else if (_.includes(browserLanguage, 'zh-')) {
+        } else if (includes(browserLanguage, 'zh-')) {
             language = Language.Chinese;
-        } else if (_.includes(browserLanguage, 'ko-')) {
+        } else if (includes(browserLanguage, 'ko-')) {
             language = Language.Korean;
-        } else if (_.includes(browserLanguage, 'ru-')) {
+        } else if (includes(browserLanguage, 'ru-')) {
             language = Language.Russian;
         }
         this.setLanguage(language);
@@ -68,7 +68,7 @@ export class Translate {
                 );
             }
         }
-        if (decoration !== undefined && !_.includes(languagesWithoutCaps, this._selectedLanguage)) {
+        if (decoration !== undefined && !includes(languagesWithoutCaps, this._selectedLanguage)) {
             switch (decoration) {
                 case Deco.Cap:
                     text = this._capitalize(text);
@@ -80,7 +80,7 @@ export class Translate {
 
                 case Deco.CapWords:
                     const words = text.split(' ');
-                    const capitalizedWords = _.map(words, (w: string, i: number) => {
+                    const capitalizedWords = map(words, (w: string, i: number) => {
                         if (w.length === 1) {
                             return w;
                         }

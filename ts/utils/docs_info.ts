@@ -1,5 +1,6 @@
 import { DocAgnosticFormat, ObjectMap, TypeDefinitionByName } from '@0x/types';
-import * as _ from 'lodash';
+
+import { each, isEmpty, keyBy, keys, map, sortBy } from 'lodash-es';
 import { ALink } from 'ts/types';
 import { utils } from 'ts/utils/utils';
 
@@ -43,14 +44,14 @@ export class DocsInfo {
         }
 
         const section = docAgnosticFormat[this.typeSectionName];
-        const typeDefinitionByName = _.keyBy(section.types, 'name') as any;
+        const typeDefinitionByName = keyBy(section.types, 'name') as any;
         return typeDefinitionByName;
     }
     public getSectionNameToLinks(docAgnosticFormat: DocAgnosticFormat): ObjectMap<ALink[]> {
         const sectionNameToLinks: ObjectMap<ALink[]> = {};
-        _.each(this.markdownMenu, (linkTitles, sectionName) => {
+        each(this.markdownMenu, (linkTitles, sectionName) => {
             sectionNameToLinks[sectionName] = [];
-            _.each(linkTitles, (linkTitle) => {
+            each(linkTitles, (linkTitle) => {
                 const to = utils.getIdFromName(linkTitle);
                 const links = sectionNameToLinks[sectionName];
                 links.push({
@@ -64,8 +65,8 @@ export class DocsInfo {
             return sectionNameToLinks;
         }
 
-        const docSections = _.keys(this.sections);
-        _.each(docSections, (sectionName) => {
+        const docSections = keys(this.sections);
+        each(docSections, (sectionName) => {
             const docSection = docAgnosticFormat[sectionName];
             if (docSection === undefined || sectionName === constants.EXTERNAL_EXPORTS_SECTION_NAME) {
                 return; // no-op
@@ -73,16 +74,16 @@ export class DocsInfo {
 
             const isExportedFunctionSection =
                 docSection.functions.length === 1 &&
-                _.isEmpty(docSection.types) &&
-                _.isEmpty(docSection.methods) &&
-                _.isEmpty(docSection.constructors) &&
-                _.isEmpty(docSection.properties) &&
-                _.isEmpty(docSection.events);
+                isEmpty(docSection.types) &&
+                isEmpty(docSection.methods) &&
+                isEmpty(docSection.constructors) &&
+                isEmpty(docSection.properties) &&
+                isEmpty(docSection.events);
 
             if (sectionName === this.typeSectionName) {
-                const sortedTypesNames = _.sortBy(docSection.types, 'name');
-                const typeNames = _.map(sortedTypesNames, (t) => t.name);
-                const typeLinks = _.map(typeNames, (typeName) => {
+                const sortedTypesNames = sortBy(docSection.types, 'name');
+                const typeNames = map(sortedTypesNames, (t) => t.name);
+                const typeLinks = map(typeNames, (typeName) => {
                     return {
                         to: `${sectionName}-${typeName}`,
                         title: typeName,
@@ -94,18 +95,18 @@ export class DocsInfo {
             } else {
                 let eventNames: string[] = [];
                 if (docSection.events !== undefined) {
-                    const sortedEventNames = _.sortBy(docSection.events, 'name');
-                    eventNames = _.map(sortedEventNames, (m) => m.name);
+                    const sortedEventNames = sortBy(docSection.events, 'name');
+                    eventNames = map(sortedEventNames, (m) => m.name);
                 }
-                const propertiesSortedByName = _.sortBy(docSection.properties, 'name');
-                const propertyNames = _.map(propertiesSortedByName, (m) => m.name);
-                const methodsSortedByName = _.sortBy(docSection.methods, 'name');
-                const methodNames = _.map(methodsSortedByName, (m) => m.name);
-                const sortedFunctionNames = _.sortBy(docSection.functions, 'name');
-                const functionNames = _.map(sortedFunctionNames, (m) => m.name);
+                const propertiesSortedByName = sortBy(docSection.properties, 'name');
+                const propertyNames = map(propertiesSortedByName, (m) => m.name);
+                const methodsSortedByName = sortBy(docSection.methods, 'name');
+                const methodNames = map(methodsSortedByName, (m) => m.name);
+                const sortedFunctionNames = sortBy(docSection.functions, 'name');
+                const functionNames = map(sortedFunctionNames, (m) => m.name);
                 const names = [...eventNames, ...propertyNames, ...functionNames, ...methodNames];
 
-                const links = _.map(names, (name) => {
+                const links = map(names, (name) => {
                     return {
                         to: `${sectionName}-${name}`,
                         title: name,

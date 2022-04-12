@@ -2,7 +2,7 @@
 import { assetDataUtils, generatePseudoRandomSalt, orderHashUtils } from '@0x/order-utils';
 import { Order as ZeroExOrder } from '@0x/types';
 import { BigNumber, logUtils } from '@0x/utils';
-import * as _ from 'lodash';
+
 import Dialog from 'material-ui/Dialog';
 import Divider from 'material-ui/Divider';
 import * as React from 'react';

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { noop } from 'lodash-es';
 import * as React from 'react';
 
 import { zIndex } from 'ts/style/z_index';
@@ -26,7 +26,7 @@ export const Overlay: React.StatelessComponent<OverlayProps> = (props) => (
 
 Overlay.defaultProps = {
     style: {},
-    onClick: _.noop.bind(_),
+    onClick: noop,
 };
 
 Overlay.displayName = 'Overlay';

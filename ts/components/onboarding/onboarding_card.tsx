@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { colors } from 'ts/utils/colors';
 
-import * as _ from 'lodash';
 import { Button } from 'ts/components/ui/button';
 import { Container } from 'ts/components/ui/container';
 import { IconButton } from 'ts/components/ui/icon_button';

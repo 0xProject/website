@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { isEmpty } from 'lodash-es';
 import * as React from 'react';
 import ReactTooltip from 'react-tooltip';
 import { EthereumAddress } from 'ts/components/ui/ethereum_address';
@@ -54,7 +54,7 @@ export class Party extends React.Component<PartyProps, PartyState> {
         return (
             <div style={{ overflow: 'hidden' }}>
                 <div className="pb1 center">{label}</div>
-                {_.isEmpty(address) ? (
+                {isEmpty(address) ? (
                     <div className="circle mx-auto" style={emptyIdenticonStyles} />
                 ) : (
                     <a href={etherscanLinkIfExists} target="_blank">

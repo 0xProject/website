@@ -1,0 +1,20 @@
+yarn run v1.22.17
+$ /Users/dennis/projects/website/node_modules/.bin/webpack --profile --json
+i ｢atl｣: Mode:  production
+i ｢atl｣: Plugin Count:  3
+ℹ ｢atl｣: Using typescript@3.9.10 from typescript
+ℹ ｢atl｣: Using tsconfig.json from /Users/dennis/projects/website/tsconfig.json
+
+<--- Last few GCs --->
+ll[31489:0x102e8d000]   580702 ms: Mark-sweep 2047.2 (2063.7) -> 2046.3 (2061.0) MB, 1524.6 / 0.0 ms  (+ 119.2 ms in 23 steps since start of marking, biggest step 8.3 ms, walltime since start of marking 1648 ms) (average mu = 0.118, current mu = 0.003) allo[31489:0x102e8d000]   582201 ms: Mark-sweep 2048.2 (2061.0) -> 2048.1 (2063.0) MB, 1375.7 / 0.0 ms  (+ 118.1 ms in 27 steps since start of marking, biggest step 8.2 ms, walltime since start of marking 1499 ms) (average mu = 0.065, current mu = 0.003) allo
+
+<--- JS stacktrace --->
+
+==== JS stack trace =========================================
+
+    0: ExitFrame [pc: 0x100a04179]
+Security context: 0x30d6343408d1 <JSObject>
+    1: addMappingWithCode [0x30d636a43c29] [/Users/dennis/projects/website/node_modules/source-map/lib/source-node.js:~150] [pc=0x158e68328dd2](this=0x30d6dc440a31 <JSGlobal Object>,0x30d6b5d6ff91 <Object map = 0x30d606828709>,0x30d624bdd471 <String[6]: 13134:>)
+    2: /* anonymous */ [0x30d6ce8fbcc9] [/Users/dennis/projects/website/node_modules/source-map/lib/...
+
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import styled from 'styled-components';
@@ -26,7 +26,7 @@ export const Breadcrumb: React.StatelessComponent<BreadcrumbProps> = ({ crumbs }
             </ButtonBack>
 
             <p>
-                {_.map(crumbs, (crumb) => {
+                {map(crumbs, (crumb) => {
                     if (crumb.url) {
                         return (
                             <ReactRouterLink key={crumb.url} to={crumb.url}>

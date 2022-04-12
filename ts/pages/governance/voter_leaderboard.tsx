@@ -1,6 +1,6 @@
 import { BigNumber } from '@0x/utils';
 import { gql, request } from 'graphql-request';
-import * as _ from 'lodash';
+
 import CircularProgress from 'material-ui/CircularProgress';
 import * as React from 'react';
 import { useQuery } from 'react-query';

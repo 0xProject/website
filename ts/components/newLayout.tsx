@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { pick } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -62,7 +62,7 @@ export const Section: React.FunctionComponent<SectionProps> = React.memo((props:
     if (props.omitWrapper) {
         return <SectionBase {...props} />;
     }
-    const wrapProps = _.pick(props, [
+    const wrapProps = pick(props, [
         'bgColor',
         'id',
         'offsetTop',

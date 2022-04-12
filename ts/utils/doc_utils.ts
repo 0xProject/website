@@ -1,6 +1,7 @@
 import { DocAgnosticFormat, GeneratedDocJson } from '@0x/types';
 import { fetchAsync, logUtils } from '@0x/utils';
-import * as _ from 'lodash';
+
+import { each, endsWith, filter, includes, isArray, map } from 'lodash-es';
 import { S3FileObject, VersionToFilePath } from 'ts/types';
 import convert from 'xml-js';
 
@@ -8,7 +9,7 @@ export const docUtils = {
     async getVersionToFilePathAsync(s3DocJsonRoot: string, folderName: string): Promise<VersionToFilePath> {
         const versionFilePaths = await docUtils.getVersionFileNamesAsync(s3DocJsonRoot, folderName);
         const versionToFilePath: VersionToFilePath = {};
-        _.each(versionFilePaths, (filePath) => {
+        each(versionFilePaths, (filePath) => {
             const version = filePath.split('/v')[1].replace('.json', '');
             versionToFilePath[version] = filePath;
         });
@@ -27,7 +28,7 @@ export const docUtils = {
             compact: true,
         });
         const responseObj = JSON.parse(responseJSONString);
-        const fileObjs: S3FileObject[] = _.isArray(responseObj.ListBucketResult.Contents)
+        const fileObjs: S3FileObject[] = isArray(responseObj.ListBucketResult.Contents)
             ? (responseObj.ListBucketResult.Contents as S3FileObject[])
             : [responseObj.ListBucketResult.Contents];
 
@@ -58,14 +59,14 @@ export const docUtils = {
          * <StorageClass>STANDARD</StorageClass>
          * </Contents>
          */
-        const relevantObjs = _.filter(fileObjs, (fileObj) => {
+        const relevantObjs = filter(fileObjs, (fileObj) => {
             const key = fileObj.Key._text;
-            const isInFolderOfInterest = _.includes(key, folderName);
-            const isFileEntry = !_.endsWith(key, '/');
+            const isInFolderOfInterest = includes(key, folderName);
+            const isFileEntry = !endsWith(key, '/');
             return isInFolderOfInterest && isFileEntry;
         });
 
-        const versionFilePaths = _.map(relevantObjs, (fileObj) => {
+        const versionFilePaths = map(relevantObjs, (fileObj) => {
             return fileObj.Key._text;
         });
         return versionFilePaths;

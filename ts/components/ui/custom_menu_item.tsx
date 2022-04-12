@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { noop } from 'lodash-es';
 import * as React from 'react';
 import { Link } from 'ts/components/documentation/shared/link';
 
@@ -14,7 +14,7 @@ interface CustomMenuItemState {
 
 export class CustomMenuItem extends React.Component<CustomMenuItemProps, CustomMenuItemState> {
     public static defaultProps: Partial<CustomMenuItemProps> = {
-        onClick: _.noop.bind(_),
+        onClick: noop,
         className: '',
     };
     public constructor(props: CustomMenuItemProps) {

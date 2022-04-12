@@ -2,8 +2,8 @@ import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
 import { logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import * as _ from 'lodash';
 
+import { isEmpty } from 'lodash-es';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { AccountState, Network, ProviderState } from 'ts/types';
 import { errorReporter } from 'ts/utils/error_reporter';
@@ -34,7 +34,7 @@ export const asyncDispatcher = {
             dispatcher.setAccountStateLocked();
             return;
         }
-        if (!_.isEmpty(availableAddresses)) {
+        if (!isEmpty(availableAddresses)) {
             const activeAddress = availableAddresses[0];
             dispatcher.setAccountStateReady(activeAddress);
 

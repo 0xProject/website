@@ -1,6 +1,6 @@
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import * as _ from 'lodash';
+import { includes, noop } from 'lodash-es';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as React from 'react';
 import { Blockchain } from 'ts/blockchain';
@@ -37,7 +37,7 @@ export class EthWethConversionButton extends React.Component<
 > {
     public static defaultProps: Partial<EthWethConversionButtonProps> = {
         isDisabled: false,
-        onConversionSuccessful: _.noop.bind(_),
+        onConversionSuccessful: noop,
     };
     public constructor(props: EthWethConversionButtonProps) {
         super(props);
@@ -108,7 +108,7 @@ export class EthWethConversionButton extends React.Component<
             this.props.onConversionSuccessful();
         } catch (err) {
             const errMsg = `${err}`;
-            if (_.includes(errMsg, BlockchainCallErrs.UserHasNoAssociatedAddresses)) {
+            if (includes(errMsg, BlockchainCallErrs.UserHasNoAssociatedAddresses)) {
                 this.props.dispatcher.updateShouldBlockchainErrDialogBeOpen(true);
             } else if (!utils.didUserDenyWeb3Request(errMsg)) {
                 logUtils.log(`Unexpected error encountered: ${err}`);

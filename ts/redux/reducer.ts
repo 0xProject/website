@@ -1,6 +1,7 @@
 import { generatePseudoRandomSalt } from '@0x/order-utils';
 import { BigNumber } from '@0x/utils';
-import * as _ from 'lodash';
+import { each } from 'lodash-es';
+
 import * as moment from 'moment';
 import {
     Account,
@@ -187,7 +188,7 @@ export function reducer(state: State = INITIAL_STATE, action: Action): State {
         case ActionTypes.UpdateTokenByAddress: {
             const tokenByAddress = { ...state.tokenByAddress };
             const tokens = action.data;
-            _.each(tokens, (token) => {
+            each(tokens, (token) => {
                 const updatedToken = {
                     ...tokenByAddress[token.address],
                     ...token,

@@ -1,7 +1,7 @@
 import { Link } from 'ts/components/documentation/shared/link';
 
 import { ObjectMap } from '@0x/types';
-import * as _ from 'lodash';
+import { capitalize, map } from 'lodash-es';
 import * as React from 'react';
 import { Button } from 'ts/components/ui/button';
 import { Text } from 'ts/components/ui/text';
@@ -17,11 +17,11 @@ export interface NestedSidebarMenuProps {
 }
 
 export const NestedSidebarMenu = (props: NestedSidebarMenuProps) => {
-    const navigation = _.map(props.sectionNameToLinks, (links: ALink[], sectionName: string) => {
+    const navigation = map(props.sectionNameToLinks, (links: ALink[], sectionName: string) => {
         const finalSectionName = utils.convertCamelCaseToSpaces(sectionName);
-        const menuItems = _.map(links, (link, i) => {
+        const menuItems = map(links, (link, i) => {
             const menuItemTitle = props.shouldReformatMenuItemNames
-                ? _.capitalize(utils.convertDashesToSpaces(link.title))
+                ? capitalize(utils.convertDashesToSpaces(link.title))
                 : link.title;
             const finalLink = {
                 ...link,

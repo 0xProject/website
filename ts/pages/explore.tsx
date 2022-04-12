@@ -1,4 +1,17 @@
-import * as _ from 'lodash';
+import {
+    assign,
+    chain,
+    concat,
+    debounce,
+    filter,
+    has,
+    includes,
+    indexOf,
+    isEmpty,
+    sortBy,
+    startsWith,
+    values,
+} from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 import * as zeroExInstant from 'zeroExInstant';
@@ -54,7 +67,7 @@ export class Explore extends React.Component<ExploreProps> {
 
     constructor(props: ExploreProps) {
         super(props);
-        this._debouncedChangeSearchResults = _.debounce(this._changeSearchResults, 300);
+        this._debouncedChangeSearchResults = debounce(this._changeSearchResults, 300);
     }
 
     // tslint:disable-next-line:async-suffix
@@ -72,7 +85,7 @@ export class Explore extends React.Component<ExploreProps> {
                     <ExploreToolBar
                         onFilterClick={this._setFilter}
                         filters={this.state.filters}
-                        orderings={_.values(ORDERINGS)}
+                        orderings={values(ORDERINGS)}
                         activeOrdering={this.state.tilesOrdering}
                         onOrdering={this._onOrdering}
                     />
@@ -123,7 +136,7 @@ export class Explore extends React.Component<ExploreProps> {
 
     // tslint:disable-next-line:no-unused-variable
     private _generateEditorialContent(): void {
-        this.setState({ tiles: _.concat([], EDITORIAL, this.state.tiles) });
+        this.setState({ tiles: concat([], EDITORIAL, this.state.tiles) });
     }
 
     private readonly _generateTilesFromState = (): ExploreTile[] => {
@@ -137,7 +150,7 @@ export class Explore extends React.Component<ExploreProps> {
                 },
             ];
         }
-        if (_.isEmpty(this.state.tiles.filter((t) => t.visibility !== ExploreTileVisibility.Hidden))) {
+        if (isEmpty(this.state.tiles.filter((t) => t.visibility !== ExploreTileVisibility.Hidden))) {
             return [
                 {
                     name: 'empty',
@@ -170,17 +183,17 @@ export class Explore extends React.Component<ExploreProps> {
         }
         let updatedFilters: ExploreFilterMetadata[];
         updatedFilters = this.state.filters.map((f) => {
-            const newFilter = _.assign({}, f);
+            const newFilter = assign({}, f);
             newFilter.active = newFilter.name === filterName ? active : false;
             return newFilter;
         });
         // If no filters are enabled, default to all
-        if (_.filter(updatedFilters, (f) => f.active).length === 0) {
+        if (filter(updatedFilters, (f) => f.active).length === 0) {
             await this._setFilter('all');
         } else {
             const newTiles = await this._generateTilesWithModifier(
                 this.state.tiles,
-                _.isEmpty(this.state.query) ? ExploreTilesModifiers.Filter : ExploreTilesModifiers.Search,
+                isEmpty(this.state.query) ? ExploreTilesModifiers.Filter : ExploreTilesModifiers.Search,
                 {
                     filter: updatedFilters.find((f) => f.active),
                     query: this.state.query,
@@ -195,16 +208,16 @@ export class Explore extends React.Component<ExploreProps> {
         options: ExploreModifierOptions,
     ): boolean => {
         if (modifier === ExploreTilesModifiers.Ordering) {
-            return _.has(options, 'tilesOrdering');
+            return has(options, 'tilesOrdering');
         }
         if (modifier === ExploreTilesModifiers.Editorial) {
-            return _.has(options, 'isEditorialShown');
+            return has(options, 'isEditorialShown');
         }
         if (modifier === ExploreTilesModifiers.Search) {
-            return _.has(options, 'filter') && _.has(options, 'query');
+            return has(options, 'filter') && has(options, 'query');
         }
         if (modifier === ExploreTilesModifiers.Filter) {
-            return _.has(options, 'filter');
+            return has(options, 'filter');
         }
         return false;
     };
@@ -221,21 +234,21 @@ export class Explore extends React.Component<ExploreProps> {
         if (modifier === ExploreTilesModifiers.Ordering) {
             switch (ORDERINGS[options.tilesOrdering].type) {
                 case ExploreTilesOrderingType.HardCodedByName:
-                    return _.sortBy(tiles, (t) => _.indexOf(ORDERINGS[options.tilesOrdering].hardCoded, t.name));
+                    return sortBy(tiles, (t) => indexOf(ORDERINGS[options.tilesOrdering].hardCoded, t.name));
                 case ExploreTilesOrderingType.DynamicBySortFunction:
                     return ORDERINGS[options.tilesOrdering].sort(tiles);
                 default:
                     return tiles;
             }
         }
-        return _.concat([], tiles).map((t) => {
-            const newTile = _.assign({}, t);
+        return concat([], tiles).map((t) => {
+            const newTile = assign({}, t);
             if (modifier === ExploreTilesModifiers.Filter || modifier === ExploreTilesModifiers.Search) {
                 newTile.visibility =
                     (options.filter.name === 'all' && ExploreTileVisibility.Visible) || newTile.visibility;
                 if (!(options.filter.name === 'all') && !!newTile.exploreProject) {
                     newTile.visibility =
-                        (_.includes(newTile.exploreProject.keywords, options.filter.name) &&
+                        (includes(newTile.exploreProject.keywords, options.filter.name) &&
                             ExploreTileVisibility.Visible) ||
                         ExploreTileVisibility.Hidden;
                 }
@@ -246,16 +259,16 @@ export class Explore extends React.Component<ExploreProps> {
                 newTile.visibility === ExploreTileVisibility.Visible
             ) {
                 newTile.visibility =
-                    (_.chain(newTile.exploreProject.label.toLowerCase())
+                    (chain(newTile.exploreProject.label.toLowerCase())
                         .split(' ')
                         .concat([newTile.exploreProject.label.toLowerCase()])
-                        .reduce((a: boolean, s: string) => a || _.startsWith(s, trimmedQuery), false)
+                        .reduce((a: boolean, s: string) => a || startsWith(s, trimmedQuery), false)
                         .value() &&
                         ExploreTileVisibility.Visible) ||
                     ExploreTileVisibility.Hidden;
             }
             if (modifier === ExploreTilesModifiers.Editorial) {
-                if (_.startsWith(t.name, 'editorial')) {
+                if (startsWith(t.name, 'editorial')) {
                     newTile.visibility = options.isEditorialShown
                         ? ExploreTileVisibility.Visible
                         : ExploreTileVisibility.Hidden;
@@ -268,11 +281,11 @@ export class Explore extends React.Component<ExploreProps> {
     // For future versions, the load entries function can be async
     private readonly _loadEntriesAsync = async (): Promise<void> => {
         this.setState({ isEntriesLoading: true });
-        const rawProjects = _.values(PROJECTS);
+        const rawProjects = values(PROJECTS);
         const tiles = rawProjects.map((e: ExploreProject) => {
-            const exploreProject = _.assign({}, e);
+            const exploreProject = assign({}, e);
             if (!!exploreProject.instant) {
-                exploreProject.instant = _.assign({}, exploreProject.instant);
+                exploreProject.instant = assign({}, exploreProject.instant);
                 exploreProject.onInstantClick = this._launchInstantAsync.bind(this, exploreProject.instant);
             }
             exploreProject.onAnalytics = this._onAnalytics.bind(this, exploreProject);

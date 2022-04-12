@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -35,7 +35,7 @@ export const Card: React.StatelessComponent<CardProps> = (props: CardProps) => {
                 </Heading>
                 <Paragraph isMuted={true}>{description}</Paragraph>
                 <Links>
-                    {_.map(links, (link, index) => (
+                    {map(links, (link, index) => (
                         <Button
                             href={link.url}
                             target={link.url !== undefined ? '_blank' : undefined}

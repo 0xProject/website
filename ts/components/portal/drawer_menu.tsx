@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { concat } from 'lodash-es';
 import * as React from 'react';
 
 import { Blockchain } from 'ts/blockchain';
@@ -42,7 +42,7 @@ export const DrawerMenu = (props: DrawerMenuProps) => {
         labelText: 'Relayer ecosystem',
         iconName: 'zmdi-portable-wifi',
     };
-    const menuItemEntries = _.concat(relayerItemEntry, defaultMenuItemEntries);
+    const menuItemEntries = concat(relayerItemEntry, defaultMenuItemEntries);
     const accountState = utils.getAccountState(
         props.blockchainIsLoaded && props.blockchain !== undefined,
         props.providerType,

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { map } from 'lodash-es';
 import { opacify } from 'polished';
 import * as React from 'react';
 
@@ -117,7 +117,7 @@ export class NextMarketMaker extends React.Component<NextMarketMakerProps> {
                 </Section>
 
                 <Section>
-                    {_.map(this._offersData, (item, index) => (
+                    {map(this._offersData, (item, index) => (
                         <Definition
                             key={`offers-${index}`}
                             icon={item.icon}

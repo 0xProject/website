@@ -1,6 +1,7 @@
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import * as _ from 'lodash';
+
+import { includes } from 'lodash-es';
 import FlatButton from 'material-ui/FlatButton';
 import * as React from 'react';
 
@@ -203,7 +204,7 @@ export class WrapEtherItem extends React.Component<WrapEtherItemProps, WrapEther
             this.props.onConversionSuccessful();
         } catch (err) {
             const errMsg = `${err}`;
-            if (_.includes(errMsg, BlockchainCallErrs.UserHasNoAssociatedAddresses)) {
+            if (includes(errMsg, BlockchainCallErrs.UserHasNoAssociatedAddresses)) {
                 this.props.dispatcher.updateShouldBlockchainErrDialogBeOpen(true);
             } else if (!utils.didUserDenyWeb3Request(errMsg)) {
                 logUtils.log(`Unexpected error encountered: ${err}`);

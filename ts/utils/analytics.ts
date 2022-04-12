@@ -1,7 +1,7 @@
 import { assetDataUtils } from '@0x/order-utils';
 import { ERC20AssetData, ObjectMap } from '@0x/types';
 import { logUtils } from '@0x/utils';
-import * as _ from 'lodash';
+
 import { PortalOrder } from 'ts/types';
 import { utils } from 'ts/utils/utils';
 

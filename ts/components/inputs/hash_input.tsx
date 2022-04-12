@@ -1,7 +1,7 @@
 /*
 import { assetDataUtils, orderHashUtils } from '@0x/order-utils';
 import { Order } from '@0x/types';
-import * as _ from 'lodash';
+
 import * as React from 'react';
 import ReactTooltip from 'react-tooltip';
 
