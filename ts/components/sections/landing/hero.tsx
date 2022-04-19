@@ -8,8 +8,6 @@ import { LandingAnimation } from 'ts/components/heroImage';
 
 import { AnimationLoader } from 'ts/components/animations/animation_loader';
 
-import { WebsitePaths } from 'ts/types';
-
 export interface SectionlandingHeroProps {}
 
 const AnimatedTitleWrap = styled.div`
@@ -72,7 +70,7 @@ const AnimatedHeroTitle: React.FC<{}> = () => {
             });
         }, 1500);
         return () => clearTimeout(t);
-    }, []);
+    }, [slides.length]);
 
     return (
         <div>
@@ -130,7 +128,7 @@ interface HeroActionsProps {}
 const HeroActions: React.FC<HeroActionsProps> = () => {
     return (
         <>
-            <Button to={WebsitePaths.ZeroExApiDocs} isInline={true}>
+            <Button href={'https://docs.0x.org/'} isInline={true} target={'_blank'}>
                 Start Building
             </Button>
 
