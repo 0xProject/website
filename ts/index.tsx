@@ -33,7 +33,6 @@ import { AccountActivity } from 'ts/pages/account/activity';
 import { Account } from 'ts/pages/account/dashboard';
 import { StakingPoolActivity } from 'ts/pages/staking/history';
 
-import { ZeroExApi } from 'ts/pages/api';
 // import { CFL } from 'ts/pages/cfl';
 // import { NextEcosystem } from 'ts/pages/ecosystem';
 import { Extensions } from 'ts/pages/extensions';
@@ -100,8 +99,6 @@ render(
                                 {/* <Route exact={true} path={WebsitePaths.Instant} component={Next0xInstant} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.LaunchKit} component={NextLaunchKit} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Ecosystem} component={NextEcosystem} /> */}
-
-                                <Route exact={true} path={WebsitePaths.ZeroExApi} component={ZeroExApi} />
 
                                 <Route exact={true} path={WebsitePaths.Account} component={Account} />
                                 <Route exact={true} path={WebsitePaths.AccountActivity} component={AccountActivity} />

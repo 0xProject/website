@@ -29,21 +29,11 @@ interface LinkListProps {
 
 const linkRows: LinkRows[] = [
     {
-        heading: 'Products',
-        isOnMobile: true,
-        links: [
-            { url: WebsitePaths.ZeroExApi, text: '0x API' },
-            { url: constants.MATCHA_PRODUCTION_URL, text: 'Matcha', shouldOpenInNewTab: true },
-            { url: WebsitePaths.Extensions, text: 'Extensions' },
-            { url: WebsitePaths.Vote, text: 'Governance' },
-        ],
-    },
-    {
         heading: 'Developers',
         links: [
-            { url: WebsitePaths.Docs, text: 'Documentation' },
+            { url: 'https://docs.0x.org/', text: 'Documentation', shouldOpenInNewTab: true },
             { url: constants.URL_GITHUB_ORG, text: 'GitHub', shouldOpenInNewTab: true },
-            { url: `${WebsitePaths.DocsGuides}/v3-specification`, text: 'Protocol Spec', shouldOpenInNewTab: true },
+            { url: 'https://docs.0x.org/protocol/docs', text: 'Protocol Spec', shouldOpenInNewTab: true },
         ],
     },
     {
