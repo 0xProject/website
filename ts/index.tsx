@@ -137,6 +137,8 @@ render(
                             Portal does currently does not support V3 architecture
                             //<Route path={WebsitePaths.Portal} component={LazyPortal} />
                                 */}
+                                {/* 0x API page deprecated, redirect any inbound requests to homepage */}
+                                <Redirect from={WebsitePaths.ZeroExApi} to={WebsitePaths.Home} />
                                 <Redirect from={WebsitePaths.StakingShortLink} to={WebsitePaths.Vote} />
                                 <Redirect
                                     from={`${WebsiteLegacyPaths.ZeroExJs}/:version?`}
