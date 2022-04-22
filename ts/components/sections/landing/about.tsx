@@ -42,7 +42,7 @@ export const SectionLandingAbout = () => {
                     </Paragraph>
                 </div>
 
-                <WrapGrid bgColor={'#8F8F8F'} isWrapped={true}>
+                <WrapGrid isWrapped={true}>
                     {_.map(projects, (item: ProjectLogo, index) => (
                         <StyledProject key={`client-${index}`} isOnMobile={item.persistOnMobile}>
                             <img src={item.imageUrl} alt={item.name} />
