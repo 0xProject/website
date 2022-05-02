@@ -106,7 +106,7 @@ export class NextAboutJobs extends React.Component<NextAboutJobsProps, NextAbout
                 href={constants.URL_MISSION_AND_VALUES_BLOG_POST}
             >
                 <DocumentTitle {...documentConstants.JOBS} />
-                <Section bgColor="#F3F6F4" isFlex={true} maxWidth="1170px" wrapWidth="100%">
+                <Section bgColor="#F3F6F4" isFlex={true} maxWidth="1170px" wrapWidth="100%" padding="32px">
                     <Column maxWidth="442px">
                         <Heading size="medium" marginBottom="30px">
                             Powered by a Diverse, Global Community
