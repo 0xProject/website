@@ -11,44 +11,150 @@ import { documentConstants } from 'ts/utils/document_meta_constants';
 
 interface HighlightProps {
     logo: string;
-    title?: string;
+    outlet: Outlets;
     text: string;
     href: string;
+    date: string;
 }
 
 interface HighlightItemProps {
     highlight: HighlightProps;
 }
 
+type Outlets =
+    | 'Forbes'
+    | 'TechCrunch'
+    | 'VentureBeat'
+    | 'Decrypt'
+    | 'CoinDesk'
+    | 'CoinTelegraph'
+    | 'The Block'
+    | 'Fortune';
+
+type Dimensions = {
+    [O in Outlets]: { width: number; height: number };
+};
+
+const dimensions: Dimensions = {
+    Forbes: {
+        width: 84,
+        height: 22,
+    },
+    TechCrunch: {
+        width: 166,
+        height: 29,
+    },
+    VentureBeat: {
+        width: 141,
+        height: 18,
+    },
+    Decrypt: {
+        width: 110,
+        height: 41,
+    },
+    CoinDesk: { width: 134, height: 26 },
+    CoinTelegraph: {
+        width: 160,
+        height: 39,
+    },
+    Fortune: {
+        width: 100,
+        height: 25,
+    },
+    'The Block': {
+        width: 139,
+        height: 25,
+    },
+};
+
 const highlights: HighlightProps[] = [
     {
         logo: '/images/press/logo-forbes.png',
-        title: 'Forbes',
-        text:
-            '0x Instant is aiming to aid businesses and developers such as news sites, crypto wallets, dApps or price trackers to monetize or add a new revenue stream to their existing pipeline.',
+        outlet: 'Forbes',
+        text: 'Coinbase NFT Partner 0x Labs Raises $70 Million From Greylock Partners, Jump Crypto, and Jared Leto',
+        href:
+            'https://www.forbes.com/sites/ninabambysheva/2022/04/26/coinbase-nft-partner-0x-labs-raises-70-million-from-greylock-partners-jump-crypto-and-jared-leto',
+        date: 'April 26, 2022',
+    },
+    {
+        logo: '/images/press/the-block.png',
+        outlet: 'The Block',
+        text: 'Coinbase NFT marketplace goes live in beta for select customerso',
+        href: 'https://www.theblockcrypto.com/post/142684/coinbase-nft-marketplace-beta-launch',
+        date: 'April 20, 2022',
+    },
+    {
+        logo: '/images/press/decrypt.png',
+        outlet: 'Decrypt',
+        text: 'Latest Version of 0x to Allow NFT Swaps on Ethereum, Avalanche, Fantom, and Others',
+        href: 'https://decrypt.co/91603/latest-version-0x-allow-nft-swaps-ethereum-avalanche-fantom-others',
+        date: 'January 31, 2022',
+    },
+    {
+        logo: '/images/press/cointelegraph_e.png',
+        outlet: 'CoinTelegraph',
+        text: '0x expands partnership with Celo to distribute $4.5M to DAO ecosystem',
+        href: 'https://cointelegraph.com/news/0x-expands-partnership-with-celo-to-distribute-4-5m-to-dao-ecosystem',
+        date: 'December 3, 2021',
+    },
+    {
+        logo: '/images/press/cointelegraph_e.png',
+        outlet: 'CoinTelegraph',
+        text: '0x takes initial steps toward decentralizing governance',
+        href: 'https://cointelegraph.com/news/amm-aggregator-0x-takes-initial-steps-towards-decentralizing-governance',
+        date: 'February 12, 2021',
+    },
+    {
+        logo: '/images/press/coindesk_e.png',
+        outlet: 'CoinDesk',
+        text: '0x Labs Closes $15M Fundraising Round as ZRX Finds DeFi Market Fit',
+        href:
+            'https://www.coindesk.com/business/2021/02/05/0x-labs-closes-15m-fundraising-round-as-zrx-finds-defi-market-fit/',
+        date: 'February 5, 2021',
+    },
+    {
+        logo: '/images/press/decrypt.png',
+        outlet: 'Decrypt',
+        text: 'Polygon, 0x Spend $10.5 Million in Ethereum DeFi Developer Push',
+        href: 'https://decrypt.co/73250/polygon-10-million-ethereum-defi-developer-push',
+        date: 'January 10, 2021',
+    },
+    {
+        logo: '/images/press/decrypt.png',
+        outlet: 'Decrypt',
+        text: 'Matcha: 0x is looking to give decentralized exchanges a makeover',
+        href: 'https://decrypt.co/34023/matcha-0x-is-looking-to-give-decentralized-exchanges-a-makeover',
+        date: 'January 30, 2020',
+    },
+    {
+        logo: '/images/press/logo-forbes.png',
+        outlet: 'Forbes',
+        text: '0x Launches Instant, Delivers An Easy And Flexible Way To Buy Crypto Tokens',
         href:
             'https://www.forbes.com/sites/rebeccacampbell1/2018/12/06/0x-launches-instant-delivers-an-easy-and-flexible-way-to-buy-crypto-tokens/#bfb73a843561',
+        date: 'December 6, 2018',
     },
     {
         logo: '/images/press/logo-venturebeat.png',
-        title: 'VentureBeat',
+        outlet: 'VentureBeat',
         text: '0x leads the way for ‘tokenization’ of the world, and collectible game items are next',
         href:
             'https://venturebeat.com/2018/09/24/0x-leads-the-way-for-tokenization-of-the-world-and-collectible-game-items-are-next/',
+        date: 'September 24, 2018',
     },
     {
         logo: '/images/press/logo-fortune.png',
-        title: 'Fortune',
-        text:
-            'In the future, many traditional investments like real estate and corporate shares will come in the form of digital tokens that are bought and transferred on a blockchain.',
+        outlet: 'Fortune',
+        text: 'Security Tokens Get a Boost as PayPal Vet Joins 0x Board',
         href: 'http://fortune.com/2018/09/06/0x-harbor-blockchain/',
+        date: 'September 6, 2018',
     },
     {
         logo: '/images/press/logo-techcrunch.png',
-        title: 'TechCrunch',
-        text:
-            '0x allows any developer to quickly build their own decentralized cryptocurrency exchange and decide their own fees.',
+        outlet: 'TechCrunch',
+        text: '0x lets any app be the Craigslist of cryptocurrency',
         href: 'https://techcrunch.com/2018/07/16/0x/',
+        date: 'July 16, 2018',
     },
 ];
 
@@ -76,7 +182,15 @@ export const Highlight: React.FunctionComponent<HighlightItemProps> = (props: Hi
     return (
         <HighlightWrap>
             <Column>
-                <img src={highlight.logo} alt={highlight.title} />
+                <div>
+                    <HighlightDateText>{highlight.date}</HighlightDateText>
+                    <img
+                        src={highlight.logo}
+                        alt={highlight.outlet}
+                        height={dimensions[highlight.outlet].height}
+                        width={dimensions[highlight.outlet].width}
+                    />
+                </div>
             </Column>
 
             <Column width="60%" maxWidth="560px">
@@ -92,4 +206,11 @@ export const Highlight: React.FunctionComponent<HighlightItemProps> = (props: Hi
 const HighlightWrap = styled(FlexWrap)`
     border-top: 1px solid #eaeaea;
     padding: 30px 0;
+`;
+
+const HighlightDateText = styled('span')`
+    display: block;
+    margin-bottom: 12px;
+    color: #474747;
+    font-size: 14px;
 `;

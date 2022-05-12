@@ -40,6 +40,7 @@ const linkRows: LinkRows[] = [
         heading: 'About',
         isOnMobile: true,
         links: [
+            { url: WebsitePaths.AboutPress, text: 'Press' },
             { url: WebsitePaths.AboutMission, text: 'Mission' },
             { url: WebsitePaths.AboutJobs, text: 'Jobs' },
             { url: WebsitePaths.PrivacyPolicy, text: 'Privacy Policy' },
