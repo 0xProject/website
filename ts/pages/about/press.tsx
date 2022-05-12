@@ -15,6 +15,7 @@ interface HighlightProps {
     text: string;
     href: string;
     date: string;
+    buttonText?: string;
 }
 
 interface HighlightItemProps {
@@ -29,7 +30,8 @@ type Outlets =
     | 'CoinDesk'
     | 'CoinTelegraph'
     | 'The Block'
-    | 'Fortune';
+    | 'Fortune'
+    | 'Bloomberg';
 
 type Dimensions = {
     [O in Outlets]: { width: number; height: number };
@@ -61,6 +63,10 @@ const dimensions: Dimensions = {
         width: 100,
         height: 25,
     },
+    Bloomberg: {
+        width: 120,
+        height: 30,
+    },
     'The Block': {
         width: 139,
         height: 25,
@@ -69,9 +75,17 @@ const dimensions: Dimensions = {
 
 const highlights: HighlightProps[] = [
     {
+        logo: '/images/press/bloomberg.png',
+        outlet: 'Bloomberg',
+        text: '0x Labs raises $70M led by Greylock',
+        href: 'https://vimeo.com/manage/videos/709190667',
+        date: 'April 26, 2022',
+        buttonText: 'Watch Video',
+    },
+    {
         logo: '/images/press/logo-forbes.png',
         outlet: 'Forbes',
-        text: 'Coinbase NFT Partner 0x Labs Raises $70 Million From Greylock Partners, Jump Crypto, and Jared Leto',
+        text: 'Coinbase NFT partner 0x Labs raises $70 million from Greylock Partners, Jump Crypto, and Jared Leto',
         href:
             'https://www.forbes.com/sites/ninabambysheva/2022/04/26/coinbase-nft-partner-0x-labs-raises-70-million-from-greylock-partners-jump-crypto-and-jared-leto',
         date: 'April 26, 2022',
@@ -79,14 +93,14 @@ const highlights: HighlightProps[] = [
     {
         logo: '/images/press/the-block.png',
         outlet: 'The Block',
-        text: 'Coinbase NFT marketplace goes live in beta for select customerso',
+        text: 'Coinbase NFT marketplace goes live in beta for select customers',
         href: 'https://www.theblockcrypto.com/post/142684/coinbase-nft-marketplace-beta-launch',
         date: 'April 20, 2022',
     },
     {
         logo: '/images/press/decrypt.png',
         outlet: 'Decrypt',
-        text: 'Latest Version of 0x to Allow NFT Swaps on Ethereum, Avalanche, Fantom, and Others',
+        text: 'Latest version of 0x to allow NFT swaps on Ethereum, Avalanche, Fantom, and others',
         href: 'https://decrypt.co/91603/latest-version-0x-allow-nft-swaps-ethereum-avalanche-fantom-others',
         date: 'January 31, 2022',
     },
@@ -107,7 +121,7 @@ const highlights: HighlightProps[] = [
     {
         logo: '/images/press/coindesk_e.png',
         outlet: 'CoinDesk',
-        text: '0x Labs Closes $15M Fundraising Round as ZRX Finds DeFi Market Fit',
+        text: '0x Labs closes $15M fundraising round as ZRX finds DeFi market fit',
         href:
             'https://www.coindesk.com/business/2021/02/05/0x-labs-closes-15m-fundraising-round-as-zrx-finds-defi-market-fit/',
         date: 'February 5, 2021',
@@ -115,7 +129,7 @@ const highlights: HighlightProps[] = [
     {
         logo: '/images/press/decrypt.png',
         outlet: 'Decrypt',
-        text: 'Polygon, 0x Spend $10.5 Million in Ethereum DeFi Developer Push',
+        text: 'Polygon, 0x spend $10.5 million in Ethereum DeFi developer push',
         href: 'https://decrypt.co/73250/polygon-10-million-ethereum-defi-developer-push',
         date: 'January 10, 2021',
     },
@@ -129,7 +143,7 @@ const highlights: HighlightProps[] = [
     {
         logo: '/images/press/logo-forbes.png',
         outlet: 'Forbes',
-        text: '0x Launches Instant, Delivers An Easy And Flexible Way To Buy Crypto Tokens',
+        text: '0x launches Instant, delivers an easy and flexible way to buy crypto tokens',
         href:
             'https://www.forbes.com/sites/rebeccacampbell1/2018/12/06/0x-launches-instant-delivers-an-easy-and-flexible-way-to-buy-crypto-tokens/#bfb73a843561',
         date: 'December 6, 2018',
@@ -145,7 +159,7 @@ const highlights: HighlightProps[] = [
     {
         logo: '/images/press/logo-fortune.png',
         outlet: 'Fortune',
-        text: 'Security Tokens Get a Boost as PayPal Vet Joins 0x Board',
+        text: 'Security tokens get a boost as PayPal vet joins 0x board',
         href: 'http://fortune.com/2018/09/06/0x-harbor-blockchain/',
         date: 'September 6, 2018',
     },
@@ -164,7 +178,7 @@ export const NextAboutPress = () => (
         description={
             <>
                 <Paragraph size="medium" marginBottom="60px" isMuted={0.65}>
-                    Want to write about 0x? <a href="mailto:team@0xproject.com">Get in touch.</a>
+                    Want to write about 0x? <Link href="mailto:press@0x.org">Get in touch.</Link>
                 </Paragraph>
 
                 {_.map(highlights, (highlight, index) => (
@@ -196,7 +210,7 @@ export const Highlight: React.FunctionComponent<HighlightItemProps> = (props: Hi
             <Column width="60%" maxWidth="560px">
                 <Paragraph isMuted={false}>{highlight.text}</Paragraph>
                 <Button href={highlight.href} isWithArrow={true} isNoBorder={true} target="_blank">
-                    Read Article
+                    {highlight.buttonText || 'Read Article'}
                 </Button>
             </Column>
         </HighlightWrap>
@@ -213,4 +227,9 @@ const HighlightDateText = styled('span')`
     margin-bottom: 12px;
     color: #474747;
     font-size: 14px;
+`;
+
+const Link = styled('a')`
+    color: #00ae99;
+    font-weight: 500;
 `;
