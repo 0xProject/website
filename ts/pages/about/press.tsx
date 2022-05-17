@@ -77,9 +77,9 @@ const highlights: HighlightProps[] = [
     {
         logo: '/images/press/bloomberg.png',
         outlet: 'Bloomberg',
-        text: '0x Labs raises $70M led by Greylock',
+        text: '0x Labs raises $70M led by Greylock. Clip from interview with Greylock Partner, Sarah Guo',
         href: 'https://vimeo.com/manage/videos/709190667',
-        date: 'April 26, 2022',
+        date: 'April 27, 2022',
         buttonText: 'Watch Video',
     },
     {
@@ -178,7 +178,7 @@ export const NextAboutPress = () => (
         description={
             <>
                 <Paragraph size="medium" marginBottom="60px" isMuted={0.65}>
-                    Want to write about 0x? <Link href="mailto:press@0x.org">Get in touch.</Link>
+                    Contact: <Link href="mailto:press@0x.org">press@0x.org</Link>
                 </Paragraph>
 
                 {_.map(highlights, (highlight, index) => (
@@ -207,12 +207,12 @@ export const Highlight: React.FunctionComponent<HighlightItemProps> = (props: Hi
                 </div>
             </Column>
 
-            <Column width="60%" maxWidth="560px">
+            <PressEntryColumn width="60%" maxWidth="560px">
                 <Paragraph isMuted={false}>{highlight.text}</Paragraph>
                 <Button href={highlight.href} isWithArrow={true} isNoBorder={true} target="_blank">
                     {highlight.buttonText || 'Read Article'}
                 </Button>
-            </Column>
+            </PressEntryColumn>
         </HighlightWrap>
     );
 };
@@ -220,6 +220,16 @@ export const Highlight: React.FunctionComponent<HighlightItemProps> = (props: Hi
 const HighlightWrap = styled(FlexWrap)`
     border-top: 1px solid #eaeaea;
     padding: 30px 0;
+`;
+
+const PressEntryColumn = styled(Column)`
+    @media (max-width: 768px) {
+        width: 100%;
+
+        &&& {
+            margin-top: 20px;
+        }
+    }
 `;
 
 const HighlightDateText = styled('span')`
