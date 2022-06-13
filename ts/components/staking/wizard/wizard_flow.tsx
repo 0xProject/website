@@ -27,7 +27,7 @@ import { Paragraph } from 'ts/components/text';
 import { Spinner } from 'ts/components/ui/spinner';
 import { UnlockIcon } from 'ts/components/ui/unlock_icon';
 
-import { UseAllowanceHookResult } from 'ts/hooks/use_allowance';
+import { useAllowance, UseAllowanceHookResult } from 'ts/hooks/use_allowance';
 import { useSecondsRemaining } from 'ts/hooks/use_seconds_remaining';
 import { UseStakeHookResult } from 'ts/hooks/use_stake';
 
@@ -296,6 +296,19 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
     const isStakeAmountAboveBalance = zrxBalance.isLessThan(roundedStakeAmount);
     const isZeroAmountStakeInput = stakeAmount && roundedStakeAmount <= 0;
 
+    const allowance = useAllowance();
+
+    const isButtonDisabled = React.useMemo(() => {
+        return allowance.loadingState !== TransactionLoadingState.Success;
+    }, [allowance]);
+
+    React.useEffect(() => {
+        if (allowance.loadingState === undefined) {
+            allowance.setAllowance();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allowance]);
+
     if (stakingPools?.length === 0) {
         return (
             <>
@@ -375,7 +388,7 @@ export const RecommendedPoolsStakeInputPane = (props: StakingInputPaneProps) => 
             {statusNode}
             {recommendedPools && recommendedPools.length > 0 && (
                 <ButtonWithIcon
-                    isDisabled={isZeroAmountStakeInput || !stakeAmount}
+                    isDisabled={isButtonDisabled || isZeroAmountStakeInput || !stakeAmount}
                     onClick={() => {
                         setSelectedStakingPools(recommendedPools);
                         props.onGoToNextStep();

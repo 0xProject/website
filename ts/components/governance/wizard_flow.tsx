@@ -1,12 +1,13 @@
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Button } from 'ts/components/button';
 import { ChangePoolDialog } from 'ts/components/staking/change_pool_dialog';
 import { ErrorButton } from 'ts/components/staking/wizard/wizard_flow';
 import { generateUniqueId, Jazzicon } from 'ts/components/ui/jazzicon';
+import { useAllowance } from 'ts/hooks/use_allowance';
 import { UseStakeHookResult } from 'ts/hooks/use_stake';
 import { colors } from 'ts/style/colors';
 import { PoolWithStats, TransactionLoadingState } from 'ts/types';
@@ -142,6 +143,9 @@ const Bullet = styled.div`
 const ConfirmButton = styled(Button)`
     margin-top: 40px;
     color: ${() => colors.white};
+    cursor: ${({ isDisabled }) => (isDisabled ? 'not-allowed' : 'pointer')};
+    pointer-events: ${({ isDisabled }) => isDisabled && 'none'};
+    opacity: ${({ isDisabled }) => (isDisabled ? 0.3 : 1)};
 `;
 
 const DelegateButton = styled.button`
@@ -169,6 +173,18 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({
     const [selectedPool, setSelectedPool] = React.useState<PoolWithStats>();
     const [isDelegationFlow, setIsDelegationFlow] = React.useState<boolean>(false);
     const [zrxAmount, setZRXAmount] = React.useState<number>(userZRXBalance || 0);
+    const allowance = useAllowance();
+
+    const isButtonDisabled = useMemo(() => {
+        return allowance.loadingState !== TransactionLoadingState.Success;
+    }, [allowance]);
+
+    useEffect(() => {
+        if (allowance.loadingState === undefined) {
+            allowance.setAllowance();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allowance]);
 
     React.useEffect(() => {
         if (userZRXBalance) {
@@ -214,7 +230,10 @@ export const VotingPowerInput: React.FC<IVotingPowerInputProps> = ({
                             in the current epoch
                         </span>
                     </Notice>
-                    <ConfirmButton onClick={() => onNextButtonClick(isDelegationFlow, selectedPool, zrxAmount)}>
+                    <ConfirmButton
+                        onClick={() => onNextButtonClick(isDelegationFlow, selectedPool, zrxAmount)}
+                        isDisabled={isButtonDisabled}
+                    >
                         Confirm Registration
                     </ConfirmButton>
                     <ChangePoolDialog
