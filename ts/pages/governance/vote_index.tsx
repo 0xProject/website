@@ -219,6 +219,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
     const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
     const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
     const providerState = useSelector((state: State) => state.providerState);
+    const [isMounted, setIsMounted] = React.useState(true);
 
     const [email, setEmail] = React.useState<string>('');
 
@@ -244,11 +245,24 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
 
     React.useEffect(() => {
         // tslint:disable-next-line: no-floating-promises
-        (async () => {
-            const tallyMap: ZeipTallyMap = await fetchTallysAsync();
-            setTallys(tallyMap);
-        })();
-    }, []);
+        const runFetchAsync = async () => {
+            try {
+                const tallyMap: ZeipTallyMap = await fetchTallysAsync();
+                if (isMounted) {
+                    setTallys(tallyMap);
+                }
+            } catch (e) {
+                if (isMounted) {
+                    setInterval(runFetchAsync, 200);
+                }
+            }
+        };
+        // tslint:disable-next-line: no-floating-promises
+        runFetchAsync();
+        return () => {
+            setIsMounted(false);
+        };
+    }, [isMounted]);
 
     React.useEffect(() => {
         const contract = new ZrxTreasuryContract(GOVERNOR_CONTRACT_ADDRESS.ZRX, providerState.provider);
@@ -346,8 +360,8 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
 
     let sumOfTotalVotingPowerAverage;
     if (proposals.length && ZEIP_PROPOSALS.length) {
-        let sumOfZEIPVotingPower;
-        let sumOfTreasuryVotingPower;
+        let sumOfZEIPVotingPower: BigNumber = new BigNumber(0);
+        let sumOfTreasuryVotingPower: BigNumber = new BigNumber(0);
         proposals.forEach((proposal) => {
             const tally = {
                 no: new BigNumber(proposal.againstVotes.toString()),
