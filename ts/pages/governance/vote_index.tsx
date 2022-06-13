@@ -360,7 +360,7 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
 
     let sumOfTotalVotingPowerAverage;
     if (proposals.length && ZEIP_PROPOSALS.length) {
-        let sumOfZEIPVotingPower;
+        let sumOfZEIPVotingPower: BigNumber = new BigNumber(0);
         let sumOfTreasuryVotingPower: BigNumber = new BigNumber(0);
         proposals.forEach((proposal) => {
             const tally = {
