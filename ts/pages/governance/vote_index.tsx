@@ -358,8 +358,9 @@ export const VoteIndex: React.FC<VoteIndexProps> = () => {
         });
         ZEIP_PROPOSALS.forEach((zeip) => {
             const tally = tallys && tallys[zeip.zeipId];
-
-            sumOfZEIPVotingPower = tally.no.plus(tally.yes);
+            if (tally) {
+                sumOfZEIPVotingPower = tally.no.plus(tally.yes);
+            }
         });
         sumOfTotalVotingPowerAverage =
             (Web3Wrapper.toUnitAmount(sumOfTreasuryVotingPower, 18).toNumber() / proposals.length +
