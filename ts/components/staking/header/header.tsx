@@ -81,11 +81,11 @@ const navItems: NavItems[] = [
         text: 'Governance',
         url: WebsitePaths.Vote,
     },
-    {
-        id: 'staking',
-        text: 'Staking',
-        url: WebsitePaths.Staking,
-    },
+    // {
+    //     id: 'staking',
+    //     text: 'Staking',
+    //     url: WebsitePaths.Staking,
+    // },
     {
         id: 'treasury',
         text: 'Treasury',

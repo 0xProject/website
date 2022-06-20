@@ -19,7 +19,7 @@ import { RegisterRouterSteps, useRegisterWizard } from 'ts/hooks/use_register_wi
 import { useStake } from 'ts/hooks/use_stake';
 import { State } from 'ts/redux/reducer';
 import { colors } from 'ts/style/colors';
-import { AccountReady, Epoch, PoolWithStats, ProviderState, StakingPoolRecomendation, WebsitePaths } from 'ts/types';
+import { AccountReady, Epoch, PoolWithStats, ProviderState, StakingPoolRecomendation } from 'ts/types';
 import { DEFAULT_POOL_ID } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { formatZrx } from 'ts/utils/format_number';
@@ -195,7 +195,7 @@ const FlowSelector: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                         </Button>
                     </Column>
                 </Section>
-                <Section
+                {/* <Section
                     maxWidth="auto"
                     wrapWidth="100%"
                     flexBreakpoint="900px"
@@ -223,7 +223,7 @@ const FlowSelector: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                             Stake and Register your ZRX
                         </Button>
                     </Column>
-                </Section>
+                </Section> */}
             </Flex>
         </Section>
     );
