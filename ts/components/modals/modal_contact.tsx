@@ -95,7 +95,16 @@ export class ModalContact extends React.Component<Props> {
                     onDismiss={onDismiss}
                 >
                     <StyledDialogContent>
-                        <Form onSubmit={this._onSubmitAsync.bind(this)} isSuccessful={isSuccessful}>
+                        <Form
+                            onSubmit={this._onSubmitAsync.bind(this)}
+                            isSuccessful={isSuccessful}
+                            tabIndex={-1}
+                            onFocus={(e) => {
+                                e.currentTarget.blur();
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }}
+                        >
                             <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
                                 Contact Sales
                             </Heading>
