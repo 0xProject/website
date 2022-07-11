@@ -45,6 +45,7 @@ import {
 import { constants } from 'ts/utils/constants';
 import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
+import { utils } from 'ts/utils/utils';
 
 export interface StakingWizardProps {
     providerState: ProviderState;
@@ -104,7 +105,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                 setAllStakingPools(poolsResponse.stakingPools);
                 const activePools = (poolsResponse.stakingPools || []).filter(stakingUtils.isPoolActive);
                 setStakingPools(activePools);
-            } catch (err) {
+            } catch (e) {
+                const err = utils.maybeWrapInError(e);
                 logUtils.warn(err);
                 setAllStakingPools([]);
                 setStakingPools([]);
@@ -122,7 +124,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
                 const epochsResponse = await apiClient.getStakingEpochsAsync();
                 setCurrentEpochStats(epochsResponse.currentEpoch);
                 setNextEpochStats(epochsResponse.nextEpoch);
-            } catch (err) {
+            } catch (e) {
+                const err = utils.maybeWrapInError(e);
                 logUtils.warn(err);
                 setCurrentEpochStats(undefined);
                 setNextEpochStats(undefined);
@@ -138,7 +141,8 @@ export const StakingWizard: React.FC<StakingWizardProps> = (props) => {
             try {
                 const stats = await apiClient.getStakingStatsAsync();
                 setAllTimeStats(stats.allTime);
-            } catch (err) {
+            } catch (e) {
+                const err = utils.maybeWrapInError(e);
                 logUtils.warn(err);
                 setAllTimeStats(undefined);
                 errorReporter.report(err);

@@ -7,6 +7,7 @@ import { RelayerGridTile, RelayerGridTileStyle } from 'ts/components/relayer_ind
 import { Retry } from 'ts/components/ui/retry';
 import { ScreenWidths, WebsiteBackendRelayerInfo } from 'ts/types';
 import { backendClient } from 'ts/utils/backend_client';
+import { utils } from 'ts/utils/utils';
 
 export enum RelayerIndexCellStyle {
     Expanded = 0,
@@ -104,10 +105,11 @@ export class RelayerIndex extends React.Component<RelayerIndexProps, RelayerInde
                     relayerInfos,
                 });
             }
-        } catch (error) {
+        } catch (e) {
+            const err = utils.maybeWrapInError(e);
             if (!this._isUnmounted) {
                 this.setState({
-                    error,
+                    error: err,
                 });
             }
         }

@@ -106,7 +106,8 @@ export class EthWethConversionButton extends React.Component<
                 await this.props.refetchEthTokenStateAsync();
             }
             this.props.onConversionSuccessful();
-        } catch (err) {
+        } catch (e) {
+            const err = utils.maybeWrapInError(e);
             const errMsg = `${err}`;
             if (_.includes(errMsg, BlockchainCallErrs.UserHasNoAssociatedAddresses)) {
                 this.props.dispatcher.updateShouldBlockchainErrDialogBeOpen(true);

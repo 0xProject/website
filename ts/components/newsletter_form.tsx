@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { fadeIn } from 'ts/style/keyframes';
 import { errorReporter } from 'ts/utils/error_reporter';
+import { utils } from 'ts/utils/utils';
 
 interface IFormProps {
     color?: string;
@@ -46,7 +47,8 @@ export const NewsletterForm: React.FC<IFormProps> = ({ color }) => {
                 method: 'POST',
             });
         } catch (e) {
-            errorReporter.report(e);
+            const err = utils.maybeWrapInError(e);
+            errorReporter.report(err);
         }
     };
 

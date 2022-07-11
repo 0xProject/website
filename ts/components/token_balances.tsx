@@ -475,7 +475,8 @@ export class TokenBalances extends React.Component<TokenBalancesProps, TokenBala
             const amount = Web3Wrapper.toUnitAmount(constants.MINT_AMOUNT, token.decimals);
             this.props.dispatcher.showFlashMessage(`Successfully minted ${amount.toString(10)} ${token.symbol}`);
             return true;
-        } catch (err) {
+        } catch (e) {
+            const err = utils.maybeWrapInError(e);
             const errMsg = `${err}`;
             if (_.includes(errMsg, BlockchainCallErrs.UserHasNoAssociatedAddresses)) {
                 this.props.dispatcher.updateShouldBlockchainErrDialogBeOpen(true);

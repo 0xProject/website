@@ -640,4 +640,13 @@ export const utils = {
         }
         return 0;
     },
+    maybeWrapInError(e: unknown): Error {
+        if (e instanceof Error) {
+            return e;
+        }
+        if (e === undefined || e === null) {
+            return new Error('Unknown error');
+        }
+        return new Error(`${e}`);
+    },
 }; // tslint:disable:max-file-line-count

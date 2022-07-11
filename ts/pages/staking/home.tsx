@@ -25,6 +25,7 @@ import { errorReporter } from 'ts/utils/error_reporter';
 import { stakingUtils } from 'ts/utils/staking_utils';
 
 import { AccountReady, Epoch, PoolsListSortingParameter, PoolWithStats, ScreenWidths, WebsitePaths } from 'ts/types';
+import { utils } from 'ts/utils/utils';
 
 const sortFnMapping: { [key: string]: (a: PoolWithStats, b: PoolWithStats) => number } = {
     [PoolsListSortingParameter.Staked]: stakingUtils.sortByStakedDesc,
@@ -146,7 +147,9 @@ export const StakingIndex: React.FC<StakingIndexProps> = () => {
             try {
                 const epochsResponse = await apiClient.getStakingEpochsAsync();
                 setNextEpochStats(epochsResponse.nextEpoch);
-            } catch (err) {
+            } catch (e) {
+                const err = utils.maybeWrapInError(e);
+
                 logUtils.warn(err);
                 setNextEpochStats(undefined);
                 errorReporter.report(err);

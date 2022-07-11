@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { Input } from 'ts/components/modals/input';
-import { Thumbnail } from 'ts/components/staking/thumbnail.tsx';
+import { Thumbnail } from 'ts/components/staking/thumbnail';
 import { Heading, Paragraph } from 'ts/components/text';
 
 import { useSearch } from 'ts/hooks/use_search';

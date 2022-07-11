@@ -1,3 +1,9 @@
+declare global {
+    interface Navigator {
+        msSaveBlob?: (blob: any, defaultName?: string) => boolean;
+    }
+}
+
 function convertToCSV(headers: string[], objArray: Array<{ [key: string]: any }>): string {
     let str = `${headers.join('\t')}\r\n`;
 

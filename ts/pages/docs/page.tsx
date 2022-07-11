@@ -49,19 +49,14 @@ export const DocsPage: React.FC<IDocsPageProps> = (props) => {
     const { page, type, version } = props.match.params;
     const { hash } = props.location;
     // For api explorer / core-concepts the url does not include the page, i.e. it's only 'docs/core-concepts'
-    const key = page ? page : type;
-    // @ts-ignore
-    const pageMeta = meta[type] && meta[type][key];
-
-    if (!pageMeta) {
-        return <PageNotFound />;
-    }
-
     const [state, setState] = React.useState<IDocsPageState>({
         Component: '',
         contents: [],
         wasNotFound: false,
     });
+    const key = page ? page : type;
+    // @ts-ignore
+    const pageMeta = meta[type] && meta[type][key];
 
     const { Component, contents, wasNotFound } = state;
 
@@ -69,31 +64,34 @@ export const DocsPage: React.FC<IDocsPageProps> = (props) => {
 
     const isLoading = !Component;
 
-    // If the route path includes a version, replace the initial version on path
     const filePath = versions && version ? path.replace(versions[0], version) : path;
 
     React.useEffect(() => {
-        void loadPageAsync(filePath);
-    }, [filePath]);
+        const loadPageAsync = async (_filePath: string) => {
+            try {
+                const component = await import(/* webpackChunkName: "mdx/[request]" */ `mdx/${_filePath}`);
 
-    const loadPageAsync = async (_filePath: string) => {
-        try {
-            const component = await import(/* webpackChunkName: "mdx/[request]" */ `mdx/${_filePath}`);
+                setState({
+                    ...state,
+                    Component: component.default,
+                    contents: component.tableOfContents(),
+                });
 
-            setState({
-                ...state,
-                Component: component.default,
-                contents: component.tableOfContents(),
-            });
-
-            if (hash) {
-                await waitForImages(); // images will push down content when loading, so we wait...
-                scrollToHash(hash); // ...and then scroll to hash when ready not to push the content down
+                if (hash) {
+                    await waitForImages(); // images will push down content when loading, so we wait...
+                    scrollToHash(hash); // ...and then scroll to hash when ready not to push the content down
+                }
+            } catch (error) {
+                setState({ ...state, wasNotFound: true });
             }
-        } catch (error) {
-            setState({ ...state, wasNotFound: true });
-        }
-    };
+        };
+        void loadPageAsync(filePath);
+    }, [filePath, hash, state]);
+
+    if (!pageMeta) {
+        return <PageNotFound />;
+    }
+    // If the route path includes a version, replace the initial version on path
 
     if (wasNotFound) {
         return <PageNotFound />;
@@ -158,8 +156,10 @@ const waitForImages = async () => {
             _.map(images, (img: HTMLImageElement) => {
                 if (!img.complete) {
                     // tslint:disable-next-line:no-inferred-empty-object-type
-                    return new Promise((resolve) => {
-                        img.addEventListener('load', () => resolve());
+                    return new Promise<void>((resolve) => {
+                        img.addEventListener('load', () => {
+                            resolve();
+                        });
                     });
                 }
                 return false;

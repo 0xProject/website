@@ -75,7 +75,8 @@ export class SendButton extends React.Component<SendButtonProps, SendButtonState
                 await this.props.blockchain.transferAsync(token, recipient, value);
                 await this.props.refetchTokenStateAsync(token.address);
             }
-        } catch (err) {
+        } catch (e) {
+            const err = utils.maybeWrapInError(e);
             const errMsg = `${err}`;
             if (_.includes(errMsg, BlockchainCallErrs.UserHasNoAssociatedAddresses)) {
                 this.props.dispatcher.updateShouldBlockchainErrDialogBeOpen(true);

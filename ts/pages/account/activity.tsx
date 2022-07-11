@@ -183,7 +183,8 @@ export const AccountActivity: React.FC<ActivityProps> = () => {
                                 try {
                                     exportDataToCSVAndDownloadForUser(csvHeaders, delegatorHistory, 'staking_activity');
                                 } catch (e) {
-                                    errorReporter.report(e);
+                                    const err = utils.maybeWrapInError(e);
+                                    errorReporter.report(err);
                                     alert('Error exporting CSV.');
                                 }
                             }}

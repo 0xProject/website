@@ -139,7 +139,8 @@ export class AllowanceStateToggle extends React.Component<AllowanceStateTogglePr
             await this.props.blockchain.setProxyAllowanceAsync(this.props.token, newAllowanceAmountInBaseUnits);
             analytics.track('Set Allowances Success', logData);
             await this.props.refetchTokenStateAsync();
-        } catch (err) {
+        } catch (e) {
+            const err = utils.maybeWrapInError(e);
             analytics.track('Set Allowance Failure', logData);
             this.setState({
                 allowanceState: AllowanceStateToggle._getAllowanceState(this.state.prevTokenState),

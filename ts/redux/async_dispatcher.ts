@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import { Dispatcher } from 'ts/redux/dispatcher';
 import { AccountState, Network, ProviderState } from 'ts/types';
 import { errorReporter } from 'ts/utils/error_reporter';
+import { utils } from 'ts/utils/utils';
 
 // NOTE: Copied from Instant
 export const asyncDispatcher = {
@@ -68,7 +69,8 @@ export const asyncDispatcher = {
             dispatcher.updateAccountEthBalance({ address, ethBalanceInWei });
             dispatcher.updateAccountZrxBalance(zrxBalance);
             dispatcher.updateAccountZrxAllowance(zrxAllowance);
-        } catch (err) {
+        } catch (e) {
+            const err = utils.maybeWrapInError(e);
             logUtils.warn(err);
             errorReporter.report(err);
             return;

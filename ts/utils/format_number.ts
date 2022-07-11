@@ -56,7 +56,7 @@ export const createBigNumber = (value: NumStrBigNumber, base?: number): BigNumbe
     } catch (e) {
         // tslint:disable-next-line: no-console
         console.error('Error instantiating WrappedBigNumber', e);
-        throw new Error(e);
+        throw new Error(`${e}`);
     }
 
     return newBigNumber;

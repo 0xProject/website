@@ -579,7 +579,8 @@ export class Blockchain {
             if (injectedProviderIfExists.enable !== undefined) {
                 try {
                     await injectedProviderIfExists.enable();
-                } catch (err) {
+                } catch (e) {
+                    const err = utils.maybeWrapInError(e);
                     errorReporter.report(err);
                 }
             }
@@ -917,7 +918,8 @@ export class Blockchain {
         try {
             const contractInstance = address === undefined ? await c.deployed() : await c.at(address);
             return contractInstance;
-        } catch (err) {
+        } catch (e) {
+            const err = utils.maybeWrapInError(e);
             const errMsg = `${err}`;
             logUtils.log(`Notice: Error encountered: ${err} ${err.stack}`);
             if (_.includes(errMsg, 'not been deployed to detected network')) {

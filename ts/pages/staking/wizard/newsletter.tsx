@@ -16,8 +16,9 @@ import { State } from 'ts/redux/reducer';
 import { AccountReady, WebsitePaths } from 'ts/types';
 
 import { backendClient } from 'ts/utils/backend_client';
-import { configs } from 'ts/utils/configs.ts';
+import { configs } from 'ts/utils/configs';
 import { errorReporter } from 'ts/utils/error_reporter';
+import { utils } from 'ts/utils/utils';
 
 const StyledHeading = styled(Heading)`
     text-align: center;
@@ -136,7 +137,8 @@ export const Newsletter = () => {
                     list: configs.STAKING_UPDATES_NEWSLETTER_ID,
                 });
                 setHasSubmitted(true);
-            } catch (err) {
+            } catch (e) {
+                const err = utils.maybeWrapInError(e);
                 logUtils.warn(`Unable to register email to newsletter`, email, err);
                 errorReporter.report(err);
             }

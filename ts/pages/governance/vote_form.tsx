@@ -23,6 +23,7 @@ import { backendClient } from 'ts/utils/backend_client';
 import { configs, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { constants } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
+import { utils } from 'ts/utils/utils';
 
 export enum VoteValue {
     Yes = 'Yes',
@@ -252,7 +253,8 @@ class VoteFormComponent extends React.Component<Props> {
                 const errorMessage = responseBody.reason !== undefined ? responseBody.reason : 'Unknown Error';
                 this._handleError(errorMessage);
             }
-        } catch (err) {
+        } catch (e) {
+            const err = utils.maybeWrapInError(e);
             this._handleError(err.message);
         }
     };
@@ -307,8 +309,9 @@ class VoteFormComponent extends React.Component<Props> {
             if (onTransactionSuccess) {
                 onTransactionSuccess();
             }
-        } catch (error) {
-            this._handleError(error.message);
+        } catch (e) {
+            const err = utils.maybeWrapInError(e);
+            this._handleError(err.message);
         }
     };
     private _handleError(errorMessage: string): void {
@@ -328,7 +331,8 @@ class VoteFormComponent extends React.Component<Props> {
 
         try {
             signatureHex = await this._eip712SignatureAsync(selectedAddress, typedData, web3Wrapper);
-        } catch (err) {
+        } catch (e) {
+            const err = utils.maybeWrapInError(e);
             // HACK: We are unable to handle specific errors thrown since provider is not an object
             //       under our control. It could be Metamask Web3, Ethers, or any general RPC provider.
             //       We check for a user denying the signature request in a way that supports Metamask and
