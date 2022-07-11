@@ -1,0 +1,12 @@
+diff --git a/node_modules/@types/material-ui/index.d.ts b/node_modules/@types/material-ui/index.d.ts
+index 2d8631e..de3e6f2 100644
+--- a/node_modules/@types/material-ui/index.d.ts
++++ b/node_modules/@types/material-ui/index.d.ts
+@@ -1284,6 +1284,7 @@ declare namespace __MaterialUI {
+             anchorOrigin?: propTypes.origin;
+             animated?: boolean;
+             animation?: React.ComponentClass<Popover.PopoverAnimationProps>;
++            autoWidth?: boolean;
+             className?: string;
+             disabled?: boolean;
+             iconButton?: React.ReactNode;

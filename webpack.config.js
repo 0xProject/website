@@ -53,9 +53,8 @@ module.exports = (_env, argv) => {
                 },
                 {
                     test: /\.tsx?$/,
-                    loader: 'awesome-typescript-loader',
+                    loader: 'ts-loader',
                     options: {
-                        useCache: true,
                         // Skip type checking for local dev, can be done in editor and pre-push
                         transpileOnly: isDevEnvironment,
                     },
