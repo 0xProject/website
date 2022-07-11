@@ -95,16 +95,7 @@ export class ModalContact extends React.Component<Props> {
                     onDismiss={onDismiss}
                 >
                     <StyledDialogContent>
-                        <Form
-                            onSubmit={this._onSubmitAsync.bind(this)}
-                            isSuccessful={isSuccessful}
-                            tabIndex={-1}
-                            onFocus={(e) => {
-                                e.currentTarget.blur();
-                                e.preventDefault();
-                                e.stopPropagation();
-                            }}
-                        >
+                        <Form onSubmit={this._onSubmitAsync.bind(this)} isSuccessful={isSuccessful}>
                             <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
                                 Contact Sales
                             </Heading>
@@ -286,7 +277,11 @@ export class ModalContact extends React.Component<Props> {
                     />
                 </InputRow>
                 {this.state.chainOfInterest === 'Other' && (
-                    <InputRow>
+                    <InputRow
+                        onClick={(e) => {
+                            e.stopPropagation();
+                        }}
+                    >
                         <Input
                             name="chainOfInterestOther"
                             label="Please enter the name of your chain of interest"

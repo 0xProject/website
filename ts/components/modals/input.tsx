@@ -1,4 +1,3 @@
-import { DropDownMenu, MenuItem } from 'material-ui';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -94,11 +93,12 @@ export const GenericDropdown = ({
 }: GenericDropdownProps) => {
     const id = `input-${name}`;
     const [currentValue, setCurrentValue] = React.useState(defaultValue);
+    const inputRef = React.useRef<HTMLInputElement>(null);
 
     const handleChange = React.useCallback(
-        (event, index, value) => {
-            setCurrentValue(value);
-            onItemSelected(value);
+        (event) => {
+            setCurrentValue(event.target.value);
+            onItemSelected(event.target.value);
         },
         [onItemSelected],
     );
@@ -106,23 +106,22 @@ export const GenericDropdown = ({
     return (
         <InputWrapper width={width}>
             <Label htmlFor={id}>{label}</Label>
-            <div
-                id={id}
-                onClick={(e) => {
-                    e.currentTarget.focus();
-                }}
-            >
-                <StyledDropdown
-                    value={currentValue}
-                    onChange={handleChange}
-                    autoWidth={false}
-                    underlineStyle={{ stroke: 'none', borderTop: 'none' }}
-                >
+            <div id={id}>
+                <input type="text" ref={inputRef} style={{ display: 'none' }} />
+                <StyledDropdown value={currentValue} onChange={handleChange}>
                     {items.map((item: string | WrappedReactNode) => {
                         if (typeof item === 'string') {
-                            return <MenuItem value={item} primaryText={item} key={`item-${item}`} />;
+                            return (
+                                <option value={item} key={`item-${item}`}>
+                                    {item}
+                                </option>
+                            );
                         }
-                        return <MenuItem value={item.value} primaryText={item.value} key={`item-${item.value}`} />;
+                        return (
+                            <option value={item.value} key={`item-${item.value}`}>
+                                {item.item}
+                            </option>
+                        );
                     })}
                 </StyledDropdown>
             </div>
@@ -181,9 +180,10 @@ const StyledInput = styled.input`
     }
 `;
 
-const StyledDropdown = styled(DropDownMenu)`
+const StyledDropdown = styled.select`
     background-color: #fff;
     border: 1px solid #d5d5d5;
+    padding: 16px 15px 14px;
     color: #000;
     height: auto !important;
     font-size: 1.111111111rem !important;
