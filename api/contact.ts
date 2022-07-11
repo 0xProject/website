@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import fetch from 'node-fetch';
 
 import { validateContactForm } from './_utils';
 

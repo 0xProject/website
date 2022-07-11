@@ -91,6 +91,7 @@
         "moment-precise-range-plugin": "^1.3.0",
         "moment-timezone": "^0.5.33",
         "nice-color-palettes": "^3.0.0",
+        "node-fetch": "^3.2.6",
         "numeral": "^2.0.6",
         "patch-package": "^6.4.7",
         "polished": "^1.9.2",
