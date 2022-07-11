@@ -97,7 +97,7 @@ export class ModalContact extends React.Component<Props> {
                     <StyledDialogContent>
                         <Form onSubmit={this._onSubmitAsync.bind(this)} isSuccessful={isSuccessful}>
                             <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
-                                Contact the 0x Core Team
+                                Contact Sales
                             </Heading>
                             {this._renderFormContent(errors)}
                             <ButtonRow>
@@ -152,8 +152,10 @@ export class ModalContact extends React.Component<Props> {
         return (
             <>
                 <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-                    If you're considering building on 0x, we're happy to answer your questions. Fill out the form so we
-                    can connect you with the right person to help you get started.
+                    Hey there, Thanks for reaching out! 0x API is a professional grade liquidity aggregator for
+                    developers and enterprises. You can get started for free directly by accessing the endpoint from the
+                    documentation. For developers and enterprises who require higher rate limits or custom solutions,
+                    please provide us with information about your business.
                 </Paragraph>
                 <InputRow>
                     <Input
@@ -223,7 +225,7 @@ export class ModalContact extends React.Component<Props> {
                 </InputRow>
                 <InputRow>
                     <CheckBoxInput
-                        label="Is your application currently live?"
+                        label="Check here if your application is live"
                         isSelected={this.state.isApplicationLive}
                         onClick={() => {
                             this.setState({ isApplicationLive: !this.state.isApplicationLive });
@@ -310,8 +312,14 @@ export class ModalContact extends React.Component<Props> {
                     />
                 </InputRow>
                 <InputRow>
+                    <StyledSpan>
+                        The API is intended for public use. The current limit is approximately 3 Requests Per Second
+                        (RPS)/40 Requests Per Minute (RPM).
+                    </StyledSpan>
+                </InputRow>
+                <InputRow>
                     <CheckBoxInput
-                        label="Check here to request an API key. Current rate limits for public API is 3 requests per second/40 requests per minute"
+                        label="If you require higher rate limits, check here to request an API key."
                         isSelected={this.state.isApiKeyRequired}
                         onClick={() => {
                             this.setState({ isApiKeyRequired: !this.state.isApiKeyRequired });
@@ -448,5 +456,11 @@ const Confirmation = styled.div<FormProps>`
         margin-left: auto;
         margin-right: auto;
     }
+`;
+
+const StyledSpan = styled.span`
+    color: #000;
+    line-height: 1.4em;
+    font-size: 1.111111111rem;
 `;
 // tslint:disable:max-file-line-count

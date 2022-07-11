@@ -106,7 +106,12 @@ export const GenericDropdown = ({
     return (
         <InputWrapper width={width}>
             <Label htmlFor={id}>{label}</Label>
-            <div id={id}>
+            <div
+                id={id}
+                onClick={(e) => {
+                    e.currentTarget.focus();
+                }}
+            >
                 <StyledDropdown
                     value={currentValue}
                     onChange={handleChange}
