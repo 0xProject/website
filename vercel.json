@@ -31,5 +31,8 @@
             "permanent": true
         }
     ],
-    "rewrites": [{ "source": "/:path+", "destination": "/" }]
+    "rewrites": [
+        { "source": "/api/(.*)", "destination": "/api" },
+        { "source": "/:path+", "destination": "/" }
+    ]
 }

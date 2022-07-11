@@ -1,3 +1,4 @@
+import { DropDownMenu, MenuItem } from 'material-ui';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -60,11 +61,67 @@ export const CheckBoxInput = (props: CheckBoxProps) => {
     const { isSelected, label, onClick } = props;
     return (
         <Container onClick={onClick} className="flex items-center">
-            <Container marginRight="10px">
+            <Container marginRight="10px" minWidth={40}>
                 <CheckMark isChecked={isSelected} color={colors.brandLight} />
             </Container>
             <Label style={{ marginBottom: '0' }}>{label}</Label>
         </Container>
+    );
+};
+
+interface WrappedReactNode {
+    item: React.ReactNode[];
+    value: string;
+}
+
+interface GenericDropdownProps {
+    items: string[] | readonly string[] | WrappedReactNode[];
+    name: string;
+    label: string;
+    defaultValue?: string;
+    onItemSelected?: (item: string) => any;
+    width?: InputWidth;
+}
+
+export const GenericDropdown = ({
+    items,
+    defaultValue = typeof items[0] === 'string' ? items[0] : items[0].value,
+    // tslint:disable-next-line:no-empty
+    onItemSelected = () => {},
+    width = InputWidth.Full,
+    name,
+    label,
+}: GenericDropdownProps) => {
+    const id = `input-${name}`;
+    const [currentValue, setCurrentValue] = React.useState(defaultValue);
+
+    const handleChange = React.useCallback(
+        (event, index, value) => {
+            setCurrentValue(value);
+            onItemSelected(value);
+        },
+        [onItemSelected],
+    );
+
+    return (
+        <InputWrapper width={width}>
+            <Label htmlFor={id}>{label}</Label>
+            <div id={id}>
+                <StyledDropdown
+                    value={currentValue}
+                    onChange={handleChange}
+                    autoWidth={false}
+                    underlineStyle={{ stroke: 'none', borderTop: 'none' }}
+                >
+                    {items.map((item: string | WrappedReactNode) => {
+                        if (typeof item === 'string') {
+                            return <MenuItem value={item} primaryText={item} key={`item-${item}`} />;
+                        }
+                        return <MenuItem value={item.value} primaryText={item.value} key={`item-${item.value}`} />;
+                    })}
+                </StyledDropdown>
+            </div>
+        </InputWrapper>
     );
 };
 
@@ -117,6 +174,16 @@ const StyledInput = styled.input`
         color: #c3c3c3;
         font-family: 'Formular';
     }
+`;
+
+const StyledDropdown = styled(DropDownMenu)`
+    background-color: #fff;
+    border: 1px solid #d5d5d5;
+    color: #000;
+    height: auto !important;
+    font-size: 1.111111111rem !important;
+    outline: none;
+    width: 100%;
 `;
 
 const InputWrapper = styled.div<InputProps>`
