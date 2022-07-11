@@ -30,7 +30,7 @@ interface Props {
 }
 
 const NextLanding: React.FC<Props> = (props) => {
-    const [isContactModalOpen, setisContactModalOpen] = useState<boolean>(false);
+    const [isContactModalOpen, setisContactModalOpen] = useState<boolean>(window.location.hash.includes('contact'));
     const _onOpenContactModal = useCallback((): void => {
         window.history.replaceState(null, null, `${window.location.pathname}${window.location.search}#contact`);
         setisContactModalOpen(true);
