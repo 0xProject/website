@@ -659,6 +659,10 @@ export const utils = {
             'linkToProductOrWebsite',
             'usageDescription',
             'referral',
+            'typeOfBusiness',
+            'timelineForIntegration',
+            'role',
+            'chainOfInterest',
         ] as const;
 
         for (const field of requiredFields) {

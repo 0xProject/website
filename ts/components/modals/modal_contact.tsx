@@ -75,14 +75,14 @@ export class ModalContact extends React.Component<Props> {
         email: '',
         companyName: '',
         linkToProductOrWebsite: '',
-        typeOfBusiness: businessTypes[0] as string,
-        timelineForIntegration: timelineForIntegrationOptions[0],
-        role: roles[0] as string,
+        typeOfBusiness: '',
+        timelineForIntegration: '',
+        role: '',
         isApplicationLive: false,
         currentTradingVolume: '0',
         link: '',
-        productOfInterest: '0x Swap API',
-        chainOfInterest: chains[0] as string,
+        // productOfInterest: '0x Swap API',
+        chainOfInterest: '',
         chainOfInterestOther: '',
         usageDescription: '',
         referral: '',
@@ -217,6 +217,7 @@ export class ModalContact extends React.Component<Props> {
                         name="typeOfBusiness"
                         items={businessTypes}
                         defaultValue={this.state.typeOfBusiness}
+                        errors={errors}
                         onItemSelected={(selectedBusiness) => {
                             this.setState({ typeOfBusiness: selectedBusiness });
                         }}
@@ -226,6 +227,7 @@ export class ModalContact extends React.Component<Props> {
                     <GenericDropdown
                         label="Your Role"
                         name="role"
+                        errors={errors}
                         items={roles}
                         defaultValue={this.state.role}
                         onItemSelected={(selectedRole) => {
@@ -247,7 +249,8 @@ export class ModalContact extends React.Component<Props> {
                         label="Timeline for integration"
                         name="timelineForIntegration"
                         items={timelineForIntegrationOptions}
-                        defaultValue={this.state.chainOfInterest}
+                        defaultValue={this.state.timelineForIntegration}
+                        errors={errors}
                         onItemSelected={(selectedOption) => {
                             this.setState({ timelineForIntegration: selectedOption });
                         }}
@@ -303,6 +306,7 @@ export class ModalContact extends React.Component<Props> {
                         name="chainOfInterest"
                         items={chains}
                         defaultValue={this.state.chainOfInterest}
+                        errors={errors}
                         onItemSelected={(selectedChain) => {
                             this.setState({ chainOfInterest: selectedChain });
                         }}

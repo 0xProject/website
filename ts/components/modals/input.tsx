@@ -76,6 +76,7 @@ interface WrappedReactNode {
 interface GenericDropdownProps {
     items: string[] | readonly string[] | WrappedReactNode[];
     name: string;
+    errors?: ErrorProps;
     label: string;
     defaultValue?: string;
     onItemSelected?: (item: string) => any;
@@ -88,12 +89,14 @@ export const GenericDropdown = ({
     // tslint:disable-next-line:no-empty
     onItemSelected = () => {},
     width = InputWidth.Full,
+    errors,
     name,
     label,
 }: GenericDropdownProps) => {
     const id = `input-${name}`;
     const [currentValue, setCurrentValue] = React.useState(defaultValue);
-    const inputRef = React.useRef<HTMLInputElement>(null);
+    const isErrors = errors && errors.hasOwnProperty(name) && errors[name] !== null;
+    const errorMessage = isErrors ? errors[name] : null;
 
     const handleChange = React.useCallback(
         (event) => {
@@ -106,9 +109,16 @@ export const GenericDropdown = ({
     return (
         <InputWrapper width={width}>
             <Label htmlFor={id}>{label}</Label>
-            <div id={id}>
-                <input type="text" ref={inputRef} style={{ display: 'none' }} />
-                <StyledDropdown value={currentValue} onChange={handleChange}>
+            <StyledDropdownContainer id={id} isErrors={isErrors}>
+                <StyledDropdown
+                    value={currentValue}
+                    onChange={handleChange}
+                    isErrors={isErrors}
+                    style={{ color: currentValue === '' ? 'gray' : undefined }}
+                >
+                    <option value="" disabled={true} selected={true} color="gray">
+                        Select
+                    </option>
                     {items.map((item: string | WrappedReactNode) => {
                         if (typeof item === 'string') {
                             return (
@@ -124,7 +134,8 @@ export const GenericDropdown = ({
                         );
                     })}
                 </StyledDropdown>
-            </div>
+            </StyledDropdownContainer>
+            {isErrors && <Error>{errorMessage}</Error>}
         </InputWrapper>
     );
 };
@@ -181,7 +192,19 @@ const StyledInput = styled.input`
 `;
 
 const StyledDropdown = styled.select`
+    height: auto !important;
+    outline: none;
+    width: 100%;
+    border: none;
     background-color: #fff;
+    background-color: ${(props: InputProps) => props.isErrors && `#FDEDED`};
+    font-size: 1.111111111rem !important;
+`;
+
+const StyledDropdownContainer = styled.div`
+    background-color: #fff;
+    background-color: ${(props: InputProps) => props.isErrors && `#FDEDED`};
+    border-color: ${(props: InputProps) => props.isErrors && `#FD0000`};
     border: 1px solid #d5d5d5;
     padding: 16px 15px 14px;
     color: #000;
