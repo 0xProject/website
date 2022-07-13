@@ -60,11 +60,83 @@ export const CheckBoxInput = (props: CheckBoxProps) => {
     const { isSelected, label, onClick } = props;
     return (
         <Container onClick={onClick} className="flex items-center">
-            <Container marginRight="10px">
+            <Container marginRight="10px" minWidth={40}>
                 <CheckMark isChecked={isSelected} color={colors.brandLight} />
             </Container>
             <Label style={{ marginBottom: '0' }}>{label}</Label>
         </Container>
+    );
+};
+
+interface WrappedReactNode {
+    item: React.ReactNode[];
+    value: string;
+}
+
+interface GenericDropdownProps {
+    items: string[] | readonly string[] | WrappedReactNode[];
+    name: string;
+    errors?: ErrorProps;
+    label: string;
+    defaultValue?: string;
+    onItemSelected?: (item: string) => any;
+    width?: InputWidth;
+}
+
+export const GenericDropdown = ({
+    items,
+    defaultValue = typeof items[0] === 'string' ? items[0] : items[0].value,
+    // tslint:disable-next-line:no-empty
+    onItemSelected = () => {},
+    width = InputWidth.Full,
+    errors,
+    name,
+    label,
+}: GenericDropdownProps) => {
+    const id = `input-${name}`;
+    const [currentValue, setCurrentValue] = React.useState(defaultValue);
+    const isErrors = errors && errors.hasOwnProperty(name) && errors[name] !== null;
+    const errorMessage = isErrors ? errors[name] : null;
+
+    const handleChange = React.useCallback(
+        (event) => {
+            setCurrentValue(event.target.value);
+            onItemSelected(event.target.value);
+        },
+        [onItemSelected],
+    );
+
+    return (
+        <InputWrapper width={width}>
+            <Label htmlFor={id}>{label}</Label>
+            <StyledDropdownContainer id={id} isErrors={isErrors}>
+                <StyledDropdown
+                    value={currentValue}
+                    onChange={handleChange}
+                    isErrors={isErrors}
+                    style={{ color: currentValue === '' ? 'gray' : undefined }}
+                >
+                    <option value="" disabled={true} selected={true} color="gray">
+                        Select
+                    </option>
+                    {items.map((item: string | WrappedReactNode) => {
+                        if (typeof item === 'string') {
+                            return (
+                                <option value={item} key={`item-${item}`}>
+                                    {item}
+                                </option>
+                            );
+                        }
+                        return (
+                            <option value={item.value} key={`item-${item.value}`}>
+                                {item.item}
+                            </option>
+                        );
+                    })}
+                </StyledDropdown>
+            </StyledDropdownContainer>
+            {isErrors && <Error>{errorMessage}</Error>}
+        </InputWrapper>
     );
 };
 
@@ -117,6 +189,29 @@ const StyledInput = styled.input`
         color: #c3c3c3;
         font-family: 'Formular';
     }
+`;
+
+const StyledDropdown = styled.select`
+    height: auto !important;
+    outline: none;
+    width: 100%;
+    border: none;
+    background-color: #fff;
+    background-color: ${(props: InputProps) => props.isErrors && `#FDEDED`};
+    font-size: 1.111111111rem !important;
+`;
+
+const StyledDropdownContainer = styled.div`
+    background-color: #fff;
+    background-color: ${(props: InputProps) => props.isErrors && `#FDEDED`};
+    border-color: ${(props: InputProps) => props.isErrors && `#FD0000`};
+    border: 1px solid #d5d5d5;
+    padding: 16px 15px 14px;
+    color: #000;
+    height: auto !important;
+    font-size: 1.111111111rem !important;
+    outline: none;
+    width: 100%;
 `;
 
 const InputWrapper = styled.div<InputProps>`

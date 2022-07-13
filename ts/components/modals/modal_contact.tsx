@@ -1,19 +1,41 @@
+import { DialogContent, DialogOverlay } from '@reach/dialog';
+import '@reach/dialog/styles.css';
 import * as _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
-
-import { colors } from 'ts/style/colors';
-
-import { DialogContent, DialogOverlay } from '@reach/dialog';
-import '@reach/dialog/styles.css';
-
 import { Button } from 'ts/components/button';
 import { Icon } from 'ts/components/icon';
 import { ButtonClose } from 'ts/components/modals/button_close';
-import { CheckBoxInput, Input, InputWidth, OptionSelector } from 'ts/components/modals/input';
+import { CheckBoxInput, GenericDropdown, Input, InputWidth } from 'ts/components/modals/input';
 import { Heading, Paragraph } from 'ts/components/text';
 import { GlobalStyle } from 'ts/constants/globalStyle';
+import { colors } from 'ts/style/colors';
 import { utils } from 'ts/utils/utils';
+
+// const products = ['0x Swap API'] as const;
+
+const timelineForIntegrationOptions = [
+    'I’ve already integrated!',
+    '0-3 months',
+    '3-6 months',
+    '6-12 months',
+    '12+ months',
+    'I’m just getting started and browsing for more information',
+] as const;
+
+const chains = ['Avalanche', 'BNB', 'Celo', 'Ethereum', 'Fantom', 'Optimism', 'Polygon', 'Other'] as const;
+
+const roles = ['Product Manager', 'Founder', 'Engineer', 'CTO', 'other'] as const;
+
+const businessTypes = [
+    'CEX',
+    'Developer',
+    'Custodians',
+    'Enterprise',
+    'Fintech',
+    'Financial Service - Crypto Native',
+    'Wallet',
+] as const;
 
 export enum ModalContactType {
     General = 'GENERAL',
@@ -21,25 +43,6 @@ export enum ModalContactType {
     Credits = 'CREDITS',
     Explore = 'EXPLORE',
 }
-
-interface OptionMetadata {
-    label: string;
-    name: string;
-}
-const CREDIT_SERVICES_OPTIONS: OptionMetadata[] = [
-    {
-        label: 'AWS',
-        name: 'aws',
-    },
-    {
-        label: 'Alchemy',
-        name: 'alchemy',
-    },
-    {
-        label: 'Digital Ocean',
-        name: 'digital_ocean',
-    },
-];
 
 interface Props {
     theme?: GlobalStyle;
@@ -51,16 +54,6 @@ interface Props {
 interface FormProps {
     isSuccessful?: boolean;
     isSubmitting?: boolean;
-}
-
-interface ErrorResponseProps {
-    param: string;
-    location: string;
-    msg: string;
-}
-
-interface ErrorResponse {
-    errors: ErrorResponseProps[];
 }
 
 interface ErrorProps {
@@ -77,23 +70,30 @@ export class ModalContact extends React.Component<Props> {
         isSubmitting: false,
         isSuccessful: false,
         errors: {},
+        firstName: '',
+        lastName: '',
+        email: '',
+        companyName: '',
+        linkToProductOrWebsite: '',
+        typeOfBusiness: '',
+        timelineForIntegration: '',
+        role: '',
+        isApplicationLive: false,
+        currentTradingVolume: '0',
+        link: '',
+        // productOfInterest: '0x Swap API',
+        chainOfInterest: '',
+        chainOfInterestOther: '',
+        usageDescription: '',
+        referral: '',
+        isApiKeyRequired: false,
     };
-    // shared fields
-    public nameRef: React.RefObject<HTMLInputElement> = React.createRef();
-    public emailRef: React.RefObject<HTMLInputElement> = React.createRef();
-    public companyProjectRef: React.RefObject<HTMLInputElement> = React.createRef();
-    public commentsRef: React.RefObject<HTMLInputElement> = React.createRef();
-    // general lead fields
-    public linkRef: React.RefObject<HTMLInputElement> = React.createRef();
-    // market maker lead fields
-    public countryRef: React.RefObject<HTMLInputElement> = React.createRef();
-    public fundSizeRef: React.RefObject<HTMLInputElement> = React.createRef();
-    // Explore lead fields
     public themeColorRef: React.RefObject<HTMLInputElement> = React.createRef();
 
     public constructor(props: Props) {
         super(props);
     }
+
     public render(): React.ReactNode {
         const { isOpen, onDismiss } = this.props;
         const { isSuccessful, errors } = this.state;
@@ -107,7 +107,7 @@ export class ModalContact extends React.Component<Props> {
                     <StyledDialogContent>
                         <Form onSubmit={this._onSubmitAsync.bind(this)} isSuccessful={isSuccessful}>
                             <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
-                                Contact the 0x Core Team
+                                Contact Us
                             </Heading>
                             {this._renderFormContent(errors)}
                             <ButtonRow>
@@ -143,322 +143,216 @@ export class ModalContact extends React.Component<Props> {
         );
     }
     public _renderFormContent(errors: ErrorProps): React.ReactNode {
-        switch (this.props.modalContactType) {
-            case ModalContactType.MarketMaker:
-                return this._renderMarketMakerFormContent(errors);
-            case ModalContactType.Credits:
-                return this._renderCreditsFormContent(errors);
-            case ModalContactType.Explore:
-                return this._renderExploreFormContent(errors);
-            case ModalContactType.General:
-            default:
-                return this._renderGeneralFormContent(errors);
-        }
-    }
-    private _renderMarketMakerFormContent(errors: ErrorProps): React.ReactNode {
-        return (
-            <>
-                <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-                    If you’re considering market making on 0x, we’re happy to answer your questions. Fill out the form
-                    so we can connect you with the right person to help you get started.
-                </Paragraph>
-                <InputRow>
-                    <Input
-                        name="name"
-                        label="Your name"
-                        type="text"
-                        width={InputWidth.Half}
-                        ref={this.nameRef}
-                        required={true}
-                        errors={errors}
-                    />
-                    <Input
-                        name="email"
-                        label="Your email"
-                        type="email"
-                        ref={this.emailRef}
-                        required={true}
-                        errors={errors}
-                        width={InputWidth.Half}
-                    />
-                </InputRow>
-                <InputRow>
-                    <Input
-                        name="country"
-                        label="Country of Location"
-                        type="text"
-                        ref={this.countryRef}
-                        required={true}
-                        errors={errors}
-                    />
-                </InputRow>
-                <InputRow>
-                    <Input
-                        name="fundSize"
-                        label="Fund Size"
-                        type="text"
-                        ref={this.fundSizeRef}
-                        required={true}
-                        errors={errors}
-                    />
-                </InputRow>
-                <InputRow>
-                    <Input
-                        name="companyOrProject"
-                        label="Name of your project / company"
-                        type="text"
-                        ref={this.companyProjectRef}
-                        required={false}
-                        errors={errors}
-                    />
-                </InputRow>
-                <InputRow>
-                    <Input
-                        name="comments"
-                        label="What is prompting you to reach out?"
-                        type="textarea"
-                        ref={this.commentsRef}
-                        required={false}
-                        errors={errors}
-                    />
-                </InputRow>
-            </>
-        );
+        return this._renderGeneralFormContent(errors);
     }
 
-    private _renderExploreFormContent(errors: ErrorProps): React.ReactNode {
-        return (
-            <>
-                <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-                    If you’re working on an awesome 0x project, we would love to share it on our explore page. Fill out
-                    the form so we can connect you with the right person to help you get started.
-                </Paragraph>
-                <InputRow>
-                    <Input
-                        name="name"
-                        label="Your name"
-                        type="text"
-                        width={InputWidth.Half}
-                        ref={this.nameRef}
-                        required={true}
-                        errors={errors}
-                    />
-                    <Input
-                        name="email"
-                        label="Your email"
-                        type="email"
-                        ref={this.emailRef}
-                        required={true}
-                        errors={errors}
-                        width={InputWidth.Half}
-                    />
-                </InputRow>
-                <InputRow>
-                    <Input
-                        name="companyOrProject"
-                        label="Name of your project / company"
-                        type="text"
-                        ref={this.companyProjectRef}
-                        required={true}
-                        errors={errors}
-                    />
-                </InputRow>
-                <InputRow>
-                    <Input
-                        name="comments"
-                        label="Description of your project / company"
-                        type="textarea"
-                        ref={this.commentsRef}
-                        required={true}
-                        errors={errors}
-                    />
-                </InputRow>
-                <InputRow>
-                    <Input
-                        name="link"
-                        label="Project / Company link"
-                        type="text"
-                        ref={this.linkRef}
-                        required={true}
-                        errors={errors}
-                    />
-                </InputRow>
-                <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-                    Details for 0x Explore page:
-                </Paragraph>
-                <InputRow>
-                    <Input
-                        name="color"
-                        label="Theme Color (in hex)"
-                        type="text"
-                        ref={this.themeColorRef}
-                        required={true}
-                        errors={errors}
-                    />
-                </InputRow>
-                <InputRow>
-                    <OptionSelector
-                        isFlex={true}
-                        name="instant"
-                        label="Does your project support instant?"
-                        errors={errors}
-                    >
-                        {[
-                            { label: 'Yes', name: 'yes' },
-                            { label: 'No', name: 'no' },
-                        ].map((metadata: OptionMetadata) => {
-                            return (
-                                <CheckBoxInput
-                                    onClick={this._handleCheckBoxInput.bind(this, metadata.name)}
-                                    key={`checkbox-${metadata.name}`}
-                                    isSelected={
-                                        (this.state.exploreSupportInstant && metadata.name === 'yes') ||
-                                        (!this.state.exploreSupportInstant && metadata.name === 'no')
-                                    }
-                                    label={metadata.label}
-                                />
-                            );
-                        })}
-                    </OptionSelector>
-                </InputRow>
-            </>
-        );
+    private _makeOnChangeHandler(name: string): React.ChangeEventHandler<HTMLInputElement> {
+        return (e) => {
+            this.setState({ [name]: e.currentTarget.value });
+        };
     }
 
-    private _renderCreditsFormContent(errors: ErrorProps): React.ReactNode {
-        return (
-            <>
-                <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-                    If you are building on top of 0x full time, please fill out this form and our Relayer Success
-                    Manager will be in touch.
-                </Paragraph>
-                <InputRow>
-                    <Input
-                        name="name"
-                        label="Your name"
-                        type="text"
-                        width={InputWidth.Half}
-                        ref={this.nameRef}
-                        required={true}
-                        errors={errors}
-                    />
-                    <Input
-                        name="email"
-                        label="Your email"
-                        type="email"
-                        ref={this.emailRef}
-                        required={true}
-                        errors={errors}
-                        width={InputWidth.Half}
-                    />
-                </InputRow>
-                <InputRow>
-                    <Input
-                        name="companyOrProject"
-                        label="Name of your project / company"
-                        type="text"
-                        ref={this.companyProjectRef}
-                        required={false}
-                        errors={errors}
-                    />
-                </InputRow>
-                <InputRow>
-                    <Input
-                        name="comments"
-                        label="Brief project description"
-                        type="textarea"
-                        ref={this.commentsRef}
-                        required={false}
-                        errors={errors}
-                    />
-                </InputRow>
-                <InputRow>
-                    <OptionSelector
-                        isFlex={true}
-                        name="services"
-                        label="Which credits are you interested in?"
-                        errors={errors}
-                    >
-                        {CREDIT_SERVICES_OPTIONS.map((metadata: OptionMetadata) => {
-                            return (
-                                <CheckBoxInput
-                                    onClick={this._handleCheckBoxInput.bind(this, metadata.name)}
-                                    key={`checkbox-${metadata.name}`}
-                                    isSelected={_.includes(this.state.creditLeadsServices, metadata.name)}
-                                    label={metadata.label}
-                                />
-                            );
-                        })}
-                    </OptionSelector>
-                </InputRow>
-            </>
-        );
-    }
+    private _validateForm(): void {
+        const newErrors = utils.validateContactForm((this.state as unknown) as { [s: string]: string });
 
-    private _handleCheckBoxInput(checkBoxName: string): void {
-        if (this.props.modalContactType === ModalContactType.Credits) {
-            const newCreditLeadsServices = _.includes(this.state.creditLeadsServices, checkBoxName)
-                ? _.pull(this.state.creditLeadsServices, checkBoxName)
-                : _.concat(this.state.creditLeadsServices, checkBoxName);
-            this.setState({ creditLeadsServices: newCreditLeadsServices });
-        } else if (this.props.modalContactType === ModalContactType.Explore) {
-            this.setState({ exploreSupportInstant: checkBoxName === 'no' ? false : true });
-        }
+        this.setState({ errors: newErrors });
     }
 
     private _renderGeneralFormContent(errors: ErrorProps): React.ReactNode {
         return (
             <>
                 <Paragraph isMuted={true} color={colors.textDarkPrimary}>
-                    If you're considering building on 0x, we're happy to answer your questions. Fill out the form so we
-                    can connect you with the right person to help you get started.
+                    Hey there, Thanks for reaching out! 0x API is a professional grade liquidity aggregator for
+                    developers and enterprises. You can get started for free directly by accessing the endpoint from the
+                    documentation. For developers and enterprises who require higher rate limits or custom solutions,
+                    please provide us with information about your business.
                 </Paragraph>
                 <InputRow>
-                    <Input
-                        name="name"
-                        label="Your name"
-                        type="text"
-                        width={InputWidth.Half}
-                        ref={this.nameRef}
-                        required={true}
-                        errors={errors}
-                    />
                     <Input
                         name="email"
                         label="Your email"
                         type="email"
-                        ref={this.emailRef}
+                        value={this.state.email}
                         required={true}
                         errors={errors}
+                        onChange={this._makeOnChangeHandler('email')}
+                    />
+                </InputRow>
+                <InputRow>
+                    <Input
+                        name="firstName"
+                        label="First Name"
+                        type="text"
                         width={InputWidth.Half}
-                    />
-                </InputRow>
-                <InputRow>
-                    <Input
-                        name="companyOrProject"
-                        label="Name of your project / company"
-                        type="text"
-                        ref={this.companyProjectRef}
+                        value={this.state.firstName}
                         required={true}
                         errors={errors}
+                        onChange={this._makeOnChangeHandler('firstName')}
                     />
-                </InputRow>
-                <InputRow>
                     <Input
-                        name="link"
-                        label="Do you have any documentation or a website?"
+                        name="lastName"
+                        label="Last Name"
                         type="text"
-                        ref={this.linkRef}
+                        width={InputWidth.Half}
+                        value={this.state.lastName}
+                        required={true}
                         errors={errors}
+                        onChange={this._makeOnChangeHandler('lastName')}
                     />
                 </InputRow>
                 <InputRow>
                     <Input
-                        name="comments"
-                        label="Anything else?"
-                        type="textarea"
-                        ref={this.commentsRef}
+                        name="companyName"
+                        label="Name of Company"
+                        type="text"
+                        value={this.state.companyName}
+                        required={true}
                         errors={errors}
+                        onChange={this._makeOnChangeHandler('companyName')}
+                    />
+                </InputRow>
+                <InputRow>
+                    <GenericDropdown
+                        label="Type of Business"
+                        name="typeOfBusiness"
+                        items={businessTypes}
+                        defaultValue={this.state.typeOfBusiness}
+                        errors={errors}
+                        onItemSelected={(selectedBusiness) => {
+                            this.setState({ typeOfBusiness: selectedBusiness });
+                        }}
+                    />
+                </InputRow>
+                <InputRow>
+                    <GenericDropdown
+                        label="Your Role"
+                        name="role"
+                        errors={errors}
+                        items={roles}
+                        defaultValue={this.state.role}
+                        onItemSelected={(selectedRole) => {
+                            this.setState({ role: selectedRole });
+                        }}
+                    />
+                </InputRow>
+                <InputRow>
+                    <CheckBoxInput
+                        label="Check here if your application is live"
+                        isSelected={this.state.isApplicationLive}
+                        onClick={() => {
+                            this.setState({ isApplicationLive: !this.state.isApplicationLive });
+                        }}
+                    />
+                </InputRow>
+                <InputRow>
+                    <GenericDropdown
+                        label="Timeline for integration"
+                        name="timelineForIntegration"
+                        items={timelineForIntegrationOptions}
+                        defaultValue={this.state.timelineForIntegration}
+                        errors={errors}
+                        onItemSelected={(selectedOption) => {
+                            this.setState({ timelineForIntegration: selectedOption });
+                        }}
+                    />
+                </InputRow>
+                <InputRow>
+                    <Input
+                        name="currentTradingVolume"
+                        label="What is the current trading volume or TVL for your application? (if applicable)"
+                        type="number"
+                        value={this.state.currentTradingVolume}
+                        required={true}
+                        errors={errors}
+                        onChange={this._makeOnChangeHandler('currentTradingVolume')}
+                    />
+                </InputRow>
+                <InputRow>
+                    <Input
+                        name="linkToProductOrWebsite"
+                        label="Link to Product or Website"
+                        type="text"
+                        value={this.state.linkToProductOrWebsite}
+                        required={false}
+                        errors={errors}
+                        onChange={this._makeOnChangeHandler('linkToProductOrWebsite')}
+                    />
+                </InputRow>
+                {/* <InputRow>
+                    <GenericDropdown
+                        label="Which Products are you interested in?"
+                        name="productOfInterest"
+                        items={products}
+                        defaultValue={this.state.productOfInterest}
+                        onItemSelected={(selectedProducts) => {
+                            this.setState({ productOfInterest: selectedProducts });
+                        }}
+                    />
+                </InputRow> */}
+                <InputRow>
+                    <Input
+                        name="usageDescription"
+                        label="How do you plan to use our products?"
+                        type="textarea"
+                        value={this.state.usageDescription}
+                        required={false}
+                        errors={errors}
+                        onChange={this._makeOnChangeHandler('usageDescription')}
+                    />
+                </InputRow>
+                <InputRow>
+                    <GenericDropdown
+                        label="Chain of Interest"
+                        name="chainOfInterest"
+                        items={chains}
+                        defaultValue={this.state.chainOfInterest}
+                        errors={errors}
+                        onItemSelected={(selectedChain) => {
+                            this.setState({ chainOfInterest: selectedChain });
+                        }}
+                    />
+                </InputRow>
+                {this.state.chainOfInterest === 'Other' && (
+                    <InputRow
+                        onClick={(e) => {
+                            e.stopPropagation();
+                        }}
+                    >
+                        <Input
+                            name="chainOfInterestOther"
+                            label="Please enter the name of your chain of interest"
+                            type="text"
+                            value={this.state.chainOfInterestOther}
+                            required={false}
+                            errors={errors}
+                            onChange={this._makeOnChangeHandler('chainOfInterestOther')}
+                        />
+                    </InputRow>
+                )}
+                <InputRow>
+                    <Input
+                        name="referral"
+                        label="How did you find out about 0x API? If via referral, please indicate the name of the team or person that referred you here."
+                        type="textarea"
+                        value={this.state.referral}
+                        required={false}
+                        errors={errors}
+                        onChange={this._makeOnChangeHandler('referral')}
+                    />
+                </InputRow>
+                <InputRow>
+                    <StyledSpan>
+                        The API is intended for public use. The current limit is approximately 3 Requests Per Second
+                        (RPS)/40 Requests Per Minute (RPM).
+                    </StyledSpan>
+                </InputRow>
+                <InputRow>
+                    <CheckBoxInput
+                        label="If you require higher rate limits, check here to request an API key."
+                        isSelected={this.state.isApiKeyRequired}
+                        onClick={() => {
+                            this.setState({ isApiKeyRequired: !this.state.isApiKeyRequired });
+                        }}
                     />
                 </InputRow>
             </>
@@ -467,102 +361,59 @@ export class ModalContact extends React.Component<Props> {
 
     private async _onSubmitAsync(e: React.FormEvent): Promise<void> {
         e.preventDefault();
+        this._validateForm();
 
-        let jsonBody;
-        if (this.props.modalContactType === ModalContactType.MarketMaker) {
-            jsonBody = {
-                name: this.nameRef.current.value,
-                email: this.emailRef.current.value,
-                country: this.countryRef.current.value,
-                fundSize: this.fundSizeRef.current.value,
-                projectOrCompany: this.companyProjectRef.current.value,
-                comments: this.commentsRef.current.value,
-            };
-        } else if (this.props.modalContactType === ModalContactType.Credits) {
-            jsonBody = {
-                name: this.nameRef.current.value,
-                email: this.emailRef.current.value,
-                project_name: this.companyProjectRef.current.value,
-                comments: this.commentsRef.current.value,
-                services: this.state.creditLeadsServices,
-            };
-        } else if (this.props.modalContactType === ModalContactType.Explore) {
-            jsonBody = {
-                name: this.nameRef.current.value,
-                email: this.emailRef.current.value,
-                project_name: this.companyProjectRef.current.value,
-                project_description: this.commentsRef.current.value,
-                link: this.linkRef.current.value,
-                theme_color: this.themeColorRef.current.value,
-                supports_instant: this.state.exploreSupportInstant,
-            };
-        } else {
-            jsonBody = {
-                name: this.nameRef.current.value,
-                email: this.emailRef.current.value,
-                projectOrCompany: this.companyProjectRef.current.value,
-                link: this.linkRef.current.value,
-                comments: this.commentsRef.current.value,
-            };
+        await new Promise((resolve) => setImmediate(resolve));
+
+        if (Object.keys(this.state.errors).length > 0) {
+            return;
         }
 
-        this.setState({ ...this.state, errors: [], isSubmitting: true });
+        const {
+            firstName,
+            lastName,
+            email,
+            companyName,
+            typeOfBusiness,
+            role,
+            isApplicationLive,
+            currentTradingVolume,
+            linkToProductOrWebsite,
+            timelineForIntegration,
+            chainOfInterest,
+            chainOfInterestOther,
+            usageDescription,
+            referral,
+            isApiKeyRequired,
+        } = this.state;
 
-        let endpoint;
-        switch (this.props.modalContactType) {
-            case ModalContactType.Explore:
-                endpoint = '/explore_leads';
-                break;
-            case ModalContactType.Credits:
-                endpoint = '/credit_leads';
-                break;
-            case ModalContactType.MarketMaker:
-                endpoint = '/market_maker_leads';
-                break;
-            default:
-                endpoint = '/leads';
-        }
+        const body = {
+            firstName,
+            lastName,
+            email,
+            companyName,
+            typeOfBusiness,
+            role,
+            isApplicationLive: `${isApplicationLive}`,
+            currentTradingVolume,
+            linkToProductOrWebsite,
+            timelineForIntegration,
+            chainOfInterest,
+            chainOfInterestOther,
+            usageDescription,
+            referral,
+            isApiKeyRequired: `${isApiKeyRequired}`,
+        };
 
-        try {
-            // Disabling no-unbound method b/c no reason for _.isEmpty to be bound
-            // tslint:disable:no-unbound-method
-            const response = await fetch(`${utils.getBackendBaseUrl()}${endpoint}`, {
-                method: 'post',
-                mode: 'cors',
-                credentials: 'same-origin',
-                headers: {
-                    'content-type': 'application/json; charset=utf-8',
-                },
-                body: JSON.stringify(_.omitBy(jsonBody, _.isEmpty)),
-            });
-
-            if (!response.ok) {
-                const errorResponse: ErrorResponse = await response.json();
-                const errors = this._parseErrors(errorResponse.errors);
-                this.setState({ ...this.state, isSubmitting: false, errors });
-
-                throw new Error('Request failed');
-            }
-
-            this.setState({ ...this.state, isSuccessful: true });
-        } catch (e) {
-            // Empty block
-        }
-    }
-    private _parseErrors(errors: ErrorResponseProps[]): ErrorProps {
-        const initialValue: {} = {};
-        // tslint:disable-next-line: no-inferred-empty-object-type
-        return _.reduce(
-            errors,
-            (hash: ErrorProps, error: ErrorResponseProps) => {
-                const { param, msg } = error;
-                const key = param;
-                hash[key] = msg;
-
-                return hash;
+        await fetch('/api/contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
-            initialValue,
-        );
+            body: new URLSearchParams(body),
+        });
+
+        this.setState({ isSuccessful: true });
     }
 }
 
@@ -634,5 +485,11 @@ const Confirmation = styled.div<FormProps>`
         margin-left: auto;
         margin-right: auto;
     }
+`;
+
+const StyledSpan = styled.span`
+    color: #000;
+    line-height: 1.4em;
+    font-size: 1.111111111rem;
 `;
 // tslint:disable:max-file-line-count
