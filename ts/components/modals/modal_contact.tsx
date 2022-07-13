@@ -12,7 +12,16 @@ import { GlobalStyle } from 'ts/constants/globalStyle';
 import { colors } from 'ts/style/colors';
 import { utils } from 'ts/utils/utils';
 
-const products = ['0x Swap API'] as const;
+// const products = ['0x Swap API'] as const;
+
+const timelineForIntegrationOptions = [
+    'I’ve already integrated!',
+    '0-3 months',
+    '3-6 months',
+    '6-12 months',
+    '12+ months',
+    'I’m just getting started and browsing for more information',
+] as const;
 
 const chains = ['Avalanche', 'BNB', 'Celo', 'Ethereum', 'Fantom', 'Optimism', 'Polygon', 'Other'] as const;
 
@@ -67,6 +76,7 @@ export class ModalContact extends React.Component<Props> {
         companyName: '',
         linkToProductOrWebsite: '',
         typeOfBusiness: businessTypes[0] as string,
+        timelineForIntegration: timelineForIntegrationOptions[0],
         role: roles[0] as string,
         isApplicationLive: false,
         currentTradingVolume: '0',
@@ -233,6 +243,17 @@ export class ModalContact extends React.Component<Props> {
                     />
                 </InputRow>
                 <InputRow>
+                    <GenericDropdown
+                        label="Timeline for integration"
+                        name="timelineForIntegration"
+                        items={timelineForIntegrationOptions}
+                        defaultValue={this.state.chainOfInterest}
+                        onItemSelected={(selectedOption) => {
+                            this.setState({ timelineForIntegration: selectedOption });
+                        }}
+                    />
+                </InputRow>
+                <InputRow>
                     <Input
                         name="currentTradingVolume"
                         label="What is the current trading volume or TVL for your application? (if applicable)"
@@ -254,7 +275,7 @@ export class ModalContact extends React.Component<Props> {
                         onChange={this._makeOnChangeHandler('linkToProductOrWebsite')}
                     />
                 </InputRow>
-                <InputRow>
+                {/* <InputRow>
                     <GenericDropdown
                         label="Which Products are you interested in?"
                         name="productOfInterest"
@@ -263,6 +284,17 @@ export class ModalContact extends React.Component<Props> {
                         onItemSelected={(selectedProducts) => {
                             this.setState({ productOfInterest: selectedProducts });
                         }}
+                    />
+                </InputRow> */}
+                <InputRow>
+                    <Input
+                        name="usageDescription"
+                        label="How do you plan to use our products?"
+                        type="textarea"
+                        value={this.state.usageDescription}
+                        required={false}
+                        errors={errors}
+                        onChange={this._makeOnChangeHandler('usageDescription')}
                     />
                 </InputRow>
                 <InputRow>
@@ -293,17 +325,6 @@ export class ModalContact extends React.Component<Props> {
                         />
                     </InputRow>
                 )}
-                <InputRow>
-                    <Input
-                        name="usageDescription"
-                        label="How do you plan to use our products?"
-                        type="textarea"
-                        value={this.state.usageDescription}
-                        required={false}
-                        errors={errors}
-                        onChange={this._makeOnChangeHandler('usageDescription')}
-                    />
-                </InputRow>
                 <InputRow>
                     <Input
                         name="referral"
@@ -354,7 +375,7 @@ export class ModalContact extends React.Component<Props> {
             isApplicationLive,
             currentTradingVolume,
             linkToProductOrWebsite,
-            productOfInterest,
+            timelineForIntegration,
             chainOfInterest,
             chainOfInterestOther,
             usageDescription,
@@ -372,7 +393,7 @@ export class ModalContact extends React.Component<Props> {
             isApplicationLive: `${isApplicationLive}`,
             currentTradingVolume,
             linkToProductOrWebsite,
-            productOfInterest,
+            timelineForIntegration,
             chainOfInterest,
             chainOfInterestOther,
             usageDescription,
