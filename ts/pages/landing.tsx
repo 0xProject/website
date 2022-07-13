@@ -1,21 +1,18 @@
 import * as React from 'react';
 // tslint:disable-next-line: no-duplicate-imports
 import { useCallback, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useWindowSize } from 'react-use';
-
 import { DocumentTitle } from 'ts/components/document_title';
+import { ModalContact } from 'ts/components/modals/modal_contact';
+import { Section } from 'ts/components/newLayout';
 import { SectionLandingAbout } from 'ts/components/sections/landing/about';
 import { SectionApiQuote } from 'ts/components/sections/landing/apiQuote';
 import { SectionLandingClients } from 'ts/components/sections/landing/clients';
 import { SectionLandingCta } from 'ts/components/sections/landing/cta';
 import { SectionLandingHero } from 'ts/components/sections/landing/hero';
 import { SectionFeatures } from 'ts/components/sections/landing/matchaFeature';
-
 import { SiteWrap } from 'ts/components/siteWrap';
-
-import { ModalContact } from 'ts/components/modals/modal_contact';
-import { Section } from 'ts/components/newLayout';
-
 import { documentConstants } from 'ts/utils/document_meta_constants';
 
 import { OrderRoutingSection } from './api';
@@ -30,16 +27,24 @@ interface Props {
 }
 
 const NextLanding: React.FC<Props> = (props) => {
-    const [isContactModalOpen, setisContactModalOpen] = useState<boolean>(window.location.hash.includes('contact'));
+    const { hash } = useLocation();
+    const history = useHistory();
+    const [isContactModalOpen, setisContactModalOpen] = useState<boolean>(hash.includes('contact'));
     const _onOpenContactModal = useCallback((): void => {
-        window.history.replaceState(null, null, `${window.location.pathname}${window.location.search}#contact`);
+        history.push('#contact');
         setisContactModalOpen(true);
-    }, []);
+    }, [history]);
 
     const _onDismissContactModal = useCallback((): void => {
-        window.history.replaceState(null, null, window.location.pathname + window.location.search);
+        history.push('/');
         setisContactModalOpen(false);
-    }, []);
+    }, [history]);
+
+    React.useEffect(() => {
+        if (hash.includes('contact')) {
+            setisContactModalOpen(true);
+        }
+    }, [hash]);
 
     const { width: windowWidth } = useWindowSize();
     const isSmallScreen = windowWidth < 700;
