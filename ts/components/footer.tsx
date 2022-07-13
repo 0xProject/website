@@ -34,6 +34,11 @@ const linkRows: LinkRows[] = [
             { url: 'https://docs.0x.org/', text: 'Documentation', shouldOpenInNewTab: true },
             { url: constants.URL_GITHUB_ORG, text: 'GitHub', shouldOpenInNewTab: true },
             { url: 'https://docs.0x.org/protocol/docs', text: 'Protocol Spec', shouldOpenInNewTab: true },
+            {
+                url: 'https://ethereum.stackexchange.com/questions/tagged/0x',
+                text: 'Stack Exchange',
+                shouldOpenInNewTab: true,
+            },
         ],
     },
     {
