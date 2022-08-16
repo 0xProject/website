@@ -29,8 +29,8 @@ export const useAllowance = (): UseAllowanceHookResult => {
     const [isStarted, setIsStarted] = useState<boolean>(false);
     const [loadingState, setLoadingState] = useState<undefined | TransactionLoadingState>(undefined);
     const [error, setError] = useState<Error | undefined>(undefined);
-    const [estimatedTimeMs, setEstimatedTimeMs] = useState<number | undefined>(undefined);
-    const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = useState<Date | undefined>(undefined);
+    // const [estimatedTimeMs, setEstimatedTimeMs] = useState<number | undefined>(undefined);
+    // const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = useState<Date | undefined>(undefined);
 
     const setAllowanceIfNeeded = async () => {
         if (isStarted) {
@@ -50,7 +50,7 @@ export const useAllowance = (): UseAllowanceHookResult => {
         const currentAllowance = await zrxTokenContract.allowance(ownerAddress, erc20ProxyAddress).callAsync();
 
         if (currentAllowance.isLessThan(constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)) {
-            setEstimatedTimeMs(gasInfo.estimatedTimeMs);
+            // setEstimatedTimeMs(gasInfo.estimatedTimeMs);
             setLoadingState(TransactionLoadingState.WaitingForSignature);
             const txPromise = zrxTokenContract
                 .approve(erc20ProxyAddress, constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)
@@ -71,13 +71,13 @@ export const useAllowance = (): UseAllowanceHookResult => {
         setIsStarted(false);
     };
 
-    useEffect(() => {
-        if (!estimatedTimeMs) {
-            return setEstimatedTransactionFinishTime(undefined);
-        }
-        const estimate = addMilliseconds(new Date(), estimatedTimeMs);
-        setEstimatedTransactionFinishTime(estimate);
-    }, [estimatedTimeMs]);
+    // useEffect(() => {
+    //     if (!estimatedTimeMs) {
+    //         return setEstimatedTransactionFinishTime(undefined);
+    //     }
+    //     const estimate = addMilliseconds(new Date(), estimatedTimeMs);
+    //     setEstimatedTransactionFinishTime(estimate);
+    // }, [estimatedTimeMs]);
 
     return {
         loadingState,
@@ -91,7 +91,7 @@ export const useAllowance = (): UseAllowanceHookResult => {
                 errorReporter.report(err);
             });
         },
-        estimatedTimeMs,
-        estimatedTransactionFinishTime,
+        // estimatedTimeMs,
+        // estimatedTransactionFinishTime,
     };
 };

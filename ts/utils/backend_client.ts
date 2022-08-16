@@ -210,26 +210,28 @@ export const backendClient = {
         return data;
     },
 
-    async getGasInfoAsync(speed?: string): Promise<GasInfo> {
+    async getGasInfoAsync(speed?: string): Promise<EIP1559GasInfo> {
         const gasApiPath = 'v2/source/block_native';
         const gasInfoReq: Promise<GasApiSingleSourceResponse> = fetchUtils.requestAsync(ZEROEX_GAS_API, gasApiPath);
         const speedInput = speed || 'standard';
 
-        const gasWaitTimesReq = fetchUtils.requestAsync(utils.getBackendBaseUrl(), ETH_GAS_STATION_ENDPOINT);
+        // const gasWaitTimesReq = fetchUtils.requestAsync(utils.getBackendBaseUrl(), ETH_GAS_STATION_ENDPOINT);
 
-        const [gasInfo, gasWaitTimes]: [GasApiSingleSourceResponse, WebsiteBackendGasWaitTimeInfo] = await Promise.all([
-            gasInfoReq,
-            gasWaitTimesReq,
-        ]);
+        const gasInfo: GasApiSingleSourceResponse = await gasInfoReq;
+
+        // const [gasInfo, gasWaitTimes]: [GasApiSingleSourceResponse, WebsiteBackendGasWaitTimeInfo] = await Promise.all([
+        //     gasInfoReq,
+        //     gasWaitTimesReq,
+        // ]);
         // Time is in minutes
         const waitTime = speedToWaitTimeMap[speedInput];
-        const estimatedTimeMs = (gasWaitTimes as any)[waitTime] * 60 * 1000; // Minutes to MS
+        // const estimatedTimeMs = (gasWaitTimes as any)[waitTime] * 60 * 1000; // Minutes to MS
 
         // Try to use user selected value, fall back to standard if no match
         const gasPriceInfo = gasInfo.result[speedInput as GasSpeedSelectors]
             ? gasInfo.result[speedInput as GasSpeedSelectors]
             : gasInfo.result.standard;
-        return { ...gasPriceInfo, estimatedTimeMs };
+        return { ...gasPriceInfo };
     },
 
     async getGasInfoSelectionAsync(): Promise<GasInfoSelection> {

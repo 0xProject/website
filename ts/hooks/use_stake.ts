@@ -66,8 +66,8 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
     const [loadingState, setLoadingState] = useState<undefined | TransactionLoadingState>(undefined);
     const [error, setError] = useState<Error | undefined>(undefined);
     const [result, setResult] = useState<TransactionReceiptWithDecodedLogs | undefined>(undefined);
-    const [estimatedTimeMs, setEstimatedTimeMs] = useState<number | undefined>(undefined);
-    const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = useState<Date | undefined>(undefined);
+    // const [estimatedTimeMs, setEstimatedTimeMs] = useState<number | undefined>(undefined);
+    // const [estimatedTransactionFinishTime, setEstimatedTransactionFinishTime] = useState<Date | undefined>(undefined);
     const [currentEpochRewards, setCurrentEpochRewards] = useState<BigNumber | undefined>(undefined);
 
     const [ownerAddress, setOwnerAddress] = useState<string | undefined>(undefined);
@@ -129,7 +129,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
             });
 
             await txPromise.txHashPromise;
-            setEstimatedTimeMs(gasInfo.estimatedTimeMs);
+            // setEstimatedTimeMs(gasInfo.estimatedTimeMs);
             setLoadingState(TransactionLoadingState.WaitingForTransaction);
             // tslint:disable:await-promise
             const txResult = await txPromise;
@@ -263,7 +263,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
             });
 
             await txPromise.txHashPromise;
-            setEstimatedTimeMs(gasInfo.estimatedTimeMs);
+            // setEstimatedTimeMs(gasInfo.estimatedTimeMs);
             setLoadingState(TransactionLoadingState.WaitingForTransaction);
             // tslint:disable:await-promise
             const txResult = await txPromise;
@@ -305,13 +305,13 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         errorReporter.report(err);
     }, []);
 
-    useEffect(() => {
-        if (!estimatedTimeMs) {
-            return setEstimatedTransactionFinishTime(undefined);
-        }
-        const estimate = addMilliseconds(new Date(), estimatedTimeMs);
-        setEstimatedTransactionFinishTime(estimate);
-    }, [estimatedTimeMs]);
+    // useEffect(() => {
+    //     if (!estimatedTimeMs) {
+    //         return setEstimatedTransactionFinishTime(undefined);
+    //     }
+    //     const estimate = addMilliseconds(new Date(), estimatedTimeMs);
+    //     setEstimatedTransactionFinishTime(estimate);
+    // }, [estimatedTimeMs]);
 
     useEffect(() => {
         if (currentEpochRewards || !contractAddresses || !providerState || !stakingContract) {
@@ -358,7 +358,7 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
         loadingState,
         result,
         error,
-        estimatedTimeMs,
+        // estimatedTimeMs,
         currentEpochRewards,
         stakingContract,
         depositAndStake: (stakePoolData: StakePoolData[], callback?: () => void) => {
@@ -427,6 +427,6 @@ export const useStake = (networkId: ChainId, providerState: ProviderState): UseS
                     handleError(err);
                 });
         },
-        estimatedTransactionFinishTime,
+        // estimatedTransactionFinishTime,
     };
 };

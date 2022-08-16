@@ -823,9 +823,7 @@ export interface EIP1559GasInfo {
     baseFeePerGas: number;
 }
 
-export type GasInfo = EIP1559GasInfo & {
-    estimatedTimeMs: number;
-};
+export type GasInfo = EIP1559GasInfo & {};
 
 export interface WebsiteBackendGasWaitTimeInfo {
     fastestWait: number;
