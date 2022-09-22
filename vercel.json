@@ -16,6 +16,126 @@
             "permanent": true
         },
         {
+            "source": "/docs/guides/0x-api-faq",
+            "destination": "https://docs.0x.org/developer-resources/api-faqs",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/0x-cheat-sheet",
+            "destination": "https://docs.0x.org/introduction/0x-cheat-sheet",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/0x-data-existing-tools",
+            "destination": "https://docs.0x.org/developer-resources/how-to-get-0x-and-matcha-data",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/0x-v4-nft-contract-interfaces",
+            "destination": "https://docs.0x.org/nft-support/docs/introduction#nft-order-formats-and-contract-interfaces",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/0x-v4-nft-features-overview",
+            "destination": "https://docs.0x.org/nft-support/docs/introduction",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/browsing-docs-on-github",
+            "destination": "https://docs.0x.org/introduction/welcome",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/bug-bounty-program",
+            "destination": "https://docs.0x.org/developer-resources/bounties",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/how-to-set-your-token-allowances",
+            "destination": "https://docs.0x.org/0x-api-swap/advanced-topics/how-to-set-your-token-allowances",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/integrate-instant",
+            "destination": "https://github.com/0xProject/0x-instant",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/introduction-to-using-0x-liquidity-in-smart-contracts",
+            "destination": "https://docs.0x.org/0x-api-swap/guides/use-0x-api-liquidity-in-your-smart-contracts",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/legal-guide",
+            "destination": "https://docs.0x.org/developer-resources/0x-legal-guide",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/market-making-on-0x-old",
+            "destination": "https://docs.0x.org/limit-orders-advanced-traders/docs",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/market-making-on-0x",
+            "destination": "https://docs.0x.org/limit-orders-advanced-traders/docs",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/migrate-0x-api-from-v0-to-v1",
+            "destination": "https://docs.0x.org/introduction/welcome",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/migrate-0x-api-from-v0-to-v1",
+            "destination": "https://docs.0x.org/introduction/welcome",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/page-template",
+            "destination": "https://docs.0x.org/",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/relayer-strategies",
+            "destination": "https://docs.0x.org/",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/rfqt-in-the-0x-api",
+            "destination": "https://docs.0x.org/market-makers/docs/introduction",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/setting-up-a-local-0x-testnet",
+            "destination": "https://docs.0x.org/limit-orders-advanced-traders/guides/working-in-the-testnet",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/swap-tokens-with-0x-api",
+            "destination": "https://docs.0x.org/0x-api-swap/guides/swap-tokens-with-0x-api",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/trading-with-0x-limit-orders",
+            "destination": "https://docs.0x.org/limit-orders-advanced-traders/docs/introduction",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/trading-with-0x-limit-orders",
+            "destination": "https://docs.0x.org/limit-orders-advanced-traders/docs/introduction",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/use-0x-api-liquidity-in-your-smart-contracts",
+            "destination": "https://docs.0x.org/0x-api-swap/guides/use-0x-api-liquidity-in-your-smart-contracts",
+            "permanent": true
+        },
+        {
+            "source": "/docs/guides/:path*",
+            "destination": "https://docs.0x.org/",
+            "permanent": true
+        },
+        {
             "source": "/docs/guides",
             "destination": "https://docs.0x.org/introduction/guides",
             "permanent": true
