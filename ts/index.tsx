@@ -11,10 +11,6 @@ import { StakingWizard } from 'ts/containers/staking/wizard/wizard';
 // import { createLazyComponent } from 'ts/lazy_component';
 import { trackedTokenStorage } from 'ts/local_storage/tracked_token_storage';
 import { tradeHistoryStorage } from 'ts/local_storage/trade_history_storage';
-import { DocsGuides } from 'ts/pages/docs/guides';
-import { DocsHome } from 'ts/pages/docs/home';
-import { DocsPage } from 'ts/pages/docs/page';
-import { DocsTools } from 'ts/pages/docs/tools';
 import { Governance } from 'ts/pages/governance/governance';
 import { Treasury } from 'ts/pages/governance/treasury';
 import { VoterLeaderboard } from 'ts/pages/governance/voter_leaderboard';
@@ -61,6 +57,7 @@ import { Web3ReactProvider } from '@web3-react/core';
 import 'less/all.less';
 import 'sass/modal_video.scss';
 import { constants } from 'ts/utils/constants';
+import RedirectExternal from './components/RedirectExternal';
 
 // We pass modulePromise returning lambda instead of module promise,
 // cause we only want to import the module when the user navigates to the page.
@@ -196,18 +193,15 @@ render(
                                     from={`${WebsiteLegacyPaths.AssetSwapperDocs}/:version?`}
                                     to={`${WebsitePaths.Docs}/tools/asset-swapper/:version?`}
                                 />
-                                <Route exact={true} path={WebsitePaths.Docs} component={DocsHome as any} />
-                                <Route exact={true} path={WebsitePaths.DocsGuides} component={DocsGuides as any} />
-                                <Route exact={true} path={WebsitePaths.DocsTools} component={DocsTools as any} />
-                                <Route
-                                    path={`${WebsitePaths.Docs}/:type/:page?/:version?`}
-                                    component={DocsPage as any}
-                                />
 
                                 {/* Legacy endpoints */}
-                                <Redirect from={WebsiteLegacyPaths.Wiki} to={WebsitePaths.DocsGuides} />
+                                <RedirectExternal
+                                    from={WebsiteLegacyPaths.Wiki}
+                                    to="https://docs.0x.org/introduction/guides"
+                                />
                                 <Redirect from={WebsiteLegacyPaths.Jobs} to={WebsitePaths.AboutJobs} />
                                 <Redirect from={WebsitePaths.Careers} to={WebsitePaths.AboutJobs} />
+                                <RedirectExternal from={WebsitePaths.Docs} to="https://docs.0x.org" />
                                 <Route component={NotFound as any} />
                             </Switch>
                         </Provider>
