@@ -2,7 +2,6 @@ import { ChainId, ContractAddresses, getContractAddressesForChainOrThrow } from 
 import { StakingContract, StakingProxyContract, WETH9Contract } from '@0x/contract-wrappers';
 import { BigNumber, logUtils } from '@0x/utils';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { addMilliseconds } from 'date-fns';
 import { TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';

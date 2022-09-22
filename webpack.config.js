@@ -8,7 +8,6 @@ const childProcess = require('child_process');
 const remarkSlug = require('remark-slug');
 const remarkAutolinkHeadings = require('./webpack/remark_autolink_headings');
 const remarkSectionizeHeadings = require('./webpack/remark_sectionize_headings');
-const mdxTableOfContents = require('./webpack/mdx_table_of_contents');
 
 const GIT_SHA = childProcess.execSync('git rev-parse HEAD').toString().trim();
 
@@ -32,13 +31,12 @@ module.exports = (_env, argv) => {
         },
         resolve: {
             modules: [path.join(__dirname, '/ts'), 'node_modules'],
-            extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.md', '.mdx'],
+            extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.md'],
             alias: {
                 ts: path.join(__dirname, '/ts'),
                 less: path.join(__dirname, '/less'),
                 sass: path.join(__dirname, '/sass'),
                 md: path.join(__dirname, '/md'),
-                mdx: path.join(__dirname, '/mdx'),
             },
         },
         module: {
@@ -58,32 +56,6 @@ module.exports = (_env, argv) => {
                         // Skip type checking for local dev, can be done in editor and pre-push
                         transpileOnly: isDevEnvironment,
                     },
-                },
-                {
-                    test: /\.mdx$/,
-                    include: path.join(__dirname, '/mdx'),
-                    use: [
-                        'cache-loader',
-                        {
-                            loader: 'babel-loader?cacheDirectory',
-                            options: {
-                                plugins: ['@babel/plugin-syntax-object-rest-spread'],
-                                presets: ['@babel/preset-env', '@babel/preset-react'],
-                            },
-                        },
-                        {
-                            loader: '@mdx-js/loader',
-                            options: {
-                                remarkPlugins: [remarkSlug, remarkAutolinkHeadings, remarkSectionizeHeadings],
-                                compilers: [mdxTableOfContents],
-                            },
-                        },
-                    ],
-                },
-
-                {
-                    test: /\.md$/,
-                    use: 'raw-loader',
                 },
                 {
                     test: /\.less$/,

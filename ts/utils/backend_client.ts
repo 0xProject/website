@@ -5,11 +5,9 @@ import { ZeroExProvider } from 'ethereum-types';
 
 import {
     EIP1559GasInfo,
-    GasInfo,
     MailchimpSubscriberInfo,
     WebsiteBackendCFLMetricsData,
     WebsiteBackendGasInfo,
-    WebsiteBackendGasWaitTimeInfo,
     WebsiteBackendJobInfo,
     WebsiteBackendPriceInfo,
     WebsiteBackendRelayerInfo,
@@ -24,7 +22,6 @@ import { gql, GraphQLClient } from 'graphql-request';
 
 const ZEROEX_GAS_API = 'https://gas.api.0x.org/';
 
-const ETH_GAS_STATION_ENDPOINT = '/eth_gas_station';
 const JOBS_ENDPOINT = '/jobs';
 const PRICES_ENDPOINT = '/prices';
 const RELAYERS_ENDPOINT = '/relayers';
@@ -53,11 +50,11 @@ interface GasApiSingleSourceResponse {
 
 type GasSpeedSelectors = 'instant' | 'fast' | 'standard' | 'low';
 
-const speedToWaitTimeMap: { [key: string]: string } = {
-    standard: 'avgWait',
-    fast: 'fastWait',
-    instant: 'fastestWait',
-};
+// const speedToWaitTimeMap: { [key: string]: string } = {
+//     standard: 'avgWait',
+//     fast: 'fastWait',
+//     instant: 'fastestWait',
+// };
 
 const graphqlClient = new GraphQLClient('https://hub.snapshot.org/graphql');
 
@@ -224,7 +221,7 @@ export const backendClient = {
         //     gasWaitTimesReq,
         // ]);
         // Time is in minutes
-        const waitTime = speedToWaitTimeMap[speedInput];
+        // const waitTime = speedToWaitTimeMap[speedInput];
         // const estimatedTimeMs = (gasWaitTimes as any)[waitTime] * 60 * 1000; // Minutes to MS
 
         // Try to use user selected value, fall back to standard if no match

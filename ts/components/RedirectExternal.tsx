@@ -6,7 +6,7 @@ interface RedirectExternalProps {
     from: string;
 }
 
-export default function RedirectExternal(props: RedirectExternalProps) {
+export const RedirectExternal: React.FC<RedirectExternalProps> = (props: RedirectExternalProps) => {
     return (
         <Route
             path={props.from}
@@ -17,4 +17,4 @@ export default function RedirectExternal(props: RedirectExternalProps) {
             }}
         />
     );
-}
+};

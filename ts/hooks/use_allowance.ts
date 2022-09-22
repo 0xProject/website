@@ -1,8 +1,7 @@
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ERC20TokenContract } from '@0x/contract-wrappers';
 import { logUtils } from '@0x/utils';
-import { addMilliseconds } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Dispatcher } from 'ts/redux/dispatcher';

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { MetaTags } from 'ts/components/meta_tags';
+import { RedirectExternal } from 'ts/components/RedirectExternal';
 import { RegisterWizard } from 'ts/containers/governance/register/wizard';
 import { NotFound } from 'ts/containers/not_found';
 import { StakingWizard } from 'ts/containers/staking/wizard/wizard';
@@ -57,7 +58,6 @@ import { Web3ReactProvider } from '@web3-react/core';
 import 'less/all.less';
 import 'sass/modal_video.scss';
 import { constants } from 'ts/utils/constants';
-import RedirectExternal from './components/RedirectExternal';
 
 // We pass modulePromise returning lambda instead of module promise,
 // cause we only want to import the module when the user navigates to the page.
