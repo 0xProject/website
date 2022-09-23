@@ -5,10 +5,10 @@ interface ZeroexpoBannerProps {
     isMobile: boolean;
 }
 
-interface ZrxpoLogoProps {
-    isAbsolute?: boolean;
-    isMobile?: boolean;
-}
+// interface ZrxpoLogoProps {
+//     isAbsolute?: boolean;
+//     isMobile?: boolean;
+// }
 
 interface BannerMainProps {
     padding?: number;
@@ -38,7 +38,7 @@ const DesktopBanner: React.FC = () => {
                 </Description>
                 <CtaText onClick={onClickHandler}>Register for your free ticket at 0xpo.com</CtaText>
             </CopyContainer>
-            <ZrxpoLogo />
+            {/* <ZrxpoLogo /> */}
         </BannerMain>
     );
 };
@@ -59,7 +59,7 @@ const MobileBanner: React.FC = () => {
             <Container>
                 <p>San Francisco, CA</p>
                 <span>November 3, 2022</span>
-                <ZrxpoLogo isAbsolute={false} isMobile={true} />
+                {/* <ZrxpoLogo isAbsolute={false} isMobile={true} /> */}
             </Container>
             <CtaText>Register for your free ticket at 0xpo.com</CtaText>
             {/* <CopyContainer>
@@ -156,19 +156,19 @@ const Description = styled('span')`
 //     cursor: pointer;
 // `;
 
-const ZrxpoLogo = styled.div<ZrxpoLogoProps>`
-    background-image: url('/images/0xpo/0xpo.svg');
-    position: absolute;
-    bottom: ${({ isMobile = false }) => (isMobile ? 'initial' : '16px')};
-    left: ${({ isMobile = false }) => (isMobile ? 'initial' : '16px')};
-    top: ${({ isMobile = false }) => (isMobile ? '8px' : 'initial')};
-    right: ${({ isMobile = false }) => (isMobile ? '8px' : 'initial')};
-    height: 24px;
-    width: 56px;
-    fill: black;
-    background-size: contain;
-    background-repeat: no-repeat;
-`;
+// const ZrxpoLogo = styled.div<ZrxpoLogoProps>`
+//     background-image: url('/images/0xpo/0xpo.svg');
+//     position: absolute;
+//     bottom: ${({ isMobile = false }) => (isMobile ? 'initial' : '16px')};
+//     left: ${({ isMobile = false }) => (isMobile ? 'initial' : '16px')};
+//     top: ${({ isMobile = false }) => (isMobile ? '8px' : 'initial')};
+//     right: ${({ isMobile = false }) => (isMobile ? '8px' : 'initial')};
+//     height: 24px;
+//     width: 56px;
+//     fill: black;
+//     background-size: contain;
+//     background-repeat: no-repeat;
+// `;
 
 const Container = styled('div')`
     display: inline-block;
