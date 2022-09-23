@@ -1,8 +1,10 @@
 import * as React from 'react';
+import { useWindowSize } from 'react-use';
 import styled, { ThemeProvider } from 'styled-components';
 
 import { Footer } from 'ts/components/footer';
 import { Header as MainHeader } from 'ts/components/header';
+import { ZeroexpoBanner } from 'ts/components/zrxpo_banner';
 
 import { GlobalStyles } from 'ts/constants/globalStyle';
 import { GLOBAL_THEMES } from 'ts/style/theme';
@@ -31,6 +33,8 @@ export const SiteWrap: React.FC<ISiteWrapProps> = (props) => {
     }, []);
 
     const Header = headerComponent || MainHeader;
+    const { width: windowWidth } = useWindowSize();
+    const isSmallScreen = windowWidth < 700;
 
     const toggleMobileNav = React.useCallback(() => setIsMobileNavOpen(!isMobileNavOpen), [isMobileNavOpen]);
 
@@ -38,6 +42,7 @@ export const SiteWrap: React.FC<ISiteWrapProps> = (props) => {
         <ThemeProvider theme={GLOBAL_THEMES[theme]}>
             <>
                 <GlobalStyles />
+                <ZeroexpoBanner isMobile={isSmallScreen} />
 
                 <Header isNavToggled={isMobileNavOpen} toggleMobileNav={toggleMobileNav} />
 
