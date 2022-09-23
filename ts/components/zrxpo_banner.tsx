@@ -90,13 +90,13 @@ const BannerMain = styled.div<BannerMainProps>`
     background-color: #00ae99;
     color: white;
     position: relative;
-    animation: animateBg 30s linear infinite normal;
+    animation: animateBg 240s linear infinite normal;
     @keyframes animateBg {
         from {
-            background-position: 0% 50%;
+            background-position: 0 50%;
         }
         to {
-            background-position: 107% 50%;
+            background-position: 1991px 50%;
         }
     }
 `;
