@@ -13,6 +13,7 @@ import { SectionLandingCta } from 'ts/components/sections/landing/cta';
 import { SectionLandingHero } from 'ts/components/sections/landing/hero';
 import { SectionFeatures } from 'ts/components/sections/landing/matchaFeature';
 import { SiteWrap } from 'ts/components/siteWrap';
+import { ZeroexpoBanner } from 'ts/components/zrxpo_banner';
 import { documentConstants } from 'ts/utils/document_meta_constants';
 
 import { OrderRoutingSection } from './api';
@@ -51,6 +52,7 @@ const NextLanding: React.FC<Props> = (props) => {
 
     return (
         <SiteWrap theme="dark">
+            <ZeroexpoBanner isMobile={isSmallScreen} />
             <DocumentTitle {...documentConstants.LANDING} />
             <SectionLandingHero />
             {!isSmallScreen && (
