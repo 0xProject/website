@@ -28,7 +28,7 @@ const DesktopBanner: React.FC = () => {
                     height={17}
                     style={{ marginLeft: 8, marginRight: 8 }}
                 />
-                Official Event
+                <span style={{ marginRight: 8 }}>Official Event</span>
             </SfbwTag>
             <CopyContainer>
                 <Description>
@@ -56,7 +56,7 @@ const MobileBanner: React.FC = () => {
                     height={17}
                     style={{ marginLeft: 4, marginRight: 4 }}
                 />
-                Official Event
+                <span style={{ marginRight: 4 }}>Official Event</span>
             </SfbwTag>
             <HalfSizeContainer>
                 <p>San Francisco, CA</p>
