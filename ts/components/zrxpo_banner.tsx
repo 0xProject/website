@@ -63,6 +63,7 @@ const MobileBanner: React.FC = () => {
                 <span>November 3, 2022</span>
                 <ZrxpoLogo isAbsolute={false} />
             </HalfSizeContainer>
+            <CtaText>Register for your free ticket at 0xpo.com</CtaText>
             {/* <CopyContainer>
                 <Description>
                     <b style={{ fontWeight: 'bold' }}>Register for your free ticket at 0xpo.com</b>
@@ -87,11 +88,19 @@ const BannerMain = styled.div<BannerMainProps>`
     padding: ${({ padding = 0 }) => padding}px;
     background-image: url('/images/0xpo/crossroads.svg');
     background-size: 35%;
-    background-position: center center;
     background-repeat-y: no-repeat;
     background-color: black;
     color: white;
     position: relative;
+    animation: animateBg 12s linear infinite normal;
+    @keyframes animateBg {
+        from {
+            background-position: 0% 50%;
+        }
+        to {
+            background-position: 107% 50%;
+        }
+    }
 `;
 const ImageBg = styled('div')`
     background: linear-gradient(
@@ -165,4 +174,14 @@ const HalfSizeContainer = styled('div')`
     height: 100%;
     position: relative;
     z-index: 10;
+`;
+
+const CtaText = styled.div`
+    font-weight: bold;
+    display: block;
+    z-index: 10;
+    position: relative;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    text-align: center;
 `;
