@@ -194,6 +194,7 @@ const CtaText = styled.div`
     margin-bottom: 16px;
     text-align: center;
     cursor: pointer;
+    text-decoration: underline;
 `;
 
 const ZrxpoDesktopTitle = styled.p`
