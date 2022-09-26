@@ -31,13 +31,16 @@ const DesktopBanner: React.FC = () => {
                 />
                 <span style={{ marginRight: 8 }}>Official Event</span>
             </SfbwTag> */}
-            <CopyContainer>
-                <Description>
-                    Crossroads is a free-flowing day of learning, networking, and fun where your future-focused ideas
-                    can flow freely.
-                </Description>
-                <CtaText onClick={onClickHandler}>Register for your free ticket at 0xpo.com</CtaText>
-            </CopyContainer>
+            <Center>
+                <CopyContainer>
+                    <Description>
+                        <ZrxpoDesktopTitle>0xpo: Crossroads - November 3, 2022 | San Francisco, CA</ZrxpoDesktopTitle>
+                        Crossroads is a free-flowing day of learning, networking, and fun where your future-focused
+                        ideas can flow freely.
+                    </Description>
+                    <CtaText onClick={onClickHandler}>Register for your free ticket at 0xpo.com</CtaText>
+                </CopyContainer>
+            </Center>
             {/* <ZrxpoLogo /> */}
         </BannerMain>
     );
@@ -57,6 +60,7 @@ const MobileBanner: React.FC = () => {
                 <span style={{ marginRight: 4 }}>Official Event</span>
             </SfbwTag> */}
             <Container>
+                <p>0xpo: Crossroads</p>
                 <p>San Francisco, CA</p>
                 <span>November 3, 2022</span>
                 {/* <ZrxpoLogo isAbsolute={false} isMobile={true} /> */}
@@ -88,7 +92,7 @@ const BannerMain = styled.div<BannerMainProps>`
     background-size: contain;
     background-repeat-y: no-repeat;
     background-color: #00ae99;
-    color: white;
+    color: #003831;
     position: relative;
     animation: animateBg 240s linear infinite normal;
     @keyframes animateBg {
@@ -127,7 +131,7 @@ const ImageBg = styled('div')`
 //     align-items: center;
 // `;
 const CopyContainer = styled('div')`
-    color: white;
+    color: #003831;
     height: 100%;
     width: 100%;
     // max-width: 816px;
@@ -138,6 +142,9 @@ const CopyContainer = styled('div')`
     width: 100%;
     // margin-top: 52px;
     margin-top: 16px;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
 `;
 
 const Description = styled('span')`
@@ -187,4 +194,15 @@ const CtaText = styled.div`
     margin-bottom: 16px;
     text-align: center;
     cursor: pointer;
+`;
+
+const ZrxpoDesktopTitle = styled.p`
+    font-weight: bold;
+    display: block;
+    text-align: center;
+`;
+
+const Center = styled.div`
+    display: flex;
+    justify-content: center;
 `;
