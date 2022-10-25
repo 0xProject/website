@@ -149,6 +149,11 @@
             "source": "/docs",
             "destination": "https://docs.0x.org/",
             "permanent": true
+        },
+        {
+            "source": "/explorer",
+            "destination": "https://explorer.0x.org/",
+            "permanent": true
         }
     ],
     "rewrites": [

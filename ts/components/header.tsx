@@ -65,9 +65,9 @@ const navItems: NavItemProps[] = [
         url: WebsitePaths.AboutMission,
     },
     {
-        id: 'analytics',
-        text: 'Analytics',
-        url: 'https://0xtracker.com/',
+        id: 'explorer',
+        text: 'Explorer',
+        url: 'https://explorer.0x.org/',
     },
 ];
 
