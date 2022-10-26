@@ -27,7 +27,7 @@ export default async function handlerAsync(req: VercelRequest, res: VercelRespon
         role,
         currentTradingVolume,
         isApplicationLive,
-        // productOfInterest,
+        productOfInterest,
         chainOfInterest,
         usageDescription,
         timelineForIntegration,
@@ -47,7 +47,6 @@ export default async function handlerAsync(req: VercelRequest, res: VercelRespon
         '00N8c00000drpLI': role,
         '00N8c00000drpLS': currentTradingVolume,
         '00N8c00000drpLm': `${isApplicationLive}`,
-        // '00N8c00000drpLw': productOfInterest,
         '00N8c00000drr36': chainOfInterest,
         '00N8c00000ds8KX': timelineForIntegration,
         '00N8c00000drpgB': usageDescription,
@@ -56,12 +55,17 @@ export default async function handlerAsync(req: VercelRequest, res: VercelRespon
         '00N8c00000drvT8': referral,
     };
 
+    const bodyInit = new URLSearchParams(payload as { [s: string]: string });
+    for (const product of productOfInterest.split(',')) {
+        bodyInit.append('00N8c00000drpLw', product);
+    }
+
     await fetch('https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams(payload as { [s: string]: string }),
+        body: bodyInit,
     });
 
     return res.send('Created successfully');
