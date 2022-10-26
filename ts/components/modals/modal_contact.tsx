@@ -428,7 +428,7 @@ export class ModalContact extends React.Component<Props> {
             usageDescription,
             referral,
             isApiKeyRequired: `${isApiKeyRequired}`,
-            productOfInterest: productOfInterest.join(';'),
+            productOfInterest: productOfInterest.join(','),
         };
 
         await fetch('/api/contact', {

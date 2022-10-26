@@ -56,7 +56,7 @@ export default async function handlerAsync(req: VercelRequest, res: VercelRespon
     };
 
     const bodyInit = new URLSearchParams(payload as { [s: string]: string });
-    for (const product of productOfInterest.split(';')) {
+    for (const product of productOfInterest.split(',')) {
         bodyInit.append('00N8c00000drpLw', product);
     }
 
