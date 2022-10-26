@@ -47,23 +47,28 @@ export default async function handlerAsync(req: VercelRequest, res: VercelRespon
         '00N8c00000drpLI': role,
         '00N8c00000drpLS': currentTradingVolume,
         '00N8c00000drpLm': `${isApplicationLive}`,
-        ...productOfInterest.split(';').reduce((acc, item) => ({ ...acc, '00N8c00000drpLw': item }), {}),
         '00N8c00000drr36': chainOfInterest,
         '00N8c00000ds8KX': timelineForIntegration,
         '00N8c00000drpgB': usageDescription,
         ...(chainOfInterest === 'Other' ? { '00N8c00000drr3B': chainOfInterestOther } : {}),
         '00N8c00000drpgL': `${isApiKeyRequired}`,
         '00N8c00000drvT8': referral,
-        debugEmail: 'dennis@0xproject.com',
-        debug: 1,
     };
+
+    const bodyInit = new URLSearchParams(payload as { [s: string]: string });
+    for (const product of productOfInterest.split(';')) {
+        bodyInit.append('00N8c00000drpLw', product);
+    }
+
+    bodyInit.append('debugEmail', 'dennis@0xproject.com');
+    bodyInit.append('debug', '1');
 
     await fetch('https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams(payload as { [s: string]: string }),
+        body: bodyInit,
     });
 
     return res.send('Created successfully');

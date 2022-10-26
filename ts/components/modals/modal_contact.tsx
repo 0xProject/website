@@ -286,10 +286,12 @@ export class ModalContact extends React.Component<Props> {
                         onClick={() => {
                             if (this.state.productOfInterest.includes('0x Swap API')) {
                                 this.setState({
-                                    productOfInterest: this.state.productOfInterest.filter((item) => item !== '0x API'),
+                                    productOfInterest: this.state.productOfInterest.filter(
+                                        (item) => item !== '0x Swap API',
+                                    ),
                                 });
                             } else {
-                                this.setState({ productOfInterest: [...this.state.productOfInterest, '0x API'] });
+                                this.setState({ productOfInterest: [...this.state.productOfInterest, '0x Swap API'] });
                             }
                         }}
                     />
