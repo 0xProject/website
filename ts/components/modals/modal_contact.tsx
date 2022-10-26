@@ -282,9 +282,9 @@ export class ModalContact extends React.Component<Props> {
                 <InputRow>
                     <CheckBoxInput
                         label="0x API"
-                        isSelected={this.state.productOfInterest.includes('0x API')}
+                        isSelected={this.state.productOfInterest.includes('0x Swap API')}
                         onClick={() => {
-                            if (this.state.productOfInterest.includes('0x API')) {
+                            if (this.state.productOfInterest.includes('0x Swap API')) {
                                 this.setState({
                                     productOfInterest: this.state.productOfInterest.filter((item) => item !== '0x API'),
                                 });

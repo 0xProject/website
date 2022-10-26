@@ -54,6 +54,8 @@ export default async function handlerAsync(req: VercelRequest, res: VercelRespon
         ...(chainOfInterest === 'Other' ? { '00N8c00000drr3B': chainOfInterestOther } : {}),
         '00N8c00000drpgL': `${isApiKeyRequired}`,
         '00N8c00000drvT8': referral,
+        debugEmail: 'dennis@0xproject.com',
+        debug: 1,
     };
 
     await fetch('https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8', {
