@@ -201,7 +201,7 @@ export class ModalContact extends React.Component<Props> {
                 <InputRow>
                     <Input
                         name="companyName"
-                        label="Name of Company"
+                        label="Company Name"
                         type="text"
                         value={this.state.companyName}
                         required={true}
@@ -268,7 +268,7 @@ export class ModalContact extends React.Component<Props> {
                 <InputRow>
                     <Input
                         name="linkToProductOrWebsite"
-                        label="Link to Product or Website"
+                        label="Company Website"
                         type="text"
                         value={this.state.linkToProductOrWebsite}
                         required={false}

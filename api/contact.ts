@@ -42,6 +42,7 @@ export default async function handlerAsync(req: VercelRequest, res: VercelRespon
         last_name: lastName,
         email,
         website: linkToProductOrWebsite,
+        Website: linkToProductOrWebsite,
         company: companyName,
         '00N8c00000drpGS': typeOfBusiness,
         '00N8c00000drpLI': role,
