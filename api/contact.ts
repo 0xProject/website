@@ -60,9 +60,6 @@ export default async function handlerAsync(req: VercelRequest, res: VercelRespon
         bodyInit.append('00N8c00000drpLw', product);
     }
 
-    bodyInit.append('debugEmail', 'dennis@0xproject.com');
-    bodyInit.append('debug', '1');
-
     await fetch('https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8', {
         method: 'POST',
         headers: {
