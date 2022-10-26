@@ -12,8 +12,6 @@ import { GlobalStyle } from 'ts/constants/globalStyle';
 import { colors } from 'ts/style/colors';
 import { utils } from 'ts/utils/utils';
 
-// const products = ['0x Swap API'] as const;
-
 const timelineForIntegrationOptions = [
     'I’ve already integrated!',
     '0-3 months',
@@ -81,7 +79,7 @@ export class ModalContact extends React.Component<Props> {
         isApplicationLive: false,
         currentTradingVolume: '0',
         link: '',
-        // productOfInterest: '0x Swap API',
+        productOfInterest: [] as string[],
         chainOfInterest: '',
         chainOfInterestOther: '',
         usageDescription: '',
@@ -278,21 +276,45 @@ export class ModalContact extends React.Component<Props> {
                         onChange={this._makeOnChangeHandler('linkToProductOrWebsite')}
                     />
                 </InputRow>
-                {/* <InputRow>
-                    <GenericDropdown
-                        label="Which Products are you interested in?"
-                        name="productOfInterest"
-                        items={products}
-                        defaultValue={this.state.productOfInterest}
-                        onItemSelected={(selectedProducts) => {
-                            this.setState({ productOfInterest: selectedProducts });
+                <InputRow>
+                    <StyledSpan>Which Products are you interested in?</StyledSpan>
+                </InputRow>
+                <InputRow>
+                    <CheckBoxInput
+                        label="0x API"
+                        isSelected={this.state.productOfInterest.includes('0x API')}
+                        onClick={() => {
+                            if (this.state.productOfInterest.includes('0x API')) {
+                                this.setState({
+                                    productOfInterest: this.state.productOfInterest.filter((item) => item !== '0x API'),
+                                });
+                            } else {
+                                this.setState({ productOfInterest: [...this.state.productOfInterest, '0x API'] });
+                            }
                         }}
                     />
-                </InputRow> */}
+                    <CheckBoxInput
+                        label="Data API (beta)"
+                        isSelected={this.state.productOfInterest.includes('Data API (beta)')}
+                        onClick={() => {
+                            if (this.state.productOfInterest.includes('Data API (beta)')) {
+                                this.setState({
+                                    productOfInterest: this.state.productOfInterest.filter(
+                                        (item) => item !== 'Data API (beta)',
+                                    ),
+                                });
+                            } else {
+                                this.setState({
+                                    productOfInterest: [...this.state.productOfInterest, 'Data API (beta)'],
+                                });
+                            }
+                        }}
+                    />
+                </InputRow>
                 <InputRow>
                     <Input
                         name="usageDescription"
-                        label="How do you plan to use our products?"
+                        label="How do you plan to use our products? Is there anything else you’d like to discuss?"
                         type="textarea"
                         value={this.state.usageDescription}
                         required={false}
@@ -385,6 +407,7 @@ export class ModalContact extends React.Component<Props> {
             usageDescription,
             referral,
             isApiKeyRequired,
+            productOfInterest,
         } = this.state;
 
         const body = {
@@ -403,6 +426,7 @@ export class ModalContact extends React.Component<Props> {
             usageDescription,
             referral,
             isApiKeyRequired: `${isApiKeyRequired}`,
+            productOfInterest: productOfInterest.join(';'),
         };
 
         await fetch('/api/contact', {
