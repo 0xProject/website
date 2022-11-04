@@ -671,7 +671,7 @@ export const utils = {
             }
         }
 
-        if (!newErrors.email && !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(entries.email)) {
+        if (!newErrors.email && !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w+)+$/.test(entries.email)) {
             newErrors.email = 'No valid email address';
         }
 
