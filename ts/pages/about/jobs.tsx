@@ -135,16 +135,14 @@ export class NextAboutJobs extends React.Component<NextAboutJobsProps, NextAbout
 
                     <Column maxWidth="826px">
                         <BenefitsList>
-                            <li>Comprehensive Insurance</li>
+                            <li>Comprehensive Health Insurance</li>
                             <li>Unlimited Vacation</li>
-                            <li>Meals and snacks provided daily</li>
-                            <li>Flexible hours and liberal work-from-home-policy</li>
-                            <li>Supportive of remote working</li>
-                            <li>Transportation, phone, and wellness expense</li>
-                            <li>Relocation assistance</li>
-                            <li>Optional team excursions</li>
-                            <li>Competitive salary</li>
-                            <li>Cryptocurrency based compensation</li>
+                            <li>Remote-first Company</li>
+                            <li>Physical Office in San Francisco</li>
+                            <li>Company-sponsored Conferences & Offsites</li>
+                            <li>Competitive Salary</li>
+                            <li>Crypto Based Compensation</li>
+                            <li>Wellness, Meal & Cell Phone Stipend</li>
                         </BenefitsList>
                     </Column>
                 </Section>
