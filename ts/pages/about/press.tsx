@@ -160,7 +160,7 @@ const highlights: HighlightProps[] = [
         logo: '/images/press/logo-fortune.png',
         outlet: 'Fortune',
         text: 'Security tokens get a boost as PayPal vet joins 0x board',
-        href: 'http://fortune.com/2018/09/06/0x-harbor-blockchain/',
+        href: 'https://fortune.com/crypto/2018/09/06/0x-harbor-blockchain/',
         date: 'September 6, 2018',
     },
     {
