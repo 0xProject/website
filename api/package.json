@@ -11,7 +11,7 @@
         "typescript": "^4.9.5"
     },
     "dependencies": {
-        "node-fetch": "^3.3.0"
+        "node-fetch": "^2.6.0"
     },
     "scripts": {
         "vercel-build": "tsc --project tsconfig.json"
