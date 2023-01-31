@@ -3,6 +3,9 @@ import fetch from 'node-fetch';
 
 import { validateContactForm } from './_utils';
 
+const DEBUG_SALESFORCE = false as const;
+const DEBUG_EMAIL = '' as const;
+
 // tslint:disable-next-line:no-default-export
 export default async function handlerAsync(req: VercelRequest, res: VercelResponse): Promise<VercelResponse> {
     const { body } = req;
@@ -58,6 +61,10 @@ export default async function handlerAsync(req: VercelRequest, res: VercelRespon
     const bodyInit = new URLSearchParams(payload as { [s: string]: string });
     for (const product of productOfInterest.split(',')) {
         bodyInit.append('00N8c00000drpLw', product);
+    }
+    if (DEBUG_SALESFORCE) {
+        bodyInit.append('debug', '1');
+        bodyInit.append('debugEmail', DEBUG_EMAIL);
     }
 
     await fetch('https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8', {

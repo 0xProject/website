@@ -159,6 +159,7 @@
         "@types/material-ui": "^0.20.0",
         "@types/mersenne-twister": "^1.1.2",
         "@types/node": "*",
+        "@types/node-fetch": "2",
         "@types/numeral": "^0.0.26",
         "@types/query-string": "^5.1.0",
         "@types/rc-slider": "^8.6.0",
@@ -226,5 +227,8 @@
         "hooks": {
             "pre-push": "yarn pre_push"
         }
+    },
+    "volta": {
+        "node": "14.21.2"
     }
 }
