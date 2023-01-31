@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useWindowSize } from 'react-use';
+// import { useWindowSize } from 'react-use';
 import styled, { ThemeProvider } from 'styled-components';
 
 import { Footer } from 'ts/components/footer';
@@ -33,7 +33,7 @@ export const SiteWrap: React.FC<ISiteWrapProps> = (props) => {
     }, []);
 
     const Header = headerComponent || MainHeader;
-    const { width: windowWidth } = useWindowSize();
+    // const { width: windowWidth } = useWindowSize();
     // const isSmallScreen = windowWidth < 700;
 
     const toggleMobileNav = React.useCallback(() => setIsMobileNavOpen(!isMobileNavOpen), [isMobileNavOpen]);
