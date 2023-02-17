@@ -273,7 +273,7 @@ export class ModalEarlyAccess extends React.Component<Props> {
             productOfInterest: productOfInterest.join(','),
         };
 
-        await fetch('/api/contact', {
+        await fetch('/api/early-access', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
