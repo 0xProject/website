@@ -90,7 +90,7 @@ export class ModalEarlyAccess extends React.Component<Props> {
                     <StyledDialogContent>
                         <Form onSubmit={this._onSubmitAsync.bind(this)} isSuccessful={isSuccessful}>
                             <Heading color={colors.textDarkPrimary} size={34} asElement="h2">
-                                Contact Us
+                                Request early access
                             </Heading>
                             {this._renderFormContent(errors)}
                             <ButtonRow>
