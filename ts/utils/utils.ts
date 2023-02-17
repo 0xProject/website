@@ -680,4 +680,27 @@ export const utils = {
         }
         return newErrors;
     },
+    validateEarlyAccessForm(entries: { [s: string]: string }): { [s: string]: string } {
+        const newErrors: { [s: string]: string } = {};
+        const requiredFields = [
+            'email',
+            'firstName',
+            'lastName',
+            'companyName',
+            'typeOfBusiness',
+            'role',
+            'chainOfInterest',
+        ] as const;
+
+        for (const field of requiredFields) {
+            if (entries[field] === '') {
+                newErrors[field] = 'Field is required';
+            }
+        }
+
+        if (!newErrors.email && !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w+)+$/.test(entries.email)) {
+            newErrors.email = 'No valid email address';
+        }
+        return newErrors;
+    },
 }; // tslint:disable:max-file-line-count
