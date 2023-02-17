@@ -3,8 +3,8 @@ import fetch from 'node-fetch';
 
 import { validateEarlyAccessForm } from './_utils';
 
-const DEBUG_SALESFORCE = true as const;
-const DEBUG_EMAIL = 'dennis@0xproject.com' as const;
+const DEBUG_SALESFORCE = false as const;
+const DEBUG_EMAIL = '' as const;
 
 // tslint:disable-next-line:no-default-export
 export default async function handlerAsync(req: VercelRequest, res: VercelResponse): Promise<VercelResponse> {
