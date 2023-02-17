@@ -22,6 +22,7 @@ interface InputProps {
     isErrors?: boolean;
     required?: boolean;
     placeholder?: string;
+    disabled?: boolean;
     onChange?: (e: any) => void;
 }
 
@@ -159,6 +160,7 @@ export const Input = React.forwardRef((props: InputProps, ref?: React.Ref<HTMLIn
                 defaultValue={defaultValue}
                 onChange={onChange}
                 placeholder={placeholder}
+                disabled={props.disabled}
                 {...inputProps}
             />
             {isErrors && <Error>{errorMessage}</Error>}
@@ -175,11 +177,12 @@ const StyledInput = styled.input`
     appearance: none;
     background-color: #fff;
     border: 1px solid #d5d5d5;
-    color: #000;
+    color: ${(props) => (props.disabled ? '#70707B' : '#000')};
     font-size: 1.111111111rem;
     padding: 16px 15px 14px;
     outline: none;
     width: 100%;
+    cursor: ${(props) => props.disabled && `not-allowed`};
     min-height: ${(props) => props.type === 'textarea' && `120px`};
 
     background-color: ${(props: InputProps) => props.isErrors && `#FDEDED`};

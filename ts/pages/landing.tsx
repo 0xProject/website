@@ -5,6 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { useWindowSize } from 'react-use';
 import { DocumentTitle } from 'ts/components/document_title';
 import { ModalContact } from 'ts/components/modals/modal_contact';
+import { ModalEarlyAccess } from 'ts/components/modals/modal_early_access';
 import { Section } from 'ts/components/newLayout';
 import { SectionLandingAbout } from 'ts/components/sections/landing/about';
 import { SectionApiQuote } from 'ts/components/sections/landing/apiQuote';
@@ -30,7 +31,8 @@ interface Props {
 const NextLanding: React.FC<Props> = (props) => {
     const { hash } = useLocation();
     const history = useHistory();
-    const [isContactModalOpen, setisContactModalOpen] = useState<boolean>(hash.includes('contact'));
+    const [isContactModalOpen, setisContactModalOpen] = useState<boolean>(hash === '#contact');
+    const [isEarlyAccessOpen, setIsEarlyAccessOpen] = useState<boolean>(hash === '#early-access');
     const _onOpenContactModal = useCallback((): void => {
         history.push('#contact');
         setisContactModalOpen(true);
@@ -39,6 +41,11 @@ const NextLanding: React.FC<Props> = (props) => {
     const _onDismissContactModal = useCallback((): void => {
         history.push('/');
         setisContactModalOpen(false);
+    }, [history]);
+
+    const _onDismissEarlyAccessModal = useCallback((): void => {
+        history.push('/');
+        setIsEarlyAccessOpen(false);
     }, [history]);
 
     React.useEffect(() => {
@@ -66,6 +73,7 @@ const NextLanding: React.FC<Props> = (props) => {
             {!isSmallScreen && <SectionFeatures />}
             <SectionLandingCta onContactClick={_onOpenContactModal} />
             <ModalContact isOpen={isContactModalOpen} onDismiss={_onDismissContactModal} />
+            <ModalEarlyAccess isOpen={isEarlyAccessOpen} onDismiss={_onDismissEarlyAccessModal} />
         </SiteWrap>
     );
 };
