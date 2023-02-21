@@ -14,7 +14,7 @@ import { utils } from 'ts/utils/utils';
 
 const chains = ['Ethereum', 'Polygon'] as const;
 
-const roles = ['Product Manager', 'Founder', 'Engineer', 'CTO', 'other'] as const;
+const roles = ['Product Manager', 'Founder', 'Engineer', 'CTO', 'Other'] as const;
 
 const txRelayAPI = 'Tx Relay API' as const;
 
