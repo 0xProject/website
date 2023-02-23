@@ -21,7 +21,7 @@ const timelineForIntegrationOptions = [
     'I’m just getting started and browsing for more information',
 ] as const;
 
-const chains = ['Avalanche', 'BNB', 'Celo', 'Ethereum', 'Fantom', 'Optimism', 'Polygon', 'Other'] as const;
+const chains = ['Avalanche', 'BNB', 'Base', 'Celo', 'Ethereum', 'Fantom', 'Optimism', 'Polygon', 'Other'] as const;
 
 const roles = ['Product Manager', 'Founder', 'Engineer', 'CTO', 'other'] as const;
 
