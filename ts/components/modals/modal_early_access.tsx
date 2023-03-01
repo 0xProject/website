@@ -99,7 +99,9 @@ export class ModalEarlyAccess extends React.Component<Props> {
                                     isNoBorder={true}
                                     isTransparent={true}
                                     type="button"
-                                    onClick={this.props.onDismiss}
+                                    onClick={() => {
+                                        history.back();
+                                    }}
                                 >
                                     Back
                                 </Button>
@@ -115,7 +117,12 @@ export class ModalEarlyAccess extends React.Component<Props> {
                                 We'll get back to you soon. If you need quick support in the meantime, reach out to the
                                 0x team on Discord.
                             </Paragraph>
-                            <Button color={colors.white} onClick={this.props.onDismiss}>
+                            <Button
+                                color={colors.white}
+                                onClick={() => {
+                                    history.back();
+                                }}
+                            >
                                 Done
                             </Button>
                         </Confirmation>
