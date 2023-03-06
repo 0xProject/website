@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import * as React from 'react';
+import styled from 'styled-components';
 
 import { DocumentTitle } from 'ts/components/document_title';
 import { Column, Section } from 'ts/components/newLayout';
@@ -42,7 +43,7 @@ export const PrivacyPolicy = () => (
                     how privacy and transparency on the blockchain works.
                 </Paragraph>
 
-                <Heading asElement="h3" size="small" textAlign="left">
+                <Heading asElement="h3" size="small" textAlign="left" id="collection-of-information">
                     1. OUR COLLECTION OF PERSONAL INFORMATION
                 </Heading>
                 <Paragraph size="default" isMuted={true} textAlign="left">
@@ -65,11 +66,14 @@ export const PrivacyPolicy = () => (
                         <strong>Account Information.</strong> To use certain our developer platform or governance portal
                         Services, you may be required to establish an account for the Services. This may involve
                         collecting your email address, social media handle and when applicable, public blockchain
-                        address associated with your crypto wallet (see Crypto Wallets section below for more
-                        information). We may also collect your usernames and password for using our developer platform
-                        Services. We use this information to administer your account, provide you with the relevant
-                        services and information, communicate with you regarding your account, the Service, and for
-                        customer support purposes.
+                        address associated with your crypto wallet (see{' '}
+                        <strong>
+                            <Link href="#crypto-wallet">Crypto Wallets</Link>
+                        </strong>{' '}
+                        section below for more information). We may also collect your usernames and password for using
+                        our developer platform Services. We use this information to administer your account, provide you
+                        with the relevant services and information, communicate with you regarding your account, the
+                        Service, and for customer support purposes.
                     </ListItem>
                     <ListItem>
                         <strong>Token Information.</strong> If you choose to trade using our Services, we may receive
@@ -111,7 +115,13 @@ export const PrivacyPolicy = () => (
                         wallet information. Please remember that ZeroEx may, but has no obligation to, monitor, record,
                         and store User Content in order to protect your safety or the safety of other users, to assist
                         with regulatory or law enforcement efforts, or to protect and defend our rights and property.
-                        For more information, please see our Terms of Service.
+                        For more information, please see our{' '}
+                        <strong>
+                            <Link href="/terms" target="_blank">
+                                Terms of Service
+                            </Link>
+                        </strong>
+                        .
                     </ListItem>
                     <ListItem>
                         <strong>Employment Application Information</strong>, including your contact and demographic
@@ -133,9 +143,8 @@ export const PrivacyPolicy = () => (
                     referring page/campaign, date/time of visit, the time spent on our Services and any errors that may
                     occur during the visit to our Services), <strong>analytics data</strong> (such as the electronic
                     path taken to our Service, through our Services and when exiting our Service, as well as usage and
-                    activity on our Service) and
-                    <strong>location data</strong> (such as general geographic location based on the log data we or our
-                    third-party providers collect).
+                    activity on our Service) and <strong>location data</strong> (such as general geographic location
+                    based on the log data we or our third-party providers collect).
                 </Paragraph>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     To manage cookies, an individual may change their browser settings to: (i) notify them when they
@@ -150,8 +159,11 @@ export const PrivacyPolicy = () => (
                     performed certain functions with it.
                 </Paragraph>
                 <Paragraph size="default" isMuted={true} textAlign="left">
-                    For more information about these practices and your choices regarding cookies, please see our Cookie
-                    Notice.
+                    For more information about these practices and your choices regarding cookies, please see our{' '}
+                    <strong>
+                        <Link href="#cookie-notice">Cookie Notice</Link>
+                    </strong>
+                    .
                 </Paragraph>
                 <Heading asElement="h3" size="small" textAlign="left">
                     <strong>
@@ -189,7 +201,7 @@ export const PrivacyPolicy = () => (
                         third-party websites and social media networks and services before sharing information and/or
                         linking or connecting them to other services.
                     </ListItem>
-                    <ListItem>
+                    <ListItem id="crypto-wallet">
                         <strong>Crypto Wallets</strong>: When you connect your crypto wallets such as MetaMask or
                         Coinbase Wallet, we receive information such as your wallet address, crypto wallet types
                         (including amounts and balances), and any related transaction and technical information
@@ -265,8 +277,14 @@ export const PrivacyPolicy = () => (
                     </ListItem>
                     <ListItem>
                         Fulfill or enforce our legal or contractual obligations and requirements (including in relation
-                        to our Terms of Service), to resolve disputes, to carry out our obligations and enforce our
-                        rights, and to protect our business interests and the interests and rights of third parties;
+                        to our{' '}
+                        <strong>
+                            <Link href="/terms" target="_blank">
+                                Terms of Service
+                            </Link>
+                        </strong>
+                        ), to resolve disputes, to carry out our obligations and enforce our rights, and to protect our
+                        business interests and the interests and rights of third parties;
                     </ListItem>
                     <ListItem>Audit transactions conducted in connection with our services;</ListItem>
                     <ListItem>Provide notice of fraud or unlawful or criminal activity; or</ListItem>
@@ -315,7 +333,11 @@ export const PrivacyPolicy = () => (
                         from a browser or device when an individual visits our Services through cookies or other data
                         collection technologies. This information is used to provide and inform targeted advertising, as
                         well as to provide advertising- related services such as reporting, attribution, analytics and
-                        market research. Please see our Cookie Notice for more information.
+                        market research. Please see our{' '}
+                        <strong>
+                            <Link href="#cookie-notice">Cookie Notice</Link>
+                        </strong>{' '}
+                        for more information.
                     </ListItem>
                     <ListItem>
                         <strong>Marketing Providers</strong>: We coordinate and share personal information with our
@@ -426,9 +448,13 @@ export const PrivacyPolicy = () => (
                     <ListItem>
                         <strong>European Economic Area</strong>, United Kingdom or Switzerland: If you are located in
                         European Economic Area (Member States of the European Union together with Iceland, Norway, and
-                        Liechtenstein), United Kingdom, or Switzerland, please see the Additional European Economic
-                        Area, United Kingdom, and Switzerland Privacy Disclosures section for additional European-
-                        specific privacy disclosures.
+                        Liechtenstein), United Kingdom, or Switzerland, please see the{' '}
+                        <strong>
+                            <Link href="#eea-uk-switzerland">
+                                Additional European Economic Area, United Kingdom, and Switzerland Privacy Disclosures
+                            </Link>
+                        </strong>{' '}
+                        section for additional European- specific privacy disclosures.
                     </ListItem>
                 </UnorderedList>
                 <Heading asElement="h3" size="small" textAlign="left">
@@ -446,7 +472,8 @@ export const PrivacyPolicy = () => (
                 </Heading>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     If you have any questions or requests in connection with this Privacy Notice or other
-                    privacy-related matters, please send an email to <a href="mailto:legal@0x.org">legal@0x.org</a>.
+                    privacy-related matters, please send an email to{' '}
+                    <Link href="mailto:legal@0x.org">legal@0x.org</Link>.
                 </Paragraph>
                 <hr />
                 {
@@ -454,7 +481,7 @@ export const PrivacyPolicy = () => (
                     //###########  EEA + UK + SWITZERLAND  ###########
                     //################################################
                 }
-                <Heading asElement="h2" size="small" textAlign="left">
+                <Heading asElement="h2" size="small" textAlign="left" id="eea-uk-switzerland">
                     ADDITIONAL EUROPEAN ECONOMIC AREA, UNITED KINGDOM, AND SWITZERLAND PRIVACY DISCLOSURES
                 </Heading>
                 <Paragraph size="default" isMuted={true} textAlign="left">
@@ -486,7 +513,13 @@ export const PrivacyPolicy = () => (
                         or to take steps at your request prior to agreeing a contract: This applies to any processing
                         where you sign a contract with us, for example when you become our customer, participate in our
                         affiliate or premium partner program, or deliver services to us as a vendor or contractor. This
-                        may also include our Terms of Service.
+                        may also include our{' '}
+                        <strong>
+                            <Link href="/terms" target="_blank">
+                                Terms of Service
+                            </Link>
+                        </strong>
+                        .
                     </ListItem>
                     <ListItem>
                         We have a <strong>legitimate interest</strong> which we believe outweighs your interests or
@@ -616,7 +649,7 @@ export const PrivacyPolicy = () => (
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     We will only send you such messages if you have given us your consent to do so. You can withdraw
                     your consent at a later date by clicking on the unsubscribe link at the bottom of our marketing
-                    emails or by contacting us at <a href="mailto:legal@0x.org">legal@0x.org</a>.
+                    emails or by contacting us at <Link href="mailto:legal@0x.org">legal@0x.org</Link>.
                 </Paragraph>
                 <Heading asElement="h3" size="small" textAlign="left">
                     Profiling
@@ -628,9 +661,12 @@ export const PrivacyPolicy = () => (
                     about you when it is available from external sources to help us do this effectively send product
                     updates. We may also use personal data about you to detect and reduce fraud. The entering of
                     personal data in our systems is optional and occurs only if consent is given to one of the purposes
-                    detailed in the Our Collection and Use of Personal Information section of the Privacy Notice; it
-                    automatically implies that ZeroEx personnel across the world, tasked with data processing, will be
-                    able to view the data, as well as to change and to update it
+                    detailed in the{' '}
+                    <strong>
+                        <Link href="#collection-of-information">Our Collection and Use of Personal Information</Link>
+                    </strong>{' '}
+                    section of the Privacy Notice; it automatically implies that ZeroEx personnel across the world,
+                    tasked with data processing, will be able to view the data, as well as to change and to update it
                 </Paragraph>
                 <Heading asElement="h3" size="small" textAlign="left">
                     Your Rights in Respect of Your Personal Information
@@ -702,16 +738,16 @@ export const PrivacyPolicy = () => (
                     based in the European Union, information about how to contact your local data protection authority
                     is available here. If you are based in the UK or Switzerland, your local data protection authorities
                     are the UK Information Commissioner's Office (
-                    <a href="https://ico.org.uk/global/contact-us/">https://ico.org.uk/global/contact-us/</a>) and the
-                    Swiss Federal Data Protection and Information Commissioner (
-                    <a href="https://www.edoeb.admin.ch/edoeb/en/home/the-fdpic/contact/address.html">
+                    <Link href="https://ico.org.uk/global/contact-us/">https://ico.org.uk/global/contact-us/</Link>) and
+                    the Swiss Federal Data Protection and Information Commissioner (
+                    <Link href="https://www.edoeb.admin.ch/edoeb/en/home/the-fdpic/contact/address.html">
                         https://www.edoeb.admin.ch/edoeb/en/home/the-fdpic/contact/address.html
-                    </a>
+                    </Link>
                     ).
                 </Paragraph>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     If you wish to exercise one of these rights, we kindly ask you to contact us at{' '}
-                    <a href="mailto:legal@0x.org">legal@0x.org</a>.
+                    <Link href="mailto:legal@0x.org">legal@0x.org</Link>.
                 </Paragraph>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     Due to the confidential nature of data processing we may ask you to provide proof of identity when
@@ -727,8 +763,11 @@ export const PrivacyPolicy = () => (
                     Services. This helps us to provide you with a good experience when you browse our Services and also
                     allows us to monitor and analyse how you use and interact with our Services so that we can continue
                     to improve our Services. It also helps us and our partners to determine products and services that
-                    may be of interest to you. Please see our Cookie Notice for more information about these practices
-                    and your choices regarding cookies.
+                    may be of interest to you. Please see our{' '}
+                    <strong>
+                        <Link href="#cookie-notice">Cookie Notice</Link>
+                    </strong>{' '}
+                    for more information about these practices and your choices regarding cookies.
                 </Paragraph>
                 <Heading asElement="h3" size="small" textAlign="left">
                     Tracking Technologies Used in Our Emails
@@ -756,13 +795,22 @@ export const PrivacyPolicy = () => (
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     Personal data will be processed with IT-based tools and/or processed manually for the length of time
                     needed to achieve the purpose for which it was collected. In particular, personal data collected for
-                    the purposes outline in the Our Collection and Use of Personal Information section of the Privacy
-                    Notice will be also processed with the usage of automated mechanisms based on procedures and logics
-                    that are strictly related to the purposes specified.
+                    the purposes outline in the{' '}
+                    <strong>
+                        <Link href="#collection-of-information">Our Collection and Use of Personal Information</Link>
+                    </strong>{' '}
+                    section of the Privacy Notice will be also processed with the usage of automated mechanisms based on
+                    procedures and logics that are strictly related to the purposes specified.
                 </Paragraph>
             </Column>
         </Section>
-        <Section>
+        {
+            //################################################
+            //###############  COOKIE NOTICE  ################
+            //################################################
+        }
+
+        <Section id="cookie-notice">
             <Column>
                 <Heading size="medium" isCentered={true}>
                     Cookie Notice
@@ -772,9 +820,9 @@ export const PrivacyPolicy = () => (
                 </Heading>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     Unless otherwise expressly stated, terms in this notice have the same meaning as defined in the{' '}
-                    <a href="#privacy-notice">
+                    <Link href="#privacy-notice">
                         <strong>Privacy Notice</strong>
-                    </a>
+                    </Link>
                     .
                 </Paragraph>
                 <Heading asElement="h3" size="small" textAlign="left">
@@ -782,9 +830,9 @@ export const PrivacyPolicy = () => (
                 </Heading>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     This Cookie Notice supplements the information contained in the{' '}
-                    <a href="#privacy-notice">
+                    <Link href="#privacy-notice">
                         <strong>Privacy Notice</strong>
-                    </a>{' '}
+                    </Link>{' '}
                     and explains how we and our business partners and service providers use cookies and related
                     technologies in the course of managing and providing our online services and our electronic
                     communication to you. It explains what these technologies are and why we use them, as well as your
@@ -795,9 +843,9 @@ export const PrivacyPolicy = () => (
                     collect personal information, or to collect information that becomes personal information if we
                     combine it with other information. For more details about how we process your personal information,
                     please review the{' '}
-                    <a href="#privacy-notice">
+                    <Link href="#privacy-notice">
                         <strong>Privacy Notice</strong>
-                    </a>
+                    </Link>
                     .
                 </Paragraph>
                 <Heading asElement="h3" size="small" textAlign="left">
@@ -906,14 +954,14 @@ export const PrivacyPolicy = () => (
                             collects and processes data, as well as how you can control information sent to Google,
                             review Google's website, “How 14 Privileged & Confidential For Discussion Purposes Only
                             Google uses data when you use our partners’ sites or apps” located at{' '}
-                            <a href="https://www.google.com/policies/privacy/partners/">
+                            <Link href="https://www.google.com/policies/privacy/partners/">
                                 <strong>https://www.google.com/policies/privacy/partners/</strong>
-                            </a>
+                            </Link>
                             . You can learn about Google Analytics’ currently available opt- outs, including the Google
                             Analytics Browser Ad-On here:{' '}
-                            <a href="https://tools.google.com/dlpage/gaoptout/">
+                            <Link href="https://tools.google.com/dlpage/gaoptout/">
                                 <strong>https://tools.google.com/dlpage/gaoptout/</strong>
-                            </a>
+                            </Link>
                             .
                         </Paragraph>
                         <Paragraph size="default" isMuted={1} textAlign="left" color="black">
@@ -924,13 +972,13 @@ export const PrivacyPolicy = () => (
                             visits to the Services. You may control your advertising preferences or opt-out of certain
                             Google advertising products by visiting the Google Ads Preferences Manager, currently
                             available at{' '}
-                            <a href="https://google.com/ads/preferences">
+                            <Link href="https://google.com/ads/preferences">
                                 <strong>https://google.com/ads/preferences</strong>
-                            </a>
+                            </Link>
                             , or by visiting NAI’s online resources at{' '}
-                            <a href="http://www.networkadvertising.org/choices">
+                            <Link href="http://www.networkadvertising.org/choices">
                                 <strong>http://www.networkadvertising.org/choices</strong>
-                            </a>
+                            </Link>
                             .
                         </Paragraph>
                         <Paragraph size="default" isMuted={1} textAlign="left" color="black">
@@ -940,43 +988,45 @@ export const PrivacyPolicy = () => (
                             <ListItem muted={false}>
                                 Google Analytics:{' '}
                                 <strong>
-                                    <a href="https://policies.google.com/technologies/partner-sites">
+                                    <Link href="https://policies.google.com/technologies/partner-sites">
                                         https://policies.google.com/technologies/partner-sites
-                                    </a>
+                                    </Link>
                                 </strong>
                             </ListItem>
                             <ListItem muted={false}>
                                 Chainalysis:{' '}
                                 <strong>
-                                    <a href="https://www.chainalysis.com/privacy-policy/">
+                                    <Link href="https://www.chainalysis.com/privacy-policy/">
                                         https://www.chainalysis.com/privacy-policy/
-                                    </a>
+                                    </Link>
                                 </strong>
                             </ListItem>
                             <ListItem muted={false}>
                                 Amplitude:{' '}
                                 <strong>
-                                    <a href="https://amplitude.com/privacy">https://amplitude.com/privacy</a>
+                                    <Link href="https://amplitude.com/privacy">https://amplitude.com/privacy</Link>
                                 </strong>
                             </ListItem>
                             <ListItem muted={false}>
                                 Metabase:{' '}
                                 <strong>
-                                    <a href="https://www.metabase.com/privacy">https://www.metabase.com/privacy</a>
+                                    <Link href="https://www.metabase.com/privacy">
+                                        https://www.metabase.com/privacy
+                                    </Link>
                                 </strong>
                             </ListItem>
                             <ListItem muted={false}>
                                 Dune Analytics:{' '}
                                 <strong>
-                                    <a href="https://dune.com/privacy">https://dune.com/privacy</a>
+                                    <Link href="https://dune.com/privacy">https://dune.com/privacy</Link>
                                 </strong>
                             </ListItem>
                             <ListItem muted={false}>
                                 Prodsight:{' '}
                                 <strong>
-                                    <a href="https://www.playvox.com/privacy-policy/">
+                                    <Link href="https://www.playvox.com/privacy-policy/">
                                         https://www.playvox.com/privacy-policy/
-                                    </a>
+                                    </Link>
                                 </strong>
                             </ListItem>
                         </UnorderedList>
@@ -1022,7 +1072,7 @@ export const PrivacyPolicy = () => (
                         We use cookies to provide and monitor the effectiveness of our Services, monitor online usage
                         and activities of our Services, and facilitate the purposes identified in the{' '}
                         <strong>
-                            <a href="#use-of-information">How We Use Your Personal Information</a>
+                            <Link href="#use-of-information">How We Use Your Personal Information</Link>
                         </strong>{' '}
                         section of our Privacy Notice.
                     </ListItem>
@@ -1041,7 +1091,7 @@ export const PrivacyPolicy = () => (
                     Please note that we link some of the personal information we collect through cookies with the other
                     personal information that we collect about you and for the purposes described in our{' '}
                     <strong>
-                        <a href="#privacy-notice">Privacy Notice</a>
+                        <Link href="#privacy-notice">Privacy Notice</Link>
                     </strong>
                     .
                 </Paragraph>
@@ -1069,20 +1119,20 @@ export const PrivacyPolicy = () => (
                     (DAA) resources and/or the Network Advertising Initiative’s (NAI) online resources, at
                     www.aboutads.info/choices or
                     <strong>
-                        <a href="http://www.networkadvertising.org/choices/">
+                        <Link href="http://www.networkadvertising.org/choices/">
                             http://www.networkadvertising.org/choices/
-                        </a>
+                        </Link>
                     </strong>
                     , or if you are in the European Economic Area, United Kingdom or Switzerland:{' '}
                     <strong>
-                        <a href="https://youronlinechoices.eu/">https://youronlinechoices.eu/</a>
+                        <Link href="https://youronlinechoices.eu/">https://youronlinechoices.eu/</Link>
                     </strong>
                     . You may also be able to limit interest-based advertising through the settings menu on your mobile
                     device by selecting “limit ad tracking” (iOS) or “opt-out of interest-based ads” (Android). You may
                     also be able to opt-out of some — but not all — interest-based advertising served by mobile ad
                     networks by visiting
                     <strong>
-                        <a href="http://youradchoices.com/appchoices">http://youradchoices.com/appchoices</a>
+                        <Link href="http://youradchoices.com/appchoices">http://youradchoices.com/appchoices</Link>
                     </strong>{' '}
                     and downloading the mobile AppChoices app.
                 </Paragraph>
@@ -1098,7 +1148,7 @@ export const PrivacyPolicy = () => (
                 <Paragraph size="default" textAlign="left" color="black">
                     If you are located in the EEA, UK, or Switzerland, you may take advantage of{' '}
                     <strong>
-                        <a href="https://youronlinechoices.eu/">Your Online Choices</a>
+                        <Link href="https://youronlinechoices.eu/">Your Online Choices</Link>
                     </strong>
                     . This service allows you to select tracking preferences for most of the advertising tools. As such,
                     it is recommended that you make use of this resource in addition to the information provided in this
@@ -1108,3 +1158,7 @@ export const PrivacyPolicy = () => (
         </Section>
     </SiteWrap>
 );
+
+const Link = styled.a`
+    text-decoration: underline;
+`;

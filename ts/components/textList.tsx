@@ -4,6 +4,7 @@ import styled from 'styled-components';
 interface ListItemProps {
     children: string | React.ReactNode;
     muted?: boolean;
+    id?: string;
 }
 
 interface OrderedListProps {
@@ -38,4 +39,8 @@ const Li = styled.li<ListItemProps>`
     }
 `;
 
-export const ListItem = ({ children, ...props }: ListItemProps) => <Li {...props}>{children}</Li>;
+export const ListItem = ({ children, id, ...props }: ListItemProps) => (
+    <Li id={id} {...props}>
+        {children}
+    </Li>
+);
