@@ -477,9 +477,9 @@ export const PrivacyPolicy = () => (
                 </Paragraph>
                 <hr />
                 {
-                    //################################################
-                    //###########  EEA + UK + SWITZERLAND  ###########
-                    //################################################
+                    // ################################################
+                    // ###########  EEA + UK + SWITZERLAND  ###########
+                    // ################################################
                 }
                 <Heading asElement="h2" size="small" textAlign="left" id="eea-uk-switzerland">
                     ADDITIONAL EUROPEAN ECONOMIC AREA, UNITED KINGDOM, AND SWITZERLAND PRIVACY DISCLOSURES
@@ -805,9 +805,9 @@ export const PrivacyPolicy = () => (
             </Column>
         </Section>
         {
-            //################################################
-            //###############  COOKIE NOTICE  ################
-            //################################################
+            // ################################################
+            // ###############  COOKIE NOTICE  ################
+            // ################################################
         }
 
         <Section id="cookie-notice">

@@ -33,7 +33,7 @@ const Li = styled.li<ListItemProps>`
     line-height: 1.4rem;
     text-align: left;
     font-weight: 300;
-    opacity: ${(props) => (props.muted === false ? 1 : 0.5)};
+    opacity: ${(props) => (props.muted !== undefined && !props.muted ? 1 : 0.5)};
     @media (max-width: 768px) {
         font-size: 15px;
     }
