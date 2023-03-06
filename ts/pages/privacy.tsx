@@ -11,13 +11,13 @@ import { documentConstants } from 'ts/utils/document_meta_constants';
 export const PrivacyPolicy = () => (
     <SiteWrap theme="light">
         <DocumentTitle {...documentConstants.PRIVACY_POLICY} />
-        <Section>
+        <Section id="privacy-notice">
             <Column>
                 <Heading size="medium" isCentered={true}>
-                    Privacy Policy
+                    Privacy Notice
                 </Heading>
                 <Heading asElement="h4" size="small" marginBottom="50px" isMuted={true} isCentered={true}>
-                    Last Updated: March 3, 2023
+                    Last Updated: March 6, 2023
                 </Heading>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     Welcome! This Privacy Notice explains how ZeroEx Inc. (
@@ -219,7 +219,7 @@ export const PrivacyPolicy = () => (
                         individuals with whom we interact.
                     </ListItem>
                 </UnorderedList>
-                <Heading asElement="h3" size="small" textAlign="left">
+                <Heading asElement="h3" size="small" textAlign="left" id="use-of-information">
                     2. OUR USE OF PERSONAL INFORMATION
                 </Heading>
                 <Paragraph size="default" isMuted={true} textAlign="left">
@@ -759,6 +759,350 @@ export const PrivacyPolicy = () => (
                     the purposes outline in the Our Collection and Use of Personal Information section of the Privacy
                     Notice will be also processed with the usage of automated mechanisms based on procedures and logics
                     that are strictly related to the purposes specified.
+                </Paragraph>
+            </Column>
+        </Section>
+        <Section>
+            <Column>
+                <Heading size="medium" isCentered={true}>
+                    Cookie Notice
+                </Heading>
+                <Heading asElement="h4" size="small" marginBottom="50px" isMuted={true} isCentered={true}>
+                    Last Updated: March 6, 2023
+                </Heading>
+                <Paragraph size="default" isMuted={true} textAlign="left">
+                    Unless otherwise expressly stated, terms in this notice have the same meaning as defined in the{' '}
+                    <a href="#privacy-notice">
+                        <strong>Privacy Notice</strong>
+                    </a>
+                    .
+                </Paragraph>
+                <Heading asElement="h3" size="small" textAlign="left">
+                    1. SCOPE OF NOTICE
+                </Heading>
+                <Paragraph size="default" isMuted={true} textAlign="left">
+                    This Cookie Notice supplements the information contained in the{' '}
+                    <a href="#privacy-notice">
+                        <strong>Privacy Notice</strong>
+                    </a>{' '}
+                    and explains how we and our business partners and service providers use cookies and related
+                    technologies in the course of managing and providing our online services and our electronic
+                    communication to you. It explains what these technologies are and why we use them, as well as your
+                    rights to control our use of them.
+                </Paragraph>
+                <Paragraph size="default" isMuted={true} textAlign="left">
+                    In some cases, we may use cookies and related technologies described in this Cookie Notice to
+                    collect personal information, or to collect information that becomes personal information if we
+                    combine it with other information. For more details about how we process your personal information,
+                    please review the{' '}
+                    <a href="#privacy-notice">
+                        <strong>Privacy Notice</strong>
+                    </a>
+                    .
+                </Paragraph>
+                <Heading asElement="h3" size="small" textAlign="left">
+                    2. WHAT ARE COOKIES AND RELATED TECHNOLOGIES
+                </Heading>
+                <Paragraph size="default" isMuted={true} textAlign="left">
+                    As is common practice among websites, our Services use cookies, which are tiny files downloaded to
+                    your device that allow us and our third-party partners to collect certain information about your
+                    interactions with our email communications, websites and other online services, and that improve
+                    your experience. We and our third-party partners and providers may also use other, related
+                    technologies to collect this information, such as web beacons, pixels, embedded scripts,
+                    location-identifying technologies and logging technologies (collectively, <strong>“cookies”</strong>
+                    ).
+                </Paragraph>
+                <Paragraph size="default" isMuted={true} textAlign="left">
+                    We use the following types of cookies:
+                </Paragraph>
+                <OrderedList marginBottom="30px" listStyle="lower-alpha">
+                    <ListItem>
+                        <strong>Strictly necessary cookies</strong>. These cookies enable core functionality such as
+                        security, network management and accessibility. You may disable these by changing your browser
+                        settings, but this may affect how the Services function. The legal basis for our use of strictly
+                        necessary cookies is our legitimate interests, namely being able to provide and maintain our
+                        Services.
+                    </ListItem>
+                    <ListItem>
+                        <strong>Functional cookies</strong>. These enable a website to remember information that changes
+                        the way the website behaves or looks, like your preferred language or the region that you are
+                        in. The legal basis for our use of functionality cookies is our legitimate interests, namely
+                        being able to provide and maintain our Services.
+                    </ListItem>
+                    <ListItem>
+                        <strong>Analytical/performance cookies</strong>. These cookies allow us to recognize and count
+                        the number of visitors to our Services, and to see how visitors move around our Services when
+                        they are using them. This helps us to improve the way our Services work, for example, by
+                        ensuring that users are finding what they are looking for easily. If you are accessing our
+                        Services with a European IP address, you have been asked to consent to the use of these cookies.
+                        You are free to deny your consent.
+                    </ListItem>
+                    <ListItem>
+                        <strong>Targeting cookies</strong>. These cookies record your visit to our Services, the pages
+                        you have visited and the links you have followed. They are used to track visitors across our
+                        Services. If you are accessing our Services with a European IP address, you have been asked to
+                        consent to the use of these cookies. You are free to deny your consent.
+                    </ListItem>
+                </OrderedList>
+                <Heading asElement="h3" size="small" textAlign="left">
+                    3. WHAT WE COLLECT WHEN USING COOKIES
+                </Heading>
+                <Paragraph size="default" isMuted={true} textAlign="left">
+                    We and our third-party partners and providers may use cookies to automatically collect certain types
+                    of usage information when you visit or interact with our email communications and Services. For
+                    example, we may collect log data about your device and its software, such as your IP address,
+                    operating system, browser type, date/time of your visit, and other similar information. Our emails
+                    may also contain tracking pixels that identify if and when you have opened an email that we have
+                    sent you, how many times you have read it and whether you have clicked on any links in that email.
+                    We may also collect analytics data or use third-party analytics tools to help us measure usage and
+                    activity trends for our online services and better understand our customer base. We also may collect
+                    location data, including general geographic location based on IP address or more precise location
+                    data when a user accesses our online services through a mobile device.
+                </Paragraph>
+                <Paragraph size="default" isMuted={true} textAlign="left">
+                    When you access our Services from a mobile device, we may collect unique identification numbers
+                    associated with your device or our mobile application (including, for example, a UDID, Unique ID for
+                    Advertisers (“IDFA”), Google AdID, or Windows Advertising ID), mobile carrier, device type, model
+                    and manufacturer, mobile device operating system brand and model, phone number, and depending on
+                    your mobile device settings, your geographical location data, including GPS coordinates (e.g.,
+                    latitude and/or longitude) or similar information regarding the location of your mobile device, or
+                    we may be able to approximate a device’s location by analyzing other information, like an IP
+                    address.
+                </Paragraph>
+                <Paragraph size="default" isMuted={true} textAlign="left">
+                    We may also include or engage in the following as part of our Services:
+                </Paragraph>
+                <UnorderedList marginBottom="30px">
+                    <ListItem>
+                        <strong>Social Media Widgets and Advertising</strong>. Our Services may include social media
+                        features, such as the Facebook “Like” button, Reddit, LinkedIn, Twitter or other widgets. These
+                        social media companies may recognize you and collect information about your visit to our
+                        Services, and they may set a cookie or employ other tracking technologies. Your interactions
+                        with those features are governed by the privacy policies of those companies.
+                    </ListItem>
+                    <ListItem>
+                        <strong>Social Media Platforms</strong>. We may display targeted advertising to you through
+                        social media platforms, such as Facebook, Twitter, LinkedIn and other social media forums. These
+                        companies have interest-based advertising programs that allow us to direct advertisements to
+                        users who have shown interest in our services while those users are on the social media
+                        platform, or to groups of other users who share similar traits, such as likely commercial
+                        interests and demographics. We may share a unique identifier, such as a user ID or hashed email
+                        address, with these platform providers or they may collect information from our website visitors
+                        through a first-party pixel, in order to direct targeted advertising to you or to a custom
+                        audience on the social media platform. These advertisements are governed by the privacy policies
+                        of those social media companies that provide them. If you do not want to receive targeted ads on
+                        your social networks, you may be able to adjust your advertising preferences through your
+                        settings on those networks.
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph size="default" isMuted={1} textAlign="left" color="black">
+                            <strong>Third Party Partners</strong>. We work with a variety of third-party partners to
+                            provide advertising services. For example, we use Google Analytics to recognize you and link
+                            the devices you use when you visit our Services on your browser or mobile device, log in to
+                            your account on our Services, or otherwise engage with us. We share a unique identifier,
+                            like a user ID or hashed email address, with Google to facilitate the service. Google
+                            Analytics allows us to better understand how our users interact with our Services and to
+                            tailor our advertisements and content to you. For information on how Google Analytics
+                            collects and processes data, as well as how you can control information sent to Google,
+                            review Google's website, “How 14 Privileged & Confidential For Discussion Purposes Only
+                            Google uses data when you use our partners’ sites or apps” located at{' '}
+                            <a href="https://www.google.com/policies/privacy/partners/">
+                                <strong>https://www.google.com/policies/privacy/partners/</strong>
+                            </a>
+                            . You can learn about Google Analytics’ currently available opt- outs, including the Google
+                            Analytics Browser Ad-On here:{' '}
+                            <a href="https://tools.google.com/dlpage/gaoptout/">
+                                <strong>https://tools.google.com/dlpage/gaoptout/</strong>
+                            </a>
+                            .
+                        </Paragraph>
+                        <Paragraph size="default" isMuted={1} textAlign="left" color="black">
+                            We may also utilize certain forms of display advertising and other advanced features through
+                            Google Analytics. These features enable us to use first-party cookies (such as the Google
+                            Analytics cookie) and third-party cookies (such as the DoubleClick advertising cookie) or
+                            other third-party cookies together to inform, optimize, and display ads based on your past
+                            visits to the Services. You may control your advertising preferences or opt-out of certain
+                            Google advertising products by visiting the Google Ads Preferences Manager, currently
+                            available at{' '}
+                            <a href="https://google.com/ads/preferences">
+                                <strong>https://google.com/ads/preferences</strong>
+                            </a>
+                            , or by visiting NAI’s online resources at{' '}
+                            <a href="http://www.networkadvertising.org/choices">
+                                <strong>http://www.networkadvertising.org/choices</strong>
+                            </a>
+                            .
+                        </Paragraph>
+                        <Paragraph size="default" isMuted={1} textAlign="left" color="black">
+                            You can learn more about our analytics providers’ practices at the following URLs:
+                        </Paragraph>
+                        <UnorderedList style={{ listStyle: 'circle', marginTop: 12 }}>
+                            <ListItem muted={false}>
+                                Google Analytics:{' '}
+                                <strong>
+                                    <a href="https://policies.google.com/technologies/partner-sites">
+                                        https://policies.google.com/technologies/partner-sites
+                                    </a>
+                                </strong>
+                            </ListItem>
+                            <ListItem muted={false}>
+                                Chainalysis:{' '}
+                                <strong>
+                                    <a href="https://www.chainalysis.com/privacy-policy/">
+                                        https://www.chainalysis.com/privacy-policy/
+                                    </a>
+                                </strong>
+                            </ListItem>
+                            <ListItem muted={false}>
+                                Amplitude:{' '}
+                                <strong>
+                                    <a href="https://amplitude.com/privacy">https://amplitude.com/privacy</a>
+                                </strong>
+                            </ListItem>
+                            <ListItem muted={false}>
+                                Metabase:{' '}
+                                <strong>
+                                    <a href="https://www.metabase.com/privacy">https://www.metabase.com/privacy</a>
+                                </strong>
+                            </ListItem>
+                            <ListItem muted={false}>
+                                Dune Analytics:{' '}
+                                <strong>
+                                    <a href="https://dune.com/privacy">https://dune.com/privacy</a>
+                                </strong>
+                            </ListItem>
+                            <ListItem muted={false}>
+                                Prodsight:{' '}
+                                <strong>
+                                    <a href="https://www.playvox.com/privacy-policy/">
+                                        https://www.playvox.com/privacy-policy/
+                                    </a>
+                                </strong>
+                            </ListItem>
+                        </UnorderedList>
+                    </ListItem>
+                </UnorderedList>
+                <Heading asElement="h3" size="small" textAlign="left">
+                    4. HOW WE USE INFORMATION COLLECTED VIA COOKIES
+                </Heading>
+                <Paragraph size="default" textAlign="left" color="black">
+                    We use cookies for a variety of reasons outlined below:
+                </Paragraph>
+                <UnorderedList marginBottom="30px">
+                    <ListItem>
+                        If you create an account with us, we will use cookies for the management of the signup process
+                        and general administration. These cookies will usually be deleted when you log out; however, in
+                        some cases, they may remain in order to remember your site preferences when logged out.
+                    </ListItem>
+                    <ListItem>
+                        We use cookies when you are logged in so that we can remember you. These cookies are typically
+                        removed or cleared when you log out to ensure you can only access restricted features and areas
+                        when logged in.
+                    </ListItem>
+                    <ListItem>
+                        The Services offer newsletter or email subscription services and cookies may be used to remember
+                        if you are already registered and whether to show certain notifications which might only be
+                        valid to subscribed/unsubscribed users.
+                    </ListItem>
+                    <ListItem>
+                        The Services may offer payment capabilities and some cookies are essential to ensure that your
+                        order is remembered between pages so that we can process it properly.
+                    </ListItem>
+                    <ListItem>
+                        When you submit data through a form, such as those found on the contact pages or comment forms,
+                        cookies may be set to remember your user details for future correspondence.
+                    </ListItem>
+                    <ListItem>
+                        In order to provide you with a great experience on the Services, we provide the functionality to
+                        set your preferences for how the Services run when you use it. In order to remember your
+                        preferences, we need to set cookies so that this information can be called whenever you interact
+                        with a website page.
+                    </ListItem>
+                    <ListItem>
+                        We use cookies to provide and monitor the effectiveness of our Services, monitor online usage
+                        and activities of our Services, and facilitate the purposes identified in the{' '}
+                        <strong>
+                            <a href="#use-of-information">How We Use Your Personal Information</a>
+                        </strong>{' '}
+                        section of our Privacy Notice.
+                    </ListItem>
+                    <ListItem>
+                        We may also use the information we collect through cookies to understand your browsing
+                        activities, including across unaffiliated third-party sites, so that we can deliver information
+                        about products and services that may be of interest to you.
+                    </ListItem>
+                    <ListItem>
+                        Tracking technology used in emails helps us measure the effectiveness of our marketing email
+                        campaigns, make the emails we send to you more relevant to your interests and help us understand
+                        if you have opened and how you interacted with our email.
+                    </ListItem>
+                </UnorderedList>
+                <Paragraph size="default" textAlign="left" color="black">
+                    Please note that we link some of the personal information we collect through cookies with the other
+                    personal information that we collect about you and for the purposes described in our{' '}
+                    <strong>
+                        <a href="#privacy-notice">Privacy Notice</a>
+                    </strong>
+                    .
+                </Paragraph>
+                <Heading asElement="h3" size="small" textAlign="left">
+                    4. HOW WE USE INFORMATION COLLECTED VIA COOKIES
+                </Heading>
+                <Paragraph size="default" textAlign="left" color="black">
+                    If you would prefer not to accept cookies, most browsers will allow you to change the setting of
+                    cookies by adjusting the settings on your browser to: (i) notify you when you receive a cookie,
+                    which lets you choose whether or not to accept it; (ii) disable existing cookies; or (iii) set your
+                    browser to automatically reject cookies. Be aware that disabling cookies may negatively affect the
+                    functionality of this and many other websites that you visit. Disabling cookies will usually result
+                    in also disabling certain functionalities and features of the Services.
+                </Paragraph>
+                <Paragraph size="default" textAlign="left" color="black">
+                    Depending on your device and operating system, you may not be able to delete or block all cookies.
+                    In addition, if you want to reject cookies across all your browsers and devices, you will need to do
+                    so on each browser on each device you actively use. You may also set your email options to prevent
+                    the automatic downloading of images that may contain technologies that would allow us to know
+                    whether you have accessed our email and performed certain functions with it.
+                </Paragraph>
+                <Paragraph size="default" textAlign="left" color="black">
+                    <strong>Online Ads</strong>: To learn more about interest-based advertising and how you may be able
+                    to opt-out of some of this advertising, you may wish to visit the Digital Advertising Alliance’s
+                    (DAA) resources and/or the Network Advertising Initiative’s (NAI) online resources, at
+                    www.aboutads.info/choices or
+                    <strong>
+                        <a href="http://www.networkadvertising.org/choices/">
+                            http://www.networkadvertising.org/choices/
+                        </a>
+                    </strong>
+                    , or if you are in the European Economic Area, United Kingdom or Switzerland:{' '}
+                    <strong>
+                        <a href="https://youronlinechoices.eu/">https://youronlinechoices.eu/</a>
+                    </strong>
+                    . You may also be able to limit interest-based advertising through the settings menu on your mobile
+                    device by selecting “limit ad tracking” (iOS) or “opt-out of interest-based ads” (Android). You may
+                    also be able to opt-out of some — but not all — interest-based advertising served by mobile ad
+                    networks by visiting
+                    <strong>
+                        <a href="http://youradchoices.com/appchoices">http://youradchoices.com/appchoices</a>
+                    </strong>{' '}
+                    and downloading the mobile AppChoices app.
+                </Paragraph>
+                <Paragraph size="default" textAlign="left" color="black">
+                    Please note that when you opt out of receiving interest-based advertisements, this does not mean you
+                    will no longer see advertisements from us or on our online services. It means that the online ads
+                    that you do see from DAA program participants should not be based on your interests. We are not
+                    responsible for the effectiveness of, or compliance with, any third-parties’ opt-out options or
+                    programs or the accuracy of their statements regarding their programs. In addition, third parties
+                    may still use cookies to collect information about your use of our online services, including for
+                    analytics and fraud prevention as well as any other purpose permitted under the DAA’s Principles.
+                </Paragraph>
+                <Paragraph size="default" textAlign="left" color="black">
+                    If you are located in the EEA, UK, or Switzerland, you may take advantage of{' '}
+                    <strong>
+                        <a href="https://youronlinechoices.eu/">Your Online Choices</a>
+                    </strong>
+                    . This service allows you to select tracking preferences for most of the advertising tools. As such,
+                    it is recommended that you make use of this resource in addition to the information provided in this
+                    document.
                 </Paragraph>
             </Column>
         </Section>
