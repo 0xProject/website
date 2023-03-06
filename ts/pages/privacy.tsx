@@ -406,8 +406,11 @@ export const PrivacyPolicy = () => (
                     </ListItem>
                     <ListItem>
                         <strong>Modifying or Deleting Your Information</strong>: If you have any questions about
-                        reviewing, modifying, or deleting your information, you can contact us directly at legal@0x.org.
-                        We may not be able to modify or delete your information in all circumstances, especially in
+                        reviewing, modifying, or deleting your information, you can contact us directly at{' '}
+                        <strong>
+                            <Link href="mailto:legal@0x.org">legal@0x.org</Link>
+                        </strong>
+                        . We may not be able to modify or delete your information in all circumstances, especially in
                         relation to information on the blockchain.
                     </ListItem>
                 </UnorderedList>
@@ -443,8 +446,11 @@ export const PrivacyPolicy = () => (
                         <strong>Nevada</strong>: If you are a resident of the State of Nevada, Chapter 603A of the
                         Nevada Revised Statutes permits a Nevada resident to opt out of future sales of certain covered
                         information that a website operator has collected or will collect about the resident. Although
-                        we do not currently sell covered information, please contact us at legal@0x.org with the subject
-                        line “Nevada Opt Out Request” to submit such a request.
+                        we do not currently sell covered information, please contact us at{' '}
+                        <strong>
+                            <Link href="mailto:legal@0x.org">legal@0x.org</Link>
+                        </strong>{' '}
+                        with the subject line “Nevada Opt Out Request” to submit such a request.
                     </ListItem>
                     <ListItem>
                         <strong>European Economic Area</strong>, United Kingdom or Switzerland: If you are located in
@@ -474,7 +480,10 @@ export const PrivacyPolicy = () => (
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     If you have any questions or requests in connection with this Privacy Notice or other
                     privacy-related matters, please send an email to{' '}
-                    <Link href="mailto:legal@0x.org">legal@0x.org</Link>.
+                    <strong>
+                        <Link href="mailto:legal@0x.org">legal@0x.org</Link>
+                    </strong>
+                    .
                 </Paragraph>
                 <hr />
                 {
@@ -650,7 +659,11 @@ export const PrivacyPolicy = () => (
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     We will only send you such messages if you have given us your consent to do so. You can withdraw
                     your consent at a later date by clicking on the unsubscribe link at the bottom of our marketing
-                    emails or by contacting us at <Link href="mailto:legal@0x.org">legal@0x.org</Link>.
+                    emails or by contacting us at{' '}
+                    <strong>
+                        <Link href="mailto:legal@0x.org">legal@0x.org</Link>
+                    </strong>
+                    .
                 </Paragraph>
                 <Heading asElement="h3" size="small" textAlign="left">
                     Profiling
@@ -748,7 +761,10 @@ export const PrivacyPolicy = () => (
                 </Paragraph>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     If you wish to exercise one of these rights, we kindly ask you to contact us at{' '}
-                    <Link href="mailto:legal@0x.org">legal@0x.org</Link>.
+                    <strong>
+                        <Link href="mailto:legal@0x.org">legal@0x.org</Link>
+                    </strong>
+                    .
                 </Paragraph>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     Due to the confidential nature of data processing we may ask you to provide proof of identity when
@@ -1117,8 +1133,11 @@ export const PrivacyPolicy = () => (
                 <Paragraph size="default" textAlign="left" color="black">
                     <strong>Online Ads</strong>: To learn more about interest-based advertising and how you may be able
                     to opt-out of some of this advertising, you may wish to visit the Digital Advertising Alliance’s
-                    (DAA) resources and/or the Network Advertising Initiative’s (NAI) online resources, at
-                    www.aboutads.info/choices or
+                    (DAA) resources and/or the Network Advertising Initiative’s (NAI) online resources, at{' '}
+                    <strong>
+                        <Link href="http://www.aboutads.info/choices">www.aboutads.info/choices</Link>
+                    </strong>{' '}
+                    or{' '}
                     <strong>
                         <Link href="http://www.networkadvertising.org/choices/">
                             http://www.networkadvertising.org/choices/
@@ -1131,7 +1150,7 @@ export const PrivacyPolicy = () => (
                     . You may also be able to limit interest-based advertising through the settings menu on your mobile
                     device by selecting “limit ad tracking” (iOS) or “opt-out of interest-based ads” (Android). You may
                     also be able to opt-out of some — but not all — interest-based advertising served by mobile ad
-                    networks by visiting
+                    networks by visiting{' '}
                     <strong>
                         <Link href="http://youradchoices.com/appchoices">http://youradchoices.com/appchoices</Link>
                     </strong>{' '}
