@@ -104,7 +104,7 @@ export const documentConstants: { [s: string]: DocumentMetadata } = {
         keywords: '',
     },
     PRIVACY_POLICY: {
-        title: '0x: Privacy Policy',
+        title: '0x: Privacy Notice & Cookie Notice',
         description: '',
         keywords: '',
     },

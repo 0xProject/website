@@ -3,10 +3,13 @@ import styled from 'styled-components';
 
 interface ListItemProps {
     children: string | React.ReactNode;
+    muted?: boolean;
+    id?: string;
 }
 
 interface OrderedListProps {
     marginBottom?: string;
+    listStyle?: React.HTMLProps<HTMLOListElement>['type'];
 }
 export interface UnorderedListProps {
     marginBottom?: string;
@@ -19,21 +22,25 @@ export const UnorderedList = styled.ul<UnorderedListProps>`
 `;
 
 export const OrderedList = styled.ol<OrderedListProps>`
-    list-style-type: decimal;
+    list-style-type: ${({ listStyle = 'decimal' }) => listStyle};
     padding-left: 20px;
     margin-bottom: ${(props) => props.marginBottom};
 `;
 
-const Li = styled.li`
+const Li = styled.li<ListItemProps>`
     padding: 0 0 0.8rem 0.2rem;
     position: relative;
     line-height: 1.4rem;
     text-align: left;
     font-weight: 300;
-    opacity: 0.5;
+    opacity: ${(props) => (props.muted !== undefined && !props.muted ? 1 : 0.5)};
     @media (max-width: 768px) {
         font-size: 15px;
     }
 `;
 
-export const ListItem = (props: ListItemProps) => <Li>{props.children}</Li>;
+export const ListItem = ({ children, id, ...props }: ListItemProps) => (
+    <Li id={id} {...props}>
+        {children}
+    </Li>
+);
