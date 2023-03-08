@@ -19,7 +19,7 @@ export const PrivacyPolicy = () => (
                     Privacy Notice
                 </Heading>
                 <Heading asElement="h4" size="small" marginBottom="50px" isMuted={true} isCentered={true}>
-                    Last Updated: March 6, 2023
+                    Last Updated: March 8, 2023
                 </Heading>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     Welcome! This Privacy Notice explains how ZeroEx Inc. (
@@ -833,7 +833,7 @@ export const PrivacyPolicy = () => (
                     Cookie Notice
                 </Heading>
                 <Heading asElement="h4" size="small" marginBottom="50px" isMuted={true} isCentered={true}>
-                    Last Updated: March 6, 2023
+                    Last Updated: March 8, 2023
                 </Heading>
                 <Paragraph size="default" isMuted={true} textAlign="left">
                     Unless otherwise expressly stated, terms in this notice have the same meaning as defined in the{' '}
