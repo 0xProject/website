@@ -1113,7 +1113,7 @@ export const PrivacyPolicy = () => (
                     .
                 </Paragraph>
                 <Heading asElement="h3" size="small" textAlign="left">
-                    4. HOW WE USE INFORMATION COLLECTED VIA COOKIES
+                    5. YOUR CHOICES ABOUT COOKIES
                 </Heading>
                 <Paragraph size="default" textAlign="left" color="black">
                     If you would prefer not to accept cookies, most browsers will allow you to change the setting of
