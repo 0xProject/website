@@ -12,7 +12,7 @@ export const TreasurySummary: React.FC<{ description: string }> = ({ description
     const paragraph = tokens.find((token: Token) => (token as Tokens.Paragraph).type === 'paragraph');
     let summary = '';
     // @ts-ignore
-    paragraph.tokens.forEach((token) => {
+    if (paragraph?.tokens) paragraph.tokens.forEach((token) => {
         summary += token.text;
     });
 
