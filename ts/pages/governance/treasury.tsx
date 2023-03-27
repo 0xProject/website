@@ -34,29 +34,7 @@ import { utils } from 'ts/utils/utils';
 
 import { VoterBreakdown } from 'ts/components/governance/voter_breakdown';
 import { fetchUtils } from 'ts/utils/fetch_utils';
-
-const PURPLE_PAY_OVERRIDE = `
-# Z-4 Purple Pay Grant
-
-## Summary This proposal seeks authorization of a $25k grant from the treasury to Purple Pay. The community has discussed the merits of the proposal in the governance forum and signaled support for moving forward in a snapshot poll:
-
-1. https://gov.0x.org/t/grant-request-purple-pay/3500/
-2. https://snapshot.org/#/0xgov.eth/proposal/0x3a99c55c508b90d4e56caf91fc0d8e1b57db5b9fc26517050cd5b6b9c52e0e22
-
-## Grant Details
-
-**Amount**: $25k in $MATIC
-
-**Price reference**: https://www.coingecko.com/en/coins/polygon/historical_data#panel ($MATIC 30-day EMA as of 3/24/2023 = 1.17630)
-
-**Payment details**: $25k paid upfront
-
-**Receiving address**: 0x698C294d13C38F79466D7Af515E62f8155D409ba ## Proposal Details See detailed explanation at https://gov.0x.org/t/grant-request-purple-pay/3500/
-
-## Action Required
-
-Send 21,253 MATIC to 0x698C294d13C38F79466D7Af515E62f8155D409ba
-` as const;
+import { PURPLE_PAY_OVERRIDE } from '../../utils/constants';
 
 const TREASURY_VOTER_BREAKDOWN_URI = 'https://um5ppgumcc.us-east-1.awsapprunner.com';
 
