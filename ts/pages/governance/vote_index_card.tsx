@@ -162,7 +162,9 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                                 </TagsWrapper>
                                 {description ? (
                                     <>
-                                        <TreasurySummary description={id === 3 ? PURPLE_PAY_OVERRIDE : description} />
+                                        <TreasurySummary
+                                            description={`${id}` === '3' ? PURPLE_PAY_OVERRIDE : description}
+                                        />
                                     </>
                                 ) : (
                                     <VoteCardShimmer>
