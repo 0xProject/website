@@ -177,7 +177,7 @@ export const Treasury: React.FC<{}> = () => {
                 id,
                 againstVotes,
                 forVotes,
-                description: id === '3' ? PURPLE_PAY_OVERRIDE : description,
+                description: proposalId === '3' ? PURPLE_PAY_OVERRIDE : description,
                 canceled: !isHappening && !isUpcoming && (againstVotes >= forVotes || forVotes < quorumThreshold),
                 executed: !!executionTimestamp,
                 upcoming: isUpcoming,
@@ -193,7 +193,7 @@ export const Treasury: React.FC<{}> = () => {
             });
             setProposalsLoaded(true);
         }
-    }, [data, quorumThreshold]);
+    }, [data, proposalId, quorumThreshold]);
 
     const onVoteReceived = (voteInfo: VoteInfo): void => {
         const { userBalance, voteValue } = voteInfo;
