@@ -676,6 +676,47 @@ export const proposals: Proposals = {
             ],
         },
     },
+    96: {
+        zeipId: 96,
+        title: 'Tx Relay & OTC-Multihop',
+        summary: [
+            `This ZEIP proposes changes to improve gas efficiency for 0x Labs' Tx Relay product,.`,
+            `and to modify the multiplex feature to enable professional market-makers to participate,`,
+            `in multihop trades with OTCOrders,`
+        ],
+        url: 'https://github.com/0xProject/ZEIPs/issues/96',
+        voteStartDate: moment(1644858000, 'X'),
+        voteEndDate: moment(1645117200, 'X'),
+        benefit: {
+            title: 'Benefit',
+            summary: [
+                `Improve gas efficiency for 0x Labs' Tx Relay product`,
+                `Enable OTCOrder types in multihop trades`,
+            ],
+            rating: 5,
+            links: [
+                {
+                    text: 'Launch Announcement',
+                    url: 'https://blog.0x.org/0x-labs-launches-tx-relay-api-in-beta-with-robinhood-wallet-as-first-partner/,
+                },
+            ],
+        },
+        risks: {
+            title: 'Risk',
+            summary: [
+                `Contracts were thoroughly reviewed internally and audited by ABDK. No vulnerabilities were found.`,
+                `However, these changes do modify a risk-sensitive part of the codebase: the execution within a privileged environment.`,
+                `0x V4 architecture comes with the ability to modify or rollback specific features, without halting the entire pipeline of smart contracts. This means that if a vulnerability is found (0x Labs offers generous bug bounties), it is possible to rollback the functionality that exposes the risk.`,
+            ],
+            rating: 1,
+            links: [
+                {
+                    text: '0x v4 Bug Bounty',
+                    url: 'https://protocol.0x.org/en/latest/additional/bounties.html',
+                },
+            ],
+        },
+    },
 };
 
 export const stagingProposals: Proposals = {
