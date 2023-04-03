@@ -697,7 +697,7 @@ export const proposals: Proposals = {
             links: [
                 {
                     text: 'Launch Announcement',
-                    url: 'https://blog.0x.org/0x-labs-launches-tx-relay-api-in-beta-with-robinhood-wallet-as-first-partner/,
+                    url: 'https://blog.0x.org/0x-labs-launches-tx-relay-api-in-beta-with-robinhood-wallet-as-first-partner/',
                 },
             ],
         },
