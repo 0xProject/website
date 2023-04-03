@@ -685,8 +685,8 @@ export const proposals: Proposals = {
             `in multihop trades with OTCOrders,`
         ],
         url: 'https://github.com/0xProject/ZEIPs/issues/96',
-        voteStartDate: moment(1644858000, 'X'),
-        voteEndDate: moment(1645117200, 'X'),
+        voteStartDate: moment(1680775200, 'X'),
+        voteEndDate: moment(1681020000, 'X'),
         benefit: {
             title: 'Benefit',
             summary: [
