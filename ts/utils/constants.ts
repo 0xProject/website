@@ -4,7 +4,7 @@ import { AccountNotReady, AccountState, Networks, Providers, Wallet, WebsitePath
 import { SupportedDocJson } from '../types';
 
 const URL_FORUM = 'https://forum.0x.org';
-const URL_ZEROEX_CHAT = 'https://discord.gg/d3FTX3M';
+const URL_ZEROEX_CHAT = 'https://discord.com/invite/official0x';
 
 export const constants = {
     DECIMAL_PLACES_ETH: 18,
