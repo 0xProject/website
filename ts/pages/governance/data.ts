@@ -682,11 +682,11 @@ export const proposals: Proposals = {
         summary: [
             `This ZEIP proposes changes to improve gas efficiency for 0x Labs' Tx Relay product,.`,
             `and to modify the multiplex feature to enable professional market-makers to participate,`,
-            `in multihop trades with OTCOrders,`
+            `in multihop trades with OTCOrders,`,
         ],
         url: 'https://github.com/0xProject/ZEIPs/issues/96',
-        voteStartDate: moment(1680775200, 'X'),
-        voteEndDate: moment(1681020000, 'X'),
+        voteStartDate: moment(1680948000, 'X'),
+        voteEndDate: moment(1681192800, 'X'),
         benefit: {
             title: 'Benefit',
             summary: [
@@ -697,7 +697,8 @@ export const proposals: Proposals = {
             links: [
                 {
                     text: 'Launch Announcement',
-                    url: 'https://blog.0x.org/0x-labs-launches-tx-relay-api-in-beta-with-robinhood-wallet-as-first-partner/',
+                    url:
+                        'https://blog.0x.org/0x-labs-launches-tx-relay-api-in-beta-with-robinhood-wallet-as-first-partner/',
                 },
             ],
         },
