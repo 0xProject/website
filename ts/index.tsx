@@ -36,7 +36,7 @@ import { Extensions } from 'ts/pages/extensions';
 import { TreasuryBreakdown } from 'ts/pages/governance/treasury_breakdown';
 import { VoteIndex } from 'ts/pages/governance/vote_index';
 // import { Next0xInstant } from 'ts/pages/instant';
-import { NextLanding } from 'ts/pages/landing';
+// import { NextLanding } from 'ts/pages/landing';
 // import { NextLaunchKit } from 'ts/pages/launch_kit';
 // import { NextMarketMaker } from 'ts/pages/market_maker';
 import { PrivacyPolicy } from 'ts/pages/privacy';
@@ -45,7 +45,7 @@ import { StakingPool } from 'ts/pages/staking/staking_pool';
 import { RemoveStake } from 'ts/pages/staking/wizard/remove';
 
 import { TermsOfService } from 'ts/pages/terms';
-import { NextWhy } from 'ts/pages/why';
+// import { NextWhy } from 'ts/pages/why';
 
 // import { Mesh } from 'ts/pages/mesh';
 
@@ -57,7 +57,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { Web3ReactProvider } from '@web3-react/core';
 import 'less/all.less';
 import 'sass/modal_video.scss';
-import { constants } from 'ts/utils/constants';
+// import { constants } from 'ts/utils/constants';
 
 // We pass modulePromise returning lambda instead of module promise,
 // cause we only want to import the module when the user navigates to the page.
@@ -88,8 +88,8 @@ render(
                         <Provider store={store}>
                             <Switch>
                                 {/* Next (new site) routes */}
-                                <Route exact={true} path="/" component={NextLanding} />
-                                <Route exact={true} path={WebsitePaths.Why} component={NextWhy} />
+                                <Route exact={true} path="/" component={VoteIndex} />
+                                {/* <Route exact={true} path={WebsitePaths.Why} component={NextWhy} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.MarketMaker} component={NextMarketMaker} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Explore} component={Explore} /> */}
                                 {/* <Route exact={true} path={WebsitePaths.Credits} component={Credits} /> */}
@@ -135,9 +135,9 @@ render(
                             //<Route path={WebsitePaths.Portal} component={LazyPortal} />
                                 */}
                                 {/* 0x API page deprecated, redirect any inbound requests to homepage */}
-                                <Redirect from={WebsitePaths.ZeroExApi} to={WebsitePaths.Home} />
-                                <Redirect from={WebsitePaths.StakingShortLink} to={WebsitePaths.Vote} />
-                                <Redirect
+                                {/* <Redirect from={WebsitePaths.ZeroExApi} to={WebsitePaths.Home} /> */}
+                                <Redirect from={WebsitePaths.StakingShortLink} to="/" />
+                                {/* <Redirect
                                     from={`${WebsiteLegacyPaths.ZeroExJs}/:version?`}
                                     to={constants.URL_NPMJS_ZEROEXJS}
                                 />
@@ -192,15 +192,15 @@ render(
                                 <Redirect
                                     from={`${WebsiteLegacyPaths.AssetSwapperDocs}/:version?`}
                                     to={`${WebsitePaths.Docs}/tools/asset-swapper/:version?`}
-                                />
+                                /> */}
 
                                 {/* Legacy endpoints */}
                                 <RedirectExternal
                                     from={WebsiteLegacyPaths.Wiki}
                                     to="https://docs.0x.org/introduction/guides"
                                 />
-                                <Redirect from={WebsiteLegacyPaths.Jobs} to={WebsitePaths.AboutJobs} />
-                                <Redirect from={WebsitePaths.Careers} to={WebsitePaths.AboutJobs} />
+                                {/* <Redirect from={WebsiteLegacyPaths.Jobs} to={WebsitePaths.AboutJobs} /> */}
+                                {/* <Redirect from={WebsitePaths.Careers} to={WebsitePaths.AboutJobs} /> */}
                                 <RedirectExternal from={WebsitePaths.Docs} to="https://docs.0x.org" />
                                 <Route component={NotFound as any} />
                             </Switch>
