@@ -1,15 +1,11 @@
 import * as React from 'react';
-import MediaQuery from 'react-responsive';
 import styled from 'styled-components';
 
 import { Link as SmartLink } from 'ts/components/documentation/shared/link';
 import { Logo } from 'ts/components/logo';
-import { Column, FlexWrap, WrapGrid } from 'ts/components/newLayout';
-import { NewsletterForm } from 'ts/components/newsletter_form';
+import { Column, FlexWrap } from 'ts/components/newLayout';
 
 import { colors } from 'ts/style/colors';
-import { WebsitePaths } from 'ts/types';
-import { constants } from 'ts/utils/constants';
 
 interface LinkInterface {
     text: string;
@@ -17,53 +13,9 @@ interface LinkInterface {
     shouldOpenInNewTab?: boolean;
 }
 
-interface LinkRows {
-    heading: string;
-    isOnMobile?: boolean;
-    links: LinkInterface[];
-}
-
 interface LinkListProps {
     links: LinkInterface[];
 }
-
-const linkRows: LinkRows[] = [
-    {
-        heading: 'Developers',
-        links: [
-            { url: 'https://docs.0x.org/', text: 'Documentation', shouldOpenInNewTab: true },
-            { url: constants.URL_GITHUB_ORG, text: 'GitHub', shouldOpenInNewTab: true },
-            { url: 'https://docs.0x.org/protocol/docs', text: 'Protocol Spec', shouldOpenInNewTab: true },
-            { url: '/#contact', text: 'Contact Us' },
-            {
-                url: 'https://ethereum.stackexchange.com/questions/tagged/0x',
-                text: 'Stack Exchange',
-                shouldOpenInNewTab: true,
-            },
-        ],
-    },
-    {
-        heading: 'About',
-        isOnMobile: true,
-        links: [
-            { url: WebsitePaths.AboutPress, text: 'Press' },
-            { url: WebsitePaths.AboutMission, text: 'Mission' },
-            { url: WebsitePaths.AboutJobs, text: 'Jobs' },
-            { url: WebsitePaths.PrivacyPolicy, text: 'Privacy Policy' },
-            { url: WebsitePaths.TermsOfService, text: 'Terms of Service' },
-        ],
-    },
-    {
-        heading: 'Community',
-        isOnMobile: true,
-        links: [
-            { url: constants.URL_TWITTER, text: 'Twitter', shouldOpenInNewTab: true },
-            { url: constants.URL_ZEROEX_CHAT, text: 'Discord Chat', shouldOpenInNewTab: true },
-            { url: constants.URL_REDDIT, text: 'Reddit', shouldOpenInNewTab: true },
-            { url: constants.URL_FORUM, text: 'Forum', shouldOpenInNewTab: true },
-        ],
-    },
-];
 
 interface IFooterProps {
     isDocs?: boolean;
@@ -75,12 +27,18 @@ export const Footer: React.FC<IFooterProps> = React.memo(({ isDocs, shouldShowDi
         <FlexWrap>
             <FooterColumn width="35%">
                 <Logo />
-                <NewsletterForm />
-                <Text>Subscribe to our blog for project and ecosystem updates</Text>
             </FooterColumn>
 
             <FooterColumn width="55%">
-                <WrapGrid isCentered={false} isWrapped={true}>
+                <LinkCollection>
+                    <Link to="https://0x.org/legal/privacy-notice" shouldOpenInNewTab={true}>
+                        Privacy Notice
+                    </Link>
+                    <Link to="https://0x.org/legal/cookie-notice" shouldOpenInNewTab={true}>
+                        Cookie Notice
+                    </Link>
+                </LinkCollection>
+                {/* <WrapGrid isCentered={false} isWrapped={true}>
                     {linkRows.map((row: LinkRows, index) => (
                         <MediaQuery minWidth={row.isOnMobile ? 0 : 768} key={`fc-${index}`}>
                             <FooterSectionWrap>
@@ -90,7 +48,7 @@ export const Footer: React.FC<IFooterProps> = React.memo(({ isDocs, shouldShowDi
                             </FooterSectionWrap>
                         </MediaQuery>
                     ))}
-                </WrapGrid>
+                </WrapGrid> */}
             </FooterColumn>
         </FlexWrap>
         {shouldShowDisclaimer && (
@@ -113,6 +71,12 @@ const LinkList = (props: LinkListProps) => (
     </List>
 );
 
+const LinkCollection = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    gap: 25px;
+`;
+
 const FooterWrap = styled.footer<IFooterProps>`
     padding: 40px 30px 30px 30px;
     margin-top: 30px;
@@ -124,7 +88,7 @@ const FooterWrap = styled.footer<IFooterProps>`
     }
 
     @media (min-width: 768px) {
-        min-height: 350px;
+        min-height: 100px;
     }
 `;
 
@@ -136,25 +100,6 @@ const FooterColumn = styled(Column)`
     @media (max-width: 768px) {
         text-align: left;
     }
-`;
-
-const FooterSectionWrap = styled(FooterColumn)`
-    @media (max-width: 768px) {
-        width: 50%;
-        margin-bottom: 30px;
-
-        & + & {
-            margin-top: 0;
-        }
-    }
-`;
-
-const RowHeading = styled.h3`
-    color: inherit;
-    font-weight: 700;
-    font-size: 16px;
-    margin-bottom: 1.25em;
-    opacity: 0.75;
 `;
 
 const List = styled.ul`
