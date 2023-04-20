@@ -179,9 +179,6 @@ export const Header: React.FC<HeaderProps> = ({ isNavToggled, toggleMobileNav })
                         <Link to={WebsitePaths.Home}>
                             <Logo />
                         </Link>
-                        <DocsLogoWrap>
-                            / <DocsLogoLink to={WebsitePaths.Vote}>ZRX</DocsLogoLink>
-                        </DocsLogoWrap>
                     </LogoWrap>
 
                     <MediaQuery minWidth={1200}>
@@ -285,21 +282,6 @@ const GovernanceActiveIndicator = styled.div<GovernanceActiveIndicatorProps>`
     padding-top: 3px;
     z-index: ${zIndex.header + 1};
 `;
-
-const DocsLogoWrap = styled.div`
-    position: relative;
-    display: flex;
-    align-items: center;
-    font-size: var(--defaultHeading);
-    color: rgba(0, 0, 0, 0.5);
-    margin-left: 0.875rem;
-    z-index: ${zIndex.header};
-`;
-
-const DocsLogoLink = styled(Link)`
-    margin-left: 0.625rem;
-`;
-
 const LinkWrap = styled.li`
     position: relative;
 
