@@ -30,11 +30,10 @@ import { colors } from 'ts/style/colors';
 import { WebsitePaths } from 'ts/types';
 import { configs, GOVERNANCE_THEGRAPH_ENDPOINT, GOVERNOR_CONTRACT_ADDRESS } from 'ts/utils/configs';
 import { documentConstants } from 'ts/utils/document_meta_constants';
-import { utils } from 'ts/utils/utils';
+import { hacks, utils } from 'ts/utils/utils';
 
 import { VoterBreakdown } from 'ts/components/governance/voter_breakdown';
 import { fetchUtils } from 'ts/utils/fetch_utils';
-import { PURPLE_PAY_OVERRIDE } from '../../utils/constants';
 
 const TREASURY_VOTER_BREAKDOWN_URI = 'https://um5ppgumcc.us-east-1.awsapprunner.com';
 
@@ -155,7 +154,7 @@ export const Treasury: React.FC<{}> = () => {
                 id,
                 againstVotes,
                 forVotes,
-                description: proposalId === '3' ? PURPLE_PAY_OVERRIDE : description,
+                description: hacks.getFormatOverride(proposalId) || description,
                 canceled: !isHappening && !isUpcoming && (againstVotes >= forVotes || forVotes < quorumThreshold),
                 executed: !!executionTimestamp,
                 upcoming: isUpcoming,

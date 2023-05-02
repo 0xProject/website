@@ -36,7 +36,7 @@ import {
     TokenState,
 } from 'ts/types';
 import { ALCHEMY_API_KEY, configs } from 'ts/utils/configs';
-import { constants } from 'ts/utils/constants';
+import { constants, PURPLE_PAY_OVERRIDE, PURPLE_PAY_OVERRIDE_2 } from 'ts/utils/constants';
 import { environments } from 'ts/utils/environments';
 import * as u2f from 'ts/vendor/u2f_api';
 
@@ -704,3 +704,11 @@ export const utils = {
         return newErrors;
     },
 }; // tslint:disable:max-file-line-count
+
+export const hacks = {
+    getFormatOverride(proposalId: string): string | null {
+        if (proposalId === '3') return PURPLE_PAY_OVERRIDE;
+        if (proposalId === '4') return PURPLE_PAY_OVERRIDE_2;
+        return null;
+    },
+};

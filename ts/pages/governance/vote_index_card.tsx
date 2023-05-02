@@ -12,7 +12,7 @@ import { getTotalBalancesString, VoteStats } from 'ts/pages/governance/vote_stat
 import { VoteStatusText } from 'ts/pages/governance/vote_status_text';
 import { colors } from 'ts/style/colors';
 import { TallyInterface, VoteOutcome, VoteTime, VotingCardType, WebsitePaths } from 'ts/types';
-import { PURPLE_PAY_OVERRIDE } from '../../utils/constants';
+import { hacks } from '../../utils/utils';
 
 interface ZEIPCardProps {
     type: VotingCardType.Zeip;
@@ -163,7 +163,7 @@ export const VoteIndexCard: React.StatelessComponent<VoteIndexCardProps> = (prop
                                 {description ? (
                                     <>
                                         <TreasurySummary
-                                            description={`${id}` === '3' ? PURPLE_PAY_OVERRIDE : description}
+                                            description={hacks.getFormatOverride(`${id}`) || description}
                                         />
                                     </>
                                 ) : (

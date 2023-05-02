@@ -247,3 +247,31 @@ See detailed explanation at https://gov.0x.org/t/grant-request-purple-pay/3500/
 
 Send 21,253 MATIC to 0x698C294d13C38F79466D7Af515E62f8155D409ba
 ` as const;
+
+export const PURPLE_PAY_OVERRIDE_2 = `
+# Z-4.2 Purple Pay Grant
+
+## Summary
+
+This proposal seeks authorization of a $25k grant from the treasury to Purple Pay. The community has discussed the merits of the proposal in the governance forum and signaled support for moving forward in a snapshot poll:
+
+1. https://gov.0x.org/t/grant-request-purple-pay/3500/
+2. https://snapshot.org/#/0xgov.eth/proposal/0x3a99c55c508b90d4e56caf91fc0d8e1b57db5b9fc26517050cd5b6b9c52e0e22
+
+## Grant Details
+
+**Amount**: $25k in $MATIC
+**Price reference**: $MATIC 30-day EMA as of 4/27/2023 = $1.09619* (https://www.coingecko.com/en/coins/polygon/historical_data#panel)
+**Payment details**: $25k paid upfront
+**Receiving address**: 0x698C294d13C38F79466D7Af515E62f8155D409ba
+
+## Proposal Details
+
+See detailed explanation at https://gov.0x.org/t/grant-request-purple-pay/3500/
+
+## Action Required
+
+Send 22,807 MATIC to 0x698C294d13C38F79466D7Af515E62f8155D409ba
+
+* *this EMA is updated from the original proposal description to accurately reflect the amount of MATIC requested*
+` as const;
