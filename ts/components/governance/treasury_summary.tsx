@@ -21,7 +21,7 @@ export const TreasurySummary: React.FC<{ description: string }> = ({ description
 
     return (
         <>
-            <Heading marginBottom="15px">{(heading as Tokens.Heading).text}</Heading>
+            {heading && <Heading marginBottom="15px">{(heading as Tokens.Heading).text}</Heading>}
             <TruncatedParagraph marginBottom="20px">{summary}</TruncatedParagraph>
         </>
     );
