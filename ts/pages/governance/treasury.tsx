@@ -257,7 +257,7 @@ export const Treasury: React.FC<{}> = () => {
     };
 
     let cleanedDescription = description.replace(/<br\/><br\/>/g, '\n');
-    cleanedDescription = cleanedDescription.replace(heading.raw, '');
+    cleanedDescription = heading ? cleanedDescription.replace(heading.raw, '') : cleanedDescription;
     return (
         <StakingPageLayout isHome={false} title="0x Treasury">
             <RegisterBanner />
@@ -267,7 +267,7 @@ export const Treasury: React.FC<{}> = () => {
                     <Countdown startDate={proposal.startDate} endDate={proposal.endDate} />
                     <Tag>Treasury</Tag>
                     <Heading size="medium" marginBottom="0px">
-                        {(heading as Tokens.Heading).text}
+                        {(heading as Tokens.Heading)?.text}
                     </Heading>
                     <StyledText
                         fontColor={colors.textDarkSecondary}
