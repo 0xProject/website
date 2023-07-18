@@ -275,3 +275,33 @@ Send 22,807 MATIC to 0x698C294d13C38F79466D7Af515E62f8155D409ba
 
 * *this EMA is updated from the original proposal description to accurately reflect the amount of MATIC requested*
 ` as const;
+
+export const  BOARDROOM_GRANT = `
+# Z-5 Boardroom Grant 
+
+## Summary 
+
+This proposal seeks authorization of a $17.5k grant from the treasury to Boardroom. 
+
+The community has discussed the merits of the proposal in the governance forum and signaled support for moving forward in a snapshot poll: 
+
+1. https://forum.0xprotocol.org/t/grant-request-boardroom-to-support-0x-protocol-governance/3636 
+
+2. https://snapshot.org/#/0xgov.eth/proposal/0x95e4748d339fb1979d4ebaa25414abbb821e634b300b5df25c92cedbac7f91bc 
+
+## Grant Details 
+
+**Amount**: $17.5k in $ZRX 
+
+**Price reference**: $ZRX 30-day EMA as of 7/11/2023 = $0.205736 (https://www.tradingview.com/symbols/ZRXUSD/technicals/?exchange=COINBASE) 
+
+**Receiving address**: 0x6b27E26dc09d9c9FD9527526f79C9c8C659d1761 
+
+## Proposal Details 
+
+See detailed explanation at https://forum.0xprotocol.org/t/grant-request-boardroom-to-support-0x-protocol-governance/3636 
+
+## Action Required 
+
+Send 85,060.5 ZRX to 0x6b27E26dc09d9c9FD9527526f79C9c8C659d1761
+` as const
