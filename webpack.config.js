@@ -27,7 +27,7 @@ module.exports = (_env, argv) => {
             zeroExInstant: 'zeroExInstant',
         },
         node: {
-            fs: 'empty',
+            global: false,
         },
         resolve: {
             modules: [path.join(__dirname, '/ts'), 'node_modules'],
@@ -37,6 +37,21 @@ module.exports = (_env, argv) => {
                 less: path.join(__dirname, '/less'),
                 sass: path.join(__dirname, '/sass'),
                 md: path.join(__dirname, '/md'),
+            },
+            fallback: {
+                fs: false,
+                net: false,
+                tls: false,
+                crypto: require.resolve('crypto-browserify'),
+                stream: require.resolve('stream-browserify'),
+                url: require.resolve('url'),
+                zlib: require.resolve('browserify-zlib'),
+                http: require.resolve('stream-http'),
+                https: require.resolve('https-browserify'),
+                assert: require.resolve('assert'),
+                os: require.resolve('os-browserify/browser'),
+                path: require.resolve('path-browserify'),
+                vm: require.resolve('vm-browserify'),
             },
         },
         module: {
@@ -68,7 +83,7 @@ module.exports = (_env, argv) => {
                 },
                 {
                     test: /\.css$/,
-                    loaders: ['style-loader', 'css-loader'],
+                    use: ['style-loader', 'css-loader'],
                 },
 
                 {
@@ -123,7 +138,7 @@ module.exports = (_env, argv) => {
 
     if (isDevEnvironment) {
         config.mode = 'development';
-        config.devtool = 'cheap-module-eval-source-map';
+        config.devtool = 'cheap-module-source-map';
     } else {
         config.mode = 'production';
         config.devtool = 'source-map';

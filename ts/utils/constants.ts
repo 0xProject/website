@@ -276,7 +276,7 @@ Send 22,807 MATIC to 0x698C294d13C38F79466D7Af515E62f8155D409ba
 * *this EMA is updated from the original proposal description to accurately reflect the amount of MATIC requested*
 ` as const;
 
-export const  BOARDROOM_GRANT = `
+export const BOARDROOM_GRANT = `
 # Z-5 Boardroom Grant 
 
 ## Summary 
@@ -304,4 +304,4 @@ See detailed explanation at https://forum.0xprotocol.org/t/grant-request-boardro
 ## Action Required 
 
 Send 85,060.5 ZRX to 0x6b27E26dc09d9c9FD9527526f79C9c8C659d1761
-` as const
+` as const;
