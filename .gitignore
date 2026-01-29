@@ -12,3 +12,4 @@ mdx/tools/*
 .env
 .vercel
 
+.env*.local
