@@ -366,6 +366,9 @@ importers:
       '@types/deep-equal':
         specifier: ^1.0.0
         version: 1.0.4
+      '@types/ethereumjs-util':
+        specifier: ^5.2.0
+        version: 5.2.0
       '@types/find-versions':
         specifier: ^2.0.0
         version: 2.0.0
@@ -2284,6 +2287,9 @@ packages:
 
   '@types/ethereum-protocol@1.0.5':
     resolution: {integrity: sha512-4wr+t2rYbwMmDrT447SGzE/43Z0EN++zyHCBoruIx32fzXQDxVa1rnQbYwPO8sLP2OugE/L8KaAIJC5kieUuBg==}
+
+  '@types/ethereumjs-util@5.2.0':
+    resolution: {integrity: sha512-qwQgQqXXTRv2h2AlJef+tMEszLFkCB9dWnrJYIdAwqjubERXEc/geB+S3apRw0yQyTVnsBf8r6BhlrE8vx+3WQ==}
 
   '@types/express-serve-static-core@4.19.8':
     resolution: {integrity: sha512-02S5fmqeoKzVZCHPZid4b8JH2eM5HzQLZWN2FohQEy/0eXTq8VXZfSN6Pcr3F6N9R/vNrj7cpgbhjie6m/1tCA==}
@@ -14093,6 +14099,11 @@ snapshots:
   '@types/ethereum-protocol@1.0.5':
     dependencies:
       bignumber.js: 7.2.1
+
+  '@types/ethereumjs-util@5.2.0':
+    dependencies:
+      '@types/bn.js': 5.2.0
+      '@types/node': 25.1.0
 
   '@types/express-serve-static-core@4.19.8':
     dependencies:

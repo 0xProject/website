@@ -52,7 +52,7 @@ interface VoterBreakdownData {
 
 export const VoterLeaderboard: React.FC<{}> = () => {
     const [voterBreakdownData, setVoterBreakdownData] = React.useState<VoterBreakdownData[]>();
-    const { id: proposalId } = useParams();
+    const { id: proposalId } = useParams<{ id: string }>();
     const providerState = useSelector((state: State) => state.providerState);
 
     useQuery('proposal', async () => {

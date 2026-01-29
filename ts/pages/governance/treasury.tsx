@@ -77,7 +77,7 @@ export const Treasury: React.FC<{}> = () => {
     const [isVoteModalOpen, setIsVoteModalOpen] = React.useState<boolean>(false);
     const [quorumThreshold, setQuorumThreshold] = React.useState<BigNumber>();
     const [voterBreakdownData, setVoterBreakdownData] = React.useState<VoterBreakdownData[]>();
-    const { id: proposalId } = useParams();
+    const { id: proposalId } = useParams<{ id: string }>();
     const providerState = useSelector((state: State) => state.providerState);
 
     const { data } = useQuery('proposal', async () => {

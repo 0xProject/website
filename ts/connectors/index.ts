@@ -26,7 +26,6 @@ const newWalletConnect = () =>
         rpc: { 1: RPC_URLS[1] },
         bridge: 'https://bridge.walletconnect.org',
         qrcode: true,
-        pollingInterval: POLLING_INTERVAL,
     });
 
 const newWalletLink = () =>

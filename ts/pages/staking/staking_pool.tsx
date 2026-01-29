@@ -80,7 +80,7 @@ const StakingCalculatorLink = styled.a`
 `;
 
 export const StakingPool: React.FC<StakingPoolProps & RouteChildrenProps> = (props) => {
-    const { poolId } = useParams();
+    const { poolId } = useParams<{ poolId: string }>();
 
     const networkId = useSelector((state: State) => state.networkId);
     const apiClient = useAPIClient(networkId);
