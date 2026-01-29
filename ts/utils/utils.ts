@@ -707,9 +707,15 @@ export const utils = {
 
 export const hacks = {
     getFormatOverride(proposalId: string): string | null {
-        if (proposalId === '3') return PURPLE_PAY_OVERRIDE;
-        if (proposalId === '4') return PURPLE_PAY_OVERRIDE_2;
-        if (proposalId === '5') return BOARDROOM_GRANT;
+        if (proposalId === '3') {
+            return PURPLE_PAY_OVERRIDE;
+        }
+        if (proposalId === '4') {
+            return PURPLE_PAY_OVERRIDE_2;
+        }
+        if (proposalId === '5') {
+            return BOARDROOM_GRANT;
+        }
         return null;
     },
 };
