@@ -151,7 +151,10 @@ module.exports = (_env, argv) => {
         plugins.push(
             // Since we do not use moment's locale feature, we exclude them from the bundle.
             // This reduces the bundle size by 0.4MB.
-            new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+            new webpack.IgnorePlugin({
+                resourceRegExp: /^\.\/locale$/,
+                contextRegExp: /moment$/,
+            }),
             new webpack.DefinePlugin({
                 'process.env': {
                     GIT_SHA: JSON.stringify(GIT_SHA),
