@@ -92,6 +92,9 @@ importers:
       bowser:
         specifier: ^1.9.4
         version: 1.9.4
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
       change-case:
         specifier: ^3.0.2
         version: 3.1.0
@@ -194,6 +197,9 @@ importers:
       postinstall-postinstall:
         specifier: ^2.1.0
         version: 2.1.0
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       prop-types:
         specifier: ^15.7.2
         version: 15.8.1
@@ -12912,7 +12918,7 @@ snapshots:
   '@jest/core@24.9.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)':
     dependencies:
       '@jest/console': 24.9.0
-      '@jest/reporters': 24.9.0
+      '@jest/reporters': 24.9.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)
       '@jest/test-result': 24.9.0
       '@jest/transform': 24.9.0
       '@jest/types': 24.9.0
@@ -12981,7 +12987,7 @@ snapshots:
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
-  '@jest/reporters@24.9.0':
+  '@jest/reporters@24.9.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)':
     dependencies:
       '@jest/environment': 24.9.0
       '@jest/test-result': 24.9.0
@@ -13005,7 +13011,9 @@ snapshots:
       source-map: 0.6.1
       string-length: 2.0.0
     transitivePeerDependencies:
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   '@jest/schemas@29.6.3':
     dependencies:
@@ -19640,7 +19648,7 @@ snapshots:
       jest-environment-jsdom: 24.9.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)
       jest-environment-node: 24.9.0
       jest-get-type: 24.9.0
-      jest-jasmine2: 24.9.0
+      jest-jasmine2: 24.9.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)
       jest-regex-util: 24.9.0
       jest-resolve: 24.9.0
       jest-util: 24.9.0
@@ -19744,7 +19752,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  jest-jasmine2@24.9.0:
+  jest-jasmine2@24.9.0(bufferutil@4.0.7)(utf-8-validate@6.0.3):
     dependencies:
       '@babel/traverse': 7.28.6(supports-color@5.5.0)
       '@jest/environment': 24.9.0
@@ -19763,7 +19771,9 @@ snapshots:
       pretty-format: 24.9.0
       throat: 4.1.0
     transitivePeerDependencies:
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   jest-leak-detector@24.9.0:
     dependencies:
@@ -19848,7 +19858,7 @@ snapshots:
       jest-config: 24.9.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)
       jest-docblock: 24.9.0
       jest-haste-map: 24.9.0
-      jest-jasmine2: 24.9.0
+      jest-jasmine2: 24.9.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)
       jest-leak-detector: 24.9.0
       jest-message-util: 24.9.0
       jest-resolve: 24.9.0

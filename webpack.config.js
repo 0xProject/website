@@ -12,7 +12,16 @@ const remarkSectionizeHeadings = require('./webpack/remark_sectionize_headings')
 const GIT_SHA = childProcess.execSync('git rev-parse HEAD').toString().trim();
 
 module.exports = (_env, argv) => {
-    const plugins = [new Dotenv()];
+    const plugins = [
+        new Dotenv(),
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+            process: 'process/browser',
+        }),
+        new webpack.DefinePlugin({
+            'global': 'globalThis',
+        }),
+    ];
     const isDevEnvironment = argv.mode === 'development';
 
     const config = {
@@ -33,7 +42,7 @@ module.exports = (_env, argv) => {
             zeroExInstant: 'zeroExInstant',
         },
         node: {
-            global: false,
+            global: true,
         },
         resolve: {
             modules: [path.join(__dirname, '/ts'), 'node_modules'],
