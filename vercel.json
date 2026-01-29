@@ -1,4 +1,6 @@
 {
+    "installCommand": "pnpm install",
+    "buildCommand": "pnpm run build:prod",
     "redirects": [
         {
             "source": "/docs/api",

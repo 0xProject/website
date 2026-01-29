@@ -17,6 +17,12 @@ module.exports = (_env, argv) => {
 
     const config = {
         entry: ['./ts/index.tsx'],
+        cache: {
+            type: 'filesystem',
+            buildDependencies: {
+                config: [__filename],
+            },
+        },
         output: {
             path: path.join(__dirname, '/public'),
             filename: 'bundle.js',
@@ -105,7 +111,6 @@ module.exports = (_env, argv) => {
             minimizer: [
                 new TerserPlugin({
                     parallel: true,
-                    sourceMap: true,
                     terserOptions: {
                         mangle: {
                             reserved: ['BigNumber'],
