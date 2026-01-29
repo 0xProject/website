@@ -12,11 +12,26 @@ const remarkSectionizeHeadings = require('./webpack/remark_sectionize_headings')
 const GIT_SHA = childProcess.execSync('git rev-parse HEAD').toString().trim();
 
 module.exports = (_env, argv) => {
-    const plugins = [new Dotenv()];
+    const plugins = [
+        new Dotenv(),
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+            process: 'process/browser',
+        }),
+        new webpack.DefinePlugin({
+            'global': 'globalThis',
+        }),
+    ];
     const isDevEnvironment = argv.mode === 'development';
 
     const config = {
         entry: ['./ts/index.tsx'],
+        cache: {
+            type: 'filesystem',
+            buildDependencies: {
+                config: [__filename],
+            },
+        },
         output: {
             path: path.join(__dirname, '/public'),
             filename: 'bundle.js',
@@ -27,7 +42,7 @@ module.exports = (_env, argv) => {
             zeroExInstant: 'zeroExInstant',
         },
         node: {
-            fs: 'empty',
+            global: true,
         },
         resolve: {
             modules: [path.join(__dirname, '/ts'), 'node_modules'],
@@ -37,6 +52,21 @@ module.exports = (_env, argv) => {
                 less: path.join(__dirname, '/less'),
                 sass: path.join(__dirname, '/sass'),
                 md: path.join(__dirname, '/md'),
+            },
+            fallback: {
+                fs: false,
+                net: false,
+                tls: false,
+                crypto: require.resolve('crypto-browserify'),
+                stream: require.resolve('stream-browserify'),
+                url: require.resolve('url'),
+                zlib: require.resolve('browserify-zlib'),
+                http: require.resolve('stream-http'),
+                https: require.resolve('https-browserify'),
+                assert: require.resolve('assert'),
+                os: require.resolve('os-browserify/browser'),
+                path: require.resolve('path-browserify'),
+                vm: require.resolve('vm-browserify'),
             },
         },
         module: {
@@ -64,11 +94,20 @@ module.exports = (_env, argv) => {
                 },
                 {
                     test: /\.scss$/,
-                    use: ['style-loader', 'css-loader', 'sass-loader'],
+                    use: [
+                        'style-loader', 
+                        'css-loader', 
+                        {
+                            loader: 'sass-loader',
+                            options: {
+                                implementation: require('sass'),
+                            },
+                        },
+                    ],
                 },
                 {
                     test: /\.css$/,
-                    loaders: ['style-loader', 'css-loader'],
+                    use: ['style-loader', 'css-loader'],
                 },
 
                 {
@@ -90,7 +129,6 @@ module.exports = (_env, argv) => {
             minimizer: [
                 new TerserPlugin({
                     parallel: true,
-                    sourceMap: true,
                     terserOptions: {
                         mangle: {
                             reserved: ['BigNumber'],
@@ -123,7 +161,7 @@ module.exports = (_env, argv) => {
 
     if (isDevEnvironment) {
         config.mode = 'development';
-        config.devtool = 'cheap-module-eval-source-map';
+        config.devtool = 'cheap-module-source-map';
     } else {
         config.mode = 'production';
         config.devtool = 'source-map';
@@ -131,7 +169,10 @@ module.exports = (_env, argv) => {
         plugins.push(
             // Since we do not use moment's locale feature, we exclude them from the bundle.
             // This reduces the bundle size by 0.4MB.
-            new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+            new webpack.IgnorePlugin({
+                resourceRegExp: /^\.\/locale$/,
+                contextRegExp: /moment$/,
+            }),
             new webpack.DefinePlugin({
                 'process.env': {
                     GIT_SHA: JSON.stringify(GIT_SHA),

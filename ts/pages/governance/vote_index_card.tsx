@@ -4,7 +4,6 @@ import * as moment from 'moment';
 import * as React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-
 import { TreasurySummary } from 'ts/components/governance/treasury_summary';
 import { Column, FlexWrap, Section } from 'ts/components/newLayout';
 import { Heading, Paragraph } from 'ts/components/text';
@@ -12,6 +11,7 @@ import { getTotalBalancesString, VoteStats } from 'ts/pages/governance/vote_stat
 import { VoteStatusText } from 'ts/pages/governance/vote_status_text';
 import { colors } from 'ts/style/colors';
 import { TallyInterface, VoteOutcome, VoteTime, VotingCardType, WebsitePaths } from 'ts/types';
+
 import { hacks } from '../../utils/utils';
 
 interface ZEIPCardProps {
@@ -91,6 +91,7 @@ export const getDateString = (voteStartDate: moment.Moment, voteEndDate: moment.
     const now = moment();
     const endDate = voteEndDate.utcOffset(pstOffset);
     const startDate = voteStartDate.utcOffset(pstOffset);
+    // @ts-ignore restrict-plus-operands
     const timeToEndInDays = (endDate.diff(now, 'days') as number) + 1;
     const timeToEndInHours = endDate.diff(now, 'hours');
     if (voteTime === 'happening') {

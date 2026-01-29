@@ -7,16 +7,6 @@ import { Column, FlexWrap } from 'ts/components/newLayout';
 
 import { colors } from 'ts/style/colors';
 
-interface LinkInterface {
-    text: string;
-    url: string;
-    shouldOpenInNewTab?: boolean;
-}
-
-interface LinkListProps {
-    links: LinkInterface[];
-}
-
 interface IFooterProps {
     isDocs?: boolean;
     shouldShowDisclaimer?: boolean;
@@ -59,18 +49,6 @@ export const Footer: React.FC<IFooterProps> = React.memo(({ isDocs, shouldShowDi
     </FooterWrap>
 ));
 
-const LinkList = (props: LinkListProps) => (
-    <List>
-        {props.links.map((link, index) => (
-            <li key={`fl-${index}`}>
-                <Link to={link.url} shouldOpenInNewTab={link.shouldOpenInNewTab}>
-                    {link.text}
-                </Link>
-            </li>
-        ))}
-    </List>
-);
-
 const LinkCollection = styled.div`
     display: flex;
     justify-content: flex-end;
@@ -99,12 +77,6 @@ const FooterColumn = styled(Column)`
 
     @media (max-width: 768px) {
         text-align: left;
-    }
-`;
-
-const List = styled.ul`
-    li + li {
-        margin-top: 8px;
     }
 `;
 

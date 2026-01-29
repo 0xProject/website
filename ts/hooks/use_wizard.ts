@@ -61,7 +61,7 @@ const useStakingWizard = (): IUSeWizardResult => {
             if (!nextStep) {
                 return;
             }
-            const routingFn = replace ? history.replace : history.push;
+            const routingFn = replace ? history.replace.bind(history) : history.push.bind(history);
             return routingFn(
                 `${WebsitePaths.StakingWizard}?${qs.stringify({
                     ...restOfQueryParams,

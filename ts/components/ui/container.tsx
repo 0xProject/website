@@ -1,4 +1,4 @@
-import { TextAlignProperty } from 'csstype';
+import { Property } from 'csstype';
 import { darken } from 'polished';
 import * as React from 'react';
 
@@ -35,7 +35,7 @@ export interface ContainerProps {
     height?: StringOrNum;
     minWidth?: StringOrNum;
     minHeight?: StringOrNum;
-    textAlign?: TextAlignProperty;
+    textAlign?: Property.TextAlign;
     isHidden?: boolean;
     className?: string;
     position?: 'absolute' | 'fixed' | 'relative' | 'unset';
