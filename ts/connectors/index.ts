@@ -5,8 +5,6 @@ import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 
 import { configs } from 'ts/utils/configs';
 
-const POLLING_INTERVAL = 10000;
-
 const RPC_URLS: { [chainId: number]: string } = {
     1: configs.PUBLIC_NODE_URLS_BY_NETWORK_ID[1][0],
     42: configs.PUBLIC_NODE_URLS_BY_NETWORK_ID[42][0],
