@@ -39,7 +39,7 @@
     "license": "Apache-2.0",
     "dependencies": {
         "@0x/asset-buyer": "6.2.0-beta.3",
-        "@0x/contract-addresses": "^4.1.0",
+        "@0x/contract-addresses": "^6.25.0",
         "@0x/contract-wrappers": "^13.18.0",
         "@0x/contracts-dev-utils": "^1.0.2",
         "@0x/contracts-treasury": "^1.4.2",
@@ -179,6 +179,7 @@
         "@types/react-scroll": "1.5.3",
         "@types/react-syntax-highlighter": "^10.2.1",
         "@types/react-transition-group": "^4.2.0",
+        "@types/rc-tooltip": "^3.7.0",
         "@types/redux": "^3.6.0",
         "@types/styled-components": "^5.1.15",
         "@types/valid-url": "^1.0.2",
