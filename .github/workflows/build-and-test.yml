@@ -8,67 +8,91 @@ jobs:
         env:
             CI: true
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-            - name: Setup node 14
-              uses: actions/setup-node@v1
+            - name: Setup node 24
+              uses: actions/setup-node@v4
               with:
-                  node-version: 14.x
-            - run: yarn install --frozen-lockfile --check-files
-            - uses: actions/cache@v1
+                  node-version: 24.x
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 9.15.0
+            - name: Get pnpm store directory
+              shell: bash
+              run: |
+                  echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+            - uses: actions/cache@v4
+              name: Setup pnpm cache
+              with:
+                  path: ${{ env.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
+            - run: pnpm install --frozen-lockfile
+            - uses: actions/cache@v4
               id: cache-deps
               with:
-                  token: ${{ github.token }}
                   path: '.'
                   key: ${{ github.sha }}-deps
     lint:
         runs-on: ubuntu-latest
         needs: install-dependencies
         steps:
-            - uses: actions/cache@v1
+            - uses: actions/cache@v4
               id: restore-deps
               with:
                   path: '.'
                   key: ${{ github.sha }}-deps
-            - name: Setup node 14
-              uses: actions/setup-node@v1
+            - name: Setup node 24
+              uses: actions/setup-node@v4
               with:
-                  node-version: 14.x
-            - run: yarn lint
+                  node-version: 24.x
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 9.15.0
+            - run: pnpm lint
     unit-test:
         runs-on: ubuntu-latest
         needs: install-dependencies
         steps:
-            - uses: actions/cache@v1
+            - uses: actions/cache@v4
               id: restore-deps
               with:
                   path: '.'
                   key: ${{ github.sha }}-deps
-            - name: Setup node 14
-              uses: actions/setup-node@v1
+            - name: Setup node 24
+              uses: actions/setup-node@v4
               with:
-                  node-version: 14.x
-            - run: yarn test
+                  node-version: 24.x
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 9.15.0
+            - run: pnpm test
     build:
         runs-on: ubuntu-latest
         needs: install-dependencies
         strategy:
             matrix:
-                node-version: [14.x]
+                node-version: [24.x]
         steps:
-            - uses: actions/cache@v1
+            - uses: actions/cache@v4
               id: restore-deps
               with:
                   path: '.'
                   key: ${{ github.sha }}
             - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v1
+              uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node-version }}
-              # HACK(johnrjj) - Rebuild node-sass in case build step runs on a separate machine than the dependency install
-            - run: npm rebuild node-sass
-            - run: yarn build:prod
-            - uses: actions/cache@v1
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 9.15.0
+            - run: pnpm build:prod
+            - uses: actions/cache@v4
               id: cache-build
               with:
                   path: '.'
